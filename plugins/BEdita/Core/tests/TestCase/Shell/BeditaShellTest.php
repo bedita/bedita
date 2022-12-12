@@ -14,6 +14,7 @@
 namespace BEdita\Core\Test\TestCase\Shell;
 
 use BEdita\Core\Shell\Task\InitSchemaTask;
+use BEdita\Core\Test\Utility\CheckDriver;
 use Cake\Console\Shell;
 use Cake\Database\Connection;
 use Cake\Datasource\ConnectionManager;
@@ -47,6 +48,10 @@ class BeditaShellTest extends TestCase
      */
     public function setUp(): void
     {
+        if (CheckDriver::is(\Cake\Database\Driver\Sqlite::class)) {
+            return;
+        }
+
         $this->fixtureManager->shutDown();
 
         // Try to avoid "database schema has changed" error on SQLite.
@@ -62,6 +67,9 @@ class BeditaShellTest extends TestCase
      */
     public function tearDown(): void
     {
+        if (CheckDriver::is(\Cake\Database\Driver\Sqlite::class)) {
+            return;
+        }
         ConnectionManager::alias('test', 'default'); // Restore alias which is dropped by `BeditaShell`.
         ConnectionManager::get('default')->getDriver()->disconnect();
         ConnectionManager::get('default')
@@ -96,6 +104,12 @@ class BeditaShellTest extends TestCase
      */
     public function testSetupNewInteractive()
     {
+        if (CheckDriver::is(\Cake\Database\Driver\Sqlite::class)) {
+            $this->markTestSkipped('Skip this test on sqlite.');
+
+            return;
+        }
+
         // Setup configuration file.
         file_put_contents(
             static::TEMP_FILE,
@@ -159,6 +173,12 @@ class BeditaShellTest extends TestCase
      */
     public function testSetupNewNonInteractive()
     {
+        if (CheckDriver::is(\Cake\Database\Driver\Sqlite::class)) {
+            $this->markTestSkipped('Skip this test on sqlite.');
+
+            return;
+        }
+
         // Setup configuration file.
         file_put_contents(
             static::TEMP_FILE,
@@ -273,6 +293,11 @@ class BeditaShellTest extends TestCase
      */
     public function testSetupExistingNonInteractive()
     {
+        if (CheckDriver::is(\Cake\Database\Driver\Sqlite::class)) {
+            $this->markTestSkipped('Skip this test on sqlite.');
+
+            return;
+        }
         $this->exec(sprintf('%s --force --seed', InitSchemaTask::class));
 
         // Invoke task.
@@ -294,6 +319,11 @@ class BeditaShellTest extends TestCase
      */
     public function testCheck()
     {
+        if (CheckDriver::is(\Cake\Database\Driver\Sqlite::class)) {
+            $this->markTestSkipped('Skip this test on sqlite.');
+
+            return;
+        }
         $this->exec(sprintf('%s --force --seed', InitSchemaTask::class));
 
         // Invoke task.

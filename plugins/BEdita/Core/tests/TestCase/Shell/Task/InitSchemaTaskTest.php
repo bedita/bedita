@@ -14,6 +14,7 @@
 namespace BEdita\Core\Test\TestCase\Shell\Task;
 
 use BEdita\Core\Shell\Task\InitSchemaTask;
+use BEdita\Core\Test\Utility\CheckDriver;
 use Cake\Console\Shell;
 use Cake\Core\Plugin;
 use Cake\Database\Connection;
@@ -36,7 +37,9 @@ class InitSchemaTaskTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
-
+        if (CheckDriver::is(\Cake\Database\Driver\Sqlite::class)) {
+            return;
+        }
         $this->fixtureManager->shutDown();
     }
 
@@ -45,6 +48,9 @@ class InitSchemaTaskTest extends TestCase
      */
     public function tearDown(): void
     {
+        if (CheckDriver::is(\Cake\Database\Driver\Sqlite::class)) {
+            return;
+        }
         ConnectionManager::get('default')
             ->transactional(function (Connection $connection) {
                 $tables = $connection->getSchemaCollection()->listTables();
@@ -73,6 +79,11 @@ class InitSchemaTaskTest extends TestCase
      */
     public function testDatabaseNotEmpty()
     {
+        if (CheckDriver::is(\Cake\Database\Driver\Sqlite::class)) {
+            $this->markTestSkipped('Skip this test on sqlite.');
+
+            return;
+        }
         $connection = ConnectionManager::get('default');
         if (!($connection instanceof Connection)) {
             throw new \RuntimeException('Unable to use database connection');
@@ -96,6 +107,11 @@ class InitSchemaTaskTest extends TestCase
      */
     public function testDatabaseEmpty()
     {
+        if (CheckDriver::is(\Cake\Database\Driver\Sqlite::class)) {
+            $this->markTestSkipped('Skip this test on sqlite.');
+
+            return;
+        }
         $connection = ConnectionManager::get('default');
         if (!($connection instanceof Connection)) {
             throw new \RuntimeException('Unable to use database connection');
@@ -119,6 +135,11 @@ class InitSchemaTaskTest extends TestCase
      */
     public function testDatabaseCleanup()
     {
+        if (CheckDriver::is(\Cake\Database\Driver\Sqlite::class)) {
+            $this->markTestSkipped('Skip this test on sqlite.');
+
+            return;
+        }
         $connection = ConnectionManager::get('default');
         if (!($connection instanceof Connection)) {
             throw new \RuntimeException('Unable to use database connection');
@@ -146,6 +167,11 @@ class InitSchemaTaskTest extends TestCase
      */
     public function testDatabaseSeed()
     {
+        if (CheckDriver::is(\Cake\Database\Driver\Sqlite::class)) {
+            $this->markTestSkipped('Skip this test on sqlite.');
+
+            return;
+        }
         $connection = ConnectionManager::get('default');
         if (!($connection instanceof Connection)) {
             throw new \RuntimeException('Unable to use database connection');
@@ -169,6 +195,11 @@ class InitSchemaTaskTest extends TestCase
      */
     public function testInteractive($notSeededCount)
     {
+        if (CheckDriver::is(\Cake\Database\Driver\Sqlite::class)) {
+            $this->markTestSkipped('Skip this test on sqlite.');
+
+            return;
+        }
         $connection = ConnectionManager::get('default');
         if (!($connection instanceof Connection)) {
             throw new \RuntimeException('Unable to use database connection');
