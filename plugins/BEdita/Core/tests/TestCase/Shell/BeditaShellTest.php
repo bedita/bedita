@@ -47,6 +47,14 @@ class BeditaShellTest extends TestCase
      */
     public function setUp(): void
     {
+        $cfg = ConnectionManager::get('default')->config();
+        $driver = substr($cfg['driver'], strrpos($cfg['driver'], '\\') + 1);
+        if ($driver === 'Sqlite') {
+            $this->markTestSkipped('Skip this test, on sqlite.');
+
+            return;
+        }
+
         $this->fixtureManager->shutDown();
 
         // Try to avoid "database schema has changed" error on SQLite.
