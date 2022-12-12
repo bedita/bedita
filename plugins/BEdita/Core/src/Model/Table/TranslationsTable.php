@@ -13,9 +13,14 @@
 
 namespace BEdita\Core\Model\Table;
 
+use BEdita\Core\Exception\BadFilterException;
+use Cake\Database\Expression\QueryExpression;
 use Cake\Database\Schema\TableSchemaInterface;
+use Cake\Datasource\Exception\RecordNotFoundException;
+use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
+use Cake\ORM\TableRegistry;
 use Cake\Validation\Validator;
 
 /**
@@ -140,5 +145,45 @@ class TranslationsTable extends Table
         $schema->setColumnType('translated_fields', 'json');
 
         return $schema;
+    }
+
+    /**
+     * Find translations by object type
+     *
+     * @param \Cake\ORM\Query $query Query object instance.
+     * @param array $options Options array.
+     * @return \Cake\ORM\Query
+     * @throws \BEdita\Core\Exception\BadFilterException
+     */
+    protected function findType(Query $query, array $options): Query
+    {
+        if (empty($options)) {
+            throw new BadFilterException(__d('bedita', 'Missing required parameter "type"'));
+        }
+        $typeIds = array_map([$this, 'typeId'], $options);
+
+        return $query->innerJoinWith('Objects', function (Query $query) use ($typeIds) {
+            return $query->where(function (QueryExpression $exp) use ($typeIds) {
+                return $exp->in('object_type_id', $typeIds);
+            });
+        });
+    }
+
+    /**
+     * Retrieve object type ID from options string
+     *
+     * @param string $option Finder option
+     * @return int
+     */
+    protected function typeId(string $option): int
+    {
+        try {
+            /** @var \BEdita\Core\Model\Entity\ObjectType $objectType */
+            $objectType = TableRegistry::getTableLocator()->get('ObjectTypes')->get($option);
+        } catch (RecordNotFoundException $ex) {
+            throw new BadFilterException(__d('bedita', 'Invalid type parameter "{0}"', $option));
+        }
+
+        return $objectType->id;
     }
 }
