@@ -199,6 +199,7 @@ class ListAssociatedActionTest extends TestCase
      * @covers ::clearInverseAssociation()
      * @covers ::buildQuery()
      * @covers ::prepareJoinEntity()
+     * @covers ::sort()
      * @covers ::execute()
      */
     public function testInvocation($expected, $table, $association, $id, ?array $options = null)
