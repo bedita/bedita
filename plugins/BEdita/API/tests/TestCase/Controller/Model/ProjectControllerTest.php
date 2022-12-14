@@ -266,6 +266,13 @@ class ProjectControllerTest extends IntegrationTestCase
                     'object' => 'users',
                 ],
                 [
+                    'name' => 'children_order',
+                    'description' => null,
+                    'is_nullable' => true,
+                    'object' => 'folders',
+                    'property' => 'children_order',
+                ],
+                [
                     'name' => 'disabled_property',
                     'description' => 'Disabled property example',
                     'is_nullable' => true,

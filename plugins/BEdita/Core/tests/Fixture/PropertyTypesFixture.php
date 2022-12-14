@@ -125,5 +125,13 @@ class PropertyTypesFixture extends TestFixture
             'modified' => '2019-11-02 09:23:43',
             'core_type' => false,
         ],
+        // 13
+        [
+            'name' => 'children_order',
+            'params' => '{"type":"string","enum":["position","-position","modified","-modified","title","-title"]}',
+            'created' => '2022-12-01 15:35:21',
+            'modified' => '2022-12-01 15:35:21',
+            'core_type' => true,
+        ],
     ];
 }

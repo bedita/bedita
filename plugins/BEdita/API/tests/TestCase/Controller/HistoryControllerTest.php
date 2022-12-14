@@ -365,6 +365,7 @@ class HistoryControllerTest extends IntegrationTestCase
      * Test `include` method.
      *
      * @return void
+     * @coversNothing
      */
     public function testInclude()
     {
