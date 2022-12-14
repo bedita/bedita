@@ -205,7 +205,7 @@ abstract class ResourcesController extends AppController
         $this->request->allowMethod(['get', 'patch', 'delete']);
 
         $contain = $this->prepareInclude($this->request->getQuery('include'));
-
+        $id = $this->getResourceId($id);
         $action = new GetEntityAction(['table' => $this->Table]);
         $entity = $action(['primaryKey' => $id, 'contain' => $contain]);
 
@@ -238,6 +238,21 @@ abstract class ResourcesController extends AppController
         $this->setSerialize(['entity']);
 
         return null;
+    }
+
+    /**
+     * Get resource ID in string format from entity ID or non numeric identifier.
+     *
+     * @param string|int $id Resource identifier, can be ID or name.
+     * @return string
+     */
+    protected function getResourceId($id): string
+    {
+        if ($this->fetchTable()->behaviors()->has('ResourceName')) {
+            return (string)$this->fetchTable()->getId($id);
+        }
+
+        return (string)$id;
     }
 
     /**

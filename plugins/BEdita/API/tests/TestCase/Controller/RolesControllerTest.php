@@ -215,6 +215,19 @@ class RolesControllerTest extends IntegrationTestCase
     }
 
     /**
+     * Test view method with name as argument.
+     *
+     * @return void
+     * @covers ::getResourceId()
+     */
+    public function testSingleName()
+    {
+        $this->configRequestHeaders('GET', $this->getUserAuthHeader());
+        $this->get(sprintf('/roles/%s', urlencode('first role')));
+        $this->assertResponseCode(200);
+    }
+
+    /**
      * Test view method.
      *
      * @return void

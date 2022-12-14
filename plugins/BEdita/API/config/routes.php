@@ -19,6 +19,7 @@ return function (RouteBuilder $routes) {
         $resourcesControllers = [
             'config',
             'roles',
+            'history',
             'streams',
             'users',
             'media',
@@ -214,13 +215,6 @@ return function (RouteBuilder $routes) {
             '/applications',
             ['controller' => 'Applications', 'action' => 'index', '_method' => 'GET'],
             ['_name' => 'applications:index']
-        );
-
-        // History.
-        $routes->connect(
-            '/history',
-            ['controller' => 'History', 'action' => 'index', '_method' => 'GET'],
-            ['_name' => 'history:index']
         );
 
         // Trees.

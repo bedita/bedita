@@ -420,8 +420,7 @@
 									},
 									{
 										"key": "Content-Type",
-										"value": "application/json",
-										"disabled": true
+										"value": "application/json"
 									},
 									{
 										"key": "X-Api-Key",
@@ -435,7 +434,12 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": ""
+									"raw": "{\n\t\"auth_provider\": \"uuid\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
 								},
 								"url": {
 									"raw": "{{be4Url}}/auth",
@@ -456,7 +460,6 @@
 								{
 									"listen": "test",
 									"script": {
-										"type": "text/javascript",
 										"exec": [
 											"var responseJSON;",
 											"try {",
@@ -471,7 +474,8 @@
 											"} catch (e) {",
 											"    tests[\"Error in parsing response\"] = e;",
 											"}"
-										]
+										],
+										"type": "text/javascript"
 									}
 								}
 							],
@@ -493,7 +497,7 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n\t\"username\": \"{{username}}\",\n    \"grant_type\": \"otp_request\"\n}"
+									"raw": "{\n\t\"username\": \"{{username}}\",\n    \"auth_provider\": \"otp\"\n}"
 								},
 								"url": {
 									"raw": "{{be4Url}}/auth",
@@ -514,7 +518,6 @@
 								{
 									"listen": "test",
 									"script": {
-										"type": "text/javascript",
 										"exec": [
 											"var responseJSON;",
 											"try {",
@@ -532,7 +535,8 @@
 											"} catch (e) {",
 											"    tests[\"Error in parsing response\"] = e;",
 											"}"
-										]
+										],
+										"type": "text/javascript"
 									}
 								}
 							],
@@ -554,7 +558,7 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n\t\"username\": \"{{username}}\",\n\t\"authorization_code\": \"{{authorizationCode}}\",\n\t\"token\": \"{{token}}\",\n\t\"grant_type\": \"otp\"\n}"
+									"raw": "{\n\t\"username\": \"{{username}}\",\n\t\"authorization_code\": \"{{authorizationCode}}\",\n\t\"token\": \"{{token}}\",\n    \"otp\": \"access\",\n    \"auth_provider\": \"otp\"\n}"
 								},
 								"url": {
 									"raw": "{{be4Url}}/auth",
@@ -616,7 +620,7 @@
 							"response": []
 						},
 						{
-							"name": "Signup ext auth",
+							"name": "Signup OAuth2",
 							"event": [
 								{
 									"listen": "test",
@@ -832,6 +836,80 @@
 									]
 								},
 								"description": "Perform actual credential change using secret hash"
+							},
+							"response": []
+						},
+						{
+							"name": "Auth user opt-out",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"var responseJSON;",
+											"try {",
+											"    tests[\"Status code is 200\"] = responseCode.code === 200;",
+											"    tests[\"Content-Type is correct\"] = postman.getResponseHeader(\"Content-Type\") === 'application/vnd.api+json';",
+											"    responseJSON = JSON.parse(responseBody);",
+											"    if (responseJSON.meta) {",
+											"        if (responseJSON.meta.jwt) {",
+											"            postman.setEnvironmentVariable(\"jwt\", responseJSON.meta.jwt);",
+											"        }",
+											"        if (responseJSON.meta.renew) {",
+											"            postman.setEnvironmentVariable(\"renew\", responseJSON.meta.renew);",
+											"        }",
+											"    }",
+											"} catch (e) {",
+											"    tests[\"Error in parsing response\"] = e;",
+											"}"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"protocolProfileBehavior": {
+								"disabledSystemHeaders": {
+									"content-type": true,
+									"accept": true
+								}
+							},
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/vnd.api+json"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "X-Api-Key",
+										"value": "{{apiKey}}"
+									},
+									{
+										"key": "Authorization",
+										"value": "Bearer {{jwt}}",
+										"type": "text",
+										"disabled": true
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n\t\"username\": \"{{username}}\",\n\t\"password\": \"{{password}}\",\n    \"grant_type\": \"password\"\n}"
+								},
+								"url": {
+									"raw": "{{be4Url}}/auth/optout",
+									"host": [
+										"{{be4Url}}"
+									],
+									"path": [
+										"auth",
+										"optout"
+									]
+								},
+								"description": "Perform authentication step using application/json content type.\n\nTypes of authentications are identified by the `grant_type` POST attribute:\n\n*   `password` for classic username/password authentication\n*   `client_credentials` for client (application) authentication\n*   `refresh_token` for JWT token renew"
 							},
 							"response": []
 						}
@@ -1054,7 +1132,7 @@
 							"response": []
 						},
 						{
-							"name": "Auth renew  user and/or app",
+							"name": "Auth renew only app or app & user token",
 							"event": [
 								{
 									"listen": "test",
@@ -1266,7 +1344,7 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n\t\"auth_provider\": \"{{oauth2Provider}}\",\n\t\"provider_username\": \"{{oauth2Username}}\",\n    \"access_token\": \"{{oauth2AccessToken}}\",\n    \"grant_type\": \"external_auth\"\n}"
+									"raw": "{\n\t\"auth_provider\": \"{{oauth2Provider}}\",\n\t\"provider_username\": \"{{oauth2Username}}\",\n    \"access_token\": \"{{oauth2AccessToken}}\"\n}"
 								},
 								"url": {
 									"raw": "{{be4Url}}/auth",
@@ -1287,7 +1365,6 @@
 								{
 									"listen": "test",
 									"script": {
-										"type": "text/javascript",
 										"exec": [
 											"var responseJSON;",
 											"try {",
@@ -1302,7 +1379,8 @@
 											"} catch (e) {",
 											"    tests[\"Error in parsing response\"] = e;",
 											"}"
-										]
+										],
+										"type": "text/javascript"
 									}
 								}
 							],
@@ -1318,13 +1396,13 @@
 										"value": "application/json"
 									},
 									{
-										"key": "X-Api-Key",
-										"value": "{{apiKey}}"
+										"key": "Authorization",
+										"value": "Bearer {{jwt}}"
 									}
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n\t\"username\": \"{{username}}\",\n    \"grant_type\": \"otp_request\"\n}"
+									"raw": "{\n\t\"username\": \"{{username}}\",\n    \"otp\": \"request\",\n    \"auth_provider\": \"otp\"\n}"
 								},
 								"url": {
 									"raw": "{{be4Url}}/auth",
@@ -1385,7 +1463,7 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n\t\"username\": \"{{username}}\",\n\t\"authorization_code\": \"{{authorizationCode}}\",\n\t\"token\": \"{{token}}\",\n\t\"grant_type\": \"otp\"\n}"
+									"raw": "{\n\t\"username\": \"{{username}}\",\n\t\"authorization_code\": \"{{authorizationCode}}\",\n\t\"token\": \"{{token}}\",\n    \"otp\": \"access\",\n    \"auth_provider\": \"otp\"\n}"
 								},
 								"url": {
 									"raw": "{{be4Url}}/auth",
@@ -1447,7 +1525,7 @@
 							"response": []
 						},
 						{
-							"name": "Signup ext auth",
+							"name": "Signup OAuth2",
 							"event": [
 								{
 									"listen": "test",
@@ -1478,7 +1556,7 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n\t\"username\": \"name@email.com\",\n    \"email\": \"name@email.com\",\n    \"name\": \"Name\",\n    \"surname\": \"Surname\",\n\t\"auth_provider\": \"some-provider\",\n\t\"provider_username\": \"acdbrt90780364\",\n\t\"provider_userdata\": {\n\t\t\"headline\": \"Chief Technology Officer, Startup LTD\",\n    \t\"id\": \"acdbrt90780364\"\n\t}\n}"
+									"raw": "{\n\t\"username\": \"name@email.com\",\n    \"email\": \"name@email.com\",\n    \"name\": \"Name\",\n    \"surname\": \"Surname\",\n    \"auth_provider\": \"{{oauth2Provider}}\",\n\t\"provider_username\": \"{{oauth2Username}}\",\n    \"access_token\": \"{{oauth2AccessToken}}\",\n\t\"provider_userdata\": {\n\t\t\"headline\": \"Chief Technology Officer, Startup LTD\"\n\t}\n}"
 								},
 								"url": {
 									"raw": "{{be4Url}}/signup",
@@ -1805,12 +1883,12 @@
 						{
 							"listen": "test",
 							"script": {
-								"type": "text/javascript",
 								"exec": [
 									"tests[\"Status code is 200\"] = responseCode.code === 200;",
 									"tests[\"Content-Type is correct\"] = postman.getResponseHeader(\"Content-Type\") === 'application/vnd.api+json';",
 									""
-								]
+								],
+								"type": "text/javascript"
 							}
 						}
 					],
@@ -2129,17 +2207,13 @@
 							"response": []
 						},
 						{
-							"name": "GET single property",
+							"name": "GET single property type",
 							"event": [
 								{
 									"listen": "test",
 									"script": {
 										"exec": [
-											"if (responseCode.code === 200) {",
-											"    tests[\"Status equals 200\"] = true;",
-											"} else if (responseCode.code === 404) {",
-											"    tests[\"Status code is 404\"] = true;",
-											"}",
+											"tests[\"Status code is 200\"] = responseCode.code === 200;",
 											"tests[\"Content-Type is correct\"] = postman.getResponseHeader(\"Content-Type\") === 'application/vnd.api+json';"
 										],
 										"type": "text/javascript"
@@ -2172,13 +2246,55 @@
 										"property_types",
 										"{{propertyTypeId}}"
 									]
-								},
-								"description": "GET object_type by object_type_id"
+								}
 							},
 							"response": []
 						},
 						{
 							"name": "GET property types",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"type": "text/javascript",
+										"exec": [
+											"tests[\"Status code is 200\"] = responseCode.code === 200;",
+											"tests[\"Content-Type is correct\"] = postman.getResponseHeader(\"Content-Type\") === 'application/vnd.api+json';"
+										]
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/vnd.api+json"
+									},
+									{
+										"key": "Authorization",
+										"value": "Bearer {{jwt}}"
+									},
+									{
+										"key": "X-Api-Key",
+										"value": "{{apiKey}}"
+									}
+								],
+								"url": {
+									"raw": "{{be4Url}}/model/property_types",
+									"host": [
+										"{{be4Url}}"
+									],
+									"path": [
+										"model",
+										"property_types"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "GET property types - filter by name",
 							"event": [
 								{
 									"listen": "test",
@@ -4158,11 +4274,11 @@
 						{
 							"listen": "test",
 							"script": {
-								"type": "text/javascript",
 								"exec": [
 									"tests[\"Status code is 200\"] = responseCode.code === 200;",
 									"tests[\"Content-Type is correct\"] = postman.getResponseHeader(\"Content-Type\") === 'application/vnd.api+json';"
-								]
+								],
+								"type": "text/javascript"
 							}
 						}
 					],
@@ -4183,14 +4299,14 @@
 							}
 						],
 						"url": {
-							"raw": "{{be4Url}}/{{objectTypeName}}/{{objectId}}/{{inverseRelationName}}",
+							"raw": "{{be4Url}}/{{objectTypeName}}/{{objectId}}/{{relationName}}",
 							"host": [
 								"{{be4Url}}"
 							],
 							"path": [
 								"{{objectTypeName}}",
 								"{{objectId}}",
-								"{{inverseRelationName}}"
+								"{{relationName}}"
 							]
 						}
 					},
@@ -6428,10 +6544,10 @@
 						{
 							"listen": "test",
 							"script": {
-								"type": "text/javascript",
 								"exec": [
 									"tests[\"Status code is 200\"] = responseCode.code === 200;"
-								]
+								],
+								"type": "text/javascript"
 							}
 						}
 					],
@@ -6619,6 +6735,122 @@
 			"item": [
 				{
 					"name": "GET translations",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;",
+									"tests[\"Content-Type is correct\"] = postman.getResponseHeader(\"Content-Type\") === 'application/vnd.api+json';",
+									"var responseJSON;",
+									"try {",
+									"    responseJSON = JSON.parse(responseBody); ",
+									"    if (responseJSON && responseJSON.data && responseJSON.data.id) {",
+									"        postman.setEnvironmentVariable(\"translationId\", responseJSON.data.id);",
+									"    }",
+									"} catch (e) {",
+									"    tests[\"Error in parsing response\"] = e;",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/vnd.api+json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt}}"
+							},
+							{
+								"key": "X-Api-Key",
+								"value": "{{apiKey}}"
+							}
+						],
+						"url": {
+							"raw": "{{be4Url}}/translations?filter[lang]=es",
+							"host": [
+								"{{be4Url}}"
+							],
+							"path": [
+								"translations"
+							],
+							"query": [
+								{
+									"key": "filter[lang]",
+									"value": "es"
+								}
+							]
+						},
+						"description": "Get translations list"
+					},
+					"response": []
+				},
+				{
+					"name": "GET translations filtered by lang",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;",
+									"tests[\"Content-Type is correct\"] = postman.getResponseHeader(\"Content-Type\") === 'application/vnd.api+json';",
+									"var responseJSON;",
+									"try {",
+									"    responseJSON = JSON.parse(responseBody); ",
+									"    if (responseJSON && responseJSON.data && responseJSON.data.id) {",
+									"        postman.setEnvironmentVariable(\"translationId\", responseJSON.data.id);",
+									"    }",
+									"} catch (e) {",
+									"    tests[\"Error in parsing response\"] = e;",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/vnd.api+json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt}}"
+							},
+							{
+								"key": "X-Api-Key",
+								"value": "{{apiKey}}"
+							}
+						],
+						"url": {
+							"raw": "{{be4Url}}/translations?filter[lang]=es",
+							"host": [
+								"{{be4Url}}"
+							],
+							"path": [
+								"translations"
+							],
+							"query": [
+								{
+									"key": "filter[lang]",
+									"value": "es"
+								}
+							]
+						},
+						"description": "Get translations list"
+					},
+					"response": []
+				},
+				{
+					"name": "GET translations filtered by object type",
 					"event": [
 						{
 							"listen": "test",
@@ -9176,16 +9408,6 @@
 								}
 							],
 							"request": {
-								"auth": {
-									"type": "bearer",
-									"bearer": [
-										{
-											"key": "token",
-											"value": "{{pirAccessToken}}",
-											"type": "string"
-										}
-									]
-								},
 								"method": "GET",
 								"header": [
 									{
@@ -10187,7 +10409,259 @@
 			]
 		},
 		{
-			"name": "16. Remove All",
+			"name": "16. App Configuration",
+			"item": [
+				{
+					"name": "GET config list",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;",
+									"tests[\"Content-Type is correct\"] = postman.getResponseHeader(\"Content-Type\") === 'application/vnd.api+json';"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/vnd.api+json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt}}"
+							},
+							{
+								"key": "X-Api-Key",
+								"value": "{{apiKey}}"
+							}
+						],
+						"url": {
+							"raw": "{{be4Url}}/config",
+							"host": [
+								"{{be4Url}}"
+							],
+							"path": [
+								"config"
+							]
+						},
+						"description": "Config endpoint"
+					},
+					"response": []
+				},
+				{
+					"name": "Create a config",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var responseJSON;",
+									"try {",
+									"    responseJSON = JSON.parse(responseBody); ",
+									"    tests[\"Status code is 201\"] = responseCode.code === 201;",
+									"    tests[\"Content-Type is correct\"] = postman.getResponseHeader(\"Content-Type\") === 'application/vnd.api+json';",
+									"    if (responseJSON && responseJSON.data && responseJSON.data.id) {",
+									"        postman.setEnvironmentVariable(\"configId\", responseJSON.data.id);",
+									"    }",
+									"} catch (e) {",
+									"    tests[\"Error in parsing response\"] = e;",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/vnd.api+json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt}}"
+							},
+							{
+								"key": "X-Api-Key",
+								"value": "{{apiKey}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"data\": {\n        \"type\": \"config\",\n        \"attributes\": {\n\t\t\t\"name\": \"AppConf\",\n            \"content\": \"config content\"\n        }\n    }\n}"
+						},
+						"url": {
+							"raw": "{{be4Url}}/config",
+							"host": [
+								"{{be4Url}}"
+							],
+							"path": [
+								"config"
+							]
+						},
+						"description": "Create an annotation for an object."
+					},
+					"response": []
+				},
+				{
+					"name": "GET single config",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;",
+									"tests[\"Content-Type is correct\"] = postman.getResponseHeader(\"Content-Type\") === 'application/vnd.api+json';"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/vnd.api+json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt}}"
+							},
+							{
+								"key": "X-Api-Key",
+								"value": "{{apiKey}}"
+							}
+						],
+						"url": {
+							"raw": "{{be4Url}}/config/{{configId}}",
+							"host": [
+								"{{be4Url}}"
+							],
+							"path": [
+								"config",
+								"{{configId}}"
+							]
+						},
+						"description": "Get a single annotation by ID"
+					},
+					"response": []
+				},
+				{
+					"name": "Modify a config",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;",
+									"tests[\"Content-Type is correct\"] = postman.getResponseHeader(\"Content-Type\") === 'application/vnd.api+json';"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Accept",
+								"value": "application/vnd.api+json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt}}"
+							},
+							{
+								"key": "X-Api-Key",
+								"value": "{{apiKey}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"data\": {\n        \"id\": \"{{configId}}\",\n        \"type\": \"config\",\n        \"attributes\": {\n            \"content\": \"another config content\"\n        }\n    }\n}"
+						},
+						"url": {
+							"raw": "{{be4Url}}/config/{{configId}}",
+							"host": [
+								"{{be4Url}}"
+							],
+							"path": [
+								"config",
+								"{{configId}}"
+							]
+						},
+						"description": "PATCH annotation"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete a config",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"tests[\"Status code is 204\"] = responseCode.code === 204;",
+									"tests[\"Body matches string\"] = responseBody === \"\";"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/vnd.api+json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt}}"
+							},
+							{
+								"key": "X-Api-Key",
+								"value": "{{apiKey}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{be4Url}}/config/{{configId}}",
+							"host": [
+								"{{be4Url}}"
+							],
+							"path": [
+								"config",
+								"{{configId}}"
+							]
+						},
+						"description": "DEL annotation"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "17. Remove All",
 			"item": [
 				{
 					"name": "Remove sub folder permanently",

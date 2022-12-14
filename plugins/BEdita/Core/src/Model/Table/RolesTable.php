@@ -71,6 +71,7 @@ class RolesTable extends Table
                 'description' => 5,
             ],
         ]);
+        $this->addBehavior('BEdita/Core.ResourceName');
     }
 
     /**

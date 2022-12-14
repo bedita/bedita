@@ -13,6 +13,7 @@
 
 namespace BEdita\API\Controller\Model;
 
+use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\ORM\Table;
 
 /**
@@ -49,5 +50,22 @@ class RelationsController extends ModelController
         }
 
         return array_merge($contain, ['LeftRelations', 'RightRelations']);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected function getResourceId($id): string
+    {
+        try {
+            $id = $this->Relations->getId($id);
+        } catch (RecordNotFoundException $ex) {
+            /** \BEdita\Core\Model\Behavior\ResourceNameBehavior $behavior */
+            $behavior = $this->Relations->behaviors()->get('ResourceName');
+            $behavior->setConfig('field', 'inverse_name');
+            $id = $this->Relations->getId($id);
+        }
+
+        return (string)$id;
     }
 }

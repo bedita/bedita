@@ -18,6 +18,7 @@ namespace BEdita\API\Controller;
  * via `AppConfig` table.
  *
  * @since 5.0.0
+ * @property \BEdita\Core\Model\Table\AppConfigTable $AppConfig
  */
 class ConfigController extends ResourcesController
 {

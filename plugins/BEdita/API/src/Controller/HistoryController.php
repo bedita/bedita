@@ -12,53 +12,41 @@
  */
 namespace BEdita\API\Controller;
 
-use BEdita\Core\Model\Action\ListEntitiesAction;
-use BEdita\Core\Utility\JsonApiSerializable;
 use Cake\Core\Configure;
-use Cake\ORM\TableRegistry;
+use Cake\ORM\Association;
 
 /**
  * Controller for `/history` endpoint.
  *
  * @since 4.1.0
+ * @property \BEdita\Core\Model\Table\HistoryTable $Table
  */
-class HistoryController extends AppController
+class HistoryController extends ResourcesController
 {
     /**
-     * History table
-     *
-     * @var \Cake\ORM\Table
+     * @inheritDoc
      */
-    protected $HistoryTable;
+    protected $_defaultConfig = [
+        'allowedAssociations' => [
+            'user' => ['users'],
+        ],
+    ];
 
     /**
      * @inheritDoc
      */
     public function initialize(): void
     {
-        parent::initialize();
+        $this->defaultTable = (string)Configure::read('History.table', 'History');
 
-        $historyTable = (string)Configure::read('History.table', 'History');
-        $this->HistoryTable = TableRegistry::getTableLocator()->get($historyTable);
+        parent::initialize();
     }
 
     /**
-     * History index.
-     *
-     * @return void
+     * @inheritDoc
      */
-    public function index(): void
+    protected function setRelationshipsAllowedMethods(Association $association)
     {
-        $this->request->allowMethod('get');
-
-        $filter = (array)$this->request->getQuery('filter');
-        $action = new ListEntitiesAction(['table' => $this->HistoryTable]);
-        $query = $action(compact('filter'));
-        $this->set('_fields', $this->request->getQuery('fields', []));
-        $data = $this->paginate($query);
-
-        $this->set(compact('data'));
-        $this->setSerialize(['data']);
-        $this->set('_jsonApiOptions', JsonApiSerializable::JSONAPIOPT_EXCLUDE_RELATIONSHIPS | JsonApiSerializable::JSONAPIOPT_EXCLUDE_LINKS);
+        $this->request->allowMethod(['get']);
     }
 }

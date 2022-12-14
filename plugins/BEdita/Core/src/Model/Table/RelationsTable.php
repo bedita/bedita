@@ -87,6 +87,7 @@ class RelationsTable extends Table
                 'inverse_label' => 5,
             ],
         ]);
+        $this->addBehavior('BEdita/Core.ResourceName');
     }
 
     /**
