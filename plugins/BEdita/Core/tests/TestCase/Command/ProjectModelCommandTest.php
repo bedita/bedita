@@ -171,7 +171,7 @@ class ProjectModelCommandTest extends TestCase
     public function testUpdate(): void
     {
         $model = ProjectModelTest::PROJECT_MODEL;
-        $model['relations'][0] = [
+        $model['relations'][1] = [
             'name' => 'test',
             'inverse_name' => 'inverse_test',
             'right_object_types' => ['documents', 'profiles'],
