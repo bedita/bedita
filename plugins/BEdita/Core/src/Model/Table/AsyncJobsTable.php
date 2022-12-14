@@ -4,6 +4,7 @@ namespace BEdita\Core\Model\Table;
 use BEdita\Core\Job\QueueJob;
 use BEdita\Core\Model\Entity\AsyncJob;
 use BEdita\Core\Model\Validation\Validation;
+use Cake\Core\Configure;
 use Cake\Database\Expression\QueryExpression;
 use Cake\Database\Schema\TableSchemaInterface;
 use Cake\Datasource\ConnectionManager;
@@ -134,7 +135,7 @@ class AsyncJobsTable extends Table
      */
     public function afterSave(EventInterface $event, AsyncJob $entity): void
     {
-        if (!$entity->isNew()) {
+        if (!$entity->isNew() || !Configure::check('Queue.default')) {
             return;
         }
 
