@@ -174,6 +174,7 @@ class TranslationsTable extends Table
      *
      * @param string $option Finder option
      * @return int
+     * @throws \BEdita\Core\Exception\BadFilterException
      */
     protected function typeId(string $option): int
     {
