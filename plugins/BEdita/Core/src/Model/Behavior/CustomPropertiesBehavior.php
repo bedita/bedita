@@ -194,10 +194,6 @@ class CustomPropertiesBehavior extends Behavior
      */
     protected function setupCustomProps($entity, array $customProps)
     {
-        if (empty($customProps)) {
-            return $entity;
-        }
-
         if (is_array($entity)) {
             return array_merge($entity, $customProps);
         }
