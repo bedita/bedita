@@ -265,6 +265,7 @@ class CustomPropertiesBehaviorTest extends TestCase
      * @dataProvider beforeFindProvider()
      * @covers ::beforeFind()
      * @covers ::promoteProperties()
+     * @covers ::setupCustomProps()
      * @covers ::isFieldSet()
      */
     public function testBeforeFind(array $expectedProperties, $id, $table, $hydrate = true)
@@ -318,6 +319,7 @@ class CustomPropertiesBehaviorTest extends TestCase
      * @return void
      * @covers ::beforeFind()
      * @covers ::promoteProperties()
+     * @covers ::setupCustomProps()
      * @covers ::isFieldSet()
      */
     public function testBeforeFindOtherType()
@@ -477,6 +479,7 @@ class CustomPropertiesBehaviorTest extends TestCase
      * @return void
      * @covers ::beforeFind()
      * @covers ::promoteProperties()
+     * @covers ::setupCustomProps()
      * @covers ::isFieldSet()
      */
     public function testCustomPropertyNotDirty(): void
