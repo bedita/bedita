@@ -229,7 +229,7 @@ class ProjectControllerTest extends IntegrationTestCase
                     'is_nullable' => true,
                     'property' => 'date',
                     'object' => 'profiles',
-                    'read_only' => false,
+                    'read_only' => true,
                 ],
                 [
                     'name' => 'another_description',

@@ -242,7 +242,7 @@ class ProjectModelTest extends TestCase
                 'is_nullable' => true,
                 'property' => 'date',
                 'object' => 'profiles',
-                'read_only' => false,
+                'read_only' => true,
             ],
             [
                 'name' => 'another_description',
@@ -411,7 +411,7 @@ class ProjectModelTest extends TestCase
                     'is_nullable' => true,
                     'property' => 'date',
                     'object' => 'profiles',
-                    'read_only' => false,
+                    'read_only' => true,
                 ],
             ],
             'relations' => [

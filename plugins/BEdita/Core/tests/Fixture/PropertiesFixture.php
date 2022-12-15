@@ -25,6 +25,7 @@ class PropertiesFixture extends TestFixture
             'label' => null,
             'is_nullable' => true,
             'is_static' => false,
+            'read_only' => false,
         ],
         [
             'name' => 'another_description',
@@ -37,6 +38,7 @@ class PropertiesFixture extends TestFixture
             'label' => 'Brief description',
             'is_nullable' => true,
             'is_static' => false,
+            'read_only' => false,
         ],
         [
             'name' => 'another_username',
@@ -49,6 +51,7 @@ class PropertiesFixture extends TestFixture
             'label' => null,
             'is_nullable' => true,
             'is_static' => false,
+            'read_only' => false,
         ],
         [
             'name' => 'another_email',
@@ -61,6 +64,7 @@ class PropertiesFixture extends TestFixture
             'label' => null,
             'is_nullable' => true,
             'is_static' => false,
+            'read_only' => false,
         ],
         [
             'name' => 'another_birthdate',
@@ -73,6 +77,7 @@ class PropertiesFixture extends TestFixture
             'label' => 'Date of birth',
             'is_nullable' => true,
             'is_static' => false,
+            'read_only' => true,
         ],
         [
             'name' => 'another_surname',
@@ -85,6 +90,7 @@ class PropertiesFixture extends TestFixture
             'label' => null,
             'is_nullable' => true,
             'is_static' => false,
+            'read_only' => false,
         ],
         [
             'name' => 'disabled_property',
@@ -97,6 +103,7 @@ class PropertiesFixture extends TestFixture
             'label' => null,
             'is_nullable' => true,
             'is_static' => false,
+            'read_only' => false,
         ],
         [
             'name' => 'media_property',
@@ -109,6 +116,7 @@ class PropertiesFixture extends TestFixture
             'label' => null,
             'is_nullable' => false,
             'is_static' => false,
+            'read_only' => false,
         ],
         [
             'name' => 'files_property',
@@ -121,6 +129,7 @@ class PropertiesFixture extends TestFixture
             'label' => null,
             'is_nullable' => true,
             'is_static' => false,
+            'read_only' => false,
         ],
         [
             'name' => 'street_address',
@@ -133,6 +142,7 @@ class PropertiesFixture extends TestFixture
             'label' => null,
             'is_nullable' => true,
             'is_static' => true,
+            'read_only' => false,
         ],
         [
             'name' => 'number_of_friends',
@@ -145,6 +155,7 @@ class PropertiesFixture extends TestFixture
             'label' => null,
             'is_nullable' => true,
             'is_static' => false,
+            'read_only' => false,
         ],
         [
             'name' => 'children_order',
@@ -157,6 +168,7 @@ class PropertiesFixture extends TestFixture
             'label' => null,
             'is_nullable' => true,
             'is_static' => false,
+            'read_only' => false,
         ],
     ];
 }

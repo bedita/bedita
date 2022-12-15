@@ -159,7 +159,7 @@ class PropertiesControllerTest extends IntegrationTestCase
                         'label' => 'Date of birth',
                         'is_nullable' => true,
                         'is_static' => false,
-                        'read_only' => false,
+                        'read_only' => true,
                     ],
                     'meta' => [
                         'created' => '2016-12-31T23:09:23+00:00',
