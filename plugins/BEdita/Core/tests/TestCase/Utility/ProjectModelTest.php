@@ -273,9 +273,8 @@ class ProjectModelTest extends TestCase
                 'description' => null,
                 'is_nullable' => true,
                 'property' => 'string',
-                'object' => 'profiles',
-                'read_only' => false,
                 'object' => 'documents',
+                'read_only' => false,
             ],
             [
                 'name' => 'another_username',
@@ -329,11 +328,9 @@ class ProjectModelTest extends TestCase
                 'name' => 'street_address',
                 'description' => null,
                 'is_nullable' => true,
-                'object' => 'folders',
-                'property' => 'children_order',
-                'read_only' => false,
                 'property' => 'string',
                 'object' => 'profiles',
+                'read_only' => false,
             ],
         ],
     ];
