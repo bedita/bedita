@@ -204,7 +204,7 @@ class CustomPropertiesBehavior extends Behavior
 
         /** @var \Cake\Datasource\EntityInterface $entity */
         $entity->set($customProps, ['guard' => false])->clean();
-        $readOnlyProps = array_filter(Hash::combine($this->available, '{s}.name', '{s}.read_only'));
+        $readOnlyProps = array_filter(Hash::combine((array)$this->available, '{s}.name', '{s}.read_only'));
         $entity->setAccess(array_keys($readOnlyProps), false);
 
         return $entity;
