@@ -135,7 +135,7 @@ class AsyncJobsTable extends Table
      */
     public function afterSave(EventInterface $event, AsyncJob $entity): void
     {
-        if (!$entity->isNew() || !Configure::check('Queue.default')) {
+        if (!$entity->isNew() || !QueueManager::getConfig('default')) {
             return;
         }
 

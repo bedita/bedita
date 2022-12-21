@@ -37,38 +37,41 @@ class QueueJob implements JobInterface
      */
     public function execute(Message $message): ?string
     {
-        $uuid = $message->getArgument('uuid');
         $this->AsyncJobs = $this->fetchTable('AsyncJobs');
-        $this->log(sprintf('%s', $uuid), 'debug');
-        $this->run($uuid);
+        $uuid = $message->getArgument('uuid');
+        $this->log(sprintf('Processing job "%s"', $uuid), 'debug');
+        $success = $this->run($uuid);
 
-        return Processor::ACK;
+        return $success ? Processor::ACK : Processor::REJECT;
     }
 
     /**
      * Process a single pending job.
      *
      * @param string $uuid Job UUID.
-     * @return void
+     * @return bool
      */
-    protected function run($uuid): void
+    protected function run($uuid): bool
     {
         try {
             $asyncJob = $this->AsyncJobs->lock($uuid);
         } catch (RecordNotFoundException $e) {
             $this->log(sprintf('Could not obtain lock on job "%s"', $uuid), 'warning');
 
-            return;
+            return false;
         }
 
         try {
             $success = $asyncJob->run();
         } catch (\Exception $e) {
             $success = false;
-
-            $this->log('Error running job - ' . $e->getMessage(), 'error');
+            $this->log(sprintf('Error running job "%s" - %s', $uuid, $e->getMessage()), 'error');
         } finally {
+            $result = $success ? 'completed successfully' : 'failed';
+            $this->log(sprintf('Job "%s" [%s] %s', $asyncJob->uuid, $asyncJob->service, $result), 'debug');
             $this->AsyncJobs->unlock($asyncJob->uuid, $success);
         }
+
+        return $success;
     }
 }
