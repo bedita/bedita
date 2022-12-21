@@ -56,10 +56,10 @@ class PropertiesControllerTest extends IntegrationTestCase
             ],
             'meta' => [
                 'pagination' => [
-                    'count' => 11,
+                    'count' => 12,
                     'page' => 1,
                     'page_count' => 1,
-                    'page_items' => 11,
+                    'page_items' => 12,
                     'page_size' => 20,
                 ],
             ],
@@ -284,6 +284,26 @@ class PropertiesControllerTest extends IntegrationTestCase
                         'self' => 'http://api.example.com/model/properties/11',
                     ],
                 ],
+                [
+                    'id' => '12',
+                    'type' => 'properties',
+                    'attributes' => [
+                        'name' => 'children_order',
+                        'description' => null,
+                        'property_type_name' => 'children_order',
+                        'object_type_name' => 'folders',
+                        'label' => null,
+                        'is_nullable' => true,
+                        'is_static' => false,
+                    ],
+                    'meta' => [
+                        'created' => '2022-12-01T15:26:00+00:00',
+                        'modified' => '2022-12-01T15:26:00+00:00',
+                    ],
+                    'links' => [
+                        'self' => 'http://api.example.com/model/properties/12',
+                    ],
+                ],
             ],
         ];
 
@@ -438,7 +458,7 @@ class PropertiesControllerTest extends IntegrationTestCase
 
         $this->assertResponseCode(201);
         $this->assertContentType('application/vnd.api+json');
-        $this->assertHeader('Location', 'http://api.example.com/model/properties/12');
+        $this->assertHeader('Location', 'http://api.example.com/model/properties/13');
         static::assertTrue(TableRegistry::getTableLocator()->get('Properties')->exists(['name' => 'yet_another_body']));
     }
 

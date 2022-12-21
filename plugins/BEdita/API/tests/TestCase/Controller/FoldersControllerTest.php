@@ -100,6 +100,7 @@ class FoldersControllerTest extends IntegrationTestCase
                         'lang' => 'en',
                         'publish_start' => null,
                         'publish_end' => null,
+                        'children_order' => null,
                     ],
                     'meta' => [
                         'locked' => false,
@@ -147,6 +148,7 @@ class FoldersControllerTest extends IntegrationTestCase
                         'lang' => 'en',
                         'publish_start' => null,
                         'publish_end' => null,
+                        'children_order' => null,
                     ],
                     'meta' => [
                         'locked' => false,
@@ -194,6 +196,7 @@ class FoldersControllerTest extends IntegrationTestCase
                         'lang' => 'en',
                         'publish_start' => null,
                         'publish_end' => null,
+                        'children_order' => null,
                     ],
                     'meta' => [
                         'locked' => false,
@@ -307,6 +310,7 @@ class FoldersControllerTest extends IntegrationTestCase
                     'lang' => 'en',
                     'publish_start' => null,
                     'publish_end' => null,
+                    'children_order' => null,
                 ],
                 'meta' => [
                     'locked' => false,
