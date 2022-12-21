@@ -4,7 +4,6 @@ namespace BEdita\Core\Model\Table;
 use BEdita\Core\Job\QueueJob;
 use BEdita\Core\Model\Entity\AsyncJob;
 use BEdita\Core\Model\Validation\Validation;
-use Cake\Core\Configure;
 use Cake\Database\Expression\QueryExpression;
 use Cake\Database\Schema\TableSchemaInterface;
 use Cake\Datasource\ConnectionManager;

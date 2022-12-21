@@ -25,7 +25,7 @@ use Interop\Queue\Processor;
 /**
  * Default Queue Job class consuming AsyncJobs
  *
- * @param \BEdita\Core\Model\Table\AsyncJobsTable $AsyncJobs
+ * @property \BEdita\Core\Model\Table\AsyncJobsTable $AsyncJobs
  */
 class QueueJob implements JobInterface
 {
@@ -61,10 +61,10 @@ class QueueJob implements JobInterface
             return false;
         }
 
+        $success = false;
         try {
             $success = $asyncJob->run();
         } catch (\Exception $e) {
-            $success = false;
             $this->log(sprintf('Error running job "%s" - %s', $uuid, $e->getMessage()), 'error');
         } finally {
             $result = $success ? 'completed successfully' : 'failed';
