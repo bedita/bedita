@@ -122,7 +122,9 @@ class ConfigTable extends Table
 
     /**
      * Finder for configuration by name and optional application name or id.
-     * Options array MUST have `name` and optionally `application` (application name) or `application_id`
+     * Options array MUST be:
+     *  - an associative array with `name` and optionally `application` (application name) or `application_id`
+     *  - a non empty indexed array, the first element is then used as `name`
      *
      * @param \Cake\ORM\Query $query Query object instance.
      * @param array $options Options array.
