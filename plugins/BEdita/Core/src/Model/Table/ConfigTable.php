@@ -19,6 +19,7 @@ use Cake\Http\Exception\BadRequestException;
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
+use Cake\Utility\Hash;
 use Cake\Validation\Validator;
 
 /**
@@ -129,10 +130,11 @@ class ConfigTable extends Table
      */
     protected function findName(Query $query, array $options): Query
     {
-        if (empty($options['name'])) {
+        if (empty($options[0]) && empty($options['name'])) {
             throw new BadRequestException(__d('bedita', 'Missing mandatory option "name"'));
         }
-        $query = $query->where([$this->aliasField('name') => $options['name']]);
+        $name = (string)Hash::get($options, 'name', Hash::get($options, '0'));
+        $query = $query->where([$this->aliasField('name') => $name]);
         if (empty($options['application']) && empty($options['application_id'])) {
             return $query;
         }
