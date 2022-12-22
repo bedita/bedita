@@ -194,6 +194,12 @@ class ConfigTableTest extends TestCase
                     'name' => 'KeyName',
                 ],
             ],
+            'non assoc array' => [
+                1,
+                [
+                    'appVal',
+                ],
+            ],
             'bad' => [
                 new BadRequestException('Missing mandatory option "name"'),
                 [
