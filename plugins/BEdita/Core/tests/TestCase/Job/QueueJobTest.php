@@ -105,10 +105,10 @@ class QueueJobTest extends TestCase
                 Processor::REJECT,
                 false,
             ],
-            'bad uuid' => [
+            'non existing uuid' => [
                 Processor::REJECT,
                 true,
-                'bad-uuid',
+                '1e1e1e1e-c0c0-4747-bebe-5b5b5b5b5b5b',
             ],
             'not pending uuid' => [
                 Processor::REJECT,
