@@ -107,7 +107,7 @@ class JobsShell extends Shell /* @phpstan-ignore-line */
         } catch (\Exception $e) {
             $success = false;
 
-            $this->log($e);
+            $this->log($e->getMessage(), 'error');
             $this->err(sprintf('=====> %s with message "%s"', get_class($e), $e->getMessage()));
         } finally {
             if ($success === false) {
