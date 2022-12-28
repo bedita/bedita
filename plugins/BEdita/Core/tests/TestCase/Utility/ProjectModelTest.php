@@ -242,6 +242,7 @@ class ProjectModelTest extends TestCase
                 'is_nullable' => true,
                 'property' => 'date',
                 'object' => 'profiles',
+                'read_only' => true,
             ],
             [
                 'name' => 'another_description',
@@ -249,6 +250,7 @@ class ProjectModelTest extends TestCase
                 'is_nullable' => true,
                 'property' => 'string',
                 'object' => 'documents',
+                'read_only' => false,
             ],
             [
                 'name' => 'another_email',
@@ -256,6 +258,7 @@ class ProjectModelTest extends TestCase
                 'is_nullable' => true,
                 'property' => 'email',
                 'object' => 'users',
+                'read_only' => false,
             ],
             [
                 'name' => 'another_surname',
@@ -263,6 +266,7 @@ class ProjectModelTest extends TestCase
                 'is_nullable' => true,
                 'property' => 'string',
                 'object' => 'profiles',
+                'read_only' => false,
             ],
             [
                 'name' => 'another_title',
@@ -270,6 +274,7 @@ class ProjectModelTest extends TestCase
                 'is_nullable' => true,
                 'property' => 'string',
                 'object' => 'documents',
+                'read_only' => false,
             ],
             [
                 'name' => 'another_username',
@@ -277,13 +282,15 @@ class ProjectModelTest extends TestCase
                 'is_nullable' => true,
                 'property' => 'string',
                 'object' => 'users',
+                'read_only' => false,
             ],
             [
                 'name' => 'children_order',
                 'description' => null,
                 'is_nullable' => true,
-                'object' => 'folders',
                 'property' => 'children_order',
+                'object' => 'folders',
+                'read_only' => false,
             ],
             [
                 'name' => 'disabled_property',
@@ -291,6 +298,7 @@ class ProjectModelTest extends TestCase
                 'is_nullable' => true,
                 'property' => 'string',
                 'object' => 'files',
+                'read_only' => false,
             ],
             [
                 'name' => 'files_property',
@@ -298,6 +306,7 @@ class ProjectModelTest extends TestCase
                 'is_nullable' => true,
                 'property' => 'json',
                 'object' => 'files',
+                'read_only' => false,
             ],
             [
                 'name' => 'media_property',
@@ -305,6 +314,7 @@ class ProjectModelTest extends TestCase
                 'is_nullable' => false,
                 'property' => 'boolean',
                 'object' => 'media',
+                'read_only' => false,
             ],
             [
                 'name' => 'number_of_friends',
@@ -312,6 +322,7 @@ class ProjectModelTest extends TestCase
                 'is_nullable' => true,
                 'property' => 'integer',
                 'object' => 'profiles',
+                'read_only' => false,
             ],
             [
                 'name' => 'street_address',
@@ -319,6 +330,7 @@ class ProjectModelTest extends TestCase
                 'is_nullable' => true,
                 'property' => 'string',
                 'object' => 'profiles',
+                'read_only' => false,
             ],
         ],
     ];
@@ -367,6 +379,7 @@ class ProjectModelTest extends TestCase
             'is_nullable' => true,
             'property' => 'string',
             'object' => 'profiles',
+            'read_only' => false,
         ];
         $data['properties'][] = $prop;
 
@@ -398,6 +411,7 @@ class ProjectModelTest extends TestCase
                     'is_nullable' => true,
                     'property' => 'date',
                     'object' => 'profiles',
+                    'read_only' => true,
                 ],
             ],
             'relations' => [

@@ -406,6 +406,7 @@ class JsonApiTraitTest extends TestCase
      *
      * @return void
      * @covers ::getMeta()
+     * @covers ::customProps()
      */
     public function testGetMetaNotAccessible()
     {
@@ -423,6 +424,7 @@ class JsonApiTraitTest extends TestCase
      *
      * @return void
      * @covers ::getMeta()
+     * @covers ::customProps()
      */
     public function testGetMetaExtra()
     {
@@ -521,6 +523,7 @@ class JsonApiTraitTest extends TestCase
      *
      * @return void
      * @covers ::getMeta()
+     * @covers ::customProps()
      */
     public function testGetMetaJoinData()
     {
@@ -682,5 +685,32 @@ class JsonApiTraitTest extends TestCase
         $result = Hash::get($role, 'relationships.users.meta.count', false);
 
         static::assertEquals($expected, $result);
+    }
+
+    /**
+     * Test getter for meta fields.
+     *
+     * @return void
+     * @covers ::customProps()
+     */
+    public function testCustomProps()
+    {
+        $expected = [
+            'another_birthdate',
+            'created',
+            'created_by',
+            'locked',
+            'modified',
+            'modified_by',
+            'published',
+        ];
+
+        $profile = $this->fetchTable('Profiles')->get(4);
+        $profile = $profile->jsonApiSerialize();
+
+        $meta = array_keys((array)Hash::get($profile, 'meta'));
+        sort($expected);
+        sort($meta);
+        static::assertEquals($expected, $meta);
     }
 }

@@ -229,6 +229,7 @@ class ProjectControllerTest extends IntegrationTestCase
                     'is_nullable' => true,
                     'property' => 'date',
                     'object' => 'profiles',
+                    'read_only' => true,
                 ],
                 [
                     'name' => 'another_description',
@@ -236,6 +237,7 @@ class ProjectControllerTest extends IntegrationTestCase
                     'is_nullable' => true,
                     'property' => 'string',
                     'object' => 'documents',
+                    'read_only' => false,
                 ],
                 [
                     'name' => 'another_email',
@@ -243,6 +245,7 @@ class ProjectControllerTest extends IntegrationTestCase
                     'is_nullable' => true,
                     'property' => 'email',
                     'object' => 'users',
+                    'read_only' => false,
                 ],
                 [
                     'name' => 'another_surname',
@@ -250,6 +253,7 @@ class ProjectControllerTest extends IntegrationTestCase
                     'is_nullable' => true,
                     'property' => 'string',
                     'object' => 'profiles',
+                    'read_only' => false,
                 ],
                 [
                     'name' => 'another_title',
@@ -257,6 +261,7 @@ class ProjectControllerTest extends IntegrationTestCase
                     'is_nullable' => true,
                     'property' => 'string',
                     'object' => 'documents',
+                    'read_only' => false,
                 ],
                 [
                     'name' => 'another_username',
@@ -264,13 +269,15 @@ class ProjectControllerTest extends IntegrationTestCase
                     'is_nullable' => true,
                     'property' => 'string',
                     'object' => 'users',
+                    'read_only' => false,
                 ],
                 [
                     'name' => 'children_order',
                     'description' => null,
                     'is_nullable' => true,
-                    'object' => 'folders',
                     'property' => 'children_order',
+                    'object' => 'folders',
+                    'read_only' => false,
                 ],
                 [
                     'name' => 'disabled_property',
@@ -278,6 +285,7 @@ class ProjectControllerTest extends IntegrationTestCase
                     'is_nullable' => true,
                     'property' => 'string',
                     'object' => 'files',
+                    'read_only' => false,
                 ],
                 [
                     'name' => 'files_property',
@@ -285,6 +293,7 @@ class ProjectControllerTest extends IntegrationTestCase
                     'is_nullable' => true,
                     'property' => 'json',
                     'object' => 'files',
+                    'read_only' => false,
                 ],
                 [
                     'name' => 'media_property',
@@ -292,6 +301,7 @@ class ProjectControllerTest extends IntegrationTestCase
                     'is_nullable' => false,
                     'property' => 'boolean',
                     'object' => 'media',
+                    'read_only' => false,
                 ],
                 [
                     'name' => 'number_of_friends',
@@ -299,6 +309,7 @@ class ProjectControllerTest extends IntegrationTestCase
                     'is_nullable' => true,
                     'property' => 'integer',
                     'object' => 'profiles',
+                    'read_only' => false,
                 ],
                 [
                     'name' => 'street_address',
@@ -306,6 +317,7 @@ class ProjectControllerTest extends IntegrationTestCase
                     'is_nullable' => true,
                     'property' => 'string',
                     'object' => 'profiles',
+                    'read_only' => false,
                 ],
             ],
         ];

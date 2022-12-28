@@ -194,10 +194,12 @@ trait JsonApiTrait
                 return !$this->isAccessible($property);
             }
         );
+
+        $custom = $this-> customProps($table);
         $extraProperties = array_filter(
             $properties,
-            function ($property) use ($table, $virtual) {
-                return !in_array($property, $virtual) && !$table->hasField($property);
+            function ($property) use ($table, $virtual, $custom) {
+                return !in_array($property, $virtual) && !$table->hasField($property) && !in_array($property, $custom);
             }
         );
 
@@ -208,6 +210,23 @@ trait JsonApiTrait
         $meta += array_filter(['relation' => $this->joinData()]);
 
         return $meta;
+    }
+
+    /**
+     * Retrieve table custom properties
+     *
+     * @param \Cake\ORM\Table $table Entity table
+     * @return array
+     */
+    protected function customProps(Table $table): array
+    {
+        if (!$table->behaviors()->has('CustomProperties')) {
+            return [];
+        }
+        /** @var \BEdita\Core\Model\Behavior\CustomPropertiesBehavior $behavior */
+        $behavior = $table->behaviors()->get('CustomProperties');
+
+        return array_keys($behavior->getAvailable());
     }
 
     /**
