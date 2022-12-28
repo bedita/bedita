@@ -71,11 +71,17 @@ class BaseApplicationTest extends TestCase
     public function testBootstrap(): void
     {
         Configure::write('Plugins', []);
+        Configure::write('Queue', ['default' => ['url' => 'null']]);
+
         $app = new class (CONFIG) extends BaseApplication {
         };
         $app->bootstrap();
 
         static::assertTrue($app->getPlugins()->has('Migrations'));
+        static::assertTrue($app->getPlugins()->has('Authentication'));
+        static::assertTrue($app->getPlugins()->has('Authorization'));
+        static::assertTrue($app->getPlugins()->has('Cake/Queue'));
+        Configure::delete('Queue');
     }
 
     /**
