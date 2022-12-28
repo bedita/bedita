@@ -78,7 +78,7 @@ class QueueJobTest extends TestCase
      * Create queue message
      *
      * @param array $body Message body
-     * @return Message
+     * @return \Cake\Queue\Job\Message
      */
     protected function createMessage(array $body): Message
     {
