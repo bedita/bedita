@@ -42,6 +42,7 @@ class ProjectModel
             'object_types' => static::objectTypes(),
             'relations' => static::relations(),
             'properties' => static::properties(),
+            'categories' => static::categories(),
         ];
     }
 
@@ -176,6 +177,51 @@ class ProjectModel
     }
 
     /**
+     * Retrieve categories.
+     *
+     * @return array
+     */
+    protected static function categories(): array
+    {
+        return TableRegistry::getTableLocator()->get('Categories')
+            ->find()
+            ->order(['name' => 'ASC'])
+            ->all()
+            ->each(function (EntityInterface $row) {
+                $hidden = [
+                    'id',
+                    'parent_id',
+                    'created',
+                    'modified',
+                    'tree_left',
+                    'tree_right',
+                    'object_type_name',
+                ];
+                $row->set('object', $row->get('object_type_name'));
+                $parent = static::parentCategory($row->get('parent_id'), $row->get('object_type_id'));
+                $row->set('parent', $parent);
+                $row->setHidden($hidden, true);
+            })
+            ->toArray();
+    }
+
+    /**
+     * Get parent category name.
+     *
+     * @return string|null
+     */
+    protected static function parentCategory(?int $id, int $typeId): ?string
+    {
+        return TableRegistry::getTableLocator()->get('Categories')
+            ->find('list', ['valueField' => 'name'])
+            ->where([
+                'id IS' => $id,
+                'object_type_id' => $typeId,
+            ])
+            ->first();
+    }
+
+    /**
      * Calculates the difference between the current project model
      * and a new project model passed by argument as array.
      * Diff array will contain 'create', 'update' and 'remove' keys
@@ -190,7 +236,7 @@ class ProjectModel
         $create = $update = $remove = [];
         $currentModel = json_decode(json_encode(static::generate()), true);
         foreach ($currentModel as $key => $items) {
-            if ($key === 'properties') {
+            if ($key === 'properties' || $key === 'categoriesw') {
                 $diff = static::propertiesDiff((array)$items, (array)Hash::get($project, $key));
                 $create[$key] = $diff['create'];
                 $remove[$key] = $diff['remove'];
