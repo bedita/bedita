@@ -32,6 +32,7 @@ class ProjectModelTest extends TestCase
         'plugin.BEdita/Core.Applications',
         'plugin.BEdita/Core.Roles',
         'plugin.BEdita/Core.ObjectTypes',
+        'plugin.BEdita/Core.Categories',
         'plugin.BEdita/Core.PropertyTypes',
         'plugin.BEdita/Core.Properties',
         'plugin.BEdita/Core.Relations',
@@ -331,6 +332,29 @@ class ProjectModelTest extends TestCase
                 'property' => 'string',
                 'object' => 'profiles',
                 'read_only' => false,
+            ],
+        ],
+        'categories' => [
+            [
+                'name' => 'disabled-cat',
+                'label' => 'Disabled category',
+                'parent' => null,
+                'enabled' => false,
+                'object' => 'documents'
+            ],
+            [
+                'name' => 'first-cat',
+                'label' => 'First category',
+                'parent' => null,
+                'enabled' => true,
+                'object' => 'documents'
+            ],
+            [
+                'name' => 'second-cat',
+                'label' => 'Second category',
+                'parent' => null,
+                'enabled' => true,
+                'object' => 'documents'
             ],
         ],
     ];
