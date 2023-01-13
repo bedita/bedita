@@ -22,6 +22,7 @@ use Cake\Event\EventInterface;
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
+use Cake\Utility\Hash;
 use Cake\Validation\Validator;
 
 /**
@@ -252,11 +253,12 @@ class CategoriesTable extends Table
         if (empty($options['name'])) {
             throw new BadFilterException(__d('bedita', 'Missing required parameter "{0}"', 'name'));
         }
-        if (empty($options['object_type_name'])) {
+        $object = Hash::get($options, 'object_type_name', Hash::get($options, 'object'));
+        if (empty($object)) {
             throw new BadFilterException(__d('bedita', 'Missing required parameter "{0}"', 'object_type_name'));
         }
 
-        return $query->find('type', [$options['object_type_name']])
+        return $query->find('type', [$object])
             ->where([$this->aliasField('name') => $options['name']]);
     }
 }

@@ -14,6 +14,8 @@
 namespace BEdita\Core\Model\Entity;
 
 use BEdita\Core\Utility\JsonApiSerializable;
+use Cake\Datasource\Exception\InvalidPrimaryKeyException;
+use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\ORM\Entity;
 
 /**
@@ -63,5 +65,84 @@ class Category extends Entity implements JsonApiSerializable
      */
     protected $_virtual = [
         'object_type_name',
+        'object',
+        'parent',
     ];
+
+    /**
+     * Getter for `object` virtual property.
+     *
+     * @return string|null
+     */
+    protected function _getObject(): ?string
+    {
+        return $this->_getObjectTypeName();
+    }
+
+    /**
+     * Setter for `object` virtual property.
+     *
+     * @param string $object Object type name.
+     * @return string|null
+     */
+    protected function _setObject(string $object): ?string
+    {
+        return $this->_setObjectTypeName($object);
+    }
+
+    /**
+     * Getter for `parent` virtual property.
+     *
+     * @return string|null
+     */
+    protected function _getParent(): ?string
+    {
+        if (empty($this->parent_id)) {
+            return null;
+        }
+        if (empty($this->parent_category)) {
+            try {
+                $this->parent_category = $this->getTable()->get($this->parent_id);
+            } catch (RecordNotFoundException $e) {
+                return null;
+            } catch (InvalidPrimaryKeyException $e) {
+                return null;
+            }
+        }
+
+        return $this->parent_category->name;
+    }
+
+    /**
+     * Setter for `parent` virtual property.
+     *
+     * @param string|null $parentName Parent category name.
+     * @return string|null
+     */
+    protected function _setParent(?string $parentName): ?string
+    {
+        if (empty($parentName)) {
+            $this->parent_category = null;
+            $this->parent_id = null;
+
+            return null;
+        }
+
+        try {
+            $this->parent_category = $this->getTable()->find()
+                ->where([
+                    'name' => $parentName,
+                    'object_type_id' => $this->object_type_id,
+                ])
+                ->firstOrFail();
+            $this->parent_id = $this->parent_category->id;
+        } catch (RecordNotFoundException $e) {
+            $this->parent_category = null;
+            $this->parent_id = null;
+
+            return null;
+        }
+
+        return $this->parent_category->name;
+    }
 }
