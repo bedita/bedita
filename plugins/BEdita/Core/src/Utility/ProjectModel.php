@@ -185,7 +185,7 @@ class ProjectModel
     {
         return TableRegistry::getTableLocator()->get('Categories')
             ->find()
-            ->order(['name' => 'ASC'])
+            ->order(['tree_left' => 'ASC'])
             ->all()
             ->each(function (EntityInterface $row) {
                 $hidden = [
@@ -197,28 +197,9 @@ class ProjectModel
                     'tree_right',
                     'object_type_name',
                 ];
-                $row->set('object', $row->get('object_type_name'));
-                $parent = static::parentCategory($row->get('parent_id'), $row->get('object_type_id'));
-                $row->set('parent', $parent);
                 $row->setHidden($hidden, true);
             })
             ->toArray();
-    }
-
-    /**
-     * Get parent category name.
-     *
-     * @return string|null
-     */
-    protected static function parentCategory(?int $id, int $typeId): ?string
-    {
-        return TableRegistry::getTableLocator()->get('Categories')
-            ->find('list', ['valueField' => 'name'])
-            ->where([
-                'id IS' => $id,
-                'object_type_id' => $typeId,
-            ])
-            ->first();
     }
 
     /**
