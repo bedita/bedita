@@ -173,6 +173,7 @@ class CategoriesTable extends Table
                     [
                         'id', 'enabled', 'created', 'modified',
                         'object_type_id', 'object_type_name',
+                        'parent', 'object',
                         'parent_id', 'tree_left', 'tree_right',
                     ],
                     true

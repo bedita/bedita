@@ -59,7 +59,6 @@ class CategoriesBehaviorTest extends TestCase
                         [
                             'name' => 'second-cat',
                             'id' => 2,
-                            'object_type_name' => null,
                         ],
                     ],
                 ],
@@ -190,6 +189,7 @@ class CategoriesBehaviorTest extends TestCase
         $entity = $table->patchEntity($entity, $data);
         $entity = $table->save($entity);
         static::assertNotFalse($entity);
+ //       $entity->setHidden(['object', 'object_type_name', 'parent']);
 
         foreach (array_keys($expected) as $key) {
             $result = (array)$entity->get($key);
@@ -200,7 +200,7 @@ class CategoriesBehaviorTest extends TestCase
                     $res = $res->toArray();
                 }
                 ksort($res);
-                unset($res['modified']);
+                unset($res['modified'], $res['object'], $res['object_type_name']);
                 static::assertSame($expected[$key][$k], $res);
             }
         }

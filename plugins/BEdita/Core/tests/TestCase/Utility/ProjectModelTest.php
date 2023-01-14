@@ -336,13 +336,6 @@ class ProjectModelTest extends TestCase
         ],
         'categories' => [
             [
-                'name' => 'disabled-cat',
-                'label' => 'Disabled category',
-                'parent' => null,
-                'enabled' => false,
-                'object' => 'documents',
-            ],
-            [
                 'name' => 'first-cat',
                 'label' => 'First category',
                 'parent' => null,
@@ -354,6 +347,13 @@ class ProjectModelTest extends TestCase
                 'label' => 'Second category',
                 'parent' => null,
                 'enabled' => true,
+                'object' => 'documents',
+            ],
+            [
+                'name' => 'disabled-cat',
+                'label' => 'Disabled category',
+                'parent' => null,
+                'enabled' => false,
                 'object' => 'documents',
             ],
         ],
