@@ -218,7 +218,7 @@ class ProjectModel
         $currentModel = json_decode(json_encode(static::generate()), true);
         foreach ($currentModel as $key => $items) {
             if ($key === 'properties' || $key === 'categories') {
-                $diff = static::propertiesDiff((array)$items, (array)Hash::get($project, $key));
+                $diff = static::byObjectDiff((array)$items, (array)Hash::get($project, $key));
                 $create[$key] = $diff['create'];
                 $remove[$key] = $diff['remove'];
                 $update[$key] = $diff['update'];
@@ -237,13 +237,16 @@ class ProjectModel
     }
 
     /**
-     * Calculate diff between current and project model properties.
+     * Calculate diff between current and project model resources
+     * grouping by `object`.
+     * Needed for `properties` and `categories` resources that may
+     * have duplicate `name` fields, but still unique by object.
      *
-     * @param array $items Current properties items.
-     * @param array $projectItems Project properties items.
+     * @param array $items Current items.
+     * @param array $projectItems Project items.
      * @return array
      */
-    protected static function propertiesDiff(array $items, array $projectItems): array
+    protected static function byObjectDiff(array $items, array $projectItems): array
     {
         $create = $update = $remove = [];
         $current = Hash::combine($items, '{n}.name', '{n}', '{n}.object');
