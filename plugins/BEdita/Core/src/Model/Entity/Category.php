@@ -58,6 +58,7 @@ class Category extends Entity implements JsonApiSerializable
         'object_type_id',
         'object_type',
         '_joinData',
+        'object_type_name',
         'object',
         'parent',
     ];
