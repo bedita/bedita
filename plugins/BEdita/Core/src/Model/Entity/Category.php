@@ -108,8 +108,6 @@ class Category extends Entity implements JsonApiSerializable
                 $this->parent_category = $this->getTable()->get($this->parent_id);
             } catch (RecordNotFoundException $e) {
                 return null;
-            } catch (InvalidPrimaryKeyException $e) {
-                return null;
             }
         }
 
