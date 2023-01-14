@@ -188,16 +188,16 @@ class ProjectModel
             ->order(['tree_left' => 'ASC'])
             ->all()
             ->each(function (EntityInterface $row) {
-                $hidden = [
+                $row->setHidden([
                     'id',
-                    'parent_id',
                     'created',
                     'modified',
+                    'object_type_id',
+                    'object_type_name',
+                    'parent_id',
                     'tree_left',
                     'tree_right',
-                    'object_type_name',
-                ];
-                $row->setHidden($hidden, true);
+                ]);
             })
             ->toArray();
     }
@@ -217,7 +217,7 @@ class ProjectModel
         $create = $update = $remove = [];
         $currentModel = json_decode(json_encode(static::generate()), true);
         foreach ($currentModel as $key => $items) {
-            if ($key === 'properties' || $key === 'categoriesw') {
+            if ($key === 'properties' || $key === 'categories') {
                 $diff = static::propertiesDiff((array)$items, (array)Hash::get($project, $key));
                 $create[$key] = $diff['create'];
                 $remove[$key] = $diff['remove'];
