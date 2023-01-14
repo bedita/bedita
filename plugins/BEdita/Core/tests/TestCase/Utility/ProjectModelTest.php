@@ -370,6 +370,7 @@ class ProjectModelTest extends TestCase
      * @covers ::objectTypes()
      * @covers ::relations()
      * @covers ::properties()
+     * @covers ::categories()
      */
     public function testGenerate(): void
     {
@@ -384,7 +385,7 @@ class ProjectModelTest extends TestCase
      *
      * @return void
      * @covers ::diff()
-     * @covers ::propertiesDiff()
+     * @covers ::byObjectDiff()
      * @covers ::itemsToUpdate()
      */
     public function testDiffAdd(): void
@@ -420,7 +421,7 @@ class ProjectModelTest extends TestCase
      *
      * @return void
      * @covers ::diff()
-     * @covers ::propertiesDiff()
+     * @covers ::byObjectDiff()
      */
     public function testDiffRemove(): void
     {
@@ -458,7 +459,7 @@ class ProjectModelTest extends TestCase
      *
      * @return void
      * @covers ::diff()
-     * @covers ::propertiesDiff()
+     * @covers ::byObjectDiff()
      * @covers ::itemsToUpdate()
      */
     public function testDiffUpdate(): void
