@@ -320,6 +320,29 @@ class ProjectControllerTest extends IntegrationTestCase
                     'read_only' => false,
                 ],
             ],
+            'categories' => [
+                [
+                    'name' => 'first-cat',
+                    'label' => 'First category',
+                    'parent' => null,
+                    'enabled' => true,
+                    'object' => 'documents',
+                ],
+                [
+                    'name' => 'second-cat',
+                    'label' => 'Second category',
+                    'parent' => null,
+                    'enabled' => true,
+                    'object' => 'documents',
+                ],
+                [
+                    'name' => 'disabled-cat',
+                    'label' => 'Disabled category',
+                    'parent' => null,
+                    'enabled' => false,
+                    'object' => 'documents',
+                ],
+            ],
         ];
 
         $this->configRequestHeaders('GET', ['Accept' => 'application/json']);

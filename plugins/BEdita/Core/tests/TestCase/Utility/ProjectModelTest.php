@@ -32,6 +32,7 @@ class ProjectModelTest extends TestCase
         'plugin.BEdita/Core.Applications',
         'plugin.BEdita/Core.Roles',
         'plugin.BEdita/Core.ObjectTypes',
+        'plugin.BEdita/Core.Categories',
         'plugin.BEdita/Core.PropertyTypes',
         'plugin.BEdita/Core.Properties',
         'plugin.BEdita/Core.Relations',
@@ -333,6 +334,29 @@ class ProjectModelTest extends TestCase
                 'read_only' => false,
             ],
         ],
+        'categories' => [
+            [
+                'name' => 'first-cat',
+                'label' => 'First category',
+                'parent' => null,
+                'enabled' => true,
+                'object' => 'documents',
+            ],
+            [
+                'name' => 'second-cat',
+                'label' => 'Second category',
+                'parent' => null,
+                'enabled' => true,
+                'object' => 'documents',
+            ],
+            [
+                'name' => 'disabled-cat',
+                'label' => 'Disabled category',
+                'parent' => null,
+                'enabled' => false,
+                'object' => 'documents',
+            ],
+        ],
     ];
 
     /**
@@ -346,6 +370,7 @@ class ProjectModelTest extends TestCase
      * @covers ::objectTypes()
      * @covers ::relations()
      * @covers ::properties()
+     * @covers ::categories()
      */
     public function testGenerate(): void
     {
@@ -360,7 +385,7 @@ class ProjectModelTest extends TestCase
      *
      * @return void
      * @covers ::diff()
-     * @covers ::propertiesDiff()
+     * @covers ::byObjectDiff()
      * @covers ::itemsToUpdate()
      */
     public function testDiffAdd(): void
@@ -396,7 +421,7 @@ class ProjectModelTest extends TestCase
      *
      * @return void
      * @covers ::diff()
-     * @covers ::propertiesDiff()
+     * @covers ::byObjectDiff()
      */
     public function testDiffRemove(): void
     {
@@ -434,7 +459,7 @@ class ProjectModelTest extends TestCase
      *
      * @return void
      * @covers ::diff()
-     * @covers ::propertiesDiff()
+     * @covers ::byObjectDiff()
      * @covers ::itemsToUpdate()
      */
     public function testDiffUpdate(): void

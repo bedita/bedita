@@ -36,6 +36,7 @@ class ProjectModelCommandTest extends TestCase
         'plugin.BEdita/Core.Applications',
         'plugin.BEdita/Core.Roles',
         'plugin.BEdita/Core.ObjectTypes',
+        'plugin.BEdita/Core.Categories',
         'plugin.BEdita/Core.PropertyTypes',
         'plugin.BEdita/Core.Properties',
         'plugin.BEdita/Core.Relations',
