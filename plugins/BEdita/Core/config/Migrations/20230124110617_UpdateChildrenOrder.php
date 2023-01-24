@@ -21,7 +21,7 @@ class UpdateChildrenOrder extends AbstractMigration
      *
      * @var array
      */
-    protected array $data = [
+    protected $data = [
         'new' => [
             'type' => 'string',
             'enum' => [
