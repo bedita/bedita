@@ -529,6 +529,26 @@ class FoldersTableTest extends TestCase
                 '-position',
                 ['Trees.tree_left' => 'desc'],
             ],
+            'Order title Children.title asc' => [
+                11,
+                'title',
+                ['Children.title' => 'asc'],
+            ],
+            'Order -title Children.title desc' => [
+                11,
+                '-title',
+                ['Children.title' => 'desc'],
+            ],
+            'Order created Children.created asc' => [
+                11,
+                'created',
+                ['Children.created' => 'asc'],
+            ],
+            'Order -created Children.created desc' => [
+                11,
+                '-created',
+                ['Children.created' => 'desc'],
+            ],
             'Order modified Children.modified asc' => [
                 11,
                 'modified',
@@ -539,15 +559,15 @@ class FoldersTableTest extends TestCase
                 '-modified',
                 ['Children.modified' => 'desc'],
             ],
-            'Order title Children.title asc' => [
+            'Order publish_start Children.publish_start asc' => [
                 11,
-                'title',
-                ['Children.title' => 'asc'],
+                'publish_start',
+                ['Children.publish_start' => 'asc'],
             ],
-            'Order -title Children.title desc' => [
+            'Order -publish_start Children.publish_start desc' => [
                 11,
-                '-title',
-                ['Children.title' => 'desc'],
+                '-publish_start',
+                ['Children.publish_start' => 'desc'],
             ],
             'Default order Trees.tree_left asc' => [
                 11,
