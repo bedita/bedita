@@ -83,6 +83,7 @@ class CategoriesTableTest extends TestCase
             'tree_left' => 1,
             'tree_right' => 2,
             'enabled' => true,
+            'object_type_name' => 'documents',
         ];
         unset($category['created'], $category['modified']);
         static::assertEquals($expected, $category);
