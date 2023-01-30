@@ -315,4 +315,66 @@ class TagsCategoriesTest extends IntegrationTestCase
         sort($ids);
         static::assertEquals($expected, $ids);
     }
+
+    /**
+     * Test `/model/categories` endpoint
+     *
+     * @return void
+     * @coversNothing
+     */
+    public function testCategoriesModel(): void
+    {
+        $this->configRequestHeaders();
+        $this->get('/model/categories');
+        $this->assertResponseCode(200);
+        $this->assertContentType('application/vnd.api+json');
+        $result = json_decode((string)$this->_response->getBody(), true);
+        $data = Hash::extract($result, 'data');
+        $expected = [
+            [
+                'id' => '1',
+                'type' => 'categories',
+                'attributes' => [
+                    'name' => 'first-cat',
+                    'label' => 'First category',
+                    'parent_id' => null,
+                    'tree_left' => 1,
+                    'tree_right' => 2,
+                    'enabled' => true,
+                    'object_type_name' => 'documents',
+                ],
+            ],
+            [
+                'id' => '2',
+                'type' => 'categories',
+                'attributes' => [
+                    'name' => 'second-cat',
+                    'label' => 'Second category',
+                    'parent_id' => null,
+                    'tree_left' => 3,
+                    'tree_right' => 4,
+                    'enabled' => true,
+                    'object_type_name' => 'documents',
+                ],
+            ],
+            [
+                'id' => '3',
+                'type' => 'categories',
+                'attributes' => [
+                    'name' => 'disabled-cat',
+                    'label' => 'Disabled category',
+                    'parent_id' => null,
+                    'tree_left' => 5,
+                    'tree_right' => 6,
+                    'enabled' => false,
+                    'object_type_name' => 'documents',
+                ],
+            ],
+        ];
+        $data = Hash::remove($data, '{n}.relationships');
+        $data = Hash::remove($data, '{n}.meta');
+        $data = Hash::remove($data, '{n}.links');
+
+        static::assertEquals($expected, $data);
+    }
 }

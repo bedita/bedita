@@ -59,6 +59,7 @@ class CategoriesBehaviorTest extends TestCase
                         [
                             'name' => 'second-cat',
                             'id' => 2,
+                            'object_type_name' => null,
                         ],
                     ],
                 ],
