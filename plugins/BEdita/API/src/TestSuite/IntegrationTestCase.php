@@ -46,6 +46,7 @@ abstract class IntegrationTestCase extends CakeIntegrationTestCase
      * @var array
      */
     protected $authFixtures = [
+        'plugin.BEdita/Core.Annotations',
         'plugin.BEdita/Core.Config',
         'plugin.BEdita/Core.AsyncJobs',
         'plugin.BEdita/Core.AuthProviders',
