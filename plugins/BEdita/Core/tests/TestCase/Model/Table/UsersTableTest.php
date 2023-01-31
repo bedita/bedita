@@ -256,6 +256,39 @@ class UsersTableTest extends TestCase
     }
 
     /**
+     * Test `login` finder with draft user.
+     *
+     * @return void
+     * @covers ::findLogin()
+     */
+    public function testFindLoginDraft()
+    {
+        $user = $this->Users->get(5);
+        $user->status = 'draft';
+        $this->Users->saveOrFail($user);
+        $user = $this->Users->find('login')->where(['username' => 'second user'])->first();
+        static::assertEmpty($user);
+    }
+
+    /**
+     * Test `login` finder with draft user and conf set as draft.
+     *
+     * @return void
+     * @covers ::findLogin()
+     */
+    public function testFindLoginDraftAllowed()
+    {
+        $user = $this->Users->get(5);
+        $user->status = 'draft';
+        $this->Users->saveOrFail($user);
+        Configure::write('Login.draft', true);
+        $user = $this->Users->find('login')->where(['username' => 'second user'])->first();
+        static::assertNotEmpty($user);
+        static::assertEquals('second user', $user['username']);
+        Configure::delete('Login.draft');
+    }
+
+    /**
      * Test `loginRoles` finder.
      *
      * @return void
