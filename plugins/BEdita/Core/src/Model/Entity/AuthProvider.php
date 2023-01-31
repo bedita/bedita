@@ -28,7 +28,7 @@ use Cake\Utility\Text;
  * @property string $auth_class
  * @property string $slug
  * @property string $url
- * @property string $params
+ * @property array $params
  * @property bool $enabled
  * @property \Cake\I18n\Time $created
  * @property \Cake\I18n\Time $modified
