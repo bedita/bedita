@@ -276,8 +276,9 @@ class UsersControllerTest extends IntegrationTestCase
             'data' => [],
         ];
 
-        TableRegistry::getTableLocator()->get('Translations')->deleteAll([]);
-        TableRegistry::getTableLocator()->get('Users')->deleteAll([]);
+        $this->fetchTable('Translations')->deleteAll([]);
+        $this->fetchTable('Annotations')->deleteAll([]);
+        $this->fetchTable('Users')->deleteAll([]);
 
         $this->configRequestHeaders();
         $this->get('/users');
