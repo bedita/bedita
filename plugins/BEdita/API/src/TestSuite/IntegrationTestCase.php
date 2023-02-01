@@ -79,6 +79,7 @@ abstract class IntegrationTestCase extends TestCase
         'plugin.BEdita/Core.Tags',
         'plugin.BEdita/Core.ObjectTags',
         'plugin.BEdita/Core.History',
+        'plugin.BEdita/Core.Annotations',
     ];
 
     /**

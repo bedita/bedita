@@ -21,6 +21,7 @@ use Cake\Event\EventInterface;
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
+use Cake\Utility\Hash;
 use Cake\Validation\Validator;
 
 /**
@@ -121,11 +122,14 @@ class ExternalAuthTable extends Table
     public function beforeSave(EventInterface $event, EntityInterface $entity)
     {
         if (!$entity->has('user_id')) {
+            /** @var \BEdita\Core\Model\Entity\AuthProvider $authProvider*/
             $authProvider = $this->AuthProviders->get($entity->get($this->AuthProviders->getForeignKey()));
             $username = sprintf('%s-%s', $authProvider->get('slug'), $entity->get('provider_username'));
 
             $user = $this->Users->newEntity(compact('username'));
             $user->set('roles', $authProvider->getRoles());
+            // set user status using auth provider params
+            $user->set('status', Hash::get((array)$authProvider->params, 'status', 'draft'));
             $selfCreated = (LoggedUser::id() === null);
             if ($selfCreated) {
                 $user = $user

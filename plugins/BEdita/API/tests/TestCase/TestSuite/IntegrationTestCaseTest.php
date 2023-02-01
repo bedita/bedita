@@ -62,6 +62,7 @@ class IntegrationTestCaseTest extends IntegrationTestCase
                     'plugin.BEdita/Core.Tags',
                     'plugin.BEdita/Core.ObjectTags',
                     'plugin.BEdita/Core.History',
+                    'plugin.BEdita/Core.Annotations',
                 ],
                 [],
             ],
@@ -95,6 +96,7 @@ class IntegrationTestCaseTest extends IntegrationTestCase
                     'plugin.BEdita/Core.Tags',
                     'plugin.BEdita/Core.ObjectTags',
                     'plugin.BEdita/Core.History',
+                    'plugin.BEdita/Core.Annotations',
                 ],
                 [
                     'plugin.BEdita/Core.Users',

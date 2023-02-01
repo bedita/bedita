@@ -739,8 +739,9 @@ class ObjectsControllerTest extends IntegrationTestCase
             'data' => [],
         ];
 
-        TableRegistry::getTableLocator()->get('Translations')->deleteAll([]);
-        TableRegistry::getTableLocator()->get('Objects')->deleteAll([]);
+        $this->fetchTable('Translations')->deleteAll([]);
+        $this->fetchTable('Annotations')->deleteAll([]);
+        $this->fetchTable('Objects')->deleteAll([]);
 
         $this->configRequestHeaders();
         $this->get('/objects');
