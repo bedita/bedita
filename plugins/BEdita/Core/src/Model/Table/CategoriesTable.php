@@ -15,6 +15,7 @@ namespace BEdita\Core\Model\Table;
 
 use ArrayObject;
 use BEdita\Core\Exception\BadFilterException;
+use BEdita\Core\Model\Validation\Validation;
 use Cake\Collection\CollectionInterface;
 use Cake\Database\Expression\QueryExpression;
 use Cake\Datasource\EntityInterface;
@@ -113,6 +114,7 @@ class CategoriesTable extends Table
             ->maxLength('name', 50)
             ->requirePresence('name', 'create')
             ->notEmptyString('name')
+            ->regex('name', Validation::CATEGORY_NAME_REGEX)
 
             ->scalar('label')
             ->maxLength('label', 255)
