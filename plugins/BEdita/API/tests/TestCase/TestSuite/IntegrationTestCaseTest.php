@@ -34,7 +34,6 @@ class IntegrationTestCaseTest extends IntegrationTestCase
         return [
             'default' => [
                 [
-                    'plugin.BEdita/Core.Annotations',
                     'plugin.BEdita/Core.Config',
                     'plugin.BEdita/Core.AsyncJobs',
                     'plugin.BEdita/Core.AuthProviders',
@@ -63,12 +62,12 @@ class IntegrationTestCaseTest extends IntegrationTestCase
                     'plugin.BEdita/Core.Tags',
                     'plugin.BEdita/Core.ObjectTags',
                     'plugin.BEdita/Core.History',
+                    'plugin.BEdita/Core.Annotations',
                 ],
                 [],
             ],
             'fixturesPresent' => [
                 [
-                    'plugin.BEdita/Core.Annotations',
                     'plugin.BEdita/Core.Config',
                     'plugin.BEdita/Core.AsyncJobs',
                     'plugin.BEdita/Core.AuthProviders',
@@ -97,6 +96,7 @@ class IntegrationTestCaseTest extends IntegrationTestCase
                     'plugin.BEdita/Core.Tags',
                     'plugin.BEdita/Core.ObjectTags',
                     'plugin.BEdita/Core.History',
+                    'plugin.BEdita/Core.Annotations',
                 ],
                 [
                     'plugin.BEdita/Core.Users',
