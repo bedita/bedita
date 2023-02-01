@@ -29,6 +29,17 @@ use Swaggest\JsonSchema\Schema;
 class Validation
 {
     /**
+     * Regular expression to validate category names:
+     *  - starts with a lowercase letter
+     *  - lowercase letters, numbers and hyphens
+     *  - length between 2 and 50 characters
+     *  - no spaces
+     *
+     * @var string
+     */
+    public const CATEGORY_NAME_REGEX = '/^[a-z][a-z0-9-]{1,50}$/';
+
+    /**
      * Regular expression to validate resource names:
      *  - starts with a lowercase letter
      *  - lowercase letters, numbers and underscores
