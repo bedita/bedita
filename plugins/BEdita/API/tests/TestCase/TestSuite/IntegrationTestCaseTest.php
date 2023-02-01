@@ -35,6 +35,7 @@ class IntegrationTestCaseTest extends IntegrationTestCase
         return [
             'default' => [
                 [
+                    'plugin.BEdita/Core.Annotations',
                     'plugin.BEdita/Core.Config',
                     'plugin.BEdita/Core.AsyncJobs',
                     'plugin.BEdita/Core.AuthProviders',
@@ -68,6 +69,7 @@ class IntegrationTestCaseTest extends IntegrationTestCase
             ],
             'fixturesPresent' => [
                 [
+                    'plugin.BEdita/Core.Annotations',
                     'plugin.BEdita/Core.Config',
                     'plugin.BEdita/Core.AsyncJobs',
                     'plugin.BEdita/Core.AuthProviders',
