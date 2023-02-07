@@ -21,6 +21,22 @@ namespace BEdita\Core\Model\Validation;
 class ProfilesValidator extends ObjectsValidator
 {
     /**
+     * Regular expression to validate names and surnames.
+     * Do not allow special chars like <, >, :, /, = to avoid
+     * malicious links or markup insertion.
+     *
+     * @var string
+     */
+    public const NAME_REGEX = '/^[^<>:\/=]*$/';
+
+    /**
+     * Regular expression to avoid presence of a valid domain name.
+     *
+     * @var string
+     */
+    public const NO_DOMAIN_REGEX = '/^(?!.*\.[a-z]{2,}).*$/';
+
+    /**
      * {@inheritDoc}
      *
      * @codeCoverageIgnore
@@ -31,8 +47,10 @@ class ProfilesValidator extends ObjectsValidator
 
         $this
             ->allowEmptyString('name')
+            ->add('name', 'validName', ['rule' => [ProfilesValidator::class, 'validName']])
 
             ->allowEmptyString('surname')
+            ->add('surname', 'validName', ['rule' => [ProfilesValidator::class, 'validName']])
 
             ->email('email')
             ->allowEmptyString('email')
@@ -75,5 +93,28 @@ class ProfilesValidator extends ObjectsValidator
             ->allowEmptyString('national_id_number')
 
             ->allowEmptyString('vat_number');
+    }
+
+    /**
+     * Checks that a value does not contain malicious elements like:
+     *  * URL, code or markup related characters
+     *  * domain names
+     *
+     * @param string $value The string to check
+     * @return bool
+     */
+    public static function validName(string $value)
+    {
+        // check for invalid characters
+        if (!preg_match(static::NAME_REGEX, $value, $matches)) {
+            return false;
+        }
+
+        // check for domain name
+        if (!preg_match(static::NO_DOMAIN_REGEX, $value, $matches)) {
+            return false;
+        }
+
+        return true;
     }
 }
