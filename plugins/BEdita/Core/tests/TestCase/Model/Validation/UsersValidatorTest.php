@@ -122,6 +122,14 @@ class UsersValidatorTest extends TestCase
                     'username' => 'first user',
                 ],
             ],
+            'username email' => [
+                [
+                ],
+                [
+                    'email' => 'some.user@example.com',
+                    'username' => 'some.user@example.com',
+                ],
+            ],
             'invalid username characters' => [
                 [
                     'username.validUsername',
