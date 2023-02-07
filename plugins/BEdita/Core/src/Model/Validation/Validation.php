@@ -37,7 +37,7 @@ class Validation
      *
      * @var string
      */
-    public const CATEGORY_NAME_REGEX = '/^[a-z][a-z0-9-]{1,50}$/';
+    public const CATEGORY_NAME_REGEX = '/^[a-z][a-z0-9-_]{1,50}$/';
 
     /**
      * Regular expression to validate resource names:
