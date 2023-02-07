@@ -103,14 +103,14 @@ class ProfilesValidator extends ObjectsValidator
      * @param string $value The string to check
      * @return bool
      */
-    public static function validName(string $value)
+    public static function validName(string $value): bool
     {
-        // check for invalid characters
+        // check for invalid characters presence
         if (!preg_match(static::NAME_REGEX, $value, $matches)) {
             return false;
         }
 
-        // check for domain name
+        // check for domain name presence
         if (!preg_match(static::NO_DOMAIN_REGEX, $value, $matches)) {
             return false;
         }
