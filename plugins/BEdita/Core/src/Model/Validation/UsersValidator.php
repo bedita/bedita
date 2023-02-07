@@ -14,7 +14,7 @@
 namespace BEdita\Core\Model\Validation;
 
 use Cake\ORM\TableRegistry;
-use Cake\Validation\Validation;
+use Cake\Validation\Validation as CakeValidation;
 
 /**
  * Validator for users.
@@ -60,7 +60,7 @@ class UsersValidator extends ProfilesValidator
      */
     public static function validUsername($value): bool
     {
-        if (Validation::email($value)) {
+        if (CakeValidation::email($value)) {
             return true;
         }
 
