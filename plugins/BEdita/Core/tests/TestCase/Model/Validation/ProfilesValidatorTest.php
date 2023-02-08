@@ -18,7 +18,7 @@ use Cake\TestSuite\TestCase;
 use Cake\Utility\Hash;
 
 /**
- * @coversNothing
+ * @covers \BEdita\Core\Model\Validation\ProfilesValidator
  */
 class ProfilesValidatorTest extends TestCase
 {
@@ -100,6 +100,29 @@ class ProfilesValidatorTest extends TestCase
                 ],
                 [
                     'website' => 'www.example.com/without/protocol.txt?shouldBeValid=no',
+                ],
+            ],
+            'invalid name' => [
+                [
+                    'name.validName',
+                ],
+                [
+                    'name' => 'http://someurl',
+                ],
+            ],
+            'invalid surname' => [
+                [
+                    'surname.validName',
+                ],
+                [
+                    'surname' => 'gustavo.com',
+                ],
+            ],
+            'valid surname' => [
+                [
+                ],
+                [
+                    'surname' => 'Support Jr.',
                 ],
             ],
         ];
