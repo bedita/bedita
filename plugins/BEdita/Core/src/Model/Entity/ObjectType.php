@@ -14,6 +14,7 @@
 namespace BEdita\Core\Model\Entity;
 
 use BEdita\Core\Utility\JsonApiSerializable;
+use Cake\Datasource\EntityInterface;
 use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\Event\EventDispatcherInterface;
 use Cake\Event\EventDispatcherTrait;
@@ -39,6 +40,8 @@ use Generator;
  * @property string[] $relations
  * @property bool $is_abstract
  * @property int $parent_id
+ * @property array $never_translate
+ * @property array $always_translate
  * @property int $tree_left
  * @property int $tree_right
  * @property string $parent_name
@@ -424,29 +427,63 @@ class ObjectType extends Entity implements JsonApiSerializable, EventDispatcherI
             ->find('objectType', [$this->id])
             ->order(['is_static' => 'ASC'])
             ->toArray();
-        $entity = $this->getTableLocator()->get($this->name)->newEntity([]);
-        $hiddenProperties = $entity->getHidden();
+        $entity = $this->getTableLocator()->get($this->name)->newEmptyEntity();
 
-        $required = [];
+        $required = $translatable = [];
         $properties = $this->associationProperties();
         foreach ($allProperties as $property) {
             if (in_array($property->name, (array)$this->hidden)) {
                 continue;
             }
-            $accessMode = null;
-            if (!$entity->isAccessible($property->name)) {
-                $accessMode = 'readOnly';
-            } elseif (in_array($property->name, $hiddenProperties)) {
-                $accessMode = 'writeOnly';
-            }
+            $accessMode = $this->accessMode($property, $entity);
             $properties[$property->name] = $property->getSchema($accessMode);
 
             if ($property->required && $accessMode === null) {
                 $required[] = $property->name;
             }
+            if ($this->translatableProperty($property)) {
+                $translatable[] = $property->name;
+            }
         }
 
-        return compact('properties', 'required');
+        return compact('properties', 'required', 'translatable');
+    }
+
+    /**
+     * See if a property is translatable looking at property type (static or dynamic)
+     * and using `always_translate` and `never_translate` attributes.
+     *
+     * @param \BEdita\Core\Model\Entity\Property $property The property
+     * @return bool
+     */
+    protected function translatableProperty(Property $property): bool
+    {
+        if (in_array($property->name, (array)$this->always_translate)) {
+            return true;
+        }
+        $excludeDefault = ['uname', 'status', 'lang', 'custom_props', 'extra'];
+        $excluded = array_merge((array)$this->never_translate, $excludeDefault);
+        $translatable = $property->translatable;
+
+        return $translatable && !in_array($property->name, $excluded);
+    }
+
+    /**
+     * Get property access mode: can be `readOnly`, `writeOnly` or null if no access mode is set
+     *
+     * @param \BEdita\Core\Model\Entity\Property $property The property
+     * @param \Cake\Datasource\EntityInterface $entity Default object entity
+     * @return string|null
+     */
+    protected function accessMode(Property $property, EntityInterface $entity): ?string
+    {
+        if (!$entity->isAccessible($property->name)) {
+            return 'readOnly';
+        } elseif (in_array($property->name, $entity->getHidden())) {
+            return 'writeOnly';
+        }
+
+        return null;
     }
 
     /**
