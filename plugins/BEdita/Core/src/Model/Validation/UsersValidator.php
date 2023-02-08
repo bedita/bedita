@@ -68,16 +68,6 @@ class UsersValidator extends ProfilesValidator
             return false;
         }
 
-        // check for invalid characters presence
-        if (!preg_match(ProfilesValidator::NAME_REGEX, $value, $matches)) {
-            return false;
-        }
-
-        // check for domain name presence
-        if (!preg_match(ProfilesValidator::NO_DOMAIN_REGEX, $value, $matches)) {
-            return false;
-        }
-
-        return true;
+        return parent::validName($value);
     }
 }
