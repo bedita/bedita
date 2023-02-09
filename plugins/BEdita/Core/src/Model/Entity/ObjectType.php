@@ -21,6 +21,7 @@ use Cake\Event\EventDispatcherTrait;
 use Cake\ORM\Entity;
 use Cake\ORM\Locator\LocatorAwareTrait;
 use Cake\ORM\Table;
+use Cake\Utility\Hash;
 use Cake\Utility\Inflector;
 use Generator;
 
@@ -40,8 +41,6 @@ use Generator;
  * @property string[] $relations
  * @property bool $is_abstract
  * @property int $parent_id
- * @property array $never_translate
- * @property array $always_translate
  * @property int $tree_left
  * @property int $tree_right
  * @property string $parent_name
@@ -49,6 +48,8 @@ use Generator;
  * @property \Cake\I18n\Time $modified
  * @property bool $core_type
  * @property bool $enabled
+ * @property array $translation_rules
+ * @property bool $is_translatable
  * @property \BEdita\Core\Model\Entity\ObjectEntity[] $objects
  * @property \BEdita\Core\Model\Entity\Relation[] $left_relations
  * @property \BEdita\Core\Model\Entity\Relation[] $right_relations
@@ -441,7 +442,7 @@ class ObjectType extends Entity implements JsonApiSerializable, EventDispatcherI
             if ($property->required && $accessMode === null) {
                 $required[] = $property->name;
             }
-            if ($this->translatableProperty($property)) {
+            if ($this->is_translatable && $this->translatableProperty($property)) {
                 $translatable[] = $property->name;
             }
         }
@@ -451,21 +452,19 @@ class ObjectType extends Entity implements JsonApiSerializable, EventDispatcherI
 
     /**
      * See if a property is translatable looking at property type (static or dynamic)
-     * and using `always_translate` and `never_translate` attributes.
+     * and using `translation_rules` data.
      *
      * @param \BEdita\Core\Model\Entity\Property $property The property
      * @return bool
      */
     protected function translatableProperty(Property $property): bool
     {
-        if (in_array($property->name, (array)$this->always_translate)) {
-            return true;
+        if (Hash::check((array)$this->translation_rules, $property->name)) {
+            return (bool)Hash::get((array)$this->translation_rules, $property->name);
         }
-        $excludeDefault = ['uname', 'status', 'lang', 'custom_props', 'extra'];
-        $excluded = array_merge((array)$this->never_translate, $excludeDefault);
-        $translatable = $property->translatable;
+        $excluded = ['uname', 'status', 'lang', 'custom_props', 'extra'];
 
-        return $translatable && !in_array($property->name, $excluded);
+        return $property->translatable && !in_array($property->name, $excluded);
     }
 
     /**
