@@ -13,6 +13,7 @@ use Cake\TestSuite\TestCase;
  * @property \BEdita\Core\Model\Table\StreamsTable $Streams
  * @coversDefaultClass \BEdita\Core\Shell\StreamsShell
  */
+#[\AllowDynamicProperties]
 class StreamsShellTest extends TestCase
 {
     use ConsoleIntegrationTestTrait;

@@ -27,6 +27,7 @@ use Interop\Queue\Processor;
  *
  * @property \BEdita\Core\Model\Table\AsyncJobsTable $AsyncJobs
  */
+#[\AllowDynamicProperties]
 class QueueJob implements JobInterface
 {
     use LocatorAwareTrait;

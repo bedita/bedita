@@ -32,6 +32,7 @@ use Cake\ORM\Locator\LocatorAwareTrait;
  * @since 4.0.0
  * @property \BEdita\Core\Model\Table\ConfigTable $Config
  */
+#[\AllowDynamicProperties]
 class DatabaseConfig implements ConfigEngineInterface
 {
     use LocatorAwareTrait;

@@ -26,6 +26,7 @@ use Cake\Utility\Text;
 /**
  * @property \BEdita\Core\Model\Table\UserTokensTable $UserTokens
  */
+#[\AllowDynamicProperties]
 class OTPIdentifier extends AbstractIdentifier
 {
     use EventDispatcherTrait;
