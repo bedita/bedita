@@ -77,6 +77,8 @@ class ObjectTypesControllerTest extends IntegrationTestCase
                         'is_abstract' => true,
                         'parent_name' => null,
                         'enabled' => true,
+                        'translation_rules' => null,
+                        'is_translatable' => true,
                     ],
                     'meta' => [
                         'alias' => 'Objects',
@@ -122,6 +124,8 @@ class ObjectTypesControllerTest extends IntegrationTestCase
                         'is_abstract' => false,
                         'parent_name' => 'objects',
                         'enabled' => true,
+                        'translation_rules' => null,
+                        'is_translatable' => true,
                     ],
                     'meta' => [
                         'alias' => 'Documents',
@@ -170,6 +174,8 @@ class ObjectTypesControllerTest extends IntegrationTestCase
                         'is_abstract' => false,
                         'parent_name' => 'objects',
                         'enabled' => true,
+                        'translation_rules' => null,
+                        'is_translatable' => true,
                     ],
                     'meta' => [
                         'alias' => 'Profiles',
@@ -217,6 +223,8 @@ class ObjectTypesControllerTest extends IntegrationTestCase
                         'is_abstract' => false,
                         'parent_name' => 'objects',
                         'enabled' => true,
+                        'translation_rules' => null,
+                        'is_translatable' => true,
                     ],
                     'meta' => [
                         'alias' => 'Users',
@@ -264,6 +272,8 @@ class ObjectTypesControllerTest extends IntegrationTestCase
                         'is_abstract' => false,
                         'parent_name' => 'objects',
                         'enabled' => false,
+                        'translation_rules' => null,
+                        'is_translatable' => true,
                     ],
                     'meta' => [
                         'alias' => 'News',
@@ -309,6 +319,8 @@ class ObjectTypesControllerTest extends IntegrationTestCase
                         'is_abstract' => false,
                         'parent_name' => 'objects',
                         'enabled' => true,
+                        'translation_rules' => null,
+                        'is_translatable' => true,
                     ],
                     'meta' => [
                         'alias' => 'Locations',
@@ -356,6 +368,8 @@ class ObjectTypesControllerTest extends IntegrationTestCase
                         'is_abstract' => false,
                         'parent_name' => 'objects',
                         'enabled' => true,
+                        'translation_rules' => null,
+                        'is_translatable' => true,
                     ],
                     'meta' => [
                         'alias' => 'Events',
@@ -403,6 +417,8 @@ class ObjectTypesControllerTest extends IntegrationTestCase
                         'is_abstract' => true,
                         'parent_name' => 'objects',
                         'enabled' => true,
+                        'translation_rules' => null,
+                        'is_translatable' => true,
                     ],
                     'meta' => [
                         'alias' => 'Media',
@@ -450,6 +466,8 @@ class ObjectTypesControllerTest extends IntegrationTestCase
                         'is_abstract' => false,
                         'parent_name' => 'media',
                         'enabled' => true,
+                        'translation_rules' => null,
+                        'is_translatable' => true,
                     ],
                     'meta' => [
                         'alias' => 'Files',
@@ -497,6 +515,8 @@ class ObjectTypesControllerTest extends IntegrationTestCase
                         'is_abstract' => false,
                         'parent_name' => 'objects',
                         'enabled' => true,
+                        'translation_rules' => null,
+                        'is_translatable' => true,
                     ],
                     'meta' => [
                         'alias' => 'Folders',
@@ -622,6 +642,8 @@ class ObjectTypesControllerTest extends IntegrationTestCase
                     'is_abstract' => false,
                     'parent_name' => 'objects',
                     'enabled' => true,
+                    'translation_rules' => null,
+                    'is_translatable' => true,
                 ],
                 'meta' => [
                     'alias' => 'Documents',
