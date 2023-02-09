@@ -41,6 +41,8 @@ class ObjectTypesFixture extends TestFixture
             'modified' => '2017-11-10 09:27:23',
             'enabled' => true,
             'core_type' => true,
+            'translation_rules' => null,
+            'is_translatable' => true,
         ],
         // 2
         [
@@ -58,6 +60,8 @@ class ObjectTypesFixture extends TestFixture
             'modified' => '2017-11-10 09:27:23',
             'enabled' => true,
             'core_type' => true,
+            'translation_rules' => null,
+            'is_translatable' => true,
         ],
         // 3
         [
@@ -75,6 +79,8 @@ class ObjectTypesFixture extends TestFixture
             'modified' => '2017-11-10 09:27:23',
             'enabled' => true,
             'core_type' => true,
+            'translation_rules' => null,
+            'is_translatable' => true,
         ],
         // 4
         [
@@ -91,6 +97,8 @@ class ObjectTypesFixture extends TestFixture
             'modified' => '2017-11-10 09:27:23',
             'enabled' => true,
             'core_type' => true,
+            'translation_rules' => null,
+            'is_translatable' => true,
         ],
         // 5
         [
@@ -108,6 +116,8 @@ class ObjectTypesFixture extends TestFixture
             'modified' => '2017-11-10 09:27:23',
             'enabled' => false,
             'core_type' => false,
+            'translation_rules' => null,
+            'is_translatable' => true,
         ],
         // 6
         [
@@ -124,6 +134,8 @@ class ObjectTypesFixture extends TestFixture
             'modified' => '2017-11-10 09:27:23',
             'enabled' => true,
             'core_type' => true,
+            'translation_rules' => null,
+            'is_translatable' => true,
         ],
         // 7
         [
@@ -141,6 +153,8 @@ class ObjectTypesFixture extends TestFixture
             'modified' => '2017-11-10 09:27:23',
             'enabled' => true,
             'core_type' => true,
+            'translation_rules' => null,
+            'is_translatable' => true,
         ],
         // 8
         [
@@ -158,6 +172,8 @@ class ObjectTypesFixture extends TestFixture
             'modified' => '2017-11-10 09:27:23',
             'enabled' => true,
             'core_type' => true,
+            'translation_rules' => null,
+            'is_translatable' => true,
         ],
         // 9
         [
@@ -175,6 +191,8 @@ class ObjectTypesFixture extends TestFixture
             'modified' => '2017-11-10 09:27:23',
             'enabled' => true,
             'core_type' => true,
+            'translation_rules' => null,
+            'is_translatable' => true,
         ],
         // 10
         [
@@ -191,6 +209,8 @@ class ObjectTypesFixture extends TestFixture
             'modified' => '2018-01-29 08:47:29',
             'enabled' => true,
             'core_type' => true,
+            'translation_rules' => null,
+            'is_translatable' => true,
         ],
     ];
 
