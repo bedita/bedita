@@ -107,6 +107,8 @@ class ObjectType extends Entity implements JsonApiSerializable, EventDispatcherI
         'is_abstract' => true,
         'parent_name' => true,
         'enabled' => true,
+        'translation_rules' => true,
+        'is_translatable' => true,
     ];
 
     /**
