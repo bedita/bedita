@@ -448,6 +448,8 @@ class ObjectType extends Entity implements JsonApiSerializable, EventDispatcherI
                 $translatable[] = $property->name;
             }
         }
+        sort($required);
+        sort($translatable);
 
         return compact('properties', 'required', 'translatable');
     }
