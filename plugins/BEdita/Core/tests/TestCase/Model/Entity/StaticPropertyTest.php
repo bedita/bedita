@@ -419,4 +419,53 @@ class StaticPropertyTest extends TestCase
 
         static::assertEquals($expected, $schema);
     }
+
+    /**
+     * Data provider for `testGetTranslatable` test case.
+     *
+     * @return array
+     */
+    public function getTranslatableProvider(): array
+    {
+        return [
+            'missing field' => [
+                false,
+                [
+                    'table' => 'Profiles',
+                    'name' => 'gustavo',
+                ],
+            ],
+            'text type' => [
+                true,
+                [
+                    'table' => 'Objects',
+                    'name' => 'description',
+                ],
+            ],
+            'date type' => [
+                false,
+                [
+                    'table' => 'Objects',
+                    'name' => 'created',
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * Test getter for `translatable` virtual property.
+     *
+     * @param bool $expected Expected result.
+     * @param array $data Entity data.
+     * @return void
+     * @dataProvider getTranslatableProvider()
+     * @covers ::_getTranslatable()
+     */
+    public function testGetTranslatable($expected, array $data): void
+    {
+        $entity = new StaticProperty($data);
+        $tr = $entity->translatable;
+
+        static::assertSame($expected, $tr);
+    }
 }

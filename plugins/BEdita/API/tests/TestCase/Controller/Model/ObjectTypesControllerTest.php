@@ -78,7 +78,7 @@ class ObjectTypesControllerTest extends IntegrationTestCase
                         'parent_name' => null,
                         'enabled' => true,
                         'translation_rules' => null,
-                        'is_translatable' => true,
+                        'is_translatable' => false,
                     ],
                     'meta' => [
                         'alias' => 'Objects',
@@ -418,7 +418,7 @@ class ObjectTypesControllerTest extends IntegrationTestCase
                         'parent_name' => 'objects',
                         'enabled' => true,
                         'translation_rules' => null,
-                        'is_translatable' => true,
+                        'is_translatable' => false,
                     ],
                     'meta' => [
                         'alias' => 'Media',
@@ -466,7 +466,13 @@ class ObjectTypesControllerTest extends IntegrationTestCase
                         'is_abstract' => false,
                         'parent_name' => 'media',
                         'enabled' => true,
-                        'translation_rules' => null,
+                        'translation_rules' => [
+                            'name' => false,
+                            'provider' => false,
+                            'provider_thumbnail' => false,
+                            'provider_uid' => false,
+                            'provider_url' => false,
+                        ],
                         'is_translatable' => true,
                     ],
                     'meta' => [

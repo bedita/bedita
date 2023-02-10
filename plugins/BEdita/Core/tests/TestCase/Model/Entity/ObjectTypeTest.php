@@ -752,15 +752,10 @@ class ObjectTypeTest extends TestCase
                         ],
                     ],
                     'translatable' => [
+                        'body',
+                        'description',
                         'disabled_property',
                         'title',
-                        'description',
-                        'body',
-                        'name',
-                        'provider',
-                        'provider_uid',
-                        'provider_url',
-                        'provider_thumbnail',
                     ],
                 ],
                 'files',
@@ -981,11 +976,11 @@ class ObjectTypeTest extends TestCase
                         ],
                     ],
                     'translatable' => [
-                        'another_title',
                         'another_description',
-                        'title',
-                        'description',
+                        'another_title',
                         'body',
+                        'description',
+                        'title',
                     ],
                 ],
                 'documents',
@@ -1002,6 +997,8 @@ class ObjectTypeTest extends TestCase
      * @dataProvider getSchemaProvider()
      * @covers ::_getSchema()
      * @covers ::objectTypeRelations()
+     * @covers ::translatableProperty()
+     * @covers ::accessMode()
      * @covers ::associationProperties()
      */
     public function testGetSchema($expected, $name): void
