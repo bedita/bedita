@@ -459,7 +459,7 @@ class HistoryControllerTest extends IntegrationTestCase
                 'schema' => [
                     'users' => [
                         '$id' => 'http://api.example.com/model/schema/users',
-                        'revision' => '3629708695',
+                        'revision' => TestConstants::SCHEMA_REVISIONS['users'],
                     ],
                 ],
             ],

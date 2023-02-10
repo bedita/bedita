@@ -105,7 +105,13 @@ class ProjectControllerTest extends IntegrationTestCase
                     'enabled' => true,
                     'table' => 'BEdita/Core.Media',
                     'parent_name' => 'media',
-                    'translation_rules' => null,
+                    'translation_rules' => [
+                        'name' => false,
+                        'provider' => false,
+                        'provider_thumbnail' => false,
+                        'provider_uid' => false,
+                        'provider_url' => false,
+                    ],
                     'is_translatable' => true,
                 ],
                 [
@@ -145,7 +151,7 @@ class ProjectControllerTest extends IntegrationTestCase
                     'table' => 'BEdita/Core.Media',
                     'parent_name' => 'objects',
                     'translation_rules' => null,
-                    'is_translatable' => true,
+                    'is_translatable' => false,
                 ],
                 [
                     'name' => 'news',
@@ -171,7 +177,7 @@ class ProjectControllerTest extends IntegrationTestCase
                     'table' => 'BEdita/Core.Objects',
                     'parent_name' => null,
                     'translation_rules' => null,
-                    'is_translatable' => true,
+                    'is_translatable' => false,
                 ],
                 [
                     'name' => 'profiles',
