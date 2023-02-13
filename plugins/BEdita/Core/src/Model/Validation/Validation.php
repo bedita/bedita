@@ -31,7 +31,7 @@ class Validation
     /**
      * Regular expression to validate category names:
      *  - starts with a lowercase letter or number
-     *  - lowercase letters, numbers and hyphens
+     *  - lowercase letters, numbers, hyphens and underscores as accepted characters
      *  - length between 2 and 50 characters
      *  - no spaces
      *
