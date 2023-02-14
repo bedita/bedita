@@ -27,10 +27,6 @@ class ObjectTypeTranslatable extends AbstractMigration
                 'null' => false,
             ])
             ->update();
-
-        // add default `translation_rules` to media types
-        $rule = '{"name":false,"provider":false,"provider_uid":false,"provider_url":false,"provider_thumbnail":false}';
-        $this->query(sprintf("UPDATE object_types SET translation_rules = '%s' WHERE name IN ('files', 'images', 'audio', 'videos')", $rule));
     }
 
     /**
