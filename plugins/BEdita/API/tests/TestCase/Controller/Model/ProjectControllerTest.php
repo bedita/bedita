@@ -106,11 +106,7 @@ class ProjectControllerTest extends IntegrationTestCase
                     'table' => 'BEdita/Core.Media',
                     'parent_name' => 'media',
                     'translation_rules' => [
-                        'name' => false,
-                        'provider' => false,
-                        'provider_thumbnail' => false,
-                        'provider_uid' => false,
-                        'provider_url' => false,
+                        'name' => true,
                     ],
                     'is_translatable' => true,
                 ],

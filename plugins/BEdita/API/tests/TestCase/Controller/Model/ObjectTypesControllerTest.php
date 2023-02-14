@@ -467,11 +467,7 @@ class ObjectTypesControllerTest extends IntegrationTestCase
                         'parent_name' => 'media',
                         'enabled' => true,
                         'translation_rules' => [
-                            'name' => false,
-                            'provider' => false,
-                            'provider_thumbnail' => false,
-                            'provider_uid' => false,
-                            'provider_url' => false,
+                            'name' => true,
                         ],
                         'is_translatable' => true,
                     ],

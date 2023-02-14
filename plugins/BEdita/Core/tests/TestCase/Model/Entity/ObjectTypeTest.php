@@ -755,6 +755,7 @@ class ObjectTypeTest extends TestCase
                         'body',
                         'description',
                         'disabled_property',
+                        'name',
                         'title',
                     ],
                 ],
