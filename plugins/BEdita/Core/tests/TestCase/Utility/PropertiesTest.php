@@ -23,6 +23,7 @@ use Cake\TestSuite\TestCase;
  * @coversDefaultClass \BEdita\Core\Utility\Properties
  * @property \BEdita\Core\Model\Table\PropertiesTable $Properties
  */
+#[\AllowDynamicProperties]
 class PropertiesTest extends TestCase
 {
     /**
