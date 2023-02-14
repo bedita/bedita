@@ -100,6 +100,19 @@ class ObjectEntity extends Entity implements JsonApiSerializable
     ];
 
     /**
+     * Text properties that are not translatable
+     *
+     * @var array
+     */
+    protected $notTranslatable = [
+        'custom_props',
+        'extra',
+        'lang',
+        'status',
+        'uname',
+    ];
+
+    /**
      * See if a property has been set in an entity.
      * Could be set in `_properties` array or a virtual one.
      * Options to exclude hidden properties and to include virtual properties.
@@ -312,5 +325,30 @@ class ObjectEntity extends Entity implements JsonApiSerializable
         }
 
         return $type;
+    }
+
+    /**
+     * Adds not-translatable fields on this entity.
+     *
+     * @param array<string> $fields An array of not translatable fields.
+     * @return $this
+     */
+    public function addNotTranslatable(array $fields)
+    {
+        $fields = array_merge($this->notTranslatable, $fields);
+        $this->notTranslatable = array_unique($fields);
+
+        return $this;
+    }
+
+    /**
+     * See if a certain field is translatable by looking at `notTranslatable` internal array
+     *
+     * @param string $name Field name
+     * @return bool
+     */
+    public function isFieldTranslatable(string $name): bool
+    {
+        return !in_array($name, $this->notTranslatable);
     }
 }

@@ -430,6 +430,7 @@ class ObjectType extends Entity implements JsonApiSerializable, EventDispatcherI
             ->find('objectType', [$this->id])
             ->order(['is_static' => 'ASC'])
             ->toArray();
+        /** @var \BEdita\Core\Model\Entity\ObjectEntity $entity */
         $entity = $this->getTableLocator()->get($this->name)->newEmptyEntity();
 
         $required = $translatable = [];
@@ -444,7 +445,7 @@ class ObjectType extends Entity implements JsonApiSerializable, EventDispatcherI
             if ($property->required && $accessMode === null) {
                 $required[] = $property->name;
             }
-            if ($this->is_translatable && $this->translatableProperty($property)) {
+            if ($this->is_translatable && $this->translatableProperty($property, $entity)) {
                 $translatable[] = $property->name;
             }
         }
@@ -459,16 +460,16 @@ class ObjectType extends Entity implements JsonApiSerializable, EventDispatcherI
      * and using `translation_rules` data.
      *
      * @param \BEdita\Core\Model\Entity\Property $property The property
+     * @param \BEdita\Core\Model\Entity\ObjectEntity $entity Default object entity
      * @return bool
      */
-    protected function translatableProperty(Property $property): bool
+    protected function translatableProperty(Property $property, ObjectEntity $entity): bool
     {
         if (Hash::check((array)$this->translation_rules, $property->name)) {
             return (bool)Hash::get((array)$this->translation_rules, $property->name);
         }
-        $excluded = ['uname', 'status', 'lang', 'custom_props', 'extra'];
 
-        return $property->translatable && !in_array($property->name, $excluded);
+        return $property->translatable && $entity->isFieldTranslatable($property->name);
     }
 
     /**
