@@ -479,6 +479,8 @@ class RelationsControllerTest extends IntegrationTestCase
                         'is_abstract' => false,
                         'parent_name' => 'objects',
                         'enabled' => true,
+                        'translation_rules' => null,
+                        'is_translatable' => true,
                     ],
                     'meta' => [
                         'alias' => 'Documents',

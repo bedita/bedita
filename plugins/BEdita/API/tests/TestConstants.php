@@ -25,13 +25,13 @@ class TestConstants
      */
     public const SCHEMA_REVISIONS = [
         'applications' => '3594165375',
-        'documents' => '4059696127',
-        'events' => '1528552691',
-        'files' => '4129506705',
-        'folders' => '2665927626',
-        'locations' => '2540919723',
-        'profiles' => '951433151',
+        'documents' => '1310097318',
+        'events' => '584481675',
+        'files' => '2952817401',
+        'folders' => '1635785743',
+        'locations' => '1587383786',
+        'profiles' => '2464239408',
         'roles' => '2845943672',
-        'users' => '1833541891',
+        'users' => '2394302225',
     ];
 }
