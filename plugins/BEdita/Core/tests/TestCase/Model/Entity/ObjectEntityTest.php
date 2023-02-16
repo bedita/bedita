@@ -597,7 +597,7 @@ class ObjectEntityTest extends TestCase
      */
     public function testTranslatable(): void
     {
-        $entity = TableRegistry::getTableLocator()->get('Documents')->newEmptyEntity();
+        $entity = TableRegistry::getTableLocator()->get('Documents')->newEntity([]);
 
         $result = $entity->isFieldTranslatable('description');
         static::assertTrue($result);
