@@ -23,4 +23,17 @@ namespace BEdita\Core\Model\Entity;
  */
 class Publication extends ObjectEntity
 {
+    /**
+     * @inheritDoc
+     */
+    public function __construct(array $properties = [], array $options = [])
+    {
+        parent::__construct($properties, $options);
+
+        $this->addNotTranslatable([
+            'public_url',
+            'staging_url',
+            'stats_code',
+        ]);
+    }
 }
