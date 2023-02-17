@@ -29,8 +29,8 @@ class TestConstants
         'events' => '584481675',
         'files' => '2952817401',
         'folders' => '1635785743',
-        'locations' => '1587383786',
-        'profiles' => '2464239408',
+        'locations' => '1575227367',
+        'profiles' => '2238499302',
         'roles' => '2845943672',
         'users' => '2394302225',
     ];
