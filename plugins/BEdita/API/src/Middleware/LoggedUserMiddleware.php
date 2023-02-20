@@ -19,6 +19,7 @@ use Authentication\Authenticator\AuthenticatorInterface;
 use Authentication\Authenticator\JwtAuthenticator;
 use BEdita\Core\Model\Entity\User;
 use BEdita\Core\Utility\LoggedUser;
+use Cake\Event\EventDispatcherTrait;
 use Cake\Http\Exception\UnauthorizedException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -30,6 +31,8 @@ use Psr\Http\Server\RequestHandlerInterface;
  */
 class LoggedUserMiddleware implements MiddlewareInterface
 {
+    use EventDispatcherTrait;
+
     /**
      * @inheritDoc
      */
@@ -41,6 +44,7 @@ class LoggedUserMiddleware implements MiddlewareInterface
             empty($service->getIdentity())
         ) {
             if (in_array($request->getUri()->getPath(), ['/auth', '/auth/optout'])) {
+                $this->dispatchEvent('Authentication.failure', compact('request'));
                 throw new UnauthorizedException(__d('bedita', 'Login request not successful'));
             }
 

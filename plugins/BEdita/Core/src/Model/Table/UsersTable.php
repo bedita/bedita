@@ -111,6 +111,7 @@ class UsersTable extends Table
         ]);
 
         EventManager::instance()->on('Authentication.afterIdentify', [$this, 'login']);
+        EventManager::instance()->on('Authentication.failure', [$this, 'failure']);
     }
 
     /**
@@ -194,6 +195,7 @@ class UsersTable extends Table
         $implementedEvents += [
             'Auth.externalAuth' => 'externalAuthLogin',
             'Authentication.afterIdentify' => 'login',
+            'Authentication.failure' => 'failure',
         ];
 
         return $implementedEvents;
@@ -216,9 +218,35 @@ class UsersTable extends Table
         $this->updateAll(
             [
                 'last_login' => $this->timestamp(),
+                'num_login_err' => 0,
             ],
             [
                 'id' => $identity->getIdentifier(),
+            ]
+        );
+    }
+
+    /**
+     * Update login failure.
+     *
+     * @param \Cake\Event\EventInterface $event Dispatched event.
+     * @return void
+     */
+    public function failure(EventInterface $event): void
+    {
+        /** @var \Cake\Http\ServerRequest|null $request */
+        $request = $event->getData('request');
+        if (empty($request) || (string)$request->getData('grant_type') !== 'password') {
+            return;
+        }
+
+        $this->updateAll(
+            [
+                'last_login_err' => $this->timestamp(),
+                'num_login_err' => 1,
+            ],
+            [
+                'username' => (string)$request->getData('username'),
             ]
         );
     }
