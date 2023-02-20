@@ -243,7 +243,7 @@ class UsersTable extends Table
         $this->updateAll(
             [
                 'last_login_err' => $this->timestamp(),
-                'num_login_err' => 1,
+                new QueryExpression('num_login_err = num_login_err + 1'),
             ],
             [
                 'username' => (string)$request->getData('username'),
