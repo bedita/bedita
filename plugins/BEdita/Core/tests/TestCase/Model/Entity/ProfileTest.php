@@ -99,7 +99,7 @@ class ProfileTest extends TestCase
      */
     public function testTranslatable(): void
     {
-        $profile = $this->Profiles->newEmptyEntity();
+        $profile = $this->Profiles->newEntity([]);
         $this->assertFalse($profile->isFieldTranslatable('surname'));
     }
 

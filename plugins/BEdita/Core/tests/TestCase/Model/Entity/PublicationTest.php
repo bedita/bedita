@@ -13,6 +13,7 @@
 
 namespace BEdita\Core\Test\TestCase\Model\Entity;
 
+use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
 /**
@@ -42,7 +43,7 @@ class PublicationTest extends TestCase
     public function testTranslatable(): void
     {
         /** @var \BEdita\Core\Model\Entity\Publication $publication */
-        $publication = $this->fetchTable('Publications')->newEmptyEntity();
+        $publication = TableRegistry::getTableLocator()->get('Publications')->newEntity([]);
         $this->assertFalse($publication->isFieldTranslatable('public_url'));
     }
 }
