@@ -15,7 +15,7 @@ on:
 jobs:
   cs:
     name: 'Check coding style'
-    runs-on: 'ubuntu-20.04'
+    runs-on: 'ubuntu-latest'
 
     steps:
       - name: 'Checkout current revision'
@@ -53,7 +53,7 @@ jobs:
 
   stan:
     name: 'Static code analyzer'
-    runs-on: 'ubuntu-18.04'
+    runs-on: 'ubuntu-latest'
     continue-on-error: true
 
     steps:
@@ -90,7 +90,7 @@ jobs:
   unit:
     name: 'Run unit tests'
     if: "!contains(github.event.commits[0].message, '[skip ci]') && !contains(github.event.commits[0].message, '[ci skip]')"
-    runs-on: 'ubuntu-18.04'
+    runs-on: 'ubuntu-latest'
 
     strategy:
       fail-fast: false
@@ -184,7 +184,7 @@ jobs:
   unit-lowest:
     name: 'Run unit tests with lowest-matching dependencies versions'
     if: "!contains(github.event.commits[0].message, '[skip ci]') && !contains(github.event.commits[0].message, '[ci skip]')"
-    runs-on: 'ubuntu-18.04'
+    runs-on: 'ubuntu-latest'
 
     env:
       db_dsn: 'sqlite://tmp/test.sql'
