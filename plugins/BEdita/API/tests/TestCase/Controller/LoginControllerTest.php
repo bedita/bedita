@@ -199,8 +199,12 @@ class LoginControllerTest extends IntegrationTestCase
             'grant_type' => 'password',
         ];
         $this->post('/auth', json_encode($body));
-
         $this->assertResponseCode(401);
+
+        $user = $this->fetchTable('Users')->get(1);
+        static::assertNotNull($user->last_login_err);
+        static::assertEqualsWithDelta(FrozenTime::now()->timestamp, $user->last_login_err->timestamp, 1, '');
+        static::assertEquals(2, $user->num_login_err);
     }
 
     /**
