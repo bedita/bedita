@@ -119,12 +119,13 @@ class Thumbnail
                 $ready = $generator->generate($stream, $options);
             } catch (InvalidStreamException $e) {
                 $acceptable = false;
+                $message = $e->getMessage();
             }
         }
 
         $res = compact('url', 'ready');
-        if (isset($acceptable)) {
-            $res += compact('acceptable');
+        if (isset($acceptable, $message)) {
+            $res += compact('acceptable', 'message');
         }
 
         return $res;
