@@ -186,6 +186,7 @@ class ThumbnailTest extends TestCase
                     'url' => TestGenerator::THUMBNAIL_URL,
                     'ready' => false,
                     'acceptable' => false,
+                    'message' => '',
                 ],
                 false,
                 new InvalidStreamException(),
