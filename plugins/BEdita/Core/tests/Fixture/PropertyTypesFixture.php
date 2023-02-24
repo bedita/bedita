@@ -112,7 +112,7 @@ class PropertyTypesFixture extends TestFixture
         // 11
         [
             'name' => 'json',
-            'params' => '{"type":"object"}',
+            'params' => '{}',
             'created' => '2019-11-01 09:23:43',
             'modified' => '2019-11-01 09:23:43',
             'core_type' => true,
