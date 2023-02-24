@@ -33,6 +33,11 @@ class Location extends ObjectEntity
     {
         parent::__construct($properties, $options);
 
+        $this->addNotTranslatable([
+            'coords',
+            'postal_code',
+        ]);
+
         $this->setAccess('distance', false);
     }
 }

@@ -587,4 +587,23 @@ class ObjectEntityTest extends TestCase
         // virtual property
         static::assertTrue($entity->hasProperty('type', false, true));
     }
+
+    /**
+     * Test methods using internal `notTranslatable` array
+     *
+     * @return void
+     * @covers ::addNotTranslatable()
+     * @covers ::isFieldTranslatable()
+     */
+    public function testTranslatable(): void
+    {
+        $entity = TableRegistry::getTableLocator()->get('Documents')->newEmptyEntity();
+
+        $result = $entity->isFieldTranslatable('description');
+        static::assertTrue($result);
+
+        $entity->addNotTranslatable(['description']);
+        $result = $entity->isFieldTranslatable('description');
+        static::assertFalse($result);
+    }
 }

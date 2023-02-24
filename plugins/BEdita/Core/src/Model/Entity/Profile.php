@@ -44,6 +44,28 @@ use Cake\Validation\Validation;
 class Profile extends ObjectEntity
 {
     /**
+     * @inheritDoc
+     */
+    public function __construct(array $properties = [], array $options = [])
+    {
+        parent::__construct($properties, $options);
+
+        $this->addNotTranslatable([
+            'name',
+            'surname',
+            'email',
+            'company_name',
+            'street_address',
+            'zipcode',
+            'phone',
+            'website',
+            'national_id_number',
+            'vat_number',
+            'pseudonym',
+        ]);
+    }
+
+    /**
      * Ensure URL is standardized by prefixing `http://` to it if necessary.
      *
      * @param mixed $website Website URL.

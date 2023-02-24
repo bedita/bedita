@@ -14,12 +14,14 @@
 namespace BEdita\Core\Model\Entity;
 
 use BEdita\Core\Utility\JsonApiSerializable;
+use Cake\Datasource\EntityInterface;
 use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\Event\EventDispatcherInterface;
 use Cake\Event\EventDispatcherTrait;
 use Cake\ORM\Entity;
 use Cake\ORM\Locator\LocatorAwareTrait;
 use Cake\ORM\Table;
+use Cake\Utility\Hash;
 use Cake\Utility\Inflector;
 use Generator;
 
@@ -46,6 +48,8 @@ use Generator;
  * @property \Cake\I18n\Time $modified
  * @property bool $core_type
  * @property bool $enabled
+ * @property array $translation_rules
+ * @property bool $is_translatable
  * @property \BEdita\Core\Model\Entity\ObjectEntity[] $objects
  * @property \BEdita\Core\Model\Entity\Relation[] $left_relations
  * @property \BEdita\Core\Model\Entity\Relation[] $right_relations
@@ -103,6 +107,8 @@ class ObjectType extends Entity implements JsonApiSerializable, EventDispatcherI
         'is_abstract' => true,
         'parent_name' => true,
         'enabled' => true,
+        'translation_rules' => true,
+        'is_translatable' => true,
     ];
 
     /**
@@ -424,29 +430,64 @@ class ObjectType extends Entity implements JsonApiSerializable, EventDispatcherI
             ->find('objectType', [$this->id])
             ->order(['is_static' => 'ASC'])
             ->toArray();
-        $entity = $this->getTableLocator()->get($this->name)->newEntity([]);
-        $hiddenProperties = $entity->getHidden();
+        /** @var \BEdita\Core\Model\Entity\ObjectEntity $entity */
+        $entity = $this->getTableLocator()->get($this->name)->newEmptyEntity();
 
-        $required = [];
+        $required = $translatable = [];
         $properties = $this->associationProperties();
         foreach ($allProperties as $property) {
             if (in_array($property->name, (array)$this->hidden)) {
                 continue;
             }
-            $accessMode = null;
-            if (!$entity->isAccessible($property->name)) {
-                $accessMode = 'readOnly';
-            } elseif (in_array($property->name, $hiddenProperties)) {
-                $accessMode = 'writeOnly';
-            }
+            $accessMode = $this->accessMode($property, $entity);
             $properties[$property->name] = $property->getSchema($accessMode);
 
             if ($property->required && $accessMode === null) {
                 $required[] = $property->name;
             }
+            if ($this->is_translatable && $this->translatableProperty($property, $entity)) {
+                $translatable[] = $property->name;
+            }
+        }
+        sort($required);
+        sort($translatable);
+
+        return compact('properties', 'required', 'translatable');
+    }
+
+    /**
+     * See if a property is translatable looking at property type (static or dynamic)
+     * and using `translation_rules` data.
+     *
+     * @param \BEdita\Core\Model\Entity\Property $property The property
+     * @param \BEdita\Core\Model\Entity\ObjectEntity $entity Default object entity
+     * @return bool
+     */
+    protected function translatableProperty(Property $property, ObjectEntity $entity): bool
+    {
+        if (Hash::check((array)$this->translation_rules, $property->name)) {
+            return (bool)Hash::get((array)$this->translation_rules, $property->name);
         }
 
-        return compact('properties', 'required');
+        return $property->translatable && $entity->isFieldTranslatable($property->name);
+    }
+
+    /**
+     * Get property access mode: can be `readOnly`, `writeOnly` or null if no access mode is set
+     *
+     * @param \BEdita\Core\Model\Entity\Property $property The property
+     * @param \Cake\Datasource\EntityInterface $entity Default object entity
+     * @return string|null
+     */
+    protected function accessMode(Property $property, EntityInterface $entity): ?string
+    {
+        if (!$entity->isAccessible($property->name)) {
+            return 'readOnly';
+        } elseif (in_array($property->name, $entity->getHidden())) {
+            return 'writeOnly';
+        }
+
+        return null;
     }
 
     /**

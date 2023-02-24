@@ -19,6 +19,7 @@ use BEdita\Core\Utility\LoggedUser;
 use Cake\Auth\WeakPasswordHasher;
 use Cake\Core\Configure;
 use Cake\Http\Exception\BadRequestException;
+use Cake\Http\ServerRequest;
 use Cake\I18n\FrozenTime;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
@@ -240,6 +241,45 @@ class UsersTableTest extends TestCase
         $result = $this->Users->dispatchEvent('Authentication.afterIdentify', []);
         static::assertEmpty($result->getData());
         static::assertNull($result->getResult());
+    }
+
+    /**
+     * Test authentication failure event.
+     *
+     * @return void
+     * @covers ::authFailure()
+     */
+    public function testAuthFailure(): void
+    {
+        // first reset `num_login_err` via auth success
+        $identity = new Identity($this->Users->get(5));
+        $this->Users->dispatchEvent('Authentication.afterIdentify', compact('identity'));
+
+        $request = new ServerRequest();
+        $request = $request->withData('grant_type', 'password')
+            ->withData('username', 'second user');
+        $now = new FrozenTime();
+        $this->Users->dispatchEvent('Authentication.failure', compact('request'));
+
+        $user = $this->Users->get(5);
+        static::assertLessThanOrEqual(2, $now->diffInSeconds($user->last_login_err));
+        static::assertEquals(1, $user->num_login_err);
+        $this->Users->dispatchEvent('Authentication.failure', compact('request'));
+        $user = $this->Users->get(5);
+        static::assertEquals(2, $user->num_login_err);
+    }
+
+    /**
+     * Test authentication failure event with no data
+     *
+     * @return void
+     * @covers ::authFailure()
+     */
+    public function testAuthFailureNoData(): void
+    {
+        $this->Users->dispatchEvent('Authentication.failure', []);
+        $user = $this->Users->get(5);
+        static::assertEquals(0, $user->num_login_err);
     }
 
     /**

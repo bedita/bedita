@@ -26,6 +26,7 @@ use Cake\Event\Event;
 use Cake\Event\EventInterface;
 use Cake\Event\EventManager;
 use Cake\Http\Exception\BadRequestException;
+use Cake\Http\ServerRequest;
 use Cake\ORM\Locator\LocatorAwareTrait;
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
@@ -111,6 +112,7 @@ class UsersTable extends Table
         ]);
 
         EventManager::instance()->on('Authentication.afterIdentify', [$this, 'login']);
+        EventManager::instance()->on('Authentication.failure', [$this, 'authFailure']);
     }
 
     /**
@@ -193,7 +195,6 @@ class UsersTable extends Table
         $implementedEvents = parent::implementedEvents();
         $implementedEvents += [
             'Auth.externalAuth' => 'externalAuthLogin',
-            'Authentication.afterIdentify' => 'login',
         ];
 
         return $implementedEvents;
@@ -216,9 +217,38 @@ class UsersTable extends Table
         $this->updateAll(
             [
                 'last_login' => $this->timestamp(),
+                'num_login_err' => 0,
             ],
             [
                 'id' => $identity->getIdentifier(),
+            ]
+        );
+    }
+
+    /**
+     * Update fields on authentication failure.
+     *
+     * @param \Cake\Event\EventInterface $event Dispatched event.
+     * @return void
+     */
+    public function authFailure(EventInterface $event): void
+    {
+        /** @var \Cake\Http\ServerRequest|null $request */
+        $request = $event->getData('request');
+        if (
+            !$request instanceof ServerRequest ||
+            (string)$request->getData('grant_type') !== 'password'
+        ) {
+            return;
+        }
+
+        $this->updateAll(
+            [
+                'last_login_err' => $this->timestamp(),
+                new QueryExpression('num_login_err = num_login_err + 1'),
+            ],
+            [
+                'username' => (string)$request->getData('username'),
             ]
         );
     }

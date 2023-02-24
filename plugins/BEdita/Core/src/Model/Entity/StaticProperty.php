@@ -199,6 +199,18 @@ class StaticProperty extends Property
     }
 
     /**
+     * Getter for `translatable` virtual property.
+     *
+     * @return bool
+     */
+    protected function _getTranslatable(): bool
+    {
+        $typeName = (string)$this->table->getSchema()->getColumnType($this->name);
+
+        return in_array($typeName, ['text', 'string']);
+    }
+
+    /**
      * @inheritDoc
      */
     public function getSchema($accessMode = null)

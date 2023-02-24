@@ -20,6 +20,7 @@ use Cake\Datasource\Exception\InvalidPrimaryKeyException;
 use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\ORM\Entity;
 use Cake\ORM\TableRegistry;
+use Cake\Utility\Hash;
 use Cake\Utility\Inflector;
 
 /**
@@ -165,6 +166,30 @@ class Property extends Entity implements JsonApiSerializable
     protected function _getRequired()
     {
         return !$this->is_nullable;
+    }
+
+    /**
+     * Getter for `translatable` virtual property.
+     *
+     * @return bool
+     */
+    protected function _getTranslatable(): bool
+    {
+        if (!$this->property_type) {
+            return false;
+        }
+
+        $schema = (array)$this->property_type->params;
+        $type = Hash::get($schema, 'type');
+        if ($type !== 'string') {
+            return false;
+        }
+        $spec = array_values(array_diff(array_keys($schema), ['type']));
+        // if no other specifier is set or only `contentMediaType` is present
+        // we can assume that we have a translatable string
+        $item = (string)Hash::get($spec, '0');
+
+        return empty($item) || ($item === 'contentMediaType' && count($spec) === 1);
     }
 
     /**
