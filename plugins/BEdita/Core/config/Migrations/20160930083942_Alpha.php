@@ -1480,7 +1480,7 @@ class Alpha extends AbstractMigration
                 'null' => true,
             ])
             ->addColumn('last_login_err', 'datetime', [
-                'comment' => 'last login filaure datetime',
+                'comment' => 'last login failure datetime',
                 'default' => null,
                 'limit' => null,
                 'null' => true,
