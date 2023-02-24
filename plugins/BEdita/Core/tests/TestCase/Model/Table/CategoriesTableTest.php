@@ -77,13 +77,13 @@ class CategoriesTableTest extends TestCase
         $category = $this->Categories->get(1)->toArray();
         $expected = [
             'id' => 1,
-            'object_type_name' => 'documents',
             'name' => 'first-cat',
             'label' => 'First category',
             'parent_id' => null,
             'tree_left' => 1,
             'tree_right' => 2,
             'enabled' => true,
+            'object_type_name' => 'documents',
         ];
         unset($category['created'], $category['modified']);
         static::assertEquals($expected, $category);

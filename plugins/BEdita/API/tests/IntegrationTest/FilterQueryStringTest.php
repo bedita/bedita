@@ -547,6 +547,13 @@ class FilterQueryStringTest extends IntegrationTestCase
                     '4',
                  ],
             ],
+            'config name' => [
+                '/config',
+                'filter[name]=appVal',
+                [
+                    '11',
+                ],
+            ],
         ];
     }
 

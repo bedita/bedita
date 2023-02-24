@@ -1,13 +1,17 @@
 <?php
 namespace BEdita\Core\Model\Table;
 
+use BEdita\Core\Job\QueueJob;
+use BEdita\Core\Model\Entity\AsyncJob;
 use BEdita\Core\Model\Validation\Validation;
 use Cake\Database\Expression\QueryExpression;
 use Cake\Database\Schema\TableSchemaInterface;
 use Cake\Datasource\ConnectionManager;
+use Cake\Event\EventInterface;
 use Cake\I18n\FrozenTime;
 use Cake\ORM\Query;
 use Cake\ORM\Table;
+use Cake\Queue\QueueManager;
 use Cake\Validation\Validator;
 
 /**
@@ -119,6 +123,22 @@ class AsyncJobsTable extends Table
         $schema->setColumnType('payload', 'json');
 
         return $schema;
+    }
+
+    /**
+     * Queue async job as new entity is created.
+     *
+     * @param \Cake\Event\EventInterface $event The event
+     * @param \BEdita\Core\Model\Entity\AsyncJob $entity The entity persisted
+     * @return void
+     */
+    public function afterSave(EventInterface $event, AsyncJob $entity): void
+    {
+        if (!$entity->isNew() || !QueueManager::getConfig('default')) {
+            return;
+        }
+
+        QueueManager::push(QueueJob::class, ['uuid' => $entity->uuid]);
     }
 
     /**

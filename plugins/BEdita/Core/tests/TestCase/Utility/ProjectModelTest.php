@@ -32,6 +32,7 @@ class ProjectModelTest extends TestCase
         'plugin.BEdita/Core.Applications',
         'plugin.BEdita/Core.Roles',
         'plugin.BEdita/Core.ObjectTypes',
+        'plugin.BEdita/Core.Categories',
         'plugin.BEdita/Core.PropertyTypes',
         'plugin.BEdita/Core.Properties',
         'plugin.BEdita/Core.Relations',
@@ -47,14 +48,14 @@ class ProjectModelTest extends TestCase
     public const PROJECT_MODEL = [
         'applications' => [
             [
-                'name' => 'First app',
-                'description' => 'Lorem ipsum dolor sit amet, aliquet feugiat.',
-                'enabled' => true,
-            ],
-            [
                 'name' => 'Disabled app',
                 'description' => 'This app has been disabled',
                 'enabled' => false,
+            ],
+            [
+                'name' => 'First app',
+                'description' => 'Lorem ipsum dolor sit amet, aliquet feugiat.',
+                'enabled' => true,
             ],
         ],
         'roles' => [
@@ -83,17 +84,6 @@ class ProjectModelTest extends TestCase
         ],
         'object_types' => [
             [
-                'name' => 'objects',
-                'is_abstract' => true,
-                'singular' => 'object',
-                'description' => null,
-                'associations' => null,
-                'hidden' => null,
-                'enabled' => true,
-                'table' => 'BEdita/Core.Objects',
-                'parent_name' => null,
-            ],
-            [
                 'name' => 'documents',
                 'is_abstract' => false,
                 'singular' => 'document',
@@ -105,50 +95,6 @@ class ProjectModelTest extends TestCase
                 'parent_name' => 'objects',
             ],
             [
-                'name' => 'profiles',
-                'is_abstract' => false,
-                'singular' => 'profile',
-                'description' => null,
-                'associations' => ['Tags'],
-                'hidden' => null,
-                'enabled' => true,
-                'table' => 'BEdita/Core.Profiles',
-                'parent_name' => 'objects',
-            ],
-            [
-                'name' => 'users',
-                'is_abstract' => false,
-                'singular' => 'user',
-                'description' => null,
-                'associations' => null,
-                'hidden' => null,
-                'enabled' => true,
-                'table' => 'BEdita/Core.Users',
-                'parent_name' => 'objects',
-            ],
-            [
-                'name' => 'news',
-                'is_abstract' => false,
-                'singular' => 'news_item',
-                'description' => null,
-                'associations' => null,
-                'hidden' => ['body'],
-                'enabled' => false,
-                'table' => 'BEdita/Core.Objects',
-                'parent_name' => 'objects',
-            ],
-            [
-                'name' => 'locations',
-                'is_abstract' => false,
-                'singular' => 'location',
-                'description' => null,
-                'associations' => null,
-                'hidden' => null,
-                'enabled' => true,
-                'table' => 'BEdita/Core.Locations',
-                'parent_name' => 'objects',
-            ],
-            [
                 'name' => 'events',
                 'is_abstract' => false,
                 'singular' => 'event',
@@ -157,17 +103,6 @@ class ProjectModelTest extends TestCase
                 'hidden' => null,
                 'enabled' => true,
                 'table' => 'BEdita/Core.Objects',
-                'parent_name' => 'objects',
-            ],
-            [
-                'name' => 'media',
-                'is_abstract' => true,
-                'singular' => 'media_item',
-                'description' => null,
-                'associations' => ['Streams'],
-                'hidden' => null,
-                'enabled' => true,
-                'table' => 'BEdita/Core.Media',
                 'parent_name' => 'objects',
             ],
             [
@@ -192,17 +127,74 @@ class ProjectModelTest extends TestCase
                 'table' => 'BEdita/Core.Objects',
                 'parent_name' => 'objects',
             ],
+            [
+                'name' => 'locations',
+                'is_abstract' => false,
+                'singular' => 'location',
+                'description' => null,
+                'associations' => null,
+                'hidden' => null,
+                'enabled' => true,
+                'table' => 'BEdita/Core.Locations',
+                'parent_name' => 'objects',
+            ],
+            [
+                'name' => 'media',
+                'is_abstract' => true,
+                'singular' => 'media_item',
+                'description' => null,
+                'associations' => ['Streams'],
+                'hidden' => null,
+                'enabled' => true,
+                'table' => 'BEdita/Core.Media',
+                'parent_name' => 'objects',
+            ],
+            [
+                'name' => 'news',
+                'is_abstract' => false,
+                'singular' => 'news_item',
+                'description' => null,
+                'associations' => null,
+                'hidden' => ['body'],
+                'enabled' => false,
+                'table' => 'BEdita/Core.Objects',
+                'parent_name' => 'objects',
+            ],
+            [
+                'name' => 'objects',
+                'is_abstract' => true,
+                'singular' => 'object',
+                'description' => null,
+                'associations' => null,
+                'hidden' => null,
+                'enabled' => true,
+                'table' => 'BEdita/Core.Objects',
+                'parent_name' => null,
+            ],
+            [
+                'name' => 'profiles',
+                'is_abstract' => false,
+                'singular' => 'profile',
+                'description' => null,
+                'associations' => ['Tags'],
+                'hidden' => null,
+                'enabled' => true,
+                'table' => 'BEdita/Core.Profiles',
+                'parent_name' => 'objects',
+            ],
+            [
+                'name' => 'users',
+                'is_abstract' => false,
+                'singular' => 'user',
+                'description' => null,
+                'associations' => null,
+                'hidden' => null,
+                'enabled' => true,
+                'table' => 'BEdita/Core.Users',
+                'parent_name' => 'objects',
+            ],
         ],
         'relations' => [
-            [
-                'name' => 'test',
-                'label' => 'Test relation',
-                'inverse_name' => 'inverse_test',
-                'inverse_label' => 'Inverse test relation',
-                'description' => 'Sample description.',
-                'right' => ['documents', 'profiles'],
-                'left' => ['documents'],
-            ],
             [
                 'name' => 'another_test',
                 'label' => 'Another test relation',
@@ -226,6 +218,15 @@ class ProjectModelTest extends TestCase
                 'left' => ['users'],
             ],
             [
+                'name' => 'test',
+                'label' => 'Test relation',
+                'inverse_name' => 'inverse_test',
+                'inverse_label' => 'Inverse test relation',
+                'description' => 'Sample description.',
+                'right' => ['documents', 'profiles'],
+                'left' => ['documents'],
+            ],
+            [
                 'name' => 'test_abstract',
                 'label' => 'Test relation involving abstract types',
                 'inverse_name' => 'inverse_test_abstract',
@@ -237,11 +238,12 @@ class ProjectModelTest extends TestCase
         ],
         'properties' => [
             [
-                'name' => 'another_title',
+                'name' => 'another_birthdate',
                 'description' => null,
                 'is_nullable' => true,
-                'property' => 'string',
-                'object' => 'documents',
+                'property' => 'date',
+                'object' => 'profiles',
+                'read_only' => true,
             ],
             [
                 'name' => 'another_description',
@@ -249,13 +251,7 @@ class ProjectModelTest extends TestCase
                 'is_nullable' => true,
                 'property' => 'string',
                 'object' => 'documents',
-            ],
-            [
-                'name' => 'another_username',
-                'description' => 'Username, unique string',
-                'is_nullable' => true,
-                'property' => 'string',
-                'object' => 'users',
+                'read_only' => false,
             ],
             [
                 'name' => 'another_email',
@@ -263,13 +259,7 @@ class ProjectModelTest extends TestCase
                 'is_nullable' => true,
                 'property' => 'email',
                 'object' => 'users',
-            ],
-            [
-                'name' => 'another_birthdate',
-                'description' => null,
-                'is_nullable' => true,
-                'property' => 'date',
-                'object' => 'profiles',
+                'read_only' => false,
             ],
             [
                 'name' => 'another_surname',
@@ -277,6 +267,31 @@ class ProjectModelTest extends TestCase
                 'is_nullable' => true,
                 'property' => 'string',
                 'object' => 'profiles',
+                'read_only' => false,
+            ],
+            [
+                'name' => 'another_title',
+                'description' => null,
+                'is_nullable' => true,
+                'property' => 'string',
+                'object' => 'documents',
+                'read_only' => false,
+            ],
+            [
+                'name' => 'another_username',
+                'description' => 'Username, unique string',
+                'is_nullable' => true,
+                'property' => 'string',
+                'object' => 'users',
+                'read_only' => false,
+            ],
+            [
+                'name' => 'children_order',
+                'description' => null,
+                'is_nullable' => true,
+                'property' => 'children_order',
+                'object' => 'folders',
+                'read_only' => false,
             ],
             [
                 'name' => 'disabled_property',
@@ -284,13 +299,7 @@ class ProjectModelTest extends TestCase
                 'is_nullable' => true,
                 'property' => 'string',
                 'object' => 'files',
-            ],
-            [
-                'name' => 'media_property',
-                'description' => null,
-                'is_nullable' => false,
-                'property' => 'boolean',
-                'object' => 'media',
+                'read_only' => false,
             ],
             [
                 'name' => 'files_property',
@@ -298,13 +307,15 @@ class ProjectModelTest extends TestCase
                 'is_nullable' => true,
                 'property' => 'json',
                 'object' => 'files',
+                'read_only' => false,
             ],
             [
-                'name' => 'street_address',
+                'name' => 'media_property',
                 'description' => null,
-                'is_nullable' => true,
-                'property' => 'string',
-                'object' => 'profiles',
+                'is_nullable' => false,
+                'property' => 'boolean',
+                'object' => 'media',
+                'read_only' => false,
             ],
             [
                 'name' => 'number_of_friends',
@@ -312,6 +323,38 @@ class ProjectModelTest extends TestCase
                 'is_nullable' => true,
                 'property' => 'integer',
                 'object' => 'profiles',
+                'read_only' => false,
+            ],
+            [
+                'name' => 'street_address',
+                'description' => null,
+                'is_nullable' => true,
+                'property' => 'string',
+                'object' => 'profiles',
+                'read_only' => false,
+            ],
+        ],
+        'categories' => [
+            [
+                'name' => 'first-cat',
+                'label' => 'First category',
+                'parent' => null,
+                'enabled' => true,
+                'object' => 'documents',
+            ],
+            [
+                'name' => 'second-cat',
+                'label' => 'Second category',
+                'parent' => null,
+                'enabled' => true,
+                'object' => 'documents',
+            ],
+            [
+                'name' => 'disabled-cat',
+                'label' => 'Disabled category',
+                'parent' => null,
+                'enabled' => false,
+                'object' => 'documents',
             ],
         ],
     ];
@@ -327,6 +370,7 @@ class ProjectModelTest extends TestCase
      * @covers ::objectTypes()
      * @covers ::relations()
      * @covers ::properties()
+     * @covers ::categories()
      */
     public function testGenerate(): void
     {
@@ -341,7 +385,7 @@ class ProjectModelTest extends TestCase
      *
      * @return void
      * @covers ::diff()
-     * @covers ::propertiesDiff()
+     * @covers ::byObjectDiff()
      * @covers ::itemsToUpdate()
      */
     public function testDiffAdd(): void
@@ -360,6 +404,7 @@ class ProjectModelTest extends TestCase
             'is_nullable' => true,
             'property' => 'string',
             'object' => 'profiles',
+            'read_only' => false,
         ];
         $data['properties'][] = $prop;
 
@@ -376,21 +421,22 @@ class ProjectModelTest extends TestCase
      *
      * @return void
      * @covers ::diff()
-     * @covers ::propertiesDiff()
+     * @covers ::byObjectDiff()
      */
     public function testDiffRemove(): void
     {
         $data = self::PROJECT_MODEL;
-        unset($data['properties'][0], $data['relations'][0]);
+        unset($data['properties'][0], $data['relations'][1]);
         $result = ProjectModel::diff($data);
         $remove = [
             'properties' => [
                 [
-                    'name' => 'another_title',
+                    'name' => 'another_birthdate',
                     'description' => null,
                     'is_nullable' => true,
-                    'property' => 'string',
-                    'object' => 'documents',
+                    'property' => 'date',
+                    'object' => 'profiles',
+                    'read_only' => true,
                 ],
             ],
             'relations' => [
@@ -413,7 +459,7 @@ class ProjectModelTest extends TestCase
      *
      * @return void
      * @covers ::diff()
-     * @covers ::propertiesDiff()
+     * @covers ::byObjectDiff()
      * @covers ::itemsToUpdate()
      */
     public function testDiffUpdate(): void
@@ -428,7 +474,7 @@ class ProjectModelTest extends TestCase
             'right' => ['documents', 'profiles'],
             'left' => ['events'],
         ];
-        $data['relations'][0] = $rel;
+        $data['relations'][1] = $rel;
 
         $result = ProjectModel::diff($data);
         $update = [

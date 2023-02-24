@@ -100,6 +100,7 @@ class FoldersControllerTest extends IntegrationTestCase
                         'lang' => 'en',
                         'publish_start' => null,
                         'publish_end' => null,
+                        'children_order' => null,
                     ],
                     'meta' => [
                         'locked' => false,
@@ -147,6 +148,7 @@ class FoldersControllerTest extends IntegrationTestCase
                         'lang' => 'en',
                         'publish_start' => null,
                         'publish_end' => null,
+                        'children_order' => null,
                     ],
                     'meta' => [
                         'locked' => false,
@@ -194,6 +196,7 @@ class FoldersControllerTest extends IntegrationTestCase
                         'lang' => 'en',
                         'publish_start' => null,
                         'publish_end' => null,
+                        'children_order' => null,
                     ],
                     'meta' => [
                         'locked' => false,
@@ -269,8 +272,9 @@ class FoldersControllerTest extends IntegrationTestCase
             'data' => [],
         ];
 
-        TableRegistry::getTableLocator()->get('Translations')->deleteAll([]);
-        TableRegistry::getTableLocator()->get('Folders')->deleteAll([]);
+        $this->fetchTable('Translations')->deleteAll([]);
+        $this->fetchTable('Annotations')->deleteAll([]);
+        $this->fetchTable('Folders')->deleteAll([]);
 
         $this->configRequestHeaders();
         $this->get('/folders');
@@ -307,6 +311,7 @@ class FoldersControllerTest extends IntegrationTestCase
                     'lang' => 'en',
                     'publish_start' => null,
                     'publish_end' => null,
+                    'children_order' => null,
                 ],
                 'meta' => [
                     'locked' => false,

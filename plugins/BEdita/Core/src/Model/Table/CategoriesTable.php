@@ -15,6 +15,7 @@ namespace BEdita\Core\Model\Table;
 
 use ArrayObject;
 use BEdita\Core\Exception\BadFilterException;
+use BEdita\Core\Model\Validation\Validation;
 use Cake\Collection\CollectionInterface;
 use Cake\Database\Expression\QueryExpression;
 use Cake\Datasource\EntityInterface;
@@ -22,6 +23,7 @@ use Cake\Event\EventInterface;
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
+use Cake\Utility\Hash;
 use Cake\Validation\Validator;
 
 /**
@@ -112,6 +114,7 @@ class CategoriesTable extends Table
             ->maxLength('name', 50)
             ->requirePresence('name', 'create')
             ->notEmptyString('name')
+            ->regex('name', Validation::CATEGORY_NAME_REGEX)
 
             ->scalar('label')
             ->maxLength('label', 255)
@@ -172,6 +175,7 @@ class CategoriesTable extends Table
                     [
                         'id', 'enabled', 'created', 'modified',
                         'object_type_id', 'object_type_name',
+                        'parent', 'object',
                         'parent_id', 'tree_left', 'tree_right',
                     ],
                     true
@@ -252,11 +256,12 @@ class CategoriesTable extends Table
         if (empty($options['name'])) {
             throw new BadFilterException(__d('bedita', 'Missing required parameter "{0}"', 'name'));
         }
-        if (empty($options['object_type_name'])) {
+        $object = Hash::get($options, 'object_type_name', Hash::get($options, 'object'));
+        if (empty($object)) {
             throw new BadFilterException(__d('bedita', 'Missing required parameter "{0}"', 'object_type_name'));
         }
 
-        return $query->find('type', [$options['object_type_name']])
+        return $query->find('type', [$object])
             ->where([$this->aliasField('name') => $options['name']]);
     }
 }

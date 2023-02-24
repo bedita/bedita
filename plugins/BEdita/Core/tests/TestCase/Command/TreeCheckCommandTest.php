@@ -25,6 +25,7 @@ use Cake\TestSuite\TestCase;
  * @property \BEdita\Core\Model\Table\TreesTable $Trees
  * @covers \BEdita\Core\Command\TreeCheckCommand
  */
+#[\AllowDynamicProperties]
 class TreeCheckCommandTest extends TestCase
 {
     use ConsoleIntegrationTestTrait;

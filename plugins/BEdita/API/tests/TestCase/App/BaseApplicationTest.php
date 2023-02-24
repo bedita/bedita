@@ -21,6 +21,7 @@ use Cake\Error\Middleware\ErrorHandlerMiddleware;
 use Cake\Http\Exception\UnauthorizedException;
 use Cake\Http\MiddlewareQueue;
 use Cake\Http\ServerRequest;
+use Cake\Queue\QueueManager;
 use Cake\Routing\Middleware\RoutingMiddleware;
 use Cake\TestSuite\TestCase;
 
@@ -71,11 +72,19 @@ class BaseApplicationTest extends TestCase
     public function testBootstrap(): void
     {
         Configure::write('Plugins', []);
+        Configure::write('Queue', ['default' => null]);
+
         $app = new class (CONFIG) extends BaseApplication {
         };
         $app->bootstrap();
 
         static::assertTrue($app->getPlugins()->has('Migrations'));
+        static::assertTrue($app->getPlugins()->has('Authentication'));
+        static::assertTrue($app->getPlugins()->has('Authorization'));
+        static::assertTrue($app->getPlugins()->has('Cake/Queue'));
+        $app->getPlugins()->remove('Cake/Queue');
+        Configure::delete('Queue');
+        QueueManager::drop('default');
     }
 
     /**

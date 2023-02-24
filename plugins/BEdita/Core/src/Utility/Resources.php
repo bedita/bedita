@@ -69,6 +69,9 @@ class Resources extends ResourcesBase
         'property_types' => [
             'core_type' => 0,
         ],
+        'categories' => [
+            'enabled' => 1,
+        ],
     ];
 
     /**
@@ -112,7 +115,7 @@ class Resources extends ResourcesBase
         $result = [];
 
         foreach ($data as $item) {
-            $resource = $Table->newEntity([]);
+            $resource = $Table->newEmptyEntity();
             $defaults = (array)Hash::get(static::$defaults, $type);
             $item = array_merge($defaults, $item);
             foreach ($item as $k => $v) {

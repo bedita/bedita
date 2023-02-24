@@ -27,6 +27,7 @@ use Cake\TestSuite\TestCase;
  * @property \BEdita\Core\Model\Table\TreesTable $Trees
  * @covers \BEdita\Core\Command\TreeRecoverCommand
  */
+#[\AllowDynamicProperties]
 class TreeRecoverCommandTest extends TestCase
 {
     use ConsoleIntegrationTestTrait;

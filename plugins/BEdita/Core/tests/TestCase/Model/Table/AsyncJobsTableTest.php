@@ -5,6 +5,7 @@ use BEdita\Core\Model\Entity\AsyncJob;
 use BEdita\Core\Model\Table\AsyncJobsTable;
 use Cake\Datasource\ConnectionManager;
 use Cake\ORM\TableRegistry;
+use Cake\Queue\QueueManager;
 use Cake\TestSuite\TestCase;
 
 /**
@@ -376,5 +377,44 @@ class AsyncJobsTableTest extends TestCase
         $actual = $this->AsyncJobs->find('priority', ['priority' => 5])->find('list')->toArray();
 
         static::assertSame($expected, $actual);
+    }
+
+    /**
+     * Test `afterSave` method.
+     *
+     * @return void
+     * @covers ::afterSave()
+     */
+    public function testAfterSave(): void
+    {
+        $fsQueueFile = $this->getFsQueueUrl() . DS . 'enqueue.app.test';
+        if (file_exists($fsQueueFile)) {
+            unlink($fsQueueFile);
+        }
+        QueueManager::drop('default');
+        $entity = $this->AsyncJobs->newEntity(['service' => 'example']);
+        $entity = $this->AsyncJobs->saveOrFail($entity);
+        static::assertFileDoesNotExist($fsQueueFile);
+
+        QueueManager::setConfig('default', [
+            'url' => $this->getFsQueueUrl(),
+            'queue' => 'test',
+        ]);
+
+        $entity = $this->AsyncJobs->newEntity(['service' => 'example']);
+        $entity = $this->AsyncJobs->saveOrFail($entity);
+        $this->assertFileExists($fsQueueFile);
+        $this->assertStringContainsString($entity->get('uuid'), file_get_contents($fsQueueFile));
+        QueueManager::drop('default');
+    }
+
+    /**
+     * Test Filesystem queue URL
+     *
+     * @return string
+     */
+    private function getFsQueueUrl(): string
+    {
+        return 'file:///' . TMP . DS . 'queue';
     }
 }

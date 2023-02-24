@@ -82,10 +82,13 @@ class SortQueryStringTest extends IntegrationTestCase
      */
     public function testSort($expected, $endpoint, $sort)
     {
+        $sortedFields = [];
+
         // sort asc
         $this->configRequestHeaders();
         $url = sprintf('%s?sort=%s', $endpoint, $sort);
         $this->get($url);
+        $fields = $sortedFields = [];
         $this->assertResponseCode($expected);
         if ($expected === 200) {
             $result = json_decode((string)$this->_response->getBody(), true);

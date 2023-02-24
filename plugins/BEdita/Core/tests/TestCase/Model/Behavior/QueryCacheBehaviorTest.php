@@ -23,6 +23,7 @@ use Cake\TestSuite\TestCase;
  * @property \BEdita\Core\Model\Table\ConfigTable $Config
  * @coversDefaultClass \BEdita\Core\Model\Behavior\QueryCacheBehavior
  */
+#[\AllowDynamicProperties]
 class QueryCacheBehaviorTest extends TestCase
 {
     use LocatorAwareTrait;

@@ -18,7 +18,7 @@ use Cake\TestSuite\TestCase;
 use Cake\Utility\Hash;
 
 /**
- * @coversNothing
+ * @covers \BEdita\Core\Model\Validation\UsersValidator
  */
 class UsersValidatorTest extends TestCase
 {
@@ -60,6 +60,7 @@ class UsersValidatorTest extends TestCase
             'empty fields' => [
                 [
                     'status._empty',
+                    'username.validUsername',
                 ],
                 [
                     'status' => '',
@@ -119,6 +120,30 @@ class UsersValidatorTest extends TestCase
                 [
                     'email' => 'gustavo.supporto@channelweb.it',
                     'username' => 'first user',
+                ],
+            ],
+            'username email' => [
+                [
+                ],
+                [
+                    'email' => 'some.user@example.com',
+                    'username' => 'some.user@example.com',
+                ],
+            ],
+            'invalid username characters' => [
+                [
+                    'username.validUsername',
+                ],
+                [
+                    'username' => 'http://www',
+                ],
+            ],
+            'invalid username domain' => [
+                [
+                    'username.validUsername',
+                ],
+                [
+                    'username' => 'click on domain.name',
                 ],
             ],
         ];

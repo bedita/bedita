@@ -24,6 +24,7 @@ use DebugKit\Mailer\MailPreview;
  * @since 4.0.0
  * @codeCoverageIgnore
  */
+#[\AllowDynamicProperties]
 class UserMailerPreview extends MailPreview
 {
     /**

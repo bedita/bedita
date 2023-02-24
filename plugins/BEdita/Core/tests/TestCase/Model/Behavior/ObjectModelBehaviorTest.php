@@ -23,6 +23,7 @@ use Cake\Utility\Hash;
  * @property \BEdita\Core\Model\Table\ObjectsTable $Documents
  * @coversDefaultClass \BEdita\Core\Model\Behavior\ObjectModelBehavior
  */
+#[\AllowDynamicProperties]
 class ObjectModelBehaviorTest extends TestCase
 {
     use LocatorAwareTrait;

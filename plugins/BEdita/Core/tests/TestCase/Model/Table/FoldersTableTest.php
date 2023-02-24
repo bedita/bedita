@@ -510,4 +510,86 @@ class FoldersTableTest extends TestCase
         $childrenIds = Hash::extract($folder->children, '{*}.id');
         static::assertNotContains($firstChild->id, $childrenIds);
     }
+
+    /**
+     * Data provider for testGetSort()
+     *
+     * @return array
+     */
+    public function getSortProvider(): array
+    {
+        return [
+            'Order position Trees.tree_left asc' => [
+                11,
+                'position',
+                ['Trees.tree_left' => 'asc'],
+            ],
+            'Order -position Trees.tree_left desc' => [
+                11,
+                '-position',
+                ['Trees.tree_left' => 'desc'],
+            ],
+            'Order title Children.title asc' => [
+                11,
+                'title',
+                ['Children.title' => 'asc'],
+            ],
+            'Order -title Children.title desc' => [
+                11,
+                '-title',
+                ['Children.title' => 'desc'],
+            ],
+            'Order created Children.created asc' => [
+                11,
+                'created',
+                ['Children.created' => 'asc'],
+            ],
+            'Order -created Children.created desc' => [
+                11,
+                '-created',
+                ['Children.created' => 'desc'],
+            ],
+            'Order modified Children.modified asc' => [
+                11,
+                'modified',
+                ['Children.modified' => 'asc'],
+            ],
+            'Order -modified Children.modified desc' => [
+                11,
+                '-modified',
+                ['Children.modified' => 'desc'],
+            ],
+            'Order publish_start Children.publish_start asc' => [
+                11,
+                'publish_start',
+                ['Children.publish_start' => 'asc'],
+            ],
+            'Order -publish_start Children.publish_start desc' => [
+                11,
+                '-publish_start',
+                ['Children.publish_start' => 'desc'],
+            ],
+            'Default order Trees.tree_left asc' => [
+                11,
+                null,
+                ['Trees.tree_left' => 'asc'],
+            ],
+        ];
+    }
+
+    /**
+     * Test `getSort` method.
+     *
+     * @return void
+     * @dataProvider getSortProvider()
+     * @covers ::getSort()
+     */
+    public function testGetSort(int $id, ?string $order, array $expected): void
+    {
+        $folder = $this->Folders->get($id);
+        $folder = $this->Folders->patchEntity($folder, ['children_order' => $order]);
+        $this->Folders->save($folder);
+        $actual = $this->Folders->getSort($id);
+        static::assertSame($expected, $actual);
+    }
 }

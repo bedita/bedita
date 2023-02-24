@@ -14,6 +14,7 @@
 namespace BEdita\Core\Model\Validation;
 
 use Cake\ORM\TableRegistry;
+use Cake\Validation\Validation as CakeValidation;
 
 /**
  * Validator for users.
@@ -37,6 +38,7 @@ class UsersValidator extends ProfilesValidator
             ->add('username', 'unique', ['rule' => 'validateUnique', 'provider' => 'usersTable'])
             ->requirePresence('username', 'create')
             ->notEmptyString('username')
+            ->add('username', 'validUsername', ['rule' => [UsersValidator::class, 'validUsername']])
 
             ->add('email', 'unique', ['rule' => 'validateUnique', 'provider' => 'usersTable'])
 
@@ -44,5 +46,28 @@ class UsersValidator extends ProfilesValidator
 
             ->boolean('blocked')
             ->allowEmptyString('blocked');
+    }
+
+    /**
+     * Checks that a value is a correct username.
+     * It is ok with a valid email format, otherwise it must not contain
+     * malicious elements like:
+     *  * URL, code or markup related characters
+     *  * domain names
+     *
+     * @param mixed $value The value to check
+     * @return bool
+     */
+    public static function validUsername($value): bool
+    {
+        if (CakeValidation::email($value)) {
+            return true;
+        }
+
+        if (!is_string($value)) {
+            return false;
+        }
+
+        return parent::validName($value);
     }
 }
