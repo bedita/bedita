@@ -236,9 +236,8 @@ class UsersTable extends Table
         /** @var \Cake\Http\ServerRequest|null $request */
         $request = $event->getData('request');
         if (
-            empty($request) ||
-            (string)$request->getData('grant_type') !== 'password' ||
-            !$request instanceof ServerRequest
+            !$request instanceof ServerRequest ||
+            (string)$request->getData('grant_type') !== 'password'
         ) {
             return;
         }
