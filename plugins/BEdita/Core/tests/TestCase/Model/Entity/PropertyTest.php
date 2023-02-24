@@ -327,4 +327,53 @@ class PropertyTest extends TestCase
 
         static::assertEquals($expected, $schema);
     }
+
+    /**
+     * Data provider for `testGetTranslatable` test case.
+     *
+     * @return array
+     */
+    public function getTranslatableProvider(): array
+    {
+        return [
+            'missing type' => [
+                false,
+                null,
+            ],
+            'text' => [
+                true,
+                'text',
+            ],
+            'date' => [
+                false,
+                'date',
+            ],
+            'plain' => [
+                true,
+                'text',
+            ],
+            'number' => [
+                false,
+                'number',
+            ],
+        ];
+    }
+
+    /**
+     * Test getter for `translatable` virtual property.
+     *
+     * @param bool $expected Expected result.
+     * @param string|null $propertyTypeName Property type name.
+     * @return void
+     * @dataProvider getTranslatableProvider()
+     * @covers ::_getTranslatable()
+     */
+    public function testGetTranslatable($expected, ?string $propertyTypeName): void
+    {
+        $entity = new Property();
+        $entity->property_type_name = $propertyTypeName;
+        $tr = $entity->translatable;
+
+        static::assertSame($expected, $tr);
+    }
 }

@@ -176,6 +176,7 @@ class ObjectTypesTable extends Table
     {
         $schema->setColumnType('associations', 'json');
         $schema->setColumnType('hidden', 'json');
+        $schema->setColumnType('translation_rules', 'json');
 
         return $schema;
     }
