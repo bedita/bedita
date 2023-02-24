@@ -26,6 +26,7 @@ use Cake\Event\Event;
 use Cake\Event\EventInterface;
 use Cake\Event\EventManager;
 use Cake\Http\Exception\BadRequestException;
+use Cake\Http\ServerRequest;
 use Cake\ORM\Locator\LocatorAwareTrait;
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
@@ -234,7 +235,11 @@ class UsersTable extends Table
     {
         /** @var \Cake\Http\ServerRequest|null $request */
         $request = $event->getData('request');
-        if (empty($request) || (string)$request->getData('grant_type') !== 'password') {
+        if (
+            empty($request) ||
+            (string)$request->getData('grant_type') !== 'password' ||
+            !$request instanceof ServerRequest
+        ) {
             return;
         }
 
