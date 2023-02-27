@@ -562,9 +562,7 @@ class ObjectTypeTest extends TestCase
                                 [
                                     'type' => 'null',
                                 ],
-                                [
-                                    'type' => 'object',
-                                ],
+                                new \stdClass(),
                             ],
                         ],
                         'created' => [
@@ -655,9 +653,7 @@ class ObjectTypeTest extends TestCase
                                 [
                                     'type' => 'null',
                                 ],
-                                [
-                                    'type' => 'object',
-                                ],
+                                new \stdClass(),
                             ],
                             '$id' => '/properties/files_property',
                             'title' => 'Files Property',
@@ -730,9 +726,7 @@ class ObjectTypeTest extends TestCase
                                 [
                                     'type' => 'null',
                                 ],
-                                [
-                                    'type' => 'object',
-                                ],
+                                new \stdClass(),
                             ],
                             '$id' => '/properties/provider_extra',
                             'title' => 'Provider Extra',
@@ -848,9 +842,7 @@ class ObjectTypeTest extends TestCase
                                 [
                                     'type' => 'null',
                                 ],
-                                [
-                                    'type' => 'object',
-                                ],
+                                new \stdClass(),
                             ],
                         ],
                         'created' => [

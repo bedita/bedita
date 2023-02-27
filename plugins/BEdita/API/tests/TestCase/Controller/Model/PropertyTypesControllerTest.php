@@ -334,7 +334,6 @@ class PropertyTypesControllerTest extends IntegrationTestCase
                     'attributes' => [
                         'name' => 'json',
                         'params' => [
-                            'type' => 'object',
                         ],
                     ],
                     'meta' => [

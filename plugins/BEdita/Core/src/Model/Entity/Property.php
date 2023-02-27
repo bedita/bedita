@@ -218,7 +218,7 @@ class Property extends Entity implements JsonApiSerializable
                     [
                         'type' => 'null',
                     ],
-                    $schema,
+                    empty($schema) ? new \stdClass() : $schema,
                 ],
             ];
         }

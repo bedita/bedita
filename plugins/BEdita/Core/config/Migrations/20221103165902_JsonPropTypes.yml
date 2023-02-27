@@ -1,0 +1,25 @@
+# JsonPropTypes migration
+---
+
+create:
+
+  property_types:
+
+    - name: json_object
+      core_type: 1
+      params:
+        type: object
+
+    - name: string_array
+      core_type: 1
+      params:
+        type: array
+        items:
+          type: string
+
+    - name: string_map
+      core_type: 1
+      params:
+        type: object
+        additionalProperties:
+          type: string

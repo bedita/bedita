@@ -266,6 +266,21 @@ class PropertyTest extends TestCase
                 'email',
                 false,
             ],
+            'json' => [
+                [
+                    '$id' => '/properties/json',
+                    'title' => 'Json',
+                    'description' => null,
+                    'oneOf' => [
+                        [
+                            'type' => 'null',
+                        ],
+                        new \stdClass(),
+                    ],
+                ],
+                'json',
+                true,
+            ],
             'email (nullable)' => [
                 [
                     '$id' => '/properties/email',
