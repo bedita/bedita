@@ -24,6 +24,17 @@ use Cake\Validation\Validation as CakeValidation;
 class UsersValidator extends ProfilesValidator
 {
     /**
+     * Regular expression to allow dot separated strings without spaces.
+     * For example:
+     * - `first.second.third` valid
+     * - `first.second..third` not valid
+     * - `first.second third` not valid
+     *
+     * @var string
+     */
+    public const DOT_SEPARATED_STRING_REGEX = '/^[^\s.]+(\.[^\s.]+)*$/';
+
+    /**
      * {@inheritDoc}
      *
      * @codeCoverageIgnore
@@ -60,14 +71,20 @@ class UsersValidator extends ProfilesValidator
      */
     public static function validUsername($value): bool
     {
-        if (CakeValidation::email($value)) {
-            return true;
-        }
-
         if (!is_string($value)) {
             return false;
         }
 
-        return parent::validName($value);
+        if (CakeValidation::email($value)) {
+            return true;
+        }
+
+        // check for not valid dot separated strings
+        if (strpos($value, '.') !== false && !preg_match(static::DOT_SEPARATED_STRING_REGEX, $value)) {
+            return false;
+        }
+
+        // check for invalid characters presence
+        return preg_match(static::NAME_REGEX, $value);
     }
 }

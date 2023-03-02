@@ -138,12 +138,32 @@ class UsersValidatorTest extends TestCase
                     'username' => 'http://www',
                 ],
             ],
-            'invalid username domain' => [
+            'invalid username with dot and space' => [
                 [
                     'username.validUsername',
                 ],
                 [
                     'username' => 'click on domain.name',
+                ],
+            ],
+            'valid dot separated username' => [
+                [],
+                [
+                    'username' => 'name.surname',
+                ],
+            ],
+            'invalid double dot separated username' => [
+                [
+                    'username.validUsername',
+                ],
+                [
+                    'username' => 'name..surname',
+                ],
+            ],
+            'valid username with space' => [
+                [],
+                [
+                    'username' => 'name surname',
                 ],
             ],
         ];
