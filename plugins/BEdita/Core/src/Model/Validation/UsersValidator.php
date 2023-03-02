@@ -85,6 +85,6 @@ class UsersValidator extends ProfilesValidator
         }
 
         // check for invalid characters presence
-        return preg_match(static::NAME_REGEX, $value);
+        return CakeValidation::custom($value, static::NAME_REGEX);
     }
 }
