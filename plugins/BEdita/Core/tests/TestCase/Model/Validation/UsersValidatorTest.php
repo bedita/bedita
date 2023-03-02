@@ -152,6 +152,12 @@ class UsersValidatorTest extends TestCase
                     'username' => 'name.surname',
                 ],
             ],
+            'valid dot separated username with three strings' => [
+                [],
+                [
+                    'username' => 'first.second.third',
+                ],
+            ],
             'invalid double dot separated username' => [
                 [
                     'username.validUsername',
