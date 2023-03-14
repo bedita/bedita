@@ -874,7 +874,7 @@ abstract class FrontendController extends AppController {
         if($xml_out) {
 
             $pubMap = array();
-            $pubMap['loc'] = $this->publication["public_url"];
+            $pubMap['loc'] = $this->publication["public_url"] ?: $conf->serverUrl;
             $pubMap['lastmod'] =  !empty($this->publication['last_modified']) ?
                 substr($this->publication["last_modified"], 0, 10) : substr($this->publication["modified"], 0, 10);
             $pubMap['priority'] = !empty($this->publication['map_priority']) ?
@@ -893,10 +893,20 @@ abstract class FrontendController extends AppController {
             }
 
             $i = count($urlset);
+            $savedUrls = array();
             $sectionModel = ClassRegistry::init("Section");
+
             foreach($sectionsTree as $v) {
+                $loc = $pubMap['loc'].$v['canonicalPath'];
+
+                if(empty($loc) || in_array($loc, $savedUrls)) {
+                    continue;
+                }
+
+                $savedUrls[] = $loc;
+
                 $urlset[$i] = array();
-                $urlset[$i]['loc'] = $this->publication["public_url"]. $v['canonicalPath'];
+                $urlset[$i]['loc'] = $loc;
 
                 if($v['object_type_id'] == $conf->objectTypes["section"]["id"]) {
 
