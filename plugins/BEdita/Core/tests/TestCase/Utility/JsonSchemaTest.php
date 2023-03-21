@@ -141,6 +141,7 @@ class JsonSchemaTest extends TestCase
                         'modified',
                         'name',
                         'unchangeable',
+                        'priority',
                     ],
                     'required' => [
                         'name',

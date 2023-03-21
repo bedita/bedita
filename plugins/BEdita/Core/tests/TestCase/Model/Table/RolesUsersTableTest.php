@@ -116,9 +116,9 @@ class RolesUsersTableTest extends TestCase
      */
     public function testDeleteAdminRole()
     {
-        $this->expectException(\BEdita\Core\Exception\ImmutableResourceException::class);
+        $this->expectException(\Cake\Http\Exception\ForbiddenException::class);
         $this->expectExceptionCode('403');
-        $this->expectExceptionMessage('Could not update relationship for users/roles for ADMIN_USER and ADMIN_ROLE');
+        $this->expectExceptionMessage('Could not update role. Insufficient priority');
         $entity = $this->RolesUsers->get(1);
         $this->RolesUsers->delete($entity);
     }

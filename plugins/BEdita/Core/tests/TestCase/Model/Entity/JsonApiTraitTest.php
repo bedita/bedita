@@ -628,6 +628,7 @@ class JsonApiTraitTest extends TestCase
                 'created' => '2016-04-15T09:57:38+00:00',
                 'modified' => '2016-04-15T09:57:38+00:00',
                 'unchangeable' => true,
+                'priority' => 100,
             ],
             'links' => [
                 'self' => '/roles/1',

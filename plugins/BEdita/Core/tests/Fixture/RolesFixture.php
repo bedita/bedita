@@ -30,6 +30,7 @@ class RolesFixture extends TestFixture
             'unchangeable' => 1,
             'created' => '2016-04-15 09:57:38',
             'modified' => '2016-04-15 09:57:38',
+            'priority' => 1,
         ],
         [
             'name' => 'second role',
@@ -37,6 +38,7 @@ class RolesFixture extends TestFixture
             'unchangeable' => 0,
             'created' => '2016-04-15 11:59:12',
             'modified' => '2016-04-15 11:59:13',
+            'priority' => 100,
         ],
     ];
 }
