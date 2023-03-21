@@ -100,6 +100,7 @@ class JsonApiTest extends TestCase
                             'unchangeable' => true,
                             'created' => '2016-04-15T09:57:38+00:00',
                             'modified' => '2016-04-15T09:57:38+00:00',
+                            'priority' => 1,
                         ],
                         'relationships' => [
                             'users' => [
@@ -124,6 +125,7 @@ class JsonApiTest extends TestCase
                             'unchangeable' => false,
                             'created' => '2016-04-15T11:59:12+00:00',
                             'modified' => '2016-04-15T11:59:13+00:00',
+                            'priority' => 100,
                         ],
                         'relationships' => [
                             'users' => [
@@ -161,6 +163,7 @@ class JsonApiTest extends TestCase
                             'unchangeable' => true,
                             'created' => '2016-04-15T09:57:38+00:00',
                             'modified' => '2016-04-15T09:57:38+00:00',
+                            'priority' => 1,
                         ],
                         'relationships' => [
                             'users' => [
@@ -185,6 +188,7 @@ class JsonApiTest extends TestCase
                             'unchangeable' => false,
                             'created' => '2016-04-15T11:59:12+00:00',
                             'modified' => '2016-04-15T11:59:13+00:00',
+                            'priority' => 100,
                         ],
                         'relationships' => [
                             'users' => [
@@ -222,6 +226,7 @@ class JsonApiTest extends TestCase
                             'unchangeable' => true,
                             'created' => '2016-04-15T09:57:38+00:00',
                             'modified' => '2016-04-15T09:57:38+00:00',
+                            'priority' => 1,
                         ],
                         'relationships' => [
                             'users' => [
@@ -246,6 +251,7 @@ class JsonApiTest extends TestCase
                             'unchangeable' => false,
                             'created' => '2016-04-15T11:59:12+00:00',
                             'modified' => '2016-04-15T11:59:13+00:00',
+                            'priority' => 100,
                         ],
                         'relationships' => [
                             'users' => [
@@ -282,6 +288,7 @@ class JsonApiTest extends TestCase
                         'unchangeable' => true,
                         'created' => '2016-04-15T09:57:38+00:00',
                         'modified' => '2016-04-15T09:57:38+00:00',
+                        'priority' => 1,
                     ],
                     'relationships' => [
                         'users' => [
@@ -314,6 +321,7 @@ class JsonApiTest extends TestCase
                         'unchangeable' => true,
                         'created' => '2016-04-15T09:57:38+00:00',
                         'modified' => '2016-04-15T09:57:38+00:00',
+                        'priority' => 1,
                     ],
                     'relationships' => [
                         'users' => [
