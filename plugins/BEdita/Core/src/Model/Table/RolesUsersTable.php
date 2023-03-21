@@ -132,18 +132,17 @@ class RolesUsersTable extends Table
      */
     protected function canModify(int $roleId): bool
     {
-        // default priority
-        $priorityUser = 100;
         $user = LoggedUser::getUser();
         $roles = (array)Hash::get($user, 'roles');
         $ids = (array)Hash::extract($roles, '{n}.id');
-        if (!empty($ids)) {
-            $query = $this->Roles->find()->where(['id IN' => $ids]);
-            $query->select([
-                'min_value' => $query->func()->min($this->Roles->aliasField('priority')),
-            ]);
-            $priorityUser = $query->find('list', ['valueField' => 'min_value'])->first();
+        if (empty($ids)) {
+            return false;
         }
+        $query = $this->Roles->find()->where(['id IN' => $ids]);
+        $query->select([
+            'min_value' => $query->func()->min($this->Roles->aliasField('priority')),
+        ]);
+        $priorityUser = $query->find('list', ['valueField' => 'min_value'])->first();
         $priorityRole = $this->Roles
             ->find('list', ['valueField' => 'priority'])
             ->where(['id' => $roleId])
