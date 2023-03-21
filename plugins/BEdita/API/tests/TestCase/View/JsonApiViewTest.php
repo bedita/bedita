@@ -97,7 +97,7 @@ class JsonApiViewTest extends TestCase
                             'unchangeable' => true,
                             'created' => '2016-04-15T09:57:38+00:00',
                             'modified' => '2016-04-15T09:57:38+00:00',
-                            'priority' => 1,
+                            'priority' => 0,
                         ],
                         'relationships' => [
                             'users' => [
@@ -140,7 +140,7 @@ class JsonApiViewTest extends TestCase
                             'unchangeable' => true,
                             'created' => '2016-04-15T09:57:38+00:00',
                             'modified' => '2016-04-15T09:57:38+00:00',
-                            'priority' => 1,
+                            'priority' => 0,
                         ],
                         'relationships' => [
                             'users' => [

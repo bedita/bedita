@@ -18,6 +18,7 @@ use BEdita\Core\Exception\UserExistsException;
 use BEdita\Core\Model\Action\SignupUserAction;
 use BEdita\Core\Model\Entity\AsyncJob;
 use BEdita\Core\Model\Entity\User;
+use BEdita\Core\Utility\LoggedUser;
 use Cake\Core\Configure;
 use Cake\Core\Exception\CakeException;
 use Cake\Event\Event;
@@ -655,6 +656,7 @@ class SignupUserActionTest extends TestCase
      */
     public function testRoles($expected, array $data, array $config = [])
     {
+        LoggedUser::set(['id' => 1]);
         Configure::write('Signup', $config);
         if ($expected instanceof \Exception) {
             $this->expectException(get_class($expected));
