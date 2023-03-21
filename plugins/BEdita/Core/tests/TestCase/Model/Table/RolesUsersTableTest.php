@@ -13,6 +13,7 @@
 
 namespace BEdita\Core\Test\TestCase\Model\Table;
 
+use BEdita\Core\Utility\LoggedUser;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
@@ -102,6 +103,7 @@ class RolesUsersTableTest extends TestCase
      */
     public function testValidation($expected, array $data)
     {
+        LoggedUser::setUser(['id' => 1, 'roles' => [['id' => 1]]]);
         $objectType = $this->RolesUsers->newEntity([]);
         $this->RolesUsers->patchEntity($objectType, $data);
 
@@ -130,6 +132,7 @@ class RolesUsersTableTest extends TestCase
      */
     public function testDeleteSecondRole()
     {
+        LoggedUser::setUser(['id' => 1, 'roles' => [['id' => 1]]]);
         $entity = $this->RolesUsers->get(2);
         $success = $this->RolesUsers->delete($entity);
         static::assertNotEmpty($success);
