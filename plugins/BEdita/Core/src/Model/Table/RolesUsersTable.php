@@ -132,7 +132,9 @@ class RolesUsersTable extends Table
      */
     protected function canModify(int $roleId): bool
     {
-        $ids = Hash::extract(Hash::get(LoggedUser::getUser(), 'roles'), '{n}.id');
+        $user = LoggedUser::getUser();
+        $roles = (array)Hash::get($user, 'roles');
+        $ids = (array)Hash::extract($roles, '{n}.id');
         $query = $this->Roles->find()->where(['id IN' => $ids]);
         $query->select([
             'min_value' => $query->func()->min($this->Roles->aliasField('priority')),
