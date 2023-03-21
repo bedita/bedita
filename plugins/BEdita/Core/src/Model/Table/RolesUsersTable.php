@@ -100,11 +100,11 @@ class RolesUsersTable extends Table
      */
     public function beforeDelete(EventInterface $event, EntityInterface $entity)
     {
-        if (!$this->canModify($entity->role_id)) {
-            throw new ForbiddenException(__d('bedita', 'Could not update role. Insufficient priority'));
-        }
         if ($entity->role_id === RolesTable::ADMIN_ROLE && $entity->user_id === UsersTable::ADMIN_USER) {
             throw new ImmutableResourceException(__d('bedita', 'Could not update relationship for users/roles for ADMIN_USER and ADMIN_ROLE'));
+        }
+        if (!$this->canModify($entity->role_id)) {
+            throw new ForbiddenException(__d('bedita', 'Could not update role. Insufficient priority'));
         }
     }
 
@@ -143,10 +143,7 @@ class RolesUsersTable extends Table
             'min_value' => $query->func()->min($this->Roles->aliasField('priority')),
         ]);
         $priorityUser = $query->find('list', ['valueField' => 'min_value'])->first();
-        $priorityRole = $this->Roles
-            ->find('list', ['valueField' => 'priority'])
-            ->where(['id' => $roleId])
-            ->firstOrFail();
+        $priorityRole = $this->Roles->get($roleId)->get('priority');
 
         return $priorityUser <= $priorityRole;
     }
