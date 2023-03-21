@@ -380,6 +380,7 @@ class JsonApiTraitTest extends TestCase
         $expected = [
             'created',
             'modified',
+            'priority',
             'unchangeable',
         ];
 
@@ -432,6 +433,7 @@ class JsonApiTraitTest extends TestCase
             'created',
             'extra',
             'modified',
+            'priority',
             'unchangeable',
         ];
         $expectedExtra = ['my_computed_field' => pi()];
