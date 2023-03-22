@@ -19,7 +19,7 @@ jobs:
 
     steps:
       - name: 'Checkout current revision'
-        uses: 'actions/checkout@v2'
+        uses: 'actions/checkout@v3'
 
       - name: 'Setup PHP'
         uses: 'shivammathur/setup-php@v2'
@@ -34,7 +34,7 @@ jobs:
         run: 'echo "::set-output name=path::$(composer global config cache-dir)"'
 
       - name: 'Share Composer cache across runs'
-        uses: 'actions/cache@v2'
+        uses: 'actions/cache@v3'
         with:
           path: '${{ steps.cachedir.outputs.path }}'
           key: "composer-${{ github.job }}-${{ hashFiles('**/composer.json') }}"
@@ -58,7 +58,7 @@ jobs:
 
     steps:
       - name: 'Checkout current revision'
-        uses: 'actions/checkout@v2'
+        uses: 'actions/checkout@v3'
 
       - name: 'Setup PHP'
         uses: 'shivammathur/setup-php@v2'
@@ -73,7 +73,7 @@ jobs:
         run: 'echo "::set-output name=path::$(composer global config cache-dir)"'
 
       - name: 'Share Composer cache across runs'
-        uses: 'actions/cache@v2'
+        uses: 'actions/cache@v3'
         with:
           path: '${{ steps.cachedir.outputs.path }}'
           key: "composer-${{ github.job }}-${{ hashFiles('**/composer.json') }}"
@@ -140,7 +140,7 @@ jobs:
 
     steps:
       - name: 'Checkout current revision'
-        uses: 'actions/checkout@v2'
+        uses: 'actions/checkout@v3'
 
       - name: 'Setup PHP'
         uses: 'shivammathur/setup-php@v2'
@@ -156,7 +156,7 @@ jobs:
         run: 'echo "::set-output name=path::$(composer global config cache-dir)"'
 
       - name: 'Share Composer cache across runs'
-        uses: 'actions/cache@v2'
+        uses: 'actions/cache@v3'
         with:
           path: '${{ steps.cachedir.outputs.path }}'
           key: "composer-${{ matrix.php }}-${{ hashFiles('**/composer.json') }}"
@@ -192,7 +192,7 @@ jobs:
 
     steps:
       - name: 'Checkout current revision'
-        uses: 'actions/checkout@v2'
+        uses: 'actions/checkout@v3'
 
       - name: 'Setup PHP'
         uses: 'shivammathur/setup-php@v2'
@@ -206,7 +206,7 @@ jobs:
         run: 'echo "::set-output name=path::$(composer global config cache-dir)"'
 
       - name: 'Share Composer cache across runs'
-        uses: 'actions/cache@v2'
+        uses: 'actions/cache@v3'
         with:
           path: '${{ steps.cachedir.outputs.path }}'
           key: "composer-lowest-${{ hashFiles('**/composer.json') }}"
