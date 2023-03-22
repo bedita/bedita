@@ -276,9 +276,13 @@ class UsersControllerTest extends IntegrationTestCase
             'data' => [],
         ];
 
-        $this->fetchTable('Translations')->deleteAll([]);
-        $this->fetchTable('Annotations')->deleteAll([]);
-        $this->fetchTable('Users')->deleteAll([]);
+        $this->fetchTable('Users')
+            ->getConnection()
+            ->disableConstraints(function () {
+                $this->fetchTable('Translations')->deleteAll([]);
+                $this->fetchTable('Annotations')->deleteAll([]);
+                $this->fetchTable('Users')->deleteAll([]);
+            });
 
         $this->configRequestHeaders();
         $this->get('/users');

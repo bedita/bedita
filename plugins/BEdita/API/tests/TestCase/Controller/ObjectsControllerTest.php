@@ -739,9 +739,13 @@ class ObjectsControllerTest extends IntegrationTestCase
             'data' => [],
         ];
 
-        $this->fetchTable('Translations')->deleteAll([]);
-        $this->fetchTable('Annotations')->deleteAll([]);
-        $this->fetchTable('Objects')->deleteAll([]);
+        $this->fetchTable('Objects')
+            ->getConnection()
+            ->disableConstraints(function () {
+                $this->fetchTable('Translations')->deleteAll([]);
+                $this->fetchTable('Annotations')->deleteAll([]);
+                $this->fetchTable('Objects')->deleteAll([]);
+            });
 
         $this->configRequestHeaders();
         $this->get('/objects');

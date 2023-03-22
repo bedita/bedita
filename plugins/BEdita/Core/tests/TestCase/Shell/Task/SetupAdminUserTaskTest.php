@@ -78,7 +78,9 @@ class SetupAdminUserTaskTest extends TestCase
      */
     public function testExecuteMissingUser()
     {
-        $this->Users->deleteAll(['id' => UsersTable::ADMIN_USER]);
+        $this->Users->getConnection()->disableConstraints(function () {
+            $this->Users->deleteAll(['id' => UsersTable::ADMIN_USER]);
+        });
 
         $this->exec(SetupAdminUserTask::class);
 

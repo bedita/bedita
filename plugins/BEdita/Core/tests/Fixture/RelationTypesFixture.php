@@ -63,16 +63,4 @@ class RelationTypesFixture extends TestFixture
             'side' => 'right',
         ],
     ];
-
-    /**
-     * Before Build Schema callback
-     *
-     * Change `side` type to 'string' to avoid errors
-     *
-     * @return void
-     */
-    public function beforeBuildSchema()
-    {
-        $this->fields['side']['type'] = 'string';
-    }
 }

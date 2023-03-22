@@ -134,6 +134,8 @@ class IntegrationTestCaseTest extends IntegrationTestCase
      */
     public function testSetUp()
     {
+        $this->tearDown();
+
         CurrentApplication::getInstance()->set(null);
         static::assertEquals([], LoggedUser::getUser());
         static::assertNull(CurrentApplication::getApplication());

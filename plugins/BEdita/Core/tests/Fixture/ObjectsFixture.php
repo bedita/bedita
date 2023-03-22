@@ -45,7 +45,10 @@ class ObjectsFixture extends TestFixture
             'title' => 'title one',
             'description' => 'description here',
             'body' => 'body here',
-            'extra' => '{"abstract": "abstract here", "list": ["one", "two", "three"]}',
+            'extra' => [
+                'abstract' => 'abstract here',
+                'list' => ['one', 'two', 'three'],
+            ],
             'lang' => 'en',
             'created_by' => 1,
             'modified_by' => 1,
@@ -105,7 +108,10 @@ class ObjectsFixture extends TestFixture
             'lang' => 'en',
             'created_by' => 5,
             'modified_by' => 5,
-            'custom_props' => '{"another_username":"synapse","another_email":"synapse@example.org"}',
+            'custom_props' => [
+                'another_username' => 'synapse',
+                'another_email' => 'synapse@example.org',
+            ],
         ],
         // 6
         [
@@ -120,7 +126,7 @@ class ObjectsFixture extends TestFixture
             'title' => 'title one deleted',
             'description' => 'description removed',
             'body' => 'body no more',
-            'extra' => '{"abstract": "what?"}',
+            'extra' => ['abstract' => 'what?'],
             'lang' => 'en',
             'created_by' => 1,
             'modified_by' => 1,
@@ -140,7 +146,7 @@ class ObjectsFixture extends TestFixture
             'title' => 'title two deleted',
             'description' => 'description removed',
             'body' => 'body no more',
-            'extra' => '{"abstract": "what?"}',
+            'extra' => ['abstract' => 'what?'],
             'lang' => 'en',
             'created_by' => 1,
             'modified_by' => 1,
@@ -206,7 +212,7 @@ class ObjectsFixture extends TestFixture
             'modified_by' => 1,
             'publish_start' => null,
             'publish_end' => null,
-            'custom_props' => '{"media_property":true}',
+            'custom_props' => ['media_property' => true],
         ],
         // 11
         [
@@ -287,7 +293,7 @@ class ObjectsFixture extends TestFixture
             'modified_by' => 1,
             'publish_start' => null,
             'publish_end' => null,
-            'custom_props' => '{"media_property":false}',
+            'custom_props' => ['media_property' => false],
         ],
         // 15 (ghost object)
         [
@@ -310,19 +316,4 @@ class ObjectsFixture extends TestFixture
             'publish_end' => null,
         ],
     ];
-
-    /**
-     * Before Build Schema callback
-     *
-     * Change `status` type to 'string' to avoid errors
-     *
-     * @return void
-     */
-    public function beforeBuildSchema()
-    {
-        $this->fields['status']['type'] = 'string';
-
-        unset($this->fields['_constraints']['objects_modifiedby_fk']);
-        unset($this->fields['_constraints']['objects_createdby_fk']);
-    }
 }

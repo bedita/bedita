@@ -49,6 +49,8 @@ class AsyncJobsTransportTest extends TestCase
      */
     public function setUp(): void
     {
+        parent::setUp();
+
         TransportFactory::drop('test');
         TransportFactory::setConfig('test', [
             'className' => 'BEdita/Core.AsyncJobs',
@@ -66,8 +68,6 @@ class AsyncJobsTransportTest extends TestCase
         ]);
 
         $this->AsyncJobs = TableRegistry::getTableLocator()->get('AsyncJobs');
-
-        parent::setUp();
     }
 
     /**
@@ -80,6 +80,7 @@ class AsyncJobsTransportTest extends TestCase
         Mailer::drop('test');
         TransportFactory::drop('test');
         TransportFactory::drop('debug');
+        $this->AsyncJobs = null;
     }
 
     /**

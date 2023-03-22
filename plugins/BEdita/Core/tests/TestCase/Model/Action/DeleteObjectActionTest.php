@@ -33,6 +33,7 @@ class DeleteObjectActionTest extends TestCase
         'plugin.BEdita/Core.Relations',
         'plugin.BEdita/Core.RelationTypes',
         'plugin.BEdita/Core.Objects',
+        'plugin.BEdita/Core.Users',
         'plugin.BEdita/Core.ObjectRelations',
         'plugin.BEdita/Core.Properties',
         'plugin.BEdita/Core.PropertyTypes',

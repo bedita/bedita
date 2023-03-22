@@ -20,7 +20,7 @@ class ObjectRelationsFixture extends TestFixture
             'right_id' => 4,
             'priority' => 1,
             'inv_priority' => 2,
-            'params' => '',
+            'params' => null,
         ],
         [
             'left_id' => 3,
@@ -28,7 +28,7 @@ class ObjectRelationsFixture extends TestFixture
             'right_id' => 4,
             'priority' => 1,
             'inv_priority' => 1,
-            'params' => '',
+            'params' => null,
         ],
         [
             'left_id' => 2,
@@ -36,7 +36,7 @@ class ObjectRelationsFixture extends TestFixture
             'right_id' => 3,
             'priority' => 2,
             'inv_priority' => 1,
-            'params' => '',
+            'params' => null,
         ],
         [
             'left_id' => 1,
@@ -44,7 +44,7 @@ class ObjectRelationsFixture extends TestFixture
             'right_id' => 8,
             'priority' => 1,
             'inv_priority' => 1,
-            'params' => '',
+            'params' => null,
         ],
     ];
 }

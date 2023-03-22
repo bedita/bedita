@@ -274,7 +274,7 @@ class ProfilesTableTest extends TestCase
      */
     public function testDelete()
     {
-        $profile = $this->Profiles->find()->first();
+        $profile = $this->Profiles->get(4);
         $id = $profile->id;
         $this->assertEquals(true, $this->Profiles->delete($profile));
 

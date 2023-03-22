@@ -21,46 +21,6 @@ use Cake\TestSuite\Fixture\TestFixture;
 class FakeCategoriesFixture extends TestFixture
 {
     /**
-     * @inheritDoc
-     */
-    public $fields = [
-        'id' => ['type' => 'integer', 'length' => 10, 'unsigned' => true, 'null' => false, 'default' => null, 'comment' => '', 'precision' => null, 'autoIncrement' => true],
-        'name' => ['type' => 'string', 'length' => 255, 'null' => false, 'default' => null, 'precision' => null],
-        'parent_id' => ['type' => 'integer', 'length' => 10, 'unsigned' => true, 'null' => true, 'default' => null, 'precision' => null],
-        'left_idx' => ['type' => 'integer', 'length' => 10, 'unsigned' => true, 'null' => false, 'default' => null, 'precision' => null],
-        'right_idx' => ['type' => 'integer', 'length' => 10, 'unsigned' => true, 'null' => false, 'default' => null, 'precision' => null],
-        '_indexes' => [
-            'fakecategories_parentid_idx' => [
-                'type' => 'index',
-                'columns' => [
-                    'parent_id',
-                ],
-            ],
-            'fakecategories_leftright_idx' => [
-                'type' => 'index',
-                'columns' => [
-                    'left_idx',
-                    'right_idx',
-                ],
-            ],
-        ],
-        '_constraints' => [
-            'primary' => ['type' => 'primary', 'columns' => ['id'], 'length' => []],
-            'fakecategories_parentid_fk' => [
-                'type' => 'foreign',
-                'columns' => ['parent_id'],
-                'references' => ['fake_categories', 'id'],
-                'update' => 'noAction',
-                'delete' => 'noAction',
-            ],
-        ],
-        '_options' => [
-            'engine' => 'InnoDB',
-            'collation' => 'utf8_general_ci',
-        ],
-    ];
-
-    /**
      * {@inheritDoc}
      *
      * @example ```

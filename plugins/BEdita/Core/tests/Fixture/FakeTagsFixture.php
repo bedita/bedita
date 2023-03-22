@@ -23,21 +23,6 @@ class FakeTagsFixture extends TestFixture
     /**
      * @inheritDoc
      */
-    public $fields = [
-        'id' => ['type' => 'integer', 'length' => 10, 'unsigned' => true, 'null' => false, 'default' => null, 'comment' => '', 'precision' => null, 'autoIncrement' => true],
-        'name' => ['type' => 'string', 'length' => 255, 'null' => false, 'default' => null, 'precision' => null],
-        '_constraints' => [
-            'primary' => ['type' => 'primary', 'columns' => ['id'], 'length' => []],
-        ],
-        '_options' => [
-            'engine' => 'InnoDB',
-            'collation' => 'utf8_general_ci',
-        ],
-    ];
-
-    /**
-     * @inheritDoc
-     */
     public $records = [
         ['name' => 'Science'],
         ['name' => 'Tale'],

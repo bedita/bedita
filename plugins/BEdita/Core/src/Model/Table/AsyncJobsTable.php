@@ -120,7 +120,8 @@ class AsyncJobsTable extends Table
      */
     protected function _initializeSchema(TableSchemaInterface $schema): TableSchemaInterface
     {
-        $schema->setColumnType('payload', 'json');
+        $schema->setColumnType('payload', 'json')
+            ->setColumnType('uuid', 'uuid');
 
         return $schema;
     }
