@@ -133,8 +133,7 @@ class RolesUsersTable extends Table
     protected function canHandle(int $roleId): bool
     {
         $user = LoggedUser::getUser();
-        $roles = (array)Hash::get($user, 'roles');
-        $ids = (array)Hash::extract($roles, '{n}.id');
+        $ids = (array)Hash::extract($user, 'roles.{n}.id');
         if (empty($ids)) {
             return false;
         }
