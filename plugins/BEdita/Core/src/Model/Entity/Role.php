@@ -23,6 +23,7 @@ use Cake\ORM\Entity;
  * @property string $name
  * @property string $description
  * @property bool $unchangeable
+ * @property int $priority
  * @property \Cake\I18n\Time $created
  * @property \Cake\I18n\Time $modified
  * @property \BEdita\Core\Model\Entity\User[] $users
