@@ -153,4 +153,41 @@ class RolesUsersTableTest extends TestCase
         $success = $this->RolesUsers->delete($entity);
         static::assertNotEmpty($success);
     }
+
+    /**
+     * Test modify admin role association
+     *
+     * @return void
+     * @covers ::beforeSave()
+     * @covers ::canModify()
+     */
+    public function testModifyAdminRole()
+    {
+        LoggedUser::setUser(['id' => 1, 'roles' => [['id' => 1]]]);
+        $entity = $this->RolesUsers->newEntity([]);
+        $this->RolesUsers->patchEntity($entity, [
+            'role_id' => 2,
+            'user_id' => 1,
+        ]);
+        $actual = $this->RolesUsers->save($entity);
+        static::assertTrue((bool)$actual);
+    }
+
+    /**
+     * Test modify admin role association
+     *
+     * @return void
+     * @covers ::beforeSave()
+     * @covers ::canModify()
+     */
+    public function testModifyAdminRoleForbidden()
+    {
+        LoggedUser::resetUser();
+        $this->expectException(\Cake\Http\Exception\ForbiddenException::class);
+        $this->expectExceptionCode('403');
+        $this->expectExceptionMessage('Could not update role. Insufficient priority');
+        $entity = $this->RolesUsers->get(1);
+        $entity->priority = 50;
+        $this->RolesUsers->save($entity);
+    }
 }
