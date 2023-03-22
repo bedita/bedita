@@ -159,7 +159,7 @@ class RolesUsersTableTest extends TestCase
      *
      * @return void
      * @covers ::beforeSave()
-     * @covers ::canModify()
+     * @covers ::canHandle()
      */
     public function testModifyAdminRole()
     {
@@ -178,7 +178,7 @@ class RolesUsersTableTest extends TestCase
      *
      * @return void
      * @covers ::beforeSave()
-     * @covers ::canModify()
+     * @covers ::canHandle()
      */
     public function testModifyAdminRoleForbidden()
     {

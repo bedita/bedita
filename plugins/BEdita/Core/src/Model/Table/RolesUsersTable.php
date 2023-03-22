@@ -103,7 +103,7 @@ class RolesUsersTable extends Table
         if ($entity->role_id === RolesTable::ADMIN_ROLE && $entity->user_id === UsersTable::ADMIN_USER) {
             throw new ImmutableResourceException(__d('bedita', 'Could not update relationship for users/roles for ADMIN_USER and ADMIN_ROLE'));
         }
-        if (!$this->canModify($entity->role_id)) {
+        if (!$this->canHandle($entity->role_id)) {
             throw new ForbiddenException(__d('bedita', 'Could not update role. Insufficient priority'));
         }
     }
@@ -118,19 +118,19 @@ class RolesUsersTable extends Table
      */
     public function beforeSave(EventInterface $event, EntityInterface $entity)
     {
-        if (!$this->canModify($entity->role_id)) {
+        if (!$this->canHandle($entity->role_id)) {
             throw new ForbiddenException(__d('bedita', 'Could not update role. Insufficient priority'));
         }
     }
 
     /**
-     * Check that logged user can modify role.
+     * Check that logged user can add or remove associations to a role.
      * Logged user roles min priority should be less or equal to the role priority.
      *
      * @param int $roleId The role ID to check againt logged user roles priorities
      * @return bool
      */
-    protected function canModify(int $roleId): bool
+    protected function canHandle(int $roleId): bool
     {
         $user = LoggedUser::getUser();
         $roles = (array)Hash::get($user, 'roles');
@@ -138,11 +138,12 @@ class RolesUsersTable extends Table
         if (empty($ids)) {
             return false;
         }
-        $query = $this->Roles->find()->where(['id IN' => $ids]);
-        $query->select([
-            'min_value' => $query->func()->min($this->Roles->aliasField('priority')),
-        ]);
-        $priorityUser = $query->find('list', ['valueField' => 'min_value'])->first();
+        $query = $this->Roles->find('list', ['valueField' => 'min_value'])
+            ->where(['id IN' => $ids]);
+        $priorityUser = $query->select([
+                'min_value' => $query->func()->min($this->Roles->aliasField('priority')),
+            ])
+            ->first();
         $priorityRole = $this->Roles->get($roleId)->get('priority');
 
         return $priorityUser <= $priorityRole;
