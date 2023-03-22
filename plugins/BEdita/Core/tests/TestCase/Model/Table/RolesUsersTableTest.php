@@ -129,7 +129,7 @@ class RolesUsersTableTest extends TestCase
      * Test delete admin role association
      *
      * @covers ::beforeDelete
-     * @covers ::canHandle
+     * @covers ::canHandle()
      */
     public function testDeleteAdminRoleForbidden()
     {
