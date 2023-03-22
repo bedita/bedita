@@ -14,10 +14,13 @@
 namespace BEdita\Core\Model\Table;
 
 use BEdita\Core\Exception\ImmutableResourceException;
+use BEdita\Core\Utility\LoggedUser;
 use Cake\Datasource\EntityInterface;
 use Cake\Event\EventInterface;
+use Cake\Http\Exception\ForbiddenException;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
+use Cake\Utility\Hash;
 use Cake\Validation\Validator;
 
 /**
@@ -87,11 +90,12 @@ class RolesUsersTable extends Table
     }
 
     /**
-     * Before delete checks: if record is not deletable, raise a ImmutableResourceException
+     * Before delete checks: if record is not deletable, raise a ForbiddenException or ImmutableResourceException
      *
      * @param \Cake\Event\EventInterface $event The beforeSave event that was fired
      * @param \Cake\Datasource\EntityInterface $entity the entity that is going to be saved
      * @return void
+     * @throws \Cake\Http\Exception\ForbiddenException; if logged user cannot modify user role
      * @throws \BEdita\Core\Exception\ImmutableResourceException; if entity is not deletable
      */
     public function beforeDelete(EventInterface $event, EntityInterface $entity)
@@ -99,5 +103,48 @@ class RolesUsersTable extends Table
         if ($entity->role_id === RolesTable::ADMIN_ROLE && $entity->user_id === UsersTable::ADMIN_USER) {
             throw new ImmutableResourceException(__d('bedita', 'Could not update relationship for users/roles for ADMIN_USER and ADMIN_ROLE'));
         }
+        if (!$this->canHandle($entity->role_id)) {
+            throw new ForbiddenException(__d('bedita', 'Could not update role. Insufficient priority'));
+        }
+    }
+
+    /**
+     * Before save checks: if record is not changeable, raise a ForbiddenException
+     *
+     * @param \Cake\Event\EventInterface $event The beforeSave event that was fired
+     * @param \Cake\Datasource\EntityInterface $entity the entity that is going to be saved
+     * @return void
+     * @throws \Cake\Http\Exception\ForbiddenException; if logged user cannot modify user role
+     */
+    public function beforeSave(EventInterface $event, EntityInterface $entity)
+    {
+        if (!$this->canHandle($entity->role_id)) {
+            throw new ForbiddenException(__d('bedita', 'Could not update role. Insufficient priority'));
+        }
+    }
+
+    /**
+     * Check that logged user can add or remove associations to a role.
+     * Logged user roles min priority should be less or equal to the role priority.
+     *
+     * @param int $roleId The role ID to check againt logged user roles priorities
+     * @return bool
+     */
+    protected function canHandle(int $roleId): bool
+    {
+        $user = LoggedUser::getUser();
+        $ids = (array)Hash::extract($user, 'roles.{n}.id');
+        if (empty($ids)) {
+            return false;
+        }
+        $query = $this->Roles->find('list', ['valueField' => 'min_value'])
+            ->where(['id IN' => $ids]);
+        $priorityUser = $query->select([
+                'min_value' => $query->func()->min($this->Roles->aliasField('priority')),
+            ])
+            ->first();
+        $priorityRole = $this->Roles->get($roleId)->get('priority');
+
+        return $priorityUser <= $priorityRole;
     }
 }

@@ -248,7 +248,7 @@ class AddRelatedObjectsActionTest extends TestCase
         $association = TableRegistry::getTableLocator()->get('Users')->getAssociation('Roles');
         $entity = $association->getSource()->get(1);
         $relatedEntities = $association->getTarget()->find()->toArray();
-
+        LoggedUser::setUser(['id' => 1, 'roles' => [['id' => 1]]]);
         $action = new AddRelatedObjectsAction(compact('association'));
         $result = $action(compact('entity', 'relatedEntities'));
 
