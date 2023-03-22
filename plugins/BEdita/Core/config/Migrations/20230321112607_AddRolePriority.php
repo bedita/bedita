@@ -6,9 +6,9 @@ use Migrations\AbstractMigration;
 class AddRolePriority extends AbstractMigration
 {
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
-    public function up()
+    public function change(): void
     {
         $this->table('roles')
             ->addColumn('priority', 'integer', [
@@ -19,15 +19,5 @@ class AddRolePriority extends AbstractMigration
             ])
             ->update();
         $this->query('UPDATE roles SET priority = 0 WHERE id = 1');
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function down()
-    {
-        $this->table('roles')
-            ->removeColumn('priority')
-            ->update();
     }
 }
