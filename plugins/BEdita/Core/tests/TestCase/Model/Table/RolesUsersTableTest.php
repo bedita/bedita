@@ -13,6 +13,7 @@
 
 namespace BEdita\Core\Test\TestCase\Model\Table;
 
+use BEdita\Core\Utility\LoggedUser;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
@@ -102,6 +103,7 @@ class RolesUsersTableTest extends TestCase
      */
     public function testValidation($expected, array $data)
     {
+        LoggedUser::setUser(['id' => 1, 'roles' => [['id' => 1]]]);
         $objectType = $this->RolesUsers->newEntity([]);
         $this->RolesUsers->patchEntity($objectType, $data);
 
@@ -124,14 +126,68 @@ class RolesUsersTableTest extends TestCase
     }
 
     /**
+     * Test delete admin role association
+     *
+     * @covers ::beforeDelete
+     * @covers ::canHandle()
+     */
+    public function testDeleteAdminRoleForbidden()
+    {
+        LoggedUser::resetUser();
+        $this->expectException(\Cake\Http\Exception\ForbiddenException::class);
+        $this->expectExceptionCode('403');
+        $this->expectExceptionMessage('Could not update role. Insufficient priority');
+        $entity = $this->RolesUsers->get(2);
+        $this->RolesUsers->delete($entity);
+    }
+
+    /**
      * Test delete second role association
      *
      * @covers ::beforeDelete
      */
     public function testDeleteSecondRole()
     {
+        LoggedUser::setUser(['id' => 1, 'roles' => [['id' => 1]]]);
         $entity = $this->RolesUsers->get(2);
         $success = $this->RolesUsers->delete($entity);
         static::assertNotEmpty($success);
+    }
+
+    /**
+     * Test modify admin role association
+     *
+     * @return void
+     * @covers ::beforeSave()
+     * @covers ::canHandle()
+     */
+    public function testModifyAdminRole()
+    {
+        LoggedUser::setUser(['id' => 1, 'roles' => [['id' => 1]]]);
+        $entity = $this->RolesUsers->newEntity([]);
+        $this->RolesUsers->patchEntity($entity, [
+            'role_id' => 2,
+            'user_id' => 1,
+        ]);
+        $actual = $this->RolesUsers->save($entity);
+        static::assertTrue((bool)$actual);
+    }
+
+    /**
+     * Test modify admin role association
+     *
+     * @return void
+     * @covers ::beforeSave()
+     * @covers ::canHandle()
+     */
+    public function testModifyAdminRoleForbidden()
+    {
+        LoggedUser::resetUser();
+        $this->expectException(\Cake\Http\Exception\ForbiddenException::class);
+        $this->expectExceptionCode('403');
+        $this->expectExceptionMessage('Could not update role. Insufficient priority');
+        $entity = $this->RolesUsers->get(1);
+        $entity->priority = 50;
+        $this->RolesUsers->save($entity);
     }
 }

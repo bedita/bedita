@@ -66,6 +66,7 @@ class RolesControllerTest extends IntegrationTestCase
                         'unchangeable' => true,
                         'created' => '2016-04-15T09:57:38+00:00',
                         'modified' => '2016-04-15T09:57:38+00:00',
+                        'priority' => 0,
                     ],
                     'links' => [
                         'self' => 'http://api.example.com/roles/1',
@@ -90,6 +91,7 @@ class RolesControllerTest extends IntegrationTestCase
                         'unchangeable' => false,
                         'created' => '2016-04-15T11:59:12+00:00',
                         'modified' => '2016-04-15T11:59:13+00:00',
+                        'priority' => 100,
                     ],
                     'links' => [
                         'self' => 'http://api.example.com/roles/2',
@@ -182,6 +184,7 @@ class RolesControllerTest extends IntegrationTestCase
                     'unchangeable' => true,
                     'created' => '2016-04-15T09:57:38+00:00',
                     'modified' => '2016-04-15T09:57:38+00:00',
+                    'priority' => 0,
                 ],
                 'relationships' => [
                     'users' => [

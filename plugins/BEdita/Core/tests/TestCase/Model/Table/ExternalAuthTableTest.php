@@ -185,7 +185,7 @@ class ExternalAuthTableTest extends TestCase
      */
     public function testBeforeSaveCreateUser()
     {
-        LoggedUser::setUser(['id' => 1]);
+        LoggedUser::setUser(['id' => 1, 'roles' => [['id' => 1]]]);
         Configure::write('Roles.BEdita/API.Uuid', ['first role']);
         $count = $this->ExternalAuth->Users->find()->count();
         $entity = $this->ExternalAuth->newEntity([
