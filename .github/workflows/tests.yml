@@ -31,7 +31,7 @@ jobs:
 
       - name: 'Discover Composer cache directory'
         id: 'cachedir'
-        run: 'echo "::set-output name=path::$(composer global config cache-dir)"'
+        run: echo "path=$(composer global config cache-dir)" >> $GITHUB_OUTPUT
 
       - name: 'Share Composer cache across runs'
         uses: 'actions/cache@v3'
@@ -70,7 +70,7 @@ jobs:
 
       - name: 'Discover Composer cache directory'
         id: 'cachedir'
-        run: 'echo "::set-output name=path::$(composer global config cache-dir)"'
+        run: echo "path=$(composer global config cache-dir)" >> $GITHUB_OUTPUT
 
       - name: 'Share Composer cache across runs'
         uses: 'actions/cache@v3'
@@ -149,7 +149,7 @@ jobs:
 
       - name: 'Discover Composer cache directory'
         id: 'cachedir'
-        run: 'echo "::set-output name=path::$(composer global config cache-dir)"'
+        run: echo "path=$(composer global config cache-dir)" >> $GITHUB_OUTPUT
 
       - name: 'Share Composer cache across runs'
         uses: 'actions/cache@v3'
@@ -170,13 +170,13 @@ jobs:
         run: 'vendor/bin/phpunit --coverage-clover=clover.xml'
 
       - name: 'Export coverage results'
-        uses: 'codecov/codecov-action@v1'
+        uses: 'codecov/codecov-action@v3'
         with:
           file: './clover.xml'
           env_vars: PHP_VERSION,DB_VENDOR
 
       - name: 'Archive code coverage results'
-        uses: 'actions/upload-artifact@v2'
+        uses: 'actions/upload-artifact@v3'
         with:
           name: 'PHP ${{ matrix.php }} with ${{ fromJson(matrix.db).vendor }}'
           path: 'clover.xml'
@@ -202,7 +202,7 @@ jobs:
 
       - name: 'Discover Composer cache directory'
         id: 'cachedir'
-        run: 'echo "::set-output name=path::$(composer global config cache-dir)"'
+        run: echo "path=$(composer global config cache-dir)" >> $GITHUB_OUTPUT
 
       - name: 'Share Composer cache across runs'
         uses: 'actions/cache@v3'
