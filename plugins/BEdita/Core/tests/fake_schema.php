@@ -49,6 +49,74 @@ return [
         ],
     ],
     [
+        'table' => 'fake_mammals',
+        'columns' => [
+            'id' => [
+                'type' => 'integer',
+                'length' => 10,
+                'unsigned' => true,
+                'null' => false,
+                'default' => null,
+                'precision' => null,
+                'autoIncrement' => null,
+            ],
+            'subclass' => [
+                'type' => 'string',
+                'length' => 255,
+                'null' => true,
+                'default' => null,
+                'precision' => null,
+            ],
+        ],
+        'constraints' => [
+            'primary' => [
+                'type' => 'primary',
+                'columns' => ['id'],
+            ],
+            'fakemammals_fk' => [
+                'type' => 'foreign',
+                'columns' => ['id'],
+                'references' => ['fake_animals', 'id'],
+                'update' => 'noAction',
+                'delete' => 'noAction',
+            ],
+        ],
+    ],
+    [
+        'table' => 'fake_felines',
+        'columns' => [
+            'id' => [
+                'type' => 'integer',
+                'length' => 10,
+                'unsigned' => true,
+                'null' => false,
+                'default' => null,
+                'precision' => null,
+                'autoIncrement' => null,
+            ],
+            'family' => [
+                'type' => 'string',
+                'length' => 255,
+                'null' => true,
+                'default' => null,
+                'precision' => null,
+            ],
+        ],
+        'constraints' => [
+            'primary' => [
+                'type' => 'primary',
+                'columns' => ['id'],
+            ],
+            'fakefelines_fk' => [
+                'type' => 'foreign',
+                'columns' => ['id'],
+                'references' => ['fake_mammals', 'id'],
+                'update' => 'noAction',
+                'delete' => 'noAction',
+            ],
+        ],
+    ],
+    [
         'table' => 'fake_articles',
         'columns' => [
             'id' => [
@@ -86,6 +154,33 @@ return [
                 'references' => ['fake_animals', 'id'],
                 'update' => 'noAction',
                 'delete' => 'noAction',
+            ],
+        ],
+    ],
+    [
+        'table' => 'fake_tags',
+        'columns' => [
+            'id' => [
+                'type' => 'integer',
+                'length' => 10,
+                'unsigned' => true,
+                'null' => false,
+                'default' => null,
+                'precision' => null,
+                'autoIncrement' => true,
+            ],
+            'name' => [
+                'type' => 'string',
+                'length' => 255,
+                'null' => false,
+                'default' => null,
+                'precision' => null,
+            ],
+        ],
+        'constraints' => [
+            'primary' => [
+                'type' => 'primary',
+                'columns' => ['id'],
             ],
         ],
     ],
@@ -197,40 +292,6 @@ return [
         ],
     ],
     [
-        'table' => 'fake_felines',
-        'columns' => [
-            'id' => [
-                'type' => 'integer',
-                'length' => 10,
-                'unsigned' => true,
-                'null' => false,
-                'default' => null,
-                'precision' => null,
-                'autoIncrement' => null,
-            ],
-            'family' => [
-                'type' => 'string',
-                'length' => 255,
-                'null' => true,
-                'default' => null,
-                'precision' => null,
-            ],
-        ],
-        'constraints' => [
-            'primary' => [
-                'type' => 'primary',
-                'columns' => ['id'],
-            ],
-            'fakefelines_fk' => [
-                'type' => 'foreign',
-                'columns' => ['id'],
-                'references' => ['fake_mammals', 'id'],
-                'update' => 'noAction',
-                'delete' => 'noAction',
-            ],
-        ],
-    ],
-    [
         'table' => 'fake_labels',
         'columns' => [
             'id' => [
@@ -274,40 +335,6 @@ return [
         ],
     ],
     [
-        'table' => 'fake_mammals',
-        'columns' => [
-            'id' => [
-                'type' => 'integer',
-                'length' => 10,
-                'unsigned' => true,
-                'null' => false,
-                'default' => null,
-                'precision' => null,
-                'autoIncrement' => null,
-            ],
-            'subclass' => [
-                'type' => 'string',
-                'length' => 255,
-                'null' => true,
-                'default' => null,
-                'precision' => null,
-            ],
-        ],
-        'constraints' => [
-            'primary' => [
-                'type' => 'primary',
-                'columns' => ['id'],
-            ],
-            'fakemammals_fk' => [
-                'type' => 'foreign',
-                'columns' => ['id'],
-                'references' => ['fake_animals', 'id'],
-                'update' => 'noAction',
-                'delete' => 'noAction',
-            ],
-        ],
-    ],
-    [
         'table' => 'fake_searches',
         'columns' => [
             'id' => [
@@ -329,33 +356,6 @@ return [
                 'type' => 'datetime',
                 'null' => true,
                 'default' => null,
-            ],
-        ],
-        'constraints' => [
-            'primary' => [
-                'type' => 'primary',
-                'columns' => ['id'],
-            ],
-        ],
-    ],
-    [
-        'table' => 'fake_tags',
-        'columns' => [
-            'id' => [
-                'type' => 'integer',
-                'length' => 10,
-                'unsigned' => true,
-                'null' => false,
-                'default' => null,
-                'precision' => null,
-                'autoIncrement' => true,
-            ],
-            'name' => [
-                'type' => 'string',
-                'length' => 255,
-                'null' => false,
-                'default' => null,
-                'precision' => null,
             ],
         ],
         'constraints' => [
