@@ -121,7 +121,9 @@ class IntegrationTestCaseTest extends IntegrationTestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $mock->fixtures = $fixtures;
+        foreach ($fixtures as $f) {
+            $mock->addFixture($f);
+        }
         $mock->__construct();
         static::assertEquals($expected, $mock->fixtures);
     }

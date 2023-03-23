@@ -32,7 +32,7 @@ class AsyncGeneratorTest extends TestCase
      *
      * @var string[]
      */
-    public $fixtures = [
+    protected $fixtures = [
         'plugin.BEdita/Core.AsyncJobs',
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.Objects',

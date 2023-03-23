@@ -26,7 +26,7 @@ class FilterQueryStringTest extends IntegrationTestCase
     /**
      * @inheritDoc
      */
-    public $fixtures = [
+    protected $fixtures = [
         'plugin.BEdita/Core.DateRanges',
     ];
 

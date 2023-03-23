@@ -31,7 +31,7 @@ class SchemaControllerTest extends IntegrationTestCase
      *
      * @var array
      */
-    public $fixtures = [
+    protected $fixtures = [
         'plugin.BEdita/Core.Media',
         'plugin.BEdita/Core.Locations',
         'plugin.BEdita/Core.PropertyTypes',

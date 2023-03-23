@@ -15,7 +15,7 @@ class TreeBehaviorTest extends TestCase
      *
      * @var string[]
      */
-    public $fixtures = [
+    protected $fixtures = [
         'plugin.BEdita/Core.FakeCategories',
     ];
 

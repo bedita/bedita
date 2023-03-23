@@ -28,7 +28,7 @@ class CustomPropertiesFilterTest extends IntegrationTestCase
     /**
      * @inheritDoc
      */
-    public $fixtures = [
+    protected $fixtures = [
         'plugin.BEdita/Core.Streams',
     ];
 

@@ -42,7 +42,7 @@ abstract class IntegrationTestCase extends TestCase
      *
      * @var array
      */
-    public $fixtures = [];
+    protected $fixtures = [];
 
     /**
      * The required fixtures for authentication.

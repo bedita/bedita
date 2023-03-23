@@ -31,7 +31,7 @@ class OTPIdentifierTest extends TestCase
      *
      * @var array
      */
-    public $fixtures = [
+    protected $fixtures = [
         'plugin.BEdita/Core.Applications',
         'plugin.BEdita/Core.Config',
         'plugin.BEdita/Core.ObjectTypes',

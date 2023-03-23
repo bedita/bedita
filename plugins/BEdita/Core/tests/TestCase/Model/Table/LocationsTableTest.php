@@ -36,7 +36,7 @@ class LocationsTableTest extends TestCase
      *
      * @var array
      */
-    public $fixtures = [
+    protected $fixtures = [
         'plugin.BEdita/Core.History',
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.Objects',

@@ -32,7 +32,7 @@ class SignupControllerTest extends IntegrationTestCase
      *
      * @var array
      */
-    public $fixtures = [
+    protected $fixtures = [
         'plugin.BEdita/Core.AsyncJobs',
     ];
 
