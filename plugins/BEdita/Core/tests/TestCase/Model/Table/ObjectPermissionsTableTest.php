@@ -23,9 +23,9 @@ class ObjectPermissionsTableTest extends TestCase
     public $fixtures = [
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.Objects',
-        'plugin.BEdita/Core.ObjectPermissions',
         'plugin.BEdita/Core.Users',
         'plugin.BEdita/Core.Roles',
+        'plugin.BEdita/Core.ObjectPermissions',
     ];
 
     /**

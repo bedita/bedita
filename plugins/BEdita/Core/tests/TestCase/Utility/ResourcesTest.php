@@ -33,13 +33,6 @@ class ResourcesTest extends TestCase
      * @var array
      */
     public $fixtures = [
-        'plugin.BEdita/Core.Applications',
-        'plugin.BEdita/Core.AuthProviders',
-        'plugin.BEdita/Core.Endpoints',
-        'plugin.BEdita/Core.EndpointPermissions',
-        'plugin.BEdita/Core.Categories',
-        'plugin.BEdita/Core.Config',
-        'plugin.BEdita/Core.Roles',
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.PropertyTypes',
         'plugin.BEdita/Core.Properties',
@@ -48,6 +41,13 @@ class ResourcesTest extends TestCase
         'plugin.BEdita/Core.Media',
         'plugin.BEdita/Core.Profiles',
         'plugin.BEdita/Core.Users',
+        'plugin.BEdita/Core.Roles',
+        'plugin.BEdita/Core.Applications',
+        'plugin.BEdita/Core.AuthProviders',
+        'plugin.BEdita/Core.Endpoints',
+        'plugin.BEdita/Core.EndpointPermissions',
+        'plugin.BEdita/Core.Categories',
+        'plugin.BEdita/Core.Config',
         'plugin.BEdita/Core.ExternalAuth',
         'plugin.BEdita/Core.Relations',
         'plugin.BEdita/Core.RelationTypes',

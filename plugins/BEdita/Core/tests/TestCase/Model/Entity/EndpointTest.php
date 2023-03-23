@@ -41,9 +41,9 @@ class EndpointTest extends TestCase
     public $fixtures = [
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.Relations',
-        'plugin.BEdita/Core.ObjectRelations',
-        'plugin.BEdita/Core.Objects',
         'plugin.BEdita/Core.RelationTypes',
+        'plugin.BEdita/Core.Objects',
+        'plugin.BEdita/Core.ObjectRelations',
         'plugin.BEdita/Core.Endpoints',
     ];
 

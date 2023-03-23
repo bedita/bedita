@@ -33,8 +33,8 @@ class ObjectsTableTest extends TestCase
      * @var array
      */
     public $fixtures = [
-        'plugin.BEdita/Core.PropertyTypes',
         'plugin.BEdita/Core.ObjectTypes',
+        'plugin.BEdita/Core.PropertyTypes',
         'plugin.BEdita/Core.Properties',
         'plugin.BEdita/Core.Objects',
         'plugin.BEdita/Core.Trees',

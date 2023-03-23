@@ -27,13 +27,7 @@ class FilterQueryStringTest extends IntegrationTestCase
      * @inheritDoc
      */
     public $fixtures = [
-        'plugin.BEdita/Core.Annotations',
         'plugin.BEdita/Core.DateRanges',
-        'plugin.BEdita/Core.Locations',
-        'plugin.BEdita/Core.Media',
-        'plugin.BEdita/Core.ObjectTypes',
-        'plugin.BEdita/Core.Relations',
-        'plugin.BEdita/Core.RelationTypes',
     ];
 
     /**

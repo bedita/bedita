@@ -24,8 +24,8 @@ class ObjectRelationsTableTest extends TestCase
      * @var array
      */
     public $fixtures = [
-        'plugin.BEdita/Core.Objects',
         'plugin.BEdita/Core.ObjectTypes',
+        'plugin.BEdita/Core.Objects',
         'plugin.BEdita/Core.Relations',
         'plugin.BEdita/Core.RelationTypes',
         'plugin.BEdita/Core.ObjectRelations',

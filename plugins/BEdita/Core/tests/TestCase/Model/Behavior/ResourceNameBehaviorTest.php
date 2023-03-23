@@ -23,13 +23,13 @@ class ResourceNameBehaviorTest extends TestCase
         'plugin.BEdita/Core.Relations',
         'plugin.BEdita/Core.RelationTypes',
         'plugin.BEdita/Core.Applications',
-        'plugin.BEdita/Core.Endpoints',
-        'plugin.BEdita/Core.EndpointPermissions',
         'plugin.BEdita/Core.Objects',
         'plugin.BEdita/Core.Profiles',
         'plugin.BEdita/Core.Users',
         'plugin.BEdita/Core.Roles',
         'plugin.BEdita/Core.RolesUsers',
+        'plugin.BEdita/Core.Endpoints',
+        'plugin.BEdita/Core.EndpointPermissions',
     ];
 
     /**

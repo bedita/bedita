@@ -40,8 +40,8 @@ class SignupUserActionTest extends TestCase
      * @var array
      */
     public $fixtures = [
-        'plugin.BEdita/Core.PropertyTypes',
         'plugin.BEdita/Core.ObjectTypes',
+        'plugin.BEdita/Core.PropertyTypes',
         'plugin.BEdita/Core.Properties',
         'plugin.BEdita/Core.Objects',
         'plugin.BEdita/Core.Profiles',
@@ -50,8 +50,8 @@ class SignupUserActionTest extends TestCase
         'plugin.BEdita/Core.Roles',
         'plugin.BEdita/Core.Trees',
         'plugin.BEdita/Core.RolesUsers',
-        'plugin.BEdita/Core.ExternalAuth',
         'plugin.BEdita/Core.AuthProviders',
+        'plugin.BEdita/Core.ExternalAuth',
         'plugin.BEdita/Core.Relations',
         'plugin.BEdita/Core.RelationTypes',
         'plugin.BEdita/Core.ObjectRelations',

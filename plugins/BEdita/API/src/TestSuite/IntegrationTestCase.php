@@ -51,10 +51,6 @@ abstract class IntegrationTestCase extends TestCase
      * @var array
      */
     protected $authFixtures = [
-        'plugin.BEdita/Core.Config',
-        'plugin.BEdita/Core.AsyncJobs',
-        'plugin.BEdita/Core.AuthProviders',
-        'plugin.BEdita/Core.ExternalAuth',
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.Objects',
         'plugin.BEdita/Core.Locations',
@@ -68,8 +64,12 @@ abstract class IntegrationTestCase extends TestCase
         'plugin.BEdita/Core.EndpointPermissions',
         'plugin.BEdita/Core.Relations',
         'plugin.BEdita/Core.RelationTypes',
-        'plugin.BEdita/Core.Properties',
         'plugin.BEdita/Core.PropertyTypes',
+        'plugin.BEdita/Core.Properties',
+        'plugin.BEdita/Core.Config',
+        'plugin.BEdita/Core.AsyncJobs',
+        'plugin.BEdita/Core.AuthProviders',
+        'plugin.BEdita/Core.ExternalAuth',
         'plugin.BEdita/Core.Trees',
         'plugin.BEdita/Core.ObjectRelations',
         'plugin.BEdita/Core.Translations',
