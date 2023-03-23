@@ -271,7 +271,8 @@ class SignupUserAction extends BaseAction implements EventListenerInterface
     protected function createUser(array $data)
     {
         if (!LoggedUser::getUser()) {
-            LoggedUser::setUser(['id' => 1]);
+            // use user 1 (admin) role 1 (admin / unchangeable)
+            LoggedUser::setUser(['id' => 1, 'roles' => [['id' => 1]]]);
         }
 
         $status = 'draft';
