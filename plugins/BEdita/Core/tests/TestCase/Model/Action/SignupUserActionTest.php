@@ -18,7 +18,6 @@ use BEdita\Core\Exception\UserExistsException;
 use BEdita\Core\Model\Action\SignupUserAction;
 use BEdita\Core\Model\Entity\AsyncJob;
 use BEdita\Core\Model\Entity\User;
-use BEdita\Core\Utility\LoggedUser;
 use Cake\Core\Configure;
 use Cake\Core\Exception\CakeException;
 use Cake\Event\Event;
