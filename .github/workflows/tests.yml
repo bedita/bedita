@@ -172,7 +172,7 @@ jobs:
       - name: 'Export coverage results'
         uses: 'codecov/codecov-action@v3'
         with:
-          file: './clover.xml'
+          files: './clover.xml'
           env_vars: PHP_VERSION,DB_VENDOR
 
       - name: 'Archive code coverage results'
