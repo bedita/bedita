@@ -630,7 +630,6 @@ class SignupUserActionTest extends TestCase
      */
     public function testRoles($expected, array $data, array $config = [])
     {
-        LoggedUser::setUser(['id' => 1, 'roles' => [['id' => 1]]]);
         Configure::write('Signup', $config);
         if ($expected instanceof \Exception) {
             $this->expectException(get_class($expected));
