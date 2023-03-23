@@ -102,17 +102,19 @@ Cache::clear('_cake_model_');
  * First load fake schema for specific test porpouse
  * then it runs BEdita/Core migrations avoiding to drop tables creating by fake schema
  */
-$fakeSchemaPath = dirname(__DIR__) . '/plugins/BEdita/Core/tests/fake_schema.php';
-$schemaLoader = new SchemaLoader();
-$schemaLoader->loadInternalFile($fakeSchemaPath);
+if (defined('UNIT_TEST_RUN')) {
+    $fakeSchemaPath = dirname(__DIR__) . '/plugins/BEdita/Core/tests/fake_schema.php';
+    $schemaLoader = new SchemaLoader();
+    $schemaLoader->loadInternalFile($fakeSchemaPath);
 
-$fakeTables = include $fakeSchemaPath;
-$fakeTables = Hash::extract((array)$fakeTables, '{n}.table');
+    $fakeTables = include $fakeSchemaPath;
+    $fakeTables = Hash::extract((array)$fakeTables, '{n}.table');
 
-$migrator = new Migrator();
+    $migrator = new Migrator();
 
-// Run migrations for multiple plugins
-$migrator->run([
-    'plugin' => 'BEdita/Core',
-    'skip' => $fakeTables,
-]);
+    // Run migrations for multiple plugins
+    $migrator->run([
+        'plugin' => 'BEdita/Core',
+        'skip' => $fakeTables,
+    ]);
+}
