@@ -94,6 +94,7 @@ class SignupUserActionTest extends TestCase
                         'email' => 'test.signup@example.com',
                         'activation_url' => 'http://sample.com?confirm=true',
                         'redirect_url' => 'http://sample.com/ok',
+                        'roles' => ['second role'],
                     ],
                 ],
             ],

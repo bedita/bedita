@@ -18,6 +18,7 @@ use BEdita\Core\Exception\UserExistsException;
 use BEdita\Core\Model\Entity\AsyncJob;
 use BEdita\Core\Model\Entity\User;
 use BEdita\Core\Model\Table\RolesTable;
+use BEdita\Core\Model\Table\UsersTable;
 use BEdita\Core\Model\Validation\Validation;
 use BEdita\Core\Utility\LoggedUser;
 use BEdita\Core\Utility\OAuth2;
@@ -272,7 +273,7 @@ class SignupUserAction extends BaseAction implements EventListenerInterface
     {
         if (!LoggedUser::getUser()) {
             // use user 1 (admin) role 1 (admin / unchangeable)
-            LoggedUser::setUser(['id' => 1, 'roles' => [['id' => 1]]]);
+            LoggedUser::setUser(['id' => UsersTable::ADMIN_USER, 'roles' => [['id' => RolesTable::ADMIN_ROLE]]]);
         }
 
         $status = 'draft';
