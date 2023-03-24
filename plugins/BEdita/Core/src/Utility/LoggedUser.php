@@ -94,7 +94,7 @@ class LoggedUser
      */
     public static function setUserAdmin()
     {
-        static::getInstance()->setUser(self::$userAdminData);
+        static::getInstance()->setUser(static::getInstance()->getUserAdmin());
     }
 
     /**
