@@ -46,7 +46,7 @@ class MediaTableTest extends TestCase
         parent::setUp();
 
         $this->Media = TableRegistry::getTableLocator()->get('Media');
-        LoggedUser::setUser(['id' => 1]);
+        LoggedUser::setUserAdmin();
     }
 
     /**

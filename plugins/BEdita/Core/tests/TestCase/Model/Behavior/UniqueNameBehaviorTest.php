@@ -54,7 +54,7 @@ class UniqueNameBehaviorTest extends TestCase
     {
         parent::setUp();
 
-        LoggedUser::setUser(['id' => 1]);
+        LoggedUser::setUserAdmin();
     }
 
     /**

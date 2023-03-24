@@ -53,7 +53,7 @@ class HistoryBehaviorTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
-        LoggedUser::setUser(['id' => 1]);
+        LoggedUser::setUserAdmin();
     }
 
     /**
@@ -344,7 +344,7 @@ class HistoryBehaviorTest extends TestCase
      */
     public function testFindHistoryEditor(array $expected, array $options): void
     {
-        LoggedUser::setUser(['id' => 1]);
+        LoggedUser::setUserAdmin();
 
         $result = TableRegistry::getTableLocator()->get('Documents')
             ->find('historyEditor', $options)

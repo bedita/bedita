@@ -69,7 +69,7 @@ class UsersTableTest extends TestCase
         parent::setUp();
 
         $this->Users = TableRegistry::getTableLocator()->get('Users');
-        LoggedUser::setUser(['id' => 1]);
+        LoggedUser::setUserAdmin();
     }
 
     /**

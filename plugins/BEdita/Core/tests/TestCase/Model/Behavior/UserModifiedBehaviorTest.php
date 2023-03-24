@@ -55,7 +55,7 @@ class UserModifiedBehaviorTest extends TestCase
     {
         parent::setUp();
 
-        LoggedUser::setUser(['id' => 1]);
+        LoggedUser::setUserAdmin();
         $this->Objects = TableRegistry::getTableLocator()->get('Objects');
     }
 

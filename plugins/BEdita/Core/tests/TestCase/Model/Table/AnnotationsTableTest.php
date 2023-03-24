@@ -190,7 +190,7 @@ class AnnotationsTableTest extends TestCase
      */
     public function testBeforeDelete()
     {
-        LoggedUser::setUser(['id' => 1]);
+        LoggedUser::setUserAdmin();
         $annotation = $this->Annotations->get(1);
         $success = $this->Annotations->delete($annotation);
         static::assertTrue((bool)$success);
