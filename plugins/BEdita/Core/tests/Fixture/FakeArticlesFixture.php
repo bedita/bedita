@@ -23,7 +23,7 @@ class FakeArticlesFixture extends TestFixture
      * @inheritDoc
      */
     public $records = [
-        ['title' => 'The cat', 'body' => 'article body', 'fake_animal_id' => 1],
-        ['title' => 'Puss in boots', 'body' => 'text', 'fake_animal_id' => 1],
+        ['head_title' => 'The cat', 'main_body' => 'article body', 'fake_animal_id' => 1],
+        ['head_title' => 'Puss in boots', 'main_body' => 'text', 'fake_animal_id' => 1],
     ];
 }

@@ -188,7 +188,7 @@ class TableTest extends TestCase
             'id' => 1,
             'name' => 'cat',
             'legs' => 4,
-            'updated_at' => $updatedAt,
+            'modified' => $updatedAt,
             'subclass' => 'Eutheria',
             'family' => 'purring cats',
         ];
@@ -217,14 +217,14 @@ class TableTest extends TestCase
                 'id' => 1,
                 'name' => 'cat',
                 'legs' => 4,
-                'updated_at' => $updatedAt,
+                'modified' => $updatedAt,
                 'subclass' => 'Eutheria',
             ],
             [
                 'id' => 2,
                 'name' => 'koala',
                 'legs' => 4,
-                'updated_at' => null,
+                'modified' => null,
                 'subclass' => 'Marsupial',
             ],
         ];
@@ -267,7 +267,7 @@ class TableTest extends TestCase
             'id' => 1,
             'name' => 'cat',
             'legs' => 4,
-            'updated_at' => new FrozenTime('2018-02-20 09:50:00'),
+            'modified' => new FrozenTime('2018-02-20 09:50:00'),
             'subclass' => 'Eutheria',
             'family' => 'purring cats',
             'fake_articles' => [

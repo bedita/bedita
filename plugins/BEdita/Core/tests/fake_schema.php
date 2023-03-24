@@ -35,7 +35,7 @@ return [
                 'default' => null,
                 'precision' => null,
             ],
-            'updated_at' => [
+            'modified' => [
                 'type' => 'datetime',
                 'null' => true,
                 'default' => null,
@@ -73,7 +73,7 @@ return [
                 'type' => 'primary',
                 'columns' => ['id'],
             ],
-            'fakemammals_fk' => [
+            'fakemammals_id_fk' => [
                 'type' => 'foreign',
                 'columns' => ['id'],
                 'references' => ['fake_animals', 'id'],
@@ -107,7 +107,7 @@ return [
                 'type' => 'primary',
                 'columns' => ['id'],
             ],
-            'fakefelines_fk' => [
+            'fakefelines_id_fk' => [
                 'type' => 'foreign',
                 'columns' => ['id'],
                 'references' => ['fake_mammals', 'id'],
@@ -128,14 +128,14 @@ return [
                 'precision' => null,
                 'autoIncrement' => true,
             ],
-            'title' => [
+            'head_title' => [
                 'type' => 'string',
                 'length' => 255,
                 'null' => false,
                 'default' => null,
                 'precision' => null,
             ],
-            'body' => ['type' => 'text'],
+            'main_body' => ['type' => 'text'],
             'fake_animal_id' => [
                 'type' => 'integer',
                 'length' => 10,
@@ -143,12 +143,20 @@ return [
                 'null' => false,
             ],
         ],
+        'indexes' => [
+            'fakearticles_fakeanimalid_idx' => [
+                'type' => 'index',
+                'columns' => [
+                    'fake_animal_id',
+                ],
+            ],
+        ],
         'constraints' => [
             'primary' => [
                 'type' => 'primary',
                 'columns' => ['id'],
             ],
-            'fakearticles_fk_1' => [
+            'fakearticles_id_fk' => [
                 'type' => 'foreign',
                 'columns' => ['fake_animal_id'],
                 'references' => ['fake_animals', 'id'],
@@ -320,6 +328,14 @@ return [
                 'precision' => null,
             ],
         ],
+        'indexes' => [
+            'fakelabels_faketagid_idx' => [
+                'type' => 'index',
+                'columns' => [
+                    'fake_tag_id',
+                ],
+            ],
+        ],
         'constraints' => [
             'primary' => [
                 'type' => 'primary',
@@ -352,7 +368,7 @@ return [
                 'default' => null,
                 'precision' => null,
             ],
-            'updated_at' => [
+            'modified' => [
                 'type' => 'datetime',
                 'null' => true,
                 'default' => null,

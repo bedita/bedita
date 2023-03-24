@@ -74,7 +74,7 @@ class QueryTest extends TestCase
                     'FakeFelines.id',
                     'FakeFelines.name',
                     'FakeFelines.legs',
-                    'FakeFelines.updated_at',
+                    'FakeFelines.modified',
                     'FakeFelines.subclass',
                     'FakeFelines.family',
                 ],
@@ -127,7 +127,7 @@ class QueryTest extends TestCase
             'id' => 'fake_felines.id',
             'name' => 'fake_animals.name',
             'legs' => 'fake_animals.legs',
-            'updated_at' => 'fake_animals.updated_at',
+            'modified' => 'fake_animals.modified',
             'subclass' => 'fake_mammals.subclass',
             'family' => 'fake_felines.family',
         ];

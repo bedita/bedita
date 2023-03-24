@@ -190,7 +190,7 @@ class InheritanceEventHandlerTest extends TestCase
                     'family' => 'purring cats',
                     'legs' => 4,
                     'subclass' => 'None',
-                    'updated_at' => new FrozenTime('2018-02-20 09:50:00'),
+                    'modified' => new FrozenTime('2018-02-20 09:50:00'),
                 ],
                 [
                     'id' => 1,
