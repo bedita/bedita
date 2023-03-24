@@ -72,7 +72,7 @@ class ObjectsHandler
         static::checkEnvironment();
         $currentUser = LoggedUser::getUser();
         if (empty($user)) {
-            $user = empty($currentUser) ? ['id' => 1] : $currentUser;
+            $user = empty($currentUser) ? LoggedUser::getUserAdmin() : $currentUser;
         }
         LoggedUser::setUser($user);
 

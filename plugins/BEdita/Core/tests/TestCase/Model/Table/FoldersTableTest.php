@@ -66,7 +66,7 @@ class FoldersTableTest extends TestCase
         parent::setUp();
 
         $this->Folders = TableRegistry::getTableLocator()->get('Folders');
-        LoggedUser::setUser(['id' => 1]);
+        LoggedUser::setUserAdmin();
     }
 
     /**

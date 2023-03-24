@@ -137,7 +137,7 @@ class IntegrationTestCaseTest extends IntegrationTestCase
         CurrentApplication::getInstance()->set(null);
         static::assertEquals([], LoggedUser::getUser());
         static::assertNull(CurrentApplication::getApplication());
-        LoggedUser::setUser(['id' => 1]);
+        LoggedUser::setUserAdmin();
 
         $this->setUp();
         static::assertEquals([], LoggedUser::getUser());

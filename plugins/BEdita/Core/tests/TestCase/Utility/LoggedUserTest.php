@@ -47,5 +47,10 @@ class LoggedUserTest extends TestCase
         $this->assertEquals($userData['id'], LoggedUser::id());
 
         $this->assertEquals($userData, LoggedUser::getUser());
+
+        LoggedUser::setUserAdmin();
+        $expected = LoggedUser::getUserAdmin();
+        $actual = LoggedUser::getUser();
+        $this->assertEquals($expected, $actual);
     }
 }
