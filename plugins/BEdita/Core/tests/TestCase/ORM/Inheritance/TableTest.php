@@ -273,14 +273,14 @@ class TableTest extends TestCase
             'fake_articles' => [
                 [
                     'id' => 1,
-                    'title' => 'The cat',
-                    'body' => 'article body',
+                    'head_title' => 'The cat',
+                    'main_body' => 'article body',
                     'fake_animal_id' => 1,
                 ],
                 [
                     'id' => 2,
-                    'title' => 'Puss in boots',
-                    'body' => 'text',
+                    'head_title' => 'Puss in boots',
+                    'main_body' => 'text',
                     'fake_animal_id' => 1,
                 ],
             ],

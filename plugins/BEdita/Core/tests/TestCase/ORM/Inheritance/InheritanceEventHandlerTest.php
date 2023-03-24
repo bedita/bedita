@@ -122,14 +122,14 @@ class InheritanceEventHandlerTest extends TestCase
                     'fake_articles' => [
                         [
                             'id' => 1,
-                            'title' => 'The cat',
-                            'body' => 'article body',
+                            'head_title' => 'The cat',
+                            'main_body' => 'article body',
                             'fake_animal_id' => 4,
                         ],
                         [
                             'id' => 2,
-                            'title' => 'Puss in boots',
-                            'body' => 'text',
+                            'head_title' => 'Puss in boots',
+                            'main_body' => 'text',
                             'fake_animal_id' => 4,
                         ],
                     ],
@@ -154,14 +154,14 @@ class InheritanceEventHandlerTest extends TestCase
                     'fake_articles' => [
                         [
                             'id' => 3,
-                            'title' => 'The white tiger',
-                            'body' => 'Body of article',
+                            'head_title' => 'The white tiger',
+                            'main_body' => 'Body of article',
                             'fake_animal_id' => 4,
                         ],
                         [
                             'id' => 4,
-                            'title' => 'Sandokan',
-                            'body' => 'The Malaysian tiger',
+                            'head_title' => 'Sandokan',
+                            'main_body' => 'The Malaysian tiger',
                             'fake_animal_id' => 4,
                         ],
                     ],
@@ -173,12 +173,12 @@ class InheritanceEventHandlerTest extends TestCase
                     'family' => 'big cats',
                     'fake_articles' => [
                         [
-                            'title' => 'The white tiger',
-                            'body' => 'Body of article',
+                            'head_title' => 'The white tiger',
+                            'main_body' => 'Body of article',
                         ],
                         [
-                            'title' => 'Sandokan',
-                            'body' => 'The Malaysian tiger',
+                            'head_title' => 'Sandokan',
+                            'main_body' => 'The Malaysian tiger',
                         ],
                     ],
                 ],
