@@ -13,9 +13,6 @@
 
 namespace BEdita\Core\Utility;
 
-use BEdita\Core\Model\Entity\RolesUser;
-use BEdita\Core\Model\Table\RolesTable;
-use BEdita\Core\Model\Table\UsersTable;
 use Cake\Console\Exception\StopException;
 use Cake\Datasource\EntityInterface;
 use Cake\ORM\TableRegistry;
