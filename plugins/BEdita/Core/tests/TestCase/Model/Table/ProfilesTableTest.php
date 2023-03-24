@@ -63,7 +63,7 @@ class ProfilesTableTest extends TestCase
         parent::setUp();
 
         $this->Profiles = TableRegistry::getTableLocator()->get('Profiles');
-        LoggedUser::setUser(['id' => 1]);
+        LoggedUser::setUserAdmin();
     }
 
     /**

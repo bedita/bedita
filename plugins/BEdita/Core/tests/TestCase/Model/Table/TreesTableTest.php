@@ -281,7 +281,7 @@ class TreesTableTest extends TestCase
     {
         $this->expectException(\RuntimeException::class);
         // create new Folder
-        LoggedUser::setUser(['id' => 1]);
+        LoggedUser::setUserAdmin();
         $Folders = TableRegistry::getTableLocator()->get('Folders');
         $entity = $Folders->newEntity(['title' => 'subsub folder']);
         $entity->type = 'folders';

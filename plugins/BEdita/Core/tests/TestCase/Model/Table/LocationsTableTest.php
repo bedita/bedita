@@ -59,7 +59,7 @@ class LocationsTableTest extends TestCase
         parent::setUp();
 
         $this->Locations = TableRegistry::getTableLocator()->get('Locations');
-        LoggedUser::setUser(['id' => 1]);
+        LoggedUser::setUserAdmin();
     }
 
     /**
