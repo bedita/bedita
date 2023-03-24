@@ -45,7 +45,7 @@ class LoggedUser
      *
      * @var array
      */
-    protected $userAdminData = [
+    protected const ADMIN_DATA = [
         'id' => UsersTable::ADMIN_USER,
         'roles' => [
             [
@@ -94,7 +94,7 @@ class LoggedUser
      */
     public static function setUserAdmin()
     {
-        static::getInstance()->setUser(static::getInstance()->getUserAdmin());
+        static::getInstance()->setUser(static::ADMIN_DATA);
     }
 
     /**
@@ -104,7 +104,7 @@ class LoggedUser
      */
     public static function getUserAdmin(): array
     {
-        return static::getInstance()->userAdminData;
+        return static::ADMIN_DATA;
     }
 
     /**
