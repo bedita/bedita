@@ -13,20 +13,15 @@ class ChangeObjectsDescriptionBodySize extends AbstractMigration
      */
     public function up()
     {
-        $limit = null;
-        if ($this->getAdapter()->getAdapterType() === 'mysql') {
-            $limit = MysqlAdapter::TEXT_MEDIUM;
-        }
-
         $this->table('objects')
             ->changeColumn('description', 'text', [
                 'default' => null,
-                'limit' => $limit,
+                'limit' => MysqlAdapter::TEXT_MEDIUM,
                 'null' => true,
             ])
             ->changeColumn('body', 'text', [
                 'default' => null,
-                'limit' => $limit,
+                'limit' => MysqlAdapter::TEXT_MEDIUM,
                 'null' => true,
             ])
             ->update();
