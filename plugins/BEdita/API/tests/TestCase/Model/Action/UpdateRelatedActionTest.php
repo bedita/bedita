@@ -156,7 +156,7 @@ class UpdateRelatedActionTest extends TestCase
             $this->expectExceptionMessage($expected->getMessage());
         }
 
-        LoggedUser::setUser(['id' => 1, 'roles' => [['id' => 1]]]);
+        LoggedUser::setUserAdmin();
         $request = new ServerRequest();
         $request = $request->withParsedBody($data);
         $association = $this->getTableLocator()->get($table)->getAssociation($association);

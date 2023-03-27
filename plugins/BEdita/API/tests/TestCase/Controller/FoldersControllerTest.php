@@ -1312,7 +1312,7 @@ class FoldersControllerTest extends IntegrationTestCase
     protected function createDocument(array $data)
     {
         if (LoggedUser::id() === null) {
-            LoggedUser::setUser(['id' => 1]);
+            LoggedUser::setUserAdmin();
         }
 
         $documentsTable = TableRegistry::getTableLocator()->get('Documents');

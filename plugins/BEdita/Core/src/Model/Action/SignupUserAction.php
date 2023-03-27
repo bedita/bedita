@@ -266,7 +266,7 @@ class SignupUserAction extends BaseAction implements EventListenerInterface
     {
         if (!LoggedUser::getUser()) {
             // use user 1 (admin) role 1 (admin / unchangeable)
-            LoggedUser::setUser(['id' => UsersTable::ADMIN_USER, 'roles' => [['id' => RolesTable::ADMIN_ROLE]]]);
+            LoggedUser::setUserAdmin();
         }
 
         $status = 'draft';

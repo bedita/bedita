@@ -13,6 +13,8 @@
 
 namespace BEdita\Core\Utility;
 
+use BEdita\Core\Model\Table\RolesTable;
+use BEdita\Core\Model\Table\UsersTable;
 use BEdita\Core\SingletonTrait;
 use Cake\Utility\Hash;
 
@@ -37,6 +39,20 @@ class LoggedUser
      * @var array
      */
     private $userData = [];
+
+    /**
+     * User admin data: id and roles.
+     *
+     * @var array
+     */
+    protected const ADMIN_DATA = [
+        'id' => UsersTable::ADMIN_USER,
+        'roles' => [
+            [
+                'id' => RolesTable::ADMIN_ROLE,
+            ],
+        ],
+    ];
 
     /**
      * Read singleton current user data.
@@ -69,6 +85,26 @@ class LoggedUser
         if (!empty($userData['id'])) {
             static::getInstance()->userData = $userData;
         }
+    }
+
+    /**
+     * Set singleton admin user data.
+     *
+     * @return void
+     */
+    public static function setUserAdmin()
+    {
+        static::getInstance()->setUser(static::ADMIN_DATA);
+    }
+
+    /**
+     * Get user admin data.
+     *
+     * @return array
+     */
+    public static function getUserAdmin(): array
+    {
+        return static::ADMIN_DATA;
     }
 
     /**
