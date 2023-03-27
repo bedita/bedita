@@ -32,7 +32,8 @@ class ObjectsValidator extends Validator
     {
         parent::__construct();
 
-        $this->setProvider('objectsTable', TableRegistry::getTableLocator()->get('Objects'));
+        $table = TableRegistry::getTableLocator()->get('Objects');
+        $this->setProvider('objectsTable', $table);
 
         $this
             ->naturalNumber('id')
@@ -57,10 +58,10 @@ class ObjectsValidator extends Validator
             ->allowEmptyString('title')
 
             ->allowEmptyString('description')
-            ->maxLengthBytes('description', (2 << 23) - 1) // 2^24 - 1 bytes = 16MiB
+            ->maxLengthBytes('description', $table->getSchema()->getColumn('description')['length'])
 
             ->allowEmptyString('body')
-            ->maxLengthBytes('body', (2 << 23) - 1) // 2^24 - 1 bytes = 16MiB
+            ->maxLengthBytes('body', $table->getSchema()->getColumn('body')['length'])
 
             ->allowEmptyArray('extra')
 
