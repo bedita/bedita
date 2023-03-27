@@ -57,8 +57,10 @@ class ObjectsValidator extends Validator
             ->allowEmptyString('title')
 
             ->allowEmptyString('description')
+            ->maxLengthBytes('description', (2 << 23) - 1) // 2^24 - 1 bytes = 16MiB
 
             ->allowEmptyString('body')
+            ->maxLengthBytes('body', (2 << 23) - 1) // 2^24 - 1 bytes = 16MiB
 
             ->allowEmptyArray('extra')
 
