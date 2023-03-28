@@ -99,8 +99,9 @@ Cache::clear('_cake_model_');
 
 /*
  * Load schema.
- * First load fake schema for specific test porpouse
- * then it runs BEdita/Core migrations avoiding to drop tables creating by fake schema
+ * First load fake schema for specific test purpose
+ * then it runs BEdita/Core migrations avoiding to drop tables creating by fake schema.
+ * Schema is loaded in unit test context but not in phpstan context.
  */
 if (defined('UNIT_TEST_RUN')) {
     $fakeSchemaPath = dirname(__DIR__) . '/plugins/BEdita/Core/tests/fake_schema.php';

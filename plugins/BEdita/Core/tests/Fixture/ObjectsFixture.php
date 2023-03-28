@@ -340,7 +340,7 @@ class ObjectsFixture extends TestFixture
         // remove `objects_createdby_fk` and `objects_modifiedby_fk` constraints
         // to avoid PostgreSQL error inserting first user that references itself.
         // CakePHP inserting fixture disables constraints but
-        // when the constraints are enabled again PostgresSQL give an SQL error.
+        // when the constraints are enabled again PostgreSQL give an SQL error.
         $connection = ConnectionManager::get($this->connection());
         if (!$connection->getDriver() instanceof Postgres) {
             return;
