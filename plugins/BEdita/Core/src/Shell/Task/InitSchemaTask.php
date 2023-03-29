@@ -19,7 +19,7 @@ use Cake\Datasource\ConnectionInterface;
 use Cake\Datasource\ConnectionManager;
 use Migrations\Migrations;
 
-/** *
+/**
  * Task to initialize database.
  *
  * @since 4.0.0
