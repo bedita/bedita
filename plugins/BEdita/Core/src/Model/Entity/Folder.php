@@ -41,8 +41,31 @@ class Folder extends ObjectEntity
 
         $this->setAccess('parents', false);
         $this->setHidden(['parents', 'tree_parent_nodes'], true);
-        $this->setVirtual(['path'], true);
+        $this->setVirtual(['path', 'perms'], true);
         $this->setAccess('path', false);
+        $this->setAccess('perms', false);
+    }
+
+    /**
+     * Getter for perms virtual prop.
+     *
+     * @return array
+     */
+    protected function _getPerms(): array
+    {
+        $roleIds = Hash::extract((array)$this->permissions, '{n}.role_id');
+        if (empty($roleIds)) {
+            return [];
+        }
+
+        $roles = TableRegistry::getTableLocator()->get('Roles')
+            ->find('list')
+            ->where([
+                'id IN' => $roleIds,
+            ])
+            ->toArray();
+
+        return ['roles' => array_values($roles)];
     }
 
     /**

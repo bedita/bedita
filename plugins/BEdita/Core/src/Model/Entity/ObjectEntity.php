@@ -52,6 +52,7 @@ use Cake\Routing\Router;
  * @property \BEdita\Core\Model\Entity\Folder[] $parents
  * @property \BEdita\Core\Model\Entity\Tree[] $tree_nodes
  * @property \BEdita\Core\Model\Entity\Translation[] $translations
+ * @property \BEdita\Core\Model\Entity\ObjectPermission[] $permissions
  * @since 4.0.0
  */
 class ObjectEntity extends Entity implements JsonApiSerializable
@@ -97,6 +98,7 @@ class ObjectEntity extends Entity implements JsonApiSerializable
         'deleted',
         'custom_props',
         'tree_nodes',
+        'permissions',
     ];
 
     /**

@@ -145,6 +145,10 @@ class ObjectsTable extends Table
             'className' => 'Translations',
             'foreignKey' => 'object_id',
         ]);
+        $this->hasMany('Permissions', [
+            'className' => 'ObjectPermissions',
+            'foreignKey' => 'object_id',
+        ]);
     }
 
     /**

@@ -195,7 +195,7 @@ trait JsonApiTrait
             }
         );
 
-        $custom = $this-> customProps($table);
+        $custom = $this->customProps($table);
         $extraProperties = array_filter(
             $properties,
             function ($property) use ($table, $virtual, $custom) {
