@@ -15,6 +15,7 @@ namespace BEdita\Core\Model\Validation;
 
 use Cake\ORM\TableRegistry;
 use Cake\Validation\Validator;
+use Phinx\Db\Adapter\MysqlAdapter;
 
 /**
  * Base validator for BEdita objects.
@@ -58,10 +59,10 @@ class ObjectsValidator extends Validator
             ->allowEmptyString('title')
 
             ->allowEmptyString('description')
-            ->maxLengthBytes('description', $table->getSchema()->getColumn('description')['length'])
+            ->maxLengthBytes('description', MysqlAdapter::TEXT_MEDIUM)
 
             ->allowEmptyString('body')
-            ->maxLengthBytes('body', $table->getSchema()->getColumn('body')['length'])
+            ->maxLengthBytes('body', MysqlAdapter::TEXT_MEDIUM)
 
             ->allowEmptyArray('extra')
 
