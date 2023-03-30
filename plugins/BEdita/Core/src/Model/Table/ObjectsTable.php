@@ -554,8 +554,9 @@ class ObjectsTable extends Table
             $options = array_filter(explode(',', reset($options)));
         }
 
-        return $query->distinct()->innerJoinWith($assoc, function (Query $query) use ($assoc, $options) {
-            return $query->where([sprintf('%s.name IN', $assoc) => $options]);
-        });
+        return $query->distinct([$this->aliasField('id')])
+            ->innerJoinWith($assoc, function (Query $query) use ($assoc, $options) {
+                return $query->where([sprintf('%s.name IN', $assoc) => $options]);
+            });
     }
 }

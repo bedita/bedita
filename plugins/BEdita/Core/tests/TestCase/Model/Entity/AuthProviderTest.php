@@ -38,7 +38,7 @@ class AuthProviderTest extends TestCase
      *
      * @var array
      */
-    public $fixtures = [
+    protected $fixtures = [
         'plugin.BEdita/Core.Roles',
         'plugin.BEdita/Core.AuthProviders',
     ];

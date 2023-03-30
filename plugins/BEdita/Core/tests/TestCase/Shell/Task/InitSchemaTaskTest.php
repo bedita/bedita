@@ -24,6 +24,11 @@ use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
 /**
+ * WARNING: This test is excluded from test suite (see phpunit.xml.dist)
+ * due to issues with database initialization and new fixture system.
+ * Since we should migrate Shell class to Command class https://github.com/bedita/bedita/issues/1987
+ * we'll try to solve them after having migrate it.
+ *
  * @covers \BEdita\Core\Shell\Task\InitSchemaTask
  */
 class InitSchemaTaskTest extends TestCase

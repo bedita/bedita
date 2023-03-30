@@ -10,7 +10,6 @@
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\Fixture;
 
 use Cake\TestSuite\Fixture\TestFixture;
@@ -24,24 +23,6 @@ class JsonSchemaTableFixture extends TestFixture
      * @inheritDoc
      */
     public $table = 'json_schema_table';
-
-    /**
-     * {@inheritDoc}
-     *
-     * @codingStandardsIgnore
-     */
-    public $fields = [
-        'id' => ['type' => 'integer', 'length' => 5, 'unsigned' => true, 'null' => false, 'default' => null, 'comment' => '', 'autoIncrement' => true, 'precision' => null],
-        'name' => ['type' => 'string', 'length' => 255, 'null' => false, 'default' => null, 'comment' => '', 'precision' => null, 'fixed' => null],
-        'json_field' => ['type' => 'text', 'length' => null, 'null' => true, 'default' => null, 'comment' => '', 'precision' => null],
-        '_constraints' => [
-            'primary' => ['type' => 'primary', 'columns' => ['id'], 'length' => []],
-        ],
-        '_options' => [
-            'engine' => 'InnoDB',
-            'collation' => 'utf8_general_ci',
-        ],
-    ];
 
     /**
      * @inheritDoc

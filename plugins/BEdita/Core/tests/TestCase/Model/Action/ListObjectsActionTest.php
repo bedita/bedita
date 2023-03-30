@@ -29,16 +29,16 @@ class ListObjectsActionTest extends TestCase
      *
      * @var array
      */
-    public $fixtures = [
+    protected $fixtures = [
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.Relations',
         'plugin.BEdita/Core.RelationTypes',
         'plugin.BEdita/Core.PropertyTypes',
         'plugin.BEdita/Core.Properties',
-        'plugin.BEdita/Core.DateRanges',
         'plugin.BEdita/Core.Objects',
         'plugin.BEdita/Core.Profiles',
         'plugin.BEdita/Core.Users',
+        'plugin.BEdita/Core.DateRanges',
         'plugin.BEdita/Core.Translations',
         'plugin.BEdita/Core.Categories',
         'plugin.BEdita/Core.ObjectCategories',

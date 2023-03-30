@@ -28,7 +28,7 @@ class ProjectModelTest extends TestCase
      *
      * @var array
      */
-    public $fixtures = [
+    protected $fixtures = [
         'plugin.BEdita/Core.Applications',
         'plugin.BEdita/Core.Roles',
         'plugin.BEdita/Core.ObjectTypes',

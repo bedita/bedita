@@ -72,6 +72,7 @@ class InitSchemaTask extends Shell /* @phpstan-ignore-line */
      * Initialize database.
      *
      * @return void
+     * @codeCoverageIgnore
      */
     public function main()
     {
@@ -89,6 +90,7 @@ class InitSchemaTask extends Shell /* @phpstan-ignore-line */
      *
      * @param \Cake\Datasource\ConnectionInterface $connection Connection instance.
      * @return void
+     * @codeCoverageIgnore
      */
     protected function cleanup(ConnectionInterface $connection)
     {
@@ -141,6 +143,7 @@ class InitSchemaTask extends Shell /* @phpstan-ignore-line */
      *
      * @param \Cake\Datasource\ConnectionInterface $connection Connection instance.
      * @return void
+     * @codeCoverageIgnore
      */
     protected function migrate(ConnectionInterface $connection)
     {
@@ -166,6 +169,7 @@ class InitSchemaTask extends Shell /* @phpstan-ignore-line */
      *
      * @param \Cake\Datasource\ConnectionInterface $connection Connection instance.
      * @return void
+     * @codeCoverageIgnore
      */
     protected function seed(ConnectionInterface $connection)
     {

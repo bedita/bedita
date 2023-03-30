@@ -26,7 +26,7 @@ class ConfigControllerTest extends IntegrationTestCase
      *
      * @var array
      */
-    public $fixtures = [
+    protected $fixtures = [
         'plugin.BEdita/Core.Config',
     ];
 

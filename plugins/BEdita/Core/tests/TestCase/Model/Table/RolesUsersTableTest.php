@@ -36,9 +36,9 @@ class RolesUsersTableTest extends TestCase
      *
      * @var array
      */
-    public $fixtures = [
-        'plugin.BEdita/Core.Roles',
+    protected $fixtures = [
         'plugin.BEdita/Core.ObjectTypes',
+        'plugin.BEdita/Core.Roles',
         'plugin.BEdita/Core.Relations',
         'plugin.BEdita/Core.RelationTypes',
         'plugin.BEdita/Core.Objects',

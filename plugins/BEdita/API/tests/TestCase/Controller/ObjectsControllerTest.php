@@ -33,7 +33,7 @@ class ObjectsControllerTest extends IntegrationTestCase
      *
      * @var array
      */
-    public $fixtures = [
+    protected $fixtures = [
         'plugin.BEdita/Core.DateRanges',
         'plugin.BEdita/Core.Locations',
         'plugin.BEdita/Core.Media',
@@ -739,9 +739,13 @@ class ObjectsControllerTest extends IntegrationTestCase
             'data' => [],
         ];
 
-        $this->fetchTable('Translations')->deleteAll([]);
-        $this->fetchTable('Annotations')->deleteAll([]);
-        $this->fetchTable('Objects')->deleteAll([]);
+        $this->fetchTable('Objects')
+            ->getConnection()
+            ->disableConstraints(function () {
+                $this->fetchTable('Translations')->deleteAll([]);
+                $this->fetchTable('Annotations')->deleteAll([]);
+                $this->fetchTable('Objects')->deleteAll([]);
+            });
 
         $this->configRequestHeaders();
         $this->get('/objects');

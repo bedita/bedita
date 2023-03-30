@@ -24,7 +24,7 @@ class UniqueNameTest extends IntegrationTestCase
     /**
      * @inheritDoc
      */
-    public $fixtures = [
+    protected $fixtures = [
         'plugin.BEdita/Core.Locations',
     ];
 

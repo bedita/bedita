@@ -46,7 +46,7 @@ class EndpointPolicyTest extends TestCase
      *
      * @var array
      */
-    public $fixtures = [
+    protected $fixtures = [
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.Roles',
         'plugin.BEdita/Core.Endpoints',

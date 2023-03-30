@@ -17,10 +17,10 @@ use BEdita\Core\Shell\Task\CheckSchemaTask;
 use Cake\Command\Command;
 use Cake\Console\TestSuite\ConsoleIntegrationTestTrait;
 use Cake\Core\Plugin;
-use Cake\Database\Connection;
 use Cake\Database\Driver\Mysql;
 use Cake\Database\Schema\TableSchema;
 use Cake\Datasource\ConnectionManager;
+use Cake\TestSuite\ConnectionHelper;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Hash;
 
@@ -30,40 +30,6 @@ use Cake\Utility\Hash;
 class CheckSchemaTaskTest extends TestCase
 {
     use ConsoleIntegrationTestTrait;
-
-    /**
-     * @inheritDoc
-     */
-    public function setUp(): void
-    {
-        static::$fixtureManager->shutDown();
-
-        $this->exec('db_admin init -fs');
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public static function tearDownAfterClass(): void
-    {
-        ConnectionManager::get('default')
-            ->transactional(function (Connection $connection) {
-                $tables = $connection->getSchemaCollection()->listTables();
-
-                foreach ($tables as $table) {
-                    $sql = $connection->getSchemaCollection()->describe($table)->dropConstraintSql($connection);
-                    foreach ($sql as $query) {
-                        $connection->query($query);
-                    }
-                }
-                foreach ($tables as $table) {
-                    $sql = $connection->getSchemaCollection()->describe($table)->dropSql($connection);
-                    foreach ($sql as $query) {
-                        $connection->query($query);
-                    }
-                }
-            });
-    }
 
     /**
      * Check whether or not perform a check on a given $connection
@@ -150,6 +116,10 @@ class CheckSchemaTaskTest extends TestCase
         }
 
         $this->exec(CheckSchemaTask::class);
+
+        // drop table
+        $connectionHelper = new ConnectionHelper();
+        $connectionHelper->dropTables('default', ['foo_bar']);
 
         if ($this->checkAvailable($connection)) {
             static::assertExitCode(Command::CODE_ERROR);

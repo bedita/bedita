@@ -36,9 +36,9 @@ class DateRangesTableTest extends TestCase
      *
      * @var array
      */
-    public $fixtures = [
-        'plugin.BEdita/Core.Objects',
+    protected $fixtures = [
         'plugin.BEdita/Core.ObjectTypes',
+        'plugin.BEdita/Core.Objects',
         'plugin.BEdita/Core.DateRanges',
     ];
 

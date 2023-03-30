@@ -1,7 +1,20 @@
 <?php
+/**
+ * BEdita, API-first content management framework
+ * Copyright 2023 ChannelWeb Srl, Chialab Srl
+ *
+ * This file is part of BEdita: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
+ */
 namespace BEdita\Core\Test\Fixture;
 
-use BEdita\Core\TestSuite\Fixture\TestFixture;
+use Cake\Database\Driver\Postgres;
+use Cake\Datasource\ConnectionManager;
+use Cake\TestSuite\Fixture\TestFixture;
 
 /**
  * ObjectsFixture
@@ -45,7 +58,10 @@ class ObjectsFixture extends TestFixture
             'title' => 'title one',
             'description' => 'description here',
             'body' => 'body here',
-            'extra' => '{"abstract": "abstract here", "list": ["one", "two", "three"]}',
+            'extra' => [
+                'abstract' => 'abstract here',
+                'list' => ['one', 'two', 'three'],
+            ],
             'lang' => 'en',
             'created_by' => 1,
             'modified_by' => 1,
@@ -105,7 +121,10 @@ class ObjectsFixture extends TestFixture
             'lang' => 'en',
             'created_by' => 5,
             'modified_by' => 5,
-            'custom_props' => '{"another_username":"synapse","another_email":"synapse@example.org"}',
+            'custom_props' => [
+                'another_username' => 'synapse',
+                'another_email' => 'synapse@example.org',
+            ],
         ],
         // 6
         [
@@ -120,7 +139,7 @@ class ObjectsFixture extends TestFixture
             'title' => 'title one deleted',
             'description' => 'description removed',
             'body' => 'body no more',
-            'extra' => '{"abstract": "what?"}',
+            'extra' => ['abstract' => 'what?'],
             'lang' => 'en',
             'created_by' => 1,
             'modified_by' => 1,
@@ -140,7 +159,7 @@ class ObjectsFixture extends TestFixture
             'title' => 'title two deleted',
             'description' => 'description removed',
             'body' => 'body no more',
-            'extra' => '{"abstract": "what?"}',
+            'extra' => ['abstract' => 'what?'],
             'lang' => 'en',
             'created_by' => 1,
             'modified_by' => 1,
@@ -206,7 +225,7 @@ class ObjectsFixture extends TestFixture
             'modified_by' => 1,
             'publish_start' => null,
             'publish_end' => null,
-            'custom_props' => '{"media_property":true}',
+            'custom_props' => ['media_property' => true],
         ],
         // 11
         [
@@ -287,7 +306,7 @@ class ObjectsFixture extends TestFixture
             'modified_by' => 1,
             'publish_start' => null,
             'publish_end' => null,
-            'custom_props' => '{"media_property":false}',
+            'custom_props' => ['media_property' => false],
         ],
         // 15 (ghost object)
         [
@@ -312,17 +331,44 @@ class ObjectsFixture extends TestFixture
     ];
 
     /**
-     * Before Build Schema callback
-     *
-     * Change `status` type to 'string' to avoid errors
-     *
-     * @return void
+     * @inheritDoc
      */
-    public function beforeBuildSchema()
+    public function init(): void
     {
-        $this->fields['status']['type'] = 'string';
+        parent::init();
 
-        unset($this->fields['_constraints']['objects_modifiedby_fk']);
-        unset($this->fields['_constraints']['objects_createdby_fk']);
+        // remove `objects_createdby_fk` and `objects_modifiedby_fk` constraints
+        // to avoid PostgreSQL error inserting first user that references itself.
+        // CakePHP inserting fixture disables constraints but
+        // when the constraints are enabled again PostgreSQL give an SQL error.
+        $connection = ConnectionManager::get($this->connection());
+        if (!$connection->getDriver() instanceof Postgres) {
+            return;
+        }
+
+        $constraints = $this->_schema->constraints();
+        $removeConstraints = ['objects_createdby_fk', 'objects_modifiedby_fk'];
+        if (empty(array_intersect($constraints, $removeConstraints))) {
+            return;
+        }
+
+        $restoreConstraints = [];
+        foreach ($this->_schema->constraints() as $name) {
+            if (in_array($name, $removeConstraints)) {
+                continue;
+            }
+
+            $restoreConstraints[$name] = $this->_schema->getConstraint($name);
+            $this->_schema->dropConstraint($name);
+        }
+
+        $dropConstraintSql = $this->_schema->dropConstraintSql($connection);
+        foreach ($dropConstraintSql as $sql) {
+            $connection->execute($sql);
+        }
+
+        foreach ($restoreConstraints as $name => $attrs) {
+            $this->_schema->addConstraint($name, $attrs);
+        }
     }
 }

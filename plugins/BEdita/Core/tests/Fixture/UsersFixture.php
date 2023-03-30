@@ -10,12 +10,11 @@
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\Fixture;
 
-use BEdita\Core\TestSuite\Fixture\TestFixture;
 use Cake\Auth\DefaultPasswordHasher;
 use Cake\Auth\WeakPasswordHasher;
+use Cake\TestSuite\Fixture\TestFixture;
 
 /**
  * Fixture for `users` table.

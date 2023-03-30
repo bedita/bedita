@@ -30,7 +30,7 @@ class ObjectTypesControllerTest extends IntegrationTestCase
      *
      * @var array
      */
-    public $fixtures = [
+    protected $fixtures = [
         'plugin.BEdita/Core.PropertyTypes',
         'plugin.BEdita/Core.Properties',
     ];
@@ -602,11 +602,15 @@ class ObjectTypesControllerTest extends IntegrationTestCase
             'data' => [],
         ];
 
-        $this->fetchTable('Properties')->deleteAll([]);
-        $this->fetchTable('Translations')->deleteAll([]);
-        $this->fetchTable('Annotations')->deleteAll([]);
-        $this->fetchTable('Objects')->deleteAll([]);
-        $this->fetchTable('ObjectTypes')->deleteAll([]);
+        $this->fetchTable('Objects')
+            ->getConnection()
+            ->disableConstraints(function () {
+                $this->fetchTable('Properties')->deleteAll([]);
+                $this->fetchTable('Translations')->deleteAll([]);
+                $this->fetchTable('Annotations')->deleteAll([]);
+                $this->fetchTable('Objects')->deleteAll([]);
+                $this->fetchTable('ObjectTypes')->deleteAll([]);
+            });
 
         $this->configRequestHeaders();
         $this->get('/model/object_types');

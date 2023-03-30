@@ -43,13 +43,16 @@ class HistoryControllerTest extends IntegrationTestCase
                     'id' => '1',
                     'type' => 'history',
                     'meta' => [
-                        'resource_id' => 2,
+                        'resource_id' => '2',
                         'resource_type' => 'objects',
                         'created' => '2016-05-13T07:09:22+00:00',
                         'user_id' => 1,
                         'application_id' => 1,
                         'user_action' => 'create',
-                        'changed' => '{"title":"title one","description":"description here"}',
+                        'changed' => [
+                            'title' => 'title one',
+                            'description' => 'description here',
+                        ],
                     ],
                     'relationships' => [
                         'user' => [
@@ -73,13 +76,19 @@ class HistoryControllerTest extends IntegrationTestCase
                     'id' => '2',
                     'type' => 'history',
                     'meta' => [
-                        'resource_id' => 2,
+                        'resource_id' => '2',
                         'resource_type' => 'objects',
                         'created' => '2016-05-13T07:09:23+00:00',
                         'user_id' => 5,
                         'application_id' => 1,
                         'user_action' => 'update',
-                        'changed' => '{"body":"body here","extra":{"abstract":"abstract here","list": ["one", "two", "three"]}}',
+                        'changed' => [
+                            'body' => 'body here',
+                            'extra' => [
+                                'abstract' => 'abstract here',
+                                'list' => ['one', 'two', 'three'],
+                            ],
+                        ],
                     ],
                     'relationships' => [
                         'user' => [
@@ -178,13 +187,19 @@ class HistoryControllerTest extends IntegrationTestCase
                     'id' => '2',
                     'type' => 'history',
                     'meta' => [
-                        'resource_id' => 2,
+                        'resource_id' => '2',
                         'resource_type' => 'objects',
                         'created' => '2016-05-13T07:09:23+00:00',
                         'user_id' => 5,
                         'application_id' => 1,
                         'user_action' => 'update',
-                        'changed' => '{"body":"body here","extra":{"abstract":"abstract here","list": ["one", "two", "three"]}}',
+                        'changed' => [
+                            'body' => 'body here',
+                            'extra' => [
+                                'abstract' => 'abstract here',
+                                'list' => ['one', 'two', 'three'],
+                            ],
+                        ],
                     ],
                     'relationships' => [
                         'user' => [
@@ -383,13 +398,16 @@ class HistoryControllerTest extends IntegrationTestCase
                     'id' => '1',
                     'type' => 'history',
                     'meta' => [
-                        'resource_id' => 2,
+                        'resource_id' => '2',
                         'resource_type' => 'objects',
                         'created' => '2016-05-13T07:09:22+00:00',
                         'user_id' => 1,
                         'application_id' => 1,
                         'user_action' => 'create',
-                        'changed' => '{"title":"title one","description":"description here"}',
+                        'changed' => [
+                            'title' => 'title one',
+                            'description' => 'description here',
+                        ],
                     ],
                     'relationships' => [
                         'user' => [
@@ -417,13 +435,19 @@ class HistoryControllerTest extends IntegrationTestCase
                     'id' => '2',
                     'type' => 'history',
                     'meta' => [
-                        'resource_id' => 2,
+                        'resource_id' => '2',
                         'resource_type' => 'objects',
                         'created' => '2016-05-13T07:09:23+00:00',
                         'user_id' => 5,
                         'application_id' => 1,
                         'user_action' => 'update',
-                        'changed' => '{"body":"body here","extra":{"abstract":"abstract here","list": ["one", "two", "three"]}}',
+                        'changed' => [
+                            'body' => 'body here',
+                            'extra' => [
+                                'abstract' => 'abstract here',
+                                'list' => ['one', 'two', 'three'],
+                            ],
+                        ],
                     ],
                     'relationships' => [
                         'user' => [

@@ -10,7 +10,6 @@
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\Fixture;
 
 use Cake\TestSuite\Fixture\TestFixture;
@@ -20,21 +19,6 @@ use Cake\TestSuite\Fixture\TestFixture;
  */
 class FakeTagsFixture extends TestFixture
 {
-    /**
-     * @inheritDoc
-     */
-    public $fields = [
-        'id' => ['type' => 'integer', 'length' => 10, 'unsigned' => true, 'null' => false, 'default' => null, 'comment' => '', 'precision' => null, 'autoIncrement' => true],
-        'name' => ['type' => 'string', 'length' => 255, 'null' => false, 'default' => null, 'precision' => null],
-        '_constraints' => [
-            'primary' => ['type' => 'primary', 'columns' => ['id'], 'length' => []],
-        ],
-        '_options' => [
-            'engine' => 'InnoDB',
-            'collation' => 'utf8_general_ci',
-        ],
-    ];
-
     /**
      * @inheritDoc
      */

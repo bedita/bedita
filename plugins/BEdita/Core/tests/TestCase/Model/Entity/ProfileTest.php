@@ -36,14 +36,12 @@ class ProfileTest extends TestCase
      *
      * @var array
      */
-    public $fixtures = [
+    protected $fixtures = [
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.Relations',
         'plugin.BEdita/Core.RelationTypes',
-        'plugin.BEdita/Core.Properties',
         'plugin.BEdita/Core.PropertyTypes',
-        'plugin.BEdita/Core.Relations',
-        'plugin.BEdita/Core.RelationTypes',
+        'plugin.BEdita/Core.Properties',
         'plugin.BEdita/Core.Objects',
         'plugin.BEdita/Core.Profiles',
         'plugin.BEdita/Core.Users',
