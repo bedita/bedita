@@ -55,7 +55,7 @@ class Folder extends ObjectEntity
     {
         $roleIds = Hash::extract((array)$this->permissions, '{n}.role_id');
         if (empty($roleIds)) {
-            return [];
+            return $this->getInheritedRolesPermissions();
         }
 
         $roles = TableRegistry::getTableLocator()->get('Roles')
@@ -65,7 +65,54 @@ class Folder extends ObjectEntity
             ])
             ->toArray();
 
-        return ['roles' => array_values($roles)];
+        $roles = array_values($roles);
+        $inherited = false;
+
+        return compact('roles', 'inherited');
+    }
+
+    /**
+     * Get inherited roles permissions
+     *
+     * @return array
+     */
+    protected function getInheritedRolesPermissions(): array
+    {
+        $Trees = TableRegistry::getTableLocator()->get('Trees');
+        /** @var \BEdita\Core\Model\Entity\Tree $node */
+        $node = $Trees->find()->where(['object_id' => $this->id])->first();
+
+        $roles = TableRegistry::getTableLocator()->get('Roles')
+            ->find()
+            ->select(['Roles.name', 'Trees.tree_left'])
+            ->disableHydration()
+            ->innerJoin(
+                ['ObjectPermissions' => 'object_permissions'],
+                ['ObjectPermissions.role_id = Roles.id'],
+            )
+            ->innerJoin(
+                ['Trees' => 'trees'],
+                [
+                    'Trees.object_id = ObjectPermissions.object_id',
+                    'Trees.tree_left <' => $node->tree_left,
+                    'Trees.tree_right >' => $node->tree_right,
+                ],
+                [
+                    'Trees.object_id' => 'integer',
+                    'Trees.tree_left' => 'integer',
+                    'Trees.tree_right' => 'integer',
+                ]
+            )
+            ->order(['Trees.tree_left' => 'DESC'])
+            ->toArray();
+
+        if (empty($roles)) {
+            return [];
+        }
+
+        $roles = array_values(Hash::combine($roles, '{n}.name', '{n}.name', '{n}.Trees.tree_left'));
+
+        return ['roles' => array_values($roles[0]), 'inherited' => true];
     }
 
     /**

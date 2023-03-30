@@ -65,6 +65,9 @@ class RolesTable extends Table
         $this->hasMany('EndpointPermissions', [
             'dependent' => true,
         ]);
+        $this->hasMany('ObjectPermissions', [
+            'dependent' => true,
+        ]);
         $this->addBehavior('BEdita/Core.Searchable', [
             'fields' => [
                 'name' => 10,
