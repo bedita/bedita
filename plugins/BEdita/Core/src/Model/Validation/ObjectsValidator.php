@@ -15,6 +15,7 @@ namespace BEdita\Core\Model\Validation;
 
 use Cake\ORM\TableRegistry;
 use Cake\Validation\Validator;
+use Phinx\Db\Adapter\MysqlAdapter;
 
 /**
  * Base validator for BEdita objects.
@@ -32,7 +33,8 @@ class ObjectsValidator extends Validator
     {
         parent::__construct();
 
-        $this->setProvider('objectsTable', TableRegistry::getTableLocator()->get('Objects'));
+        $table = TableRegistry::getTableLocator()->get('Objects');
+        $this->setProvider('objectsTable', $table);
 
         $this
             ->naturalNumber('id')
@@ -57,8 +59,10 @@ class ObjectsValidator extends Validator
             ->allowEmptyString('title')
 
             ->allowEmptyString('description')
+            ->maxLengthBytes('description', MysqlAdapter::TEXT_MEDIUM)
 
             ->allowEmptyString('body')
+            ->maxLengthBytes('body', MysqlAdapter::TEXT_MEDIUM)
 
             ->allowEmptyArray('extra')
 
