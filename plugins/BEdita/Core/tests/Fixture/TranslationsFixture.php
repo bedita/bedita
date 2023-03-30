@@ -10,11 +10,10 @@
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\Fixture;
 
-use BEdita\Core\TestSuite\Fixture\TestFixture;
 use Cake\I18n\FrozenTime;
+use Cake\TestSuite\Fixture\TestFixture;
 
 /**
  * Fixture for `translations` table.
@@ -35,7 +34,7 @@ class TranslationsFixture extends TestFixture
                 'modified' => FrozenTime::now(),
                 'created_by' => 1,
                 'modified_by' => 1,
-                'translated_fields' => json_encode([
+                'translated_fields' => [
                     'title' => 'titolo uno',
                     'description' => 'descrizione qui',
                     'body' => 'contenuto qui',
@@ -43,7 +42,7 @@ class TranslationsFixture extends TestFixture
                         'abstract' => 'estratto qui',
                         'list' => ['uno', 'due', 'tre'],
                     ],
-                ]),
+                ],
             ],
             [
                 'object_id' => 2,
@@ -53,12 +52,12 @@ class TranslationsFixture extends TestFixture
                 'modified' => FrozenTime::now(),
                 'created_by' => 1,
                 'modified_by' => 1,
-                'translated_fields' => json_encode([
+                'translated_fields' => [
                     'description' => 'description ici',
                     'extra' => [
                         'list' => ['on', 'deux', 'trois'],
                     ],
-                ]),
+                ],
             ],
             [
                 'object_id' => 2,
@@ -68,12 +67,12 @@ class TranslationsFixture extends TestFixture
                 'modified' => '2018-01-01 00:00:00',
                 'created_by' => 1,
                 'modified_by' => 1,
-                'translated_fields' => json_encode([
+                'translated_fields' => [
                     'description' => 'descripción aquí',
                     'extra' => [
                         'list' => ['uno', 'dos', 'tres'],
                     ],
-                ]),
+                ],
             ],
         ];
 

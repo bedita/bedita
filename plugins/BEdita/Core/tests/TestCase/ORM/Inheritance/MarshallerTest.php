@@ -51,7 +51,7 @@ class MarshallerTest extends TestCase
         $data = [
             'name' => 'tiger',
             'legs' => 4,
-            'updated_at' => '2018-02-20 12:05:00',
+            'modified' => '2018-02-20 12:05:00',
         ];
 
         $entity = $marshaller->one($data);
@@ -71,14 +71,14 @@ class MarshallerTest extends TestCase
                     // fake_animals table fields
                     'name' => 'tiger',
                     'legs' => 4,
-                    'updated_at' => '2018-02-20 12:05:00',
+                    'modified' => '2018-02-20 12:05:00',
                     // fake_felines table fields
                     'family' => 'The big tiger family',
                 ],
                 [
                     'name' => 'tiger',
                     'legs' => 4,
-                    'updated_at' => new FrozenTime('2018-02-20 12:05:00'),
+                    'modified' => new FrozenTime('2018-02-20 12:05:00'),
                     'family' => 'The big tiger family',
                 ],
             ],
@@ -87,14 +87,14 @@ class MarshallerTest extends TestCase
                     // fake_animals table fields
                     'name' => 'tiger',
                     'legs' => 4,
-                    'updated_at' => '',
+                    'modified' => '',
                     // fake_felines table fields
                     'family' => 'The big tiger family',
                 ],
                 [
                     'name' => 'tiger',
                     'legs' => 4,
-                    'updated_at' => null,
+                    'modified' => null,
                     'family' => 'The big tiger family',
                 ],
             ],

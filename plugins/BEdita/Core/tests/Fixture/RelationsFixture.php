@@ -1,5 +1,4 @@
 <?php
-
 /**
  * BEdita, API-first content management framework
  * Copyright 2017 ChannelWeb Srl, Chialab Srl
@@ -11,10 +10,9 @@
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\Fixture;
 
-use BEdita\Core\TestSuite\Fixture\TestFixture;
+use Cake\TestSuite\Fixture\TestFixture;
 
 /**
  * Fixture for `relations` table.
@@ -41,7 +39,19 @@ class RelationsFixture extends TestFixture
             'inverse_name' => 'inverse_another_test',
             'inverse_label' => 'Another inverse test relation',
             'description' => 'Sample description /2.',
-            'params' => '{"type":"object","properties":{"name":{"type":"string"},"age":{"type":"integer","minimum":0}},"required":["name"]}',
+            'params' => [
+                'type' => 'object',
+                'properties' => [
+                    'name' => [
+                        'type' => 'string',
+                    ],
+                    'age' => [
+                        'type' => 'integer',
+                        'minimum' => 0,
+                    ],
+                ],
+                'required' => ['name'],
+            ],
         ],
         [
             'name' => 'test_abstract',

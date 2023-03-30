@@ -37,7 +37,7 @@ class EndpointsTableTest extends TestCase
      *
      * @var array
      */
-    public $fixtures = [
+    protected $fixtures = [
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.Endpoints',
         'plugin.BEdita/Core.Relations',

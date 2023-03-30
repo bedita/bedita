@@ -10,10 +10,9 @@
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\Fixture;
 
-use BEdita\Core\TestSuite\Fixture\TestFixture;
+use Cake\TestSuite\Fixture\TestFixture;
 
 /**
  * Fixture for `auth_providers` table.
@@ -29,7 +28,7 @@ class AuthProvidersFixture extends TestFixture
             'name' => 'example',
             'auth_class' => 'BEdita/API.OAuth2',
             'url' => 'https://example.com/oauth2',
-            'params' => '{"provider_username_field": "owner_id"}',
+            'params' => ['provider_username_field' => 'owner_id'],
             'enabled' => true,
             'created' => '2018-04-07 12:51:27',
             'modified' => '2018-04-07 12:51:27',
@@ -39,7 +38,7 @@ class AuthProvidersFixture extends TestFixture
             'name' => 'uuid',
             'auth_class' => 'BEdita/API.Uuid',
             'url' => null,
-            'params' => '{"status": "on"}',
+            'params' => ['status' => 'on'],
             'enabled' => true,
             'created' => '2018-04-07 12:51:27',
             'modified' => '2018-04-07 12:51:27',
@@ -49,7 +48,7 @@ class AuthProvidersFixture extends TestFixture
             'name' => 'linkedout',
             'auth_class' => 'BEdita/API.OAuth2',
             'url' => 'https://out.example.com/oauth2',
-            'params' => '{"provider_username_field": "owner_id"}',
+            'params' => ['provider_username_field' => 'owner_id'],
             'enabled' => false,
             'created' => '2018-04-07 12:51:27',
             'modified' => '2018-04-07 12:51:27',
@@ -59,7 +58,7 @@ class AuthProvidersFixture extends TestFixture
             'name' => 'otp',
             'auth_class' => 'BEdita/API.OTP',
             'url' => null,
-            'params' => '{"expiry":"+5 minutes"}',
+            'params' => ['expiry' => '+5 minutes'],
             'enabled' => true,
             'created' => '2018-04-07 12:51:27',
             'modified' => '2018-04-07 12:51:27',

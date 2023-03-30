@@ -34,7 +34,7 @@ class GlideGeneratorTest extends TestCase
      *
      * @var string[]
      */
-    public $fixtures = [
+    protected $fixtures = [
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.Objects',
         'plugin.BEdita/Core.Media',

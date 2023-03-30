@@ -19,6 +19,9 @@ use Cake\I18n\FrozenDate;
 use Cake\I18n\FrozenTime;
 use Cake\Log\Log;
 use Cake\ORM\TableRegistry;
+use Cake\TestSuite\Fixture\SchemaLoader;
+use Cake\Utility\Hash;
+use Migrations\TestSuite\Migrator;
 
 $app = new Application(dirname(__DIR__) . '/config');
 $app->bootstrap();
@@ -93,3 +96,26 @@ Configure::write('Plugins', []);
 
 Cache::clear('_cake_core_');
 Cache::clear('_cake_model_');
+
+/*
+ * Load schema.
+ * First load fake schema for specific test purpose
+ * then it runs BEdita/Core migrations avoiding to drop tables creating by fake schema.
+ * Schema is loaded in unit test context but not in phpstan context.
+ */
+if (defined('UNIT_TEST_RUN')) {
+    $fakeSchemaPath = dirname(__DIR__) . '/plugins/BEdita/Core/tests/fake_schema.php';
+    $schemaLoader = new SchemaLoader();
+    $schemaLoader->loadInternalFile($fakeSchemaPath);
+
+    $fakeTables = include $fakeSchemaPath;
+    $fakeTables = Hash::extract((array)$fakeTables, '{n}.table');
+
+    $migrator = new Migrator();
+
+    // Run migrations for multiple plugins
+    $migrator->run([
+        'plugin' => 'BEdita/Core',
+        'skip' => $fakeTables,
+    ]);
+}

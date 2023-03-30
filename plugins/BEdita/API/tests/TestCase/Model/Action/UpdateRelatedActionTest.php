@@ -33,7 +33,7 @@ class UpdateRelatedActionTest extends TestCase
      *
      * @var array
      */
-    public $fixtures = [
+    protected $fixtures = [
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.Objects',
         'plugin.BEdita/Core.Profiles',
@@ -42,8 +42,8 @@ class UpdateRelatedActionTest extends TestCase
         'plugin.BEdita/Core.Relations',
         'plugin.BEdita/Core.RelationTypes',
         'plugin.BEdita/Core.ObjectRelations',
-        'plugin.BEdita/Core.Properties',
         'plugin.BEdita/Core.PropertyTypes',
+        'plugin.BEdita/Core.Properties',
         'plugin.BEdita/Core.Categories',
         'plugin.BEdita/Core.ObjectCategories',
         'plugin.BEdita/Core.History',

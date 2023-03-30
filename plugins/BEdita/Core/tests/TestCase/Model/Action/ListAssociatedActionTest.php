@@ -31,7 +31,7 @@ class ListAssociatedActionTest extends TestCase
      *
      * @var array
      */
-    public $fixtures = [
+    protected $fixtures = [
         'plugin.BEdita/Core.FakeAnimals',
         'plugin.BEdita/Core.FakeArticles',
         'plugin.BEdita/Core.FakeMammals',
@@ -137,7 +137,7 @@ class ListAssociatedActionTest extends TestCase
                     'id' => 1,
                     'name' => 'cat',
                     'legs' => 4,
-                    'updated_at' => '2018-02-20T09:50:00+00:00',
+                    'modified' => '2018-02-20T09:50:00+00:00',
                     'subclass' => 'Eutheria',
                 ],
                 'FakeMammalArticles',

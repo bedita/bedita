@@ -89,6 +89,7 @@ class BeditaShell extends Shell /* @phpstan-ignore-line */
      * Initial set up for a BEdita instance.
      *
      * @return void
+     * @codeCoverageIgnore
      */
     public function setup()
     {
@@ -139,6 +140,7 @@ class BeditaShell extends Shell /* @phpstan-ignore-line */
      * Check bedita instance.
      *
      * @return void
+     * @codeCoverageIgnore
      */
     public function check()
     {

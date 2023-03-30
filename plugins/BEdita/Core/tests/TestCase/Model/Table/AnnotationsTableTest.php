@@ -27,7 +27,7 @@ class AnnotationsTableTest extends TestCase
      *
      * @var array
      */
-    public $fixtures = [
+    protected $fixtures = [
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.Relations',
         'plugin.BEdita/Core.RelationTypes',
@@ -175,7 +175,7 @@ class AnnotationsTableTest extends TestCase
         if ($id) {
             $entity = $this->Annotations->get($id);
         } else {
-            $entity = $this->Annotations->newEntity([]);
+            $entity = $this->Annotations->newEmptyEntity();
         }
         $entity = $this->Annotations->patchEntity($entity, $data);
 

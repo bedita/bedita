@@ -34,10 +34,6 @@ class IntegrationTestCaseTest extends IntegrationTestCase
         return [
             'default' => [
                 [
-                    'plugin.BEdita/Core.Config',
-                    'plugin.BEdita/Core.AsyncJobs',
-                    'plugin.BEdita/Core.AuthProviders',
-                    'plugin.BEdita/Core.ExternalAuth',
                     'plugin.BEdita/Core.ObjectTypes',
                     'plugin.BEdita/Core.Objects',
                     'plugin.BEdita/Core.Locations',
@@ -51,8 +47,12 @@ class IntegrationTestCaseTest extends IntegrationTestCase
                     'plugin.BEdita/Core.EndpointPermissions',
                     'plugin.BEdita/Core.Relations',
                     'plugin.BEdita/Core.RelationTypes',
-                    'plugin.BEdita/Core.Properties',
                     'plugin.BEdita/Core.PropertyTypes',
+                    'plugin.BEdita/Core.Properties',
+                    'plugin.BEdita/Core.Config',
+                    'plugin.BEdita/Core.AsyncJobs',
+                    'plugin.BEdita/Core.AuthProviders',
+                    'plugin.BEdita/Core.ExternalAuth',
                     'plugin.BEdita/Core.Trees',
                     'plugin.BEdita/Core.ObjectRelations',
                     'plugin.BEdita/Core.Translations',
@@ -68,10 +68,6 @@ class IntegrationTestCaseTest extends IntegrationTestCase
             ],
             'fixturesPresent' => [
                 [
-                    'plugin.BEdita/Core.Config',
-                    'plugin.BEdita/Core.AsyncJobs',
-                    'plugin.BEdita/Core.AuthProviders',
-                    'plugin.BEdita/Core.ExternalAuth',
                     'plugin.BEdita/Core.ObjectTypes',
                     'plugin.BEdita/Core.Objects',
                     'plugin.BEdita/Core.Locations',
@@ -85,8 +81,12 @@ class IntegrationTestCaseTest extends IntegrationTestCase
                     'plugin.BEdita/Core.EndpointPermissions',
                     'plugin.BEdita/Core.Relations',
                     'plugin.BEdita/Core.RelationTypes',
-                    'plugin.BEdita/Core.Properties',
                     'plugin.BEdita/Core.PropertyTypes',
+                    'plugin.BEdita/Core.Properties',
+                    'plugin.BEdita/Core.Config',
+                    'plugin.BEdita/Core.AsyncJobs',
+                    'plugin.BEdita/Core.AuthProviders',
+                    'plugin.BEdita/Core.ExternalAuth',
                     'plugin.BEdita/Core.Trees',
                     'plugin.BEdita/Core.ObjectRelations',
                     'plugin.BEdita/Core.Translations',
@@ -121,7 +121,9 @@ class IntegrationTestCaseTest extends IntegrationTestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $mock->fixtures = $fixtures;
+        foreach ($fixtures as $f) {
+            $mock->addFixture($f);
+        }
         $mock->__construct();
         static::assertEquals($expected, $mock->fixtures);
     }
@@ -134,6 +136,8 @@ class IntegrationTestCaseTest extends IntegrationTestCase
      */
     public function testSetUp()
     {
+        $this->tearDown();
+
         CurrentApplication::getInstance()->set(null);
         static::assertEquals([], LoggedUser::getUser());
         static::assertNull(CurrentApplication::getApplication());

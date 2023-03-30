@@ -272,9 +272,13 @@ class FoldersControllerTest extends IntegrationTestCase
             'data' => [],
         ];
 
-        $this->fetchTable('Translations')->deleteAll([]);
-        $this->fetchTable('Annotations')->deleteAll([]);
-        $this->fetchTable('Folders')->deleteAll([]);
+        $this->fetchTable('Folders')
+            ->getConnection()
+            ->disableConstraints(function () {
+                $this->fetchTable('Translations')->deleteAll([]);
+                $this->fetchTable('Annotations')->deleteAll([]);
+                $this->fetchTable('Folders')->deleteAll([]);
+            });
 
         $this->configRequestHeaders();
         $this->get('/folders');

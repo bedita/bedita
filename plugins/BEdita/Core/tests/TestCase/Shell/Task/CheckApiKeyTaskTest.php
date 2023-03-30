@@ -39,7 +39,7 @@ class CheckApiKeyTaskTest extends TestCase
      *
      * @var array
      */
-    public $fixtures = [
+    protected $fixtures = [
         'plugin.BEdita/Core.Applications',
     ];
 

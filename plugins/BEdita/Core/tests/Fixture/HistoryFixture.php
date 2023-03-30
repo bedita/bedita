@@ -12,7 +12,7 @@
  */
 namespace BEdita\Core\Test\Fixture;
 
-use BEdita\Core\TestSuite\Fixture\TestFixture;
+use Cake\TestSuite\Fixture\TestFixture;
 
 /**
  * HistoryFixture
@@ -39,8 +39,10 @@ class HistoryFixture extends TestFixture
             'user_id' => 1,
             'application_id' => 1,
             'user_action' => 'create',
-            'changed' => '{"title":"title one","description":"description here"}',
-
+            'changed' => [
+                'title' => 'title one',
+                'description' => 'description here',
+            ],
         ],
         [
             'resource_id' => '2',
@@ -49,7 +51,13 @@ class HistoryFixture extends TestFixture
             'user_id' => 5,
             'application_id' => 1,
             'user_action' => 'update',
-            'changed' => '{"body":"body here","extra":{"abstract":"abstract here","list": ["one", "two", "three"]}}',
+            'changed' => [
+                'body' => 'body here',
+                'extra' => [
+                    'abstract' => 'abstract here',
+                    'list' => ['one', 'two', 'three'],
+                ],
+            ],
         ],
     ];
 }

@@ -26,7 +26,7 @@ class RelationshipsPriorityTest extends IntegrationTestCase
     /**
      * @inheritDoc
      */
-    public $fixtures = [
+    protected $fixtures = [
         'plugin.BEdita/Core.Media',
         'plugin.BEdita/Core.Streams',
     ];

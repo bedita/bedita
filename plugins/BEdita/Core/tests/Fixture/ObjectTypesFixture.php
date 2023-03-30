@@ -10,10 +10,9 @@
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\Fixture;
 
-use BEdita\Core\TestSuite\Fixture\TestFixture;
+use Cake\TestSuite\Fixture\TestFixture;
 
 /**
  * Fixture for `object_types` table.
@@ -53,7 +52,7 @@ class ObjectTypesFixture extends TestFixture
             'tree_left' => 2,
             'tree_right' => 3,
             'description' => null,
-            'associations' => '["Categories"]',
+            'associations' => ['Categories'],
             'plugin' => 'BEdita/Core',
             'model' => 'Objects',
             'created' => '2017-11-10 09:27:23',
@@ -72,7 +71,7 @@ class ObjectTypesFixture extends TestFixture
             'tree_left' => 4,
             'tree_right' => 5,
             'description' => null,
-            'associations' => '["Tags"]',
+            'associations' => ['Tags'],
             'plugin' => 'BEdita/Core',
             'model' => 'Profiles',
             'created' => '2017-11-10 09:27:23',
@@ -111,7 +110,7 @@ class ObjectTypesFixture extends TestFixture
             'description' => null,
             'plugin' => 'BEdita/Core',
             'model' => 'Objects',
-            'hidden' => '["body"]',
+            'hidden' => ['body'],
             'created' => '2017-11-10 09:27:23',
             'modified' => '2017-11-10 09:27:23',
             'enabled' => false,
@@ -148,7 +147,7 @@ class ObjectTypesFixture extends TestFixture
             'description' => null,
             'plugin' => 'BEdita/Core',
             'model' => 'Objects',
-            'associations' => '["DateRanges"]',
+            'associations' => ['DateRanges'],
             'created' => '2017-11-10 09:27:23',
             'modified' => '2017-11-10 09:27:23',
             'enabled' => true,
@@ -167,7 +166,7 @@ class ObjectTypesFixture extends TestFixture
             'description' => null,
             'plugin' => 'BEdita/Core',
             'model' => 'Media',
-            'associations' => '["Streams"]',
+            'associations' => ['Streams'],
             'created' => '2017-11-10 09:27:23',
             'modified' => '2017-11-10 09:27:23',
             'enabled' => true,
@@ -186,7 +185,7 @@ class ObjectTypesFixture extends TestFixture
             'description' => null,
             'plugin' => 'BEdita/Core',
             'model' => 'Media',
-            'associations' => '["Streams"]',
+            'associations' => ['Streams'],
             'created' => '2017-11-10 09:27:23',
             'modified' => '2017-11-10 09:27:23',
             'enabled' => true,
@@ -215,16 +214,4 @@ class ObjectTypesFixture extends TestFixture
             'is_translatable' => true,
         ],
     ];
-
-    /**
-     * Before Build Schema callback
-     *
-     * Remove foreign key on `parent_id` to avoid errors when DROP-ping table.
-     *
-     * @return void
-     */
-    public function beforeBuildSchema()
-    {
-        unset($this->fields['_constraints']['objecttypes_parentid_fk']);
-    }
 }

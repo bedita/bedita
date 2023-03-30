@@ -13,9 +13,10 @@
 namespace BEdita\Core\Test\TestCase\Utility;
 
 use BEdita\Core\Utility\Database;
+use Cake\Database\Connection;
+use Cake\Database\Schema\Collection;
 use Cake\Datasource\ConnectionManager;
 use Cake\TestSuite\TestCase;
-use Cake\Utility\Inflector;
 
 /**
  * \BEdita\Core\Utility\Database Test Case
@@ -25,16 +26,11 @@ use Cake\Utility\Inflector;
 class DatabaseTest extends TestCase
 {
     /**
-     * @inheritDoc
-     */
-    public $autoFixtures = false;
-
-    /**
      * Fixtures
      *
      * @var array
      */
-    public $fixtures = [
+    protected $fixtures = [
         'plugin.BEdita/Core.Applications',
         'plugin.BEdita/Core.Config',
         'plugin.BEdita/Core.AsyncJobs',
@@ -50,15 +46,11 @@ class DatabaseTest extends TestCase
      */
     public function testCurrentSchema()
     {
-        static::$fixtureManager->shutDown();
-
-        $fixtures = ['Applications', 'Config', 'ObjectTypes', 'Roles'];
-        $this->loadFixtures(...$fixtures); /* @phpstan-ignore-line */
+        $expected = ConnectionManager::get('test')->getSchemaCollection()->listTables();
         $schema = Database::currentSchema();
-
-        $this->assertCount(count($fixtures), $schema);
-        foreach ($fixtures as $f) {
-            $this->assertArrayHasKey(Inflector::underscore($f), $schema);
+        $this->assertCount(count($expected), $schema);
+        foreach ($expected as $table) {
+            $this->assertArrayHasKey($table, $schema);
         }
 
         // test not valid Connection object
@@ -92,17 +84,42 @@ class DatabaseTest extends TestCase
      */
     public function testSchemaCompare()
     {
-        static::$fixtureManager->shutDown();
+        $schemaTables1 = ['applications', 'config', 'object_types'];
+        $schemaTables2 = ['applications', 'config', 'object_types', 'async_jobs', 'roles'];
 
-        $fixtures1 = ['Applications', 'Config', 'ObjectTypes'];
-        $this->loadFixtures(...$fixtures1); /* @phpstan-ignore-line */
-        $schema1 = Database::currentSchema();
+        $describeCallback = function ($table) {
+            $schemaCol = ConnectionManager::get('test')->getSchemaCollection();
 
-        $fixtures2 = ['AsyncJobs', 'Roles'];
-        $this->loadFixtures(...$fixtures2); /* @phpstan-ignore-line */
-        $schema2 = Database::currentSchema();
+            return $schemaCol->describe($table);
+        };
 
-        $fixtures2 = array_merge($fixtures1, $fixtures2);
+        $mockSchemaCollection = $this->getMockBuilder(Collection::class)
+            ->disableOriginalConstructor()
+            ->onlyMethods(['listTables', 'describe'])
+            ->getMock();
+
+        $mockSchemaCollection
+            ->method('listTables')
+            ->willReturnOnConsecutiveCalls($schemaTables1, $schemaTables2);
+
+        $mockSchemaCollection
+            ->method('describe')
+            ->willReturnCallback($describeCallback);
+
+        $mockConnection = $this->getMockBuilder(Connection::class)
+            ->disableOriginalConstructor()
+            ->onlyMethods(['getSchemaCollection'])
+            ->getMock();
+
+        $mockConnection->method('getSchemaCollection')
+            ->willReturn($mockSchemaCollection);
+
+        ConnectionManager::setConfig('__tmp1Connection', ['className' => $mockConnection]);
+
+        $schema1 = Database::currentSchema('__tmp1Connection');
+        $schema2 = Database::currentSchema('__tmp1Connection');
+
+        ConnectionManager::drop('__tmp1Connection');
 
         $diff1 = Database::schemaCompare($schema1, $schema2);
         $this->assertCount(0, $diff1);
@@ -111,10 +128,10 @@ class DatabaseTest extends TestCase
         $this->assertCount(1, $diff2);
         $this->assertArrayHasKey('missing', $diff2);
 
-        $arrayDiff = array_diff($fixtures2, $fixtures1);
+        $arrayDiff = array_diff($schemaTables2, $schemaTables1);
         $this->assertCount(count($arrayDiff), $diff2['missing']['tables']);
         foreach ($arrayDiff as $v) {
-            $this->assertContains(Inflector::underscore($v), $diff2['missing']['tables']);
+            $this->assertContains($v, $diff2['missing']['tables']);
         }
 
         unset($schema2['object_types']['indexes']);
@@ -191,11 +208,11 @@ class DatabaseTest extends TestCase
     public function sqlExecute()
     {
         return [
-            ['SELECT id from applications', true, 2, 1],
-            ['SELECT id from properties', false, 0, 0],
-            ['SELECT id from roles', false, 0, 0, 'zzzzzzzzz'],
             ["UPDATE roles SET name='gustavo' WHERE id = 1;\n" .
              "UPDATE applications SET name='Gustano' WHERE id = 1;", true, 2, 2],
+            ['SELECT id from applications', true, 2, 1],
+            ['SELECT id from not_existing_table', false, 0, 0],
+            ['SELECT id from roles', false, 0, 0, 'zzzzzzzzz'],
             ["SELECT name from config;\n" . 'SELECT name from roles;', true, 15, 2],
             ['SELECT something', false, 0, 0],
             [[' ', 'SAY NO TO SQL', 'NOSQL NOPARTY'], false, 0, 0],
@@ -217,8 +234,6 @@ class DatabaseTest extends TestCase
      */
     public function testExecuteTransaction($sql, $success, $rowCount, $queryCount, $dbConfig = 'test')
     {
-        $this->loadFixtures('Applications', 'Config', 'ObjectTypes', 'Roles'); /* @phpstan-ignore-line */
-
         $res = Database::executeTransaction($sql, $dbConfig);
         $this->assertNotEmpty($res);
         $this->assertEquals($success, $res['success']);

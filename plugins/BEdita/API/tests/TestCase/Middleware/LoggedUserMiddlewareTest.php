@@ -42,14 +42,14 @@ class LoggedUserMiddlewareTest extends TestCase
      * @inheritDoc
      */
     protected $fixtures = [
+        'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.Relations',
         'plugin.BEdita/Core.RelationTypes',
-        'plugin.BEdita/Core.Config',
         'plugin.BEdita/Core.Applications',
+        'plugin.BEdita/Core.Config',
+        'plugin.BEdita/Core.Objects',
         'plugin.BEdita/Core.Users',
         'plugin.BEdita/Core.Profiles',
-        'plugin.BEdita/Core.Objects',
-        'plugin.BEdita/Core.ObjectTypes',
     ];
 
     /**
