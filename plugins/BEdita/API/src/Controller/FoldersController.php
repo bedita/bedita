@@ -176,15 +176,4 @@ class FoldersController extends ObjectsController
 
         return (int)$position;
     }
-
-    /**
-     * @inheritDoc
-     */
-    protected function prepareInclude($include, ?Table $table = null): array
-    {
-        $contain = parent::prepareInclude($include, $table);
-        $contain[] = 'Permissions';
-
-        return $contain;
-    }
 }

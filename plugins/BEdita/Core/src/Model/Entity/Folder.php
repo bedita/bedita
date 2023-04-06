@@ -41,38 +41,27 @@ class Folder extends ObjectEntity
 
         $this->setAccess('parents', false);
         $this->setHidden(['parents', 'tree_parent_nodes'], true);
-        $this->setVirtual(['path', 'perms'], true);
+        $this->setVirtual(['path'], true);
         $this->setAccess('path', false);
-        $this->setAccess('perms', false);
     }
 
     /**
-     * Getter for perms virtual prop.
+     * {@inheritDoc}
      *
-     * @return array
+     * If $roles is an empty array try to look for inherited permissions.
      */
-    protected function _getPerms(): array
+    protected function _getPerms(): ?array
     {
-        $roleIds = Hash::extract((array)$this->permissions, '{n}.role_id');
-        if (empty($roleIds)) {
+        $roles = parent::_getPerms();
+        if (is_array($roles) && empty($roles)) {
             return $this->getInheritedRolesPermissions();
         }
 
-        $roles = TableRegistry::getTableLocator()->get('Roles')
-            ->find('list')
-            ->where([
-                'id IN' => $roleIds,
-            ])
-            ->toArray();
-
-        $roles = array_values($roles);
-        $inherited = false;
-
-        return compact('roles', 'inherited');
+        return $roles;
     }
 
     /**
-     * Get inherited roles permissions
+     * Get inherited roles permissions.
      *
      * @return array
      */
@@ -82,18 +71,15 @@ class Folder extends ObjectEntity
         /** @var \BEdita\Core\Model\Entity\Tree $node */
         $node = $Trees->find()->where(['object_id' => $this->id])->first();
 
-        $roles = TableRegistry::getTableLocator()->get('Roles')
+        $permission = $this->getTable()->Permissions
             ->find()
-            ->select(['Roles.name', 'Trees.tree_left'])
             ->disableHydration()
-            ->innerJoin(
-                ['ObjectPermissions' => 'object_permissions'],
-                ['ObjectPermissions.role_id = Roles.id'],
-            )
+            ->select(['tree_left' => 'Trees.tree_left', 'name' => 'Roles.name'])
+            ->contain('Roles')
             ->innerJoin(
                 ['Trees' => 'trees'],
                 [
-                    'Trees.object_id = ObjectPermissions.object_id',
+                    'Trees.object_id = Permissions.object_id',
                     'Trees.tree_left <' => $node->tree_left,
                     'Trees.tree_right >' => $node->tree_right,
                 ],
@@ -106,13 +92,13 @@ class Folder extends ObjectEntity
             ->order(['Trees.tree_left' => 'DESC'])
             ->toArray();
 
-        if (empty($roles)) {
+        if (empty($permission)) {
             return [];
         }
 
-        $roles = array_values(Hash::combine($roles, '{n}.name', '{n}.name', '{n}.Trees.tree_left'));
+        $roles = current(Hash::combine($permission, '{n}.name', '{n}.name', '{n}.tree_left'));
 
-        return ['roles' => array_values($roles[0]), 'inherited' => true];
+        return ['roles' => array_values($roles), 'inherited' => true];
     }
 
     /**

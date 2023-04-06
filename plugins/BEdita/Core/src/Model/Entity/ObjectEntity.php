@@ -20,6 +20,7 @@ use Cake\ORM\Entity;
 use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
 use Cake\Routing\Router;
+use Cake\Utility\Hash;
 
 /**
  * Object Entity.
@@ -78,6 +79,7 @@ class ObjectEntity extends Entity implements JsonApiSerializable
         'published' => false,
         'created_by' => false,
         'modified_by' => false,
+        'perms' => false,
     ];
 
     /**
@@ -85,6 +87,7 @@ class ObjectEntity extends Entity implements JsonApiSerializable
      */
     protected $_virtual = [
         'type',
+        'perms',
     ];
 
     /**
@@ -99,6 +102,7 @@ class ObjectEntity extends Entity implements JsonApiSerializable
         'custom_props',
         'tree_nodes',
         'permissions',
+        'perms',
     ];
 
     /**
@@ -267,8 +271,12 @@ class ObjectEntity extends Entity implements JsonApiSerializable
      */
     public function getVisible(): array
     {
-        $visible = parent::getVisible();
         $this->loadObjectType();
+        if ($this->object_type && in_array('Permissions', (array)$this->object_type->associations)) {
+            $this->setHidden(array_diff($this->_hidden, ['perms']), false);
+        }
+
+        $visible = parent::getVisible();
         if (!$this->object_type) {
             return $visible;
         }
@@ -352,5 +360,49 @@ class ObjectEntity extends Entity implements JsonApiSerializable
     public function isFieldTranslatable(string $name): bool
     {
         return !in_array($name, $this->notTranslatable);
+    }
+
+    /**
+     * Getter for perms virtual prop.
+     * Return `null` if `Permissions` isn't in object type associations
+     * else return an array as
+     *
+     * ```
+     * [
+     *     'roles' => ['rolename_one', 'rolename_two'],
+     *     'inherited' => false,
+     * ]
+     * ```
+     *
+     * @return array|null
+     */
+    protected function _getPerms(): ?array
+    {
+        $this->loadObjectType();
+        if (!$this->object_type || !in_array('Permissions', (array)$this->object_type->associations)) {
+            return null;
+        }
+
+        $roleIds = Hash::extract((array)$this->permissions, '{n}.role_id');
+
+        if (!$this->hasProperty('permissions')) {
+            $this->getTable()->loadInto($this, ['Permissions']);
+        }
+
+        if (empty($roleIds)) {
+            return [];
+        }
+
+        $roles = TableRegistry::getTableLocator()->get('Roles')
+            ->find('list')
+            ->where([
+                'id IN' => $roleIds,
+            ])
+            ->toArray();
+
+        $roles = array_values($roles);
+        $inherited = false;
+
+        return compact('roles', 'inherited');
     }
 }

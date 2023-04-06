@@ -32,6 +32,7 @@ use Cake\Http\Exception\ForbiddenException;
 use Cake\Http\Exception\InternalErrorException;
 use Cake\ORM\Association;
 use Cake\ORM\Query;
+use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
 use Cake\Routing\Exception\MissingRouteException;
 use Cake\Routing\Router;
@@ -165,6 +166,19 @@ class ObjectsController extends ResourcesController
         }
 
         return parent::beforeFilter($event);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected function prepareInclude($include, ?Table $table = null): array
+    {
+        $contain = parent::prepareInclude($include, $table);
+        if ($this->objectType && in_array('Permissions', (array)$this->objectType->associations)) {
+            $contain[] = 'Permissions';
+        }
+
+        return $contain;
     }
 
     /**
