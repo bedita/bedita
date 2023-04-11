@@ -25,13 +25,21 @@ class UpdateObjectPermissions extends AbstractMigration
                 'null' => false,
             ])
             ->removeColumn('params')
+            ->addIndex(
+                [
+                    'created_by',
+                ],
+                [
+                    'name' => 'objectpermissions_createdby_idx',
+                ]
+            )
             ->addForeignKey(
                 'created_by',
                 'users',
                 'id',
                 [
                     'constraint' => 'objectpermissions_createdby_fk',
-                    'update' => 'RESTRICT',
+                    'update' => 'NO_ACTION',
                     'delete' => 'RESTRICT',
                 ]
             )
@@ -44,6 +52,7 @@ class UpdateObjectPermissions extends AbstractMigration
     public function down()
     {
         $this->table('object_permissions')
+            ->removeIndex('created_by')
             ->dropForeignKey('created_by')
             ->removeColumn('created_by')
             ->removeColumn('created')
