@@ -71,9 +71,6 @@ class ObjectPermissionsTable extends Table
             ->integer('id')
             ->allowEmptyString('id', null, 'create');
 
-        $validator
-            ->allowEmptyArray('params');
-
         return $validator;
     }
 
@@ -84,9 +81,9 @@ class ObjectPermissionsTable extends Table
      */
     public function buildRules(RulesChecker $rules): RulesChecker
     {
-        $rules->add($rules->existsIn(['object_id'], 'Objects'));
-        $rules->add($rules->existsIn(['role_id'], 'Roles'));
-
-        return $rules;
+        return $rules
+            ->add($rules->existsIn(['object_id'], 'Objects'))
+            ->add($rules->existsIn(['role_id'], 'Roles'))
+            ->add($rules->existsIn(['created_by'], 'CreatedByUsers'));
     }
 }

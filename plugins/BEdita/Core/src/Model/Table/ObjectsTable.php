@@ -37,6 +37,7 @@ use Cake\Utility\Hash;
  * @property \BEdita\Core\Model\Table\FoldersTable|\Cake\ORM\Association\BelongsToMany $Parents
  * @property \BEdita\Core\Model\Table\TreesTable|\Cake\ORM\Association\HasMany $TreeNodes
  * @property \BEdita\Core\Model\Table\TranslationsTable|\Cake\ORM\Association\HasMany $Translations
+ * @property \BEdita\Core\Model\Table\ObjectPermissionsTable|\Cake\ORM\Association\HasMany $Permissions
  * @method \BEdita\Core\Model\Entity\ObjectEntity get($primaryKey, $options = [])
  * @method \BEdita\Core\Model\Entity\ObjectEntity newEntity($data = null, array $options = [])
  * @method \BEdita\Core\Model\Entity\ObjectEntity[] newEntities(array $data, array $options = [])

@@ -383,11 +383,11 @@ class ObjectEntity extends Entity implements JsonApiSerializable
             return null;
         }
 
-        $roleIds = Hash::extract((array)$this->permissions, '{n}.role_id');
-
         if (!$this->hasProperty('permissions')) {
             $this->getTable()->loadInto($this, ['Permissions']);
         }
+
+        $roleIds = Hash::extract((array)$this->permissions, '{n}.role_id');
 
         if (empty($roleIds)) {
             return [];
