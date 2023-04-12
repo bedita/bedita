@@ -1,6 +1,8 @@
 <?php
 namespace BEdita\Core\Test\TestCase\Model\Table;
 
+use Cake\ORM\Association\BelongsTo;
+use Cake\ORM\Behavior\TimestampBehavior;
 use Cake\TestSuite\TestCase;
 
 /**
@@ -55,29 +57,68 @@ class ObjectPermissionsTableTest extends TestCase
      * Test initialize method
      *
      * @return void
+     * @coversNothing
      */
     public function testInitialize()
     {
-        $this->markTestIncomplete('Not implemented yet.');
+        $this->assertEquals('object_permissions', $this->ObjectPermissions->getTable());
+        $this->assertEquals('id', $this->ObjectPermissions->getPrimaryKey());
+        $this->assertEquals('id', $this->ObjectPermissions->getDisplayField());
+
+        $this->assertInstanceOf(BelongsTo::class, $this->ObjectPermissions->CreatedByUsers);
+        $this->assertInstanceOf(BelongsTo::class, $this->ObjectPermissions->Objects);
+        $this->assertInstanceOf(BelongsTo::class, $this->ObjectPermissions->Roles);
+        $this->assertInstanceOf(TimestampBehavior::class, $this->ObjectPermissions->behaviors()->get('Timestamp'));
     }
 
     /**
-     * Test validationDefault method
+     * Data provider for `testBuildRules` test case.
      *
-     * @return void
+     * @return array
      */
-    public function testValidationDefault()
+    public function buildRulesProvider()
     {
-        $this->markTestIncomplete('Not implemented yet.');
+        return [
+            'invalidObject' => [
+                false,
+                [
+                    'object_id' => 1234,
+                    'role_id' => 1,
+                    'created_by' => 1,
+                ],
+            ],
+            'invalidRole' => [
+                false,
+                [
+                    'object_id' => 2,
+                    'role_id' => 1234,
+                    'created_by' => 1,
+                ],
+            ],
+            'invalidUser' => [
+                false,
+                [
+                    'object_id' => 2,
+                    'role_id' => 1,
+                    'created_by' => 1234,
+                ],
+            ],
+        ];
     }
 
     /**
-     * Test buildRules method
+     * Test build rules validation.
      *
+     * @param bool $expected Expected result.
+     * @param array $data Data to be validated.
      * @return void
+     * @dataProvider buildRulesProvider
+     * @covers ::buildRules()
      */
-    public function testBuildRules()
+    public function testBuildRules($expected, array $data): void
     {
-        $this->markTestIncomplete('Not implemented yet.');
+        $entity = $this->ObjectPermissions->newEntity($data, ['accessibleFields' => ['created_by' => true]]);
+        $success = $this->ObjectPermissions->save($entity);
+        $this->assertEquals($expected, (bool)$success, print_r($entity->getErrors(), true));
     }
 }

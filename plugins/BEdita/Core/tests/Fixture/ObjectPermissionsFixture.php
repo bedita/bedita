@@ -27,7 +27,7 @@ class ObjectPermissionsFixture extends TestFixture
     public $records = [
         [
             'id' => 1,
-            'object_id' => 1,
+            'object_id' => 2,
             'role_id' => 1,
             'created_by' => 1,
             'created' => '2023-03-29 15:08',

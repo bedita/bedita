@@ -53,6 +53,7 @@ class ObjectEntityTest extends TestCase
         'plugin.BEdita/Core.ObjectRelations',
         'plugin.BEdita/Core.AuthProviders',
         'plugin.BEdita/Core.ExternalAuth',
+        'plugin.BEdita/Core.ObjectPermissions',
     ];
 
     /**
@@ -232,6 +233,26 @@ class ObjectEntityTest extends TestCase
         $visible = $entity->getVisible();
 
         static::assertSame($expectedVisible, array_values($visible));
+    }
+
+    /**
+     * Test that an object type with `Permissions` association has `perms` as visible properties.
+     *
+     * @return void
+     * @covers ::getVisible()
+     * @covers ::loadObjectType()
+     */
+    public function testVisiblePropertiesWithPermissions(): void
+    {
+        $document = $this->Objects->ObjectTypes->get('document');
+        $document->associations = ['Permissions'];
+        $this->Objects->ObjectTypes->saveOrFail($document);
+
+        $entity = $this->Objects->newEmptyEntity();
+        $entity->type = 'documents';
+
+        static::assertTrue(in_array('perms', $entity->getVisible()));
+        static::assertFalse(in_array('perms', $entity->getHidden()));
     }
 
     /**
@@ -605,5 +626,64 @@ class ObjectEntityTest extends TestCase
         $entity->addNotTranslatable(['description']);
         $result = $entity->isFieldTranslatable('description');
         static::assertFalse($result);
+    }
+
+    /**
+     * Test that getting `perms` virtual prop for an object type
+     * without Permission association return `null`.
+     *
+     * @return void
+     * @covers ::loadObjectType()
+     * @covers ::_getPerms()
+     */
+    public function testGetPermsWithoutPermissionsAssociation(): void
+    {
+        $document = $this->Objects->ObjectTypes->get('documents');
+        static::assertFalse(in_array('Permissions', (array)$document->associations));
+        $entity = $this->Objects->newEmptyEntity();
+        $entity->type = 'documents';
+        static::assertNull($entity->get('perms'));
+    }
+
+    /**
+     * Data provider for `testGetPerms()`.
+     *
+     * @return array
+     */
+    public function getPermissionsProvider(): array
+    {
+        return [
+            'no perms' => [
+                [],
+                3,
+            ],
+            'perms' => [
+                [
+                    'roles' => ['first role'],
+                    'inherited' => false,
+                ],
+                2,
+            ],
+        ];
+    }
+
+    /**
+     * Test getter for `perms` virtual prop.
+     *
+     * @param array $expected The expected result
+     * @param int $documentId The document id
+     * @return void
+     * @covers ::loadObjectType()
+     * @covers ::_getPerms()
+     * @dataProvider getPermissionsProvider
+     */
+    public function testGetPerms(array $expected, int $documentId): void
+    {
+        $document = $this->Objects->ObjectTypes->get('document');
+        $document->associations = ['Permissions'];
+        $this->Objects->ObjectTypes->saveOrFail($document);
+
+        $document = $this->fetchTable('Documents')->get($documentId);
+        static::assertEquals($expected, $document->get('perms'));
     }
 }
