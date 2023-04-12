@@ -22,6 +22,7 @@ use BEdita\Core\Model\Action\ListRelatedObjectsAction;
 use BEdita\Core\Model\Action\RemoveRelatedObjectsAction;
 use BEdita\Core\Model\Action\SaveEntityAction;
 use BEdita\Core\Model\Action\SetRelatedObjectsAction;
+use BEdita\Core\Model\Entity\ObjectType;
 use BEdita\Core\Model\Table\ObjectsTable;
 use BEdita\Core\Model\Table\RolesTable;
 use Cake\Datasource\EntityInterface;
@@ -174,7 +175,15 @@ class ObjectsController extends ResourcesController
     protected function prepareInclude($include, ?Table $table = null): array
     {
         $contain = parent::prepareInclude($include, $table);
-        if ($this->objectType && in_array('Permissions', (array)$this->objectType->associations)) {
+
+        $objectType = null;
+        if ($table === null) {
+            $objectType = $this->objectType;
+        } elseif ($table->hasBehavior('ObjectType')) {
+            $objectType = $table->objectType();
+        }
+
+        if ($objectType instanceof ObjectType && in_array('Permissions', (array)$objectType->associations)) {
             $contain[] = 'Permissions';
         }
 
