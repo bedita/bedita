@@ -37,12 +37,12 @@ class FolderTest extends TestCase
         'plugin.BEdita/Core.Relations',
         'plugin.BEdita/Core.RelationTypes',
         'plugin.BEdita/Core.ObjectRelations',
-        'plugin.BEdita/Core.ObjectPermissions',
         'plugin.BEdita/Core.Profiles',
         'plugin.BEdita/Core.Users',
         'plugin.BEdita/Core.Trees',
         'plugin.BEdita/Core.Roles',
         'plugin.BEdita/Core.RolesUsers',
+        'plugin.BEdita/Core.ObjectPermissions',
     ];
 
     /**
