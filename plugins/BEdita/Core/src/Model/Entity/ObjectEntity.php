@@ -383,22 +383,16 @@ class ObjectEntity extends Entity implements JsonApiSerializable
             return null;
         }
 
-        if (!$this->hasProperty('permissions')) {
-            $this->getTable()->loadInto($this, ['Permissions']);
+        $roles = array_filter(array_unique(Hash::extract((array)$this->permissions, '{n}.role.name')));
+        // ensure permissions and roles are loaded
+        if (empty($roles)) {
+            $this->getTable()->loadInto($this, ['Permissions.Roles']);
+            $roles = array_filter(array_unique(Hash::extract((array)$this->permissions, '{n}.role.name')));
         }
 
-        $roleIds = Hash::extract((array)$this->permissions, '{n}.role_id');
-
-        if (empty($roleIds)) {
+        if (empty($roles)) {
             return [];
         }
-
-        $roles = TableRegistry::getTableLocator()->get('Roles')
-            ->find('list')
-            ->where([
-                'id IN' => $roleIds,
-            ])
-            ->toArray();
 
         $roles = array_values($roles);
         $inherited = false;
