@@ -13,6 +13,7 @@
 
 namespace BEdita\Core\Test\TestCase\Model\Table;
 
+use BEdita\Core\Model\Entity\ObjectType;
 use BEdita\Core\Utility\LoggedUser;
 use Cake\Core\Configure;
 use Cake\Database\Expression\QueryExpression;
@@ -94,6 +95,20 @@ class FoldersTableTest extends TestCase
         $this->assertEquals('title', $this->Folders->getDisplayField());
 
         $this->assertInstanceOf(BelongsToMany::class, $this->Folders->Children);
+    }
+
+    /**
+     * Test that a FoldersTable initialized via alias has the right object type.
+     * For example when is used as Parents association on `objectsTable`
+     *
+     * @return void
+     * @covers ::initialize()
+     */
+    public function testInitializeObjectType(): void
+    {
+        $Folders = $this->fetchTable('FolderAlias', ['className' => 'BEdita/Core.Folders']);
+        static::assertInstanceOf(ObjectType::class, $Folders->objectType());
+        static::assertEquals('folders', $Folders->objectType()->name);
     }
 
     /**
