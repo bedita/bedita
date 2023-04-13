@@ -2823,4 +2823,92 @@ class ObjectsControllerTest extends IntegrationTestCase
 
         static::assertEquals($expected, Hash::get($result, 'data.meta.perms'));
     }
+
+    /**
+     * Test that getting parents the permissions are set.
+     *
+     * @return void
+     * @covers ::prepareInclude()
+     */
+    public function testParentsPermissions(): void
+    {
+        $ObjectTypes = $this->fetchTable('ObjectTypes');
+        $ot = $ObjectTypes->get('folders');
+        $ot->associations = ['Permissions'];
+        $ObjectTypes->saveOrFail($ot);
+
+        // add perms on parent folder
+        $ObjectPermissions = $this->fetchTable('ObjectPermissions');
+        $entity = $ObjectPermissions->newEntity(
+            [
+                'object_id' => 11,
+                'role_id' => 2,
+                'created_by' => 1,
+            ],
+            [
+                'accessibleFields' => ['created_by' => true],
+            ]
+        );
+
+        $ObjectPermissions->saveOrFail($entity);
+
+        $this->configRequestHeaders();
+        $this->get(sprintf('/documents/%s/parents', 2));
+
+        $result = json_decode((string)$this->_response->getBody(), true);
+
+        $this->assertResponseCode(200);
+        $this->assertContentType('application/vnd.api+json');
+
+        $expected = [
+            'roles' => ['second role'],
+            'inherited' => false,
+        ];
+
+        static::assertEquals($expected, Hash::get($result, 'data.0.meta.perms'));
+    }
+
+    /**
+     * Test that getting related objects the permission are set.
+     *
+     * @return void
+     * @covers ::prepareInclude()
+     */
+    public function testRelationPermissions(): void
+    {
+        $ObjectTypes = $this->fetchTable('ObjectTypes');
+        $ot = $ObjectTypes->get('locations');
+        $ot->associations = ['Permissions'];
+        $ObjectTypes->saveOrFail($ot);
+
+        // add perms on related locations
+        $ObjectPermissions = $this->fetchTable('ObjectPermissions');
+        $entity = $ObjectPermissions->newEntity(
+            [
+                'object_id' => 8,
+                'role_id' => 2,
+                'created_by' => 1,
+            ],
+            [
+                'accessibleFields' => ['created_by' => true],
+            ]
+        );
+
+        $ObjectPermissions->saveOrFail($entity);
+
+        $this->configRequestHeaders();
+        $this->get('/users/1/another_test');
+
+        $result = json_decode((string)$this->_response->getBody(), true);
+
+        $this->assertResponseCode(200);
+        $this->assertContentType('application/vnd.api+json');
+
+        $expected = [
+            'roles' => ['second role'],
+            'inherited' => false,
+        ];
+
+        static::assertEquals($expected, Hash::get($result, 'data.0.meta.perms'));
+    }
 }
