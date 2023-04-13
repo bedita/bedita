@@ -63,6 +63,8 @@ class FoldersTable extends ObjectsTable
             'foreignKey' => 'parent_id',
         ]);
 
+        // Ensure to setup object type also when an alias different from `Folders` is used.
+        // For example `Parents` association defined in `ObjectsTable`
         if ($this->objectType() === null) {
             $this->setupRelations('folders');
         }
