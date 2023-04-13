@@ -40,6 +40,9 @@ class FolderTest extends TestCase
         'plugin.BEdita/Core.Profiles',
         'plugin.BEdita/Core.Users',
         'plugin.BEdita/Core.Trees',
+        'plugin.BEdita/Core.Roles',
+        'plugin.BEdita/Core.RolesUsers',
+        'plugin.BEdita/Core.ObjectPermissions',
     ];
 
     /**
@@ -262,5 +265,71 @@ class FolderTest extends TestCase
         TableRegistry::getTableLocator()->get('Trees')->recover();
 
         $this->Folders->get(12)->get('path');
+    }
+
+    /**
+     * Test empty perms.
+     *
+     * @return void
+     * @covers ::_getPerms()
+     * @covers ::getInheritedRolesPermissions()
+     */
+    public function testGetPermsEmpty(): void
+    {
+        $folder = $this->Folders->get(11);
+        static::assertNull($folder->get('perms'));
+
+        $ot = $this->Folders->ObjectTypes->get('folders');
+        $ot->associations = ['Permissions'];
+        $this->Folders->ObjectTypes->saveOrFail($ot);
+
+        $folder = $this->Folders->get(11);
+        static::assertEquals([], $folder->get('perms'));
+    }
+
+    /**
+     * Test get inherited permissions.
+     *
+     * @return void
+     * @covers ::_getPerms()
+     * @covers ::getInheritedRolesPermissions()
+     */
+    public function testGetPermsInherited(): void
+    {
+        $ot = $this->Folders->ObjectTypes->get('folders');
+        $ot->associations = ['Permissions'];
+        $this->Folders->ObjectTypes->saveOrFail($ot);
+
+        $entities = $this->Folders->Permissions->newEntities(
+            [
+                [
+                    'object_id' => 11,
+                    'role_id' => 1,
+                    'created_by' => 1,
+                ],
+                [
+                    'object_id' => 11,
+                    'role_id' => 2,
+                    'created_by' => 1,
+                ],
+            ],
+            [
+                'accessibleFields' => ['created_by' => true],
+            ]
+        );
+
+        $this->Folders->Permissions->saveManyOrFail($entities);
+
+        $perms = $this->Folders->get(12)->get('perms');
+        static::assertIsArray($perms);
+        static::assertArrayHasKey('roles', $perms);
+        static::assertArrayHasKey('inherited', $perms);
+
+        $expected = [
+            'roles' => ['first role', 'second role'],
+            'inherited' => true,
+        ];
+        sort($perms['roles']);
+        static::assertEquals($expected, $perms);
     }
 }

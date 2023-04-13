@@ -38,9 +38,7 @@ use Cake\ORM\RulesChecker;
 class FoldersTable extends ObjectsTable
 {
     /**
-     * {@inheritDoc}
-     *
-     * @codeCoverageIgnore
+     * @inheritDoc
      */
     public function initialize(array $config): void
     {
@@ -64,6 +62,12 @@ class FoldersTable extends ObjectsTable
             'className' => 'Trees',
             'foreignKey' => 'parent_id',
         ]);
+
+        // Ensure to setup object type also when an alias different from `Folders` is used.
+        // For example `Parents` association defined in `ObjectsTable`
+        if ($this->objectType() === null) {
+            $this->setupRelations('folders');
+        }
     }
 
     /**

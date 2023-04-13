@@ -8,15 +8,23 @@ use Cake\Validation\Validator;
 /**
  * ObjectPermissions Model
  *
- * @property \Cake\ORM\Association\BelongsTo $Objects
- * @property \Cake\ORM\Association\BelongsTo $Roles
+ * @property \BEdita\Core\Model\Table\ObjectsTable&\Cake\ORM\Association\BelongsTo $Objects
+ * @property \BEdita\Core\Model\Table\RolesTable&\Cake\ORM\Association\BelongsTo $Roles
  * @method \BEdita\Core\Model\Entity\ObjectPermission get($primaryKey, $options = [])
- * @method \BEdita\Core\Model\Entity\ObjectPermission newEntity($data = null, array $options = [])
+ * @method \BEdita\Core\Model\Entity\ObjectPermission newEntity(array $data, array $options = [])
  * @method \BEdita\Core\Model\Entity\ObjectPermission[] newEntities(array $data, array $options = [])
- * @method \BEdita\Core\Model\Entity\ObjectPermission|bool save(\Cake\Datasource\EntityInterface $entity, $options = [])
+ * @method \BEdita\Core\Model\Entity\ObjectPermission|false save(\Cake\Datasource\EntityInterface $entity, $options = [])
  * @method \BEdita\Core\Model\Entity\ObjectPermission patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
- * @method \BEdita\Core\Model\Entity\ObjectPermission[] patchEntities($entities, array $data, array $options = [])
- * @method \BEdita\Core\Model\Entity\ObjectPermission findOrCreate($search, callable $callback = null, $options = [])
+ * @method \BEdita\Core\Model\Entity\ObjectPermission[] patchEntities(iterable $entities, array $data, array $options = [])
+ * @method \BEdita\Core\Model\Entity\ObjectPermission findOrCreate($search, ?callable $callback = null, $options = [])
+ * @property \BEdita\Core\Model\Table\UsersTable&\Cake\ORM\Association\BelongsTo $CreatedByUsers
+ * @method \BEdita\Core\Model\Entity\ObjectPermission newEmptyEntity()
+ * @method \BEdita\Core\Model\Entity\ObjectPermission saveOrFail(\Cake\Datasource\EntityInterface $entity, $options = [])
+ * @method \BEdita\Core\Model\Entity\ObjectPermission[]|\Cake\Datasource\ResultSetInterface|false saveMany(iterable $entities, $options = [])
+ * @method \BEdita\Core\Model\Entity\ObjectPermission[]|\Cake\Datasource\ResultSetInterface saveManyOrFail(iterable $entities, $options = [])
+ * @method \BEdita\Core\Model\Entity\ObjectPermission[]|\Cake\Datasource\ResultSetInterface|false deleteMany(iterable $entities, $options = [])
+ * @method \BEdita\Core\Model\Entity\ObjectPermission[]|\Cake\Datasource\ResultSetInterface deleteManyOrFail(iterable $entities, $options = [])
+ * @mixin \Cake\ORM\Behavior\TimestampBehavior
  */
 class ObjectPermissionsTable extends Table
 {
@@ -43,6 +51,13 @@ class ObjectPermissionsTable extends Table
             'joinType' => 'INNER',
             'className' => 'BEdita/Core.Roles',
         ]);
+        $this->belongsTo('CreatedByUsers', [
+            'foreignKey' => 'created_by',
+            'joinType' => 'INNER',
+            'className' => 'BEdita/Core.Users',
+        ]);
+
+        $this->addBehavior('Timestamp');
     }
 
     /**
@@ -56,9 +71,6 @@ class ObjectPermissionsTable extends Table
             ->integer('id')
             ->allowEmptyString('id', null, 'create');
 
-        $validator
-            ->allowEmptyArray('params');
-
         return $validator;
     }
 
@@ -69,9 +81,9 @@ class ObjectPermissionsTable extends Table
      */
     public function buildRules(RulesChecker $rules): RulesChecker
     {
-        $rules->add($rules->existsIn(['object_id'], 'Objects'));
-        $rules->add($rules->existsIn(['role_id'], 'Roles'));
-
-        return $rules;
+        return $rules
+            ->add($rules->existsIn(['object_id'], 'Objects'))
+            ->add($rules->existsIn(['role_id'], 'Roles'))
+            ->add($rules->existsIn(['created_by'], 'CreatedByUsers'));
     }
 }

@@ -9,10 +9,12 @@ use Cake\ORM\Entity;
  * @property int $id
  * @property int $object_id
  * @property int $role_id
- * @property string $params
+ * @property \Cake\I18n\FrozenTime $created
+ * @property int $created_by
  *
  * @property \BEdita\Core\Model\Entity\ObjectEntity $object
  * @property \BEdita\Core\Model\Entity\Role $role
+ * @property \BEdita\Core\Model\Entity\User $created_by_user
  */
 class ObjectPermission extends Entity
 {
@@ -28,5 +30,7 @@ class ObjectPermission extends Entity
     protected $_accessible = [
         '*' => true,
         'id' => false,
+        'created' => false,
+        'created_by' => false,
     ];
 }

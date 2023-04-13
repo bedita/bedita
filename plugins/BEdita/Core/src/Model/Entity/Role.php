@@ -48,5 +48,6 @@ class Role extends Entity implements JsonApiSerializable
      */
     protected $_hidden = [
         'endpoint_permissions',
+        'object_permissions',
     ];
 }

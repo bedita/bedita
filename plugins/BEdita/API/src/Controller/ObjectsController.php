@@ -22,6 +22,7 @@ use BEdita\Core\Model\Action\ListRelatedObjectsAction;
 use BEdita\Core\Model\Action\RemoveRelatedObjectsAction;
 use BEdita\Core\Model\Action\SaveEntityAction;
 use BEdita\Core\Model\Action\SetRelatedObjectsAction;
+use BEdita\Core\Model\Entity\ObjectType;
 use BEdita\Core\Model\Table\ObjectsTable;
 use BEdita\Core\Model\Table\RolesTable;
 use Cake\Datasource\EntityInterface;
@@ -32,6 +33,7 @@ use Cake\Http\Exception\ForbiddenException;
 use Cake\Http\Exception\InternalErrorException;
 use Cake\ORM\Association;
 use Cake\ORM\Query;
+use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
 use Cake\Routing\Exception\MissingRouteException;
 use Cake\Routing\Router;
@@ -165,6 +167,27 @@ class ObjectsController extends ResourcesController
         }
 
         return parent::beforeFilter($event);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected function prepareInclude($include, ?Table $table = null): array
+    {
+        $contain = parent::prepareInclude($include, $table);
+
+        $objectType = null;
+        if ($table === null) {
+            $objectType = $this->objectType;
+        } elseif ($table->hasBehavior('ObjectType')) {
+            $objectType = $table->objectType();
+        }
+
+        if ($objectType instanceof ObjectType && in_array('Permissions', (array)$objectType->associations)) {
+            $contain[] = 'Permissions.Roles';
+        }
+
+        return $contain;
     }
 
     /**

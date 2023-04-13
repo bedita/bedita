@@ -46,6 +46,62 @@ class Folder extends ObjectEntity
     }
 
     /**
+     * {@inheritDoc}
+     *
+     * If $roles is an empty array try to look for inherited permissions.
+     */
+    protected function _getPerms(): ?array
+    {
+        $roles = parent::_getPerms();
+        if (is_array($roles) && empty($roles)) {
+            return $this->getInheritedRolesPermissions();
+        }
+
+        return $roles;
+    }
+
+    /**
+     * Get inherited roles permissions.
+     *
+     * @return array
+     */
+    protected function getInheritedRolesPermissions(): array
+    {
+        $Trees = TableRegistry::getTableLocator()->get('Trees');
+        /** @var \BEdita\Core\Model\Entity\Tree $node */
+        $node = $Trees->find()->where(['object_id' => $this->id])->first();
+
+        $permission = $this->getTable()->Permissions
+            ->find()
+            ->disableHydration()
+            ->select(['tree_left' => 'Trees.tree_left', 'name' => 'Roles.name'])
+            ->contain('Roles')
+            ->innerJoin(
+                ['Trees' => 'trees'],
+                [
+                    'Trees.object_id = Permissions.object_id',
+                    'Trees.tree_left <' => $node->tree_left,
+                    'Trees.tree_right >' => $node->tree_right,
+                ],
+                [
+                    'Trees.object_id' => 'integer',
+                    'Trees.tree_left' => 'integer',
+                    'Trees.tree_right' => 'integer',
+                ]
+            )
+            ->order(['Trees.tree_left' => 'DESC'])
+            ->toArray();
+
+        if (empty($permission)) {
+            return [];
+        }
+
+        $roles = current(Hash::combine($permission, '{n}.name', '{n}.name', '{n}.tree_left'));
+
+        return ['roles' => array_values($roles), 'inherited' => true];
+    }
+
+    /**
      * Getter for `parent` virtual property
      *
      * @return \BEdita\Core\Model\Entity\Folder|null

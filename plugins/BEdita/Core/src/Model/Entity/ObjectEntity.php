@@ -20,6 +20,7 @@ use Cake\ORM\Entity;
 use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
 use Cake\Routing\Router;
+use Cake\Utility\Hash;
 
 /**
  * Object Entity.
@@ -52,6 +53,7 @@ use Cake\Routing\Router;
  * @property \BEdita\Core\Model\Entity\Folder[] $parents
  * @property \BEdita\Core\Model\Entity\Tree[] $tree_nodes
  * @property \BEdita\Core\Model\Entity\Translation[] $translations
+ * @property \BEdita\Core\Model\Entity\ObjectPermission[] $permissions
  * @since 4.0.0
  */
 class ObjectEntity extends Entity implements JsonApiSerializable
@@ -77,6 +79,7 @@ class ObjectEntity extends Entity implements JsonApiSerializable
         'published' => false,
         'created_by' => false,
         'modified_by' => false,
+        'perms' => false,
     ];
 
     /**
@@ -84,6 +87,7 @@ class ObjectEntity extends Entity implements JsonApiSerializable
      */
     protected $_virtual = [
         'type',
+        'perms',
     ];
 
     /**
@@ -97,6 +101,8 @@ class ObjectEntity extends Entity implements JsonApiSerializable
         'deleted',
         'custom_props',
         'tree_nodes',
+        'permissions',
+        'perms',
     ];
 
     /**
@@ -265,8 +271,12 @@ class ObjectEntity extends Entity implements JsonApiSerializable
      */
     public function getVisible(): array
     {
-        $visible = parent::getVisible();
         $this->loadObjectType();
+        if ($this->object_type && in_array('Permissions', (array)$this->object_type->associations)) {
+            $this->setHidden(array_diff($this->_hidden, ['perms']), false);
+        }
+
+        $visible = parent::getVisible();
         if (!$this->object_type) {
             return $visible;
         }
@@ -350,5 +360,43 @@ class ObjectEntity extends Entity implements JsonApiSerializable
     public function isFieldTranslatable(string $name): bool
     {
         return !in_array($name, $this->notTranslatable);
+    }
+
+    /**
+     * Getter for perms virtual prop.
+     * Return `null` if `Permissions` isn't in object type associations
+     * else return an array as
+     *
+     * ```
+     * [
+     *     'roles' => ['rolename_one', 'rolename_two'],
+     *     'inherited' => false,
+     * ]
+     * ```
+     *
+     * @return array|null
+     */
+    protected function _getPerms(): ?array
+    {
+        $this->loadObjectType();
+        if (!$this->object_type || !in_array('Permissions', (array)$this->object_type->associations)) {
+            return null;
+        }
+
+        $roles = array_filter(array_unique(Hash::extract((array)$this->permissions, '{n}.role.name')));
+        // ensure permissions and roles are loaded
+        if (empty($roles)) {
+            $this->getTable()->loadInto($this, ['Permissions.Roles']);
+            $roles = array_filter(array_unique(Hash::extract((array)$this->permissions, '{n}.role.name')));
+        }
+
+        if (empty($roles)) {
+            return [];
+        }
+
+        $roles = array_values($roles);
+        $inherited = false;
+
+        return compact('roles', 'inherited');
     }
 }
