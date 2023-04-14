@@ -20,6 +20,7 @@ COPY docker-entrypoint.sh /usr/local/bin/
 COPY . /var/www/html
 WORKDIR /var/www/html
 RUN chown -R www-data:www-data /var/www/html
+RUN chmod g+w /var/www/html
 USER www-data:www-data
 VOLUME /var/www/html/webroot/_files
 
