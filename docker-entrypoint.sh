@@ -24,6 +24,9 @@ if [ ! -z "${DATABASE_URL}" ]; then
         DATABASE_PATH=$(php -r "echo substr(parse_url(preg_replace('/^([\\w\\\\\\]+)/', 'file', getenv('DATABASE_URL')), PHP_URL_PATH), 1);")
         echo "=====> Path: ${DATABASE_PATH}"
         chmod a+rwx ${DATABASE_PATH}
+        DATABASE_DIR="$(dirname ${DATABASE_PATH})"
+        chown www-data:www-data ${DATABASE_PATH} ${DATABASE_DIR}
+        chmod g+w ${DATABASE_DIR}
     fi
 
     bin/cake cache clear_all
