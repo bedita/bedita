@@ -7,7 +7,6 @@ ARG DEBUG
 ENV DEBUG=${DEBUG:-false} \
     LOG_DEBUG_URL="console:///?stream=php://stdout" \
     LOG_ERROR_URL="console:///?stream=php://stderr" \
-    DATABASE_DIR="/var/www/html/" \
     DATABASE_URL="sqlite:////var/www/html/bedita.sqlite"
 
 # Install Wait-for-it, copy entrypoint, configure Apache and PHP
