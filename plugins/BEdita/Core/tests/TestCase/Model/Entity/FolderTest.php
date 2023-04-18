@@ -14,6 +14,7 @@
 namespace BEdita\Core\Test\TestCase\Model\Entity;
 
 use BEdita\Core\Model\Entity\Folder;
+use BEdita\Core\Utility\LoggedUser;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
@@ -328,8 +329,96 @@ class FolderTest extends TestCase
         $expected = [
             'roles' => ['first role', 'second role'],
             'inherited' => true,
+            'descendant_have_perms' => false,
         ];
         sort($perms['roles']);
+        static::assertEquals($expected, $perms);
+    }
+
+    /**
+     * Test descendant have permissions.
+     *
+     * @return void
+     * @covers ::_getPerms()
+     * @covers ::descendantHavePermissions()
+     */
+    public function testDescendantHavePermissions(): void
+    {
+        $ot = $this->Folders->ObjectTypes->get('folders');
+        $ot->associations = ['Permissions'];
+        $this->Folders->ObjectTypes->saveOrFail($ot);
+
+        // Root folder has role 1 permission, sub folder has none
+        $entity = $this->Folders->Permissions->newEntity(
+            [
+                'object_id' => 11,
+                'role_id' => 1,
+                'created_by' => 1,
+            ],
+            [
+                'accessibleFields' => ['created_by' => true],
+            ]
+        );
+        $this->Folders->Permissions->saveOrFail($entity);
+
+        // Perms for root folder must assert that guest has no permission for a descendant folder
+        $perms = $this->Folders->get(11)->get('perms');
+
+        static::assertIsArray($perms);
+        static::assertNotEmpty($perms);
+        static::assertArrayHasKey('descendant_have_perms', $perms);
+        static::assertFalse($perms['descendant_have_perms']);
+
+        $expected = [
+            'roles' => ['first role'],
+            'inherited' => false,
+            'descendant_have_perms' => false,
+        ];
+        static::assertEquals($expected, $perms);
+
+        // User has role 2
+        LoggedUser::setUser([
+            'id' => 5,
+            'roles' => [
+                ['id' => 2],
+            ],
+        ]);
+
+        // Perms for root folder must assert that user has no permission for a descendant folder
+        $perms = $this->Folders->get(11)->get('perms');
+
+        static::assertIsArray($perms);
+        static::assertNotEmpty($perms);
+        static::assertArrayHasKey('descendant_have_perms', $perms);
+        static::assertFalse($perms['descendant_have_perms']);
+        static::assertEquals($expected, $perms);
+
+        // Add role 2 permission to sub folder
+        $entity = $this->Folders->Permissions->newEntity(
+            [
+                'object_id' => 12,
+                'role_id' => 2,
+                'created_by' => 1,
+            ],
+            [
+                'accessibleFields' => ['created_by' => true],
+            ]
+        );
+        $this->Folders->Permissions->saveOrFail($entity);
+
+        // Perms for root folder must assert that user has permission for a descendant folder
+        $perms = $this->Folders->get(11)->get('perms');
+
+        static::assertIsArray($perms);
+        static::assertNotEmpty($perms);
+        static::assertArrayHasKey('descendant_have_perms', $perms);
+        static::assertTrue($perms['descendant_have_perms']);
+
+        $expected = [
+            'roles' => ['first role'],
+            'inherited' => false,
+            'descendant_have_perms' => true,
+        ];
         static::assertEquals($expected, $perms);
     }
 }

@@ -13,6 +13,7 @@
 
 namespace BEdita\Core\Model\Entity;
 
+use BEdita\Core\Utility\LoggedUser;
 use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
@@ -54,7 +55,10 @@ class Folder extends ObjectEntity
     {
         $roles = parent::_getPerms();
         if (is_array($roles) && empty($roles)) {
-            return $this->getInheritedRolesPermissions();
+            $roles = $this->getInheritedRolesPermissions();
+        }
+        if (is_array($roles) && !empty($roles)) {
+            $roles = Hash::insert($roles, 'descendant_have_perms', $this->descendantHavePermissions());
         }
 
         return $roles;
@@ -99,6 +103,44 @@ class Folder extends ObjectEntity
         $roles = current(Hash::combine($permission, '{n}.name', '{n}.name', '{n}.tree_left'));
 
         return ['roles' => array_values($roles), 'inherited' => true];
+    }
+
+    /**
+     * Check if access to any descendant is permitted to the current user.
+     *
+     * @return bool
+     */
+    protected function descendantHavePermissions(): bool
+    {
+        $user = LoggedUser::getUser();
+        if (empty($user)) {
+            return false;
+        }
+
+        $Trees = TableRegistry::getTableLocator()->get('Trees');
+        $descendantPermitted = $Trees->query()
+            ->disableHydration()
+            ->select(['existing' => 1])
+            ->from(['t1' => 'trees'], true)
+            ->innerJoin(
+                ['t2' => 'trees'],
+                [
+                    't2.tree_left > t1.tree_left',
+                    't2.tree_right < t1.tree_right',
+                ],
+            )
+            ->innerJoin(
+                ['op' => 'object_permissions'],
+                [
+                    'op.object_id = t2.object_id',
+                    'op.role_id IN' => Hash::extract($user, 'roles.{n}.id'),
+                ],
+            )
+            ->where(['t1.object_id' => $this->id], ['t1.object_id' => 'integer'])
+            ->limit(1)
+            ->first();
+
+        return !empty($descendantPermitted);
     }
 
     /**
