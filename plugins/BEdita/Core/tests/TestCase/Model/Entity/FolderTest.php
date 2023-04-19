@@ -352,7 +352,7 @@ class FolderTest extends TestCase
                         'object_id' => 11,
                         'role_id' => 1,
                         'created_by' => 1,
-                    ]
+                    ],
                 ],
                 // folder to get
                 11,
