@@ -420,5 +420,17 @@ class FolderTest extends TestCase
             'descendant_perms_granted' => true,
         ];
         static::assertEquals($expected, $perms);
+
+        // User is admin
+        LoggedUser::setUserAdmin();
+
+        // Perms for root folder must assert that user has permission for a descendant folder
+        $perms = $this->Folders->get(11)->get('perms');
+
+        static::assertIsArray($perms);
+        static::assertNotEmpty($perms);
+        static::assertArrayHasKey('descendant_perms_granted', $perms);
+        static::assertTrue($perms['descendant_perms_granted']);
+        static::assertEquals($expected, $perms);
     }
 }
