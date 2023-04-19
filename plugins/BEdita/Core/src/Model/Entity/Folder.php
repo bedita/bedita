@@ -116,6 +116,10 @@ class Folder extends ObjectEntity
         if (empty($user)) {
             return false;
         }
+        $roles = Hash::extract($user, 'roles.{n}.name');
+        if (in_array('admin', $roles)) {
+            return true;
+        }
 
         $Trees = TableRegistry::getTableLocator()->get('Trees');
         $descendantPermitted = $Trees->query()
