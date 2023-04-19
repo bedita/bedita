@@ -329,7 +329,7 @@ class FolderTest extends TestCase
         $expected = [
             'roles' => ['first role', 'second role'],
             'inherited' => true,
-            'descendant_have_perms' => false,
+            'descendant_perms_granted' => false,
         ];
         sort($perms['roles']);
         static::assertEquals($expected, $perms);
@@ -366,13 +366,13 @@ class FolderTest extends TestCase
 
         static::assertIsArray($perms);
         static::assertNotEmpty($perms);
-        static::assertArrayHasKey('descendant_have_perms', $perms);
-        static::assertFalse($perms['descendant_have_perms']);
+        static::assertArrayHasKey('descendant_perms_granted', $perms);
+        static::assertFalse($perms['descendant_perms_granted']);
 
         $expected = [
             'roles' => ['first role'],
             'inherited' => false,
-            'descendant_have_perms' => false,
+            'descendant_perms_granted' => false,
         ];
         static::assertEquals($expected, $perms);
 
@@ -389,8 +389,8 @@ class FolderTest extends TestCase
 
         static::assertIsArray($perms);
         static::assertNotEmpty($perms);
-        static::assertArrayHasKey('descendant_have_perms', $perms);
-        static::assertFalse($perms['descendant_have_perms']);
+        static::assertArrayHasKey('descendant_perms_granted', $perms);
+        static::assertFalse($perms['descendant_perms_granted']);
         static::assertEquals($expected, $perms);
 
         // Add role 2 permission to sub folder
@@ -411,13 +411,13 @@ class FolderTest extends TestCase
 
         static::assertIsArray($perms);
         static::assertNotEmpty($perms);
-        static::assertArrayHasKey('descendant_have_perms', $perms);
-        static::assertTrue($perms['descendant_have_perms']);
+        static::assertArrayHasKey('descendant_perms_granted', $perms);
+        static::assertTrue($perms['descendant_perms_granted']);
 
         $expected = [
             'roles' => ['first role'],
             'inherited' => false,
-            'descendant_have_perms' => true,
+            'descendant_perms_granted' => true,
         ];
         static::assertEquals($expected, $perms);
     }

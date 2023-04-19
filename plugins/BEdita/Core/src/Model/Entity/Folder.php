@@ -58,7 +58,7 @@ class Folder extends ObjectEntity
             $roles = $this->getInheritedRolesPermissions();
         }
         if (is_array($roles) && !empty($roles)) {
-            $roles = Hash::insert($roles, 'descendant_have_perms', $this->descendantHavePermissions());
+            $roles = Hash::insert($roles, 'descendant_perms_granted', $this->descendantHavePermissions());
         }
 
         return $roles;

@@ -2863,7 +2863,7 @@ class ObjectsControllerTest extends IntegrationTestCase
         $expected = [
             'roles' => ['second role'],
             'inherited' => false,
-            'descendant_have_perms' => false,
+            'descendant_perms_granted' => false,
         ];
 
         static::assertEquals($expected, Hash::get($result, 'data.0.meta.perms'));
