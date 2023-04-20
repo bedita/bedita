@@ -1,6 +1,7 @@
 <?php
 namespace BEdita\Core\Model\Entity;
 
+use BEdita\Core\Utility\JsonApiSerializable;
 use Cake\ORM\Entity;
 
 /**
@@ -16,8 +17,10 @@ use Cake\ORM\Entity;
  * @property \BEdita\Core\Model\Entity\Role $role
  * @property \BEdita\Core\Model\Entity\User $created_by_user
  */
-class ObjectPermission extends Entity
+class ObjectPermission extends Entity implements JsonApiSerializable
 {
+    use JsonApiTrait;
+
     /**
      * Fields that can be mass assigned using newEntity() or patchEntity().
      *

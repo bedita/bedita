@@ -58,6 +58,13 @@ class ObjectPermissionsTable extends Table
         ]);
 
         $this->addBehavior('Timestamp');
+        $this->addBehavior('BEdita/Core.UserModified', [
+            'events' => [
+                'Model.beforeSave' => [
+                    'created_by' => 'new',
+                ],
+            ],
+        ]);
     }
 
     /**

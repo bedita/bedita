@@ -26,6 +26,7 @@ return function (RouteBuilder $routes) {
             'folders',
             'translations',
             'annotations',
+            'object_permissions',
         ];
         $adminControllers = [
             'applications',
