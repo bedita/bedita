@@ -1,9 +1,9 @@
 {
 	"info": {
-		"_postman_id": "13af6637-6ab9-4f7c-9d43-3f76ef92b77e",
+		"_postman_id": "fb4edbaa-3cf1-4f6d-a731-60ab9ab87c9f",
 		"name": "BEdita 5 Core API",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "234034"
+		"_exporter_id": "864760"
 	},
 	"item": [
 		{
@@ -6057,7 +6057,7 @@
 							}
 						],
 						"url": {
-							"raw": "{{be4Url}}/folders?filter[roots]",
+							"raw": "{{be4Url}}/folders?filter[roots]=",
 							"host": [
 								"{{be4Url}}"
 							],
@@ -10194,7 +10194,7 @@
 							}
 						],
 						"url": {
-							"raw": "{{be4Url}}/{{objectTypeName}}?filter[mine]",
+							"raw": "{{be4Url}}/{{objectTypeName}}?filter[mine]=true",
 							"host": [
 								"{{be4Url}}"
 							],
@@ -10661,7 +10661,375 @@
 			]
 		},
 		{
-			"name": "17. Remove All",
+			"name": "17. ObjectPermissions",
+			"item": [
+				{
+					"name": "GET object_permissions",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;",
+									"tests[\"Content-Type is correct\"] = postman.getResponseHeader(\"Content-Type\") === 'application/vnd.api+json';",
+									"var responseJSON;",
+									"try {",
+									"    responseJSON = JSON.parse(responseBody); ",
+									"    if (responseJSON && responseJSON.data && responseJSON.data.id) {",
+									"        postman.setEnvironmentVariable(\"annotationId\", responseJSON.data.id);",
+									"    }",
+									"} catch (e) {",
+									"    tests[\"Error in parsing response\"] = e;",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/vnd.api+json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt}}"
+							},
+							{
+								"key": "X-Api-Key",
+								"value": "{{apiKey}}"
+							}
+						],
+						"url": {
+							"raw": "{{be4Url}}/object_permissions/",
+							"host": [
+								"{{be4Url}}"
+							],
+							"path": [
+								"object_permissions",
+								""
+							]
+						},
+						"description": "Get annotations list"
+					},
+					"response": []
+				},
+				{
+					"name": "Create an object_permissions",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var responseJSON;",
+									"try {",
+									"    responseJSON = JSON.parse(responseBody); ",
+									"    tests[\"Status code is 201\"] = responseCode.code === 201;",
+									"    tests[\"Content-Type is correct\"] = postman.getResponseHeader(\"Content-Type\") === 'application/vnd.api+json';",
+									"    if (responseJSON && responseJSON.data && responseJSON.data.id) {",
+									"        postman.setEnvironmentVariable(\"objectPermissionId\", responseJSON.data.id);",
+									"    }",
+									"} catch (e) {",
+									"    tests[\"Error in parsing response\"] = e;",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/vnd.api+json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt}}"
+							},
+							{
+								"key": "X-Api-Key",
+								"value": "{{apiKey}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"data\": {\n        \"type\": \"object_permissions\",\n        \"attributes\": {\n\t\t\t\"object_id\": \"{{objectId}}\",\n            \"role_id\": \"{{roleId}}\"\n        }\n    }\n}"
+						},
+						"url": {
+							"raw": "{{be4Url}}/object_permissions",
+							"host": [
+								"{{be4Url}}"
+							],
+							"path": [
+								"object_permissions"
+							]
+						},
+						"description": "Create an annotation for an object."
+					},
+					"response": []
+				},
+				{
+					"name": "GET object_permissions by object id",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;",
+									"tests[\"Content-Type is correct\"] = postman.getResponseHeader(\"Content-Type\") === 'application/vnd.api+json';",
+									"var responseJSON;",
+									"try {",
+									"    responseJSON = JSON.parse(responseBody); ",
+									"    if (responseJSON && responseJSON.data && responseJSON.data.id) {",
+									"        postman.setEnvironmentVariable(\"annotationId\", responseJSON.data.id);",
+									"    }",
+									"} catch (e) {",
+									"    tests[\"Error in parsing response\"] = e;",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/vnd.api+json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt}}"
+							},
+							{
+								"key": "X-Api-Key",
+								"value": "{{apiKey}}"
+							}
+						],
+						"url": {
+							"raw": "{{be4Url}}/object_permissions?filter[object_id]={{objectId}}",
+							"host": [
+								"{{be4Url}}"
+							],
+							"path": [
+								"object_permissions"
+							],
+							"query": [
+								{
+									"key": "filter[object_id]",
+									"value": "{{objectId}}"
+								}
+							]
+						},
+						"description": "Get annotations list"
+					},
+					"response": []
+				},
+				{
+					"name": "GET single object_permissions",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;",
+									"tests[\"Content-Type is correct\"] = postman.getResponseHeader(\"Content-Type\") === 'application/vnd.api+json';"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/vnd.api+json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt}}"
+							},
+							{
+								"key": "X-Api-Key",
+								"value": "{{apiKey}}"
+							}
+						],
+						"url": {
+							"raw": "{{be4Url}}/object_permissions/{{objectPermissionId}}",
+							"host": [
+								"{{be4Url}}"
+							],
+							"path": [
+								"object_permissions",
+								"{{objectPermissionId}}"
+							]
+						},
+						"description": "Get a single annotation by ID"
+					},
+					"response": []
+				},
+				{
+					"name": "Modify an object_permissions",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;",
+									"tests[\"Content-Type is correct\"] = postman.getResponseHeader(\"Content-Type\") === 'application/vnd.api+json';"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Accept",
+								"value": "application/vnd.api+json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt}}"
+							},
+							{
+								"key": "X-Api-Key",
+								"value": "{{apiKey}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"data\": {\n        \"id\": \"{{objectPermissionId}}\",\n        \"type\": \"object_permissions\",\n        \"attributes\": {\n            \"role_id\": \"3\"\n        }\n    }\n}"
+						},
+						"url": {
+							"raw": "{{be4Url}}/object_permissions/{{objectPermissionId}}",
+							"host": [
+								"{{be4Url}}"
+							],
+							"path": [
+								"object_permissions",
+								"{{objectPermissionId}}"
+							]
+						},
+						"description": "PATCH annotation"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete an object_permission",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"tests[\"Status code is 204\"] = responseCode.code === 204;",
+									"tests[\"Body matches string\"] = responseBody === \"\";"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/vnd.api+json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt}}"
+							},
+							{
+								"key": "X-Api-Key",
+								"value": "{{apiKey}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{be4Url}}/object_permissions/{{objectPermissionId}}",
+							"host": [
+								"{{be4Url}}"
+							],
+							"path": [
+								"object_permissions",
+								"{{objectPermissionId}}"
+							]
+						},
+						"description": "DEL annotation"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete an annotation permanently Copy",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 204\"] = responseCode.code === 204;",
+									"tests[\"Body matches string\"] = responseBody === \"\";"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/vnd.api+json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt}}"
+							},
+							{
+								"key": "X-Api-Key",
+								"value": "{{apiKey}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{be4Url}}/trash/{{annotationId}}",
+							"host": [
+								"{{be4Url}}"
+							],
+							"path": [
+								"trash",
+								"{{annotationId}}"
+							]
+						},
+						"description": "DEL annotation"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "18. Remove All",
 			"item": [
 				{
 					"name": "Remove sub folder permanently",
