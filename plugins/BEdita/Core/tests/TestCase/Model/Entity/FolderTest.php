@@ -14,6 +14,7 @@
 namespace BEdita\Core\Test\TestCase\Model\Entity;
 
 use BEdita\Core\Model\Entity\Folder;
+use BEdita\Core\Utility\LoggedUser;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
@@ -328,8 +329,142 @@ class FolderTest extends TestCase
         $expected = [
             'roles' => ['first role', 'second role'],
             'inherited' => true,
+            'descendant_perms_granted' => false,
         ];
         sort($perms['roles']);
+        static::assertEquals($expected, $perms);
+    }
+
+    /**
+     * Provider for `testDescendantHavePermissions`.
+     *
+     * @return array[]
+     */
+    public function testDescendantHavePermissionsProvider(): array
+    {
+        return [
+            'guest user' => [
+                // user
+                null,
+                // permission entities
+                [
+                    [
+                        'object_id' => 11,
+                        'role_id' => 1,
+                        'created_by' => 1,
+                    ],
+                ],
+                // folder to get
+                11,
+                // expected
+                [
+                    'roles' => ['first role'],
+                    'inherited' => false,
+                    'descendant_perms_granted' => false,
+                ],
+            ],
+            'user without permissions for descendant folder' => [
+                [
+                    'id' => 5,
+                    'roles' => [
+                        ['id' => 2],
+                    ],
+                ],
+                [
+                    [
+                        'object_id' => 11,
+                        'role_id' => 1,
+                        'created_by' => 1,
+                    ],
+                ],
+                11,
+                [
+                    'roles' => ['first role'],
+                    'inherited' => false,
+                    'descendant_perms_granted' => false,
+                ],
+            ],
+            'user with permissions for descendant folder' => [
+                [
+                    'id' => 5,
+                    'roles' => [
+                        ['id' => 2],
+                    ],
+                ],
+                [
+                    [
+                        'object_id' => 11,
+                        'role_id' => 1,
+                        'created_by' => 1,
+                    ],
+                    [
+                        'object_id' => 12,
+                        'role_id' => 2,
+                        'created_by' => 1,
+                    ],
+                ],
+                11,
+                [
+                    'roles' => ['first role'],
+                    'inherited' => false,
+                    'descendant_perms_granted' => true,
+                ],
+            ],
+            'user is admin' => [
+                [
+                    'id' => 5,
+                    'roles' => [
+                        ['id' => 1, 'name' => 'admin'],
+                    ],
+                ],
+                [
+                    [
+                        'object_id' => 11,
+                        'role_id' => 1,
+                        'created_by' => 1,
+                    ],
+                    [
+                        'object_id' => 12,
+                        'role_id' => 2,
+                        'created_by' => 1,
+                    ],
+                ],
+                11,
+                [
+                    'roles' => ['first role'],
+                    'inherited' => false,
+                    'descendant_perms_granted' => true,
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * Test descendant have permissions.
+     *
+     * @return void
+     * @dataProvider testDescendantHavePermissionsProvider
+     * @covers ::_getPerms()
+     * @covers ::descendantHavePermissions()
+     */
+    public function testDescendantHavePermissions($user, $entities, $folderId, $expected): void
+    {
+        $ot = $this->Folders->ObjectTypes->get('folders');
+        $ot->associations = ['Permissions'];
+        $this->Folders->ObjectTypes->saveOrFail($ot);
+
+        $entities = $this->Folders->Permissions->newEntities($entities, ['accessibleFields' => ['created_by' => true]]);
+        $this->Folders->Permissions->saveManyOrFail($entities);
+
+        if ($user !== null) {
+            LoggedUser::setUser($user);
+        }
+
+        $perms = $this->Folders->get($folderId)->get('perms');
+
+        static::assertIsArray($perms);
+        static::assertNotEmpty($perms);
+        static::assertArrayHasKey('descendant_perms_granted', $perms);
         static::assertEquals($expected, $perms);
     }
 }
