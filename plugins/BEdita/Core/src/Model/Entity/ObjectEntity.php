@@ -45,6 +45,7 @@ use Cake\Utility\Hash;
  * @property int $modified_by
  * @property \Cake\I18n\Time|\Cake\I18n\FrozenTime $publish_start
  * @property \Cake\I18n\Time|\Cake\I18n\FrozenTime $publish_end
+ * @property array $perms
  *
  * @property \BEdita\Core\Model\Entity\ObjectType $object_type
  * @property \BEdita\Core\Model\Entity\User $created_by_user

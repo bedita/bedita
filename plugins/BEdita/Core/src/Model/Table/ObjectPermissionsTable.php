@@ -1,8 +1,13 @@
 <?php
 namespace BEdita\Core\Model\Table;
 
+use BEdita\Core\Utility\LoggedUser;
+use Cake\Datasource\EntityInterface;
+use Cake\Event\EventInterface;
+use Cake\Http\Exception\ForbiddenException;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
+use Cake\Utility\Hash;
 use Cake\Validation\Validator;
 
 /**
@@ -76,7 +81,15 @@ class ObjectPermissionsTable extends Table
     {
         $validator
             ->integer('id')
-            ->allowEmptyString('id', null, 'create');
+            ->allowEmptyString('id', null, 'create')
+
+            ->integer('role_id')
+            ->requirePresence('role_id', 'create')
+            ->notEmptyString('role_id')
+
+            ->integer('object_id')
+            ->requirePresence('object_id', 'create')
+            ->notEmptyString('object_id');
 
         return $validator;
     }
@@ -92,5 +105,38 @@ class ObjectPermissionsTable extends Table
             ->add($rules->existsIn(['object_id'], 'Objects'))
             ->add($rules->existsIn(['role_id'], 'Roles'))
             ->add($rules->existsIn(['created_by'], 'CreatedByUsers'));
+    }
+
+    /**
+     * Check object permissions.
+     *
+     * @param \Cake\Event\EventInterface $event Fired event.
+     * @param \Cake\Datasource\EntityInterface $entity Entity data.
+     * @return void
+     */
+    public function beforeSave(EventInterface $event, EntityInterface $entity): void
+    {
+        if (in_array(RolesTable::ADMIN_ROLE, Hash::extract(LoggedUser::getUser(), 'roles.{n}.id'))) {
+            return;
+        }
+
+        if ($entity->isNew()) {
+            $entity->object = $this->Objects->get($entity->object_id);
+        }
+
+        /** @var \BEdita\Core\Model\Entity\ObjectPermission $entity */
+        if (empty($entity->object)) {
+            $this->loadInto($entity, ['Objects']);
+        }
+
+        $permsRoles = Hash::extract((array)$entity->object->perms, 'roles');
+        if (empty($permsRoles)) { // no permission set
+            return;
+        }
+
+        $userRolesNames = Hash::extract(LoggedUser::getUser(), 'roles.{n}.name');
+        if (empty(array_intersect($permsRoles, $userRolesNames))) {
+            throw new ForbiddenException(__d('bedita', 'Save object permission is forbidden for user'));
+        }
     }
 }

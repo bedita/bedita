@@ -1,6 +1,8 @@
 <?php
 namespace BEdita\Core\Test\TestCase\Model\Table;
 
+use BEdita\Core\Utility\LoggedUser;
+use Cake\Http\Exception\ForbiddenException;
 use Cake\ORM\Association\BelongsTo;
 use Cake\ORM\Behavior\TimestampBehavior;
 use Cake\TestSuite\TestCase;
@@ -25,8 +27,10 @@ class ObjectPermissionsTableTest extends TestCase
     protected $fixtures = [
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.Objects',
+        'plugin.BEdita/Core.Profiles',
         'plugin.BEdita/Core.Users',
         'plugin.BEdita/Core.Roles',
+        'plugin.BEdita/Core.RolesUsers',
         'plugin.BEdita/Core.ObjectPermissions',
     ];
 
@@ -49,6 +53,7 @@ class ObjectPermissionsTableTest extends TestCase
     public function tearDown(): void
     {
         unset($this->ObjectPermissions);
+        LoggedUser::resetUser();
 
         parent::tearDown();
     }
@@ -120,5 +125,109 @@ class ObjectPermissionsTableTest extends TestCase
         $entity = $this->ObjectPermissions->newEntity($data, ['accessibleFields' => ['created_by' => true]]);
         $success = $this->ObjectPermissions->save($entity);
         $this->assertEquals($expected, (bool)$success, print_r($entity->getErrors(), true));
+    }
+
+    /**
+     * Test that save object permission with admin user is allowed
+     * also with another permission set on it.
+     *
+     * @return void
+     * @covers ::beforeSave
+     */
+    public function testBeforeSaveAdmin(): void
+    {
+        LoggedUser::setUserAdmin();
+        $ObjectTypes = $this->fetchTable('ObjectTypes');
+        $ot = $ObjectTypes->get('documents');
+        $ot->permissions_enabled = true;
+        $ObjectTypes->saveOrFail($ot);
+        static::assertTrue($this->ObjectPermissions->exists(['object_id' => 2]));
+        $entity = $this->ObjectPermissions->newEntity([
+            'role_id' => 2,
+            'object_id' => 2,
+        ]);
+
+        $this->ObjectPermissions->saveOrFail($entity);
+        static::assertEquals(2, $entity->id);
+    }
+
+    /**
+     * Test save is ok when no permission is set on object.
+     *
+     * @return void
+     * @covers ::beforeSave()
+     */
+    public function testBeforeSaveNoPermissionSet(): void
+    {
+        $user = $this->fetchTable('Users')->get(5, ['contain' => 'Roles']);
+        LoggedUser::setUser($user->toArray());
+        $ObjectTypes = $this->fetchTable('ObjectTypes');
+        $ot = $ObjectTypes->get('documents');
+        $ot->permissions_enabled = true;
+        $ObjectTypes->saveOrFail($ot);
+        static::assertFalse($this->ObjectPermissions->exists(['object_id' => 3]));
+        $entity = $this->ObjectPermissions->newEntity([
+            'role_id' => 2,
+            'object_id' => 3,
+        ]);
+
+        $this->ObjectPermissions->saveOrFail($entity);
+        static::assertEquals(2, $entity->id);
+    }
+
+    /**
+     * Test save is ok when permission is set on object and user has grant.
+     *
+     * @return void
+     * @covers ::beforeSave()
+     */
+    public function testBeforeSaveWithPermissionOk(): void
+    {
+        $user = $this->fetchTable('Users')->get(5, ['contain' => 'Roles']);
+        LoggedUser::setUser($user->toArray());
+        $ObjectTypes = $this->fetchTable('ObjectTypes');
+        $ot = $ObjectTypes->get('documents');
+        $ot->permissions_enabled = true;
+        $ObjectTypes->saveOrFail($ot);
+        static::assertFalse($this->ObjectPermissions->exists(['object_id' => 3]));
+        $entity = $this->ObjectPermissions->newEntity([
+            'role_id' => 2,
+            'object_id' => 3,
+        ]);
+
+        $this->ObjectPermissions->saveOrFail($entity);
+        static::assertEquals(2, $entity->id);
+
+        $entity = $this->ObjectPermissions->newEntity([
+            'role_id' => 1,
+            'object_id' => 3,
+        ]);
+        $this->ObjectPermissions->saveOrFail($entity);
+        static::assertEquals(3, $entity->id);
+    }
+
+    /**
+     * Test save is forbidden when permission is set on object and user hasn't grant.
+     *
+     * @return void
+     * @covers ::beforeSave()
+     */
+    public function testBeforeSaveWithPermissionForbidden(): void
+    {
+        $this->expectException(ForbiddenException::class);
+
+        $user = $this->fetchTable('Users')->get(5, ['contain' => 'Roles']);
+        LoggedUser::setUser($user->toArray());
+        $ObjectTypes = $this->fetchTable('ObjectTypes');
+        $ot = $ObjectTypes->get('documents');
+        $ot->permissions_enabled = true;
+        $ObjectTypes->saveOrFail($ot);
+        static::assertTrue($this->ObjectPermissions->exists(['object_id' => 2]));
+        $entity = $this->ObjectPermissions->newEntity([
+            'role_id' => 2,
+            'object_id' => 2,
+        ]);
+
+        $this->ObjectPermissions->save($entity);
     }
 }
