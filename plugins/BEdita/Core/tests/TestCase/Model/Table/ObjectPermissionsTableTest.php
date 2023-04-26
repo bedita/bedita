@@ -113,7 +113,7 @@ class ObjectPermissionsTableTest extends TestCase
      * @param array $data Data to be validated.
      * @return void
      * @dataProvider buildRulesProvider
-     * @covers ::buildRules()
+     * @coversNothing
      */
     public function testBuildRules($expected, array $data): void
     {

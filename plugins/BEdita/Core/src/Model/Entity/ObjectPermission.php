@@ -36,7 +36,15 @@ class ObjectPermission extends Entity implements JsonApiSerializable
      */
     protected $_hidden = [
         'created_by_user',
-        'object',
-        'role',
     ];
+
+    /**
+     * {@inheritDoc}
+     *
+     * @codeCoverageIgnore
+     */
+    protected function getRelationships()
+    {
+         return [[], []];
+    }
 }
