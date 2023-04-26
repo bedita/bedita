@@ -119,6 +119,11 @@ Router::plugin(
             ['_name' => 'streams:upload', 'pass' => ['fileName']]
         );
         $routes->connect(
+            '/streams/clone/{uuid}',
+            ['controller' => 'Streams', 'action' => 'clone'],
+            ['_name' => 'streams:clone']
+        )->setPass(['uuid']);
+        $routes->connect(
             '/media/thumbs/{id}',
             ['controller' => 'Media', 'action' => 'thumbs'],
             ['_name' => 'media:thumbs', 'pass' => ['id']]

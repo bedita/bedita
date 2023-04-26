@@ -32,6 +32,7 @@ use Cake\Validation\Validator;
  * @method \BEdita\Core\Model\Entity\Stream[] patchEntities($entities, array $data, array $options = [])
  * @method \BEdita\Core\Model\Entity\Stream findOrCreate($search, callable $callback = null, $options = [])
  * @mixin \Cake\ORM\Behavior\TimestampBehavior
+ * @mixin \BEdita\Core\Model\Behavior\UploadableBehavior
  * @since 4.0.0
  */
 class StreamsTable extends Table
@@ -121,6 +122,19 @@ class StreamsTable extends Table
     }
 
     /**
+     * Validator for cloning streams.
+     *
+     * @param \Cake\Validation\Validator $validator Validator instance.
+     * @return \Cake\Validation\Validator
+     * @codeCoverageIgnore
+     */
+    public function validationClone(Validator $validator): Validator
+    {
+        return $this->validationDefault($validator)
+            ->requirePresence('contents', false);
+    }
+
+    /**
      * {@inheritDoc}
      *
      * @codeCoverageIgnore
@@ -162,5 +176,27 @@ class StreamsTable extends Table
     public function afterDelete(Event $event, Stream $stream)
     {
         Thumbnail::delete($stream);
+    }
+
+    /**
+     * Clone a stream.
+     *
+     * @param \BEdita\Core\Model\Entity\Stream $stream Stream to clone.
+     * @return \BEdita\Core\Model\Entity\Stream
+     */
+    public function clone(Stream $stream): Stream
+    {
+        $clone = $this->newEntity($stream->extract(Stream::FILE_PROPERTIES), [
+            'accessibleFields' => array_fill_keys(Stream::FILE_PROPERTIES, true),
+            'validate' => 'clone',
+        ]);
+        $clone->uri = $clone->filesystemPath();
+
+        return $this->getConnection()->transactional(function () use ($clone, $stream): Stream {
+            $clone = $this->saveOrFail($clone, ['atomic' => false]);
+            $this->copyFiles($stream, $clone);
+
+            return $this->get($clone->get('uuid'));
+        });
     }
 }
