@@ -12,6 +12,8 @@
  */
 namespace BEdita\API\Controller;
 
+use Cake\Http\Exception\MethodNotAllowedException;
+
 /**
  * Controller for `/object_permissions` endpoint.
  *
@@ -24,4 +26,16 @@ class ObjectPermissionsController extends ResourcesController
      * @inheritDoc
      */
     public $defaultTable = 'ObjectPermissions';
+
+    /**
+     * @inheritDoc
+     */
+    public function initialize(): void
+    {
+        parent::initialize();
+
+        if ($this->request->getMethod() === 'PATCH') {
+            throw new MethodNotAllowedException();
+        }
+    }
 }
