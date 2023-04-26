@@ -47,7 +47,7 @@ class UploadableBehavior extends Behavior
      * @param mixed $contents File contents.
      * @return void
      */
-    protected function write(MountManager $manager, $path, $contents): void
+    protected function write(MountManager $manager, string $path, $contents): void
     {
         if ($contents instanceof StreamInterface) {
             $contents = $contents->detach();
@@ -70,7 +70,7 @@ class UploadableBehavior extends Behavior
      * @param string $contentsField Name of field in which contents are stored.
      * @return void
      */
-    protected function processUpload(Entity $entity, $pathField, $contentsField): void
+    protected function processUpload(Entity $entity, string $pathField, string $contentsField): void
     {
         if (!$entity->isDirty($pathField) && !$entity->isDirty($contentsField)) {
             // Nothing to do.
@@ -105,7 +105,7 @@ class UploadableBehavior extends Behavior
      * @param string $pathField Name of field in which path is stored.
      * @return void
      */
-    protected function setVisibility(Entity $entity, $pathField): void
+    protected function setVisibility(Entity $entity, string $pathField): void
     {
         if (!$entity->get('private_url')) {
             return;
@@ -137,7 +137,7 @@ class UploadableBehavior extends Behavior
      * @param \Cake\ORM\Entity $entity Entity.
      * @return void
      */
-    public function afterSave(EventInterface $event, Entity $entity)
+    public function afterSave(EventInterface $event, Entity $entity): void
     {
         foreach ($this->getConfig('files') as $file) {
             $this->processUpload($entity, $file['path'], $file['contents']);
@@ -152,7 +152,7 @@ class UploadableBehavior extends Behavior
      * @param \Cake\ORM\Entity $entity Entity.
      * @return void
      */
-    public function afterDelete(EventInterface $event, Entity $entity)
+    public function afterDelete(EventInterface $event, Entity $entity): void
     {
         foreach ($this->getConfig('files') as $file) {
             $this->processDelete($entity, $file['path']);

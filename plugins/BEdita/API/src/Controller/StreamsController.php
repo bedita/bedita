@@ -114,7 +114,6 @@ class StreamsController extends ResourcesController
      */
     public function download(string $uuid): Response
     {
-        /** @var \BEdita\Core\Model\Entity\Stream $stream */
         $stream = $this->Table->get($uuid);
         $filename = Hash::get($stream, 'file_name', sprintf('stream-%s', $uuid));
 

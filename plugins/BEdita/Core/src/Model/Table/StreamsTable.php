@@ -151,7 +151,7 @@ class StreamsTable extends Table
      * @param \BEdita\Core\Model\Entity\Stream $entity Entity.
      * @return void
      */
-    public function beforeSave(EventInterface $event, Stream $entity)
+    public function beforeSave(EventInterface $event, Stream $entity): void
     {
         if (!$entity->isNew()) {
             return;
@@ -170,7 +170,7 @@ class StreamsTable extends Table
      * @param \BEdita\Core\Model\Entity\Stream $stream Entity.
      * @return void
      */
-    public function afterDelete(EventInterface $event, Stream $stream)
+    public function afterDelete(EventInterface $event, Stream $stream): void
     {
         Thumbnail::delete($stream);
     }
