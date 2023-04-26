@@ -110,6 +110,7 @@ class ObjectTypeTest extends TestCase
                 'inverse_test',
             ],
             'parent_name' => 'objects',
+            'permissions_enabled' => false,
         ];
 
         $objectType = $this->ObjectTypes->get(2);
@@ -1344,5 +1345,45 @@ class ObjectTypeTest extends TestCase
             static::assertInstanceOf(ObjectType::class, $actual);
             static::assertSame($expected, $actual->name);
         }
+    }
+
+    /**
+     * Test getter for `permissions_enabled` virtual property
+     *
+     * @return void
+     * @covers ::_getPermissionsEnabled()
+     */
+    public function testGetPermissionsEnabled(): void
+    {
+        $entity = $this->ObjectTypes->get('users');
+        static::assertNull($entity->associations);
+        static::assertFalse($entity->permissions_enabled);
+
+        $entity->associations = [];
+        static::assertFalse($entity->permissions_enabled);
+
+        $entity->associations = ['categories'];
+        static::assertFalse($entity->permissions_enabled);
+
+        $entity->associations[] = 'Permissions';
+        static::assertTrue($entity->permissions_enabled);
+    }
+
+    /**
+     * Test setter for `permissions_enabled` virtual property
+     *
+     * @return void
+     * @covers ::_setPermissionsEnabled()
+     */
+    public function testSetPermissionsEnabled(): void
+    {
+        $entity = $this->ObjectTypes->get('users');
+        static::assertNull($entity->associations);
+        $entity->permissions_enabled = true;
+        static::assertEquals(['Permissions'], $entity->associations);
+
+        $entity->associations = ['Categories'];
+        $entity->permissions_enabled = true;
+        static::assertEquals(['Categories', 'Permissions'], $entity->associations);
     }
 }

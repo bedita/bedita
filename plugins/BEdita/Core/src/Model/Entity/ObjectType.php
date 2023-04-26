@@ -56,6 +56,7 @@ use Generator;
  * @property \BEdita\Core\Model\Entity\Property[] $properties
  * @property \BEdita\Core\Model\Entity\ObjectType $parent
  * @property mixed $schema
+ * @property bool $permissions_enabled
  */
 class ObjectType extends Entity implements JsonApiSerializable, EventDispatcherInterface
 {
@@ -119,6 +120,7 @@ class ObjectType extends Entity implements JsonApiSerializable, EventDispatcherI
         'table',
         'parent_name',
         'relations',
+        'permissions_enabled',
     ];
 
     /**
@@ -375,6 +377,39 @@ class ObjectType extends Entity implements JsonApiSerializable, EventDispatcherI
         }
 
         return $event->getResult() ?: $schema;
+    }
+
+    /**
+     * Virtual property to get info about permissions availability.
+     *
+     * @return bool
+     */
+    protected function _getPermissionsEnabled(): bool
+    {
+        return in_array('Permissions', (array)$this->associations);
+    }
+
+    /**
+     * Setter for virtual property `permissions_enabled`.
+     *
+     * @param bool $enable The enable value
+     * @return bool
+     */
+    protected function _setPermissionsEnabled(bool $enable): bool
+    {
+        if ($enable) {
+            $this->associations = array_unique(array_merge((array)$this->associations, ['Permissions']));
+
+            return $enable;
+        }
+
+        if (empty($this->associations)) {
+            return $enable;
+        }
+
+        $this->associations = array_diff((array)$this->associations, ['Permissions']);
+
+        return $enable;
     }
 
     /**

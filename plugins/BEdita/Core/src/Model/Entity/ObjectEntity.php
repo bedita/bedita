@@ -379,7 +379,7 @@ class ObjectEntity extends Entity implements JsonApiSerializable
     protected function _getPerms(): ?array
     {
         $this->loadObjectType();
-        if (!$this->object_type || !in_array('Permissions', (array)$this->object_type->associations)) {
+        if (!$this->object_type || !$this->object_type->permissions_enabled) {
             return null;
         }
 
