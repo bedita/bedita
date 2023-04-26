@@ -107,7 +107,7 @@ class ProjectModel
                 unset($row['created']);
                 unset($row['modified']);
                 unset($row['core_type']);
-                $row->setHidden(['relations', 'alias'], true);
+                $row->setHidden(['relations', 'alias', 'permissions_enabled'], true);
             })
             ->toArray();
     }
