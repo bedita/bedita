@@ -13,6 +13,7 @@
 
 namespace BEdita\Core\Model\Entity;
 
+use BEdita\Core\Model\Table\RolesTable;
 use BEdita\Core\Utility\LoggedUser;
 use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\ORM\Table;
@@ -116,8 +117,8 @@ class Folder extends ObjectEntity
         if (empty($user)) {
             return false;
         }
-        $roles = Hash::extract($user, 'roles.{n}.name');
-        if (in_array('admin', $roles)) {
+        $rolesIds = Hash::extract($user, 'roles.{n}.id');
+        if (in_array(RolesTable::ADMIN_ROLE, $rolesIds)) {
             return true;
         }
 
