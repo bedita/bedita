@@ -34,7 +34,7 @@ class ObjectPermissionsControllerTest extends IntegrationTestCase
      * @return void
      * @coversNothing
      */
-    public function testIndex()
+    public function testIndex(): void
     {
         $expected = [
             'links' => [
@@ -88,7 +88,7 @@ class ObjectPermissionsControllerTest extends IntegrationTestCase
      * @return void
      * @coversNothing
      */
-    public function testSingle()
+    public function testSingle(): void
     {
         $expected = [
             'links' => [
@@ -124,7 +124,7 @@ class ObjectPermissionsControllerTest extends IntegrationTestCase
      * @return void
      * @coversNothing
      */
-    public function testAdd()
+    public function testAdd(): void
     {
         $data = [
             'type' => 'object_permissions',
@@ -150,7 +150,7 @@ class ObjectPermissionsControllerTest extends IntegrationTestCase
      * @return void
      * @covers ::initialize()
      */
-    public function testEdit()
+    public function testEdit(): void
     {
         $data = [
             'id' => '1',
@@ -173,7 +173,7 @@ class ObjectPermissionsControllerTest extends IntegrationTestCase
      * @return void
      * @coversNothing
      */
-    public function testDelete()
+    public function testDelete(): void
     {
         $this->configRequestHeaders('DELETE', $this->getUserAuthHeader());
         $this->delete('/object_permissions/1');
