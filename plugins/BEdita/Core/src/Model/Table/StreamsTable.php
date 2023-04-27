@@ -127,6 +127,7 @@ class StreamsTable extends Table
      *
      * @param \Cake\Validation\Validator $validator Validator instance.
      * @return \Cake\Validation\Validator
+     * @codeCoverageIgnore
      */
     public function validationClone(Validator $validator): Validator
     {
