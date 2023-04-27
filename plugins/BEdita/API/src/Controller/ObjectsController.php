@@ -183,7 +183,7 @@ class ObjectsController extends ResourcesController
             $objectType = $table->objectType();
         }
 
-        if ($objectType instanceof ObjectType && in_array('Permissions', (array)$objectType->associations)) {
+        if ($objectType instanceof ObjectType && $objectType->hasAssoc('Permissions')) {
             $contain[] = 'Permissions.Roles';
         }
 

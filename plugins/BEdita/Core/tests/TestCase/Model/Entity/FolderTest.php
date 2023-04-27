@@ -281,7 +281,7 @@ class FolderTest extends TestCase
         static::assertNull($folder->get('perms'));
 
         $ot = $this->Folders->ObjectTypes->get('folders');
-        $ot->associations = ['Permissions'];
+        $ot->addAssoc('Permissions');
         $this->Folders->ObjectTypes->saveOrFail($ot);
 
         $folder = $this->Folders->get(11);
@@ -297,8 +297,9 @@ class FolderTest extends TestCase
      */
     public function testGetPermsInherited(): void
     {
+        LoggedUser::setUserAdmin();
         $ot = $this->Folders->ObjectTypes->get('folders');
-        $ot->associations = ['Permissions'];
+        $ot->addAssoc('Permissions');
         $this->Folders->ObjectTypes->saveOrFail($ot);
 
         $entities = $this->Folders->Permissions->newEntities(
@@ -320,6 +321,7 @@ class FolderTest extends TestCase
         );
 
         $this->Folders->Permissions->saveManyOrFail($entities);
+        LoggedUser::resetUser();
 
         $perms = $this->Folders->get(12)->get('perms');
         static::assertIsArray($perms);
@@ -340,7 +342,7 @@ class FolderTest extends TestCase
      *
      * @return array[]
      */
-    public function testDescendantHavePermissionsProvider(): array
+    public function descendantHavePermissionsProvider(): array
     {
         return [
             'guest user' => [
@@ -414,7 +416,7 @@ class FolderTest extends TestCase
                 [
                     'id' => 5,
                     'roles' => [
-                        ['id' => 1, 'name' => 'admin'],
+                        ['id' => 1],
                     ],
                 ],
                 [
@@ -443,14 +445,14 @@ class FolderTest extends TestCase
      * Test descendant have permissions.
      *
      * @return void
-     * @dataProvider testDescendantHavePermissionsProvider
+     * @dataProvider descendantHavePermissionsProvider
      * @covers ::_getPerms()
      * @covers ::descendantHavePermissions()
      */
     public function testDescendantHavePermissions($user, $entities, $folderId, $expected): void
     {
         $ot = $this->Folders->ObjectTypes->get('folders');
-        $ot->associations = ['Permissions'];
+        $ot->addAssoc('Permissions');
         $this->Folders->ObjectTypes->saveOrFail($ot);
 
         $entities = $this->Folders->Permissions->newEntities($entities, ['accessibleFields' => ['created_by' => true]]);

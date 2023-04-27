@@ -1345,4 +1345,53 @@ class ObjectTypeTest extends TestCase
             static::assertSame($expected, $actual->name);
         }
     }
+
+    /**
+     * Test `addAssoc()`
+     *
+     * @return void
+     * @covers ::addAssoc()
+     */
+    public function testAddAssoc(): void
+    {
+        /** @var \BEdita\Core\Model\Entity\ObjectType $entity */
+        $entity = $this->ObjectTypes->newEmptyEntity();
+        $entity->associations = ['Categories'];
+        $entity->addAssoc('Permissions');
+        static::assertEquals(['Categories', 'Permissions'], $entity->associations);
+    }
+
+    /**
+     * Test `hasAssoc()`
+     *
+     * @return void
+     * @covers ::hasAssoc()
+     */
+    public function testHasAssoc(): void
+    {
+        /** @var \BEdita\Core\Model\Entity\ObjectType $entity */
+        $entity = $this->ObjectTypes->newEmptyEntity();
+        static::assertFalse($entity->hasAssoc('Permissions'));
+        $entity->associations = ['Permissions'];
+        static::assertTrue($entity->hasAssoc('Permissions'));
+    }
+
+    /**
+     * Test `removeAssoc()`
+     *
+     * @return void
+     * @covers ::removeAssoc()
+     */
+    public function testRemoveAssoc(): void
+    {
+        /** @var \BEdita\Core\Model\Entity\ObjectType $entity */
+        $entity = $this->ObjectTypes->newEmptyEntity();
+        $entity->associations = null;
+        $entity->removeAssoc('Permissions');
+        static::assertEquals(null, $entity->associations);
+
+        $entity->associations = ['Categories', 'Permissions'];
+        $entity->removeAssoc('Permissions');
+        static::assertEquals(['Categories'], $entity->associations);
+    }
 }

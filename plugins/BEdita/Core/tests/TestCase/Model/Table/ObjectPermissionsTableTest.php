@@ -1,12 +1,16 @@
 <?php
 namespace BEdita\Core\Test\TestCase\Model\Table;
 
+use BEdita\Core\Utility\LoggedUser;
+use Cake\Http\Exception\ForbiddenException;
 use Cake\ORM\Association\BelongsTo;
 use Cake\ORM\Behavior\TimestampBehavior;
 use Cake\TestSuite\TestCase;
 
 /**
- * BEdita\Core\Model\Table\ObjectPermissionsTable Test Case
+ * {@see \BEdita\Core\Model\Table\ObjectPermissionsTable} Test Case
+ *
+ * @coversDefaultClass \BEdita\Core\Model\Table\ObjectPermissionsTable
  */
 class ObjectPermissionsTableTest extends TestCase
 {
@@ -15,7 +19,7 @@ class ObjectPermissionsTableTest extends TestCase
      *
      * @var \BEdita\Core\Model\Table\ObjectPermissionsTable
      */
-    public $ObjectPermissions;
+    protected $ObjectPermissions;
 
     /**
      * Fixtures
@@ -25,8 +29,10 @@ class ObjectPermissionsTableTest extends TestCase
     protected $fixtures = [
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.Objects',
+        'plugin.BEdita/Core.Profiles',
         'plugin.BEdita/Core.Users',
         'plugin.BEdita/Core.Roles',
+        'plugin.BEdita/Core.RolesUsers',
         'plugin.BEdita/Core.ObjectPermissions',
     ];
 
@@ -49,6 +55,7 @@ class ObjectPermissionsTableTest extends TestCase
     public function tearDown(): void
     {
         unset($this->ObjectPermissions);
+        LoggedUser::resetUser();
 
         parent::tearDown();
     }
@@ -113,12 +120,194 @@ class ObjectPermissionsTableTest extends TestCase
      * @param array $data Data to be validated.
      * @return void
      * @dataProvider buildRulesProvider
-     * @covers ::buildRules()
+     * @coversNothing
      */
     public function testBuildRules($expected, array $data): void
     {
         $entity = $this->ObjectPermissions->newEntity($data, ['accessibleFields' => ['created_by' => true]]);
         $success = $this->ObjectPermissions->save($entity);
         $this->assertEquals($expected, (bool)$success, print_r($entity->getErrors(), true));
+    }
+
+    /**
+     * Data provider for `testBeforeSave()`.
+     *
+     * @return array
+     */
+    public function beforeSaveProvider(): array
+    {
+        return [
+            'admin' => [
+                2,
+                LoggedUser::getUserAdmin(),
+                [
+                    'role_id' => 2,
+                    'object_id' => 2,
+                ],
+            ],
+            'perms not set' => [
+                2,
+                [
+                    'id' => 5,
+                    'roles' => [
+                        [
+                            'id' => 2,
+                            'name' => 'second user',
+                        ],
+                    ],
+                ],
+                [
+                    'role_id' => 2,
+                    'object_id' => 3,
+                ],
+            ],
+            'forbidden' => [
+                new ForbiddenException('Save object permission is forbidden for user'),
+                [
+                    'id' => 5,
+                    'roles' => [
+                        [
+                            'id' => 2,
+                            'name' => 'second user',
+                        ],
+                    ],
+                ],
+                [
+                    'role_id' => 2,
+                    'object_id' => 2,
+                ],
+            ],
+            'forbidden loading roles (no names)' => [
+                new ForbiddenException('Save object permission is forbidden for user'),
+                [
+                    'id' => 5,
+                    'roles' => [
+                        ['id' => 2],
+                    ],
+                ],
+                [
+                    'role_id' => 2,
+                    'object_id' => 2,
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * Test save is forbidden when permission is set on object and user hasn't grant.
+     *
+     * @param \Exception|int $expected The expected value
+     * @param array $user The logged user data
+     * @param array $data Object permission data
+     * @return void
+     * @covers ::beforeSave()
+     * @covers ::isEditable()
+     * @dataProvider beforeSaveProvider
+     */
+    public function testBeforeSave($expected, array $user, array $data): void
+    {
+        if ($expected instanceof \Exception) {
+            $this->expectExceptionObject($expected);
+        }
+
+        LoggedUser::setUser($user);
+        $ObjectTypes = $this->fetchTable('ObjectTypes');
+        /** @var \BEdita\Core\Model\Entity\ObjectType $ot */
+        $ot = $ObjectTypes->get('documents');
+        $ot->addAssoc('Permissions');
+        $ObjectTypes->saveOrFail($ot);
+
+        $entity = $this->ObjectPermissions->newEntity($data);
+        $this->ObjectPermissions->saveOrFail($entity);
+
+        static::assertEquals($expected, $entity->id);
+    }
+
+    /**
+     * Test save is ok when permission is set on object and user has grant.
+     *
+     * @return void
+     * @covers ::beforeSave()
+     * @covers ::isEditable()
+     */
+    public function testBeforeSaveWithPermissionOk(): void
+    {
+        $user = $this->fetchTable('Users')->get(5, ['contain' => 'Roles']);
+        LoggedUser::setUser($user->toArray());
+        $ObjectTypes = $this->fetchTable('ObjectTypes');
+        /** @var \BEdita\Core\Model\Entity\ObjectType $ot */
+        $ot = $ObjectTypes->get('documents');
+        $ot->addAssoc('Permissions');
+        $ObjectTypes->saveOrFail($ot);
+        static::assertFalse($this->ObjectPermissions->exists(['object_id' => 3]));
+        $entity = $this->ObjectPermissions->newEntity([
+            'role_id' => 2,
+            'object_id' => 3,
+        ]);
+
+        $this->ObjectPermissions->saveOrFail($entity);
+        static::assertEquals(2, $entity->id);
+
+        $entity = $this->ObjectPermissions->newEntity([
+            'role_id' => 1,
+            'object_id' => 3,
+        ]);
+        $this->ObjectPermissions->saveOrFail($entity);
+        static::assertEquals(3, $entity->id);
+    }
+
+    /**
+     * Data provider for `testBeforeDelete()`
+     *
+     * @return array
+     */
+    public function beforeDeleteProvider(): array
+    {
+        return [
+            'admin' => [
+                null,
+                LoggedUser::getUserAdmin(),
+            ],
+            'forbidden' => [
+                new ForbiddenException('Delete object permission is forbidden for user'),
+                [
+                    'id' => 5,
+                    'roles' => [
+                        [
+                            'id' => 2,
+                            'name' => 'second user',
+                        ],
+                    ],
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * Test beforeDelete.
+     *
+     * @param mixed $expected The expected result
+     * @param array $user The logged user data
+     * @return void
+     * @covers ::beforeDelete()
+     * @covers ::isEditable()
+     * @dataProvider beforeDeleteProvider
+     */
+    public function testBeforeDelete($expected, array $user): void
+    {
+        if ($expected instanceof \Exception) {
+            $this->expectExceptionObject($expected);
+        }
+
+        LoggedUser::setUser($user);
+        $ObjectTypes = $this->fetchTable('ObjectTypes');
+        /** @var \BEdita\Core\Model\Entity\ObjectType $ot */
+        $ot = $ObjectTypes->get('documents');
+        $ot->addAssoc('Permissions');
+        $ObjectTypes->saveOrFail($ot);
+
+        $op = $this->ObjectPermissions->get(1);
+        $this->ObjectPermissions->deleteOrFail($op);
+        static::assertFalse($this->ObjectPermissions->exists(['id' => 1]));
     }
 }

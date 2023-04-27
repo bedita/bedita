@@ -378,6 +378,45 @@ class ObjectType extends Entity implements JsonApiSerializable, EventDispatcherI
     }
 
     /**
+     * Say if an association is present in `associations` property.
+     *
+     * @param string $association The association
+     * @return bool
+     */
+    public function hasAssoc(string $association): bool
+    {
+        return in_array($association, (array)$this->associations);
+    }
+
+    /**
+     * Add an association to `associations` property.
+     *
+     * @param string $association The association
+     * @return self
+     */
+    public function addAssoc(string $association): self
+    {
+        $this->associations = array_unique(array_merge((array)$this->associations, [$association]));
+
+        return $this;
+    }
+
+    /**
+     * Remove an association from `associations` property.
+     *
+     * @param string $association The association
+     * @return self
+     */
+    public function removeAssoc(string $association): self
+    {
+        if (!empty($this->associations)) {
+            $this->associations = array_diff((array)$this->associations, [$association]);
+        }
+
+        return $this;
+    }
+
+    /**
      * Retrieve relation information as associative array:
      *  * relation name as key, direct or inverse
      *  * label, params and related types as values
