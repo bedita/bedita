@@ -1385,5 +1385,13 @@ class ObjectTypeTest extends TestCase
         $entity->associations = ['Categories'];
         $entity->permissions_enabled = true;
         static::assertEquals(['Categories', 'Permissions'], $entity->associations);
+
+        $entity->associations = null;
+        $entity->permissions_enabled = false;
+        static::assertEquals(null, $entity->associations);
+
+        $entity->associations = ['Categories', 'Permissions'];
+        $entity->permissions_enabled = false;
+        static::assertEquals(['Categories'], $entity->associations);
     }
 }
