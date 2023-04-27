@@ -297,6 +297,7 @@ class FolderTest extends TestCase
      */
     public function testGetPermsInherited(): void
     {
+        LoggedUser::setUserAdmin();
         $ot = $this->Folders->ObjectTypes->get('folders');
         $ot->associations = ['Permissions'];
         $this->Folders->ObjectTypes->saveOrFail($ot);
@@ -320,6 +321,7 @@ class FolderTest extends TestCase
         );
 
         $this->Folders->Permissions->saveManyOrFail($entities);
+        LoggedUser::resetUser();
 
         $perms = $this->Folders->get(12)->get('perms');
         static::assertIsArray($perms);
@@ -340,7 +342,7 @@ class FolderTest extends TestCase
      *
      * @return array[]
      */
-    public function testDescendantHavePermissionsProvider(): array
+    public function descendantHavePermissionsProvider(): array
     {
         return [
             'guest user' => [
@@ -414,7 +416,7 @@ class FolderTest extends TestCase
                 [
                     'id' => 5,
                     'roles' => [
-                        ['id' => 1, 'name' => 'admin'],
+                        ['id' => 1],
                     ],
                 ],
                 [
@@ -443,7 +445,7 @@ class FolderTest extends TestCase
      * Test descendant have permissions.
      *
      * @return void
-     * @dataProvider testDescendantHavePermissionsProvider
+     * @dataProvider descendantHavePermissionsProvider
      * @covers ::_getPerms()
      * @covers ::descendantHavePermissions()
      */
