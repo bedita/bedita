@@ -212,8 +212,9 @@ class ObjectPermissionsTableTest extends TestCase
 
         LoggedUser::setUser($user);
         $ObjectTypes = $this->fetchTable('ObjectTypes');
+        /** @var \BEdita\Core\Model\Entity\ObjectType $ot */
         $ot = $ObjectTypes->get('documents');
-        $ot->permissions_enabled = true;
+        $ot->addAssoc('Permissions');
         $ObjectTypes->saveOrFail($ot);
 
         $entity = $this->ObjectPermissions->newEntity($data);
@@ -234,8 +235,9 @@ class ObjectPermissionsTableTest extends TestCase
         $user = $this->fetchTable('Users')->get(5, ['contain' => 'Roles']);
         LoggedUser::setUser($user->toArray());
         $ObjectTypes = $this->fetchTable('ObjectTypes');
+        /** @var \BEdita\Core\Model\Entity\ObjectType $ot */
         $ot = $ObjectTypes->get('documents');
-        $ot->permissions_enabled = true;
+        $ot->addAssoc('Permissions');
         $ObjectTypes->saveOrFail($ot);
         static::assertFalse($this->ObjectPermissions->exists(['object_id' => 3]));
         $entity = $this->ObjectPermissions->newEntity([
@@ -299,8 +301,9 @@ class ObjectPermissionsTableTest extends TestCase
 
         LoggedUser::setUser($user);
         $ObjectTypes = $this->fetchTable('ObjectTypes');
+        /** @var \BEdita\Core\Model\Entity\ObjectType $ot */
         $ot = $ObjectTypes->get('documents');
-        $ot->permissions_enabled = true;
+        $ot->addAssoc('Permissions');
         $ObjectTypes->saveOrFail($ot);
 
         $op = $this->ObjectPermissions->get(1);

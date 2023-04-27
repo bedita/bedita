@@ -86,7 +86,6 @@ class ObjectTypesControllerTest extends IntegrationTestCase
                         'created' => '2017-11-10T09:27:23+00:00',
                         'modified' => '2017-11-10T09:27:23+00:00',
                         'core_type' => true,
-                        'permissions_enabled' => false,
                     ],
                     'links' => [
                         'self' => 'http://api.example.com/model/object_types/1',
@@ -137,7 +136,6 @@ class ObjectTypesControllerTest extends IntegrationTestCase
                         'created' => '2017-11-10T09:27:23+00:00',
                         'modified' => '2017-11-10T09:27:23+00:00',
                         'core_type' => true,
-                        'permissions_enabled' => false,
                     ],
                     'links' => [
                         'self' => 'http://api.example.com/model/object_types/2',
@@ -187,7 +185,6 @@ class ObjectTypesControllerTest extends IntegrationTestCase
                         'created' => '2017-11-10T09:27:23+00:00',
                         'modified' => '2017-11-10T09:27:23+00:00',
                         'core_type' => true,
-                        'permissions_enabled' => false,
                     ],
                     'links' => [
                         'self' => 'http://api.example.com/model/object_types/3',
@@ -237,7 +234,6 @@ class ObjectTypesControllerTest extends IntegrationTestCase
                         'created' => '2017-11-10T09:27:23+00:00',
                         'modified' => '2017-11-10T09:27:23+00:00',
                         'core_type' => true,
-                        'permissions_enabled' => false,
                     ],
                     'links' => [
                         'self' => 'http://api.example.com/model/object_types/4',
@@ -285,7 +281,6 @@ class ObjectTypesControllerTest extends IntegrationTestCase
                         'created' => '2017-11-10T09:27:23+00:00',
                         'modified' => '2017-11-10T09:27:23+00:00',
                         'core_type' => false,
-                        'permissions_enabled' => false,
                     ],
                     'links' => [
                         'self' => 'http://api.example.com/model/object_types/5',
@@ -335,7 +330,6 @@ class ObjectTypesControllerTest extends IntegrationTestCase
                         'created' => '2017-11-10T09:27:23+00:00',
                         'modified' => '2017-11-10T09:27:23+00:00',
                         'core_type' => true,
-                        'permissions_enabled' => false,
                     ],
                     'links' => [
                         'self' => 'http://api.example.com/model/object_types/6',
@@ -385,7 +379,6 @@ class ObjectTypesControllerTest extends IntegrationTestCase
                         'created' => '2017-11-10T09:27:23+00:00',
                         'modified' => '2017-11-10T09:27:23+00:00',
                         'core_type' => true,
-                        'permissions_enabled' => false,
                     ],
                     'links' => [
                         'self' => 'http://api.example.com/model/object_types/7',
@@ -435,7 +428,6 @@ class ObjectTypesControllerTest extends IntegrationTestCase
                         'created' => '2017-11-10T09:27:23+00:00',
                         'modified' => '2017-11-10T09:27:23+00:00',
                         'core_type' => true,
-                        'permissions_enabled' => false,
                     ],
                     'links' => [
                         'self' => 'http://api.example.com/model/object_types/8',
@@ -487,7 +479,6 @@ class ObjectTypesControllerTest extends IntegrationTestCase
                         'created' => '2017-11-10T09:27:23+00:00',
                         'modified' => '2017-11-10T09:27:23+00:00',
                         'core_type' => true,
-                        'permissions_enabled' => false,
                     ],
                     'links' => [
                         'self' => 'http://api.example.com/model/object_types/9',
@@ -535,7 +526,6 @@ class ObjectTypesControllerTest extends IntegrationTestCase
                         'created' => '2018-01-29T08:47:29+00:00',
                         'modified' => '2018-01-29T08:47:29+00:00',
                         'core_type' => true,
-                        'permissions_enabled' => false,
                     ],
                     'links' => [
                         'self' => 'http://api.example.com/model/object_types/10',
@@ -670,7 +660,6 @@ class ObjectTypesControllerTest extends IntegrationTestCase
                     'created' => '2017-11-10T09:27:23+00:00',
                     'modified' => '2017-11-10T09:27:23+00:00',
                     'core_type' => true,
-                    'permissions_enabled' => false,
                 ],
                 'relationships' => [
                     'left_relations' => [

@@ -245,7 +245,7 @@ class ObjectEntityTest extends TestCase
     public function testVisiblePropertiesWithPermissions(): void
     {
         $document = $this->Objects->ObjectTypes->get('document');
-        $document->permissions_enabled = true;
+        $document->addAssoc('Permissions');
         $this->Objects->ObjectTypes->saveOrFail($document);
 
         $entity = $this->Objects->newEmptyEntity();
@@ -680,7 +680,7 @@ class ObjectEntityTest extends TestCase
     public function testGetPerms(array $expected, int $documentId): void
     {
         $document = $this->Objects->ObjectTypes->get('document');
-        $document->permissions_enabled = true;
+        $document->addAssoc('Permissions');
         $this->Objects->ObjectTypes->saveOrFail($document);
 
         $document = $this->fetchTable('Documents')->get($documentId);

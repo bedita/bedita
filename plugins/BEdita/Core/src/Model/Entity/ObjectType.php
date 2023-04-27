@@ -56,7 +56,6 @@ use Generator;
  * @property \BEdita\Core\Model\Entity\Property[] $properties
  * @property \BEdita\Core\Model\Entity\ObjectType $parent
  * @property mixed $schema
- * @property bool $permissions_enabled
  */
 class ObjectType extends Entity implements JsonApiSerializable, EventDispatcherInterface
 {
@@ -120,7 +119,6 @@ class ObjectType extends Entity implements JsonApiSerializable, EventDispatcherI
         'table',
         'parent_name',
         'relations',
-        'permissions_enabled',
     ];
 
     /**
@@ -380,36 +378,42 @@ class ObjectType extends Entity implements JsonApiSerializable, EventDispatcherI
     }
 
     /**
-     * Virtual property to get info about permissions availability.
+     * Say if an association is present in `associations` property.
      *
+     * @param string $association The association
      * @return bool
      */
-    protected function _getPermissionsEnabled(): bool
+    public function hasAssoc(string $association): bool
     {
-        return in_array('Permissions', (array)$this->associations);
+        return in_array($association, (array)$this->associations);
     }
 
     /**
-     * Setter for virtual property `permissions_enabled`.
+     * Add an association to `associations` property.
      *
-     * @param bool $enable The enable value
-     * @return bool
+     * @param string $association The association
+     * @return self
      */
-    protected function _setPermissionsEnabled(bool $enable): bool
+    public function addAssoc(string $association): self
     {
-        if ($enable) {
-            $this->associations = array_unique(array_merge((array)$this->associations, ['Permissions']));
+        $this->associations = array_unique(array_merge((array)$this->associations, [$association]));
 
-            return $enable;
+        return $this;
+    }
+
+    /**
+     * Remove an association from `associations` property.
+     *
+     * @param string $association The association
+     * @return self
+     */
+    public function removeAssoc(string $association): self
+    {
+        if (!empty($this->associations)) {
+            $this->associations = array_diff((array)$this->associations, [$association]);
         }
 
-        if (empty($this->associations)) {
-            return $enable;
-        }
-
-        $this->associations = array_diff((array)$this->associations, ['Permissions']);
-
-        return $enable;
+        return $this;
     }
 
     /**

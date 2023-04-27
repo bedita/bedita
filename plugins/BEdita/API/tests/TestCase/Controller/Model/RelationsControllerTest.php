@@ -513,7 +513,6 @@ class RelationsControllerTest extends IntegrationTestCase
                         'created' => '2017-11-10T09:27:23+00:00',
                         'modified' => '2017-11-10T09:27:23+00:00',
                         'core_type' => true,
-                        'permissions_enabled' => false,
                     ],
                     'links' => [
                         'self' => 'http://api.example.com/model/object_types/2',

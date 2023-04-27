@@ -281,7 +281,7 @@ class FolderTest extends TestCase
         static::assertNull($folder->get('perms'));
 
         $ot = $this->Folders->ObjectTypes->get('folders');
-        $ot->permissions_enabled = true;
+        $ot->addAssoc('Permissions');
         $this->Folders->ObjectTypes->saveOrFail($ot);
 
         $folder = $this->Folders->get(11);
@@ -299,7 +299,7 @@ class FolderTest extends TestCase
     {
         LoggedUser::setUserAdmin();
         $ot = $this->Folders->ObjectTypes->get('folders');
-        $ot->permissions_enabled = true;
+        $ot->addAssoc('Permissions');
         $this->Folders->ObjectTypes->saveOrFail($ot);
 
         $entities = $this->Folders->Permissions->newEntities(
@@ -452,7 +452,7 @@ class FolderTest extends TestCase
     public function testDescendantHavePermissions($user, $entities, $folderId, $expected): void
     {
         $ot = $this->Folders->ObjectTypes->get('folders');
-        $ot->permissions_enabled = true;
+        $ot->addAssoc('Permissions');
         $this->Folders->ObjectTypes->saveOrFail($ot);
 
         $entities = $this->Folders->Permissions->newEntities($entities, ['accessibleFields' => ['created_by' => true]]);
