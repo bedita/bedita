@@ -117,8 +117,8 @@ class Folder extends ObjectEntity
         if (empty($user)) {
             return false;
         }
-        $rolesIds = Hash::extract($user, 'roles.{n}.id');
-        if (in_array(RolesTable::ADMIN_ROLE, $rolesIds)) {
+        $roleIds = Hash::extract($user, 'roles.{n}.id');
+        if (in_array(RolesTable::ADMIN_ROLE, $roleIds)) {
             return true;
         }
 
