@@ -75,7 +75,7 @@ class UploadableBehavior extends Behavior
     {
         $manager = FilesystemRegistry::getMountManager();
         if (
-            (!$entity->isDirty($pathField) || !$manager->fileExists($entity->getOriginal($pathField)))
+            (!$entity->isDirty($pathField) || !$manager->has($entity->getOriginal($pathField)))
             && !$entity->isDirty($contentsField)
         ) {
             // Nothing to do.
