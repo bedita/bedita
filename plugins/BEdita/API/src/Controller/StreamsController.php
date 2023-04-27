@@ -106,6 +106,34 @@ class StreamsController extends ResourcesController
     }
 
     /**
+     * Clone a Stream by its UUID.
+     *
+     * @param string $uuid ID of the Stream to clone.
+     * @return void
+     */
+    public function clone(string $uuid): void
+    {
+        $data = $this->Table->clone($this->Table->get($uuid));
+
+        $this->set(compact('data'));
+        $this->setSerialize(['data']);
+
+        $this->response = $this->response
+            ->withStatus(201)
+            ->withHeader(
+                'Location',
+                Router::url(
+                    [
+                        '_name' => 'api:resources:resource',
+                        'controller' => $this->name,
+                        'id' => $data->get('uuid'),
+                    ],
+                    true
+                )
+            );
+    }
+
+    /**
      * Download a stream.
      *
      * @param string $uuid Stream UUID.
@@ -114,7 +142,6 @@ class StreamsController extends ResourcesController
      */
     public function download(string $uuid): Response
     {
-        /** @var \BEdita\Core\Model\Entity\Stream $stream */
         $stream = $this->Table->get($uuid);
         $filename = Hash::get($stream, 'file_name', sprintf('stream-%s', $uuid));
 

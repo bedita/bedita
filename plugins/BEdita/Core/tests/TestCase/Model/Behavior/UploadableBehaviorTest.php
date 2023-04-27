@@ -30,7 +30,7 @@ class UploadableBehaviorTest extends TestCase
      *
      * @var \BEdita\Core\Model\Table\StreamsTable
      */
-    public $Streams;
+    protected $Streams;
 
     /**
      * Fixtures
@@ -70,7 +70,7 @@ class UploadableBehaviorTest extends TestCase
      *
      * @return array
      */
-    public function afterSaveProvider()
+    public function afterSaveProvider(): array
     {
         $originalContents = "Sample uploaded file.\n";
         $newContents = 'Modified contents.';
@@ -136,7 +136,7 @@ class UploadableBehaviorTest extends TestCase
      * @covers ::setVisibility()
      * @covers ::write()
      */
-    public function testAfterSave(array $expected, array $data)
+    public function testAfterSave(array $expected, array $data): void
     {
         $manager = FilesystemRegistry::getMountManager();
 
@@ -167,7 +167,7 @@ class UploadableBehaviorTest extends TestCase
      * @covers ::afterDelete()
      * @covers ::processDelete()
      */
-    public function testAfterDelete()
+    public function testAfterDelete(): void
     {
         $manager = FilesystemRegistry::getMountManager();
 
@@ -177,5 +177,25 @@ class UploadableBehaviorTest extends TestCase
         $this->Streams->deleteOrFail($stream);
 
         static::assertFalse($manager->fileExists($path));
+    }
+
+    /**
+     * Test [@see \BEdita\Core\Model\Behavior\UploadableBehavior::copyFiles()} method..
+     *
+     * @return void
+     * @covers ::copyFiles()
+     */
+    public function testCopyFiles(): void
+    {
+        $manager = FilesystemRegistry::getMountManager();
+
+        $stream = $this->Streams->get('9e58fa47-db64-4479-a0ab-88a706180d59');
+        $copy = $this->Streams->newEmptyEntity();
+        $copy->uri = $copy->filesystemPath();
+
+        $this->Streams->copyFiles($stream, $copy);
+
+        static::assertTrue($manager->fileExists($copy->uri));
+        static::assertSame($manager->read($stream->uri), $manager->read($copy->uri));
     }
 }

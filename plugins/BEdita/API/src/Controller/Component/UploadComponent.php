@@ -66,7 +66,7 @@ class UploadComponent extends Component
 
         $this->Streams = $this->fetchTable('Streams');
         // Add a new entity.
-        $entity = $this->Streams->newEntity([]);
+        $entity = $this->Streams->newEmptyEntity();
         $action = new SaveEntityAction(['table' => $this->Streams]);
 
         $data = [

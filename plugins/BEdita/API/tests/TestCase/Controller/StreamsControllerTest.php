@@ -220,4 +220,43 @@ class StreamsControllerTest extends IntegrationTestCase
         $this->get('/streams');
         $this->assertResponseCode(406);
     }
+
+    /**
+     * Test {@see \BEdita\API\Controller\StreamsController::clone()} action.
+     *
+     * @return void
+     * @covers ::clone()
+     */
+    public function testClone(): void
+    {
+        $attributes = [
+            'file_name' => 'bedita-logo-gray.gif',
+            'mime_type' => 'image/gif',
+        ];
+        $meta = [
+            'version' => 1,
+            'file_size' => 927,
+            'hash_md5' => 'a714dbb31ca89d5b1257245dfa5c5153',
+            'hash_sha1' => '444b2b42b48b0b815d70f6648f8a7a23d5faf54b',
+        ];
+
+        $this->configRequestHeaders('POST', $this->getUserAuthHeader());
+        $this->post('/streams/clone/6aceb0eb-bd30-4f60-ac74-273083b921b6');
+
+        $this->assertResponseCode(201);
+        $this->assertContentType('application/vnd.api+json');
+
+        $response = json_decode((string)$this->_response->getBody(), true);
+        static::assertArrayHasKey('data', $response);
+
+        $id = $response['data']['id'];
+        $url = sprintf('http://api.example.com/streams/%s', $id);
+        static::assertTrue(Validation::uuid($id));
+        static::assertSame('streams', $response['data']['type']);
+        static::assertEquals($attributes, $response['data']['attributes']);
+        static::assertArraySubset($meta, $response['data']['meta']);
+        static::assertSame(sprintf('https://static.example.org/files/%s-%s', $id, $attributes['file_name']), $response['data']['meta']['url']);
+
+        $this->assertHeader('Location', $url);
+    }
 }
