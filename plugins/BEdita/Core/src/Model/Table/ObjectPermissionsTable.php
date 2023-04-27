@@ -108,7 +108,7 @@ class ObjectPermissionsTable extends Table
     }
 
     /**
-     * Check object permissions.
+     * Check if object permission is editable before saving.
      *
      * @param \Cake\Event\EventInterface $event Fired event.
      * @param \Cake\Datasource\EntityInterface $entity Entity data.
@@ -116,27 +116,59 @@ class ObjectPermissionsTable extends Table
      */
     public function beforeSave(EventInterface $event, EntityInterface $entity): void
     {
-        if (in_array(RolesTable::ADMIN_ROLE, Hash::extract(LoggedUser::getUser(), 'roles.{n}.id'))) {
-            return;
-        }
-
-        if ($entity->isNew()) {
-            $entity->object = $this->Objects->get($entity->object_id);
-        }
-
-        /** @var \BEdita\Core\Model\Entity\ObjectPermission $entity */
-        if (empty($entity->object)) {
-            $this->loadInto($entity, ['Objects']);
-        }
-
-        $permsRoles = Hash::extract((array)$entity->object->perms, 'roles');
-        if (empty($permsRoles)) { // no permission set
-            return;
-        }
-
-        $userRolesNames = Hash::extract(LoggedUser::getUser(), 'roles.{n}.name');
-        if (empty(array_intersect($permsRoles, $userRolesNames))) {
+        if (!$this->isEditable($entity)) {
             throw new ForbiddenException(__d('bedita', 'Save object permission is forbidden for user'));
         }
+    }
+
+    /**
+     * Check if object permission is editable before deleting.
+     *
+     * @param \Cake\Event\EventInterface $event Fired event.
+     * @param \Cake\Datasource\EntityInterface $entity Entity data.
+     * @return void
+     */
+    public function beforeDelete(EventInterface $event, EntityInterface $entity): void
+    {
+        if (!$this->isEditable($entity)) {
+            throw new ForbiddenException(__d('bedita', 'Delete object permission is forbidden for user'));
+        }
+    }
+
+    /**
+     * Check if logged user can create, edit or delete the object permission.
+     *
+     * Object permission is editable if one of below condition is true:
+     * - user belongs to admin role
+     * - no permission is set on the related object
+     * - permissions are set on the related object and user belongs to role that with permission
+     *
+     * @param \Cake\Datasource\EntityInterface $entity The object permission entity
+     * @return bool
+     * @throws \LogicException If entity missing of required object_id
+     */
+    protected function isEditable(EntityInterface $entity): bool
+    {
+        $user = LoggedUser::getUser();
+        $roleIds = Hash::extract($user, 'roles.{n}.id');
+        if (in_array(RolesTable::ADMIN_ROLE, $roleIds)) {
+            return true;
+        }
+
+        $object = $this->Objects->get($entity->object_id);
+        $permsRoles = Hash::extract((array)$object->perms, 'roles');
+        if (empty($permsRoles)) { // no permission set
+            return true;
+        }
+
+        $userRolesNames = Hash::extract($user, 'roles.{n}.name');
+        if (empty($userRolesNames) && !empty($roleIds)) {
+            $userRolesNames = $this->Roles
+                ->find('list')
+                ->where(['id IN' => $roleIds])
+                ->toArray();
+        }
+
+        return !empty(array_intersect($permsRoles, $userRolesNames));
     }
 }
