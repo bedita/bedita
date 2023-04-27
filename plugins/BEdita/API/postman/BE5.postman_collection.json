@@ -7365,11 +7365,11 @@
 						{
 							"listen": "test",
 							"script": {
-								"type": "text/javascript",
 								"exec": [
 									"tests[\"Status code is 200\"] = responseCode.code === 200;",
 									"tests[\"Content-Type is correct\"] = postman.getResponseHeader(\"Content-Type\") === 'application/vnd.api+json';"
-								]
+								],
+								"type": "text/javascript"
 							}
 						}
 					],
@@ -7390,13 +7390,15 @@
 							}
 						],
 						"url": {
-							"raw": "{{be4Url}}/annotation/{{annotationId}}",
+							"raw": "{{be4Url}}/annotations/{{annotationId}}/relationships/object",
 							"host": [
 								"{{be4Url}}"
 							],
 							"path": [
-								"annotation",
-								"{{annotationId}}"
+								"annotations",
+								"{{annotationId}}",
+								"relationships",
+								"object"
 							]
 						},
 						"description": "Get a single annotation by ID"
@@ -10879,58 +10881,6 @@
 					"response": []
 				},
 				{
-					"name": "Modify an object_permissions",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"tests[\"Status code is 200\"] = responseCode.code === 200;",
-									"tests[\"Content-Type is correct\"] = postman.getResponseHeader(\"Content-Type\") === 'application/vnd.api+json';"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "PATCH",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							},
-							{
-								"key": "Accept",
-								"value": "application/vnd.api+json"
-							},
-							{
-								"key": "Authorization",
-								"value": "Bearer {{jwt}}"
-							},
-							{
-								"key": "X-Api-Key",
-								"value": "{{apiKey}}"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"data\": {\n        \"id\": \"{{objectPermissionId}}\",\n        \"type\": \"object_permissions\",\n        \"attributes\": {\n            \"role_id\": \"3\"\n        }\n    }\n}"
-						},
-						"url": {
-							"raw": "{{be4Url}}/object_permissions/{{objectPermissionId}}",
-							"host": [
-								"{{be4Url}}"
-							],
-							"path": [
-								"object_permissions",
-								"{{objectPermissionId}}"
-							]
-						},
-						"description": "PATCH annotation"
-					},
-					"response": []
-				},
-				{
 					"name": "Delete an object_permission",
 					"event": [
 						{
@@ -10972,54 +10922,6 @@
 							"path": [
 								"object_permissions",
 								"{{objectPermissionId}}"
-							]
-						},
-						"description": "DEL annotation"
-					},
-					"response": []
-				},
-				{
-					"name": "Delete an annotation permanently Copy",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"type": "text/javascript",
-								"exec": [
-									"tests[\"Status code is 204\"] = responseCode.code === 204;",
-									"tests[\"Body matches string\"] = responseBody === \"\";"
-								]
-							}
-						}
-					],
-					"request": {
-						"method": "DELETE",
-						"header": [
-							{
-								"key": "Accept",
-								"value": "application/vnd.api+json"
-							},
-							{
-								"key": "Authorization",
-								"value": "Bearer {{jwt}}"
-							},
-							{
-								"key": "X-Api-Key",
-								"value": "{{apiKey}}"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
-						"url": {
-							"raw": "{{be4Url}}/trash/{{annotationId}}",
-							"host": [
-								"{{be4Url}}"
-							],
-							"path": [
-								"trash",
-								"{{annotationId}}"
 							]
 						},
 						"description": "DEL annotation"
