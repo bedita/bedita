@@ -55,6 +55,19 @@ class Stream extends Entity implements JsonApiSerializable
     use JsonApiTrait;
     use LogTrait;
 
+    public const FILE_PROPERTIES = [
+        'file_name',
+        'mime_type',
+        'file_size',
+        'hash_md5',
+        'hash_sha1',
+        'width',
+        'height',
+        'duration',
+        'file_metadata',
+        'private_url',
+    ];
+
     /**
      * @inheritDoc
      */
