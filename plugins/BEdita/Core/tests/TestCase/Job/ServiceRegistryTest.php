@@ -73,6 +73,12 @@ class ServiceRegistryTest extends TestCase
 
         static::assertNotEmpty($result);
         static::assertInstanceOf(JobService::class, $result);
+
+        // test full path notation
+        $result = ServiceRegistry::get('\\BEdita\\Core\\Job\\Service\\MailService');
+
+        static::assertNotEmpty($result);
+        static::assertInstanceOf(JobService::class, $result);
     }
 
     /**
