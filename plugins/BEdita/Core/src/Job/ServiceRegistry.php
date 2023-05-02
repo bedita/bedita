@@ -55,6 +55,9 @@ class ServiceRegistry
         }
 
         $className = $plugin . Inflector::camelize($name);
+        if (strpos($name, '\\') === 0) {
+            $className = Inflector::camelize($name);
+        }
         $fullClassName = App::className($className, 'Job/Service', 'Service');
 
         if ($fullClassName === null) {
