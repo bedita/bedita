@@ -13,9 +13,11 @@
 
 namespace BEdita\API\Model\Action;
 
+use Authorization\Policy\Exception\MissingPolicyException;
 use BEdita\Core\Model\Action\BaseAction;
 use Cake\Database\Expression\QueryExpression;
 use Cake\Datasource\Exception\RecordNotFoundException;
+use Cake\Http\Exception\ForbiddenException;
 use Cake\ORM\Association;
 use Cake\ORM\Association\BelongsTo;
 use Cake\ORM\Association\BelongsToMany;
@@ -70,6 +72,18 @@ class UpdateAssociatedAction extends BaseAction
         }
 
         $relatedEntities = $this->getTargetEntities($requestData, $association);
+
+        $identity = $this->request->getAttribute('identity');
+        foreach ([$entity, ...$relatedEntities] as $obj) {
+            try {
+                if ($identity->can('update', $obj) === false) {
+                    throw new ForbiddenException('stocazzo');
+                }
+            } catch (MissingPolicyException $e) {
+                continue;
+            }
+        }
+
         $count = count($relatedEntities);
         if ($count === 0) {
             $relatedEntities = [];
