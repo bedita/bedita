@@ -22,11 +22,13 @@ use Authorization\AuthorizationServiceInterface;
 use Authorization\AuthorizationServiceProviderInterface;
 use Authorization\Middleware\AuthorizationMiddleware;
 use Authorization\Policy\MapResolver;
+use Authorization\Policy\ResolverCollection;
 use BEdita\API\Identifier\JwtSubjectIdentifier;
 use BEdita\API\Middleware\ApplicationMiddleware;
 use BEdita\API\Middleware\BodyParserMiddleware;
 use BEdita\API\Middleware\LoggedUserMiddleware;
 use BEdita\API\Policy\EndpointPolicy;
+use BEdita\API\Policy\ObjectResolver;
 use BEdita\Core\Model\Entity\AuthProvider;
 use Cake\Core\Configure;
 use Cake\Error\Middleware\ErrorHandlerMiddleware;
@@ -225,8 +227,10 @@ abstract class BaseApplication extends CakeBaseApplication implements Authentica
         $mapResolver = new MapResolver([
             ServerRequest::class => EndpointPolicy::class,
         ]);
+        $objectResolver = new ObjectResolver();
+        $resolver = new ResolverCollection([$mapResolver, $objectResolver]);
 
-        return new AuthorizationService($mapResolver);
+        return new AuthorizationService($resolver);
     }
 
     /**
