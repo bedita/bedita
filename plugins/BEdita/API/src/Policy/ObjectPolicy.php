@@ -48,24 +48,24 @@ class ObjectPolicy implements BeforePolicyInterface
     }
 
     /**
-     * Check if $user can update an object.
+     * Check if $identity can update an object.
      *
-     * @param \Authorization\IdentityInterface $user The user.
+     * @param \Authorization\IdentityInterface $identity The identity.
      * @param \BEdita\Core\Model\Entity\ObjectEntity $object The object entity
      * @return bool
      */
-    public function canUpdate(IdentityInterface $user, ObjectEntity $object): bool
+    public function canUpdate(IdentityInterface $identity, ObjectEntity $object): bool
     {
         $permsRoles = Hash::extract((array)$object->perms, 'roles');
         if (empty($permsRoles)) { // no permission set
             return true;
         }
 
-        $userRolesNames = Hash::extract($user->getOriginalData(), 'roles.{n}.name');
-        if (empty($userRolesNames) && !empty($roleIds)) {
+        $userRolesNames = Hash::extract($identity->getOriginalData(), 'roles.{n}.name');
+        if (empty($userRolesNames)) {
             $userRolesNames = $this->fetchTable('Roles')
                 ->find('list')
-                ->where(['id IN' => $roleIds])
+                ->where(['id IN' => (array)Hash::extract($identity->getOriginalData(), 'roles.{n}.id')])
                 ->toArray();
         }
 
