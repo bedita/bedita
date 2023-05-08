@@ -103,6 +103,7 @@ class JobsShell extends Shell /* @phpstan-ignore-line */
         }
 
         $this->out(sprintf('=====> Processing job "<info>%s</info>" [%s]...', $asyncJob->uuid, $asyncJob->service));
+        $success = false;
         try {
             $result = $asyncJob->run();
             $success = is_bool($result) ? $result : (bool)Hash::get((array)$result, 'success');
