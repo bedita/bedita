@@ -75,11 +75,11 @@ class UpdateAssociatedAction extends BaseAction
 
         /** @var \Authorization\Identity $identity */
         $identity = $this->request->getAttribute('identity');
-        foreach ([$entity, ...$relatedEntities] as $obj) {
+        foreach ([$entity, ...$relatedEntities] as $ent) {
             try {
-                if ($identity->can('update', $obj) === false) {
+                if ($identity->can('update', $ent) === false) {
                     throw new ForbiddenException(
-                        __d('bedita', '{0} [id={1}] update is forbidden for user', [get_class($obj), $obj->id])
+                        __d('bedita', '{0} [id={1}] update is forbidden for user', [get_class($ent), $ent->id])
                     );
                 }
             } catch (MissingPolicyException $e) {

@@ -14,6 +14,7 @@
 namespace BEdita\API\Test\TestCase\Model\Action;
 
 use Authorization\Identity;
+use Authorization\Policy\Exception\MissingPolicyException;
 use BEdita\API\Model\Action\UpdateAssociatedAction;
 use BEdita\Core\Exception\InvalidDataException;
 use BEdita\Core\Model\Action\SetAssociatedAction;
@@ -343,5 +344,35 @@ class UpdateAssociatedActionTest extends TestCase
         $action = new UpdateAssociatedAction(['action' => $parentAction, 'request' => $request]);
 
         $action(['primaryKey' => 1]);
+    }
+
+    /**
+     * Test that if the policy was not found, the action go ahead.
+     *
+     * @return void
+     */
+    public function testMissingPolicyContinue(): void
+    {
+        $data = [
+            ['id' => 1],
+            ['id' => 2],
+        ];
+        $request = new ServerRequest();
+        $identityMock = $this->getMockBuilder(Identity::class)
+            ->disableOriginalConstructor()
+            ->onlyMethods(['can'])
+            ->getMock();
+
+        $identityMock->method('can')->willThrowException(new MissingPolicyException('Missing policy'));
+
+        $request = $request->withParsedBody($data)
+            ->withAttribute('identity', $identityMock);
+
+        $association = TableRegistry::getTableLocator()->get('FakeTags')->getAssociation('FakeArticles');
+        $parentAction = new SetAssociatedAction(compact('association'));
+        $action = new UpdateAssociatedAction(['action' => $parentAction, 'request' => $request]);
+
+        $result = $action(['primaryKey' => 1]);
+        static::assertEquals(1, $result);
     }
 }
