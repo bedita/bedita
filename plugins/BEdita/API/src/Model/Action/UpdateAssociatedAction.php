@@ -73,11 +73,14 @@ class UpdateAssociatedAction extends BaseAction
 
         $relatedEntities = $this->getTargetEntities($requestData, $association);
 
+        /** @var \Authorization\Identity $identity */
         $identity = $this->request->getAttribute('identity');
         foreach ([$entity, ...$relatedEntities] as $obj) {
             try {
                 if ($identity->can('update', $obj) === false) {
-                    throw new ForbiddenException('stocazzo');
+                    throw new ForbiddenException(
+                        __d('bedita', '{0} [id={1}] update is forbidden for user', [get_class($obj), $obj->id])
+                    );
                 }
             } catch (MissingPolicyException $e) {
                 continue;
