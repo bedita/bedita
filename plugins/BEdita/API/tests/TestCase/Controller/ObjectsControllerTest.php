@@ -1323,7 +1323,7 @@ class ObjectsControllerTest extends IntegrationTestCase
         $objectTypesTable->saveOrFail($ot);
 
         $this->configRequestHeaders('DELETE', $this->getUserAuthHeader('second user', 'password2'));
-        $this->delete('/documents/2', json_encode(compact('data')));
+        $this->delete('/documents/2');
 
         $this->assertResponseCode(403);
         $this->assertContentType('application/vnd.api+json');
