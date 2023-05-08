@@ -21,6 +21,7 @@ use Cake\ORM\Entity;
  * @property \Cake\I18n\Time $modified
  * @property \Cake\I18n\Time $completed
  * @property string $status
+ * @property array $results
  * @since 4.0.0
  */
 class AsyncJob extends Entity implements JsonApiSerializable
@@ -38,6 +39,7 @@ class AsyncJob extends Entity implements JsonApiSerializable
         'scheduled_from' => true,
         'expires' => true,
         'max_attempts' => true,
+        'results' => true,
     ];
 
     /**

@@ -66,10 +66,13 @@ class QueueJob implements JobInterface
         try {
             $success = $asyncJob->run();
         } catch (\Exception $e) {
+            $this->AsyncJobs->updateResults($asyncJob, $success, $e->getMessage());
             $this->log(sprintf('Error running job "%s" - %s', $uuid, $e->getMessage()), 'error');
         } finally {
             $result = $success ? 'completed successfully' : 'failed';
-            $this->log(sprintf('Job "%s" [%s] %s', $asyncJob->uuid, $asyncJob->service, $result), 'debug');
+            $message = sprintf('Job "%s" [%s] %s', $asyncJob->uuid, $asyncJob->service, $result);
+            $this->AsyncJobs->updateResults($asyncJob, $success, $message);
+            $this->log($message, 'debug');
             $this->AsyncJobs->unlock($asyncJob->uuid, $success);
         }
 

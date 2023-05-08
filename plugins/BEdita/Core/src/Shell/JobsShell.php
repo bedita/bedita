@@ -15,6 +15,7 @@ namespace BEdita\Core\Shell;
 use Cake\Console\ConsoleOptionParser;
 use Cake\Console\Shell;
 use Cake\Datasource\Exception\RecordNotFoundException;
+use Cake\Utility\Hash;
 
 /**
  * Shell class to run pending jobs
@@ -103,25 +104,25 @@ class JobsShell extends Shell /* @phpstan-ignore-line */
 
         $this->out(sprintf('=====> Processing job "<info>%s</info>" [%s]...', $asyncJob->uuid, $asyncJob->service));
         try {
-            $success = $asyncJob->run();
+            $result = $asyncJob->run();
+            $success = is_bool($result) ? $result : (bool)Hash::get((array)$result, 'success');
+            $message = is_array($result) ? (string)Hash::get($result, 'message') : '';
+            $this->AsyncJobs->updateResults($asyncJob, $success, $message);
         } catch (\Exception $e) {
             $success = false;
-
+            $this->AsyncJobs->updateResults($asyncJob, $success, $e->getMessage());
             $this->log($e->getMessage(), 'error');
             $this->err(sprintf('=====> %s with message "%s"', get_class($e), $e->getMessage()));
         } finally {
+            $message = '';
             if ($success === false) {
                 $this->log(sprintf('Job "%s" [%s] failed', $asyncJob->uuid, $asyncJob->service));
 
                 $this->err(sprintf('=====> Job "%s" [%s] failed', $asyncJob->uuid, $asyncJob->service));
             } else {
-                $this->out(
-                    sprintf(
-                        '=====> <success>Job "%s" [%s] completed successfully</success>',
-                        $asyncJob->uuid,
-                        $asyncJob->service
-                    )
-                );
+                $message = sprintf('Job "%s" [%s] completed successfully', $asyncJob->uuid, $asyncJob->service);
+                $this->AsyncJobs->updateResults($asyncJob, $success, $message);
+                $this->out(sprintf('=====> <success>%s</success>', $message));
             }
 
             $this->verbose(sprintf('=====> Unlocking job "<info>%s</info>"...', $asyncJob->uuid));
