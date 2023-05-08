@@ -23,7 +23,7 @@ use BEdita\Core\Model\Entity\ObjectEntity;
  *
  * @since 5.10.0
  */
-class ObjectResolver implements ResolverInterface
+class ObjectsResolver implements ResolverInterface
 {
     /**
      * @inheritDoc

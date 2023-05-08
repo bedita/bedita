@@ -16,17 +16,17 @@ namespace BEdita\API\Test\TestCase\Policy;
 
 use Authorization\Policy\Exception\MissingPolicyException;
 use BEdita\API\Policy\ObjectPolicy;
-use BEdita\API\Policy\ObjectResolver;
+use BEdita\API\Policy\ObjectsResolver;
 use BEdita\Core\Model\Entity\ObjectEntity;
 use BEdita\Core\Model\Entity\Role;
 use Cake\TestSuite\TestCase;
 
 /**
- * {@see \BEdita\API\Policy\ObjectResolver} Test Case.
+ * {@see \BEdita\API\Policy\ObjectsResolver} Test Case.
  *
- * @coversDefaultClass \BEdita\API\Policy\ObjectResolver
+ * @coversDefaultClass \BEdita\API\Policy\ObjectsResolver
  */
-class ObjectResolverTest extends TestCase
+class ObjectsResolverTest extends TestCase
 {
     /**
      * Data provider for `testGetPolicy()`
@@ -52,7 +52,7 @@ class ObjectResolverTest extends TestCase
     /**
      * Test `getPolicy()`.
      *
-     * @param string| $expected
+     * @param string|\Authorization\Policy\Exception\MissingPolicyException $expected
      * @param mixed $resource
      * @return void
      * @covers ::getPolicy()
@@ -64,7 +64,7 @@ class ObjectResolverTest extends TestCase
             $this->expectExceptionObject($expected);
         }
 
-        $resolver = new ObjectResolver();
+        $resolver = new ObjectsResolver();
         $actual = $resolver->getPolicy($resource);
         static::assertInstanceOf($expected, $actual);
     }
