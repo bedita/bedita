@@ -17,10 +17,10 @@ namespace BEdita\API\Test\TestCase\Policy;
 use Authentication\Identity as AuthenticationIdentity;
 use Authorization\AuthorizationService;
 use Authorization\Identity;
-use Authorization\IdentityInterface;
 use Authorization\Policy\MapResolver;
 use BEdita\API\Policy\ObjectPolicy;
 use BEdita\Core\Utility\LoggedUser;
+use Cake\ORM\Query;
 use Cake\TestSuite\TestCase;
 
 /**
@@ -30,6 +30,16 @@ use Cake\TestSuite\TestCase;
  */
 class ObjectPolicyTest extends TestCase
 {
+    protected $fixtures = [
+        'plugin.BEdita/Core.ObjectTypes',
+        'plugin.BEdita/Core.Objects',
+        'plugin.BEdita/Core.Profiles',
+        'plugin.BEdita/Core.Users',
+        'plugin.BEdita/Core.Roles',
+        'plugin.BEdita/Core.RolesUsers',
+        'plugin.BEdita/Core.ObjectPermissions',
+    ];
+
     /**
      * Data provider for `testBefore()`.
      *
@@ -77,5 +87,78 @@ class ObjectPolicyTest extends TestCase
         $policy = new ObjectPolicy();
         $actual = $policy->before($identity, null, null);
         static::assertEquals($expected, $actual);
+    }
+
+    /**
+     * Data provider for `testCanUpdate()`
+     *
+     * @return array
+     */
+    public function canUpdateProvider(): array
+    {
+        return [
+            'no permissions set' => [
+                true,
+                3,
+                [
+                    'id' => 5,
+                    'roles' => [
+                        [
+                            'id' => 2,
+                            'name' => 'second role',
+                        ],
+                    ],
+                ],
+            ],
+            'user has role' => [
+                true,
+                2,
+                LoggedUser::getUserAdmin(),
+            ],
+            'user has not role' => [
+                false,
+                2,
+                [
+                    'id' => 5,
+                    'roles' => [
+                        [
+                            'id' => 2,
+                            'name' => 'second role',
+                        ],
+                    ],
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * Test `canUpdate()` method.
+     *
+     * @param bool $expected The expected value
+     * @param int $id The object id
+     * @param array $user The user data
+     * @return void
+     * @covers ::canUpdate()
+     * @dataProvider canUpdateProvider
+     */
+    public function testCanUpdate(bool $expected, $id, array $user): void
+    {
+        $objectTypesTable = $this->fetchTable('ObjectTypes');
+        /** @var \BEdita\Core\Model\Entity\ObjectType $objectType */
+        $objectType = $objectTypesTable
+            ->find()
+            ->innerJoinWith('Objects', function (Query $q) use ($id) {
+                return $q->where(['Objects.id' => $id]);
+            })
+            ->first();
+
+        $objectType->addAssoc('Permissions');
+        $objectTypesTable->saveOrFail($objectType);
+
+        $object = $this->fetchTable($objectType->name)->get($id);
+        $identity = new Identity(new AuthorizationService(new MapResolver()), new AuthenticationIdentity($user));
+        $policy = new ObjectPolicy();
+
+        static::assertEquals($expected, $policy->canUpdate($identity, $object));
     }
 }
