@@ -428,27 +428,27 @@ class AsyncJobsTableTest extends TestCase
         return [
             'success false, some message' => [
                 false,
-                'some dummy message 1',
+                ['some dummy message 1'],
                 [
                     [
                         'data' => [
-                            'message' => 'some dummy message 1',
+                            'messages' => ['some dummy message 1'],
                         ],
                         'success' => false,
-                        'remaining_attempts' => null,
+                        'attempt_number' => 1,
                     ],
                 ],
             ],
             'success true, some message' => [
                 true,
-                'some dummy message 2',
+                ['some dummy message 2'],
                 [
                     [
                         'data' => [
-                            'message' => 'some dummy message 2',
+                            'messages' => ['some dummy message 2'],
                         ],
                         'success' => true,
-                        'remaining_attempts' => null,
+                        'attempt_number' => 1,
                     ],
                 ],
             ],
@@ -459,17 +459,17 @@ class AsyncJobsTableTest extends TestCase
      * Test `updateResults`.
      *
      * @param bool $success The success flag
-     * @param string $message The message
+     * @param array $messages The messages
      * @param array $expected The expected result
      * @return void
      * @covers ::updateResults()
      * @dataProvider updateResultsProvider()
      */
-    public function testUpdateResults(bool $success, string $message, array $expected): void
+    public function testUpdateResults(bool $success, array $messages, array $expected): void
     {
         $entity = $this->AsyncJobs->newEntity(['service' => 'example2']);
         $entity = $this->AsyncJobs->saveOrFail($entity);
-        $this->AsyncJobs->updateResults($entity, $success, $message);
+        $this->AsyncJobs->updateResults($entity, $success, $messages);
         $actual = $entity->get('results');
         static::assertSame($expected, $actual);
     }
