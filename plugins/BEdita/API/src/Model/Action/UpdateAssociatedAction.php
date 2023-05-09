@@ -13,9 +13,11 @@
 
 namespace BEdita\API\Model\Action;
 
+use Authorization\Policy\Exception\MissingPolicyException;
 use BEdita\Core\Model\Action\BaseAction;
 use Cake\Database\Expression\QueryExpression;
 use Cake\Datasource\Exception\RecordNotFoundException;
+use Cake\Http\Exception\ForbiddenException;
 use Cake\ORM\Association;
 use Cake\ORM\Association\BelongsTo;
 use Cake\ORM\Association\BelongsToMany;
@@ -70,6 +72,21 @@ class UpdateAssociatedAction extends BaseAction
         }
 
         $relatedEntities = $this->getTargetEntities($requestData, $association);
+
+        /** @var \Authorization\Identity $identity */
+        $identity = $this->request->getAttribute('identity');
+        foreach ([$entity, ...$relatedEntities] as $ent) {
+            try {
+                if ($identity->can('update', $ent) === false) {
+                    throw new ForbiddenException(
+                        __d('bedita', '{0} [id={1}] update is forbidden for user', [get_class($ent), $ent->id])
+                    );
+                }
+            } catch (MissingPolicyException $e) {
+                continue;
+            }
+        }
+
         $count = count($relatedEntities);
         if ($count === 0) {
             $relatedEntities = [];

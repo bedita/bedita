@@ -13,7 +13,11 @@
 
 namespace BEdita\API\Test\TestCase\Model\Action;
 
+use Authentication\Identity as AuthenticationIdentity;
+use Authorization\AuthorizationService;
+use Authorization\Identity;
 use BEdita\API\Model\Action\UpdateRelatedAction;
+use BEdita\API\Policy\ObjectsResolver;
 use BEdita\Core\Model\Action\SetRelatedObjectsAction;
 use BEdita\Core\Utility\LoggedUser;
 use Cake\Datasource\Exception\RecordNotFoundException;
@@ -157,8 +161,12 @@ class UpdateRelatedActionTest extends TestCase
         }
 
         LoggedUser::setUserAdmin();
+        $identity = new Identity(
+            new AuthorizationService(new ObjectsResolver()),
+            new AuthenticationIdentity(LoggedUser::getUser()),
+        );
         $request = new ServerRequest();
-        $request = $request->withParsedBody($data);
+        $request = $request->withParsedBody($data)->withAttribute('identity', $identity);
         $association = $this->getTableLocator()->get($table)->getAssociation($association);
         $parentAction = new SetRelatedObjectsAction(compact('association'));
         $action = new UpdateRelatedAction(['action' => $parentAction, 'request' => $request]);

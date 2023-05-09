@@ -13,10 +13,13 @@
 
 namespace BEdita\API\Test\TestCase\Model\Action;
 
+use Authorization\Identity;
+use Authorization\Policy\Exception\MissingPolicyException;
 use BEdita\API\Model\Action\UpdateAssociatedAction;
 use BEdita\Core\Exception\InvalidDataException;
 use BEdita\Core\Model\Action\SetAssociatedAction;
 use Cake\Datasource\Exception\RecordNotFoundException;
+use Cake\Http\Exception\ForbiddenException;
 use Cake\Http\ServerRequest;
 use Cake\ORM\Query;
 use Cake\ORM\TableRegistry;
@@ -216,7 +219,15 @@ class UpdateAssociatedActionTest extends TestCase
         }
 
         $request = new ServerRequest();
-        $request = $request->withParsedBody($data);
+        $identityMock = $this->getMockBuilder(Identity::class)
+            ->disableOriginalConstructor()
+            ->onlyMethods(['can'])
+            ->getMock();
+
+        $identityMock->method('can')->willReturn(true);
+
+        $request = $request->withParsedBody($data)
+            ->withAttribute('identity', $identityMock);
         $association = TableRegistry::getTableLocator()->get($table)->getAssociation($association);
         $parentAction = new SetAssociatedAction(compact('association'));
         $action = new UpdateAssociatedAction(['action' => $parentAction, 'request' => $request]);
@@ -259,14 +270,23 @@ class UpdateAssociatedActionTest extends TestCase
         $junction->saveOrFail($junctionEntity);
 
         $request = new ServerRequest();
-        $request = $request->withParsedBody([
-            [
-                'id' => 1,
-            ],
-            [
-                'id' => 2,
-            ],
-        ]);
+        $identityMock = $this->getMockBuilder(Identity::class)
+            ->disableOriginalConstructor()
+            ->onlyMethods(['can'])
+            ->getMock();
+
+        $identityMock->method('can')->willReturn(true);
+
+        $request = $request
+            ->withAttribute('identity', $identityMock)
+            ->withParsedBody([
+                [
+                    'id' => 1,
+                ],
+                [
+                    'id' => 2,
+                ],
+            ]);
         $association = TableRegistry::getTableLocator()->get('FakeArticles')->getAssociation('FakeTags');
         $parentAction = new SetAssociatedAction(compact('association'));
         $action = new UpdateAssociatedAction(['action' => $parentAction, 'request' => $request]);
@@ -293,5 +313,66 @@ class UpdateAssociatedActionTest extends TestCase
             ],
         ];
         static::assertSame($expected, $junctionEntities);
+    }
+
+    /**
+     * Test forbidden response if identity can't update an entity
+     *
+     * @return void
+     */
+    public function testForbidden(): void
+    {
+        $this->expectExceptionObject(new ForbiddenException('Cake\ORM\Entity [id=1] update is forbidden for user'));
+
+        $data = [
+            ['id' => 1],
+            ['id' => 2],
+        ];
+        $request = new ServerRequest();
+        $identityMock = $this->getMockBuilder(Identity::class)
+            ->disableOriginalConstructor()
+            ->onlyMethods(['can'])
+            ->getMock();
+
+        $identityMock->method('can')->willReturn(false);
+
+        $request = $request->withParsedBody($data)
+            ->withAttribute('identity', $identityMock);
+
+        $association = TableRegistry::getTableLocator()->get('FakeTags')->getAssociation('FakeArticles');
+        $parentAction = new SetAssociatedAction(compact('association'));
+        $action = new UpdateAssociatedAction(['action' => $parentAction, 'request' => $request]);
+
+        $action(['primaryKey' => 1]);
+    }
+
+    /**
+     * Test that if the policy was not found, the action go ahead.
+     *
+     * @return void
+     */
+    public function testMissingPolicyContinue(): void
+    {
+        $data = [
+            ['id' => 1],
+            ['id' => 2],
+        ];
+        $request = new ServerRequest();
+        $identityMock = $this->getMockBuilder(Identity::class)
+            ->disableOriginalConstructor()
+            ->onlyMethods(['can'])
+            ->getMock();
+
+        $identityMock->method('can')->willThrowException(new MissingPolicyException('Missing policy'));
+
+        $request = $request->withParsedBody($data)
+            ->withAttribute('identity', $identityMock);
+
+        $association = TableRegistry::getTableLocator()->get('FakeTags')->getAssociation('FakeArticles');
+        $parentAction = new SetAssociatedAction(compact('association'));
+        $action = new UpdateAssociatedAction(['action' => $parentAction, 'request' => $request]);
+
+        $result = $action(['primaryKey' => 1]);
+        static::assertEquals(1, $result);
     }
 }

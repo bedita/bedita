@@ -1244,6 +1244,35 @@ class ObjectsControllerTest extends IntegrationTestCase
     }
 
     /**
+     * Test edit method for forbidden object.
+     *
+     * @return void
+     * @covers ::resource()
+     */
+    public function testEditForbidden()
+    {
+        $objectTypesTable = $this->fetchTable('ObjectTypes');
+        /** @var \BEdita\Core\Model\Entity\ObjectType $ot */
+        $ot = $objectTypesTable->get('documents');
+        $ot->addAssoc('Permissions');
+        $objectTypesTable->saveOrFail($ot);
+
+        $data = [
+            'id' => '2',
+            'type' => 'documents',
+            'attributes' => [
+                'title' => 'Try to change title',
+            ],
+        ];
+
+        $this->configRequestHeaders('PATCH', $this->getUserAuthHeader('second user', 'password2'));
+        $this->patch('/documents/2', json_encode(compact('data')));
+
+        $this->assertResponseCode(403);
+        $this->assertContentType('application/vnd.api+json');
+    }
+
+    /**
      * Test delete method.
      *
      * @return void
@@ -1276,6 +1305,27 @@ class ObjectsControllerTest extends IntegrationTestCase
         $this->configRequestHeaders('DELETE', $authHeader);
         $this->delete('/documents/4');
         $this->assertResponseCode(404);
+        $this->assertContentType('application/vnd.api+json');
+    }
+
+    /**
+     * Test delete method for forbidden object.
+     *
+     * @return void
+     * @covers ::resource()
+     */
+    public function testDeleteForbidden()
+    {
+        $objectTypesTable = $this->fetchTable('ObjectTypes');
+        /** @var \BEdita\Core\Model\Entity\ObjectType $ot */
+        $ot = $objectTypesTable->get('documents');
+        $ot->addAssoc('Permissions');
+        $objectTypesTable->saveOrFail($ot);
+
+        $this->configRequestHeaders('DELETE', $this->getUserAuthHeader('second user', 'password2'));
+        $this->delete('/documents/2');
+
+        $this->assertResponseCode(403);
         $this->assertContentType('application/vnd.api+json');
     }
 

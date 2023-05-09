@@ -35,6 +35,7 @@ class AssociatedEntitiesTest extends IntegrationTestCase
         'plugin.BEdita/Core.DateRanges',
         'plugin.BEdita/Core.Locations',
         'plugin.BEdita/Core.Streams',
+        'plugin.BEdita/Core.ObjectPermissions',
     ];
 
     /**
@@ -282,5 +283,70 @@ class AssociatedEntitiesTest extends IntegrationTestCase
         static::assertEquals($expect, $result['included'][0]['meta']['media_url']);
 
         $this->filesystemRestore();
+    }
+
+    /**
+     * Test that deletion of object's association protected is forbidden.
+     *
+     * @return void
+     */
+    public function testDeleteAssociationsForbidden(): void
+    {
+        $objectTypesTable = $this->fetchTable('ObjectTypes');
+        /** @var \BEdita\Core\Model\Entity\ObjectType $ot */
+        $ot = $objectTypesTable->get('documents');
+        $ot->addAssoc('Permissions');
+        $objectTypesTable->saveOrFail($ot);
+
+        $data = [
+            [
+                'id' => '2',
+                'type' => 'documents',
+            ],
+        ];
+
+        $this->configRequestHeaders('DELETE', $this->getUserAuthHeader('second user', 'password2'));
+        // Cannot use `IntegrationTestCase::delete()`, as it does not allow sending payload with the request.
+        $this->_sendRequest('/profiles/4/relationships/inverse_test', 'DELETE', json_encode(compact('data')));
+
+        $this->assertResponseCode(403);
+        $this->assertContentType('application/vnd.api+json');
+    }
+
+    /**
+     * Test that editing of object's association protected is forbidden.
+     *
+     * @return void
+     */
+    public function testEditAssociationsForbidden(): void
+    {
+        $objectTypesTable = $this->fetchTable('ObjectTypes');
+        /** @var \BEdita\Core\Model\Entity\ObjectType $ot */
+        $ot = $objectTypesTable->get('documents');
+        $ot->addAssoc('Permissions');
+        $objectTypesTable->saveOrFail($ot);
+
+        $data = [
+            [
+                'id' => '2',
+                'type' => 'documents',
+                'meta' => [
+                    'relation' => [
+                        'priority' => 1,
+                        'inv_priority' => 2,
+                        'params' => [
+                            'gustavo' => 'supporto',
+                        ],
+                    ],
+                ],
+            ],
+        ];
+
+        $this->configRequestHeaders('PATCH', $this->getUserAuthHeader('second user', 'password2'));
+        // Cannot use `IntegrationTestCase::delete()`, as it does not allow sending payload with the request.
+        $this->patch('/profiles/4/relationships/inverse_test', json_encode(compact('data')));
+
+        $this->assertResponseCode(403);
+        $this->assertContentType('application/vnd.api+json');
     }
 }

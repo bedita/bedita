@@ -204,7 +204,7 @@ class ObjectsController extends ResourcesController
                 throw new ForbiddenException(__d('bedita', 'Abstract object types cannot be instantiated'));
             }
 
-            $entity = $this->Table->newEntity([]);
+            $entity = $this->Table->newEmptyEntity();
             $entity->set('type', $this->request->getData('type'));
             $action = new SaveEntityAction(['table' => $this->Table, 'objectType' => $this->objectType]);
 
@@ -273,6 +273,8 @@ class ObjectsController extends ResourcesController
         $this->addCount([$entity]);
 
         if ($this->request->is('delete')) {
+            $this->Authorization->authorize($entity, 'update');
+
             // Delete an entity.
             $action = new DeleteObjectAction(['table' => $this->Table]);
 
@@ -285,6 +287,8 @@ class ObjectsController extends ResourcesController
         }
 
         if ($this->request->is('patch')) {
+            $this->Authorization->authorize($entity, 'update');
+
             // Patch an existing entity.
             if ($this->request->getData('id') !== (string)$id) {
                 throw new ConflictException(__d('bedita', 'IDs don\'t match'));
