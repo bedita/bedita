@@ -110,6 +110,9 @@ class AsyncJobsTable extends Table
             ->add('completed', 'dateTime', ['rule' => [Validation::class, 'dateTime']])
             ->allowEmptyDateTime('completed');
 
+        $validator
+            ->allowEmptyString('results');
+
         return $validator;
     }
 
@@ -121,7 +124,8 @@ class AsyncJobsTable extends Table
     protected function _initializeSchema(TableSchemaInterface $schema): TableSchemaInterface
     {
         $schema->setColumnType('payload', 'json')
-            ->setColumnType('uuid', 'uuid');
+            ->setColumnType('uuid', 'uuid')
+            ->setColumnType('results', 'json');
 
         return $schema;
     }
@@ -327,5 +331,27 @@ class AsyncJobsTable extends Table
         return $query
             ->find('pending')
             ->orderDesc($this->aliasField('priority'));
+    }
+
+    /**
+     * Update field "results" by entity, success and message
+     *
+     * @param \BEdita\Core\Model\Entity\AsyncJob $entity The Job entity
+     * @param bool $success The success flag
+     * @param array $messages The messages
+     * @return void
+     */
+    public function updateResults(AsyncJob $entity, bool $success, array $messages = []): void
+    {
+        $this->getConnection()->transactional(function () use ($entity, $success, $messages) {
+            $results = (array)$entity->get('results');
+            $attempt = count($results) + 1;
+            $data = compact('messages');
+            $result = compact('data', 'success');
+            $result['attempt_number'] = $attempt;
+            $results[] = $result;
+            $entity->set('results', $results);
+            $this->saveOrFail($entity, ['atomic' => false]);
+        });
     }
 }

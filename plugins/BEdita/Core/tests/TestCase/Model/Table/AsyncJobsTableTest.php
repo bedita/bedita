@@ -417,4 +417,60 @@ class AsyncJobsTableTest extends TestCase
     {
         return 'file:///' . TMP . DS . 'queue';
     }
+
+    /**
+     * Data provider for testUpdateResults.
+     *
+     * @return array
+     */
+    public function updateResultsProvider(): array
+    {
+        return [
+            'success false, some message' => [
+                false,
+                ['some dummy message 1'],
+                [
+                    [
+                        'data' => [
+                            'messages' => ['some dummy message 1'],
+                        ],
+                        'success' => false,
+                        'attempt_number' => 1,
+                    ],
+                ],
+            ],
+            'success true, some message' => [
+                true,
+                ['some dummy message 2'],
+                [
+                    [
+                        'data' => [
+                            'messages' => ['some dummy message 2'],
+                        ],
+                        'success' => true,
+                        'attempt_number' => 1,
+                    ],
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * Test `updateResults`.
+     *
+     * @param bool $success The success flag
+     * @param array $messages The messages
+     * @param array $expected The expected result
+     * @return void
+     * @covers ::updateResults()
+     * @dataProvider updateResultsProvider()
+     */
+    public function testUpdateResults(bool $success, array $messages, array $expected): void
+    {
+        $entity = $this->AsyncJobs->newEntity(['service' => 'example2']);
+        $entity = $this->AsyncJobs->saveOrFail($entity);
+        $this->AsyncJobs->updateResults($entity, $success, $messages);
+        $actual = $entity->get('results');
+        static::assertSame($expected, $actual);
+    }
 }

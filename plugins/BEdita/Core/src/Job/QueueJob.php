@@ -20,6 +20,7 @@ use Cake\Log\LogTrait;
 use Cake\ORM\Locator\LocatorAwareTrait;
 use Cake\Queue\Job\JobInterface;
 use Cake\Queue\Job\Message;
+use Cake\Utility\Hash;
 use Interop\Queue\Processor;
 
 /**
@@ -63,13 +64,20 @@ class QueueJob implements JobInterface
         }
 
         $success = false;
+        $messages = [];
         try {
-            $success = $asyncJob->run();
+            $result = $asyncJob->run();
+            $success = is_bool($result) ? $result : (bool)Hash::get((array)$result, 'success');
+            $messages = is_array($result) ? (array)Hash::get($result, 'messages') : [];
         } catch (\Exception $e) {
+            $messages[] = $e->getMessage();
             $this->log(sprintf('Error running job "%s" - %s', $uuid, $e->getMessage()), 'error');
         } finally {
             $result = $success ? 'completed successfully' : 'failed';
-            $this->log(sprintf('Job "%s" [%s] %s', $asyncJob->uuid, $asyncJob->service, $result), 'debug');
+            $message = sprintf('Job "%s" [%s] %s', $asyncJob->uuid, $asyncJob->service, $result);
+            $messages[] = $message;
+            $this->AsyncJobs->updateResults($asyncJob, $success, $messages);
+            $this->log($message, 'debug');
             $this->AsyncJobs->unlock($asyncJob->uuid, $success);
         }
 
