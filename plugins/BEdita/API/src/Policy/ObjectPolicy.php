@@ -39,7 +39,7 @@ class ObjectPolicy implements BeforePolicyInterface
             return null;
         }
 
-        $roleIds = Hash::extract($identity->getOriginalData(), 'roles.{n}.id');
+        $roleIds = (array)Hash::extract($identity->getOriginalData(), 'roles.{n}.id');
         if (in_array(RolesTable::ADMIN_ROLE, $roleIds)) {
             return true;
         }
@@ -61,14 +61,30 @@ class ObjectPolicy implements BeforePolicyInterface
             return true;
         }
 
+        return !empty(array_intersect($permsRoles, $this->extractRolesNames($identity)));
+    }
+
+    /**
+     * Extract roles'names from identity.
+     *
+     * @param \Authorization\IdentityInterface $identity The identity.
+     * @return array
+     */
+    protected function extractRolesNames(IdentityInterface $identity): array
+    {
         $userRolesNames = Hash::extract($identity->getOriginalData(), 'roles.{n}.name');
-        if (empty($userRolesNames)) {
-            $userRolesNames = $this->fetchTable('Roles')
-                ->find('list')
-                ->where(['id IN' => (array)Hash::extract($identity->getOriginalData(), 'roles.{n}.id')])
-                ->toArray();
+        if (!empty($userRolesNames)) {
+            return $userRolesNames;
         }
 
-        return !empty(array_intersect($permsRoles, $userRolesNames));
+        $userRolesIds = (array)Hash::extract($identity->getOriginalData(), 'roles.{n}.id');
+        if (empty($userRolesIds)) {
+            return [];
+        }
+
+        return $this->fetchTable('Roles')
+            ->find('list')
+            ->where(['id IN' => $userRolesIds])
+            ->toArray();
     }
 }

@@ -128,6 +128,13 @@ class ObjectPolicyTest extends TestCase
                     ],
                 ],
             ],
+            'user without roles' => [
+                false,
+                2,
+                [
+                    'id' => 5,
+                ],
+            ],
         ];
     }
 
@@ -139,6 +146,7 @@ class ObjectPolicyTest extends TestCase
      * @param array $user The user data
      * @return void
      * @covers ::canUpdate()
+     * @covers ::extractRolesNames
      * @dataProvider canUpdateProvider
      */
     public function testCanUpdate(bool $expected, $id, array $user): void
