@@ -72,7 +72,7 @@ class ObjectPolicy implements BeforePolicyInterface
      */
     protected function extractRolesNames(IdentityInterface $identity): array
     {
-        $userRolesNames = Hash::extract($identity->getOriginalData(), 'roles.{n}.name');
+        $userRolesNames = (array)Hash::extract($identity->getOriginalData(), 'roles.{n}.name');
         if (!empty($userRolesNames)) {
             return $userRolesNames;
         }
