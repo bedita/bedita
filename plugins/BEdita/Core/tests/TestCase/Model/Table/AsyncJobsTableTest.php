@@ -426,43 +426,29 @@ class AsyncJobsTableTest extends TestCase
     public function updateResultsProvider(): array
     {
         return [
-            'success false, some message, no attempt' => [
+            'success false, some message' => [
                 false,
                 'some dummy message 1',
-                -1,
                 [
                     [
                         'data' => [
                             'message' => 'some dummy message 1',
                         ],
+                        'remaining_attempts' => 0,
                         'success' => false,
                     ],
                 ],
             ],
-            'success true, some message, no attempt' => [
+            'success true, some message' => [
                 true,
                 'some dummy message 2',
-                -1,
                 [
                     [
                         'data' => [
                             'message' => 'some dummy message 2',
                         ],
+                        'remaining_attempts' => 0,
                         'success' => true,
-                    ],
-                ],
-            ],
-            'success true, some message, and attempt' => [
-                true,
-                'some dummy message 3',
-                2,
-                [
-                    [
-                        'data' => [
-                            'message' => 'some dummy message 3',
-                        ],
-                        'success' => true,
-                        'attempt_number' => 2,
                     ],
                 ],
             ],
@@ -472,19 +458,18 @@ class AsyncJobsTableTest extends TestCase
     /**
      * Test `updateResults`.
      *
+     * @param bool $success The success flag
+     * @param string $message The message
+     * @param array $expected The expected result
      * @return void
      * @covers ::updateResults()
      * @dataProvider updateResultsProvider()
      */
-    public function testUpdateResults(bool $success, string $message, int $attempt, array $expected): void
+    public function testUpdateResults(bool $success, string $message, array $expected): void
     {
         $entity = $this->AsyncJobs->newEntity(['service' => 'example2']);
         $entity = $this->AsyncJobs->saveOrFail($entity);
-        if ($attempt > 0) {
-            $this->AsyncJobs->updateResults($entity, $success, $message, $attempt);
-        } else {
-            $this->AsyncJobs->updateResults($entity, $success, $message);
-        }
+        $this->AsyncJobs->updateResults($entity, $success, $message);
         $actual = $entity->get('results');
         static::assertSame($expected, $actual);
     }

@@ -339,18 +339,15 @@ class AsyncJobsTable extends Table
      * @param \BEdita\Core\Model\Entity\AsyncJob $entity The Job entity
      * @param bool $success The success flag
      * @param string $message The message
-     * @param int $attempt The attempt
      * @return void
      */
-    public function updateResults(AsyncJob $entity, bool $success, string $message = '', int $attempt = 0): void
+    public function updateResults(AsyncJob $entity, bool $success, string $message = ''): void
     {
-        $this->getConnection()->transactional(function () use ($entity, $success, $message, $attempt) {
+        $this->getConnection()->transactional(function () use ($entity, $success, $message) {
             $results = (array)$entity->get('results');
             $data = compact('message');
             $result = compact('data', 'success');
-            if ($attempt > 0) {
-                $result['attempt_number'] = $attempt;
-            }
+            $result['remaining_attempts'] = $entity->get('max_attempts');
             $results[] = $result;
             $entity->set('results', $results);
             $this->saveOrFail($entity);
