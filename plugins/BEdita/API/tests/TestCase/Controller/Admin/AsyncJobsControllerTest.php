@@ -66,6 +66,7 @@ class AsyncJobsControllerTest extends IntegrationTestCase
                         'scheduled_from' => null,
                         'expires' => '1992-08-17T19:29:31+00:00',
                         'max_attempts' => 1,
+                        'results' => null,
                     ],
                     'meta' => [
                         'locked_until' => null,
@@ -90,6 +91,7 @@ class AsyncJobsControllerTest extends IntegrationTestCase
                         'scheduled_from' => null,
                         'expires' => null,
                         'max_attempts' => 1,
+                        'results' => null,
                     ],
                     'meta' => [
                         'locked_until' => null,
@@ -114,6 +116,7 @@ class AsyncJobsControllerTest extends IntegrationTestCase
                         'scheduled_from' => null,
                         'expires' => null,
                         'max_attempts' => 0,
+                        'results' => null,
                     ],
                     'meta' => [
                         'locked_until' => null,
@@ -138,6 +141,7 @@ class AsyncJobsControllerTest extends IntegrationTestCase
                         'scheduled_from' => null,
                         'expires' => null,
                         'max_attempts' => 1,
+                        'results' => null,
                     ],
                     'meta' => [
                         'locked_until' => null,
@@ -162,6 +166,7 @@ class AsyncJobsControllerTest extends IntegrationTestCase
                         'scheduled_from' => null,
                         'expires' => null,
                         'max_attempts' => 1,
+                        'results' => null,
                     ],
                     'meta' => [
                         'locked_until' => json_decode(json_encode($AsyncJobs->get('6407afa6-96a3-4aeb-90c1-1541756efdef')->get('locked_until')), true),
@@ -186,6 +191,7 @@ class AsyncJobsControllerTest extends IntegrationTestCase
                         'scheduled_from' => json_decode(json_encode($AsyncJobs->get('66594f3c-995f-49d2-9192-382baf1a12b3')->get('scheduled_from')), true),
                         'expires' => null,
                         'max_attempts' => 1,
+                        'results' => null,
                     ],
                     'meta' => [
                         'locked_until' => null,
@@ -210,6 +216,7 @@ class AsyncJobsControllerTest extends IntegrationTestCase
                         'scheduled_from' => null,
                         'expires' => null,
                         'max_attempts' => 1,
+                        'results' => null,
                     ],
                     'meta' => [
                         'locked_until' => null,
@@ -234,6 +241,7 @@ class AsyncJobsControllerTest extends IntegrationTestCase
                         'scheduled_from' => null,
                         'expires' => null,
                         'max_attempts' => 1,
+                        'results' => null,
                     ],
                     'meta' => [
                         'locked_until' => null,
@@ -325,6 +333,7 @@ class AsyncJobsControllerTest extends IntegrationTestCase
                     'scheduled_from' => null,
                     'expires' => null,
                     'max_attempts' => 1,
+                    'results' => null,
                 ],
                 'meta' => [
                     'completed' => null,
