@@ -351,7 +351,7 @@ class AsyncJobsTable extends Table
             $result['attempt_number'] = $attempt;
             $results[] = $result;
             $entity->set('results', $results);
-            $this->saveOrFail($entity);
+            $this->saveOrFail($entity, ['atomic' => false]);
         });
     }
 }
