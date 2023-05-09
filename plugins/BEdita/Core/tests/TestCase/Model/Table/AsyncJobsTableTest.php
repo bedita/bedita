@@ -434,8 +434,8 @@ class AsyncJobsTableTest extends TestCase
                         'data' => [
                             'message' => 'some dummy message 1',
                         ],
-                        'remaining_attempts' => 0,
                         'success' => false,
+                        'remaining_attempts' => null,
                     ],
                 ],
             ],
@@ -447,8 +447,8 @@ class AsyncJobsTableTest extends TestCase
                         'data' => [
                             'message' => 'some dummy message 2',
                         ],
-                        'remaining_attempts' => 0,
                         'success' => true,
+                        'remaining_attempts' => null,
                     ],
                 ],
             ],
