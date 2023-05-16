@@ -341,12 +341,17 @@ class UsersTable extends Table
      */
     protected function findLogin(Query $query)
     {
+        $status = ['on'];
+        if ((bool)Configure::read('Login.draft') === true) {
+            $status[] = 'draft';
+        }
+
         return $query
-            ->where(function (QueryExpression $exp) {
+            ->where(function (QueryExpression $exp) use ($status) {
                 return $exp
                     ->eq($this->aliasField('deleted'), false)
                     ->eq($this->aliasField('blocked'), false)
-                    ->in($this->aliasField('status'), ['on', 'draft']);
+                    ->in($this->aliasField('status'), $status);
             });
     }
 
