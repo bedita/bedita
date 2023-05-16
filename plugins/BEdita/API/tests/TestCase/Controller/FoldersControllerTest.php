@@ -269,9 +269,9 @@ class FoldersControllerTest extends IntegrationTestCase
             'data' => [],
         ];
 
-        $this->fetchTable('Translations')->deleteAll([]);
-        $this->fetchTable('Annotations')->deleteAll([]);
-        $this->fetchTable('Folders')->deleteAll([]);
+        TableRegistry::getTableLocator()->get('Translations')->deleteAll([]);
+        TableRegistry::getTableLocator()->get('Annotations')->deleteAll([]);
+        TableRegistry::getTableLocator()->get('Folders')->deleteAll([]);
 
         $this->configRequestHeaders();
         $this->get('/folders');
