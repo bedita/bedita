@@ -713,7 +713,7 @@ class PagesController extends AppController {
                     ),
                 ),
             ),
-            'limit' => 25,  // Keeping our feet on the ground.
+            'limit' => 100,  // Keeping our feet on the ground.
         ));
 
         $this->layout = 'ajax';
