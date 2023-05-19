@@ -29,7 +29,7 @@ class AsyncJobsControllerTest extends IntegrationTestCase
      * Test index method on GET.
      *
      * @return void
-     * @coversNothing
+     * @covers ::initialize()
      */
     public function testIndex(): void
     {
@@ -269,7 +269,7 @@ class AsyncJobsControllerTest extends IntegrationTestCase
      * Test index method on POST.
      *
      * @return void
-     * @coversNothing
+     * @covers ::initialize()
      */
     public function testAdd(): void
     {
