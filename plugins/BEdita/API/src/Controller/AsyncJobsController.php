@@ -34,10 +34,9 @@ class AsyncJobsController extends ResourcesController
      */
     public function initialize(): void
     {
-        parent::initialize();
-
         if (!in_array($this->request->getMethod(), ['GET', 'POST'])) {
             throw new MethodNotAllowedException();
         }
+        parent::initialize();
     }
 }

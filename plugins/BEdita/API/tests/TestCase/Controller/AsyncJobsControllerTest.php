@@ -15,6 +15,7 @@ declare(strict_types=1);
 namespace BEdita\API\Test\TestCase\Controller;
 
 use BEdita\API\TestSuite\IntegrationTestCase;
+use Cake\Http\Exception\MethodNotAllowedException;
 use Cake\ORM\TableRegistry;
 use DMS\PHPUnitExtensions\ArraySubset\ArraySubsetAsserts;
 
@@ -289,5 +290,68 @@ class AsyncJobsControllerTest extends IntegrationTestCase
             ->first();
         $expected = array_merge(['uuid' => $asyncJob->get('uuid')], $data['attributes']);
         static::assertArraySubset($expected, $asyncJob->toArray());
+    }
+
+    /**
+     * Test method not allowed exception on patch
+     *
+     * @return void
+     * @covers ::initialize()
+     */
+    public function testPatch(): void
+    {
+        $this->configRequestHeaders('POST', $this->getUserAuthHeader());
+        $data = [
+            'id' => '6407afa6-96a3-4aeb-90c1-1541756efdef', // 'whatever
+            'type' => 'async_jobs',
+            'attributes' => [
+                'service' => 'whatever',
+            ],
+        ];
+        $this->patch('/async_jobs', json_encode(compact('data')));
+        $actual = json_decode((string)$this->_response->getBody(), true);
+        $expected = [
+            'error' => [
+                'status' => '405',
+                'title' => 'Method Not Allowed',
+            ],
+            'links' => [
+                'self' => '/async_jobs',
+                'home' => '/home',
+            ],
+        ];
+        $this->assertSame($expected['error']['status'], $actual['error']['status']);
+        $this->assertSame($expected['error']['title'], $actual['error']['title']);
+        $this->assertSame($expected['links'], $actual['links']);
+    }
+
+    /**
+     * Test method not allowed exception on delete
+     *
+     * @return void
+     * @covers ::initialize()
+     */
+    public function testDelete(): void
+    {
+        $this->configRequestHeaders('DELETE', $this->getUserAuthHeader());
+        $data = [
+            'id' => '6407afa6-96a3-4aeb-90c1-1541756efdef', // 'whatever
+            'type' => 'async_jobs',
+        ];
+        $this->delete('/async_jobs', json_encode(compact('data')));
+        $actual = json_decode((string)$this->_response->getBody(), true);
+        $expected = [
+            'error' => [
+                'status' => '405',
+                'title' => 'Method Not Allowed',
+            ],
+            'links' => [
+                'self' => '/async_jobs',
+                'home' => '/home',
+            ],
+        ];
+        $this->assertSame($expected['error']['status'], $actual['error']['status']);
+        $this->assertSame($expected['error']['title'], $actual['error']['title']);
+        $this->assertSame($expected['links'], $actual['links']);
     }
 }
