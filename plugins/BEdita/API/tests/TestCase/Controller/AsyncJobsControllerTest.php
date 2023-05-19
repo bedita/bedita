@@ -281,7 +281,7 @@ class AsyncJobsControllerTest extends IntegrationTestCase
         ];
         $this->configRequestHeaders('POST', $this->getUserAuthHeader());
         $this->post('/async_jobs', json_encode(compact('data')));
-        $this->assertResponseCode(200);
+        $this->assertResponseCode(201);
         $this->assertContentType('application/vnd.api+json');
         $asyncJob = TableRegistry::getTableLocator()->get('AsyncJobs')
             ->find()
