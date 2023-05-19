@@ -29,9 +29,9 @@ class AsyncJobsControllerTest extends IntegrationTestCase
      * Test index method on GET.
      *
      * @return void
-     * @covers ::index()
+     * @coversNothing
      */
-    public function testIndexGet(): void
+    public function testIndex(): void
     {
         $AsyncJobs = TableRegistry::getTableLocator()->get('AsyncJobs');
         $expected = [
@@ -269,9 +269,9 @@ class AsyncJobsControllerTest extends IntegrationTestCase
      * Test index method on POST.
      *
      * @return void
-     * @covers ::index()
+     * @coversNothing
      */
-    public function testIndexPost(): void
+    public function testAdd(): void
     {
         $data = [
             'type' => 'async_jobs',

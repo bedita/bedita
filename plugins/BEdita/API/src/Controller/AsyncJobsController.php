@@ -15,12 +15,14 @@ declare(strict_types=1);
 
 namespace BEdita\API\Controller;
 
+use Cake\Http\Exception\MethodNotAllowedException;
+
 /**
  * Controller for `/async_jobs` endpoint.
  *
  * @property \BEdita\Core\Model\Table\AsyncJobsTable $AsyncJobs
  */
-class AsyncJobsController extends AppController
+class AsyncJobsController extends ResourcesController
 {
     /**
      * @inheritDoc
@@ -28,25 +30,14 @@ class AsyncJobsController extends AppController
     public $defaultTable = 'AsyncJobs';
 
     /**
-     * Handle async_jobs endpoint.
-     *
-     * @return void
+     * @inheritDoc
      */
-    public function index(): void
+    public function initialize(): void
     {
-        $this->getRequest()->allowMethod(['GET', 'POST']);
-        if ($this->getRequest()->is('GET')) {
-            $query = $this->AsyncJobs->find();
-            $data = $this->paginate($query);
-            $this->set(compact('data'));
-            $this->setSerialize(['data']);
+        parent::initialize();
 
-            return;
+        if (!in_array($this->request->getMethod(), ['GET', 'POST'])) {
+            throw new MethodNotAllowedException();
         }
-        $data = $this->getRequest()->getData();
-        $asyncJob = $this->AsyncJobs->newEntity($data);
-        $this->AsyncJobs->save($asyncJob);
-        $this->set(compact('asyncJob'));
-        $this->setSerialize(['asyncJob']);
     }
 }
