@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 /**
  * BEdita, API-first content management framework
- * Copyright 2023 Atlas Srl, Chialab Srl
+ * Copyright 2023 Channelweb Srl, Chialab Srl
  *
  * This file is part of BEdita: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published
@@ -15,7 +15,6 @@ declare(strict_types=1);
 namespace BEdita\API\Test\TestCase\Controller;
 
 use BEdita\API\TestSuite\IntegrationTestCase;
-use Cake\Http\Exception\MethodNotAllowedException;
 use Cake\ORM\TableRegistry;
 use DMS\PHPUnitExtensions\ArraySubset\ArraySubsetAsserts;
 
