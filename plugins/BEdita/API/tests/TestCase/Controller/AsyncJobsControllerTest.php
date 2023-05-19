@@ -333,11 +333,7 @@ class AsyncJobsControllerTest extends IntegrationTestCase
     public function testDelete(): void
     {
         $this->configRequestHeaders('DELETE', $this->getUserAuthHeader());
-        $data = [
-            'id' => '6407afa6-96a3-4aeb-90c1-1541756efdef', // 'whatever
-            'type' => 'async_jobs',
-        ];
-        $this->delete('/async_jobs', json_encode(compact('data')));
+        $this->delete('/async_jobs');
         $actual = json_decode((string)$this->_response->getBody(), true);
         $expected = [
             'error' => [
