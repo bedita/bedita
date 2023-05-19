@@ -47,6 +47,10 @@ class HomeController extends AppController
             'methods' => 'ALL',
             'multiple_types' => true,
         ],
+        '/async_jobs' => [
+            'methods' => ['GET', 'POST'],
+            'multiple_types' => false,
+        ],
         '/model' => [
             'methods' => 'ALL',
             'multiple_types' => true,
