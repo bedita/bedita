@@ -223,6 +223,13 @@ return function (RouteBuilder $routes) {
             ['_name' => 'applications:index']
         );
 
+        // Async jobs.
+        $routes->connect(
+            '/async_jobs',
+            ['controller' => 'AsyncJobs', 'action' => 'index'],
+            ['_name' => 'async_jobs:index']
+        );
+
         // Trees.
         $routes->connect(
             '/trees/**',

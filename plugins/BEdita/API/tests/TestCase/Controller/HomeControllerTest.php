@@ -334,6 +334,23 @@ class HomeControllerTest extends IntegrationTestCase
                             'multiple_types' => false,
                         ],
                     ],
+                    '/async_jobs' => [
+                        'href' => 'http://api.example.com/async_jobs',
+                        'hints' => [
+                            'allow' => [
+                                'GET', 'POST',
+                            ],
+                            'formats' => [
+                                'application/json',
+                                'application/vnd.api+json',
+                            ],
+                            'display' => [
+                                'label' => 'AsyncJobs',
+                            ],
+                            'object_type' => false,
+                            'multiple_types' => false,
+                        ],
+                    ],
                 ],
                 'project' => $project,
                 'version' => $version,
