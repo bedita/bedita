@@ -343,10 +343,54 @@ class AssociatedEntitiesTest extends IntegrationTestCase
         ];
 
         $this->configRequestHeaders('PATCH', $this->getUserAuthHeader('second user', 'password2'));
-        // Cannot use `IntegrationTestCase::delete()`, as it does not allow sending payload with the request.
         $this->patch('/profiles/4/relationships/inverse_test', json_encode(compact('data')));
 
         $this->assertResponseCode(403);
         $this->assertContentType('application/vnd.api+json');
+    }
+
+    /**
+     * Test that editing of object's association with parent protected is forbidden.
+     *
+     * @return void
+     */
+    public function testEditAssociationsForbiddenByParent(): void
+    {
+        $objectTypesTable = $this->fetchTable('ObjectTypes');
+        /** @var \BEdita\Core\Model\Entity\ObjectType $ot */
+        $ot = $objectTypesTable->get('folders');
+        $ot->addAssoc('Permissions');
+        $objectTypesTable->saveOrFail($ot);
+
+        // add perms on parent folder of document 2
+        $ObjectPermissions = $this->fetchTable('ObjectPermissions');
+        $entity = $ObjectPermissions->newEntity(
+            [
+                'object_id' => 11,
+                'role_id' => 1,
+                'created_by' => 1,
+            ],
+            [
+                'accessibleFields' => ['created_by' => true],
+            ]
+        );
+
+        $ObjectPermissions->saveOrFail($entity);
+
+        $data = [
+            [
+                'id' => '12',
+                'type' => 'folders',
+            ],
+        ];
+
+        $this->configRequestHeaders('PATCH', $this->getUserAuthHeader('second user', 'password2'));
+        $this->patch('/documents/2/relationships/parents', json_encode(compact('data')));
+        $body = json_decode((string)$this->_response->getBody(), true);
+        $expected = 'BEdita\Core\Model\Entity\ObjectEntity [id=2] patching "Parents" is forbidden due to restricted permission on some parent';
+
+        $this->assertResponseCode(403);
+        $this->assertContentType('application/vnd.api+json');
+        static::assertEquals($expected, Hash::get((array)$body, 'error.title'));
     }
 }

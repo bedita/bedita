@@ -13,7 +13,6 @@
 namespace BEdita\API\Controller;
 
 use BEdita\API\Model\Action\UpdateRelatedAction;
-use BEdita\Core\Exception\LockedResourceException;
 use BEdita\Core\Model\Action\ActionTrait;
 use BEdita\Core\Model\Action\AddRelatedObjectsAction;
 use BEdita\Core\Model\Action\DeleteObjectAction;
@@ -335,7 +334,7 @@ class ObjectsController extends ResourcesController
                 }
 
                 if ($entity->get($field) !== Hash::get($data, $field)) {
-                    throw new LockedResourceException(
+                    throw new ForbiddenException(
                         __d(
                             'bedita',
                             'Cannot change "{0}" field since object {1} is locked by parent',
