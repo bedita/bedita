@@ -1147,6 +1147,7 @@ class ObjectsControllerTest extends IntegrationTestCase
      * @covers ::resource()
      * @covers ::initialize()
      * @covers ::initObjectModel()
+     * @covers ::authorizeResource()
      */
     public function testEdit()
     {
@@ -1181,6 +1182,7 @@ class ObjectsControllerTest extends IntegrationTestCase
      * @return void
      * @covers ::resource()
      * @covers ::initialize()
+     * @covers ::authorizeResource()
      */
     public function testEditConflict()
     {
@@ -1215,6 +1217,7 @@ class ObjectsControllerTest extends IntegrationTestCase
      * @return void
      * @covers ::resource()
      * @covers ::initialize()
+     * @covers ::authorizeResource()
      */
     public function testEditInvalid()
     {
@@ -1248,6 +1251,7 @@ class ObjectsControllerTest extends IntegrationTestCase
      *
      * @return void
      * @covers ::resource()
+     * @covers ::authorizeResource()
      */
     public function testEditForbidden()
     {
@@ -1273,11 +1277,106 @@ class ObjectsControllerTest extends IntegrationTestCase
     }
 
     /**
+     * Data provider for `testEditWithPermissionOnParent()`.
+     *
+     * @return array
+     */
+    public function editWithPermissionOnParentProvider(): array
+    {
+        return [
+            'forbidden uname change' => [
+                403,
+                [
+                    'id' => '2',
+                    'type' => 'documents',
+                    'attributes' => [
+                        'uname' => 'try-to-change-uname',
+                    ],
+                ],
+            ],
+            'forbidden status change' => [
+                403,
+                [
+                    'id' => '2',
+                    'type' => 'documents',
+                    'attributes' => [
+                        'status' => 'off',
+                    ],
+                ],
+            ],
+            'ok uname unchanged' => [
+                200,
+                [
+                    'id' => '2',
+                    'type' => 'documents',
+                    'attributes' => [
+                        'uname' => 'title-one',
+                        'title' => 'New title here',
+                    ],
+                ],
+            ],
+            'ok uname unchanged' => [
+                200,
+                [
+                    'id' => '2',
+                    'type' => 'documents',
+                    'attributes' => [
+                        'status' => 'on',
+                        'title' => 'New title here',
+                    ],
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * Test edit method for forbidden parent.
+     *
+     * @param int $expected The expected result
+     * @param mixed $data Patch data
+     * @return void
+     * @covers ::resource()
+     * @covers ::authorizeResource()
+     * @dataProvider editWithPermissionOnParentProvider
+     */
+    public function testEditWithPermissionOnParent(int $expected, array $data): void
+    {
+        // enable permissions for folders
+        $ObjectTypes = $this->fetchTable('ObjectTypes');
+        /** @var \BEdita\Core\Model\Entity\ObjectType $ot */
+        $ot = $ObjectTypes->get('folders');
+        $ot->addAssoc('Permissions');
+        $ObjectTypes->saveOrFail($ot);
+
+        // add perms on parent folder of document 2
+        $ObjectPermissions = $this->fetchTable('ObjectPermissions');
+        $entity = $ObjectPermissions->newEntity(
+            [
+                'object_id' => 11,
+                'role_id' => 1,
+                'created_by' => 1,
+            ],
+            [
+                'accessibleFields' => ['created_by' => true],
+            ]
+        );
+
+        $ObjectPermissions->saveOrFail($entity);
+
+        $this->configRequestHeaders('PATCH', $this->getUserAuthHeader('second user', 'password2'));
+        $this->patch('/documents/2', json_encode(compact('data')));
+
+        $this->assertResponseCode($expected);
+        $this->assertContentType('application/vnd.api+json');
+    }
+
+    /**
      * Test delete method.
      *
      * @return void
-     * @covers ::resource()
      * @covers ::initialize()
+     * @covers ::resource()
+     * @covers ::authorizeResource()
      */
     public function testDelete()
     {
@@ -1313,6 +1412,7 @@ class ObjectsControllerTest extends IntegrationTestCase
      *
      * @return void
      * @covers ::resource()
+     * @covers ::authorizeResource()
      */
     public function testDeleteForbidden()
     {
@@ -1321,6 +1421,43 @@ class ObjectsControllerTest extends IntegrationTestCase
         $ot = $objectTypesTable->get('documents');
         $ot->addAssoc('Permissions');
         $objectTypesTable->saveOrFail($ot);
+
+        $this->configRequestHeaders('DELETE', $this->getUserAuthHeader('second user', 'password2'));
+        $this->delete('/documents/2');
+
+        $this->assertResponseCode(403);
+        $this->assertContentType('application/vnd.api+json');
+    }
+
+    /**
+     * Test delete method for forbidden parent.
+     *
+     * @return void
+     * @covers ::resource()
+     * @covers ::authorizeResource()
+     */
+    public function testDeleteParentForbidden(): void
+    {
+        // enable permissions for folders
+        $ObjectTypes = $this->fetchTable('ObjectTypes');
+        /** @var \BEdita\Core\Model\Entity\ObjectType $ot */
+        $ot = $ObjectTypes->get('folders');
+        $ot->addAssoc('Permissions');
+        $ObjectTypes->saveOrFail($ot);
+
+        // add perms on parent folder of document 2
+        $ObjectPermissions = $this->fetchTable('ObjectPermissions');
+        $entity = $ObjectPermissions->newEntity(
+            [
+                'object_id' => 11,
+                'role_id' => 1,
+                'created_by' => 1,
+            ],
+            [
+                'accessibleFields' => ['created_by' => true],
+            ]
+        );
+        $ObjectPermissions->saveOrFail($entity);
 
         $this->configRequestHeaders('DELETE', $this->getUserAuthHeader('second user', 'password2'));
         $this->delete('/documents/2');

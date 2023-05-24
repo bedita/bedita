@@ -13,6 +13,7 @@
 namespace BEdita\API\Controller;
 
 use BEdita\API\Model\Action\UpdateRelatedAction;
+use BEdita\Core\Exception\LockedResourceException;
 use BEdita\Core\Model\Action\ActionTrait;
 use BEdita\Core\Model\Action\AddRelatedObjectsAction;
 use BEdita\Core\Model\Action\DeleteObjectAction;
@@ -272,9 +273,8 @@ class ObjectsController extends ResourcesController
 
         $this->addCount([$entity]);
 
+        $this->authorizeResource($entity);
         if ($this->request->is('delete')) {
-            $this->Authorization->authorize($entity, 'update');
-
             // Delete an entity.
             $action = new DeleteObjectAction(['table' => $this->Table]);
 
@@ -287,8 +287,6 @@ class ObjectsController extends ResourcesController
         }
 
         if ($this->request->is('patch')) {
-            $this->Authorization->authorize($entity, 'update');
-
             // Patch an existing entity.
             if ($this->request->getData('id') !== (string)$id) {
                 throw new ConflictException(__d('bedita', 'IDs don\'t match'));
@@ -306,6 +304,47 @@ class ObjectsController extends ResourcesController
         $this->setSerialize(['entity']);
 
         return null;
+    }
+
+    /**
+     * Authorize resource.
+     *
+     * @param \Cake\Datasource\EntityInterface $entity The resource entity
+     * @return void
+     */
+    protected function authorizeResource(EntityInterface $entity): void
+    {
+        if ($this->request->is('delete')) {
+            $this->Authorization->authorize($entity, 'update');
+            $this->Authorization->authorize($entity, 'updateParents'); // can't delete object if some parent is protected
+
+            return;
+        }
+
+        if ($this->request->is('patch')) {
+            $this->Authorization->authorize($entity, 'update');
+            if ($this->Authorization->can($entity, 'updateParents')) {
+                return;
+            }
+
+            // locked by parent => check if trying to change uname or status
+            $data = (array)$this->request->getData();
+            foreach (['uname', 'status'] as $field) {
+                if (!Hash::check($data, $field)) {
+                    continue;
+                }
+
+                if ($entity->get($field) !== Hash::get($data, $field)) {
+                    throw new LockedResourceException(
+                        __d(
+                            'bedita',
+                            'Cannot change "{0}" field since object {1} is locked by parent',
+                            [$field, $entity->id]
+                        )
+                    );
+                }
+            }
+        }
     }
 
     /**
