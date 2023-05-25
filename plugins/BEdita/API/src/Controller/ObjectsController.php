@@ -320,28 +320,30 @@ class ObjectsController extends ResourcesController
             return;
         }
 
-        if ($this->request->is('patch')) {
-            $this->Authorization->authorize($entity, 'update');
-            if ($this->Authorization->can($entity, 'updateParents')) {
-                return;
+        if (!$this->request->is('patch')) {
+            return;
+        }
+
+        $this->Authorization->authorize($entity, 'update');
+        if ($this->Authorization->can($entity, 'updateParents')) {
+            return;
+        }
+
+        // locked by parent => check if trying to change uname or status
+        $data = (array)$this->request->getData();
+        foreach (['uname', 'status'] as $field) {
+            if (!Hash::check($data, $field)) {
+                continue;
             }
 
-            // locked by parent => check if trying to change uname or status
-            $data = (array)$this->request->getData();
-            foreach (['uname', 'status'] as $field) {
-                if (!Hash::check($data, $field)) {
-                    continue;
-                }
-
-                if ($entity->get($field) !== Hash::get($data, $field)) {
-                    throw new ForbiddenException(
-                        __d(
-                            'bedita',
-                            'Cannot change "{0}" field since object {1} is locked by parent',
-                            [$field, $entity->id]
-                        )
-                    );
-                }
+            if ($entity->get($field) !== Hash::get($data, $field)) {
+                throw new ForbiddenException(
+                    __d(
+                        'bedita',
+                        'Cannot change "{0}" field since object {1} is locked by parent',
+                        [$field, $entity->id]
+                    )
+                );
             }
         }
     }
