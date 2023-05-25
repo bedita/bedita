@@ -1315,7 +1315,7 @@ class ObjectsControllerTest extends IntegrationTestCase
                     ],
                 ],
             ],
-            'ok uname unchanged' => [
+            'ok status unchanged' => [
                 200,
                 [
                     'id' => '2',
