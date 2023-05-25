@@ -766,6 +766,7 @@ class ObjectsControllerTest extends IntegrationTestCase
      * @covers ::initialize()
      * @covers ::addCount()
      * @covers ::prepareInclude()
+     * @covers ::authorizeResource()
      */
     public function testSingle()
     {
@@ -865,6 +866,7 @@ class ObjectsControllerTest extends IntegrationTestCase
      * @return void
      * @covers ::resource()
      * @covers ::initialize()
+     * @covers ::authorizeResource()
      */
     public function testDeleted()
     {
@@ -966,6 +968,7 @@ class ObjectsControllerTest extends IntegrationTestCase
      * @return void
      * @covers ::resource()
      * @covers ::initialize()
+     * @covers ::authorizeResource()
      */
     public function testMissing()
     {
