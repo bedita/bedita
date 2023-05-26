@@ -272,9 +272,8 @@ class ObjectsController extends ResourcesController
 
         $this->addCount([$entity]);
 
+        $this->authorizeResource($entity);
         if ($this->request->is('delete')) {
-            $this->Authorization->authorize($entity, 'update');
-
             // Delete an entity.
             $action = new DeleteObjectAction(['table' => $this->Table]);
 
@@ -287,8 +286,6 @@ class ObjectsController extends ResourcesController
         }
 
         if ($this->request->is('patch')) {
-            $this->Authorization->authorize($entity, 'update');
-
             // Patch an existing entity.
             if ($this->request->getData('id') !== (string)$id) {
                 throw new ConflictException(__d('bedita', 'IDs don\'t match'));
@@ -306,6 +303,50 @@ class ObjectsController extends ResourcesController
         $this->setSerialize(['entity']);
 
         return null;
+    }
+
+    /**
+     * Authorize resource.
+     *
+     * @param \Cake\Datasource\EntityInterface $entity The resource entity
+     * @return void
+     */
+    protected function authorizeResource(EntityInterface $entity): void
+    {
+        if ($this->request->is('delete')) {
+            $this->Authorization->authorize($entity, 'update');
+            $this->Authorization->authorize($entity, 'updateParents'); // can't delete object if some parent is protected
+
+            return;
+        }
+
+        if (!$this->request->is('patch')) {
+            return;
+        }
+
+        $this->Authorization->authorize($entity, 'update');
+
+        $data = (array)$this->request->getData();
+        $protectedFieldsChanged = array_filter(
+            ['uname', 'status'],
+            fn (string $field): bool => Hash::check($data, $field) && $entity->get($field) !== Hash::get($data, $field),
+        );
+
+        if (empty($protectedFieldsChanged) || $this->Authorization->can($entity, 'updateParents')) {
+            return;
+        }
+
+        throw new ForbiddenException(
+            __d(
+                'bedita',
+                'Cannot change {0} field{1} since object {2} is locked by parent',
+                [
+                    implode(', ', $protectedFieldsChanged),
+                    count($protectedFieldsChanged) > 1 ? 's' : '',
+                    $entity->id,
+                ]
+            )
+        );
     }
 
     /**

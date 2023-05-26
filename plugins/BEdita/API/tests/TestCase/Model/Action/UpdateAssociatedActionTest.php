@@ -21,6 +21,7 @@ use BEdita\Core\Model\Action\SetAssociatedAction;
 use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\Http\Exception\ForbiddenException;
 use Cake\Http\ServerRequest;
+use Cake\ORM\Association\HasMany;
 use Cake\ORM\Query;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
@@ -341,6 +342,45 @@ class UpdateAssociatedActionTest extends TestCase
 
         $association = TableRegistry::getTableLocator()->get('FakeTags')->getAssociation('FakeArticles');
         $parentAction = new SetAssociatedAction(compact('association'));
+        $action = new UpdateAssociatedAction(['action' => $parentAction, 'request' => $request]);
+
+        $action(['primaryKey' => 1]);
+    }
+
+    /**
+     * Test forbidden response if identity can't update an entity's parent
+     *
+     * @return void
+     */
+    public function testForbiddenParent(): void
+    {
+        $this->expectExceptionObject(new ForbiddenException('Cake\ORM\Entity [id=1] patching "Parents" is forbidden due to restricted permission on some parent'));
+
+        $data = [
+            ['id' => 1],
+            ['id' => 2],
+        ];
+        $request = new ServerRequest();
+        $identityMock = $this->getMockBuilder(Identity::class)
+            ->disableOriginalConstructor()
+            ->onlyMethods(['can'])
+            ->getMock();
+
+        $identityMock->method('can')->with('updateParents')->willReturn(false);
+
+        $request = $request->withParsedBody($data)
+            ->withMethod('PATCH')
+            ->withAttribute('identity', $identityMock);
+
+        $associationMock = $this->getMockBuilder(HasMany::class)
+            ->setConstructorArgs(['Parents'])
+            ->onlyMethods(['getSource', 'getTarget'])
+            ->getMock();
+
+        $associationMock->method('getSource')->willReturn(TableRegistry::getTableLocator()->get('FakeAnimals'));
+        $associationMock->method('getTarget')->willReturn(TableRegistry::getTableLocator()->get('FakeArticles'));
+
+        $parentAction = new SetAssociatedAction(['association' => $associationMock]);
         $action = new UpdateAssociatedAction(['action' => $parentAction, 'request' => $request]);
 
         $action(['primaryKey' => 1]);

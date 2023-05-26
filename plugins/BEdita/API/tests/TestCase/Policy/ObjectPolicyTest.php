@@ -38,6 +38,7 @@ class ObjectPolicyTest extends TestCase
         'plugin.BEdita/Core.Roles',
         'plugin.BEdita/Core.RolesUsers',
         'plugin.BEdita/Core.ObjectPermissions',
+        'plugin.BEdita/Core.Trees',
     ];
 
     /**
@@ -168,5 +169,118 @@ class ObjectPolicyTest extends TestCase
         $policy = new ObjectPolicy();
 
         static::assertEquals($expected, $policy->canUpdate($identity, $object));
+    }
+
+    /**
+     * Data provider for `testCanUpdateParents()`
+     *
+     * @return array
+     */
+    public function canUpdateParentsProvider(): array
+    {
+        return [
+            'no permissions set' => [
+                true,
+                false,
+                2,
+                [
+                    'id' => 5,
+                    'roles' => [
+                        [
+                            'id' => 2,
+                            'name' => 'second role',
+                        ],
+                    ],
+                ],
+            ],
+            'perms and user has role' => [
+                true,
+                true,
+                2,
+                LoggedUser::getUserAdmin(),
+            ],
+            'perms and user has not role' => [
+                false,
+                true,
+                2,
+                [
+                    'id' => 5,
+                    'roles' => [
+                        [
+                            'id' => 2,
+                            'name' => 'second role',
+                        ],
+                    ],
+                ],
+            ],
+            'subfolder with parent perms and user has not role' => [
+                false,
+                true,
+                12,
+                [
+                    'id' => 5,
+                    'roles' => [
+                        [
+                            'id' => 2,
+                            'name' => 'second role',
+                        ],
+                    ],
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * Test `canUpdateParents()` method.
+     *
+     * @param bool $expected The expected value
+     * @param bool $enableFoldersPerms If folders must have perms enabled
+     * @param int $childrenId The children id to test
+     * @param array $user The user data
+     * @return void
+     * @covers ::canUpdateParents()
+     * @dataProvider canUpdateParentsProvider
+     */
+    public function testCanUpdateParents(bool $expected, bool $enableFoldersPerms, $childrenId, array $user): void
+    {
+        $objectTypesTable = $this->fetchTable('ObjectTypes');
+        if ($enableFoldersPerms) {
+            /** @var \BEdita\Core\Model\Entity\ObjectType $folderType */
+            $folderType = $objectTypesTable->get('Folders');
+            $folderType->addAssoc('Permissions');
+            $objectTypesTable->saveOrFail($folderType);
+        }
+
+        // add perms on parent folder of `$childrenId`
+        $ObjectPermissions = $this->fetchTable('ObjectPermissions');
+        $entity = $ObjectPermissions->newEntity(
+            [
+                'object_id' => 11,
+                'role_id' => 1,
+                'created_by' => 1,
+            ],
+            [
+                'accessibleFields' => ['created_by' => true],
+            ]
+        );
+
+        $ObjectPermissions->saveOrFail($entity);
+
+        /** @var \BEdita\Core\Model\Entity\ObjectType $objectType */
+        $objectType = $objectTypesTable
+            ->find()
+            ->innerJoinWith('Objects', function (Query $q) use ($childrenId) {
+                return $q->where(['Objects.id' => $childrenId]);
+            })
+            ->first();
+
+        $objectType->addAssoc('Permissions');
+        $objectTypesTable->saveOrFail($objectType);
+
+        $object = $this->fetchTable($objectType->name)->get($childrenId);
+        $identity = new Identity(new AuthorizationService(new MapResolver()), new AuthenticationIdentity($user));
+        $policy = new ObjectPolicy();
+
+        static::assertEquals($expected, $policy->canUpdateParents($identity, $object));
     }
 }

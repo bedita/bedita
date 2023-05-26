@@ -16,9 +16,11 @@ namespace BEdita\API\Policy;
 
 use Authorization\IdentityInterface;
 use Authorization\Policy\BeforePolicyInterface;
+use BEdita\Core\Model\Entity\Folder;
 use BEdita\Core\Model\Entity\ObjectEntity;
 use BEdita\Core\Model\Table\RolesTable;
 use Cake\ORM\Locator\LocatorAwareTrait;
+use Cake\ORM\Query;
 use Cake\Utility\Hash;
 
 /**
@@ -62,6 +64,40 @@ class ObjectPolicy implements BeforePolicyInterface
         }
 
         return !empty(array_intersect($permsRoles, $this->extractRolesNames($identity)));
+    }
+
+    /**
+     * Check if $identity can update parents of $object.
+     *
+     * @param \Authorization\IdentityInterface $identity The identity.
+     * @param \BEdita\Core\Model\Entity\ObjectEntity $object The object entity
+     * @return bool
+     */
+    public function canUpdateParents(IdentityInterface $identity, ObjectEntity $object): bool
+    {
+        /** @var \BEdita\Core\Model\Entity\ObjectType $folderObjectType */
+        $folderObjectType = $this->fetchTable('ObjectTypes')->get('folders');
+        if (!$folderObjectType->hasAssoc('Permissions')) {
+            return true;
+        }
+
+        if ($object instanceof Folder) {
+            return $this->canUpdate($identity, $object);
+        }
+
+        $parents = $this->fetchTable('Folders')
+            ->find('available')
+            ->contain(['Permissions.Roles'])
+            ->innerJoinWith('Children', fn (Query $q) => $q->where(['Children.id' => $object->id]))
+            ->toArray();
+
+        foreach ($parents as $parent) {
+            if (!$this->canUpdate($identity, $parent)) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     /**

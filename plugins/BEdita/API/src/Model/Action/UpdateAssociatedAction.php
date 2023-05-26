@@ -16,6 +16,7 @@ namespace BEdita\API\Model\Action;
 use Authorization\Policy\Exception\MissingPolicyException;
 use BEdita\Core\Model\Action\BaseAction;
 use Cake\Database\Expression\QueryExpression;
+use Cake\Datasource\EntityInterface;
 use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\Http\Exception\ForbiddenException;
 use Cake\ORM\Association;
@@ -72,10 +73,44 @@ class UpdateAssociatedAction extends BaseAction
         }
 
         $relatedEntities = $this->getTargetEntities($requestData, $association);
+        $this->authorizeAction($entity, $relatedEntities, $association);
+        $count = count($relatedEntities);
+        if ($count === 0) {
+            $relatedEntities = [];
+        } elseif ($count === 1 && ($association instanceof BelongsTo || $association instanceof HasOne)) {
+            $relatedEntities = reset($relatedEntities);
+        }
 
+        return $this->Action->execute(compact('entity', 'relatedEntities'));
+    }
+
+    /**
+     * Authorize action.
+     *
+     * @param \Cake\Datasource\EntityInterface $entity The entity
+     * @param array $targetEntities The target entities
+     * @param \Cake\ORM\Association $association The association between $entity and $targetEntities
+     * @return void
+     */
+    protected function authorizeAction(EntityInterface $entity, array $targetEntities, Association $association): void
+    {
         /** @var \Authorization\Identity $identity */
         $identity = $this->request->getAttribute('identity');
-        foreach ([$entity, ...$relatedEntities] as $ent) {
+
+        // For patch on Parents association ensures that parents of main entity aren't forbidden to user.
+        // Patch will replace all current parents with target entities so if some parent of $entity is protected
+        // the action can't be authorized.
+        if ($this->request->is('patch') && $association->getName() === 'Parents' && !$identity->can('updateParents', $entity)) {
+            throw new ForbiddenException(
+                __d(
+                    'bedita',
+                    '{0} [id={1}] patching "Parents" is forbidden due to restricted permission on some parent',
+                    [get_class($entity), $entity->id]
+                )
+            );
+        }
+
+        foreach ([$entity, ...$targetEntities] as $ent) {
             try {
                 if ($identity->can('update', $ent) === false) {
                     throw new ForbiddenException(
@@ -86,15 +121,6 @@ class UpdateAssociatedAction extends BaseAction
                 continue;
             }
         }
-
-        $count = count($relatedEntities);
-        if ($count === 0) {
-            $relatedEntities = [];
-        } elseif ($count === 1 && ($association instanceof BelongsTo || $association instanceof HasOne)) {
-            $relatedEntities = reset($relatedEntities);
-        }
-
-        return $this->Action->execute(compact('entity', 'relatedEntities'));
     }
 
     /**
