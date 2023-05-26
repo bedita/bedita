@@ -22,6 +22,7 @@ use Cake\Database\Expression\QueryExpression;
 use Cake\Database\Schema\TableSchemaInterface;
 use Cake\Datasource\EntityInterface;
 use Cake\Event\EventInterface;
+use Cake\I18n\FrozenTime;
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
@@ -473,7 +474,7 @@ class ObjectsTable extends Table
      */
     protected function findPublishDateAllowed(Query $query): Query
     {
-        $now = $query->func()->now();
+        $now = FrozenTime::now();
 
         return $query->where(function (QueryExpression $exp) use ($now) {
             return $exp->and([
