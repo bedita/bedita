@@ -13,6 +13,7 @@
 
 namespace BEdita\Core\Test\TestCase\Model\Behavior;
 
+use Cake\Datasource\EntityInterface;
 use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
@@ -42,7 +43,7 @@ class PriorityBehaviorTest extends TestCase
      *
      * @return array
      */
-    public function initializeProvider()
+    public function initializeProvider(): array
     {
         return [
             'default' => [
@@ -90,7 +91,7 @@ class PriorityBehaviorTest extends TestCase
      * @covers ::initialize()
      * @dataProvider initializeProvider()
      */
-    public function testInitialize(array $expected, array $config = [])
+    public function testInitialize(array $expected, array $config = []): void
     {
         $table = TableRegistry::getTableLocator()->get('MyTable', ['className' => Table::class]);
         $table->addBehavior('BEdita/Core.Priority', $config);
@@ -106,9 +107,10 @@ class PriorityBehaviorTest extends TestCase
      *
      * @return void
      * @covers ::beforeSave()
+     * @covers ::updateEntityPriorities()
      * @covers ::maxValue()
      */
-    public function testBeforeSave()
+    public function testBeforeSave(): void
     {
         $table = TableRegistry::getTableLocator()->get('ObjectRelations');
 
@@ -135,9 +137,10 @@ class PriorityBehaviorTest extends TestCase
      * @return void
      * @covers ::_getConditions()
      * @covers ::beforeSave()
+     * @covers ::updateEntityPriorities()
      * @covers ::expand()
      */
-    public function testExpand()
+    public function testExpand(): void
     {
         $table = TableRegistry::getTableLocator()->get('ObjectRelations');
 
@@ -181,9 +184,10 @@ class PriorityBehaviorTest extends TestCase
      * @return void
      * @covers ::_getConditions()
      * @covers ::beforeSave()
+     * @covers ::updateEntityPriorities()
      * @covers ::compact()
      */
-    public function testCompact()
+    public function testCompact(): void
     {
         $table = TableRegistry::getTableLocator()->get('ObjectRelations');
 
@@ -227,8 +231,9 @@ class PriorityBehaviorTest extends TestCase
      * @return void
      * @covers ::_getConditions()
      * @covers ::beforeDelete()
+     * @covers ::compactEntityField()
      */
-    public function testBeforeDelete()
+    public function testBeforeDelete(): void
     {
         $table = TableRegistry::getTableLocator()->get('ObjectRelations');
 
@@ -261,5 +266,176 @@ class PriorityBehaviorTest extends TestCase
         static::assertSame(1, $entities[0]->get('priority'));
         static::assertSame(7, $entities[1]->get('right_id'));
         static::assertSame(2, $entities[1]->get('priority'));
+    }
+
+    /**
+     * Data provider for testCompactEntityField
+     *
+     * @return array
+     */
+    public function compactEntityFieldProvider(): array
+    {
+        $table = TableRegistry::getTableLocator()->get('ObjectRelations');
+
+        return [
+            'empty scope' => [
+                'entity' => $table->newEntity([
+                    'left_id' => 2,
+                    'relation_id' => 1,
+                    'right_id' => 4,
+                    'priority' => 1,
+                ]),
+                'field' => 'priority',
+                'config' => [],
+                'expected' => false,
+            ],
+            'empty field' => [
+                'entity' => $table->newEntity([
+                    'left_id' => 2,
+                    'relation_id' => 1,
+                    'right_id' => null,
+                    'priority' => 1,
+                ]),
+                'field' => 'right_id',
+                'config' => [
+                    'scope' => ['whatever'],
+                ],
+                'expected' => false,
+            ],
+            'compact data' => [
+                'entity' => $table->newEntity([
+                    'left_id' => 2,
+                    'relation_id' => 1,
+                    'right_id' => 4,
+                    'priority' => 1,
+                ]),
+                'field' => 'priority',
+                'config' => [
+                    'scope' => ['priority'],
+                ],
+                'expected' => true,
+            ],
+        ];
+    }
+
+    /**
+     * Test `compactEntityField()` method
+     *
+     * @param EntityInterface $entity The entity
+     * @param string $field The field
+     * @param array $config the config
+     * @param bool $expected The expected result
+     * @return void
+     * @dataProvider compactEntityFieldProvider()
+     * @covers ::_getConditions()
+     * @covers ::compactEntityField()
+     */
+    public function testCompactEntityField(EntityInterface $entity, string $field, array $config, bool $expected): void
+    {
+        $table = TableRegistry::getTableLocator()->get('ObjectRelations');
+        $actual = $table->compactEntityField($entity, $field, $config);
+        static::assertSame($expected, $actual);
+    }
+
+    /**
+     * Data provider for testUpdateEntityPriorities
+     *
+     * @return array
+     */
+    public function updateEntityPrioritiesProvider(): array
+    {
+        return [
+            'empty scope' => [
+                'entity' => [
+                    'left_id' => 2,
+                    'relation_id' => 1,
+                    'right_id' => 4,
+                ],
+                1,
+                1,
+                'field' => 'priority',
+                'config' => [],
+                'expected' => false,
+            ],
+            'actual value equals previous value' => [
+                'entity' => [
+                    'left_id' => 2,
+                    'relation_id' => 1,
+                    'right_id' => 4,
+                ],
+                1,
+                1,
+                'field' => 'priority',
+                'config' => [
+                    'scope' => ['priority'],
+                ],
+                'expected' => false,
+            ],
+            'compact' => [
+                'entity' => [
+                    'left_id' => 2,
+                    'relation_id' => 1,
+                    'right_id' => 4,
+                ],
+                2,
+                1,
+                'field' => 'priority',
+                'config' => [
+                    'scope' => ['priority'],
+                ],
+                'expected' => true,
+            ],
+            'expand' => [
+                'entity' => [
+                    'left_id' => 2,
+                    'relation_id' => 1,
+                    'right_id' => 4,
+                ],
+                1,
+                2,
+                'field' => 'priority',
+                'config' => [
+                    'scope' => ['priority'],
+                ],
+                'expected' => true,
+            ],
+            'max value' => [
+                'entity' => [
+                    'left_id' => 2,
+                    'relation_id' => 1,
+                    'right_id' => 4,
+                ],
+                null,
+                1,
+                'field' => 'priority',
+                'config' => [
+                    'scope' => ['priority'],
+                ],
+                'expected' => true,
+            ],
+        ];
+    }
+
+    /**
+     * Test `updateEntityPriorities()` method
+     *
+     * @param array|null $entityData The entity
+     * @param int|null $actualValue The actual value
+     * @param int $previousValue The previous value
+     * @param string $field The field
+     * @param array $config the config
+     * @param bool $expected The expected result
+     * @return void
+     * @dataProvider updateEntityPrioritiesProvider()
+     * @covers ::_getConditions()
+     * @covers ::updateEntityPriorities()
+     */
+    public function testUpdateEntityPriorities(?array $entityData, ?int $actualValue, int $previousValue, string $field, array $config, bool $expected): void
+    {
+        $table = TableRegistry::getTableLocator()->get('ObjectRelations');
+        $entityData[$field] = $previousValue;
+        $entity = $table->newEntity($entityData);
+        $entity->set($field, $actualValue);
+        static::assertSame($expected, $table->updateEntityPriorities($entity, $field, $config));
     }
 }

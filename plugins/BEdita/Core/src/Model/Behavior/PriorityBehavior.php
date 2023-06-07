@@ -68,27 +68,7 @@ class PriorityBehavior extends Behavior
     {
         $fields = $this->getConfig('fields');
         foreach ($fields as $field => $config) {
-            if (empty($config['scope'])) {
-                continue;
-            }
-
-            $conditions = $this->_getConditions($entity, $config['scope']);
-            if (!empty($entity->get($field))) {
-                if ($entity instanceof Entity) {
-                    $actualValue = $entity->get($field);
-                    $previousValue = $entity->getOriginal($field);
-
-                    if ($previousValue < $actualValue) {
-                        $this->compact($field, $previousValue, $actualValue, $conditions);
-                    } elseif ($previousValue > $actualValue) {
-                        $this->expand($field, $actualValue, $previousValue, $conditions);
-                    }
-                }
-                continue;
-            }
-
-            $maxValue = $this->maxValue($field, $conditions);
-            $entity->set($field, $maxValue + 1);
+            $this->updateEntityPriorities($entity, $field, $config);
         }
     }
 
@@ -103,13 +83,68 @@ class PriorityBehavior extends Behavior
     {
         $fields = $this->getConfig('fields');
         foreach ($fields as $field => $config) {
-            if (empty($entity->get($field)) || empty($config['scope'])) {
-                continue;
+            $this->compactEntityField($entity, $field, $config);
+        }
+    }
+
+    /**
+     * Compact entity field.
+     *
+     * @param EntityInterface $entity The entity
+     * @param string $field The field
+     * @param array $config The config
+     * @return bool
+     */
+    public function compactEntityField(EntityInterface $entity, string $field, array $config): bool
+    {
+        if (empty($entity->get($field)) || empty($config['scope'])) {
+            return false;
+        }
+
+        $conditions = $this->_getConditions($entity, $config['scope']);
+        $this->compact($field, $entity->get($field), null, $conditions);
+
+        return true;
+    }
+
+    /**
+     * Update entity priorities.
+     * Return true if data is updated, false otherwise.
+     *
+     * @param EntityInterface $entity The entity
+     * @param string $field The field
+     * @param array $config the config
+     * @return bool
+     */
+    public function updateEntityPriorities(EntityInterface $entity, string $field, array $config): bool
+    {
+        if (empty($config['scope'])) {
+            return false;
+        }
+
+        $conditions = $this->_getConditions($entity, $config['scope']);
+        if (!empty($entity->get($field)) && $entity instanceof Entity) {
+            $actualValue = $entity->get($field);
+            $previousValue = $entity->getOriginal($field);
+            if ($previousValue === $actualValue) {
+                return false;
             }
 
-            $conditions = $this->_getConditions($entity, $config['scope']);
-            $this->compact($field, $entity->get($field), null, $conditions);
+            if ($previousValue < $actualValue) {
+                $this->compact($field, $previousValue, $actualValue, $conditions);
+
+                return true;
+            }
+            // $previousValue > $actualValue
+            $this->expand($field, $actualValue, $previousValue, $conditions);
+
+            return true;
         }
+
+        $maxValue = $this->maxValue($field, $conditions);
+        $entity->set($field, $maxValue + 1);
+
+        return true;
     }
 
     /**
