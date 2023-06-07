@@ -275,27 +275,26 @@ class PriorityBehaviorTest extends TestCase
      */
     public function compactEntityFieldProvider(): array
     {
-        $table = TableRegistry::getTableLocator()->get('ObjectRelations');
 
         return [
             'empty scope' => [
-                'entity' => $table->newEntity([
+                [
                     'left_id' => 2,
                     'relation_id' => 1,
                     'right_id' => 4,
                     'priority' => 1,
-                ]),
+                ],
                 'field' => 'priority',
                 'config' => [],
                 'expected' => false,
             ],
             'empty field' => [
-                'entity' => $table->newEntity([
+                [
                     'left_id' => 2,
                     'relation_id' => 1,
                     'right_id' => null,
                     'priority' => 1,
-                ]),
+                ],
                 'field' => 'right_id',
                 'config' => [
                     'scope' => ['whatever'],
@@ -303,12 +302,12 @@ class PriorityBehaviorTest extends TestCase
                 'expected' => false,
             ],
             'compact data' => [
-                'entity' => $table->newEntity([
+                [
                     'left_id' => 2,
                     'relation_id' => 1,
                     'right_id' => 4,
                     'priority' => 1,
-                ]),
+                ],
                 'field' => 'priority',
                 'config' => [
                     'scope' => ['priority'],
@@ -321,18 +320,19 @@ class PriorityBehaviorTest extends TestCase
     /**
      * Test `compactEntityField()` method
      *
-     * @param EntityInterface $entity The entity
+     * @param array $entityData The entity data
      * @param string $field The field
      * @param array $config the config
      * @param bool $expected The expected result
      * @return void
-     * @dataProvider compactEntityFieldProvider()
      * @covers ::_getConditions()
      * @covers ::compactEntityField()
+     * @dataProvider compactEntityFieldProvider()
      */
-    public function testCompactEntityField(EntityInterface $entity, string $field, array $config, bool $expected): void
+    public function testCompactEntityField(array $entityData, string $field, array $config, bool $expected): void
     {
         $table = TableRegistry::getTableLocator()->get('ObjectRelations');
+        $entity = $table->newEntity($entityData);
         $actual = $table->compactEntityField($entity, $field, $config);
         static::assertSame($expected, $actual);
     }
@@ -346,7 +346,7 @@ class PriorityBehaviorTest extends TestCase
     {
         return [
             'empty scope' => [
-                'entity' => [
+                [
                     'left_id' => 2,
                     'relation_id' => 1,
                     'right_id' => 4,
@@ -358,7 +358,7 @@ class PriorityBehaviorTest extends TestCase
                 'expected' => false,
             ],
             'actual value equals previous value' => [
-                'entity' => [
+                [
                     'left_id' => 2,
                     'relation_id' => 1,
                     'right_id' => 4,
@@ -372,7 +372,7 @@ class PriorityBehaviorTest extends TestCase
                 'expected' => false,
             ],
             'compact' => [
-                'entity' => [
+                [
                     'left_id' => 2,
                     'relation_id' => 1,
                     'right_id' => 4,
@@ -386,7 +386,7 @@ class PriorityBehaviorTest extends TestCase
                 'expected' => true,
             ],
             'expand' => [
-                'entity' => [
+                [
                     'left_id' => 2,
                     'relation_id' => 1,
                     'right_id' => 4,
@@ -400,7 +400,7 @@ class PriorityBehaviorTest extends TestCase
                 'expected' => true,
             ],
             'max value' => [
-                'entity' => [
+                [
                     'left_id' => 2,
                     'relation_id' => 1,
                     'right_id' => 4,
@@ -426,9 +426,9 @@ class PriorityBehaviorTest extends TestCase
      * @param array $config the config
      * @param bool $expected The expected result
      * @return void
-     * @dataProvider updateEntityPrioritiesProvider()
      * @covers ::_getConditions()
      * @covers ::updateEntityPriorities()
+     * @dataProvider updateEntityPrioritiesProvider()
      */
     public function testUpdateEntityPriorities(?array $entityData, ?int $actualValue, int $previousValue, string $field, array $config, bool $expected): void
     {
