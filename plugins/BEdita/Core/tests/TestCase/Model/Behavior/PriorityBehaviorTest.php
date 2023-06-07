@@ -275,7 +275,6 @@ class PriorityBehaviorTest extends TestCase
      */
     public function compactEntityFieldProvider(): array
     {
-
         return [
             'empty scope' => [
                 [
