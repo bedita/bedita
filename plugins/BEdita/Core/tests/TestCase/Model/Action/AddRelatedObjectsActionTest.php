@@ -58,7 +58,7 @@ class AddRelatedObjectsActionTest extends TestCase
     {
         parent::setUp();
 
-        LoggedUser::setUser(['id' => 1]);
+        LoggedUser::setUserAdmin();
     }
 
     /**
@@ -246,7 +246,7 @@ class AddRelatedObjectsActionTest extends TestCase
         $association = TableRegistry::getTableLocator()->get('Users')->getAssociation('Roles');
         $entity = $association->getSource()->get(1);
         $relatedEntities = $association->getTarget()->find()->toArray();
-
+        LoggedUser::setUserAdmin();
         $action = new AddRelatedObjectsAction(compact('association'));
         $result = $action(compact('entity', 'relatedEntities'));
 

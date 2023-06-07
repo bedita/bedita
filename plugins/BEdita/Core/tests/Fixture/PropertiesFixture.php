@@ -146,5 +146,17 @@ class PropertiesFixture extends TestFixture
             'is_nullable' => true,
             'is_static' => false,
         ],
+        [
+            'name' => 'children_order',
+            'property_type_id' => 13,
+            'object_type_id' => 10,
+            'created' => '2022-12-01 15:26:00',
+            'modified' => '2022-12-01 15:26:00',
+            'description' => null,
+            'enabled' => true,
+            'label' => null,
+            'is_nullable' => true,
+            'is_static' => false,
+        ],
     ];
 }

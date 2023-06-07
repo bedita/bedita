@@ -119,6 +119,7 @@ class AppControllerTest extends IntegrationTestCase
                     'unchangeable' => true,
                     'created' => '2016-04-15T09:57:38+00:00',
                     'modified' => '2016-04-15T09:57:38+00:00',
+                    'priority' => 0,
                 ],
                 'relationships' => [
                     'users' => [

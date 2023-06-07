@@ -205,7 +205,8 @@ class ListAssociatedAction extends BaseAction
             $query = $query->select($this->Association->junction());
         }
         if ($this->Association instanceof BelongsToMany || $this->Association instanceof HasMany) {
-            $query = $query->order($this->Association->getSort());
+            $sort = $this->sort($this->Association, $primaryKey);
+            $query = $query->order($sort);
         }
 
         $primaryKeyConditions = $this->primaryKeyConditions($inverseAssociation->getTarget(), $primaryKey);
@@ -245,6 +246,23 @@ class ListAssociatedAction extends BaseAction
      */
     protected function prepareJoinEntity(EntityInterface $joinData): void
     {
+    }
+
+    /**
+     * Get association sort by association and primary key.
+     * When association name is "Children", use Folders.getSort($primaryKey).
+     *
+     * @param mixed $primaryKey Primary key
+     * @param \Cake\ORM\Association $association Association
+     * @return array
+     */
+    protected function sort(Association $association, $primaryKey): array
+    {
+        if ($association->getName() === 'Children') {
+            return (array)TableRegistry::getTableLocator()->get('Folders')->getSort($primaryKey);
+        }
+
+        return (array)$association->getSort();
     }
 
     /**

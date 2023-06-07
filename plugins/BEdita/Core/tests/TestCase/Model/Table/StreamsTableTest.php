@@ -13,6 +13,7 @@
 
 namespace BEdita\Core\Test\TestCase\Model\Table;
 
+use BEdita\Core\Model\Entity\Stream;
 use BEdita\Core\Model\Table\ObjectsTable;
 use BEdita\Core\Test\Utility\TestFilesystemTrait;
 use Cake\ORM\Association\BelongsTo;
@@ -250,5 +251,31 @@ class StreamsTableTest extends TestCase
         $result = $stream->extract(array_keys($expected));
 
         static::assertSame($expected, $result);
+    }
+
+    /**
+     * Test {@see \BEdita\Core\Model\Table\StreamsTable::clone()} method.
+     *
+     * @param string $uuid UUID of the Stream to clone.
+     * @return void
+     * @testWith    ["e5afe167-7341-458d-a1e6-042e8791b0fe"]
+     *              ["9e58fa47-db64-4479-a0ab-88a706180d59"]
+     *              ["6aceb0eb-bd30-4f60-ac74-273083b921b6"]
+     * @covers ::clone()
+     */
+    public function testClone(string $uuid): void
+    {
+        $src = $this->Streams->get($uuid);
+        $expected = $src->extract(Stream::FILE_PROPERTIES);
+
+        $clone = $this->Streams->clone($src);
+        $actual = $clone->extract(Stream::FILE_PROPERTIES);
+
+        static::assertNotSame($src, $clone, 'Cloned stream is the same entity as the source stream');
+        static::assertTrue($this->Streams->exists(['uuid' => $clone->uuid]), 'Cloned stream has not been persisted');
+        static::assertNotSame($src->uuid, $clone->uuid, 'Cloned stream has the same UUID as the source stream');
+        static::assertNull($clone->object_id, 'Cloned stream must not be linked to any object');
+        static::assertSame($src->contents->getContents(), $clone->contents->getContents(), 'Cloned stream must have the same file contents');
+        static::assertSame($expected, $actual, 'Cloned stream must preserve property values');
     }
 }

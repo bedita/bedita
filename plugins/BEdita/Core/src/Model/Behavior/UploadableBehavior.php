@@ -37,6 +37,9 @@ class UploadableBehavior extends Behavior
                 'contents' => 'contents',
             ],
         ],
+        'implementedMethods' => [
+            'copyFiles' => 'copyFiles',
+        ],
     ];
 
     /**
@@ -70,12 +73,15 @@ class UploadableBehavior extends Behavior
      */
     protected function processUpload(Entity $entity, $pathField, $contentsField)
     {
-        if (!$entity->isDirty($pathField) && !$entity->isDirty($contentsField)) {
+        $manager = FilesystemRegistry::getMountManager();
+        if (
+            (!$entity->isDirty($pathField) || !$manager->has($entity->getOriginal($pathField)))
+            && !$entity->isDirty($contentsField)
+        ) {
             // Nothing to do.
             return true;
         }
 
-        $manager = FilesystemRegistry::getMountManager();
         $path = $entity->get($pathField);
         $originalPath = $entity->getOriginal($pathField);
         if ($entity->isDirty($pathField) && $originalPath !== $path) {
@@ -150,6 +156,25 @@ class UploadableBehavior extends Behavior
     {
         foreach ($this->getConfig('files') as $file) {
             $this->processDelete($entity, $file['path']);
+        }
+    }
+
+    /**
+     * Copy files from an entity to another.
+     *
+     * @param \Cake\ORM\Entity $src Source entity. It must have path fields set and referenced files must exist.
+     * @param \Cake\ORM\Entity $dest Destination entity. It must have path fields set.
+     * @return void
+     * @throws \League\Flysystem\FilesystemException
+     */
+    public function copyFiles(Entity $src, Entity $dest): void
+    {
+        $manager = FilesystemRegistry::getMountManager();
+        foreach ($this->getConfig('files') as $file) {
+            $srcPath = $src->get($file['path']);
+            $destPath = $dest->get($file['path']);
+
+            $manager->copy($srcPath, $destPath);
         }
     }
 }

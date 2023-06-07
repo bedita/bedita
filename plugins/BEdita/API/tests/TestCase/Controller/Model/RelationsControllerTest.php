@@ -479,6 +479,8 @@ class RelationsControllerTest extends IntegrationTestCase
                         'is_abstract' => false,
                         'parent_name' => 'objects',
                         'enabled' => true,
+                        'translation_rules' => null,
+                        'is_translatable' => true,
                     ],
                     'meta' => [
                         'alias' => 'Documents',
@@ -533,5 +535,105 @@ class RelationsControllerTest extends IntegrationTestCase
         $this->assertResponseCode(200);
         $this->assertContentType('application/vnd.api+json');
         $this->assertEquals($expected, $result);
+    }
+
+    /**
+     * Test adding object types to the left and to the right side of a relation
+     *
+     * @codeCoverageIgnore
+     * @return void
+     */
+    public function testPostLeftRightObjectTypes(): void
+    {
+        // `locations` and `events` to the left
+        $payload = json_encode([
+            'data' => [
+                [
+                    'type' => 'object_types',
+                    'id' => 6,
+                ],
+                [
+                    'type' => 'object_types',
+                    'id' => 7,
+                ],
+            ],
+        ]);
+        $this->configRequestHeaders('POST', $this->getUserAuthHeader());
+        $this->post('/model/relations/1/relationships/left_object_types', $payload);
+        $this->assertResponseCode(200);
+
+        // add only `users` to the right
+        $payload = json_encode([
+            'data' => [
+                'type' => 'object_types',
+                'id' => 4,
+            ],
+        ]);
+        $this->configRequestHeaders('POST', $this->getUserAuthHeader());
+        $this->post('/model/relations/1/relationships/right_object_types', $payload);
+        $this->assertResponseCode(200);
+
+        $this->configRequestHeaders();
+        $this->get('/model/relations/1?include=left_object_types,right_object_types');
+        $this->assertResponseCode(200);
+
+        $result = json_decode((string)$this->_response->getBody(), true);
+        $left = Hash::extract($result, 'data.relationships.left_object_types.data.{n}.id');
+        $right = Hash::extract($result, 'data.relationships.right_object_types.data.{n}.id');
+
+        static::assertTrue(in_array(6, $left));
+        static::assertTrue(in_array(7, $left));
+        static::assertTrue(in_array(4, $right));
+    }
+
+    /**
+     * Test replacing object types to the left and to the right side of a relation
+     *
+     * @codeCoverageIgnore
+     * @return void
+     */
+    public function testPatchLeftRightObjectTypes(): void
+    {
+        // `locations` and `events` to the left
+        $payload = json_encode([
+            'data' => [
+                [
+                    'type' => 'object_types',
+                    'id' => 6,
+                ],
+                [
+                    'type' => 'object_types',
+                    'id' => 7,
+                ],
+            ],
+        ]);
+        $this->configRequestHeaders('PATCH', $this->getUserAuthHeader());
+        $this->patch('/model/relations/1/relationships/left_object_types', $payload);
+        $this->assertResponseCode(200);
+
+        // `users` to the right
+        $payload = json_encode([
+            'data' => [
+                [
+                    'type' => 'object_types',
+                    'id' => 4,
+                ],
+            ],
+        ]);
+        $this->configRequestHeaders('PATCH', $this->getUserAuthHeader());
+        $this->patch('/model/relations/1/relationships/right_object_types', $payload);
+        $this->assertResponseCode(200);
+
+        $this->configRequestHeaders();
+        $this->get('/model/relations/1?include=left_object_types,right_object_types');
+        $this->assertResponseCode(200);
+        $result = json_decode((string)$this->_response->getBody(), true);
+        $left = Hash::extract($result, 'data.relationships.left_object_types.data.{n}.id');
+        $right = Hash::extract($result, 'data.relationships.right_object_types.data.{n}.id');
+
+        sort($left);
+        sort($right);
+        static::assertEquals([6, 7], $left);
+        static::assertEquals([4], $right);
     }
 }

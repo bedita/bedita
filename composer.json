@@ -33,7 +33,7 @@
         "cakephp/cakephp-codesniffer": "~3.2.1",
         "psy/psysh": "@stable",
         "bedita/dev-tools": "1.5.*",
-        "phpstan/phpstan": "^1.5",
+        "phpstan/phpstan": "^1.5, < 1.10.12 || ^1.11",
         "phpunit/phpunit": "^6.5"
     },
     "autoload": {
@@ -82,7 +82,8 @@
     "config": {
         "allow-plugins": {
             "cakephp/plugin-installer": true,
-            "wikimedia/composer-merge-plugin": true
+            "wikimedia/composer-merge-plugin": true,
+            "dealerdirect/phpcodesniffer-composer-installer": true
         }
     }
 }

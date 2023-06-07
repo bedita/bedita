@@ -24,6 +24,7 @@ Router::plugin(
     function (RouteBuilder $routes) {
         $resourcesControllers = [
             'roles',
+            'history',
             'streams',
             'users',
             'media',
@@ -36,6 +37,7 @@ Router::plugin(
             'async_jobs',
             'config',
             'endpoints',
+            'endpoint_permissions',
         ];
         $modelingControllers = [
             'object_types',
@@ -116,6 +118,11 @@ Router::plugin(
             ['controller' => 'Streams', 'action' => 'upload'],
             ['_name' => 'streams:upload', 'pass' => ['fileName']]
         );
+        $routes->connect(
+            '/streams/clone/{uuid}',
+            ['controller' => 'Streams', 'action' => 'clone'],
+            ['_name' => 'streams:clone']
+        )->setPass(['uuid']);
         $routes->connect(
             '/media/thumbs/{id}',
             ['controller' => 'Media', 'action' => 'thumbs'],
@@ -230,13 +237,6 @@ Router::plugin(
             '/config',
             ['controller' => 'Config', 'action' => 'index', '_method' => 'GET'],
             ['_name' => 'config:index']
-        );
-
-        // History.
-        $routes->connect(
-            '/history',
-            ['controller' => 'History', 'action' => 'index', '_method' => 'GET'],
-            ['_name' => 'history:index']
         );
 
         // Trees.

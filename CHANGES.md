@@ -1,5 +1,17 @@
 # ChangeLog
 
+## Version 4.7.1 - Cactus
+
+### API changes (4.7.1)
+
+* [#1908](https://github.com/bedita/bedita/pull/1908) Admin endpoint_permissions
+
+### Core changes (4.7.1)
+
+* [#1900](https://github.com/bedita/bedita/pull/1900) fix: avoid changing results cardinality when using `?filter[ancestors]`
+* [#1899](https://github.com/bedita/bedita/pull/1899) [Refactor] Cake4 compatibility changes
+* [#1898](https://github.com/bedita/bedita/pull/1898) Dirty props consistency in inheritance
+
 ## Version 4.7.0 - Cactus
 
 ### API changes (4.7.0)

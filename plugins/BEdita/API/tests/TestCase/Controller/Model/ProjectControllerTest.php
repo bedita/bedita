@@ -79,6 +79,8 @@ class ProjectControllerTest extends IntegrationTestCase
                     'enabled' => true,
                     'table' => 'BEdita/Core.Objects',
                     'parent_name' => null,
+                    'translation_rules' => null,
+                    'is_translatable' => false,
                 ],
                 [
                     'name' => 'documents',
@@ -90,6 +92,8 @@ class ProjectControllerTest extends IntegrationTestCase
                     'enabled' => true,
                     'table' => 'BEdita/Core.Objects',
                     'parent_name' => 'objects',
+                    'translation_rules' => null,
+                    'is_translatable' => true,
                 ],
                 [
                     'name' => 'profiles',
@@ -101,6 +105,8 @@ class ProjectControllerTest extends IntegrationTestCase
                     'enabled' => true,
                     'table' => 'BEdita/Core.Profiles',
                     'parent_name' => 'objects',
+                    'translation_rules' => null,
+                    'is_translatable' => true,
                 ],
                 [
                     'name' => 'users',
@@ -112,6 +118,8 @@ class ProjectControllerTest extends IntegrationTestCase
                     'enabled' => true,
                     'table' => 'BEdita/Core.Users',
                     'parent_name' => 'objects',
+                    'translation_rules' => null,
+                    'is_translatable' => true,
                 ],
                 [
                     'name' => 'news',
@@ -123,6 +131,8 @@ class ProjectControllerTest extends IntegrationTestCase
                     'enabled' => false,
                     'table' => 'BEdita/Core.Objects',
                     'parent_name' => 'objects',
+                    'translation_rules' => null,
+                    'is_translatable' => true,
                 ],
                 [
                     'name' => 'locations',
@@ -134,6 +144,8 @@ class ProjectControllerTest extends IntegrationTestCase
                     'enabled' => true,
                     'table' => 'BEdita/Core.Locations',
                     'parent_name' => 'objects',
+                    'translation_rules' => null,
+                    'is_translatable' => true,
                 ],
                 [
                     'name' => 'events',
@@ -145,6 +157,8 @@ class ProjectControllerTest extends IntegrationTestCase
                     'enabled' => true,
                     'table' => 'BEdita/Core.Objects',
                     'parent_name' => 'objects',
+                    'translation_rules' => null,
+                    'is_translatable' => true,
                 ],
                 [
                     'name' => 'media',
@@ -156,6 +170,8 @@ class ProjectControllerTest extends IntegrationTestCase
                     'enabled' => true,
                     'table' => 'BEdita/Core.Media',
                     'parent_name' => 'objects',
+                    'translation_rules' => null,
+                    'is_translatable' => false,
                 ],
                 [
                     'name' => 'files',
@@ -167,6 +183,10 @@ class ProjectControllerTest extends IntegrationTestCase
                     'enabled' => true,
                     'table' => 'BEdita/Core.Media',
                     'parent_name' => 'media',
+                    'translation_rules' => [
+                        'name' => true,
+                    ],
+                    'is_translatable' => true,
                 ],
                 [
                     'name' => 'folders',
@@ -178,6 +198,8 @@ class ProjectControllerTest extends IntegrationTestCase
                     'enabled' => true,
                     'table' => 'BEdita/Core.Objects',
                     'parent_name' => 'objects',
+                    'translation_rules' => null,
+                    'is_translatable' => true,
                 ],
             ],
             'relations' => [
@@ -301,6 +323,13 @@ class ProjectControllerTest extends IntegrationTestCase
                     'is_nullable' => true,
                     'property_type_name' => 'integer',
                     'object_type_name' => 'profiles',
+                ],
+                [
+                    'name' => 'children_order',
+                    'description' => null,
+                    'is_nullable' => true,
+                    'property_type_name' => 'children_order',
+                    'object_type_name' => 'folders',
                 ],
             ],
         ];

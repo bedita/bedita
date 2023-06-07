@@ -36,6 +36,14 @@ class Media extends ObjectEntity
     {
         parent::__construct($properties, $options);
 
+        $this->addNotTranslatable([
+            'name',
+            'provider',
+            'provider_thumbnail',
+            'provider_uid',
+            'provider_url',
+        ]);
+
         // Virtual properties.
         $this->setVirtual(['media_url'], true);
         $this->setAccess('media_url', false);

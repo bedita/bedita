@@ -92,6 +92,8 @@ class ProjectModelTest extends TestCase
                 'enabled' => true,
                 'table' => 'BEdita/Core.Objects',
                 'parent_name' => null,
+                'translation_rules' => null,
+                'is_translatable' => false,
             ],
             [
                 'name' => 'documents',
@@ -103,6 +105,8 @@ class ProjectModelTest extends TestCase
                 'enabled' => true,
                 'table' => 'BEdita/Core.Objects',
                 'parent_name' => 'objects',
+                'translation_rules' => null,
+                'is_translatable' => true,
             ],
             [
                 'name' => 'profiles',
@@ -114,6 +118,8 @@ class ProjectModelTest extends TestCase
                 'enabled' => true,
                 'table' => 'BEdita/Core.Profiles',
                 'parent_name' => 'objects',
+                'translation_rules' => null,
+                'is_translatable' => true,
             ],
             [
                 'name' => 'users',
@@ -125,6 +131,8 @@ class ProjectModelTest extends TestCase
                 'enabled' => true,
                 'table' => 'BEdita/Core.Users',
                 'parent_name' => 'objects',
+                'translation_rules' => null,
+                'is_translatable' => true,
             ],
             [
                 'name' => 'news',
@@ -136,6 +144,8 @@ class ProjectModelTest extends TestCase
                 'enabled' => false,
                 'table' => 'BEdita/Core.Objects',
                 'parent_name' => 'objects',
+                'translation_rules' => null,
+                'is_translatable' => true,
             ],
             [
                 'name' => 'locations',
@@ -147,6 +157,8 @@ class ProjectModelTest extends TestCase
                 'enabled' => true,
                 'table' => 'BEdita/Core.Locations',
                 'parent_name' => 'objects',
+                'translation_rules' => null,
+                'is_translatable' => true,
             ],
             [
                 'name' => 'events',
@@ -158,6 +170,8 @@ class ProjectModelTest extends TestCase
                 'enabled' => true,
                 'table' => 'BEdita/Core.Objects',
                 'parent_name' => 'objects',
+                'translation_rules' => null,
+                'is_translatable' => true,
             ],
             [
                 'name' => 'media',
@@ -169,6 +183,8 @@ class ProjectModelTest extends TestCase
                 'enabled' => true,
                 'table' => 'BEdita/Core.Media',
                 'parent_name' => 'objects',
+                'translation_rules' => null,
+                'is_translatable' => false,
             ],
             [
                 'name' => 'files',
@@ -180,6 +196,10 @@ class ProjectModelTest extends TestCase
                 'enabled' => true,
                 'table' => 'BEdita/Core.Media',
                 'parent_name' => 'media',
+                'translation_rules' => [
+                    'name' => true,
+                ],
+                'is_translatable' => true,
             ],
             [
                 'name' => 'folders',
@@ -191,6 +211,8 @@ class ProjectModelTest extends TestCase
                 'enabled' => true,
                 'table' => 'BEdita/Core.Objects',
                 'parent_name' => 'objects',
+                'translation_rules' => null,
+                'is_translatable' => true,
             ],
         ],
         'relations' => [
@@ -314,6 +336,13 @@ class ProjectModelTest extends TestCase
                 'is_nullable' => true,
                 'property_type_name' => 'integer',
                 'object_type_name' => 'profiles',
+            ],
+            [
+                'name' => 'children_order',
+                'description' => null,
+                'is_nullable' => true,
+                'property_type_name' => 'children_order',
+                'object_type_name' => 'folders',
             ],
         ],
     ];

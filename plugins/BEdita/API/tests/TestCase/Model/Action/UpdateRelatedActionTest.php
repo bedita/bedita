@@ -15,6 +15,7 @@ namespace BEdita\API\Test\TestCase\Model\Action;
 
 use BEdita\API\Model\Action\UpdateRelatedAction;
 use BEdita\Core\Model\Action\SetRelatedObjectsAction;
+use BEdita\Core\Utility\LoggedUser;
 use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\Http\ServerRequest;
 use Cake\TestSuite\TestCase;
@@ -155,6 +156,7 @@ class UpdateRelatedActionTest extends TestCase
             $this->expectExceptionMessage($expected->getMessage());
         }
 
+        LoggedUser::setUserAdmin();
         $request = new ServerRequest();
         $request = $request->withParsedBody($data);
         $association = $this->getTableLocator()->get($table)->getAssociation($association);

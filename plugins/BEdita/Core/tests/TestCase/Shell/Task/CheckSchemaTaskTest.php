@@ -14,27 +14,33 @@
 namespace BEdita\Core\Test\TestCase\Shell\Task;
 
 use BEdita\Core\Shell\Task\CheckSchemaTask;
+use BEdita\Core\Test\Utility\CheckDriver;
 use Cake\Console\Shell;
 use Cake\Core\Plugin;
 use Cake\Database\Connection;
 use Cake\Database\Driver\Mysql;
 use Cake\Database\Schema\TableSchema;
 use Cake\Datasource\ConnectionManager;
-use Cake\TestSuite\ConsoleIntegrationTestCase;
+use Cake\TestSuite\ConsoleIntegrationTestTrait;
+use Cake\TestSuite\TestCase;
 use Cake\Utility\Hash;
 
 /**
  * @coversDefaultClass \BEdita\Core\Shell\Task\CheckSchemaTask
  */
-class CheckSchemaTaskTest extends ConsoleIntegrationTestCase
+class CheckSchemaTaskTest extends TestCase
 {
+    use ConsoleIntegrationTestTrait;
+
     /**
      * @inheritDoc
      */
     public function setUp(): void
     {
         parent::setUp();
-
+        if (CheckDriver::is(\Cake\Database\Driver\Sqlite::class)) {
+            return;
+        }
         $this->fixtureManager->shutDown();
 
         $this->exec('db_admin init -fs');
@@ -45,6 +51,9 @@ class CheckSchemaTaskTest extends ConsoleIntegrationTestCase
      */
     public static function tearDownAfterClass(): void
     {
+        if (CheckDriver::is(\Cake\Database\Driver\Sqlite::class)) {
+            return;
+        }
         ConnectionManager::get('default')
             ->transactional(function (Connection $connection) {
                 $tables = $connection->getSchemaCollection()->listTables();
@@ -91,6 +100,11 @@ class CheckSchemaTaskTest extends ConsoleIntegrationTestCase
      */
     public function testMissingMigrationsPlugin()
     {
+        if (CheckDriver::is(\Cake\Database\Driver\Sqlite::class)) {
+            $this->markTestSkipped('Skip this test on sqlite.');
+
+            return;
+        }
         $pluginCollection = Plugin::getCollection();
         $migrationPlugin = $pluginCollection->get('Migrations');
         $pluginCollection->remove('Migrations');
@@ -113,6 +127,11 @@ class CheckSchemaTaskTest extends ConsoleIntegrationTestCase
      */
     public function testOffendedConventions()
     {
+        if (CheckDriver::is(\Cake\Database\Driver\Sqlite::class)) {
+            $this->markTestSkipped('Skip this test on sqlite.');
+
+            return;
+        }
         /** @var \Cake\Database\Connection $connection */
         $connection = ConnectionManager::get('default');
 
@@ -172,6 +191,11 @@ class CheckSchemaTaskTest extends ConsoleIntegrationTestCase
      */
     public function testCheckSchema()
     {
+        if (CheckDriver::is(\Cake\Database\Driver\Sqlite::class)) {
+            $this->markTestSkipped('Skip this test on sqlite.');
+
+            return;
+        }
         /** @var \Cake\Database\Connection $connection */
         $connection = ConnectionManager::get('default');
 
@@ -193,6 +217,11 @@ class CheckSchemaTaskTest extends ConsoleIntegrationTestCase
      */
     public function testAddTable()
     {
+        if (CheckDriver::is(\Cake\Database\Driver\Sqlite::class)) {
+            $this->markTestSkipped('Skip this test on sqlite.');
+
+            return;
+        }
         /** @var \Cake\Database\Connection $connection */
         $connection = ConnectionManager::get('default');
 
@@ -222,6 +251,11 @@ class CheckSchemaTaskTest extends ConsoleIntegrationTestCase
      */
     public function testRemoveTable()
     {
+        if (CheckDriver::is(\Cake\Database\Driver\Sqlite::class)) {
+            $this->markTestSkipped('Skip this test on sqlite.');
+
+            return;
+        }
         /** @var \Cake\Database\Connection $connection */
         $connection = ConnectionManager::get('default');
 
@@ -251,6 +285,11 @@ class CheckSchemaTaskTest extends ConsoleIntegrationTestCase
      */
     public function testUpdateConstraints()
     {
+        if (CheckDriver::is(\Cake\Database\Driver\Sqlite::class)) {
+            $this->markTestSkipped('Skip this test on sqlite.');
+
+            return;
+        }
         /** @var \Cake\Database\Connection $connection */
         $connection = ConnectionManager::get('default');
 

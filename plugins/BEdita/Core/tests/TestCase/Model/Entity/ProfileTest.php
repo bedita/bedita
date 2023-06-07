@@ -92,6 +92,18 @@ class ProfileTest extends TestCase
     }
 
     /**
+     * Test translatable properties.
+     *
+     * @return void
+     * @covers ::__construct()
+     */
+    public function testTranslatable(): void
+    {
+        $profile = $this->Profiles->newEntity([]);
+        $this->assertFalse($profile->isFieldTranslatable('surname'));
+    }
+
+    /**
      * Data provider for `testSetUrl` test case.
      *
      * @return array

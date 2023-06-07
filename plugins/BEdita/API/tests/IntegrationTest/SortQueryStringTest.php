@@ -82,6 +82,8 @@ class SortQueryStringTest extends IntegrationTestCase
      */
     public function testSort($expected, $endpoint, $sort)
     {
+        $sortedFields = [];
+
         // sort asc
         $this->configRequestHeaders();
         $url = sprintf('%s?sort=%s', $endpoint, $sort);
