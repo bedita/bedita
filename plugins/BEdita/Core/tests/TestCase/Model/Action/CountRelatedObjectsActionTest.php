@@ -174,7 +174,7 @@ class CountRelatedObjectsActionTest extends TestCase
                         'id' => 7,
                         'count' => [
                             'test' => 0,
-                            'inverse_test' => 0,
+                            'inverse_test' => 1,
                         ],
                     ],
                     [
@@ -215,7 +215,7 @@ class CountRelatedObjectsActionTest extends TestCase
                         'id' => 7,
                         'count' => [
                             'test' => 0,
-                            'inverse_test' => 0,
+                            'inverse_test' => 1,
                         ],
                     ],
                     [
@@ -321,7 +321,7 @@ class CountRelatedObjectsActionTest extends TestCase
                         'id' => 7,
                         'count' => [
                             'test' => 0,
-                            'inverse_test' => 0,
+                            'inverse_test' => 1,
                             'another_test' => 0,
                             'inverse_another_test' => 0,
                             'test_abstract' => 0,

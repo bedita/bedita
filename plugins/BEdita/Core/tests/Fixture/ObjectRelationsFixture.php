@@ -57,5 +57,13 @@ class ObjectRelationsFixture extends TestFixture
             'inv_priority' => 1,
             'params' => null,
         ],
+        [
+            'left_id' => 2,
+            'relation_id' => 1,
+            'right_id' => 7,
+            'priority' => 3,
+            'inv_priority' => 1,
+            'params' => null,
+        ],
     ];
 }
