@@ -90,7 +90,7 @@ class PriorityBehavior extends Behavior
     /**
      * Compact entity field.
      *
-     * @param EntityInterface $entity The entity
+     * @param \Cake\Datasource\EntityInterface $entity The entity
      * @param string $field The field
      * @param array $config The config
      * @return bool
@@ -111,7 +111,7 @@ class PriorityBehavior extends Behavior
      * Update entity priorities.
      * Return true if data is updated, false otherwise.
      *
-     * @param EntityInterface $entity The entity
+     * @param \Cake\Datasource\EntityInterface $entity The entity
      * @param string $field The field
      * @param array $config the config
      * @return bool
