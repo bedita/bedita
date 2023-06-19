@@ -16,6 +16,7 @@ namespace BEdita\Core\Test\TestCase\Search;
 
 use BEdita\Core\Search\BaseAdapter;
 use BEdita\Core\Search\SearchRegistry;
+use Cake\Datasource\EntityInterface;
 use Cake\ORM\Query;
 use Cake\TestSuite\TestCase;
 use RuntimeException;
@@ -59,25 +60,13 @@ class SearchRegistryTest extends TestCase
                 null,
                 [
                     'className' => new class extends BaseAdapter {
-                        public function search(Query $query, string $text, array $options = []): Query
+                        public function search(Query $query, string $text, array $options = [], array $config = []): Query
                         {
                             return $query;
-                        }
-                    },
-                ],
-            ],
-            'failed initialization' => [
-                RuntimeException::class,
-                [
-                    'className' => new class extends BaseAdapter {
-                        public function initialize(array $config): bool
-                        {
-                            return false;
                         }
 
-                        public function search(Query $query, string $text, array $options = []): Query
+                        public function indexResource(EntityInterface $entity, string $operation): void
                         {
-                            return $query;
                         }
                     },
                 ],

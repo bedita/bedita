@@ -58,9 +58,7 @@ class SearchRegistry extends ObjectRegistry
             throw new RuntimeException(sprintf('Search adapters must use %s as a base class.', BaseAdapter::class));
         }
 
-        if (!$instance->initialize($config)) {
-            throw new RuntimeException(sprintf('Search adapter %s is not properly configured. Check error log for additional information.', get_class($instance)));
-        }
+        $instance->initialize($config);
 
         return $instance;
     }

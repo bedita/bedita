@@ -32,21 +32,17 @@ abstract class BaseAdapter
      *
      * @var array
      */
-    protected $_defaultConfig = [
-        'allowedOperations' => ['edit', 'delete'],
-    ];
+    protected $_defaultConfig = [];
 
     /**
      * Initialize adapter with configuration.
      *
      * @param array $config Adapter configuration
-     * @return bool Success or failure
+     * @return void
      */
-    public function initialize(array $config): bool
+    public function initialize(array $config): void
     {
         $this->setConfig($config);
-
-        return true;
     }
 
     /**
@@ -54,23 +50,18 @@ abstract class BaseAdapter
      *
      * @param \Cake\ORM\Query $query The query instance
      * @param string $text The text to look for
-     * @param array $options Options
+     * @param array $options Options for search
+     * @param array $config Search configuration
      * @return \Cake\ORM\Query
      */
-    abstract public function search(Query $query, string $text, array $options = []): Query;
+    abstract public function search(Query $query, string $text, array $options = [], array $config = []): Query;
 
     /**
      * Index a resource by `$operation`.
-     * Every adapter that needs an index should implement this method.
      *
      * @param \Cake\Datasource\EntityInterface $entity The entity to index
      * @param string $operation The operation
      * @return void
      */
-    public function indexResource(EntityInterface $entity, string $operation): void
-    {
-        if (!in_array($operation, (array)$this->getConfig('allowedOperations'))) {
-            throw new \InvalidArgumentException(sprintf('Invalid operation "%s" indexing resource', $operation));
-        }
-    }
+    abstract public function indexResource(EntityInterface $entity, string $operation): void;
 }
