@@ -16,7 +16,6 @@ namespace BEdita\Core\Search\Adapter;
 
 use BEdita\Core\Exception\BadFilterException;
 use BEdita\Core\Search\BaseAdapter;
-use Cake\Database\Expression\FunctionExpression;
 use Cake\Database\Expression\QueryExpression;
 use Cake\Datasource\EntityInterface;
 use Cake\ORM\Query;
