@@ -17,6 +17,8 @@ namespace BEdita\Core\Test\TestCase\Search\Adapter;
 use BEdita\Core\Exception\BadFilterException;
 use BEdita\Core\ORM\Inheritance\Table;
 use BEdita\Core\Search\Adapter\SimpleAdapter;
+use Cake\Database\Driver\Postgres;
+use Cake\Datasource\ConnectionManager;
 use Cake\TestSuite\TestCase;
 
 /**
@@ -89,7 +91,7 @@ class SimpleAdapterTest extends TestCase
                 [
                     1 => 'cat',
                 ],
-                'eutheria cat',
+                'Eutheria cat',
                 [],
                 'FakeMammals',
                 [
@@ -142,6 +144,8 @@ class SimpleAdapterTest extends TestCase
                 'HIPPO',
                 [],
                 'FakeSearches',
+                [],
+                true,
             ],
             'exact false' => [
                 [
@@ -174,14 +178,19 @@ class SimpleAdapterTest extends TestCase
      * @param string $text Text to search
      * @param array $options Search options
      * @param string $tableName Table name
+     * @param bool $caseInsensitive Whether test case relies on case-insensitive comparison.
      * @return void
      * @dataProvider searchProvider()
      * @covers ::search()
      * @covers ::prepareText()
      * @covers ::getValidator()
      */
-    public function testSearch($expected, string $text, array $options = [], $tableName = 'FakeAnimals', array $fields = [])
+    public function testSearch($expected, string $text, array $options = [], $tableName = 'FakeAnimals', array $fields = [], bool $caseInsensitive = false)
     {
+        if ($caseInsensitive && ConnectionManager::get('default')->getDriver() instanceof Postgres) {
+            static::markTestSkipped('Case-insensitive test cases are skipped on Postgres');
+        }
+
         if ($expected instanceof \Exception) {
             $this->expectExceptionObject($expected);
         }

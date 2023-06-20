@@ -106,7 +106,7 @@ class SimpleAdapter extends BaseAdapter
 
         $tableFields = (array)Hash::get($config, 'fields');
 
-        // Concat all fields into a single, lower-cased string.
+        // Concat all fields into a single string.
         $fields = [];
         /** @var \Cake\ORM\Table $table */
         $table = $query->getRepository();
