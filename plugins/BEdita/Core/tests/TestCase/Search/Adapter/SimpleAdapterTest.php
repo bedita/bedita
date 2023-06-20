@@ -183,9 +183,7 @@ class SimpleAdapterTest extends TestCase
     public function testSearch($expected, string $text, array $options = [], $tableName = 'FakeAnimals', array $fields = [])
     {
         if ($expected instanceof \Exception) {
-            $this->expectException(get_class($expected));
-            $this->expectExceptionCode($expected->getCode());
-            $this->expectExceptionMessage($expected->getMessage());
+            $this->expectExceptionObject($expected);
         }
 
         $table = $this->fetchTable($tableName);

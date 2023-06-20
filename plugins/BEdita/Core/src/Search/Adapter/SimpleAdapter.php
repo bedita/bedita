@@ -37,7 +37,7 @@ class SimpleAdapter extends BaseAdapter
      * @param array $config Search configuration
      * @return \Cake\Validation\Validator
      */
-    public function getValidator(array $config = []): Validator
+    protected function getValidator(array $config = []): Validator
     {
         $validator = new Validator();
 
@@ -77,18 +77,14 @@ class SimpleAdapter extends BaseAdapter
             $words = preg_split('/\W+/', $text); // Split words.
         }
         $words = array_unique(array_map( // Escape `%` and `\` characters in words.
-            function ($word) {
-                return str_replace(
-                    ['%', '\\'],
-                    ['\\%', '\\\\'],
-                    mb_strtolower($word)
-                );
-            },
+            fn (string $word): string => str_replace(
+                ['%', '\\'],
+                ['\\%', '\\\\'],
+                $word,
+            ),
             array_filter( // Filter out words that are too short.
                 $words,
-                function ($word) use ($minLength) {
-                    return mb_strlen($word) >= $minLength;
-                }
+                fn (string $word): bool => mb_strlen($word) >= $minLength,
             )
         ));
 
@@ -123,7 +119,7 @@ class SimpleAdapter extends BaseAdapter
             $fields[] = ' '; // Add a spacer.
         }
         array_pop($fields); // Remove last spacer.
-        $field = new FunctionExpression('LOWER', [$query->func()->concat($fields)]);
+        $field = $query->func()->concat($fields);
 
         // Build query conditions.
         return $query
