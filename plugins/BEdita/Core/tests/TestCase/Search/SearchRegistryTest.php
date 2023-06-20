@@ -14,11 +14,13 @@ declare(strict_types=1);
  */
 namespace BEdita\Core\Test\TestCase\Search;
 
+use BEdita\Core\Search\Adapter\SimpleAdapter;
 use BEdita\Core\Search\BaseAdapter;
 use BEdita\Core\Search\SearchRegistry;
 use Cake\Datasource\EntityInterface;
 use Cake\ORM\Query;
 use Cake\TestSuite\TestCase;
+use Cake\Utility\Hash;
 use RuntimeException;
 
 /**
@@ -26,6 +28,11 @@ use RuntimeException;
  */
 class SearchRegistryTest extends TestCase
 {
+    /**
+     * SearchRegistry instance
+     *
+     * @var \BEdita\Core\Search\SearchRegistry
+     */
     protected SearchRegistry $registry;
 
     /**
@@ -58,6 +65,7 @@ class SearchRegistryTest extends TestCase
         return [
             'successful initialization' => [
                 null,
+                'default',
                 [
                     'className' => new class extends BaseAdapter {
                         public function search(Query $query, string $text, array $options = [], array $config = []): Query
@@ -72,10 +80,21 @@ class SearchRegistryTest extends TestCase
                 ],
             ],
             'wrong class' => [
-                RuntimeException::class,
+                new RuntimeException(sprintf('Search adapters must use %s as a base class.', BaseAdapter::class)),
+                'default',
                 [
                     'className' => new \stdClass(),
                 ],
+            ],
+            'SimpleAdapter by name' => [
+                SimpleAdapter::class,
+                'BEdita/Core.Simple',
+                [],
+            ],
+            'Adapter not found' => [
+                new \BadMethodCallException('Search adapter FakeAdapter is not available.'),
+                'FakeAdapter',
+                [],
             ],
         ];
     }
@@ -83,20 +102,30 @@ class SearchRegistryTest extends TestCase
     /**
      * Test case for {@see SearchRegistry::load()} method.
      *
+     * @param \Exception|string|null $expected The expected result
+     * @param string $name Adapter name
+     * @param array $config Adapter configuration
      * @return void
      * @covers ::_create()
+     * @covers ::_resolveClassName()
+     * @covers ::_throwMissingClassError()
      * @dataProvider loadProvider()
      */
-    public function testLoad(?string $expected, array $config): void
+    public function testLoad($expected, string $name, array $config): void
     {
-        if ($expected !== null) {
-            static::expectException($expected);
+        if ($expected instanceof \Exception) {
+            $this->expectExceptionObject($expected);
         }
 
-        $adapter = $this->registry->load('default', $config);
+        $adapter = $this->registry->load($name, $config);
 
-        if (is_object($config['className'])) {
-            static::assertSame($config['className'], $adapter);
+        $className = Hash::get($config, 'className');
+        if (is_object($className)) {
+            static::assertSame($className, $adapter);
+        }
+
+        if (is_string($expected)) {
+            static::assertInstanceOf($expected, $adapter);
         }
     }
 }

@@ -39,6 +39,7 @@ abstract class BaseAdapter
      *
      * @param array $config Adapter configuration
      * @return void
+     * @codeCoverageIgnore
      */
     public function initialize(array $config): void
     {
