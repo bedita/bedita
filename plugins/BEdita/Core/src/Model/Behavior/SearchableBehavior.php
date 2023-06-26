@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 /**
  * BEdita, API-first content management framework
  * Copyright 2017 ChannelWeb Srl, Chialab Srl
@@ -15,8 +17,11 @@ namespace BEdita\Core\Model\Behavior;
 
 use BEdita\Core\Exception\BadFilterException;
 use BEdita\Core\ORM\Inheritance\Table as InheritanceTable;
-use Cake\Database\Expression\FunctionExpression;
-use Cake\Database\Expression\QueryExpression;
+use BEdita\Core\Search\BaseAdapter;
+use BEdita\Core\Search\SearchRegistry;
+use Cake\Core\Configure;
+use Cake\Datasource\EntityInterface;
+use Cake\Event\EventInterface;
 use Cake\ORM\Behavior;
 use Cake\ORM\Query;
 use Cake\ORM\Table;
@@ -47,6 +52,13 @@ class SearchableBehavior extends Behavior
     ];
 
     /**
+     * The Search adapters registry.
+     *
+     * @var \BEdita\Core\Search\SearchRegistry
+     */
+    protected static $searchRegistry = null;
+
+    /**
      * {@inheritDoc}
      *
      * If fields or column types are specified - do *not* merge them with existing config,
@@ -59,6 +71,66 @@ class SearchableBehavior extends Behavior
                 $this->setConfig($key, $config[$key], false);
             }
         }
+    }
+
+    /**
+     * Update search adapters index when a resource is saved.
+     *
+     * @param \Cake\Event\EventInterface $event The event
+     * @param \Cake\Datasource\EntityInterface $entity The resource entity
+     * @return void
+     */
+    public function afterSave(EventInterface $event, EntityInterface $entity): void
+    {
+        foreach (array_keys((array)Configure::read('Search.adapters')) as $name) {
+            $this->getAdapter($name)->indexResource($entity, 'edit');
+        }
+    }
+
+    /**
+     * Update search adapters index when a resource is deleted.
+     *
+     * @param \Cake\Event\EventInterface $event The event
+     * @param \Cake\Datasource\EntityInterface $entity The resource entity
+     * @return void
+     */
+    public function afterDelete(EventInterface $event, EntityInterface $entity): void
+    {
+        foreach (array_keys((array)Configure::read('Search.adapters')) as $name) {
+            $this->getAdapter($name)->indexResource($entity, 'delete');
+        }
+    }
+
+    /**
+     * Get search adapters registry.
+     *
+     * @return \BEdita\Core\Search\SearchRegistry
+     */
+    protected static function getSearchRegistry(): SearchRegistry
+    {
+        if (!isset(static::$searchRegistry)) {
+            static::$searchRegistry = new SearchRegistry();
+        }
+
+        return static::$searchRegistry;
+    }
+
+    /**
+     * Get an adapter by name.
+     *
+     * @param string $name The adapter name
+     * @return \BEdita\Core\Search\BaseAdapter
+     */
+    protected function getAdapter($name): BaseAdapter
+    {
+        $searchRegistry = static::getSearchRegistry();
+        if ($searchRegistry->has($name)) {
+            return $searchRegistry->get($name);
+        }
+
+        $conf = (array)Configure::read(sprintf('Search.adapters.%s', $name));
+
+        return $searchRegistry->load($name, $conf);
     }
 
     /**
@@ -121,10 +193,9 @@ class SearchableBehavior extends Behavior
         $options += [
             'exact' => false,
         ];
-        if (isset($options[0]) && !isset($options['string'])) {
-            $options['string'] = $options[0];
-        }
-        if (!isset($options['string']) || !is_string($options['string'])) {
+
+        $text = $options['string'] ?? $options[0] ?? null;
+        if (!isset($text) || !is_string($text)) {
             // Bad filter options.
             throw new BadFilterException([
                 'title' => __d('bedita', 'Invalid data'),
@@ -132,67 +203,15 @@ class SearchableBehavior extends Behavior
             ]);
         }
 
-        $minLength = $this->getConfig('minLength');
-        $maxWords = $this->getConfig('maxWords');
-        $words = [$options['string']];
-        if (filter_var($options['exact'], FILTER_VALIDATE_BOOLEAN) !== true) {
-            $words = preg_split('/\W+/', $options['string']); // Split words.
-        }
-        $words = array_unique(array_map( // Escape `%` and `\` characters in words.
-            function ($word) {
-                return str_replace(
-                    ['%', '\\'],
-                    ['\\%', '\\\\'],
-                    mb_strtolower($word)
-                );
-            },
-            array_filter( // Filter out words that are too short.
-                $words,
-                function ($word) use ($minLength) {
-                    return mb_strlen($word) >= $minLength;
-                }
-            )
-        ));
-        if (count($words) === 0) {
-            // Query contained only short words.
-            throw new BadFilterException([
-                'title' => __d('bedita', 'Invalid data'),
-                'detail' => __d('bedita', 'query strings must be at least {0} characters long', $minLength),
-            ]);
-        }
-        if ($maxWords > 0 && count($words) > $maxWords) {
-            // Conditions with too many words would make our database hang for a long time.
-            throw new BadFilterException([
-                'title' => __d('bedita', 'Invalid data'),
-                'detail' => 'query string too long',
-            ]);
-        }
+        unset($options[0], $options['string']);
 
-        // Concat all fields into a single, lower-cased string.
-        $fields = [];
-        /** @var \Cake\ORM\Table $table */
-        $table = $query->getRepository();
-        foreach (array_keys($this->getFields()) as $field) {
-            $fields[] = $query->func()->coalesce([
-                $table->aliasField($field) => 'identifier',
-                '',
-            ]);
-            $fields[] = ' '; // Add a spacer.
-        }
-        array_pop($fields); // Remove last spacer.
-        $field = new FunctionExpression('LOWER', [$query->func()->concat($fields)]);
+        $config = [
+            'minLength' => $this->getConfig('minLength'),
+            'maxWords' => $this->getConfig('maxWords'),
+            'fields' => $this->getFields(),
+        ];
 
-        // Build query conditions.
-        return $query
-            ->where(function (QueryExpression $exp) use ($field, $words) {
-                foreach ($words as $word) {
-                    $exp->like(
-                        $field,
-                        sprintf('%%%s%%', $word)
-                    );
-                }
-
-                return $exp;
-            });
+        return $this->getAdapter(Configure::read('Search.use', 'default'))
+            ->search($query, $text, $options, $config);
     }
 }
