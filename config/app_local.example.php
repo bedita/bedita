@@ -232,4 +232,31 @@ return [
     //     // default lang tag - may be null
     //     'default' => null,
     // ],
+
+    /**
+     * Queue settings
+     */
+    // 'Queue' => [
+    //     'default' => [
+    //         // A DSN for your configured backend. default: null
+    //         // Can contain protocol/port/username/password or be null if the backend defaults to localhost
+    //         'url' => 'redis://127.0.01:6379',
+
+    //         // The queue that will be used for sending messages. default: default
+    //         // This can be overridden when queuing or processing messages
+    //         'queue' => 'default',
+
+    //         // Delay in seconds to use in `QueueManager::push` action, default: 1
+    //         // 'pushDelay' => 1,
+
+    //         // The name of a configured logger, default: null
+    //         // 'logger' => 'stdout',
+
+    //         // The name of an event listener class to associate with the worker
+    //         // 'listener' => \App\Listener\WorkerListener::class,
+
+    //         // The amount of time in milliseconds to sleep if no jobs are currently available. default: 10000
+    //         'receiveTimeout' => 10000,
+    //     ],
+    // ],
 ];

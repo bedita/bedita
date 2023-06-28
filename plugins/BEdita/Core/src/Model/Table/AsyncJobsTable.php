@@ -4,6 +4,7 @@ namespace BEdita\Core\Model\Table;
 use BEdita\Core\Job\QueueJob;
 use BEdita\Core\Model\Entity\AsyncJob;
 use BEdita\Core\Model\Validation\Validation;
+use Cake\Core\Configure;
 use Cake\Database\Expression\QueryExpression;
 use Cake\Database\Schema\TableSchemaInterface;
 use Cake\Datasource\ConnectionManager;
@@ -143,7 +144,13 @@ class AsyncJobsTable extends Table
             return;
         }
 
-        QueueManager::push(QueueJob::class, ['uuid' => $entity->uuid]);
+        $delay = (int)Configure::read('Queue.default.pushDelay', 1);
+
+        QueueManager::push(
+            QueueJob::class,
+            ['uuid' => $entity->uuid],
+            compact('delay'),
+        );
     }
 
     /**
