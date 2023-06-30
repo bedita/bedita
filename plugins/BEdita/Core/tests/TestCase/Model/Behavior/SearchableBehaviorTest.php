@@ -15,7 +15,10 @@ namespace BEdita\Core\Test\TestCase\Model\Behavior;
 
 use BEdita\Core\Exception\BadFilterException;
 use BEdita\Core\ORM\Inheritance\Table;
-use Cake\ORM\TableRegistry;
+use BEdita\Core\Search\BaseAdapter;
+use Cake\Core\Configure;
+use Cake\Datasource\EntityInterface;
+use Cake\ORM\Query;
 use Cake\TestSuite\TestCase;
 
 /**
@@ -44,103 +47,21 @@ class SearchableBehaviorTest extends TestCase
     {
         parent::setUp();
 
-        TableRegistry::getTableLocator()->get('FakeMammals', ['className' => Table::class])
+        $this->fetchTable('FakeMammals', ['className' => Table::class])
             ->setDisplayField('name')
             ->extensionOf('FakeAnimals');
-        TableRegistry::getTableLocator()->get('FakeFelines', ['className' => Table::class])
+        $this->fetchTable('FakeFelines', ['className' => Table::class])
             ->setDisplayField('name')
             ->extensionOf('FakeMammals');
     }
 
-    /**
-     * Test behavior initialization process.
-     *
-     * @return void
-     * @covers ::initialize()
-     */
-    public function testInitialize()
+    public function tearDown(): void
     {
-        $columnTypes = [
-            'integer',
-        ];
-        $fields = [
-            'my_field' => 17,
-        ];
+        parent::tearDown();
 
-        $table = TableRegistry::getTableLocator()->get('FakeAnimals');
-        $table->addBehavior('BEdita/Core.Searchable', compact('columnTypes', 'fields'));
-
-        /** @var \BEdita\Core\Model\Behavior\SearchableBehavior $behavior */
-        $behavior = $table->behaviors()->get('Searchable');
-
-        static::assertEquals($columnTypes, $behavior->getConfig('columnTypes'));
-        static::assertEquals($fields, $behavior->getConfig('fields'));
-    }
-
-    /**
-     * Data provider for `testGetFields` test case.
-     *
-     * @return array
-     */
-    public function getFieldsProvider()
-    {
-        return [
-            'default' => [
-                [
-                    'name' => 1,
-                ],
-            ],
-            'inherited fields with custom priorities' => [
-                [
-                    'name' => 1,
-                    'subclass' => 2,
-                ],
-                [
-                    'fields' => [
-                        '*' => 1,
-                        'subclass' => 2,
-                    ],
-                ],
-                'FakeMammals',
-            ],
-            'excluded fields' => [
-                [
-                    'subclass' => 2,
-                    'family' => 5,
-                ],
-                [
-                    'fields' => [
-                        'subclass' => 2,
-                        'family' => 5,
-                    ],
-                ],
-                'FakeFelines',
-            ],
-        ];
-    }
-
-    /**
-     * Test listing all searchable fields along with their priorities.
-     *
-     * @param array $expected Expected result.
-     * @param array $config Behavior configuration.
-     * @param string $table Table.
-     * @return void
-     * @dataProvider getFieldsProvider()
-     * @covers ::getAllFields()
-     * @covers ::getFields()
-     */
-    public function testGetFields(array $expected, array $config = [], $table = 'FakeAnimals')
-    {
-        $table = TableRegistry::getTableLocator()->get($table);
-        $table->addBehavior('BEdita/Core.Searchable', $config);
-
-        /** @var \BEdita\Core\Model\Behavior\SearchableBehavior $behavior */
-        $behavior = $table->behaviors()->get('Searchable');
-
-        $fields = $behavior->getFields();
-
-        static::assertEquals($expected, $fields);
+        $this->getTableLocator()->remove('FakeFelines');
+        $this->getTableLocator()->remove('FakeMammals');
+        $this->getTableLocator()->remove('FakeAnimals');
     }
 
     /**
@@ -262,6 +183,9 @@ class SearchableBehaviorTest extends TestCase
      * @return void
      * @dataProvider findQueryProvider()
      * @covers ::findQuery()
+     * @covers ::getAdapter()
+     * @covers ::getSearchRegistry()
+     * @covers ::fitSimpleAdapterConf()
      */
     public function testFindQuery($expected, $query, $table = 'FakeAnimals')
     {
@@ -271,7 +195,7 @@ class SearchableBehaviorTest extends TestCase
             $this->expectExceptionMessage($expected->getMessage());
         }
 
-        $table = TableRegistry::getTableLocator()->get($table);
+        $table = $this->fetchTable($table);
         $table->addBehavior('BEdita/Core.Searchable');
 
         static::assertTrue($table->hasFinder('query'));
@@ -282,5 +206,93 @@ class SearchableBehaviorTest extends TestCase
             ->toArray();
 
         static::assertEquals($expected, $result);
+    }
+
+    /**
+     * Test that deprecated conf works yet.
+     *
+     * @return void
+     * @covers ::findQuery()
+     * @covers ::getAdapter()
+     * @covers ::getSearchRegistry()
+     * @covers ::fitSimpleAdapterConf()
+     */
+    public function testFitSimpleSearchWithDeprecatedConf(): void
+    {
+        $options = ['string' => 'koal'];
+
+        $table = $this->fetchTable('FakeMammals');
+        $table->addBehavior('BEdita/Core.Searchable'); // search on all fields
+        $result = $table
+            ->find('query', $options)
+            ->toArray();
+
+        static::assertCount(1, $result);
+        static::assertEquals('koala', $result[0]->name);
+
+        $table->removeBehavior('Searchable');
+        $table->addBehavior('BEdita/Core.Searchable', [ // search on `subclass`
+            'fields' => [
+                'subclass' => 1,
+            ],
+        ]);
+
+        $result = $table
+            ->find('query', $options)
+            ->toArray();
+
+        static::assertCount(0, $result);
+    }
+
+    /**
+     * Test afterSave() and afterDelete()
+     *
+     * @return void
+     * @covers ::afterSave()
+     * @covers ::afterDelete()
+     */
+    public function testAfterSaveDelete(): void
+    {
+        $adapter = new class extends BaseAdapter {
+            public $afterDeleteCount = 0;
+            public $afterSaveCount = 0;
+
+            public function search(Query $query, string $text, array $options = []): Query
+            {
+                return $query;
+            }
+
+            public function indexResource(EntityInterface $entity, string $operation): void
+            {
+                if ($operation === 'edit') {
+                    $this->afterSaveCount++;
+                }
+
+                if ($operation === 'delete') {
+                    $this->afterDeleteCount++;
+                }
+            }
+        };
+
+        $backupConf = Configure::read('Search');
+
+        Configure::write('Search.adapters.default', [
+            'className' => $adapter,
+        ]);
+
+        $table = $this->fetchTable('FakeMammals');
+        $table->addBehavior('BEdita/Core.Searchable');
+        $entity = $table->get(2);
+
+        static::assertEquals(0, $adapter->afterSaveCount);
+        $entity->setDirty('name');
+        $table->saveOrFail($entity);
+        static::assertEquals(1, $adapter->afterSaveCount);
+
+        static::assertEquals(0, $adapter->afterDeleteCount);
+        $table->deleteOrFail($entity);
+        static::assertEquals(1, $adapter->afterDeleteCount);
+
+        Configure::write('Search', $backupConf);
     }
 }

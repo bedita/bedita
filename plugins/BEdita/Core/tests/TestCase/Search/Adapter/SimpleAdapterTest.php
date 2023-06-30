@@ -15,10 +15,11 @@ declare(strict_types=1);
 namespace BEdita\Core\Test\TestCase\Search\Adapter;
 
 use BEdita\Core\Exception\BadFilterException;
-use BEdita\Core\ORM\Inheritance\Table;
+use BEdita\Core\ORM\Inheritance\Table as InheritanceTable;
 use BEdita\Core\Search\Adapter\SimpleAdapter;
 use Cake\Database\Driver\Postgres;
 use Cake\Datasource\ConnectionManager;
+use Cake\ORM\Table;
 use Cake\TestSuite\TestCase;
 
 /**
@@ -51,10 +52,10 @@ class SimpleAdapterTest extends TestCase
         parent::setUp();
 
         $this->adapter = new SimpleAdapter();
-        $this->fetchTable('FakeMammals', ['className' => Table::class])
+        $this->fetchTable('FakeMammals', ['className' => InheritanceTable::class])
             ->setDisplayField('name')
             ->extensionOf('FakeAnimals');
-        $this->fetchTable('FakeFelines', ['className' => Table::class])
+        $this->fetchTable('FakeFelines', ['className' => InheritanceTable::class])
             ->setDisplayField('name')
             ->extensionOf('FakeMammals');
     }
@@ -67,6 +68,79 @@ class SimpleAdapterTest extends TestCase
         parent::tearDown();
 
         $this->adapter = null;
+    }
+
+    /**
+     * Data provider for `testGetFields` test case.
+     *
+     * @return array
+     */
+    public function getFieldsProvider()
+    {
+        return [
+            'default' => [
+                [
+                    'name',
+                ],
+            ],
+            'inherited fields with custom priorities' => [
+                [
+                    'name',
+                    'subclass',
+                ],
+                [
+                    'fields' => [
+                        '*',
+                        'subclass',
+                    ],
+                ],
+                'FakeMammals',
+            ],
+            'excluded fields' => [
+                [
+                    'subclass',
+                    'family',
+                ],
+                [
+                    'fields' => [
+                        'subclass',
+                        'family',
+                    ],
+                ],
+                'FakeFelines',
+            ],
+        ];
+    }
+
+    /**
+     * Test listing all searchable fields.
+     *
+     * @param array $expected Expected result.
+     * @param array $config Behavior configuration.
+     * @param string $table Table.
+     * @return void
+     * @dataProvider getFieldsProvider()
+     * @covers ::getAllFields()
+     * @covers ::getFields()
+     */
+    public function testGetFields(array $expected, array $config = [], $table = 'FakeAnimals')
+    {
+        $table = $this->fetchTable($table);
+
+        $fakeAdapter = new class extends SimpleAdapter
+        {
+            public function fields(Table $table)
+            {
+                return $this->getFields($table);
+            }
+        };
+
+        $fakeAdapter->setConfig($config, null, false); // override conf.
+        $fields = $fakeAdapter->fields($table);
+        sort($expected);
+        sort($fields);
+
+        static::assertEquals($expected, $fields);
     }
 
     /**
@@ -95,8 +169,8 @@ class SimpleAdapterTest extends TestCase
                 [],
                 'FakeMammals',
                 [
-                    'name' => 1,
-                    'subclass' => 1,
+                    'name',
+                    'subclass',
                 ],
             ],
             'short words' => [
@@ -198,12 +272,14 @@ class SimpleAdapterTest extends TestCase
         $table = $this->fetchTable($tableName);
         $query = $table->find();
 
-        $fields += ['name' => 1];
+        $fields = array_unique(array_merge($fields, ['name']));
 
         $config = [
             'minLength' => 3,
             'maxWords' => 10,
         ] + compact('fields');
+
+        $this->adapter->setConfig($config, null, false);
 
         $result = $this->adapter
             ->search($query, $text, $options, $config)
