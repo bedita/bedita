@@ -36,7 +36,7 @@ trait SimpleSearchTrait
      * @param \Cake\ORM\Table|null $refTable The reference table
      * @return void
      */
-    protected function setupSimpleSearch(array $config, ?Table $refTable = null): void
+    public function setupSimpleSearch(array $config, ?Table $refTable = null): void
     {
         $refTable ??= $this;
         $this->getEventManager()->on(
