@@ -17,7 +17,6 @@ use BEdita\Core\Model\Action\AddRelatedObjectsAction;
 use BEdita\Core\Model\Action\RemoveRelatedObjectsAction;
 use BEdita\Core\Model\Action\SetRelatedObjectsAction;
 use BEdita\Core\Model\Entity\ObjectEntity;
-use BEdita\Core\Search\SimpleSearchTrait;
 use Cake\ORM\Behavior;
 
 /**
