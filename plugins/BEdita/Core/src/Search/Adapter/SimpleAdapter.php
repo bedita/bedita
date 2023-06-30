@@ -80,10 +80,10 @@ class SimpleAdapter extends BaseAdapter
         $fields = (array)$this->getConfig('fields');
         $allFields = $this->getAllFields($table);
         if (in_array('*', $this->getConfig('fields'))) {
-            return $allFields;
+            return array_values($allFields);
         }
 
-        return array_intersect($fields, $allFields);
+        return array_values(array_intersect($fields, $allFields));
     }
 
     /**
@@ -162,7 +162,7 @@ class SimpleAdapter extends BaseAdapter
         $fields = [];
         /** @var \Cake\ORM\Table $table */
         $table = $query->getRepository();
-        foreach ($this->getConfig('fields') as $field) {
+        foreach ((array)$this->getFields($table) as $field) {
             $fields[] = $query->func()->coalesce([
                 $table->aliasField($field) => 'identifier',
                 '',

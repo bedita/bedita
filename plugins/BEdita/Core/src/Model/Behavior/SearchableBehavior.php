@@ -176,7 +176,7 @@ class SearchableBehavior extends Behavior
                 $conf = array_keys($conf);
             }
 
-            $this->setConfig($key, $conf, false);
+            $adapter->setConfig($key, $conf, false);
         }
     }
 }
