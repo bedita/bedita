@@ -17,6 +17,7 @@ use BEdita\Core\Model\Action\AddRelatedObjectsAction;
 use BEdita\Core\Model\Action\RemoveRelatedObjectsAction;
 use BEdita\Core\Model\Action\SetRelatedObjectsAction;
 use BEdita\Core\Model\Entity\ObjectEntity;
+use BEdita\Core\Search\SimpleSearchTrait;
 use Cake\ORM\Behavior;
 
 /**
@@ -26,6 +27,8 @@ use Cake\ORM\Behavior;
  */
 class ObjectModelBehavior extends Behavior
 {
+    use SimpleSearchTrait;
+
     /**
      * {@inheritDoc}
      *
@@ -46,7 +49,7 @@ class ObjectModelBehavior extends Behavior
         $table->addBehavior('BEdita/Core.Searchable');
         $table->addBehavior('BEdita/Core.Status');
 
-        $table->setupSimpleSearch(['fields' => ['title', 'description', 'body']]);
+        $this->setupSimpleSearch(['fields' => ['title', 'description', 'body']], $table);
     }
 
     /**
