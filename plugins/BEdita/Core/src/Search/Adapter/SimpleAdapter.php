@@ -15,10 +15,12 @@ declare(strict_types=1);
 namespace BEdita\Core\Search\Adapter;
 
 use BEdita\Core\Exception\BadFilterException;
+use BEdita\Core\ORM\Inheritance\Table as InheritanceTable;
 use BEdita\Core\Search\BaseAdapter;
 use Cake\Database\Expression\QueryExpression;
 use Cake\Datasource\EntityInterface;
 use Cake\ORM\Query;
+use Cake\ORM\Table;
 use Cake\Utility\Hash;
 use Cake\Validation\Validator;
 
@@ -31,22 +33,75 @@ use Cake\Validation\Validator;
 class SimpleAdapter extends BaseAdapter
 {
     /**
+     * @inheritDoc
+     */
+    protected $_defaultConfig = [
+        'minLength' => 3,
+        'maxWords' => 10,
+        'columnTypes' => [
+            'string',
+            'text',
+        ],
+        'fields' => ['*'],
+    ];
+
+    /**
+     * Get all fields whose column type is amongst those allowed in `columnTypes` configuration key.
+     *
+     * @param \Cake\ORM\Table $table Table object.
+     * @return string[]
+     */
+    protected function getAllFields(Table $table)
+    {
+        $columnTypes = $this->getConfig('columnTypes');
+        $fields = array_filter( // Filter fields that are of a searchable type.
+            $table->getSchema()->columns(),
+            function ($column) use ($columnTypes, $table) {
+                return in_array($table->getSchema()->getColumnType($column), $columnTypes);
+            }
+        );
+
+        if ($table instanceof InheritanceTable && $table->inheritedTable() !== null) {
+            // If table inherits from another table, merge parent table's fields.
+            $fields = array_merge($fields, $this->getAllFields($table->inheritedTable()));
+        }
+
+        return $fields;
+    }
+
+    /**
+     * Get searchable fields.
+     *
+     * @param \Cake\ORM\Table $table The table
+     * @return array
+     */
+    protected function getFields(Table $table)
+    {
+        $fields = (array)$this->getConfig('fields');
+        $allFields = $this->getAllFields($table);
+        if (in_array('*', $this->getConfig('fields'))) {
+            return $allFields;
+        }
+
+        return array_intersect($fields, $allFields);
+    }
+
+    /**
      * Get validator.
      *
-     * @param array $config Search configuration
      * @return \Cake\Validation\Validator
      */
-    protected function getValidator(array $config = []): Validator
+    protected function getValidator(): Validator
     {
         $validator = new Validator();
 
         return $validator
             ->isArray('words')
             ->add('words', 'checkWords', [
-                'rule' => function ($value) use ($config) {
+                'rule' => function ($value) {
                     $value = (array)$value;
-                    $minLength = Hash::get($config, 'minLength');
-                    $maxWords = Hash::get($config, 'maxWords');
+                    $minLength = $this->getConfig('minLength');
+                    $maxWords = $this->getConfig('maxWords');
                     if (count($value) === 0) {
                         return __d('bedita', 'query strings must be at least {0} characters long', $minLength);
                     }
@@ -65,12 +120,11 @@ class SimpleAdapter extends BaseAdapter
      *
      * @param string $text The text to search
      * @param array $options The search options
-     * @param array $config Search configuration
      * @return array
      */
-    protected function prepareText(string $text, array $options = [], array $config = []): array
+    protected function prepareText(string $text, array $options = []): array
     {
-        $minLength = Hash::get($config, 'minLength');
+        $minLength = $this->getConfig('minLength');
         $words = [$text];
         if (filter_var(Hash::get($options, 'exact'), FILTER_VALIDATE_BOOLEAN) !== true) {
             $words = preg_split('/\W+/', $text); // Split words.
@@ -93,10 +147,10 @@ class SimpleAdapter extends BaseAdapter
     /**
      * @inheritDoc
      */
-    public function search(Query $query, string $text, array $options = [], array $config = []): Query
+    public function search(Query $query, string $text, array $options = []): Query
     {
-        $words = $this->prepareText($text, $options, $config);
-        $errors = $this->getValidator($config)->validate(compact('words'));
+        $words = $this->prepareText($text, $options);
+        $errors = $this->getValidator()->validate(compact('words'));
         if (!empty($errors)) {
             throw new BadFilterException([
                 'title' => __d('bedita', 'Invalid data'),
@@ -104,13 +158,11 @@ class SimpleAdapter extends BaseAdapter
             ]);
         }
 
-        $tableFields = (array)Hash::get($config, 'fields');
-
         // Concat all fields into a single string.
         $fields = [];
         /** @var \Cake\ORM\Table $table */
         $table = $query->getRepository();
-        foreach (array_keys($tableFields) as $field) {
+        foreach ($this->getConfig('fields') as $field) {
             $fields[] = $query->func()->coalesce([
                 $table->aliasField($field) => 'identifier',
                 '',
