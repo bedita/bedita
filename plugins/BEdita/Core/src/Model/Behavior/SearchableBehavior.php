@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 /**
  * BEdita, API-first content management framework
- * Copyright 2017 ChannelWeb Srl, Chialab Srl
+ * Copyright 2023 ChannelWeb Srl, Chialab Srl
  *
  * This file is part of BEdita: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published
@@ -12,11 +12,10 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Model\Behavior;
 
 use BEdita\Core\Exception\BadFilterException;
-use BEdita\Core\ORM\Inheritance\Table as InheritanceTable;
+use BEdita\Core\Search\Adapter\SimpleAdapter;
 use BEdita\Core\Search\BaseAdapter;
 use BEdita\Core\Search\SearchRegistry;
 use Cake\Core\Configure;
@@ -24,7 +23,6 @@ use Cake\Datasource\EntityInterface;
 use Cake\Event\EventInterface;
 use Cake\ORM\Behavior;
 use Cake\ORM\Query;
-use Cake\ORM\Table;
 
 /**
  * Behavior to add text-based search to model.
@@ -34,44 +32,28 @@ use Cake\ORM\Table;
 class SearchableBehavior extends Behavior
 {
     /**
-     * @inheritDoc
+     * {@inheritDoc}
+     *
+     * Deprecated configuration keys:
+     * - 'minLength' => 3,
+     * - 'maxWords' => 10,
+     * - 'columnTypes' => ['string', 'text'],
+     * - 'fields' => ['*' => 1]
+     *
+     * if present they are used in `SimpleAdapter` for backward compatibility.
      */
     protected $_defaultConfig = [
-        'minLength' => 3,
-        'maxWords' => 10,
-        'columnTypes' => [
-            'string',
-            'text',
-        ],
-        'fields' => [
-            '*' => 1,
-        ],
         'implementedFinders' => [
             'query' => 'findQuery',
         ],
     ];
 
     /**
-     * The Search adapters registry.
+     * The Search adapters registry instance.
      *
      * @var \BEdita\Core\Search\SearchRegistry
      */
-    protected static $searchRegistry = null;
-
-    /**
-     * {@inheritDoc}
-     *
-     * If fields or column types are specified - do *not* merge them with existing config,
-     * overwrite the fields to search on.
-     */
-    public function initialize(array $config): void
-    {
-        foreach (['columnTypes', 'fields'] as $key) {
-            if (isset($config[$key])) {
-                $this->setConfig($key, $config[$key], false);
-            }
-        }
-    }
+    protected $searchRegistry = null;
 
     /**
      * Update search adapters index when a resource is saved.
@@ -106,13 +88,13 @@ class SearchableBehavior extends Behavior
      *
      * @return \BEdita\Core\Search\SearchRegistry
      */
-    protected static function getSearchRegistry(): SearchRegistry
+    protected function getSearchRegistry(): SearchRegistry
     {
-        if (!isset(static::$searchRegistry)) {
-            static::$searchRegistry = new SearchRegistry();
+        if (!isset($this->searchRegistry)) {
+            $this->searchRegistry = new SearchRegistry();
         }
 
-        return static::$searchRegistry;
+        return $this->searchRegistry;
     }
 
     /**
@@ -123,62 +105,20 @@ class SearchableBehavior extends Behavior
      */
     protected function getAdapter($name): BaseAdapter
     {
-        $searchRegistry = static::getSearchRegistry();
+        $searchRegistry = $this->getSearchRegistry();
         if ($searchRegistry->has($name)) {
             return $searchRegistry->get($name);
         }
 
-        $conf = (array)Configure::read(sprintf('Search.adapters.%s', $name));
+        $adapter = $searchRegistry->load($name, (array)Configure::read(sprintf('Search.adapters.%s', $name)));
+        $this->table()->dispatchEvent('SearchAdapter.initialize', [$this->table()], $adapter);
 
-        return $searchRegistry->load($name, $conf);
-    }
-
-    /**
-     * Get all fields whose column type is amongst those allowed in `columnTypes` configuration key.
-     *
-     * @param \Cake\ORM\Table $table Table object.
-     * @return string[]
-     */
-    protected function getAllFields(Table $table)
-    {
-        $columnTypes = $this->getConfig('columnTypes');
-        $fields = array_filter( // Filter fields that are of a searchable type.
-            $table->getSchema()->columns(),
-            function ($column) use ($columnTypes, $table) {
-                return in_array($table->getSchema()->getColumnType($column), $columnTypes);
-            }
-        );
-
-        if ($table instanceof InheritanceTable && $table->inheritedTable() !== null) {
-            // If table inherits from another table, merge parent table's fields.
-            $fields = array_merge($fields, $this->getAllFields($table->inheritedTable()));
+        // backward compatibility
+        if ($adapter instanceof SimpleAdapter) {
+            $this->fitSimpleAdapterConf($adapter);
         }
 
-        return $fields;
-    }
-
-    /**
-     * Get searchable fields and their priorities.
-     *
-     * @return array Array where keys are columns, and values are priorities.
-     */
-    public function getFields()
-    {
-        $wildCard = $this->getConfig('fields.*');
-
-        $fields = (array)$this->getConfig('fields');
-        $allFields = $this->getAllFields($this->table());
-
-        $fields = array_intersect_key($fields, array_flip($allFields));
-        if ($wildCard !== null) {
-            // If wildcard `*` is present, all other fields have default priority.
-            $fields += array_diff_key(
-                array_fill_keys($allFields, $wildCard),
-                $fields
-            );
-        }
-
-        return $fields;
+        return $adapter;
     }
 
     /**
@@ -205,13 +145,38 @@ class SearchableBehavior extends Behavior
 
         unset($options[0], $options['string']);
 
-        $config = [
-            'minLength' => $this->getConfig('minLength'),
-            'maxWords' => $this->getConfig('maxWords'),
-            'fields' => $this->getFields(),
-        ];
-
         return $this->getAdapter(Configure::read('Search.use', 'default'))
-            ->search($query, $text, $options, $config);
+            ->search($query, $text, $options);
+    }
+
+    /**
+     * Fit configuration of `SimpleAdapter` to maintain backward compatibility with 5.x.
+     *
+     * @param \BEdita\Core\Search\Adapter\SimpleAdapter $adapter The adapter.
+     * @return void
+     */
+    protected function fitSimpleAdapterConf(SimpleAdapter $adapter): void
+    {
+        $config = array_intersect_key(
+            $this->getConfig(),
+            array_flip(['minLength', 'maxWords'])
+        );
+        $adapter->setConfig($config);
+
+        // Config keys that must be overridden
+        foreach (['columnTypes', 'fields'] as $key) {
+            $conf = $this->getConfig($key);
+            if (!is_array($conf)) {
+                continue;
+            }
+
+            // `fields` key in SimpleAdapter is changed.
+            // It is now a list of fields without unused priority.
+            if ($key === 'fields') {
+                $conf = array_keys($conf);
+            }
+
+            $this->setConfig($key, $conf, false);
+        }
     }
 }
