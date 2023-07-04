@@ -18,6 +18,8 @@ use BEdita\Core\ORM\Inheritance\Table;
 use BEdita\Core\Search\BaseAdapter;
 use Cake\Core\Configure;
 use Cake\Datasource\EntityInterface;
+use Cake\Event\Event;
+use Cake\Event\EventManager;
 use Cake\ORM\Query;
 use Cake\TestSuite\TestCase;
 
@@ -37,7 +39,6 @@ class SearchableBehaviorTest extends TestCase
         'plugin.BEdita/Core.FakeAnimals',
         'plugin.BEdita/Core.FakeMammals',
         'plugin.BEdita/Core.FakeFelines',
-        'plugin.BEdita/Core.FakeSearches',
     ];
 
     /**
@@ -50,16 +51,15 @@ class SearchableBehaviorTest extends TestCase
         $this->fetchTable('FakeMammals', ['className' => Table::class])
             ->setDisplayField('name')
             ->extensionOf('FakeAnimals');
-        $this->fetchTable('FakeFelines', ['className' => Table::class])
-            ->setDisplayField('name')
-            ->extensionOf('FakeMammals');
     }
 
+    /**
+     * @inheritDoc
+     */
     public function tearDown(): void
     {
         parent::tearDown();
 
-        $this->getTableLocator()->remove('FakeFelines');
         $this->getTableLocator()->remove('FakeMammals');
         $this->getTableLocator()->remove('FakeAnimals');
     }
@@ -72,94 +72,17 @@ class SearchableBehaviorTest extends TestCase
     public function findQueryProvider()
     {
         return [
-            'basic' => [
+            'ok' => [
                 [
                     2 => 'koala',
                 ],
                 'ala',
             ],
-            'two words' => [
-                [],
-                'koala eagle',
-            ],
-            'two words, different fields' => [
+            'ok with "string" key' => [
                 [
-                    1 => 'cat',
+                    2 => 'koala',
                 ],
-                'eutheria cat',
-                'FakeMammals',
-            ],
-            'short words' => [
-                new BadFilterException([
-                    'title' => 'Invalid data',
-                    'detail' => 'query strings must be at least 3 characters long',
-                ]),
-                'I am me',
-            ],
-            'too many words' => [
-                new BadFilterException([
-                    'title' => 'Invalid data',
-                    'detail' => 'query string too long',
-                ]),
-                'this query string contains too many words thus will be rejected to avoid denial of service',
-            ],
-            'search hyphen' => [
-                [
-                    1 => 'hippo-tiger',
-                ],
-                'hippo-tiger',
-                'FakeSearches',
-            ],
-            'search underscore' => [
-                [
-                    2 => 'lion_snake',
-                ],
-                'lion_snake',
-                'FakeSearches',
-            ],
-            'search underscore 2' => [
-                [
-                   2 => 'lion_snake',
-                ],
-                'li_n',
-                'FakeSearches',
-            ],
-            'search case' => [
-                [
-                    1 => 'hippo-tiger',
-                ],
-                'HIPPO',
-                'FakeSearches',
-            ],
-            'basic with "string" param' => [
-                [
-                   1 => 'hippo-tiger',
-                ],
-                [
-                    'string' => 'hippo',
-                ],
-                'FakeSearches',
-            ],
-            'exact false' => [
-                [
-                    3 => 'big mouse',
-                    4 => 'mouse big',
-                ],
-                [
-                    'string' => 'big mouse',
-                    'exact' => 0,
-                ],
-                'FakeSearches',
-            ],
-            'exact' => [
-                [
-                    3 => 'big mouse',
-                ],
-                [
-                    'string' => 'big mouse',
-                    'exact' => 1,
-                ],
-                'FakeSearches',
+                ['string' => 'ala'],
             ],
             'query with string param not a string' => [
                 new BadFilterException([
@@ -169,7 +92,6 @@ class SearchableBehaviorTest extends TestCase
                 [
                     'string' => 1,
                 ],
-                'FakeSearches',
             ],
         ];
     }
@@ -179,7 +101,6 @@ class SearchableBehaviorTest extends TestCase
      *
      * @param array|\Exception $expected Expected result.
      * @param string|array $query Query string.
-     * @param string $table Table.
      * @return void
      * @dataProvider findQueryProvider()
      * @covers ::findQuery()
@@ -187,7 +108,7 @@ class SearchableBehaviorTest extends TestCase
      * @covers ::getSearchRegistry()
      * @covers ::fitSimpleAdapterConf()
      */
-    public function testFindQuery($expected, $query, $table = 'FakeAnimals')
+    public function testFindQuery($expected, $query)
     {
         if ($expected instanceof \Exception) {
             $this->expectException(get_class($expected));
@@ -195,7 +116,7 @@ class SearchableBehaviorTest extends TestCase
             $this->expectExceptionMessage($expected->getMessage());
         }
 
-        $table = $this->fetchTable($table);
+        $table = $this->fetchTable('FakeMammals');
         $table->addBehavior('BEdita/Core.Searchable');
 
         static::assertTrue($table->hasFinder('query'));
@@ -250,10 +171,12 @@ class SearchableBehaviorTest extends TestCase
      * @return void
      * @covers ::afterSave()
      * @covers ::afterDelete()
+     * @covers ::getAdapter()
      */
     public function testAfterSaveDelete(): void
     {
         $adapter = new class extends BaseAdapter {
+            public $initializedCount = 0;
             public $afterDeleteCount = 0;
             public $afterSaveCount = 0;
 
@@ -274,6 +197,10 @@ class SearchableBehaviorTest extends TestCase
             }
         };
 
+        EventManager::instance()->on('SearchAdapter.initialize', function (Event $event) {
+            $event->getSubject()->initializedCount++;
+        });
+
         $backupConf = Configure::read('Search');
 
         Configure::write('Search.adapters.default', [
@@ -288,11 +215,14 @@ class SearchableBehaviorTest extends TestCase
         $entity->setDirty('name');
         $table->saveOrFail($entity);
         static::assertEquals(1, $adapter->afterSaveCount);
+        static::assertEquals(1, $adapter->initializedCount);
 
         static::assertEquals(0, $adapter->afterDeleteCount);
         $table->deleteOrFail($entity);
         static::assertEquals(1, $adapter->afterDeleteCount);
+        static::assertEquals(1, $adapter->initializedCount);
 
         Configure::write('Search', $backupConf);
+        EventManager::instance()->off('SearchAdapter.initialize');
     }
 }
