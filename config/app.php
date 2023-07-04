@@ -489,7 +489,7 @@ return [
     /**
      * Search configuration.
      *
-     * - `use`: the search adapter to use on search
+     * - `use`: the search adapter to use in the search
      * - `adapters`: configured search adapters
      */
     'Search' => [
