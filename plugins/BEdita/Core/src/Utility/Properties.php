@@ -79,6 +79,8 @@ class Properties extends ResourcesBase
                 'property_type_name' => $p['property'],
                 'object_type_name' => $p['object'],
                 'description' => Hash::get($p, 'description'),
+                'is_nullable' => (bool)Hash::get($p, 'is_nullable', true),
+                'read_only' => (bool)Hash::get($p, 'read_only', false),
             ]);
 
             $Properties->saveOrFail($property, static::$defaults['save']);
@@ -138,6 +140,8 @@ class Properties extends ResourcesBase
                 ->firstOrFail();
             $property->set('property_type_name', $p['property']);
             $property->set('description', Hash::get($p, 'description'));
+            $property->set('is_nullable', (bool)Hash::get($p, 'is_nullable', true));
+            $property->set('read_only', (bool)Hash::get($p, 'read_only', false));
 
             $Properties->saveOrFail($property, static::$defaults['update']);
         }
