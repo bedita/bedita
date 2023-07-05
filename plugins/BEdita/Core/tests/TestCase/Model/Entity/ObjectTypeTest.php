@@ -1008,6 +1008,19 @@ class ObjectTypeTest extends TestCase
     }
 
     /**
+     * Test `readOnly` property in schema.
+     *
+     * @covers ::accessMode()
+     * @return void
+     */
+    public function testReadOnlyProp(): void
+    {
+        $objectType = $this->ObjectTypes->get('profiles');
+        $schema = $objectType->schema;
+        static::assertTrue(Hash::get($schema, 'properties.another_birthdate.readOnly'));
+    }
+
+    /**
      * Test getter for `schema` with an event listener which modifies the schema.
      *
      * @param mixed $expected Expected result.

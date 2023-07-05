@@ -520,7 +520,7 @@ class ObjectType extends Entity implements JsonApiSerializable, EventDispatcherI
      */
     protected function accessMode(Property $property, EntityInterface $entity): ?string
     {
-        if (!$entity->isAccessible($property->name)) {
+        if (!$entity->isAccessible($property->name) || $property->read_only) {
             return 'readOnly';
         } elseif (in_array($property->name, $entity->getHidden())) {
             return 'writeOnly';

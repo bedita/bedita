@@ -31,6 +31,7 @@ use Cake\Utility\Inflector;
  * @property string $description
  * @property bool $enabled
  * @property bool $is_nullable
+ * @property bool $read_only
  * @property bool $required
  * @property \Cake\I18n\Time $created
  * @property \Cake\I18n\Time $modified
