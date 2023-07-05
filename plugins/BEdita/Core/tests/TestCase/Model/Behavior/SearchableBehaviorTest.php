@@ -171,6 +171,7 @@ class SearchableBehaviorTest extends TestCase
      * @return void
      * @covers ::afterSave()
      * @covers ::afterDelete()
+     * @covers ::getSearchAdapters()
      * @covers ::getAdapter()
      */
     public function testAfterSaveDelete(): void

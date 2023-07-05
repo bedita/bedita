@@ -64,8 +64,8 @@ class SearchableBehavior extends Behavior
      */
     public function afterSave(EventInterface $event, EntityInterface $entity): void
     {
-        foreach (array_keys((array)Configure::read('Search.adapters')) as $name) {
-            $this->getAdapter($name)->indexResource($entity, 'edit');
+        foreach ($this->getSearchAdapters() as $adapter) {
+            $adapter->indexResource($entity, 'edit');
         }
     }
 
@@ -78,8 +78,21 @@ class SearchableBehavior extends Behavior
      */
     public function afterDelete(EventInterface $event, EntityInterface $entity): void
     {
+        foreach ($this->getSearchAdapters() as $adapter) {
+            $adapter->indexResource($entity, 'delete');
+        }
+    }
+
+    /**
+     * Get iterable of adapters.
+     * The keys are the adapter name and the values are the adapters instances.
+     *
+     * @return iterable<string, \BEdita\Core\Search\BaseAdapter>
+     */
+    public function getSearchAdapters(): iterable
+    {
         foreach (array_keys((array)Configure::read('Search.adapters')) as $name) {
-            $this->getAdapter($name)->indexResource($entity, 'delete');
+            yield (string)$name => $this->getAdapter((string)$name);
         }
     }
 
@@ -103,8 +116,9 @@ class SearchableBehavior extends Behavior
      * @param string $name The adapter name
      * @return \BEdita\Core\Search\BaseAdapter
      */
-    protected function getAdapter($name): BaseAdapter
+    protected function getAdapter(?string $name = null): BaseAdapter
     {
+        $name ??= 'default';
         $searchRegistry = $this->getSearchRegistry();
         if ($searchRegistry->has($name)) {
             return $searchRegistry->get($name);
@@ -145,7 +159,7 @@ class SearchableBehavior extends Behavior
 
         unset($options[0], $options['string']);
 
-        return $this->getAdapter(Configure::read('Search.use', 'default'))
+        return $this->getAdapter(Configure::read('Search.use'))
             ->search($query, $text, $options);
     }
 
@@ -173,6 +187,7 @@ class SearchableBehavior extends Behavior
             // `fields` key in SimpleAdapter is changed.
             // It is now a list of fields without unused priority.
             if ($key === 'fields') {
+                deprecationWarning('"fields" must be a list of fields. Unused priorities have been removed.');
                 $conf = array_keys($conf);
             }
 
