@@ -118,7 +118,7 @@ class SearchableBehavior extends Behavior
      */
     protected function getAdapter(?string $name = null): BaseAdapter
     {
-        $name ??= 'default';
+        $name ??= (string)Configure::read('Search.use', 'default');
         $searchRegistry = $this->getSearchRegistry();
         if ($searchRegistry->has($name)) {
             return $searchRegistry->get($name);
@@ -159,8 +159,7 @@ class SearchableBehavior extends Behavior
 
         unset($options[0], $options['string']);
 
-        return $this->getAdapter(Configure::read('Search.use'))
-            ->search($query, $text, $options);
+        return $this->getAdapter()->search($query, $text, $options);
     }
 
     /**
@@ -187,7 +186,7 @@ class SearchableBehavior extends Behavior
             // `fields` key in SimpleAdapter is changed.
             // It is now a list of fields without unused priority.
             if ($key === 'fields') {
-                deprecationWarning('"fields" must be a list of fields. Unused priorities have been removed.');
+                deprecationWarning('"fields" must be a list of strings. Unused priorities have been removed.');
                 $conf = array_keys($conf);
             }
 
