@@ -44,19 +44,19 @@ class MediaTable extends Table
             'prefix' => 'media-',
         ]);
 
-        $this->getBehavior('Searchable')->setConfig([
-            'fields' => [
-                'title' => 10,
-                'description' => 7,
-                'body' => 5,
-                'provider' => 5,
-                'name' => 8,
-            ],
-        ]);
-
         $this->hasMany('Streams', [
             'foreignKey' => 'object_id',
             'className' => 'BEdita/Core.Streams',
+        ]);
+
+        $this->setupSimpleSearch([
+            'fields' => [
+                'title',
+                'description',
+                'body',
+                'provider',
+                'name',
+            ],
         ]);
     }
 

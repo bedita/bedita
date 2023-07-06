@@ -52,10 +52,9 @@ abstract class BaseAdapter
      * @param \Cake\ORM\Query $query The query instance
      * @param string $text The text to look for
      * @param array $options Options for search
-     * @param array $config Search configuration
      * @return \Cake\ORM\Query
      */
-    abstract public function search(Query $query, string $text, array $options = [], array $config = []): Query;
+    abstract public function search(Query $query, string $text, array $options = []): Query;
 
     /**
      * Index a resource by `$operation`.

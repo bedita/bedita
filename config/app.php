@@ -485,4 +485,19 @@ return [
             ],
         ],
     ],
+
+    /**
+     * Search configuration.
+     *
+     * - `use`: the search adapter to use in the search
+     * - `adapters`: configured search adapters
+     */
+    'Search' => [
+        'use' => 'default',
+        'adapters' => [
+            'default' => [
+                'className' => 'BEdita/Core.Simple',
+            ],
+        ],
+    ],
 ];

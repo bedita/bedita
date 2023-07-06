@@ -15,7 +15,12 @@ namespace BEdita\Core\Test\TestCase\Model\Behavior;
 
 use BEdita\Core\Exception\BadFilterException;
 use BEdita\Core\ORM\Inheritance\Table;
-use Cake\ORM\TableRegistry;
+use BEdita\Core\Search\BaseAdapter;
+use Cake\Core\Configure;
+use Cake\Datasource\EntityInterface;
+use Cake\Event\Event;
+use Cake\Event\EventManager;
+use Cake\ORM\Query;
 use Cake\TestSuite\TestCase;
 
 /**
@@ -34,7 +39,6 @@ class SearchableBehaviorTest extends TestCase
         'plugin.BEdita/Core.FakeAnimals',
         'plugin.BEdita/Core.FakeMammals',
         'plugin.BEdita/Core.FakeFelines',
-        'plugin.BEdita/Core.FakeSearches',
     ];
 
     /**
@@ -44,103 +48,20 @@ class SearchableBehaviorTest extends TestCase
     {
         parent::setUp();
 
-        TableRegistry::getTableLocator()->get('FakeMammals', ['className' => Table::class])
+        $this->fetchTable('FakeMammals', ['className' => Table::class])
             ->setDisplayField('name')
             ->extensionOf('FakeAnimals');
-        TableRegistry::getTableLocator()->get('FakeFelines', ['className' => Table::class])
-            ->setDisplayField('name')
-            ->extensionOf('FakeMammals');
     }
 
     /**
-     * Test behavior initialization process.
-     *
-     * @return void
-     * @covers ::initialize()
+     * @inheritDoc
      */
-    public function testInitialize()
+    public function tearDown(): void
     {
-        $columnTypes = [
-            'integer',
-        ];
-        $fields = [
-            'my_field' => 17,
-        ];
+        parent::tearDown();
 
-        $table = TableRegistry::getTableLocator()->get('FakeAnimals');
-        $table->addBehavior('BEdita/Core.Searchable', compact('columnTypes', 'fields'));
-
-        /** @var \BEdita\Core\Model\Behavior\SearchableBehavior $behavior */
-        $behavior = $table->behaviors()->get('Searchable');
-
-        static::assertEquals($columnTypes, $behavior->getConfig('columnTypes'));
-        static::assertEquals($fields, $behavior->getConfig('fields'));
-    }
-
-    /**
-     * Data provider for `testGetFields` test case.
-     *
-     * @return array
-     */
-    public function getFieldsProvider()
-    {
-        return [
-            'default' => [
-                [
-                    'name' => 1,
-                ],
-            ],
-            'inherited fields with custom priorities' => [
-                [
-                    'name' => 1,
-                    'subclass' => 2,
-                ],
-                [
-                    'fields' => [
-                        '*' => 1,
-                        'subclass' => 2,
-                    ],
-                ],
-                'FakeMammals',
-            ],
-            'excluded fields' => [
-                [
-                    'subclass' => 2,
-                    'family' => 5,
-                ],
-                [
-                    'fields' => [
-                        'subclass' => 2,
-                        'family' => 5,
-                    ],
-                ],
-                'FakeFelines',
-            ],
-        ];
-    }
-
-    /**
-     * Test listing all searchable fields along with their priorities.
-     *
-     * @param array $expected Expected result.
-     * @param array $config Behavior configuration.
-     * @param string $table Table.
-     * @return void
-     * @dataProvider getFieldsProvider()
-     * @covers ::getAllFields()
-     * @covers ::getFields()
-     */
-    public function testGetFields(array $expected, array $config = [], $table = 'FakeAnimals')
-    {
-        $table = TableRegistry::getTableLocator()->get($table);
-        $table->addBehavior('BEdita/Core.Searchable', $config);
-
-        /** @var \BEdita\Core\Model\Behavior\SearchableBehavior $behavior */
-        $behavior = $table->behaviors()->get('Searchable');
-
-        $fields = $behavior->getFields();
-
-        static::assertEquals($expected, $fields);
+        $this->getTableLocator()->remove('FakeMammals');
+        $this->getTableLocator()->remove('FakeAnimals');
     }
 
     /**
@@ -151,94 +72,17 @@ class SearchableBehaviorTest extends TestCase
     public function findQueryProvider()
     {
         return [
-            'basic' => [
+            'ok' => [
                 [
                     2 => 'koala',
                 ],
                 'ala',
             ],
-            'two words' => [
-                [],
-                'koala eagle',
-            ],
-            'two words, different fields' => [
+            'ok with "string" key' => [
                 [
-                    1 => 'cat',
+                    2 => 'koala',
                 ],
-                'eutheria cat',
-                'FakeMammals',
-            ],
-            'short words' => [
-                new BadFilterException([
-                    'title' => 'Invalid data',
-                    'detail' => 'query strings must be at least 3 characters long',
-                ]),
-                'I am me',
-            ],
-            'too many words' => [
-                new BadFilterException([
-                    'title' => 'Invalid data',
-                    'detail' => 'query string too long',
-                ]),
-                'this query string contains too many words thus will be rejected to avoid denial of service',
-            ],
-            'search hyphen' => [
-                [
-                    1 => 'hippo-tiger',
-                ],
-                'hippo-tiger',
-                'FakeSearches',
-            ],
-            'search underscore' => [
-                [
-                    2 => 'lion_snake',
-                ],
-                'lion_snake',
-                'FakeSearches',
-            ],
-            'search underscore 2' => [
-                [
-                   2 => 'lion_snake',
-                ],
-                'li_n',
-                'FakeSearches',
-            ],
-            'search case' => [
-                [
-                    1 => 'hippo-tiger',
-                ],
-                'HIPPO',
-                'FakeSearches',
-            ],
-            'basic with "string" param' => [
-                [
-                   1 => 'hippo-tiger',
-                ],
-                [
-                    'string' => 'hippo',
-                ],
-                'FakeSearches',
-            ],
-            'exact false' => [
-                [
-                    3 => 'big mouse',
-                    4 => 'mouse big',
-                ],
-                [
-                    'string' => 'big mouse',
-                    'exact' => 0,
-                ],
-                'FakeSearches',
-            ],
-            'exact' => [
-                [
-                    3 => 'big mouse',
-                ],
-                [
-                    'string' => 'big mouse',
-                    'exact' => 1,
-                ],
-                'FakeSearches',
+                ['string' => 'ala'],
             ],
             'query with string param not a string' => [
                 new BadFilterException([
@@ -248,7 +92,6 @@ class SearchableBehaviorTest extends TestCase
                 [
                     'string' => 1,
                 ],
-                'FakeSearches',
             ],
         ];
     }
@@ -258,12 +101,14 @@ class SearchableBehaviorTest extends TestCase
      *
      * @param array|\Exception $expected Expected result.
      * @param string|array $query Query string.
-     * @param string $table Table.
      * @return void
      * @dataProvider findQueryProvider()
      * @covers ::findQuery()
+     * @covers ::getAdapter()
+     * @covers ::getSearchRegistry()
+     * @covers ::fitSimpleAdapterConf()
      */
-    public function testFindQuery($expected, $query, $table = 'FakeAnimals')
+    public function testFindQuery($expected, $query)
     {
         if ($expected instanceof \Exception) {
             $this->expectException(get_class($expected));
@@ -271,7 +116,7 @@ class SearchableBehaviorTest extends TestCase
             $this->expectExceptionMessage($expected->getMessage());
         }
 
-        $table = TableRegistry::getTableLocator()->get($table);
+        $table = $this->fetchTable('FakeMammals');
         $table->addBehavior('BEdita/Core.Searchable');
 
         static::assertTrue($table->hasFinder('query'));
@@ -282,5 +127,103 @@ class SearchableBehaviorTest extends TestCase
             ->toArray();
 
         static::assertEquals($expected, $result);
+    }
+
+    /**
+     * Test that deprecated conf works yet.
+     *
+     * @return void
+     * @covers ::findQuery()
+     * @covers ::getAdapter()
+     * @covers ::getSearchRegistry()
+     * @covers ::fitSimpleAdapterConf()
+     */
+    public function testFitSimpleSearchWithDeprecatedConf(): void
+    {
+        $options = ['string' => 'koal'];
+
+        $table = $this->fetchTable('FakeMammals');
+        $table->addBehavior('BEdita/Core.Searchable'); // search on all fields
+        $result = $table
+            ->find('query', $options)
+            ->toArray();
+
+        static::assertCount(1, $result);
+        static::assertEquals('koala', $result[0]->name);
+
+        $table->removeBehavior('Searchable');
+        $table->addBehavior('BEdita/Core.Searchable', [ // search on `subclass`
+            'fields' => [
+                'subclass' => 1,
+            ],
+        ]);
+
+        $result = $table
+            ->find('query', $options)
+            ->toArray();
+
+        static::assertCount(0, $result);
+    }
+
+    /**
+     * Test afterSave() and afterDelete()
+     *
+     * @return void
+     * @covers ::afterSave()
+     * @covers ::afterDelete()
+     * @covers ::getSearchAdapters()
+     * @covers ::getAdapter()
+     */
+    public function testAfterSaveDelete(): void
+    {
+        $adapter = new class extends BaseAdapter {
+            public $initializedCount = 0;
+            public $afterDeleteCount = 0;
+            public $afterSaveCount = 0;
+
+            public function search(Query $query, string $text, array $options = []): Query
+            {
+                return $query;
+            }
+
+            public function indexResource(EntityInterface $entity, string $operation): void
+            {
+                if ($operation === 'edit') {
+                    $this->afterSaveCount++;
+                }
+
+                if ($operation === 'delete') {
+                    $this->afterDeleteCount++;
+                }
+            }
+        };
+
+        EventManager::instance()->on('SearchAdapter.initialize', function (Event $event) {
+            $event->getSubject()->initializedCount++;
+        });
+
+        $backupConf = Configure::read('Search');
+
+        Configure::write('Search.adapters.default', [
+            'className' => $adapter,
+        ]);
+
+        $table = $this->fetchTable('FakeMammals');
+        $table->addBehavior('BEdita/Core.Searchable');
+        $entity = $table->get(2);
+
+        static::assertEquals(0, $adapter->afterSaveCount);
+        $entity->setDirty('name');
+        $table->saveOrFail($entity);
+        static::assertEquals(1, $adapter->afterSaveCount);
+        static::assertEquals(1, $adapter->initializedCount);
+
+        static::assertEquals(0, $adapter->afterDeleteCount);
+        $table->deleteOrFail($entity);
+        static::assertEquals(1, $adapter->afterDeleteCount);
+        static::assertEquals(1, $adapter->initializedCount);
+
+        Configure::write('Search', $backupConf);
+        EventManager::instance()->off('SearchAdapter.initialize');
     }
 }

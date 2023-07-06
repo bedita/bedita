@@ -58,20 +58,20 @@ class ProfilesTable extends Table
             'prefix' => 'profile-',
         ]);
 
-        $this->getBehavior('Searchable')->setConfig([
+        $this->setupSimpleSearch([
             'fields' => [
-                'title' => 10,
-                'description' => 7,
-                'body' => 5,
-                'name' => 10,
-                'surname' => 10,
-                'email' => 7,
-                'company_name' => 10,
-                'street_address' => 1,
-                'city' => 2,
-                'country' => 2,
-                'state_name' => 2,
-                'pseudonym' => 10,
+                'title',
+                'description',
+                'body',
+                'name',
+                'surname',
+                'email',
+                'company_name',
+                'street_address',
+                'city',
+                'country',
+                'state_name',
+                'pseudonym',
             ],
         ]);
     }

@@ -91,24 +91,24 @@ class UsersTable extends Table
             'prefix' => 'user-',
         ]);
 
-        $this->getBehavior('Searchable')->setConfig([
-            'fields' => [
-                'username' => 10,
-                'title' => 10,
-                'name' => 10,
-                'surname' => 10,
-                'email' => 7,
-                'description' => 7,
-                'body' => 5,
-            ],
-        ]);
-
         $this->hasMany('ExternalAuth', [
             'foreignKey' => 'user_id',
         ]);
 
         $this->belongsToMany('Roles', [
             'through' => 'RolesUsers',
+        ]);
+
+        $this->setupSimpleSearch([
+            'fields' => [
+                'username',
+                'title',
+                'name',
+                'surname',
+                'email',
+                'description',
+                'body',
+            ],
         ]);
 
         EventManager::instance()->on('Authentication.afterIdentify', [$this, 'login']);

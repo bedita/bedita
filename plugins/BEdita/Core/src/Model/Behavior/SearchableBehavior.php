@@ -1,7 +1,9 @@
 <?php
+declare(strict_types=1);
+
 /**
  * BEdita, API-first content management framework
- * Copyright 2017 ChannelWeb Srl, Chialab Srl
+ * Copyright 2023 ChannelWeb Srl, Chialab Srl
  *
  * This file is part of BEdita: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published
@@ -10,16 +12,17 @@
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Model\Behavior;
 
 use BEdita\Core\Exception\BadFilterException;
-use BEdita\Core\ORM\Inheritance\Table as InheritanceTable;
-use Cake\Database\Expression\FunctionExpression;
-use Cake\Database\Expression\QueryExpression;
+use BEdita\Core\Search\Adapter\SimpleAdapter;
+use BEdita\Core\Search\BaseAdapter;
+use BEdita\Core\Search\SearchRegistry;
+use Cake\Core\Configure;
+use Cake\Datasource\EntityInterface;
+use Cake\Event\EventInterface;
 use Cake\ORM\Behavior;
 use Cake\ORM\Query;
-use Cake\ORM\Table;
 
 /**
  * Behavior to add text-based search to model.
@@ -29,84 +32,107 @@ use Cake\ORM\Table;
 class SearchableBehavior extends Behavior
 {
     /**
-     * @inheritDoc
+     * {@inheritDoc}
+     *
+     * Deprecated configuration keys:
+     * - 'minLength' => 3,
+     * - 'maxWords' => 10,
+     * - 'columnTypes' => ['string', 'text'],
+     * - 'fields' => ['*' => 1]
+     *
+     * if present they are used in `SimpleAdapter` for backward compatibility.
      */
     protected $_defaultConfig = [
-        'minLength' => 3,
-        'maxWords' => 10,
-        'columnTypes' => [
-            'string',
-            'text',
-        ],
-        'fields' => [
-            '*' => 1,
-        ],
         'implementedFinders' => [
             'query' => 'findQuery',
         ],
     ];
 
     /**
-     * {@inheritDoc}
+     * The Search adapters registry instance.
      *
-     * If fields or column types are specified - do *not* merge them with existing config,
-     * overwrite the fields to search on.
+     * @var \BEdita\Core\Search\SearchRegistry
      */
-    public function initialize(array $config): void
+    protected $searchRegistry = null;
+
+    /**
+     * Update search adapters index when a resource is saved.
+     *
+     * @param \Cake\Event\EventInterface $event The event
+     * @param \Cake\Datasource\EntityInterface $entity The resource entity
+     * @return void
+     */
+    public function afterSave(EventInterface $event, EntityInterface $entity): void
     {
-        foreach (['columnTypes', 'fields'] as $key) {
-            if (isset($config[$key])) {
-                $this->setConfig($key, $config[$key], false);
-            }
+        foreach ($this->getSearchAdapters() as $adapter) {
+            $adapter->indexResource($entity, 'edit');
         }
     }
 
     /**
-     * Get all fields whose column type is amongst those allowed in `columnTypes` configuration key.
+     * Update search adapters index when a resource is deleted.
      *
-     * @param \Cake\ORM\Table $table Table object.
-     * @return string[]
+     * @param \Cake\Event\EventInterface $event The event
+     * @param \Cake\Datasource\EntityInterface $entity The resource entity
+     * @return void
      */
-    protected function getAllFields(Table $table)
+    public function afterDelete(EventInterface $event, EntityInterface $entity): void
     {
-        $columnTypes = $this->getConfig('columnTypes');
-        $fields = array_filter( // Filter fields that are of a searchable type.
-            $table->getSchema()->columns(),
-            function ($column) use ($columnTypes, $table) {
-                return in_array($table->getSchema()->getColumnType($column), $columnTypes);
-            }
-        );
-
-        if ($table instanceof InheritanceTable && $table->inheritedTable() !== null) {
-            // If table inherits from another table, merge parent table's fields.
-            $fields = array_merge($fields, $this->getAllFields($table->inheritedTable()));
+        foreach ($this->getSearchAdapters() as $adapter) {
+            $adapter->indexResource($entity, 'delete');
         }
-
-        return $fields;
     }
 
     /**
-     * Get searchable fields and their priorities.
+     * Get iterable of adapters.
+     * The keys are the adapter name and the values are the adapters instances.
      *
-     * @return array Array where keys are columns, and values are priorities.
+     * @return iterable<string, \BEdita\Core\Search\BaseAdapter>
      */
-    public function getFields()
+    public function getSearchAdapters(): iterable
     {
-        $wildCard = $this->getConfig('fields.*');
+        foreach (array_keys((array)Configure::read('Search.adapters')) as $name) {
+            yield (string)$name => $this->getAdapter((string)$name);
+        }
+    }
 
-        $fields = (array)$this->getConfig('fields');
-        $allFields = $this->getAllFields($this->table());
-
-        $fields = array_intersect_key($fields, array_flip($allFields));
-        if ($wildCard !== null) {
-            // If wildcard `*` is present, all other fields have default priority.
-            $fields += array_diff_key(
-                array_fill_keys($allFields, $wildCard),
-                $fields
-            );
+    /**
+     * Get search adapters registry.
+     *
+     * @return \BEdita\Core\Search\SearchRegistry
+     */
+    protected function getSearchRegistry(): SearchRegistry
+    {
+        if (!isset($this->searchRegistry)) {
+            $this->searchRegistry = new SearchRegistry();
         }
 
-        return $fields;
+        return $this->searchRegistry;
+    }
+
+    /**
+     * Get an adapter by name.
+     *
+     * @param string $name The adapter name
+     * @return \BEdita\Core\Search\BaseAdapter
+     */
+    protected function getAdapter(?string $name = null): BaseAdapter
+    {
+        $name ??= (string)Configure::read('Search.use', 'default');
+        $searchRegistry = $this->getSearchRegistry();
+        if ($searchRegistry->has($name)) {
+            return $searchRegistry->get($name);
+        }
+
+        $adapter = $searchRegistry->load($name, (array)Configure::read(sprintf('Search.adapters.%s', $name)));
+        $this->table()->dispatchEvent('SearchAdapter.initialize', [$this->table()], $adapter);
+
+        // backward compatibility
+        if ($adapter instanceof SimpleAdapter) {
+            $this->fitSimpleAdapterConf($adapter);
+        }
+
+        return $adapter;
     }
 
     /**
@@ -121,10 +147,9 @@ class SearchableBehavior extends Behavior
         $options += [
             'exact' => false,
         ];
-        if (isset($options[0]) && !isset($options['string'])) {
-            $options['string'] = $options[0];
-        }
-        if (!isset($options['string']) || !is_string($options['string'])) {
+
+        $text = $options['string'] ?? $options[0] ?? null;
+        if (!isset($text) || !is_string($text)) {
             // Bad filter options.
             throw new BadFilterException([
                 'title' => __d('bedita', 'Invalid data'),
@@ -132,67 +157,40 @@ class SearchableBehavior extends Behavior
             ]);
         }
 
-        $minLength = $this->getConfig('minLength');
-        $maxWords = $this->getConfig('maxWords');
-        $words = [$options['string']];
-        if (filter_var($options['exact'], FILTER_VALIDATE_BOOLEAN) !== true) {
-            $words = preg_split('/\W+/', $options['string']); // Split words.
-        }
-        $words = array_unique(array_map( // Escape `%` and `\` characters in words.
-            function ($word) {
-                return str_replace(
-                    ['%', '\\'],
-                    ['\\%', '\\\\'],
-                    mb_strtolower($word)
-                );
-            },
-            array_filter( // Filter out words that are too short.
-                $words,
-                function ($word) use ($minLength) {
-                    return mb_strlen($word) >= $minLength;
-                }
-            )
-        ));
-        if (count($words) === 0) {
-            // Query contained only short words.
-            throw new BadFilterException([
-                'title' => __d('bedita', 'Invalid data'),
-                'detail' => __d('bedita', 'query strings must be at least {0} characters long', $minLength),
-            ]);
-        }
-        if ($maxWords > 0 && count($words) > $maxWords) {
-            // Conditions with too many words would make our database hang for a long time.
-            throw new BadFilterException([
-                'title' => __d('bedita', 'Invalid data'),
-                'detail' => 'query string too long',
-            ]);
-        }
+        unset($options[0], $options['string']);
 
-        // Concat all fields into a single, lower-cased string.
-        $fields = [];
-        /** @var \Cake\ORM\Table $table */
-        $table = $query->getRepository();
-        foreach (array_keys($this->getFields()) as $field) {
-            $fields[] = $query->func()->coalesce([
-                $table->aliasField($field) => 'identifier',
-                '',
-            ]);
-            $fields[] = ' '; // Add a spacer.
+        return $this->getAdapter()->search($query, $text, $options);
+    }
+
+    /**
+     * Fit configuration of `SimpleAdapter` to maintain backward compatibility with 5.x.
+     *
+     * @param \BEdita\Core\Search\Adapter\SimpleAdapter $adapter The adapter.
+     * @return void
+     */
+    protected function fitSimpleAdapterConf(SimpleAdapter $adapter): void
+    {
+        $config = array_intersect_key(
+            $this->getConfig(),
+            array_flip(['minLength', 'maxWords'])
+        );
+        $adapter->setConfig($config);
+
+        // Config keys that must be overridden
+        foreach (['columnTypes', 'fields'] as $key) {
+            $conf = $this->getConfig($key);
+            if (!is_array($conf)) {
+                continue;
+            }
+
+            // `fields` key in SimpleAdapter is changed.
+            // It is now a list of fields without unused priority.
+            if ($key === 'fields') {
+                deprecationWarning('"fields" must be a list of strings. Unused priorities have been removed.');
+                $conf = array_keys($conf);
+            }
+
+            $adapter->setConfig($key, $conf, false);
         }
-        array_pop($fields); // Remove last spacer.
-        $field = new FunctionExpression('LOWER', [$query->func()->concat($fields)]);
-
-        // Build query conditions.
-        return $query
-            ->where(function (QueryExpression $exp) use ($field, $words) {
-                foreach ($words as $word) {
-                    $exp->like(
-                        $field,
-                        sprintf('%%%s%%', $word)
-                    );
-                }
-
-                return $exp;
-            });
     }
 }
