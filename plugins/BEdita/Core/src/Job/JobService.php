@@ -27,7 +27,7 @@ interface JobService
      * - a boolean i.e. `true` on success, `false` on failure
      * - an array with keys:
      *   - 'success' (required) => `true` on success, `false` on failure
-     *   - 'message' (optional) => array of messages
+     *   - 'messages' (optional) => array of messages
      *
      * @param array $payload Input data for running this job.
      * @param array $options Options for running this job.
