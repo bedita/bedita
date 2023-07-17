@@ -16,6 +16,7 @@ namespace BEdita\Core\Test\TestCase\Job\Service;
 use BEdita\Core\Job\Service\MailService;
 use Cake\Mailer\TransportFactory;
 use Cake\TestSuite\TestCase;
+use Cake\Utility\Hash;
 
 /**
  * {@see \BEdita\Core\Job\Service\MailService} Test Case
@@ -107,15 +108,17 @@ class MailServiceTest extends TestCase
 
         $mailService = new MailService();
         $result = $mailService->run($payload, ['transport' => 'test']);
-        array_walk($result, function (&$val) {
+        $email = Hash::get($result, 'email');
+        array_walk($email, function (&$val) {
             $val = explode("\r\n", $val);
         });
 
-        static::assertArrayHasKey('headers', $result);
+        static::assertTrue(Hash::get($result, 'success'));
+        static::assertArrayHasKey('headers', $email);
         foreach ($expected['headers'] as $header) {
-            static::assertContains($header, $result['headers']);
+            static::assertContains($header, $email['headers']);
         }
-        static::assertArrayHasKey('message', $result);
-        static::assertSame($expected['message'], $result['message']);
+        static::assertArrayHasKey('message', $email);
+        static::assertSame($expected['message'], $email['message']);
     }
 }
