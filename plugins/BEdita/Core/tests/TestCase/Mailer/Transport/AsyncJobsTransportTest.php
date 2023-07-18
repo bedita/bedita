@@ -187,6 +187,7 @@ class AsyncJobsTransportTest extends TestCase
             $val = explode("\r\n", $val);
         });
 
+        static::assertTrue(Hash::get($result, 'success'));
         static::assertArrayHasKey('headers', $email);
         foreach ($expected['headers'] as $header) {
             static::assertContains($header, $email['headers']);
