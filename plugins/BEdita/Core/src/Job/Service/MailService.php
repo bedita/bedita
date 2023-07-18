@@ -32,9 +32,13 @@ class MailService implements JobService
      * Options can contain the following keys:
      *  - `transport`: mail transport to use (default: `'default'`).
      *
+     * Return result with keys:
+     * - `success` true
+     * - `email` Result from {@see \Cake\Mailer\Email::send()}.
+     *
      * @param array $payload Input data for this email job.
      * @param array $options Options for running this job.
-     * @return array Result from {@see \Cake\Mailer\Email::send()}.
+     * @return array
      */
     public function run(array $payload, array $options = [])
     {
@@ -44,6 +48,9 @@ class MailService implements JobService
             ->createFromArray($payload)
             ->setTransport($transport);
 
-        return $email->sendRaw();
+        return [
+            'success' => true,
+            'email' => $email->sendRaw(),
+        ];
     }
 }

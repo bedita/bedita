@@ -19,6 +19,7 @@ use Cake\Mailer\Mailer;
 use Cake\Mailer\TransportFactory;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
+use Cake\Utility\Hash;
 use DMS\PHPUnitExtensions\ArraySubset\ArraySubsetAsserts;
 
 /**
@@ -181,15 +182,17 @@ class AsyncJobsTransportTest extends TestCase
 
         $mailService = new MailService();
         $result = $mailService->run($asyncJob->payload, ['transport' => 'debug']);
-        array_walk($result, function (&$val) {
+        $email = Hash::get($result, 'email');
+        array_walk($email, function (&$val) {
             $val = explode("\r\n", $val);
         });
 
-        static::assertArrayHasKey('headers', $result);
+        static::assertTrue(Hash::get($result, 'success'));
+        static::assertArrayHasKey('headers', $email);
         foreach ($expected['headers'] as $header) {
-            static::assertContains($header, $result['headers']);
+            static::assertContains($header, $email['headers']);
         }
-        static::assertArrayHasKey('message', $result);
-        static::assertArraySubset($expected['message'], $result['message']);
+        static::assertArrayHasKey('message', $email);
+        static::assertArraySubset($expected['message'], $email['message']);
     }
 }

@@ -23,9 +23,15 @@ interface JobService
     /**
      * Run an async job using $payload input data and optional $options.
      *
+     * It can return:
+     * - a boolean i.e. `true` on success, `false` on failure
+     * - an array with keys:
+     *   - 'success' (required) => `true` on success, `false` on failure
+     *   - 'messages' (optional) => array of messages
+     *
      * @param array $payload Input data for running this job.
      * @param array $options Options for running this job.
-     * @return bool True on success, false on failure
+     * @return bool|array
      */
     public function run(array $payload, array $options = []);
 }
