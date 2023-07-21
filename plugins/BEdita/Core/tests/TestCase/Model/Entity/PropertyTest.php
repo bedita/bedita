@@ -371,6 +371,10 @@ class PropertyTest extends TestCase
                 false,
                 'number',
             ],
+            'string' => [
+                false,
+                'string',
+            ],
         ];
     }
 
