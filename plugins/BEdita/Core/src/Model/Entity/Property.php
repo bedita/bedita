@@ -187,7 +187,7 @@ class Property extends Entity implements JsonApiSerializable
         }
         $spec = array_values(array_diff(array_keys($schema), ['type']));
         // only if `contentMediaType` is present we can assume that
-        // we have a translatable string by defatul (text/plain, text/html...)
+        // we have a translatable string by default (text/plain, text/html...)
         $item = (string)Hash::get($spec, '0');
 
         return $item === 'contentMediaType' && count($spec) === 1;
