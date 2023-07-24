@@ -176,7 +176,7 @@ class AsyncJobsTable extends Table
      */
     protected function findPending(Query $query)
     {
-        $now = $query->func()->now();
+        $now = FrozenTime::now();
 
         return $query
             ->where(function (QueryExpression $exp) use ($now) {
@@ -222,7 +222,7 @@ class AsyncJobsTable extends Table
      */
     protected function findFailed(Query $query)
     {
-        $now = $query->func()->now();
+        $now = FrozenTime::now();
 
         return $query->where(function (QueryExpression $exp) use ($now) {
             return $exp->and([

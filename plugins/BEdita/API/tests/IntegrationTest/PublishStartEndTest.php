@@ -81,29 +81,29 @@ class PublishStartEndTest extends IntegrationTestCase
                 404,
                 true,
                 [
-                    'publish_start' => FrozenTime::parse(time() + DAY),
+                    'publish_start' => FrozenTime::now()->addDay(),
                 ],
             ],
             'no conf' => [
                 200,
                 false,
                 [
-                    'publish_start' => FrozenTime::parse(time() + DAY),
+                    'publish_start' => FrozenTime::now()->addDay(),
                 ],
             ],
             'ended' => [
                 404,
                 true,
                 [
-                    'publish_end' => FrozenTime::parse(time() - DAY),
+                    'publish_end' => FrozenTime::now()->subDay(),
                 ],
             ],
             'started' => [
                 200,
                 true,
                 [
-                    'publish_start' => FrozenTime::parse(time() - DAY),
-                    'publish_end' => FrozenTime::parse(time() + DAY),
+                    'publish_start' => FrozenTime::now()->subDay(),
+                    'publish_end' => FrozenTime::now()->addDay(),
                 ],
             ],
         ];
