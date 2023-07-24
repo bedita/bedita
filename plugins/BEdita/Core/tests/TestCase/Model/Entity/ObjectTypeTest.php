@@ -748,7 +748,6 @@ class ObjectTypeTest extends TestCase
                     'translatable' => [
                         'body',
                         'description',
-                        'disabled_property',
                         'name',
                         'title',
                     ],
@@ -969,8 +968,6 @@ class ObjectTypeTest extends TestCase
                         ],
                     ],
                     'translatable' => [
-                        'another_description',
-                        'another_title',
                         'body',
                         'description',
                         'title',
