@@ -35,13 +35,13 @@ class DefaultApplication extends AbstractMigration
             ->insert([
                 [
                     'id' => 1,
-                    'name' => 'default-app',
+                    'name' => 'manager',
                     'api_key' => ApplicationsTable::generateApiKey(),
-                    'description' => 'Default application',
+                    'description' => 'Manager application',
                     'created' => date('Y-m-d H:i:s'),
                     'modified' => date('Y-m-d H:i:s'),
                     'enabled' => 1,
-                ]
+                ],
             ])
             ->save();
     }
