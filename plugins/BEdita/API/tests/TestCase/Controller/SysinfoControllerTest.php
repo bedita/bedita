@@ -22,6 +22,21 @@ use Cake\Core\Configure;
 class SysinfoControllerTest extends IntegrationTestCase
 {
     /**
+     * Test index method no admin.
+     *
+     * @return void
+     * @covers ::index()
+     * @covers ::initialize()
+     */
+    public function testIndexNoAdmin()
+    {
+        $this->configRequestHeaders();
+        $this->get('/sysinfo');
+        $this->assertResponseCode(401);
+        $this->assertContentType('application/vnd.api+json');
+    }
+
+    /**
      * Test index method.
      *
      * @return void
@@ -30,6 +45,7 @@ class SysinfoControllerTest extends IntegrationTestCase
      */
     public function testIndex()
     {
+        // auth as admin
         $fullBaseUrl = Configure::read('App.fullBaseUrl');
         if (empty($fullBaseUrl)) {
             Configure::write('App.fullBaseUrl', 'http://api.example.com');
@@ -44,44 +60,12 @@ class SysinfoControllerTest extends IntegrationTestCase
             ],
         ];
 
-        $this->configRequestHeaders();
+        $this->configRequestHeaders('GET', $this->getUserAuthHeader());
         $this->get('/sysinfo');
         $result = json_decode((string)$this->_response->getBody(), true);
 
         $this->assertResponseCode(200);
         $this->assertContentType('application/vnd.api+json');
-        static::assertEquals($expected, $result);
-    }
-
-    /**
-     * Test index method with `Accept: * / *` header.
-     *
-     * @return void
-     * @covers ::index()
-     * @covers ::initialize()
-     */
-    public function testGenericContentType()
-    {
-        $fullBaseUrl = Configure::read('App.fullBaseUrl');
-        if (empty($fullBaseUrl)) {
-            Configure::write('App.fullBaseUrl', 'http://api.example.com');
-        }
-        $expected = [
-            'links' => [
-                'self' => 'http://api.example.com/sysinfo',
-                'home' => 'http://api.example.com/home',
-            ],
-            'meta' => [
-                'info' => System::info(),
-            ],
-        ];
-
-        $this->configRequestHeaders('GET', ['Accept' => '*/*']);
-        $this->get('/sysinfo');
-        $result = json_decode((string)$this->_response->getBody(), true);
-
-        $this->assertResponseCode(200);
-        $this->assertContentType('application/json');
         static::assertEquals($expected, $result);
     }
 
@@ -96,9 +80,8 @@ class SysinfoControllerTest extends IntegrationTestCase
     {
         $this->configRequestHeaders('HEAD', ['Accept' => '*/*']);
         $this->_sendRequest('/sysinfo', 'HEAD');
-
-        $this->assertResponseCode(200);
-        $this->assertContentType('application/json');
-        $this->assertResponseEmpty();
+        $this->assertResponseCode(401);
+        $this->assertContentType('application/vnd.api+json');
+        $this->assertResponseNotEmpty();
     }
 }

@@ -12,6 +12,7 @@
  */
 namespace BEdita\API\Controller;
 
+use BEdita\API\Policy\EndpointPolicy;
 use BEdita\Core\Utility\System;
 use Cake\Core\Configure;
 
@@ -33,6 +34,8 @@ class SysinfoController extends AppController
         }
 
         parent::initialize();
+
+        $this->request = $this->request->withAttribute(EndpointPolicy::ADMINISTRATOR_ONLY, true);
 
         if ($this->JsonApi) {
             $this->JsonApi->setConfig('checkMediaType', false);
