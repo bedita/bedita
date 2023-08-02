@@ -64,13 +64,6 @@ return function (RouteBuilder $routes) {
             ['_name' => 'status']
         );
 
-        // Sysinfo.
-        $routes->connect(
-            '/sysinfo',
-            ['controller' => 'Sysinfo', 'action' => 'index'],
-            ['_name' => 'sysinfo']
-        );
-
         // Login.
         $routes->post(
             '/auth',
@@ -173,6 +166,12 @@ return function (RouteBuilder $routes) {
                 '_namePrefix' => 'admin:',
             ],
             $resourcesRoutes($adminControllers)
+        );
+
+        $routes->connect(
+            '/admin/sysinfo',
+            ['controller' => 'Sysinfo', 'action' => 'index'],
+            ['_name' => 'sysinfo']
         );
 
         // Modeling endpoints.

@@ -14,7 +14,6 @@ namespace BEdita\API\Controller;
 
 use BEdita\API\Policy\EndpointPolicy;
 use BEdita\Core\Utility\System;
-use Cake\Core\Configure;
 
 /**
  * Controller for `/sysinfo` endpoint.
@@ -28,18 +27,9 @@ class SysinfoController extends AppController
      */
     public function initialize(): void
     {
-        $htmlRequest = (Configure::read('debug') || Configure::read('Accept.html')) && $this->request->is('html');
-        if (!$this->request->is('jsonapi') && !$htmlRequest) {
-            $this->request = $this->request->withHeader('Accept', 'application/json');
-        }
-
         parent::initialize();
 
         $this->request = $this->request->withAttribute(EndpointPolicy::ADMINISTRATOR_ONLY, true);
-
-        if ($this->JsonApi) {
-            $this->JsonApi->setConfig('checkMediaType', false);
-        }
     }
 
     /**
@@ -49,12 +39,7 @@ class SysinfoController extends AppController
      */
     public function index()
     {
-        $this->request->allowMethod(['get', 'head']);
-
-        if ($this->request->is('head')) {
-            return $this->response;
-        }
-
+        $this->request->allowMethod(['get']);
         $info = System::info();
         $this->set('_meta', compact('info'));
         $this->setSerialize([]);

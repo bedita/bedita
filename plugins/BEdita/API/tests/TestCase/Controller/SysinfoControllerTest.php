@@ -31,7 +31,7 @@ class SysinfoControllerTest extends IntegrationTestCase
     public function testIndexNoAdmin()
     {
         $this->configRequestHeaders();
-        $this->get('/sysinfo');
+        $this->get('/admin/sysinfo');
         $this->assertResponseCode(401);
         $this->assertContentType('application/vnd.api+json');
     }
@@ -52,7 +52,7 @@ class SysinfoControllerTest extends IntegrationTestCase
         }
         $expected = [
             'links' => [
-                'self' => 'http://api.example.com/sysinfo',
+                'self' => 'http://api.example.com/admin/sysinfo',
                 'home' => 'http://api.example.com/home',
             ],
             'meta' => [
@@ -61,28 +61,12 @@ class SysinfoControllerTest extends IntegrationTestCase
         ];
 
         $this->configRequestHeaders('GET', $this->getUserAuthHeader());
-        $this->get('/sysinfo');
+        $this->get('/admin/sysinfo');
         $result = json_decode((string)$this->_response->getBody(), true);
 
         $this->assertResponseCode(200);
         $this->assertContentType('application/vnd.api+json');
         static::assertEquals($expected, $result);
-    }
-
-    /**
-     * Test `HEAD` request with user not admin.
-     *
-     * @return void
-     * @covers ::index()
-     * @covers ::initialize()
-     */
-    public function testHeadRequestNoAdmin()
-    {
-        $this->configRequestHeaders('HEAD', ['Accept' => '*/*']);
-        $this->_sendRequest('/sysinfo', 'HEAD');
-        $this->assertResponseCode(401);
-        $this->assertContentType('application/vnd.api+json');
-        $this->assertResponseNotEmpty();
     }
 
     /**
@@ -94,10 +78,10 @@ class SysinfoControllerTest extends IntegrationTestCase
      */
     public function testHeadRequest()
     {
-        $this->configRequestHeaders('HEAD', $this->getUserAuthHeader() + ['Accept' => '*/*']);
-        $this->_sendRequest('/sysinfo', 'HEAD');
-        $this->assertResponseCode(200);
-        $this->assertContentType('application/json');
-        $this->assertResponseEmpty();
+        $this->configRequestHeaders('HEAD', ['Accept' => '*/*']);
+        $this->_sendRequest('/admin/sysinfo', 'HEAD');
+        $this->assertResponseCode(406);
+        $this->assertContentType('application/vnd.api+json');
+        $this->assertResponseNotEmpty();
     }
 }
