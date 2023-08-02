@@ -14,6 +14,7 @@ namespace BEdita\API\Test\TestCase\Controller;
 
 use BEdita\API\TestSuite\IntegrationTestCase;
 use BEdita\Core\Utility\System;
+use Cake\Core\Configure;
 
 /**
  * @coversDefaultClass \BEdita\API\Controller\SysinfoController
@@ -29,6 +30,10 @@ class SysinfoControllerTest extends IntegrationTestCase
      */
     public function testIndex()
     {
+        $fullBaseUrl = Configure::read('App.fullBaseUrl');
+        if (empty($fullBaseUrl)) {
+            Configure::write('App.fullBaseUrl', 'http://api.example.com');
+        }
         $expected = [
             'links' => [
                 'self' => 'http://api.example.com/sysinfo',
