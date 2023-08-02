@@ -171,7 +171,7 @@ return function (RouteBuilder $routes) {
                 $routes->connect(
                     '/sysinfo',
                     ['controller' => 'Sysinfo', 'action' => 'index'],
-                    ['_name' => 'admin:sysinfo']
+                    ['_name' => 'sysinfo']
                 );
             }
         );
