@@ -171,7 +171,7 @@ return function (RouteBuilder $routes) {
         $routes->connect(
             '/admin/sysinfo',
             ['controller' => 'Sysinfo', 'action' => 'index'],
-            ['_name' => 'sysinfo']
+            ['_name' => 'admin:sysinfo']
         );
 
         // Modeling endpoints.

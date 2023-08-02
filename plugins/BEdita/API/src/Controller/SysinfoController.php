@@ -14,6 +14,7 @@ namespace BEdita\API\Controller;
 
 use BEdita\API\Policy\EndpointPolicy;
 use BEdita\Core\Utility\System;
+use Cake\Http\Response;
 
 /**
  * Controller for `/sysinfo` endpoint.
@@ -37,7 +38,7 @@ class SysinfoController extends AppController
      *
      * @return \Cake\Http\Response|null
      */
-    public function index()
+    public function index(): ?Response
     {
         $this->request->allowMethod(['get']);
         $info = System::info();
