@@ -10,8 +10,9 @@
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-namespace BEdita\API\Controller;
+namespace BEdita\API\Controller\Admin;
 
+use BEdita\API\Controller\AppController;
 use BEdita\API\Policy\EndpointPolicy;
 use BEdita\Core\Utility\System;
 use Cake\Http\Response;

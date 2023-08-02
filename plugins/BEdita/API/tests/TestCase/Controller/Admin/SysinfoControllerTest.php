@@ -10,7 +10,7 @@
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-namespace BEdita\API\Test\TestCase\Controller;
+namespace BEdita\API\Test\TestCase\Controller\Admin;
 
 use BEdita\API\TestSuite\IntegrationTestCase;
 use BEdita\Core\Utility\System;

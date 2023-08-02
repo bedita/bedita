@@ -165,13 +165,15 @@ return function (RouteBuilder $routes) {
             [
                 '_namePrefix' => 'admin:',
             ],
-            $resourcesRoutes($adminControllers)
-        );
-
-        $routes->connect(
-            '/admin/sysinfo',
-            ['controller' => 'Sysinfo', 'action' => 'index'],
-            ['_name' => 'admin:sysinfo']
+            function (RouteBuilder $routes) use ($adminControllers, $resourcesRoutes) {
+                $callback = $resourcesRoutes($adminControllers);
+                $callback($routes);
+                $routes->connect(
+                    '/sysinfo',
+                    ['controller' => 'Sysinfo', 'action' => 'index'],
+                    ['_name' => 'admin:sysinfo']
+                );
+            }
         );
 
         // Modeling endpoints.
