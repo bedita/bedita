@@ -24,6 +24,28 @@ use Cake\Core\Plugin;
 class System
 {
     /**
+     * Get system information
+     *
+     * @return array Information on CakePHP, PHP, OS, extensions, memory and upload limits
+     */
+    public static function info(): array
+    {
+        return [
+            'Url' => Configure::read('App.fullBaseUrl'),
+            'Version' => Configure::read('BEdita.version'),
+            'CakePHP' => Configure::version(),
+            'PHP' => phpversion(),
+            'Operating System' => php_uname(),
+            'PHP Server API' => php_sapi_name(),
+            'Extensions' => get_loaded_extensions(),
+            'Extensions info' => get_loaded_extensions(true),
+            'Memory limit' => ini_get('memory_limit'),
+            'Post max size' => sprintf('%dM', intVal(substr(ini_get('post_max_size'), 0, -1))),
+            'Upload max size' => sprintf('%dM', intVal(substr(ini_get('upload_max_filesize'), 0, -1))),
+        ];
+    }
+
+    /**
      * Get status information
      *
      * @return array Information on environment and datasource/cache connections

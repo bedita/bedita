@@ -64,6 +64,13 @@ return function (RouteBuilder $routes) {
             ['_name' => 'status']
         );
 
+        // Sysinfo.
+        $routes->connect(
+            '/sysinfo',
+            ['controller' => 'Sysinfo', 'action' => 'index'],
+            ['_name' => 'sysinfo']
+        );
+
         // Login.
         $routes->post(
             '/auth',

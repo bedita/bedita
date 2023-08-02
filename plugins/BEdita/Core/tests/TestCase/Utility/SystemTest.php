@@ -26,6 +26,32 @@ use Cake\TestSuite\TestCase;
 class SystemTest extends TestCase
 {
     /**
+     * Test info method
+     *
+     * @return void
+     */
+    public function testInfo(): void
+    {
+        $actual = System::info();
+        $expectedKeys = [
+            'Url',
+            'Version',
+            'CakePHP',
+            'PHP',
+            'Operating System',
+            'PHP Server API',
+            'Extensions',
+            'Extensions info',
+            'Memory limit',
+            'Post max size',
+            'Upload max size',
+        ];
+        foreach ($expectedKeys as $expectedKey) {
+            $this->assertArrayHasKey($expectedKey, $actual);
+        }
+    }
+
+    /**
      * Test status method
      *
      * @return void
