@@ -22,7 +22,7 @@ use Cake\Core\Configure;
 class SysinfoControllerTest extends IntegrationTestCase
 {
     /**
-     * Test index method no admin.
+     * Test `index` method with user not admin.
      *
      * @return void
      * @covers ::index()
@@ -37,7 +37,7 @@ class SysinfoControllerTest extends IntegrationTestCase
     }
 
     /**
-     * Test index method.
+     * Test `index` method.
      *
      * @return void
      * @covers ::index()
@@ -70,6 +70,22 @@ class SysinfoControllerTest extends IntegrationTestCase
     }
 
     /**
+     * Test `HEAD` request with user not admin.
+     *
+     * @return void
+     * @covers ::index()
+     * @covers ::initialize()
+     */
+    public function testHeadRequestNoAdmin()
+    {
+        $this->configRequestHeaders('HEAD', ['Accept' => '*/*']);
+        $this->_sendRequest('/sysinfo', 'HEAD');
+        $this->assertResponseCode(401);
+        $this->assertContentType('application/vnd.api+json');
+        $this->assertResponseNotEmpty();
+    }
+
+    /**
      * Test `HEAD` request.
      *
      * @return void
@@ -78,10 +94,10 @@ class SysinfoControllerTest extends IntegrationTestCase
      */
     public function testHeadRequest()
     {
-        $this->configRequestHeaders('HEAD', ['Accept' => '*/*']);
+        $this->configRequestHeaders('HEAD', $this->getUserAuthHeader() + ['Accept' => '*/*']);
         $this->_sendRequest('/sysinfo', 'HEAD');
-        $this->assertResponseCode(401);
-        $this->assertContentType('application/vnd.api+json');
-        $this->assertResponseNotEmpty();
+        $this->assertResponseCode(200);
+        $this->assertContentType('application/json');
+        $this->assertResponseEmpty();
     }
 }
