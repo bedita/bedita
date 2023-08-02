@@ -62,6 +62,10 @@ class SysinfoControllerTest extends IntegrationTestCase
      */
     public function testGenericContentType()
     {
+        $fullBaseUrl = Configure::read('App.fullBaseUrl');
+        if (empty($fullBaseUrl)) {
+            Configure::write('App.fullBaseUrl', 'http://api.example.com');
+        }
         $expected = [
             'links' => [
                 'self' => 'http://api.example.com/sysinfo',
