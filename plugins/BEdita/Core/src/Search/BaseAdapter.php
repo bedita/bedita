@@ -35,15 +35,49 @@ abstract class BaseAdapter
     protected $_defaultConfig = [];
 
     /**
+     * Adapter alias.
+     *
+     * @var string
+     */
+    protected string $alias;
+
+    /**
      * Initialize adapter with configuration.
      *
      * @param array $config Adapter configuration
-     * @return void
+     * @return $this
      * @codeCoverageIgnore
      */
-    public function initialize(array $config): void
+    public function initialize(array $config)
     {
         $this->setConfig($config);
+
+        return $this;
+    }
+
+    /**
+     * Set adapter alias.
+     *
+     * @param string $alias Adapter alias
+     * @return $this
+     * @codeCoverageIgnore
+     */
+    public function setAlias(string $alias)
+    {
+        $this->alias = $alias;
+
+        return $this;
+    }
+
+    /**
+     * Get adapter alias.
+     *
+     * @return string
+     * @codeCoverageIgnore
+     */
+    public function getAlias(): string
+    {
+        return $this->alias;
     }
 
     /**
