@@ -18,6 +18,8 @@ use BEdita\Core\Model\Action\RemoveRelatedObjectsAction;
 use BEdita\Core\Model\Action\SetRelatedObjectsAction;
 use BEdita\Core\Model\Entity\ObjectEntity;
 use BEdita\Core\Search\SimpleSearchTrait;
+use Cake\Datasource\EntityInterface;
+use Cake\Event\EventInterface;
 use Cake\ORM\Behavior;
 
 /**
@@ -46,7 +48,18 @@ class ObjectModelBehavior extends Behavior
         $table->addBehavior('BEdita/Core.CustomProperties');
         $table->addBehavior('BEdita/Core.UniqueName');
         $table->addBehavior('BEdita/Core.Relations');
-        $table->addBehavior('BEdita/Core.Searchable');
+        $table->addBehavior('BEdita/Core.Searchable', [
+            'operationName' => [
+                'Model.afterSave' => function (EventInterface $event, EntityInterface $entity): string {
+                    if (!$entity->isDirty('deleted')) {
+                        return 'edit';
+                    }
+
+                    return $entity->get('deleted') ? 'softDelete' : 'softDeleteRestore';
+                },
+                'Model.afterDelete' => 'delete',
+            ],
+        ]);
         $table->addBehavior('BEdita/Core.Status');
 
         $this->setupSimpleSearch(['fields' => ['title', 'description', 'body']], $table);
