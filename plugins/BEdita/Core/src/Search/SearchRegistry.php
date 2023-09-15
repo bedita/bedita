@@ -51,15 +51,13 @@ class SearchRegistry extends ObjectRegistry
             $instance = $class;
         } else {
             unset($config['className']);
-            $instance = new $class($config);
+            $instance = new $class();
         }
 
         if (!($instance instanceof BaseAdapter)) {
             throw new RuntimeException(sprintf('Search adapters must use %s as a base class.', BaseAdapter::class));
         }
 
-        $instance->initialize($config);
-
-        return $instance;
+        return $instance->setAlias($alias)->initialize($config);
     }
 }

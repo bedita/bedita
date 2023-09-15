@@ -149,6 +149,7 @@ class PriorityBehaviorTest extends TestCase
                 'relation_id' => 1,
             ])
             ->order(['priority'])
+            ->all()
             ->toList();
 
         static::assertSame(4, $entities[0]->get('right_id'));
@@ -167,6 +168,7 @@ class PriorityBehaviorTest extends TestCase
                 'relation_id' => 1,
             ])
             ->order(['priority'])
+            ->all()
             ->toList();
 
         static::assertSame(7, $entities[0]->get('right_id'));
@@ -196,6 +198,7 @@ class PriorityBehaviorTest extends TestCase
                 'relation_id' => 1,
             ])
             ->order(['priority'])
+            ->all()
             ->toList();
 
         static::assertSame(4, $entities[0]->get('right_id'));
@@ -214,6 +217,7 @@ class PriorityBehaviorTest extends TestCase
                 'relation_id' => 1,
             ])
             ->order(['priority'])
+            ->all()
             ->toList();
 
         static::assertSame(3, $entities[0]->get('right_id'));
@@ -242,6 +246,7 @@ class PriorityBehaviorTest extends TestCase
                 'relation_id' => 1,
             ])
             ->order(['priority'])
+            ->all()
             ->toList();
 
         static::assertSame(4, $entities[0]->get('right_id'));
@@ -259,6 +264,7 @@ class PriorityBehaviorTest extends TestCase
                 'relation_id' => 1,
             ])
             ->order(['priority'])
+            ->all()
             ->toList();
 
         static::assertSame(4, $entities[0]->get('right_id'));

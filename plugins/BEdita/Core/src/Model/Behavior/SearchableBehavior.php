@@ -43,6 +43,10 @@ class SearchableBehavior extends Behavior
      * if present they are used in `SimpleAdapter` for backward compatibility.
      */
     protected $_defaultConfig = [
+        'operationName' => [
+            'Model.afterSave' => 'edit',
+            'Model.afterDelete' => 'delete',
+        ],
         'implementedFinders' => [
             'query' => 'findQuery',
         ],
@@ -56,7 +60,51 @@ class SearchableBehavior extends Behavior
     protected $searchRegistry = null;
 
     /**
-     * Update search adapters index when a resource is saved.
+     * Get operation name for the entity being saved or deleted.
+     *
+     * @param \Cake\Event\EventInterface $event Dispatched event.
+     * @param \Cake\Datasource\EntityInterface $entity Resource entity.
+     * @return string|null
+     */
+    protected function getOperation(EventInterface $event, EntityInterface $entity): ?string
+    {
+        $operations = (array)$this->getConfig('operationName');
+        $operationName = $operations[$event->getName()] ?? null;
+
+        if (is_callable($operationName)) {
+            $operationName = $operationName($event, $entity);
+        }
+
+        if ($operationName !== null && !is_string($operationName)) {
+            throw new \UnexpectedValueException(
+                sprintf('Operation name must be string or null, got %s', gettype($operationName))
+            );
+        }
+
+        return $operationName;
+    }
+
+    /**
+     * Update search adapters index when a resource is saved or deleted.
+     *
+     * @param \Cake\Event\EventInterface $event The event
+     * @param \Cake\Datasource\EntityInterface $entity The resource entity
+     * @return void
+     */
+    protected function indexEntity(EventInterface $event, EntityInterface $entity): void
+    {
+        $operation = $this->getOperation($event, $entity);
+        if ($operation === null) {
+            return;
+        }
+
+        foreach ($this->getSearchAdapters() as $adapter) {
+            $adapter->indexResource($entity, $operation);
+        }
+    }
+
+    /**
+     * Update search adapters index when a resource is saved or deleted.
      *
      * @param \Cake\Event\EventInterface $event The event
      * @param \Cake\Datasource\EntityInterface $entity The resource entity
@@ -64,13 +112,11 @@ class SearchableBehavior extends Behavior
      */
     public function afterSave(EventInterface $event, EntityInterface $entity): void
     {
-        foreach ($this->getSearchAdapters() as $adapter) {
-            $adapter->indexResource($entity, 'edit');
-        }
+        $this->indexEntity($event, $entity);
     }
 
     /**
-     * Update search adapters index when a resource is deleted.
+     * Update search adapters index when a resource is saved or deleted.
      *
      * @param \Cake\Event\EventInterface $event The event
      * @param \Cake\Datasource\EntityInterface $entity The resource entity
@@ -78,9 +124,7 @@ class SearchableBehavior extends Behavior
      */
     public function afterDelete(EventInterface $event, EntityInterface $entity): void
     {
-        foreach ($this->getSearchAdapters() as $adapter) {
-            $adapter->indexResource($entity, 'delete');
-        }
+        $this->indexEntity($event, $entity);
     }
 
     /**
