@@ -93,12 +93,10 @@ class SearchCommand extends Command
         $operation = empty($tmp) ? '' : (string)array_key_first($tmp);
         if (empty($operation)) {
             $io->out($this->getOptionParser()->help());
-
-            return Command::CODE_ERROR;
         }
         $this->Objects = $this->fetchTable('Objects');
 
-        return $this->{$operation}($args, $io);
+        return empty($operation) ? Command::CODE_ERROR : $this->{$operation}($args, $io);
     }
 
     /**
