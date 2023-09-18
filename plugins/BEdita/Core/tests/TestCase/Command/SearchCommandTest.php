@@ -14,6 +14,8 @@ declare(strict_types=1);
  */
 namespace BEdita\Core\Test\TestCase\Command;
 
+use Cake\Command\Command;
+use Cake\Console\TestSuite\ConsoleIntegrationTestTrait;
 use Cake\TestSuite\TestCase;
 
 /**
@@ -23,6 +25,19 @@ use Cake\TestSuite\TestCase;
  */
 class SearchCommandTest extends TestCase
 {
+    use ConsoleIntegrationTestTrait;
+
+    /**
+     * setUp method
+     *
+     * @return void
+     */
+    public function setUp(): void
+    {
+        parent::setUp();
+        $this->useCommandRunner();
+    }
+
     /**
      * Test `buildOptionParser` method
      *
@@ -31,7 +46,12 @@ class SearchCommandTest extends TestCase
      */
     public function testBuildOptionParser(): void
     {
-        $this->markTestIncomplete('Not implemented yet.');
+        $this->exec('search --help');
+        $this->assertOutputContains('Interface to handle search indexes and data');
+        $this->assertOutputContains('Clear index');
+        $this->assertOutputContains('Delete an object from index');
+        $this->assertOutputContains('Index a single object');
+        $this->assertOutputContains('Reindex all objects in the system');
     }
 
     /**
@@ -39,9 +59,71 @@ class SearchCommandTest extends TestCase
      *
      * @return void
      * @covers ::execute()
+     * @covers ::operation()
      */
     public function testExecute(): void
     {
-        $this->markTestIncomplete('Not implemented yet.');
+        $this->exec('search');
+        $this->assertExitCode(Command::CODE_ERROR);
+    }
+
+    /**
+     * Test `operation` method
+     *
+     * @return void
+     * @covers ::operation()
+     */
+    public function testOperation(): void
+    {
+        $this->exec('search --reindex');
+        $this->assertExitCode(Command::CODE_SUCCESS);
+    }
+
+    /**
+     * Test `reindex` method
+     *
+     * @return void
+     * @covers ::reindex()
+     */
+    public function testReindex(): void
+    {
+        $this->exec('search --reindex');
+        $this->assertExitCode(Command::CODE_SUCCESS);
+    }
+
+    /**
+     * Test `index` method
+     *
+     * @return void
+     * @covers ::index()
+     */
+    public function testIndex(): void
+    {
+        $this->exec('search --index');
+        $this->assertExitCode(Command::CODE_SUCCESS);
+    }
+
+    /**
+     * Test `delete` method
+     *
+     * @return void
+     * @covers ::delete()
+     */
+    public function testDelete(): void
+    {
+        $this->exec('search --delete');
+        $this->assertExitCode(Command::CODE_SUCCESS);
+    }
+
+    /**
+     * Test `clear` method
+     *
+     * @return void
+     * @covers ::clear()
+     */
+    public function testClear(): void
+    {
+        $this->exec('search --clear');
+        $this->assertExitCode(Command::CODE_SUCCESS);
     }
 }
