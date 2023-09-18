@@ -91,9 +91,8 @@ class SearchCommand extends Command
     {
         $tmp = array_intersect_key($args->getOptions(), array_flip($this->operations));
         $operation = empty($tmp) ? '' : (string)array_key_first($tmp);
-        if (empty($operation)) {
-            $io->out($this->getOptionParser()->help());
-        }
+        $message = empty($operation) ? $this->getOptionParser()->help() : 'Perform ' . $operation . ' operation';
+        $io->out($message);
         $this->Objects = $this->fetchTable('Objects');
 
         return empty($operation) ? Command::CODE_ERROR : $this->{$operation}($args, $io);
