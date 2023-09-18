@@ -61,13 +61,13 @@ class AsyncJob extends Entity implements JsonApiSerializable
         }
 
         $now = new FrozenTime();
-        if ($this->locked_until !== null && $this->locked_until->gte($now)) {
+        if ($this->locked_until !== null && $this->locked_until->greaterThanOrEquals($now)) {
             return 'locked';
         }
-        if ($this->max_attempts === 0 || ($this->expires !== null && $this->expires->lt($now))) {
+        if ($this->max_attempts === 0 || ($this->expires !== null && $this->expires->lessThan($now))) {
             return 'failed';
         }
-        if ($this->scheduled_from !== null && $this->scheduled_from->gt($now)) {
+        if ($this->scheduled_from !== null && $this->scheduled_from->greaterThan($now)) {
             return 'planned';
         }
 

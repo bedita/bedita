@@ -4,6 +4,7 @@ namespace BEdita\Core\Model\Table;
 use BEdita\Core\Job\QueueJob;
 use BEdita\Core\Model\Entity\AsyncJob;
 use BEdita\Core\Model\Validation\Validation;
+use Cake\Core\Configure;
 use Cake\Database\Expression\QueryExpression;
 use Cake\Database\Schema\TableSchemaInterface;
 use Cake\Datasource\ConnectionManager;
@@ -143,7 +144,13 @@ class AsyncJobsTable extends Table
             return;
         }
 
-        QueueManager::push(QueueJob::class, ['uuid' => $entity->uuid]);
+        $delay = (int)Configure::read('Queue.default.pushDelay', 1);
+
+        QueueManager::push(
+            QueueJob::class,
+            ['uuid' => $entity->uuid],
+            compact('delay'),
+        );
     }
 
     /**
@@ -201,7 +208,7 @@ class AsyncJobsTable extends Table
      */
     protected function findPending(Query $query)
     {
-        $now = $query->func()->now();
+        $now = FrozenTime::now();
 
         return $query
             ->where(function (QueryExpression $exp) use ($now) {
@@ -247,7 +254,7 @@ class AsyncJobsTable extends Table
      */
     protected function findFailed(Query $query)
     {
-        $now = $query->func()->now();
+        $now = FrozenTime::now();
 
         return $query->where(function (QueryExpression $exp) use ($now) {
             return $exp->and([

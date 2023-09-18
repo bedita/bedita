@@ -449,6 +449,20 @@ class StaticPropertyTest extends TestCase
                     'name' => 'created',
                 ],
             ],
+            'title' => [
+                true,
+                [
+                    'table' => 'Objects',
+                    'name' => 'title',
+                ],
+            ],
+            'string type' => [
+                false,
+                [
+                    'table' => 'Profiles',
+                    'name' => 'surname',
+                ],
+            ],
         ];
     }
 

@@ -60,6 +60,7 @@ class PropertiesTest extends TestCase
             'name' => 'custom_two',
             'object' => 'documents',
             'property' => 'string',
+            'is_nullable' => false,
         ],
     ];
 
@@ -88,6 +89,8 @@ class PropertiesTest extends TestCase
             ->where(['name IN' => ['custom_one', 'custom_two']])
             ->toArray();
         static::assertEquals(2, count($newProperties));
+        $prop = $newProperties[0]->get('name') === 'custom_two' ? $newProperties[0] : $newProperties[1];
+        static::assertFalse($prop->get('is_nullable'));
     }
 
     /**
@@ -134,6 +137,7 @@ class PropertiesTest extends TestCase
         Properties::create($this->properties);
 
         $this->properties[1]['property'] = 'text';
+        $this->properties[1]['read_only'] = true;
         Properties::update($this->properties);
 
         $newProp = $this->Properties
@@ -141,5 +145,6 @@ class PropertiesTest extends TestCase
             ->where(['name' => 'custom_two'])
             ->first();
         static::assertEquals('text', $newProp->get('property_type_name'));
+        static::assertTrue($newProp->get('read_only'));
     }
 }

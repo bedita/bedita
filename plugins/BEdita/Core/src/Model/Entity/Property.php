@@ -31,6 +31,7 @@ use Cake\Utility\Inflector;
  * @property string $description
  * @property bool $enabled
  * @property bool $is_nullable
+ * @property bool $read_only
  * @property bool $required
  * @property \Cake\I18n\Time $created
  * @property \Cake\I18n\Time $modified
@@ -185,11 +186,11 @@ class Property extends Entity implements JsonApiSerializable
             return false;
         }
         $spec = array_values(array_diff(array_keys($schema), ['type']));
-        // if no other specifier is set or only `contentMediaType` is present
-        // we can assume that we have a translatable string
+        // only if `contentMediaType` is present we can assume that
+        // we have a translatable string by default (text/plain, text/html...)
         $item = (string)Hash::get($spec, '0');
 
-        return empty($item) || ($item === 'contentMediaType' && count($spec) === 1);
+        return $item === 'contentMediaType' && count($spec) === 1;
     }
 
     /**

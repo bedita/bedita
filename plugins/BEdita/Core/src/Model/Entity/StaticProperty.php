@@ -207,7 +207,7 @@ class StaticProperty extends Property
     {
         $typeName = (string)$this->table->getSchema()->getColumnType($this->name);
 
-        return in_array($typeName, ['text', 'string']);
+        return $this->name === 'title' || $typeName === 'text';
     }
 
     /**

@@ -36,6 +36,8 @@ class OAuth2
         'header' => 'Authorization',
         'headerPrefix' => 'Bearer',
         'queryParam' => 'access_token',
+        // Additional headers required by OAuth2 provider
+        'additionalHeaders' => [],
         // mode can be 'header' (default) or 'query'
         'mode' => 'header',
     ];
@@ -53,7 +55,7 @@ class OAuth2
         $this->setConfig($options);
         $client = new Client((array)$this->getConfig('client'));
         $query = $this->getQuery($accessToken);
-        $headers = $this->getHeaders($accessToken);
+        $headers = $this->getHeaders($accessToken) + (array)$this->getConfig('additionalHeaders');
         $response = $client->get($url, $query, compact('headers'));
 
         return (array)$response->getJson();

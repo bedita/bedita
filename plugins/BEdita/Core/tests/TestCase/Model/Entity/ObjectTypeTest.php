@@ -748,7 +748,6 @@ class ObjectTypeTest extends TestCase
                     'translatable' => [
                         'body',
                         'description',
-                        'disabled_property',
                         'name',
                         'title',
                     ],
@@ -969,8 +968,6 @@ class ObjectTypeTest extends TestCase
                         ],
                     ],
                     'translatable' => [
-                        'another_description',
-                        'another_title',
                         'body',
                         'description',
                         'title',
@@ -1005,6 +1002,19 @@ class ObjectTypeTest extends TestCase
         }
 
         static::assertEquals($expected, $schema);
+    }
+
+    /**
+     * Test `readOnly` property in schema.
+     *
+     * @covers ::accessMode()
+     * @return void
+     */
+    public function testReadOnlyProp(): void
+    {
+        $objectType = $this->ObjectTypes->get('profiles');
+        $schema = $objectType->schema;
+        static::assertTrue(Hash::get($schema, 'properties.another_birthdate.readOnly'));
     }
 
     /**

@@ -79,7 +79,7 @@ class DateRangesTable extends Table
 
         $validator
             ->add('start_date', 'dateTime', ['rule' => [Validation::class, 'dateTime']])
-            ->allowEmptyDateTime('start_date');
+            ->notEmptyDateTime('start_date');
 
         $validator
             ->add('end_date', 'dateTime', ['rule' => [Validation::class, 'dateTime']])
