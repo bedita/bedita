@@ -28,6 +28,14 @@ class SearchCommandTest extends TestCase
     use ConsoleIntegrationTestTrait;
 
     /**
+     * @inheritDoc
+     */
+    protected $fixtures = [
+        'plugin.BEdita/Core.ObjectTypes',
+        'plugin.BEdita/Core.Objects',
+    ];
+
+    /**
      * setUp method
      *
      * @return void
@@ -68,12 +76,13 @@ class SearchCommandTest extends TestCase
     }
 
     /**
-     * Test `operation` method
+     * Test `reindex` method
      *
      * @return void
-     * @covers ::operation()
+     * @covers ::reindex()
+     * @covers ::saveIndexEntity()
      */
-    public function testOperation(): void
+    public function testReindex(): void
     {
         $this->exec('search --reindex');
         $this->assertExitCode(Command::CODE_SUCCESS);
@@ -84,10 +93,11 @@ class SearchCommandTest extends TestCase
      *
      * @return void
      * @covers ::reindex()
+     * @covers ::saveIndexEntity()
      */
-    public function testReindex(): void
+    public function testReindexByTypes(): void
     {
-        $this->exec('search --reindex');
+        $this->exec('search --reindex documents,profiles');
         $this->assertExitCode(Command::CODE_SUCCESS);
     }
 
@@ -96,11 +106,38 @@ class SearchCommandTest extends TestCase
      *
      * @return void
      * @covers ::index()
+     * @covers ::saveIndexEntity()
      */
     public function testIndex(): void
     {
-        $this->exec('search --index');
+        $this->exec('search --index 1');
         $this->assertExitCode(Command::CODE_SUCCESS);
+    }
+
+    /**
+     * Test `index` method on missing ID
+     *
+     * @return void
+     * @covers ::index()
+     * @covers ::saveIndexEntity()
+     */
+    public function testIndexMissingId(): void
+    {
+        $this->exec('search --index');
+        $this->assertExitCode(Command::CODE_ERROR);
+    }
+
+    /**
+     * Test `index` method on wrong ID
+     *
+     * @return void
+     * @covers ::index()
+     * @covers ::saveIndexEntity()
+     */
+    public function testIndexWrongId(): void
+    {
+        $this->exec('search --index abcdefghi');
+        $this->assertExitCode(Command::CODE_ERROR);
     }
 
     /**
@@ -108,11 +145,38 @@ class SearchCommandTest extends TestCase
      *
      * @return void
      * @covers ::delete()
+     * @covers ::removeIndexEntity()
      */
     public function testDelete(): void
     {
-        $this->exec('search --delete');
+        $this->exec('search --delete 1');
         $this->assertExitCode(Command::CODE_SUCCESS);
+    }
+
+    /**
+     * Test `delete` method on missing ID
+     *
+     * @return void
+     * @covers ::delete()
+     * @covers ::removeIndexEntity()
+     */
+    public function testDeleteMissingId(): void
+    {
+        $this->exec('search --delete');
+        $this->assertExitCode(Command::CODE_ERROR);
+    }
+
+    /**
+     * Test `delete` method on wrong ID
+     *
+     * @return void
+     * @covers ::delete()
+     * @covers ::removeIndexEntity()
+     */
+    public function testDeleteWrongId(): void
+    {
+        $this->exec('search --delete abcdefghi');
+        $this->assertExitCode(Command::CODE_ERROR);
     }
 
     /**
@@ -120,6 +184,7 @@ class SearchCommandTest extends TestCase
      *
      * @return void
      * @covers ::clear()
+     * @covers ::removeIndexEntity()
      */
     public function testClear(): void
     {
