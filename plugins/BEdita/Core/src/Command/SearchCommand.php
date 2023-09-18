@@ -31,6 +31,15 @@ use Cake\Datasource\EntityInterface;
  * - `delete`: delete an object from index
  * - `clear`: clear index
  *
+ * Usage:
+ *
+ * ```bash
+ * bin/cake search --reindex
+ * bin/cake search --index 25
+ * bin/cake search --clear
+ * bin/cake search --delete 25
+ * ```
+ *
  * @since 5.14.0
  * @property \BEdita\Core\Model\Table\ObjectsTable $Objects
  */
