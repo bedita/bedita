@@ -58,6 +58,13 @@ class SearchCommand extends Command
     ];
 
     /**
+     * Dry run flag.
+     *
+     * @var bool
+     */
+    protected $dryrun = false;
+
+    /**
      * @inheritDoc
      */
     public function buildOptionParser(ConsoleOptionParser $parser): ConsoleOptionParser
@@ -80,6 +87,10 @@ class SearchCommand extends Command
             'help' => 'Clear index by deleting all data.',
             'required' => false,
         ]);
+        $parser->addOption('dry-run', [
+            'help' => 'Dry run, do not perform any operation.',
+            'required' => false,
+        ]);
 
         return $parser;
     }
@@ -94,6 +105,7 @@ class SearchCommand extends Command
         $message = empty($operation) ? $this->getOptionParser()->help() : 'Perform ' . $operation . ' operation';
         $io->out($message);
         $this->Objects = $this->fetchTable('Objects');
+        $this->dryrun = $args->getOption('dry-run') !== null;
 
         return empty($operation) ? Command::CODE_ERROR : $this->{$operation}($args, $io);
     }
@@ -200,8 +212,17 @@ class SearchCommand extends Command
     protected function saveIndexEntity(EntityInterface $entity, ConsoleIo $io): void
     {
         foreach ($this->Objects->getSearchAdapters() as $adapter) {
-            $io->out('Save index ' . $entity->id . ' [' . $entity->uname . '] [Adapter: ' . get_class($adapter) . ']');
-            $adapter->indexResource($entity, 'afterSave');
+            $io->out(
+                sprintf(
+                    'Index %s [%s] [Adapter: %s]',
+                    $entity->id,
+                    $entity->uname,
+                    get_class($adapter)
+                )
+            );
+            if (!$this->dryrun) {
+                $adapter->indexResource($entity, 'afterSave');
+            }
         }
     }
 
@@ -215,8 +236,17 @@ class SearchCommand extends Command
     protected function removeIndexEntity(EntityInterface $entity, ConsoleIo $io): void
     {
         foreach ($this->Objects->getSearchAdapters() as $adapter) {
-            $io->out('Remove index ' . $entity->id . ' [' . $entity->uname . '] [Adapter: ' . get_class($adapter) . ']');
-            $adapter->indexResource($entity, 'afterDelete');
+            $io->out(
+                sprintf(
+                    'Remove index %s [%s] [Adapter: %s]',
+                    $entity->id,
+                    $entity->uname,
+                    get_class($adapter)
+                )
+            );
+            if (!$this->dryrun) {
+                $adapter->indexResource($entity, 'afterDelete');
+            }
         }
     }
 }
