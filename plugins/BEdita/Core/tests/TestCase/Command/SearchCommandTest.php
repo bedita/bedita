@@ -80,7 +80,9 @@ class SearchCommandTest extends TestCase
      *
      * @return void
      * @covers ::reindex()
+     * @covers ::doMultiIndex()
      * @covers ::saveIndexEntity()
+     * @covers ::doIndexResource()
      */
     public function testReindex(): void
     {
@@ -93,7 +95,9 @@ class SearchCommandTest extends TestCase
      *
      * @return void
      * @covers ::reindex()
+     * @covers ::doMultiIndex()
      * @covers ::saveIndexEntity()
+     * @covers ::doIndexResource()
      */
     public function testReindexByTypes(): void
     {
@@ -102,15 +106,47 @@ class SearchCommandTest extends TestCase
     }
 
     /**
+     * Test `clear` method
+     *
+     * @return void
+     * @covers ::clear()
+     * @covers ::doMultiIndex()
+     * @covers ::removeIndexEntity()
+     * @covers ::doIndexResource()
+     */
+    public function testClear(): void
+    {
+        $this->exec('search --clear');
+        $this->assertExitCode(Command::CODE_SUCCESS);
+    }
+
+    /**
+     * Test `clear` method by types
+     *
+     * @return void
+     * @covers ::clear()
+     * @covers ::doMultiIndex()
+     * @covers ::removeIndexEntity()
+     * @covers ::doIndexResource()
+     */
+    public function testClearByType(): void
+    {
+        $this->exec('search --clear documents,profiles');
+        $this->assertExitCode(Command::CODE_SUCCESS);
+    }
+
+    /**
      * Test `index` method
      *
      * @return void
      * @covers ::index()
+     * @covers ::doSingleIndex()
      * @covers ::saveIndexEntity()
+     * @covers ::doIndexResource()
      */
     public function testIndex(): void
     {
-        $this->exec('search --index 1');
+        $this->exec('search --index 2');
         $this->assertExitCode(Command::CODE_SUCCESS);
     }
 
@@ -119,7 +155,9 @@ class SearchCommandTest extends TestCase
      *
      * @return void
      * @covers ::index()
+     * @covers ::doSingleIndex()
      * @covers ::saveIndexEntity()
+     * @covers ::doIndexResource()
      */
     public function testIndexMissingId(): void
     {
@@ -132,7 +170,9 @@ class SearchCommandTest extends TestCase
      *
      * @return void
      * @covers ::index()
+     * @covers ::doSingleIndex()
      * @covers ::saveIndexEntity()
+     * @covers ::doIndexResource()
      */
     public function testIndexWrongId(): void
     {
@@ -145,11 +185,13 @@ class SearchCommandTest extends TestCase
      *
      * @return void
      * @covers ::delete()
+     * @covers ::doSingleIndex()
      * @covers ::removeIndexEntity()
+     * @covers ::doIndexResource()
      */
     public function testDelete(): void
     {
-        $this->exec('search --delete 1');
+        $this->exec('search --delete 2');
         $this->assertExitCode(Command::CODE_SUCCESS);
     }
 
@@ -158,7 +200,9 @@ class SearchCommandTest extends TestCase
      *
      * @return void
      * @covers ::delete()
+     * @covers ::doSingleIndex()
      * @covers ::removeIndexEntity()
+     * @covers ::doIndexResource()
      */
     public function testDeleteMissingId(): void
     {
@@ -171,24 +215,13 @@ class SearchCommandTest extends TestCase
      *
      * @return void
      * @covers ::delete()
+     * @covers ::doSingleIndex()
      * @covers ::removeIndexEntity()
+     * @covers ::doIndexResource()
      */
     public function testDeleteWrongId(): void
     {
         $this->exec('search --delete abcdefghi');
         $this->assertExitCode(Command::CODE_ERROR);
-    }
-
-    /**
-     * Test `clear` method
-     *
-     * @return void
-     * @covers ::clear()
-     * @covers ::removeIndexEntity()
-     */
-    public function testClear(): void
-    {
-        $this->exec('search --clear');
-        $this->assertExitCode(Command::CODE_SUCCESS);
     }
 }

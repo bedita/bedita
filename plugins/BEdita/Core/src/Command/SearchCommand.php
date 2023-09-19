@@ -19,6 +19,7 @@ use Cake\Console\Arguments;
 use Cake\Console\ConsoleIo;
 use Cake\Console\ConsoleOptionParser;
 use Cake\Datasource\EntityInterface;
+use Cake\Utility\Hash;
 
 /**
  * Search command.
@@ -119,69 +120,7 @@ class SearchCommand extends Command
      */
     protected function reindex(Arguments $args, ConsoleIo $io): int
     {
-        $id = 1; // this is admin object, we don't want to reindex it
-        $types = array_filter(explode(',', (string)$args->getOption('reindex')));
-        $query = !empty($types) ? $this->Objects->find('type', $types) : $this->Objects->find();
-        foreach ($query->where(['id >' => $id])->toArray() as $obj) {
-            $this->saveIndexEntity($obj, $io);
-            $id = $obj->id;
-        }
-
-        return Command::CODE_SUCCESS;
-    }
-
-    /**
-     * Perform index on single object by ID.
-     *
-     * @param \Cake\Console\Arguments $args The arguments
-     * @param \Cake\Console\ConsoleIo $io The io console
-     * @return int
-     */
-    protected function index(Arguments $args, ConsoleIo $io): int
-    {
-        $id = $args->getOption('index');
-        if (empty($id)) {
-            $io->error('Missing object ID');
-
-            return Command::CODE_ERROR;
-        }
-        try {
-            $obj = $this->Objects->find()->where(['id' => $id])->firstOrFail();
-            $this->saveIndexEntity($obj, $io);
-        } catch (\Exception $e) {
-            $io->error($e->getMessage());
-
-            return Command::CODE_ERROR;
-        }
-
-        return Command::CODE_SUCCESS;
-    }
-
-    /**
-     * Perform delete on single object by ID.
-     *
-     * @param \Cake\Console\Arguments $args The arguments
-     * @param \Cake\Console\ConsoleIo $io The io console
-     * @return int
-     */
-    protected function delete(Arguments $args, ConsoleIo $io): int
-    {
-        $id = $args->getOption('delete');
-        if (empty($id)) {
-            $io->error('Missing object ID');
-
-            return Command::CODE_ERROR;
-        }
-        try {
-            $obj = $this->Objects->find()->where(['id' => $id])->firstOrFail();
-            $this->removeIndexEntity($obj, $io);
-        } catch (\Exception $e) {
-            $io->error($e->getMessage());
-
-            return Command::CODE_ERROR;
-        }
-
-        return Command::CODE_SUCCESS;
+        return $this->doMultiIndex($args, $io, 'reindex', 'saveIndexEntity');
     }
 
     /**
@@ -193,13 +132,31 @@ class SearchCommand extends Command
      */
     protected function clear(Arguments $args, ConsoleIo $io): int
     {
-        $id = 1;
-        foreach ($this->Objects->find()->where(['id >' => $id])->toArray() as $obj) {
-            $this->removeIndexEntity($obj, $io);
-            $id = $obj->id;
-        }
+        return $this->doMultiIndex($args, $io, 'clear', 'removeIndexEntity');
+    }
 
-        return Command::CODE_SUCCESS;
+    /**
+     * Perform index on single object by ID.
+     *
+     * @param \Cake\Console\Arguments $args The arguments
+     * @param \Cake\Console\ConsoleIo $io The io console
+     * @return int
+     */
+    protected function index(Arguments $args, ConsoleIo $io): int
+    {
+        return $this->doSingleIndex($args, $io, 'index', 'saveIndexEntity');
+    }
+
+    /**
+     * Perform delete on single object by ID.
+     *
+     * @param \Cake\Console\Arguments $args The arguments
+     * @param \Cake\Console\ConsoleIo $io The io console
+     * @return int
+     */
+    protected function delete(Arguments $args, ConsoleIo $io): int
+    {
+        return $this->doSingleIndex($args, $io, 'delete', 'removeIndexEntity');
     }
 
     /**
@@ -211,19 +168,7 @@ class SearchCommand extends Command
      */
     protected function saveIndexEntity(EntityInterface $entity, ConsoleIo $io): void
     {
-        foreach ($this->Objects->getSearchAdapters() as $adapter) {
-            $io->out(
-                sprintf(
-                    'Index %s [%s] [Adapter: %s]',
-                    $entity->id,
-                    $entity->uname,
-                    get_class($adapter)
-                )
-            );
-            if (!$this->dryrun) {
-                $adapter->indexResource($entity, 'afterSave');
-            }
-        }
+        $this->doIndexResource($entity, $io, 'afterSave');
     }
 
     /**
@@ -235,17 +180,98 @@ class SearchCommand extends Command
      */
     protected function removeIndexEntity(EntityInterface $entity, ConsoleIo $io): void
     {
-        foreach ($this->Objects->getSearchAdapters() as $adapter) {
+        $this->doIndexResource($entity, $io, 'afterDelete');
+    }
+
+    /**
+     * Perform index on multiple objects.
+     * If no type is specified, all enabled types are indexed.
+     * If a type is specified, only objects of that type are indexed.
+     *
+     * @param \Cake\Console\Arguments $args The arguments
+     * @param \Cake\Console\ConsoleIo $io The console io
+     * @param string $operation The operation
+     * @param string $method The method to call
+     * @return int
+     */
+    protected function doMultiIndex(Arguments $args, ConsoleIo $io, string $operation, string $method): int
+    {
+        $types = array_filter(explode(',', (string)$args->getOption($operation)));
+        if (empty($types)) {
+            $result = $this->fetchTable('ObjectTypes')->find()->where(['enabled' => true])->toArray();
+            $types = (array)Hash::extract($result, '{n}.name');
+        }
+        foreach ($types as $type) {
+            $table = $this->fetchTable($type);
+            $query = $table->find('type', [$type])->where(['deleted' => false]);
+            foreach ($query->toArray() as $obj) {
+                try {
+                    $this->{$method}($obj, $io);
+                } catch (\Exception $e) {
+                    $io->error($e->getMessage());
+
+                    return Command::CODE_ERROR;
+                }
+            }
+        }
+
+        return Command::CODE_SUCCESS;
+    }
+
+    /**
+     * Perform index on single object by ID.
+     *
+     * @param \Cake\Console\Arguments $args The arguments
+     * @param \Cake\Console\ConsoleIo $io The console io
+     * @param string $operation The operation
+     * @param string $method The method to call
+     * @return int
+     */
+    protected function doSingleIndex(Arguments $args, ConsoleIo $io, string $operation, string $method): int
+    {
+        $id = $args->getOption($operation);
+        if (empty($id)) {
+            $io->error('Missing object ID');
+
+            return Command::CODE_ERROR;
+        }
+        try {
+            $obj = $this->Objects->find()->where(['id' => $id])->firstOrFail();
+            $type = $obj->type;
+            $table = $this->fetchTable($type);
+            $obj = $table->get($id);
+            $this->{$method}($obj, $io);
+        } catch (\Exception $e) {
+            $io->error($e->getMessage());
+
+            return Command::CODE_ERROR;
+        }
+
+        return Command::CODE_SUCCESS;
+    }
+
+    /**
+     * Save index for entity using all available adapters.
+     *
+     * @param \Cake\Datasource\EntityInterface $entity The entity
+     * @param \Cake\Console\ConsoleIo $io The console io
+     * @param string $operation The operation
+     * @return void
+     */
+    protected function doIndexResource(EntityInterface $entity, ConsoleIo $io, string $operation): void
+    {
+        $table = $this->fetchTable($entity->getSource());
+        foreach ($table->getSearchAdapters() as $adapter) {
             $io->out(
                 sprintf(
-                    'Remove index %s [%s] [Adapter: %s]',
+                    'Index %s [%s] [Adapter: %s]',
                     $entity->id,
                     $entity->uname,
                     get_class($adapter)
                 )
             );
             if (!$this->dryrun) {
-                $adapter->indexResource($entity, 'afterDelete');
+                $adapter->indexResource($entity, $operation);
             }
         }
     }
