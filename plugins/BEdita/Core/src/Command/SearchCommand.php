@@ -267,10 +267,10 @@ class SearchCommand extends Command
      *
      * @param \Cake\Datasource\EntityInterface $entity The entity
      * @param \Cake\Console\ConsoleIo $io The console io
-     * @param string $operation The operation, can be `edit` or `delete`
+     * @param string $indexOperation The index operation, can be `edit` or `delete`
      * @return void
      */
-    protected function doIndexResource(EntityInterface $entity, ConsoleIo $io, string $operation): void
+    protected function doIndexResource(EntityInterface $entity, ConsoleIo $io, string $indexOperation): void
     {
         $table = $this->fetchTable($entity->getSource());
         foreach ($table->getSearchAdapters() as $adapter) {
@@ -283,7 +283,7 @@ class SearchCommand extends Command
                 )
             );
             if (!$this->dryrun) {
-                $adapter->indexResource($entity, $operation);
+                $adapter->indexResource($entity, $indexOperation);
             }
         }
     }
