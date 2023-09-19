@@ -214,6 +214,7 @@ class SearchCommand extends Command
             $types = (array)Hash::extract($result, '{n}.name');
         }
         foreach ($types as $type) {
+            $io->out(sprintf('Perform "%s" on type "%s"', $operation, $type));
             $table = $this->fetchTable($type);
             $query = $table->find('type', [$type])->where(['deleted' => false]);
             foreach ($query->toArray() as $obj) {

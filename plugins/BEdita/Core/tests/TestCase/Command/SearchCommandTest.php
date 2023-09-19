@@ -125,8 +125,6 @@ class SearchCommandTest extends TestCase
         Configure::write('Search.adapters.dummy', [
             'className' => $adapter2,
         ]);
-        $table = $this->fetchTable('Documents');
-        $table->addBehavior('BEdita/Core.Searchable');
         $this->exec('search --reindex');
         static::assertGreaterThan(0, $adapter1->afterSaveCount);
         static::assertLessThan(0, $adapter2->afterSaveCount);
@@ -181,8 +179,6 @@ class SearchCommandTest extends TestCase
         Configure::write('Search.adapters.dummy', [
             'className' => $adapter2,
         ]);
-        $table = $this->fetchTable('Documents');
-        $table->addBehavior('BEdita/Core.Searchable');
         $this->exec('search --reindex documents,profiles');
         static::assertGreaterThan(0, $adapter1->afterSaveCount);
         static::assertLessThan(0, $adapter2->afterSaveCount);
@@ -237,8 +233,6 @@ class SearchCommandTest extends TestCase
         Configure::write('Search.adapters.dummy', [
             'className' => $adapter2,
         ]);
-        $table = $this->fetchTable('Documents');
-        $table->addBehavior('BEdita/Core.Searchable');
         $this->exec('search --clear');
         static::assertGreaterThan(0, $adapter1->afterDeleteCount);
         static::assertLessThan(0, $adapter2->afterDeleteCount);
@@ -293,8 +287,6 @@ class SearchCommandTest extends TestCase
         Configure::write('Search.adapters.dummy', [
             'className' => $adapter2,
         ]);
-        $table = $this->fetchTable('Documents');
-        $table->addBehavior('BEdita/Core.Searchable');
         $this->exec('search --clear documents,profiles');
         static::assertGreaterThan(0, $adapter1->afterDeleteCount);
         static::assertLessThan(0, $adapter2->afterDeleteCount);
@@ -349,8 +341,6 @@ class SearchCommandTest extends TestCase
         Configure::write('Search.adapters.dummy', [
             'className' => $adapter2,
         ]);
-        $table = $this->fetchTable('Documents');
-        $table->addBehavior('BEdita/Core.Searchable');
         $this->exec('search --index 2');
         static::assertSame(1, $adapter1->afterSaveCount);
         static::assertSame(-1, $adapter2->afterSaveCount);
@@ -435,8 +425,6 @@ class SearchCommandTest extends TestCase
         Configure::write('Search.adapters.dummy', [
             'className' => $adapter2,
         ]);
-        $table = $this->fetchTable('Documents');
-        $table->addBehavior('BEdita/Core.Searchable');
         $this->exec('search --delete 2');
         static::assertSame(1, $adapter1->afterDeleteCount);
         static::assertSame(-1, $adapter2->afterDeleteCount);
