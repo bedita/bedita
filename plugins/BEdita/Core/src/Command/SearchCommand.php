@@ -27,18 +27,30 @@ use Cake\Utility\Hash;
  * This provides a command line interface to handle search indexes and data.
  * Operations available are:
  *
- * - `reindex`: reindex all objects in the system
- * - `index`: index a single object
- * - `delete`: delete an object from index
- * - `clear`: clear index
+ * - `--reindex`: reindex all objects in the system
+ * - `--index`: index a single object
+ * - `--delete`: delete an object from index
+ * - `--clear`: clear index
  *
- * Usage:
+ * Options available are:
+ *
+ * - `--dry-run`: dry run, do not perform any operation
+ *
+ * Usage examples:
  *
  * ```bash
  * bin/cake search --reindex
+ * bin/cake search --reindex documents,events
+ * bin/cake search --reindex --dry-run
+ * bin/cake search --reindex documents,events --dry-run
  * bin/cake search --index 25
+ * bin/cake search --index 25 --dry-run
  * bin/cake search --clear
+ * bin/cake search --clear documents,events
+ * bin/cake search --clear --dry-run
+ * bin/cake search --clear documents,events --dry-run
  * bin/cake search --delete 25
+ * bin/cake search --delete 25 --dry-run
  * ```
  *
  * @since 5.14.0
@@ -190,8 +202,8 @@ class SearchCommand extends Command
      *
      * @param \Cake\Console\Arguments $args The arguments
      * @param \Cake\Console\ConsoleIo $io The console io
-     * @param string $operation The operation
-     * @param string $method The method to call
+     * @param string $operation The operation, can be `reindex` or `clear`
+     * @param string $method The method to call, can be `saveIndexEntity` or `removeIndexEntity`
      * @return int
      */
     protected function doMultiIndex(Arguments $args, ConsoleIo $io, string $operation, string $method): int
@@ -223,8 +235,8 @@ class SearchCommand extends Command
      *
      * @param \Cake\Console\Arguments $args The arguments
      * @param \Cake\Console\ConsoleIo $io The console io
-     * @param string $operation The operation
-     * @param string $method The method to call
+     * @param string $operation The operation, can be `index` or `delete`
+     * @param string $method The method to call, can be `saveIndexEntity` or `removeIndexEntity`
      * @return int
      */
     protected function doSingleIndex(Arguments $args, ConsoleIo $io, string $operation, string $method): int
@@ -255,7 +267,7 @@ class SearchCommand extends Command
      *
      * @param \Cake\Datasource\EntityInterface $entity The entity
      * @param \Cake\Console\ConsoleIo $io The console io
-     * @param string $operation The operation
+     * @param string $operation The operation, can be `afterSave` or `afterDelete`
      * @return void
      */
     protected function doIndexResource(EntityInterface $entity, ConsoleIo $io, string $operation): void
