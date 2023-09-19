@@ -180,7 +180,7 @@ class SearchCommand extends Command
      */
     protected function saveIndexEntity(EntityInterface $entity, ConsoleIo $io): void
     {
-        $this->doIndexResource($entity, $io, 'afterSave');
+        $this->doIndexResource($entity, $io, 'edit');
     }
 
     /**
@@ -192,7 +192,7 @@ class SearchCommand extends Command
      */
     protected function removeIndexEntity(EntityInterface $entity, ConsoleIo $io): void
     {
-        $this->doIndexResource($entity, $io, 'afterDelete');
+        $this->doIndexResource($entity, $io, 'delete');
     }
 
     /**
@@ -267,7 +267,7 @@ class SearchCommand extends Command
      *
      * @param \Cake\Datasource\EntityInterface $entity The entity
      * @param \Cake\Console\ConsoleIo $io The console io
-     * @param string $operation The operation, can be `afterSave` or `afterDelete`
+     * @param string $operation The operation, can be `edit` or `delete`
      * @return void
      */
     protected function doIndexResource(EntityInterface $entity, ConsoleIo $io, string $operation): void

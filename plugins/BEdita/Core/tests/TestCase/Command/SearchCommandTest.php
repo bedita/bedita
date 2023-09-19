@@ -14,8 +14,11 @@ declare(strict_types=1);
  */
 namespace BEdita\Core\Test\TestCase\Command;
 
+use BEdita\Core\Search\Adapter\SimpleAdapter;
 use Cake\Command\Command;
 use Cake\Console\TestSuite\ConsoleIntegrationTestTrait;
+use Cake\Core\Configure;
+use Cake\Datasource\EntityInterface;
 use Cake\TestSuite\TestCase;
 
 /**
@@ -63,13 +66,13 @@ class SearchCommandTest extends TestCase
     }
 
     /**
-     * Test `execute` method
+     * Test `execute` method with no options
      *
      * @return void
      * @covers ::execute()
      * @covers ::operation()
      */
-    public function testExecute(): void
+    public function testExecuteNoOptions(): void
     {
         $this->exec('search');
         $this->assertExitCode(Command::CODE_ERROR);
@@ -86,7 +89,48 @@ class SearchCommandTest extends TestCase
      */
     public function testReindex(): void
     {
+        $adapter1 = new class extends SimpleAdapter
+        {
+            public $afterDeleteCount = 0;
+            public $afterSaveCount = 0;
+            public function indexResource(EntityInterface $entity, string $operation): void
+            {
+                if ($operation === 'edit') {
+                    $this->afterSaveCount++;
+                }
+
+                if ($operation === 'delete') {
+                    $this->afterDeleteCount++;
+                }
+            }
+        };
+        $adapter2 = new class extends SimpleAdapter
+        {
+            public $afterDeleteCount = 0;
+            public $afterSaveCount = 0;
+            public function indexResource(EntityInterface $entity, string $operation): void
+            {
+                if ($operation === 'edit') {
+                    $this->afterSaveCount--;
+                }
+
+                if ($operation === 'delete') {
+                    $this->afterDeleteCount--;
+                }
+            }
+        };
+        Configure::write('Search.adapters.default', [
+            'className' => $adapter1,
+        ]);
+        Configure::write('Search.adapters.dummy', [
+            'className' => $adapter2,
+        ]);
+        $table = $this->fetchTable('Documents');
+        $table->addBehavior('BEdita/Core.Searchable');
         $this->exec('search --reindex');
+        static::assertGreaterThan(0, $adapter1->afterSaveCount);
+        static::assertLessThan(0, $adapter2->afterSaveCount);
+        static::assertSame(0, $adapter1->afterSaveCount + $adapter2->afterSaveCount);
         $this->assertExitCode(Command::CODE_SUCCESS);
     }
 
@@ -101,7 +145,48 @@ class SearchCommandTest extends TestCase
      */
     public function testReindexByTypes(): void
     {
+        $adapter1 = new class extends SimpleAdapter
+        {
+            public $afterDeleteCount = 0;
+            public $afterSaveCount = 0;
+            public function indexResource(EntityInterface $entity, string $operation): void
+            {
+                if ($operation === 'edit') {
+                    $this->afterSaveCount++;
+                }
+
+                if ($operation === 'delete') {
+                    $this->afterDeleteCount++;
+                }
+            }
+        };
+        $adapter2 = new class extends SimpleAdapter
+        {
+            public $afterDeleteCount = 0;
+            public $afterSaveCount = 0;
+            public function indexResource(EntityInterface $entity, string $operation): void
+            {
+                if ($operation === 'edit') {
+                    $this->afterSaveCount--;
+                }
+
+                if ($operation === 'delete') {
+                    $this->afterDeleteCount--;
+                }
+            }
+        };
+        Configure::write('Search.adapters.default', [
+            'className' => $adapter1,
+        ]);
+        Configure::write('Search.adapters.dummy', [
+            'className' => $adapter2,
+        ]);
+        $table = $this->fetchTable('Documents');
+        $table->addBehavior('BEdita/Core.Searchable');
         $this->exec('search --reindex documents,profiles');
+        static::assertGreaterThan(0, $adapter1->afterSaveCount);
+        static::assertLessThan(0, $adapter2->afterSaveCount);
+        static::assertSame(0, $adapter1->afterSaveCount + $adapter2->afterSaveCount);
         $this->assertExitCode(Command::CODE_SUCCESS);
     }
 
@@ -116,7 +201,48 @@ class SearchCommandTest extends TestCase
      */
     public function testClear(): void
     {
+        $adapter1 = new class extends SimpleAdapter
+        {
+            public $afterDeleteCount = 0;
+            public $afterSaveCount = 0;
+            public function indexResource(EntityInterface $entity, string $operation): void
+            {
+                if ($operation === 'edit') {
+                    $this->afterSaveCount++;
+                }
+
+                if ($operation === 'delete') {
+                    $this->afterDeleteCount++;
+                }
+            }
+        };
+        $adapter2 = new class extends SimpleAdapter
+        {
+            public $afterDeleteCount = 0;
+            public $afterSaveCount = 0;
+            public function indexResource(EntityInterface $entity, string $operation): void
+            {
+                if ($operation === 'edit') {
+                    $this->afterSaveCount--;
+                }
+
+                if ($operation === 'delete') {
+                    $this->afterDeleteCount--;
+                }
+            }
+        };
+        Configure::write('Search.adapters.default', [
+            'className' => $adapter1,
+        ]);
+        Configure::write('Search.adapters.dummy', [
+            'className' => $adapter2,
+        ]);
+        $table = $this->fetchTable('Documents');
+        $table->addBehavior('BEdita/Core.Searchable');
         $this->exec('search --clear');
+        static::assertGreaterThan(0, $adapter1->afterDeleteCount);
+        static::assertLessThan(0, $adapter2->afterDeleteCount);
+        static::assertSame(0, $adapter1->afterDeleteCount + $adapter2->afterDeleteCount);
         $this->assertExitCode(Command::CODE_SUCCESS);
     }
 
@@ -131,7 +257,48 @@ class SearchCommandTest extends TestCase
      */
     public function testClearByType(): void
     {
+        $adapter1 = new class extends SimpleAdapter
+        {
+            public $afterDeleteCount = 0;
+            public $afterSaveCount = 0;
+            public function indexResource(EntityInterface $entity, string $operation): void
+            {
+                if ($operation === 'edit') {
+                    $this->afterSaveCount++;
+                }
+
+                if ($operation === 'delete') {
+                    $this->afterDeleteCount++;
+                }
+            }
+        };
+        $adapter2 = new class extends SimpleAdapter
+        {
+            public $afterDeleteCount = 0;
+            public $afterSaveCount = 0;
+            public function indexResource(EntityInterface $entity, string $operation): void
+            {
+                if ($operation === 'edit') {
+                    $this->afterSaveCount--;
+                }
+
+                if ($operation === 'delete') {
+                    $this->afterDeleteCount--;
+                }
+            }
+        };
+        Configure::write('Search.adapters.default', [
+            'className' => $adapter1,
+        ]);
+        Configure::write('Search.adapters.dummy', [
+            'className' => $adapter2,
+        ]);
+        $table = $this->fetchTable('Documents');
+        $table->addBehavior('BEdita/Core.Searchable');
         $this->exec('search --clear documents,profiles');
+        static::assertGreaterThan(0, $adapter1->afterDeleteCount);
+        static::assertLessThan(0, $adapter2->afterDeleteCount);
+        static::assertSame(0, $adapter1->afterDeleteCount + $adapter2->afterDeleteCount);
         $this->assertExitCode(Command::CODE_SUCCESS);
     }
 
@@ -146,7 +313,48 @@ class SearchCommandTest extends TestCase
      */
     public function testIndex(): void
     {
+        $adapter1 = new class extends SimpleAdapter
+        {
+            public $afterDeleteCount = 0;
+            public $afterSaveCount = 0;
+            public function indexResource(EntityInterface $entity, string $operation): void
+            {
+                if ($operation === 'edit') {
+                    $this->afterSaveCount++;
+                }
+
+                if ($operation === 'delete') {
+                    $this->afterDeleteCount++;
+                }
+            }
+        };
+        $adapter2 = new class extends SimpleAdapter
+        {
+            public $afterDeleteCount = 0;
+            public $afterSaveCount = 0;
+            public function indexResource(EntityInterface $entity, string $operation): void
+            {
+                if ($operation === 'edit') {
+                    $this->afterSaveCount--;
+                }
+
+                if ($operation === 'delete') {
+                    $this->afterDeleteCount--;
+                }
+            }
+        };
+        Configure::write('Search.adapters.default', [
+            'className' => $adapter1,
+        ]);
+        Configure::write('Search.adapters.dummy', [
+            'className' => $adapter2,
+        ]);
+        $table = $this->fetchTable('Documents');
+        $table->addBehavior('BEdita/Core.Searchable');
         $this->exec('search --index 2');
+        static::assertSame(1, $adapter1->afterSaveCount);
+        static::assertSame(-1, $adapter2->afterSaveCount);
+        static::assertSame(0, $adapter1->afterSaveCount + $adapter2->afterSaveCount);
         $this->assertExitCode(Command::CODE_SUCCESS);
     }
 
@@ -191,7 +399,48 @@ class SearchCommandTest extends TestCase
      */
     public function testDelete(): void
     {
+        $adapter1 = new class extends SimpleAdapter
+        {
+            public $afterDeleteCount = 0;
+            public $afterSaveCount = 0;
+            public function indexResource(EntityInterface $entity, string $operation): void
+            {
+                if ($operation === 'edit') {
+                    $this->afterSaveCount++;
+                }
+
+                if ($operation === 'delete') {
+                    $this->afterDeleteCount++;
+                }
+            }
+        };
+        $adapter2 = new class extends SimpleAdapter
+        {
+            public $afterDeleteCount = 0;
+            public $afterSaveCount = 0;
+            public function indexResource(EntityInterface $entity, string $operation): void
+            {
+                if ($operation === 'edit') {
+                    $this->afterSaveCount--;
+                }
+
+                if ($operation === 'delete') {
+                    $this->afterDeleteCount--;
+                }
+            }
+        };
+        Configure::write('Search.adapters.default', [
+            'className' => $adapter1,
+        ]);
+        Configure::write('Search.adapters.dummy', [
+            'className' => $adapter2,
+        ]);
+        $table = $this->fetchTable('Documents');
+        $table->addBehavior('BEdita/Core.Searchable');
         $this->exec('search --delete 2');
+        static::assertSame(1, $adapter1->afterDeleteCount);
+        static::assertSame(-1, $adapter2->afterDeleteCount);
+        static::assertSame(0, $adapter1->afterDeleteCount + $adapter2->afterDeleteCount);
         $this->assertExitCode(Command::CODE_SUCCESS);
     }
 
