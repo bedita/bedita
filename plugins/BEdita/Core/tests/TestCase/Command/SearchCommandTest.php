@@ -84,7 +84,6 @@ class SearchCommandTest extends TestCase
      * @return void
      * @covers ::reindex()
      * @covers ::doMultiIndex()
-     * @covers ::saveIndexEntity()
      * @covers ::doIndexResource()
      */
     public function testReindex(): void
@@ -138,7 +137,6 @@ class SearchCommandTest extends TestCase
      * @return void
      * @covers ::reindex()
      * @covers ::doMultiIndex()
-     * @covers ::saveIndexEntity()
      * @covers ::doIndexResource()
      */
     public function testReindexByTypes(): void
@@ -192,7 +190,6 @@ class SearchCommandTest extends TestCase
      * @return void
      * @covers ::clear()
      * @covers ::doMultiIndex()
-     * @covers ::removeIndexEntity()
      * @covers ::doIndexResource()
      */
     public function testClear(): void
@@ -246,7 +243,6 @@ class SearchCommandTest extends TestCase
      * @return void
      * @covers ::clear()
      * @covers ::doMultiIndex()
-     * @covers ::removeIndexEntity()
      * @covers ::doIndexResource()
      */
     public function testClearByType(): void
@@ -300,7 +296,6 @@ class SearchCommandTest extends TestCase
      * @return void
      * @covers ::index()
      * @covers ::doSingleIndex()
-     * @covers ::saveIndexEntity()
      * @covers ::doIndexResource()
      */
     public function testIndex(): void
@@ -354,7 +349,6 @@ class SearchCommandTest extends TestCase
      * @return void
      * @covers ::index()
      * @covers ::doSingleIndex()
-     * @covers ::saveIndexEntity()
      * @covers ::doIndexResource()
      */
     public function testIndexMissingId(): void
@@ -369,7 +363,6 @@ class SearchCommandTest extends TestCase
      * @return void
      * @covers ::index()
      * @covers ::doSingleIndex()
-     * @covers ::saveIndexEntity()
      * @covers ::doIndexResource()
      */
     public function testIndexWrongId(): void
@@ -384,7 +377,6 @@ class SearchCommandTest extends TestCase
      * @return void
      * @covers ::delete()
      * @covers ::doSingleIndex()
-     * @covers ::removeIndexEntity()
      * @covers ::doIndexResource()
      */
     public function testDelete(): void
@@ -438,7 +430,6 @@ class SearchCommandTest extends TestCase
      * @return void
      * @covers ::delete()
      * @covers ::doSingleIndex()
-     * @covers ::removeIndexEntity()
      * @covers ::doIndexResource()
      */
     public function testDeleteMissingId(): void
@@ -453,7 +444,6 @@ class SearchCommandTest extends TestCase
      * @return void
      * @covers ::delete()
      * @covers ::doSingleIndex()
-     * @covers ::removeIndexEntity()
      * @covers ::doIndexResource()
      */
     public function testDeleteWrongId(): void

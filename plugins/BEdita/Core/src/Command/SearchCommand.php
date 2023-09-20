@@ -132,7 +132,7 @@ class SearchCommand extends Command
      */
     protected function reindex(Arguments $args, ConsoleIo $io): int
     {
-        return $this->doMultiIndex($args, $io, 'reindex', 'saveIndexEntity');
+        return $this->doMultiIndex($args, $io, 'reindex', 'edit');
     }
 
     /**
@@ -144,7 +144,7 @@ class SearchCommand extends Command
      */
     protected function clear(Arguments $args, ConsoleIo $io): int
     {
-        return $this->doMultiIndex($args, $io, 'clear', 'removeIndexEntity');
+        return $this->doMultiIndex($args, $io, 'clear', 'delete');
     }
 
     /**
@@ -156,7 +156,7 @@ class SearchCommand extends Command
      */
     protected function index(Arguments $args, ConsoleIo $io): int
     {
-        return $this->doSingleIndex($args, $io, 'index', 'saveIndexEntity');
+        return $this->doSingleIndex($args, $io, 'index', 'edit');
     }
 
     /**
@@ -168,31 +168,7 @@ class SearchCommand extends Command
      */
     protected function delete(Arguments $args, ConsoleIo $io): int
     {
-        return $this->doSingleIndex($args, $io, 'delete', 'removeIndexEntity');
-    }
-
-    /**
-     * Save index for entity using all available adapters.
-     *
-     * @param \Cake\Datasource\EntityInterface $entity The entity
-     * @param \Cake\Console\ConsoleIo $io The console io
-     * @return void
-     */
-    protected function saveIndexEntity(EntityInterface $entity, ConsoleIo $io): void
-    {
-        $this->doIndexResource($entity, $io, 'edit');
-    }
-
-    /**
-     * Remove index for entity using all available adapters.
-     *
-     * @param \Cake\Datasource\EntityInterface $entity The entity
-     * @param \Cake\Console\ConsoleIo $io The console io
-     * @return void
-     */
-    protected function removeIndexEntity(EntityInterface $entity, ConsoleIo $io): void
-    {
-        $this->doIndexResource($entity, $io, 'delete');
+        return $this->doSingleIndex($args, $io, 'delete', 'delete');
     }
 
     /**
@@ -203,10 +179,10 @@ class SearchCommand extends Command
      * @param \Cake\Console\Arguments $args The arguments
      * @param \Cake\Console\ConsoleIo $io The console io
      * @param string $operation The operation, can be `reindex` or `clear`
-     * @param string $method The method to call, can be `saveIndexEntity` or `removeIndexEntity`
+     * @param string $indexOperation The index operation, can be `edit` or `delete`
      * @return int
      */
-    protected function doMultiIndex(Arguments $args, ConsoleIo $io, string $operation, string $method): int
+    protected function doMultiIndex(Arguments $args, ConsoleIo $io, string $operation, string $indexOperation): int
     {
         $types = array_filter(explode(',', (string)$args->getOption($operation)));
         if (empty($types)) {
@@ -217,9 +193,9 @@ class SearchCommand extends Command
             $io->out(sprintf('Perform "%s" on type "%s"', $operation, $type));
             $table = $this->fetchTable($type);
             $query = $table->find('type', [$type])->where(['deleted' => false]);
-            foreach ($query->toArray() as $obj) {
+            foreach ($query->toArray() as $entity) {
                 try {
-                    $this->{$method}($obj, $io);
+                    $this->doIndexResource($entity, $io, $indexOperation);
                 } catch (\Exception $e) {
                     $io->error($e->getMessage());
 
@@ -237,10 +213,10 @@ class SearchCommand extends Command
      * @param \Cake\Console\Arguments $args The arguments
      * @param \Cake\Console\ConsoleIo $io The console io
      * @param string $operation The operation, can be `index` or `delete`
-     * @param string $method The method to call, can be `saveIndexEntity` or `removeIndexEntity`
+     * @param string $indexOperation The index operation, can be `edit` or `delete`
      * @return int
      */
-    protected function doSingleIndex(Arguments $args, ConsoleIo $io, string $operation, string $method): int
+    protected function doSingleIndex(Arguments $args, ConsoleIo $io, string $operation, string $indexOperation): int
     {
         $id = $args->getOption($operation);
         if (empty($id)) {
@@ -252,8 +228,8 @@ class SearchCommand extends Command
             $obj = $this->Objects->find()->where(['id' => $id])->firstOrFail();
             $type = $obj->type;
             $table = $this->fetchTable($type);
-            $obj = $table->get($id);
-            $this->{$method}($obj, $io);
+            $entity = $table->get($id);
+            $this->doIndexResource($entity, $io, $indexOperation);
         } catch (\Exception $e) {
             $io->error($e->getMessage());
 
