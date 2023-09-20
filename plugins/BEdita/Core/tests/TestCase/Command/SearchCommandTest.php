@@ -185,6 +185,30 @@ class SearchCommandTest extends TestCase
     }
 
     /**
+     * Test `reindex` method with exception
+     *
+     * @return void
+     * @covers ::reindex()
+     * @covers ::doMultiIndex()
+     * @covers ::doIndexResource()
+     */
+    public function testReindexException(): void
+    {
+        $adapter1 = new class extends SimpleAdapter
+        {
+            public function indexResource(EntityInterface $entity, string $operation): void
+            {
+                throw new \Exception('Test exception');
+            }
+        };
+        Configure::write('Search.adapters.default', [
+            'className' => $adapter1,
+        ]);
+        $this->exec('search --reindex');
+        $this->assertExitCode(Command::CODE_ERROR);
+    }
+
+    /**
      * Test `clear` method
      *
      * @return void
