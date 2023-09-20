@@ -178,24 +178,24 @@ class SearchCommand extends Command
      *
      * @param \Cake\Console\Arguments $args The arguments
      * @param \Cake\Console\ConsoleIo $io The console io
-     * @param string $operation The operation, can be `reindex` or `clear`
-     * @param string $indexOperation The index operation, can be `edit` or `delete`
+     * @param string $cmdOperation The operation, can be `reindex` or `clear`
+     * @param string $idxOperation The index operation, can be `edit` or `delete`
      * @return int
      */
-    protected function doMultiIndex(Arguments $args, ConsoleIo $io, string $operation, string $indexOperation): int
+    protected function doMultiIndex(Arguments $args, ConsoleIo $io, string $cmdOperation, string $idxOperation): int
     {
-        $types = array_filter(explode(',', (string)$args->getOption($operation)));
+        $types = array_filter(explode(',', (string)$args->getOption($cmdOperation)));
         if (empty($types)) {
             $result = $this->fetchTable('ObjectTypes')->find()->where(['enabled' => true])->toArray();
             $types = (array)Hash::extract($result, '{n}.name');
         }
         foreach ($types as $type) {
-            $io->out(sprintf('Perform "%s" on type "%s"', $operation, $type));
+            $io->out(sprintf('Perform "%s" on type "%s"', $cmdOperation, $type));
             $table = $this->fetchTable($type);
             $query = $table->find('type', [$type])->where(['deleted' => false]);
             foreach ($query->toArray() as $entity) {
                 try {
-                    $this->doIndexResource($entity, $io, $indexOperation);
+                    $this->doIndexResource($entity, $io, $idxOperation);
                 } catch (\Exception $e) {
                     $io->error($e->getMessage());
 
@@ -212,13 +212,13 @@ class SearchCommand extends Command
      *
      * @param \Cake\Console\Arguments $args The arguments
      * @param \Cake\Console\ConsoleIo $io The console io
-     * @param string $operation The operation, can be `index` or `delete`
-     * @param string $indexOperation The index operation, can be `edit` or `delete`
+     * @param string $cmdOperation The operation, can be `index` or `delete`
+     * @param string $idxOperation The index operation, can be `edit` or `delete`
      * @return int
      */
-    protected function doSingleIndex(Arguments $args, ConsoleIo $io, string $operation, string $indexOperation): int
+    protected function doSingleIndex(Arguments $args, ConsoleIo $io, string $cmdOperation, string $idxOperation): int
     {
-        $id = $args->getOption($operation);
+        $id = $args->getOption($cmdOperation);
         if (empty($id)) {
             $io->error('Missing object ID');
 
@@ -229,7 +229,7 @@ class SearchCommand extends Command
             $type = $obj->type;
             $table = $this->fetchTable($type);
             $entity = $table->get($id);
-            $this->doIndexResource($entity, $io, $indexOperation);
+            $this->doIndexResource($entity, $io, $idxOperation);
         } catch (\Exception $e) {
             $io->error($e->getMessage());
 
@@ -244,23 +244,24 @@ class SearchCommand extends Command
      *
      * @param \Cake\Datasource\EntityInterface $entity The entity
      * @param \Cake\Console\ConsoleIo $io The console io
-     * @param string $indexOperation The index operation, can be `edit` or `delete`
+     * @param string $idxOperation The index operation, can be `edit` or `delete`
      * @return void
      */
-    protected function doIndexResource(EntityInterface $entity, ConsoleIo $io, string $indexOperation): void
+    protected function doIndexResource(EntityInterface $entity, ConsoleIo $io, string $idxOperation): void
     {
         $table = $this->fetchTable($entity->getSource());
         foreach ($table->getSearchAdapters() as $adapter) {
             $io->out(
                 sprintf(
-                    'Index %s [%s] [Adapter: %s]',
+                    'Index %s [%s] [op: %s] [Adapter: %s]',
                     $entity->id,
                     $entity->uname,
+                    $idxOperation,
                     get_class($adapter)
                 )
             );
             if (!$this->dryrun) {
-                $adapter->indexResource($entity, $indexOperation);
+                $adapter->indexResource($entity, $idxOperation);
             }
         }
     }
