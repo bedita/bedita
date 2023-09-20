@@ -59,10 +59,11 @@ class SearchCommandTest extends TestCase
     {
         $this->exec('search --help');
         $this->assertOutputContains('Interface to handle search indexes and data');
-        $this->assertOutputContains('Clear index');
+        $this->assertOutputContains('Remove index for all or multiple objects');
+        $this->assertOutputContains('Dry run, do not perform any operation');
         $this->assertOutputContains('Delete an object from index');
         $this->assertOutputContains('Index a single object');
-        $this->assertOutputContains('Reindex all objects in the system');
+        $this->assertOutputContains('Reindex all or multiple objects in the system');
     }
 
     /**
@@ -70,7 +71,6 @@ class SearchCommandTest extends TestCase
      *
      * @return void
      * @covers ::execute()
-     * @covers ::operation()
      */
     public function testExecuteNoOptions(): void
     {
