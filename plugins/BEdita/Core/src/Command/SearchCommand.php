@@ -85,7 +85,7 @@ class SearchCommand extends Command
         $parser = parent::buildOptionParser($parser);
         $parser->setDescription('Interface to handle search indexes and data.');
         $parser->addOption('reindex', [
-            'help' => 'Reindex all objects in the system.',
+            'help' => 'Reindex all or multiple objects in the system.',
             'required' => false,
         ]);
         $parser->addOption('index', [
@@ -97,7 +97,7 @@ class SearchCommand extends Command
             'required' => false,
         ]);
         $parser->addOption('clear', [
-            'help' => 'Clear index by deleting all data.',
+            'help' => 'Remove index for all or multiple objects.',
             'required' => false,
         ]);
         $parser->addOption('dry-run', [
@@ -124,7 +124,7 @@ class SearchCommand extends Command
     }
 
     /**
-     * Perform reindex.
+     * Save index for all or multiple objects using all available adapters.
      *
      * @param \Cake\Console\Arguments $args The arguments
      * @param \Cake\Console\ConsoleIo $io The io console
@@ -136,7 +136,7 @@ class SearchCommand extends Command
     }
 
     /**
-     * Perform clear.
+     * Remove index for all or multiple objects using all available adapters.
      *
      * @param \Cake\Console\Arguments $args The arguments
      * @param \Cake\Console\ConsoleIo $io The io console
@@ -148,7 +148,7 @@ class SearchCommand extends Command
     }
 
     /**
-     * Perform index on single object by ID.
+     * Save index on single object by ID using all available adapters.
      *
      * @param \Cake\Console\Arguments $args The arguments
      * @param \Cake\Console\ConsoleIo $io The io console
@@ -160,7 +160,7 @@ class SearchCommand extends Command
     }
 
     /**
-     * Perform delete on single object by ID.
+     * Remove index on single object by ID using all available adapters.
      *
      * @param \Cake\Console\Arguments $args The arguments
      * @param \Cake\Console\ConsoleIo $io The io console
@@ -172,9 +172,9 @@ class SearchCommand extends Command
     }
 
     /**
-     * Perform index on multiple objects.
-     * If no type is specified, all enabled types are indexed.
-     * If a type is specified, only objects of that type are indexed.
+     * Save or remove index on multiple objects.
+     * If no type is specified, all enabled types are processed.
+     * If a type is specified, only objects of that type are processed.
      *
      * @param \Cake\Console\Arguments $args The arguments
      * @param \Cake\Console\ConsoleIo $io The console io
@@ -208,7 +208,7 @@ class SearchCommand extends Command
     }
 
     /**
-     * Perform index on single object by ID.
+     * Save or remove index on single object by ID using all available adapters.
      *
      * @param \Cake\Console\Arguments $args The arguments
      * @param \Cake\Console\ConsoleIo $io The console io
@@ -240,7 +240,7 @@ class SearchCommand extends Command
     }
 
     /**
-     * Save index for entity using all available adapters.
+     * Save or remove index for entity using all available adapters.
      *
      * @param \Cake\Datasource\EntityInterface $entity The entity
      * @param \Cake\Console\ConsoleIo $io The console io
