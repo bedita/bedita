@@ -270,6 +270,7 @@ class FoldersControllerTest extends IntegrationTestCase
         ];
 
         TableRegistry::getTableLocator()->get('Translations')->deleteAll([]);
+        TableRegistry::getTableLocator()->get('Annotations')->deleteAll([]);
         TableRegistry::getTableLocator()->get('Folders')->deleteAll([]);
 
         $this->configRequestHeaders();

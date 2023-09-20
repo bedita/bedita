@@ -600,6 +600,7 @@ class ObjectTypesControllerTest extends IntegrationTestCase
 
         TableRegistry::getTableLocator()->get('Properties')->deleteAll([]);
         TableRegistry::getTableLocator()->get('Translations')->deleteAll([]);
+        TableRegistry::getTableLocator()->get('Annotations')->deleteAll([]);
         TableRegistry::getTableLocator()->get('Objects')->deleteAll([]);
         TableRegistry::getTableLocator()->get('ObjectTypes')->deleteAll([]);
 
