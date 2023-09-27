@@ -42,7 +42,6 @@ use Cake\Utility\Hash;
  * ```
  *
  * @since 5.14.0
- * @property \BEdita\Core\Model\Table\ObjectsTable $Objects
  */
 class BuildSearchIndexCommand extends Command
 {
@@ -74,25 +73,42 @@ class BuildSearchIndexCommand extends Command
      */
     public function execute(Arguments $args, ConsoleIo $io): ?int
     {
-        $this->Objects = $this->fetchTable('Objects');
-
+        $io->out('');
+        $io->out('Building search index');
+        $io->out('');
         $types = array_filter(explode(',', (string)$args->getOption('type')));
         if (empty($types)) {
-            $result = $this->fetchTable('ObjectTypes')->find()->where(['enabled' => true])->toArray();
+            $result = $this->fetchTable('ObjectTypes')
+                ->find()
+                ->where(['enabled' => true, 'is_abstract' => false])
+                ->orderAsc('name')
+                ->toArray();
             $types = (array)Hash::extract($result, '{n}.name');
         }
+        $summary = [];
         foreach ($types as $type) {
-            $io->out(sprintf('Reindex objects by type "%s"', $type));
-            foreach ($this->objectsIterator($type) as $entity) {
+            $counter = 0;
+            foreach ($this->objectsIterator($args, $type) as $entity) {
                 try {
                     $this->doIndexResource($entity, $io, 'edit');
+                    $counter++;
                 } catch (\Exception $e) {
                     $io->error($e->getMessage());
 
                     return Command::CODE_ERROR;
                 }
             }
+            if ($counter > 0) {
+                $summary[] = sprintf('> %s: %d', $type, $counter);
+            }
         }
+        $io->out('');
+        $io->out('Done. Summary:');
+        $io->out('');
+        foreach ($summary as $msg) {
+            $io->out($msg);
+        }
+        $io->out('');
 
         return Command::CODE_SUCCESS;
     }
@@ -102,44 +118,49 @@ class BuildSearchIndexCommand extends Command
      *
      * @param \Cake\Datasource\EntityInterface $entity The entity
      * @param \Cake\Console\ConsoleIo $io The console io
-     * @param string $idxOperation The index operation, can be `edit`
      * @return void
      */
-    protected function doIndexResource(EntityInterface $entity, ConsoleIo $io, string $idxOperation): void
+    protected function doIndexResource(EntityInterface $entity, ConsoleIo $io): void
     {
         $table = $this->fetchTable($entity->getSource());
         foreach ($table->getSearchAdapters() as $adapter) {
             $io->out(
                 sprintf(
-                    'Index %s [%s] [op: %s] [Adapter: %s]',
+                    '> ID %s [%s] [Adapter: %s]',
                     $entity->id,
                     $entity->uname,
-                    $idxOperation,
                     get_class($adapter)
                 )
             );
-            if (!$this->dryrun) {
-                $adapter->indexResource($entity, $idxOperation);
-            }
+            $adapter->indexResource($entity, 'edit');
         }
     }
 
     /**
      * Get objects by type and return an iterable.
      *
+     * @param \Cake\Console\Arguments $args The command arguments
      * @param string $type The object type
      * @return iterable
      */
-    protected function objectsIterator(string $type): iterable
+    protected function objectsIterator(Arguments $args, string $type): iterable
     {
-        $table = $this->fetchTable($type);
+        $table = $this->fetchTable('Objects');
         $query = $table->find()->orderAsc($table->aliasField('id'))->limit(200);
-        $query = $query->find('type', [$type])->where(['deleted' => false]);
+        $query = $query->find('type', [$type]);
+        $id = array_filter(explode(',', (string)$args->getOption('id')));
+        if (!empty($id)) {
+            $query = $query->where([$table->aliasField('id') . ' IN' => $id]);
+        }
+        $uname = array_filter(explode(',', (string)$args->getOption('uname')));
+        if (!empty($uname)) {
+            $query = $query->where([$table->aliasField('uname') . ' IN' => $uname]);
+        }
         $lastId = 0;
         while (true) {
             $q = clone $query;
             $q = $q->where(fn (QueryExpression $exp): QueryExpression => $exp->gt($table->aliasField('id'), $lastId));
-            $results = $query->all();
+            $results = $q->all();
             if ($results->isEmpty()) {
                 break;
             }
