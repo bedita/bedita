@@ -78,9 +78,8 @@ class BuildSearchIndexCommand extends Command
      */
     public function execute(Arguments $args, ConsoleIo $io): ?int
     {
-        $io->out('');
         $io->out('Building search index');
-        $io->out('');
+        $io->out("\n" . 'This may take a while, please wait... (Ctrl+C to abort)');
         $types = array_filter(explode(',', (string)$args->getOption('type')));
         if (empty($types)) {
             $result = $this->fetchTable('ObjectTypes')
@@ -93,6 +92,7 @@ class BuildSearchIndexCommand extends Command
         $summary = [];
         $adapters = array_filter(explode(',', (string)$args->getOption('adapter')));
         foreach ($types as $type) {
+            $io->verbose("\n" . sprintf('Indexing %s', $type) . "\n");
             $counter = 0;
             foreach ($this->objectsIterator($args, $type) as $entity) {
                 try {
@@ -104,6 +104,7 @@ class BuildSearchIndexCommand extends Command
                     return Command::CODE_ERROR;
                 }
             }
+            $io->verbose(sprintf('> %s: %d', $type, $counter));
             if ($counter > 0) {
                 $summary[] = sprintf('> %s: %d', $type, $counter);
             }
@@ -138,7 +139,7 @@ class BuildSearchIndexCommand extends Command
             if (!empty($adapters) && !in_array(get_class($adapter), $adapters)) {
                 continue;
             }
-            $io->out(
+            $io->verbose(
                 sprintf(
                     '> ID %s [%s] [Adapter: %s]',
                     $entity->id,
