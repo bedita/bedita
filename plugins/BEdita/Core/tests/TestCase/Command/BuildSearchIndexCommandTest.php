@@ -228,8 +228,9 @@ class BuildSearchIndexCommandTest extends TestCase
      */
     public function testExecuteWrongId(): void
     {
-        $this->exec('build_search_index --id abcdefghi');
-        $this->assertExitCode(Command::CODE_ERROR);
+        $this->exec('build_search_index --id 123456789');
+        $this->assertExitCode(Command::CODE_SUCCESS);
+        $this->assertOutputContains('0 objects indexed.');
     }
 
     /**
@@ -286,6 +287,50 @@ class BuildSearchIndexCommandTest extends TestCase
     public function testExecuteWrongUname(): void
     {
         $this->exec('build_search_index --uname abcdefghi');
-        $this->assertExitCode(Command::CODE_ERROR);
+        $this->assertExitCode(Command::CODE_SUCCESS);
+        $this->assertOutputContains('0 objects indexed.');
+    }
+
+    /**
+     * Test `execute` method with --adapters option
+     *
+     * @return void
+     * @covers ::execute()
+     * @covers ::objectsIterator()
+     * @covers ::doIndexResource()
+     */
+    public function testExecuteByAdapters(): void
+    {
+        $adapter1 = new class extends SimpleAdapter
+        {
+            public $afterSaveCount = 0;
+            public function indexResource(EntityInterface $entity, string $operation): void
+            {
+                if ($operation === 'edit') {
+                    $this->afterSaveCount++;
+                }
+            }
+        };
+        $adapter2 = new class extends SimpleAdapter
+        {
+            public $afterSaveCount = 0;
+            public function indexResource(EntityInterface $entity, string $operation): void
+            {
+                if ($operation === 'edit') {
+                    $this->afterSaveCount--;
+                }
+            }
+        };
+        Configure::write('Search.adapters.default', [
+            'className' => $adapter1,
+        ]);
+        Configure::write('Search.adapters.dummy', [
+            'className' => $adapter2,
+        ]);
+        $adapters = [get_class($adapter1), get_class($adapter2)];
+        $this->exec(sprintf('build_search_index --adapter "%s"', implode(',', $adapters)));
+        static::assertGreaterThan(0, $adapter1->afterSaveCount);
+        static::assertLessThan(0, $adapter2->afterSaveCount);
+        $this->assertExitCode(Command::CODE_SUCCESS);
     }
 }
