@@ -327,9 +327,9 @@ class BuildSearchIndexCommandTest extends TestCase
         Configure::write('Search.adapters.dummy', [
             'className' => $adapter2,
         ]);
-        $adapters = [get_class($adapter1), get_class($adapter2)];
+        $adapters = [get_class($adapter2)];
         $this->exec(sprintf('build_search_index --adapter "%s"', implode(',', $adapters)));
-        static::assertGreaterThan(0, $adapter1->afterSaveCount);
+        static::assertSame(0, $adapter1->afterSaveCount);
         static::assertLessThan(0, $adapter2->afterSaveCount);
         $this->assertExitCode(Command::CODE_SUCCESS);
     }
