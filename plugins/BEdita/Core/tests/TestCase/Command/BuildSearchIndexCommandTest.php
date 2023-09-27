@@ -22,11 +22,11 @@ use Cake\Datasource\EntityInterface;
 use Cake\TestSuite\TestCase;
 
 /**
- * BEdita\Core\Command\SearchCommand Test Case
+ * BEdita\Core\Command\BuildSearchIndexCommand Test Case
  *
- * @coversDefaultClass \BEdita\Core\Command\SearchCommand
+ * @coversDefaultClass \BEdita\Core\Command\BuildSearchIndexCommand
  */
-class SearchCommandTest extends TestCase
+class BuildSearchIndexCommandTest extends TestCase
 {
     use ConsoleIntegrationTestTrait;
 
@@ -57,11 +57,10 @@ class SearchCommandTest extends TestCase
      */
     public function testBuildOptionParser(): void
     {
-        $this->exec('search --help');
+        $this->exec('build_search_index --help');
         $this->assertOutputContains('Interface to handle search indexes and data');
-        $this->assertOutputContains('Dry run, do not perform any operation');
-        $this->assertOutputContains('Index a single object');
-        $this->assertOutputContains('Reindex all or multiple objects in the system');
+        $this->assertOutputContains('Reindex only objects from one or more specific types');
+        $this->assertOutputContains('Reindex only one or more specific objects by uname');
     }
 
     /**
@@ -69,22 +68,9 @@ class SearchCommandTest extends TestCase
      *
      * @return void
      * @covers ::execute()
-     */
-    public function testExecuteNoOptions(): void
-    {
-        $this->exec('search');
-        $this->assertExitCode(Command::CODE_ERROR);
-    }
-
-    /**
-     * Test `reindex` method
-     *
-     * @return void
-     * @covers ::reindex()
-     * @covers ::doMultiIndex()
      * @covers ::doIndexResource()
      */
-    public function testReindex(): void
+    public function testExecute(): void
     {
         $adapter1 = new class extends SimpleAdapter
         {
@@ -112,7 +98,7 @@ class SearchCommandTest extends TestCase
         Configure::write('Search.adapters.dummy', [
             'className' => $adapter2,
         ]);
-        $this->exec('search --reindex');
+        $this->exec('build_search_index');
         static::assertGreaterThan(0, $adapter1->afterSaveCount);
         static::assertLessThan(0, $adapter2->afterSaveCount);
         static::assertSame(0, $adapter1->afterSaveCount + $adapter2->afterSaveCount);
@@ -120,57 +106,13 @@ class SearchCommandTest extends TestCase
     }
 
     /**
-     * Test `reindex` method
+     * Test `execute` method with exception
      *
      * @return void
-     * @covers ::reindex()
-     * @covers ::doMultiIndex()
+     * @covers ::execute()
      * @covers ::doIndexResource()
      */
-    public function testReindexByTypes(): void
-    {
-        $adapter1 = new class extends SimpleAdapter
-        {
-            public $afterSaveCount = 0;
-            public function indexResource(EntityInterface $entity, string $operation): void
-            {
-                if ($operation === 'edit') {
-                    $this->afterSaveCount++;
-                }
-            }
-        };
-        $adapter2 = new class extends SimpleAdapter
-        {
-            public $afterSaveCount = 0;
-            public function indexResource(EntityInterface $entity, string $operation): void
-            {
-                if ($operation === 'edit') {
-                    $this->afterSaveCount--;
-                }
-            }
-        };
-        Configure::write('Search.adapters.default', [
-            'className' => $adapter1,
-        ]);
-        Configure::write('Search.adapters.dummy', [
-            'className' => $adapter2,
-        ]);
-        $this->exec('search --reindex documents,profiles');
-        static::assertGreaterThan(0, $adapter1->afterSaveCount);
-        static::assertLessThan(0, $adapter2->afterSaveCount);
-        static::assertSame(0, $adapter1->afterSaveCount + $adapter2->afterSaveCount);
-        $this->assertExitCode(Command::CODE_SUCCESS);
-    }
-
-    /**
-     * Test `reindex` method with exception
-     *
-     * @return void
-     * @covers ::reindex()
-     * @covers ::doMultiIndex()
-     * @covers ::doIndexResource()
-     */
-    public function testReindexException(): void
+    public function testExecuteException(): void
     {
         $adapter1 = new class extends SimpleAdapter
         {
@@ -182,19 +124,18 @@ class SearchCommandTest extends TestCase
         Configure::write('Search.adapters.default', [
             'className' => $adapter1,
         ]);
-        $this->exec('search --reindex');
+        $this->exec('build_search_index');
         $this->assertExitCode(Command::CODE_ERROR);
     }
 
     /**
-     * Test `index` method
+     * Test `execute` method with --type option
      *
      * @return void
-     * @covers ::index()
-     * @covers ::doSingleIndex()
+     * @covers ::execute()
      * @covers ::doIndexResource()
      */
-    public function testIndex(): void
+    public function testExecuteByTypes(): void
     {
         $adapter1 = new class extends SimpleAdapter
         {
@@ -222,7 +163,49 @@ class SearchCommandTest extends TestCase
         Configure::write('Search.adapters.dummy', [
             'className' => $adapter2,
         ]);
-        $this->exec('search --index 2');
+        $this->exec('build_search_index --type documents,profiles');
+        static::assertGreaterThan(0, $adapter1->afterSaveCount);
+        static::assertLessThan(0, $adapter2->afterSaveCount);
+        static::assertSame(0, $adapter1->afterSaveCount + $adapter2->afterSaveCount);
+        $this->assertExitCode(Command::CODE_SUCCESS);
+    }
+
+    /**
+     * Test `execute` method with --id option
+     *
+     * @return void
+     * @covers ::execute()
+     * @covers ::doIndexResource()
+     */
+    public function testExecuteById(): void
+    {
+        $adapter1 = new class extends SimpleAdapter
+        {
+            public $afterSaveCount = 0;
+            public function indexResource(EntityInterface $entity, string $operation): void
+            {
+                if ($operation === 'edit') {
+                    $this->afterSaveCount++;
+                }
+            }
+        };
+        $adapter2 = new class extends SimpleAdapter
+        {
+            public $afterSaveCount = 0;
+            public function indexResource(EntityInterface $entity, string $operation): void
+            {
+                if ($operation === 'edit') {
+                    $this->afterSaveCount--;
+                }
+            }
+        };
+        Configure::write('Search.adapters.default', [
+            'className' => $adapter1,
+        ]);
+        Configure::write('Search.adapters.dummy', [
+            'className' => $adapter2,
+        ]);
+        $this->exec('build_search_index --id 2');
         static::assertSame(1, $adapter1->afterSaveCount);
         static::assertSame(-1, $adapter2->afterSaveCount);
         static::assertSame(0, $adapter1->afterSaveCount + $adapter2->afterSaveCount);
@@ -230,30 +213,70 @@ class SearchCommandTest extends TestCase
     }
 
     /**
-     * Test `index` method on missing ID
+     * Test `execute` method on wrong ID
      *
      * @return void
-     * @covers ::index()
-     * @covers ::doSingleIndex()
+     * @covers ::execute()
      * @covers ::doIndexResource()
      */
-    public function testIndexMissingId(): void
+    public function testExecuteWrongId(): void
     {
-        $this->exec('search --index');
+        $this->exec('build_search_index --id abcdefghi');
         $this->assertExitCode(Command::CODE_ERROR);
     }
 
     /**
-     * Test `index` method on wrong ID
+     * Test `execute` method with --uname option
      *
      * @return void
-     * @covers ::index()
-     * @covers ::doSingleIndex()
+     * @covers ::execute()
      * @covers ::doIndexResource()
      */
-    public function testIndexWrongId(): void
+    public function testExecuteByUname(): void
     {
-        $this->exec('search --index abcdefghi');
+        $adapter1 = new class extends SimpleAdapter
+        {
+            public $afterSaveCount = 0;
+            public function indexResource(EntityInterface $entity, string $operation): void
+            {
+                if ($operation === 'edit') {
+                    $this->afterSaveCount++;
+                }
+            }
+        };
+        $adapter2 = new class extends SimpleAdapter
+        {
+            public $afterSaveCount = 0;
+            public function indexResource(EntityInterface $entity, string $operation): void
+            {
+                if ($operation === 'edit') {
+                    $this->afterSaveCount--;
+                }
+            }
+        };
+        Configure::write('Search.adapters.default', [
+            'className' => $adapter1,
+        ]);
+        Configure::write('Search.adapters.dummy', [
+            'className' => $adapter2,
+        ]);
+        $this->exec('build_search_index --uname title-one');
+        static::assertSame(1, $adapter1->afterSaveCount);
+        static::assertSame(-1, $adapter2->afterSaveCount);
+        static::assertSame(0, $adapter1->afterSaveCount + $adapter2->afterSaveCount);
+        $this->assertExitCode(Command::CODE_SUCCESS);
+    }
+
+    /**
+     * Test `execute` method on wrong uname
+     *
+     * @return void
+     * @covers ::execute()
+     * @covers ::doIndexResource()
+     */
+    public function testExecuteWrongUname(): void
+    {
+        $this->exec('build_search_index --uname abcdefghi');
         $this->assertExitCode(Command::CODE_ERROR);
     }
 }
