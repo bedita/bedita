@@ -29,8 +29,6 @@ use Cake\Utility\Hash;
  *
  * - `--reindex`: reindex all objects in the system
  * - `--index`: index a single object
- * - `--delete`: delete an object from index
- * - `--clear`: clear index
  *
  * Options available are:
  *
@@ -45,12 +43,6 @@ use Cake\Utility\Hash;
  * bin/cake search --reindex documents,events --dry-run
  * bin/cake search --index 25
  * bin/cake search --index 25 --dry-run
- * bin/cake search --clear
- * bin/cake search --clear documents,events
- * bin/cake search --clear --dry-run
- * bin/cake search --clear documents,events --dry-run
- * bin/cake search --delete 25
- * bin/cake search --delete 25 --dry-run
  * ```
  *
  * @since 5.14.0
@@ -66,8 +58,6 @@ class SearchCommand extends Command
     protected $operations = [
         'reindex',
         'index',
-        'delete',
-        'clear',
     ];
 
     /**
@@ -90,14 +80,6 @@ class SearchCommand extends Command
         ]);
         $parser->addOption('index', [
             'help' => 'Index a single object.',
-            'required' => false,
-        ]);
-        $parser->addOption('delete', [
-            'help' => 'Delete an object from index.',
-            'required' => false,
-        ]);
-        $parser->addOption('clear', [
-            'help' => 'Remove index for all or multiple objects.',
             'required' => false,
         ]);
         $parser->addOption('dry-run', [
@@ -136,18 +118,6 @@ class SearchCommand extends Command
     }
 
     /**
-     * Remove index for all or multiple objects using all available adapters.
-     *
-     * @param \Cake\Console\Arguments $args The arguments
-     * @param \Cake\Console\ConsoleIo $io The io console
-     * @return int
-     */
-    protected function clear(Arguments $args, ConsoleIo $io): int
-    {
-        return $this->doMultiIndex($args, $io, 'clear', 'delete');
-    }
-
-    /**
      * Save index on single object by ID using all available adapters.
      *
      * @param \Cake\Console\Arguments $args The arguments
@@ -160,26 +130,14 @@ class SearchCommand extends Command
     }
 
     /**
-     * Remove index on single object by ID using all available adapters.
-     *
-     * @param \Cake\Console\Arguments $args The arguments
-     * @param \Cake\Console\ConsoleIo $io The io console
-     * @return int
-     */
-    protected function delete(Arguments $args, ConsoleIo $io): int
-    {
-        return $this->doSingleIndex($args, $io, 'delete', 'delete');
-    }
-
-    /**
      * Save or remove index on multiple objects.
      * If no type is specified, all enabled types are processed.
      * If a type is specified, only objects of that type are processed.
      *
      * @param \Cake\Console\Arguments $args The arguments
      * @param \Cake\Console\ConsoleIo $io The console io
-     * @param string $cmdOperation The operation, can be `reindex` or `clear`
-     * @param string $idxOperation The index operation, can be `edit` or `delete`
+     * @param string $cmdOperation The operation, can be `reindex`
+     * @param string $idxOperation The index operation, can be `edit`
      * @return int
      */
     protected function doMultiIndex(Arguments $args, ConsoleIo $io, string $cmdOperation, string $idxOperation): int
@@ -212,8 +170,8 @@ class SearchCommand extends Command
      *
      * @param \Cake\Console\Arguments $args The arguments
      * @param \Cake\Console\ConsoleIo $io The console io
-     * @param string $cmdOperation The operation, can be `index` or `delete`
-     * @param string $idxOperation The index operation, can be `edit` or `delete`
+     * @param string $cmdOperation The operation, can be `index`
+     * @param string $idxOperation The index operation, can be `edit`
      * @return int
      */
     protected function doSingleIndex(Arguments $args, ConsoleIo $io, string $cmdOperation, string $idxOperation): int
@@ -244,7 +202,7 @@ class SearchCommand extends Command
      *
      * @param \Cake\Datasource\EntityInterface $entity The entity
      * @param \Cake\Console\ConsoleIo $io The console io
-     * @param string $idxOperation The index operation, can be `edit` or `delete`
+     * @param string $idxOperation The index operation, can be `edit`
      * @return void
      */
     protected function doIndexResource(EntityInterface $entity, ConsoleIo $io, string $idxOperation): void

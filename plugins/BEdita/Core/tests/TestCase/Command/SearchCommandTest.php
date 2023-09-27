@@ -59,9 +59,7 @@ class SearchCommandTest extends TestCase
     {
         $this->exec('search --help');
         $this->assertOutputContains('Interface to handle search indexes and data');
-        $this->assertOutputContains('Remove index for all or multiple objects');
         $this->assertOutputContains('Dry run, do not perform any operation');
-        $this->assertOutputContains('Delete an object from index');
         $this->assertOutputContains('Index a single object');
         $this->assertOutputContains('Reindex all or multiple objects in the system');
     }
@@ -90,31 +88,21 @@ class SearchCommandTest extends TestCase
     {
         $adapter1 = new class extends SimpleAdapter
         {
-            public $afterDeleteCount = 0;
             public $afterSaveCount = 0;
             public function indexResource(EntityInterface $entity, string $operation): void
             {
                 if ($operation === 'edit') {
                     $this->afterSaveCount++;
                 }
-
-                if ($operation === 'delete') {
-                    $this->afterDeleteCount++;
-                }
             }
         };
         $adapter2 = new class extends SimpleAdapter
         {
-            public $afterDeleteCount = 0;
             public $afterSaveCount = 0;
             public function indexResource(EntityInterface $entity, string $operation): void
             {
                 if ($operation === 'edit') {
                     $this->afterSaveCount--;
-                }
-
-                if ($operation === 'delete') {
-                    $this->afterDeleteCount--;
                 }
             }
         };
@@ -143,31 +131,21 @@ class SearchCommandTest extends TestCase
     {
         $adapter1 = new class extends SimpleAdapter
         {
-            public $afterDeleteCount = 0;
             public $afterSaveCount = 0;
             public function indexResource(EntityInterface $entity, string $operation): void
             {
                 if ($operation === 'edit') {
                     $this->afterSaveCount++;
                 }
-
-                if ($operation === 'delete') {
-                    $this->afterDeleteCount++;
-                }
             }
         };
         $adapter2 = new class extends SimpleAdapter
         {
-            public $afterDeleteCount = 0;
             public $afterSaveCount = 0;
             public function indexResource(EntityInterface $entity, string $operation): void
             {
                 if ($operation === 'edit') {
                     $this->afterSaveCount--;
-                }
-
-                if ($operation === 'delete') {
-                    $this->afterDeleteCount--;
                 }
             }
         };
@@ -209,112 +187,6 @@ class SearchCommandTest extends TestCase
     }
 
     /**
-     * Test `clear` method
-     *
-     * @return void
-     * @covers ::clear()
-     * @covers ::doMultiIndex()
-     * @covers ::doIndexResource()
-     */
-    public function testClear(): void
-    {
-        $adapter1 = new class extends SimpleAdapter
-        {
-            public $afterDeleteCount = 0;
-            public $afterSaveCount = 0;
-            public function indexResource(EntityInterface $entity, string $operation): void
-            {
-                if ($operation === 'edit') {
-                    $this->afterSaveCount++;
-                }
-
-                if ($operation === 'delete') {
-                    $this->afterDeleteCount++;
-                }
-            }
-        };
-        $adapter2 = new class extends SimpleAdapter
-        {
-            public $afterDeleteCount = 0;
-            public $afterSaveCount = 0;
-            public function indexResource(EntityInterface $entity, string $operation): void
-            {
-                if ($operation === 'edit') {
-                    $this->afterSaveCount--;
-                }
-
-                if ($operation === 'delete') {
-                    $this->afterDeleteCount--;
-                }
-            }
-        };
-        Configure::write('Search.adapters.default', [
-            'className' => $adapter1,
-        ]);
-        Configure::write('Search.adapters.dummy', [
-            'className' => $adapter2,
-        ]);
-        $this->exec('search --clear');
-        static::assertGreaterThan(0, $adapter1->afterDeleteCount);
-        static::assertLessThan(0, $adapter2->afterDeleteCount);
-        static::assertSame(0, $adapter1->afterDeleteCount + $adapter2->afterDeleteCount);
-        $this->assertExitCode(Command::CODE_SUCCESS);
-    }
-
-    /**
-     * Test `clear` method by types
-     *
-     * @return void
-     * @covers ::clear()
-     * @covers ::doMultiIndex()
-     * @covers ::doIndexResource()
-     */
-    public function testClearByType(): void
-    {
-        $adapter1 = new class extends SimpleAdapter
-        {
-            public $afterDeleteCount = 0;
-            public $afterSaveCount = 0;
-            public function indexResource(EntityInterface $entity, string $operation): void
-            {
-                if ($operation === 'edit') {
-                    $this->afterSaveCount++;
-                }
-
-                if ($operation === 'delete') {
-                    $this->afterDeleteCount++;
-                }
-            }
-        };
-        $adapter2 = new class extends SimpleAdapter
-        {
-            public $afterDeleteCount = 0;
-            public $afterSaveCount = 0;
-            public function indexResource(EntityInterface $entity, string $operation): void
-            {
-                if ($operation === 'edit') {
-                    $this->afterSaveCount--;
-                }
-
-                if ($operation === 'delete') {
-                    $this->afterDeleteCount--;
-                }
-            }
-        };
-        Configure::write('Search.adapters.default', [
-            'className' => $adapter1,
-        ]);
-        Configure::write('Search.adapters.dummy', [
-            'className' => $adapter2,
-        ]);
-        $this->exec('search --clear documents,profiles');
-        static::assertGreaterThan(0, $adapter1->afterDeleteCount);
-        static::assertLessThan(0, $adapter2->afterDeleteCount);
-        static::assertSame(0, $adapter1->afterDeleteCount + $adapter2->afterDeleteCount);
-        $this->assertExitCode(Command::CODE_SUCCESS);
-    }
-
-    /**
      * Test `index` method
      *
      * @return void
@@ -326,31 +198,21 @@ class SearchCommandTest extends TestCase
     {
         $adapter1 = new class extends SimpleAdapter
         {
-            public $afterDeleteCount = 0;
             public $afterSaveCount = 0;
             public function indexResource(EntityInterface $entity, string $operation): void
             {
                 if ($operation === 'edit') {
                     $this->afterSaveCount++;
                 }
-
-                if ($operation === 'delete') {
-                    $this->afterDeleteCount++;
-                }
             }
         };
         $adapter2 = new class extends SimpleAdapter
         {
-            public $afterDeleteCount = 0;
             public $afterSaveCount = 0;
             public function indexResource(EntityInterface $entity, string $operation): void
             {
                 if ($operation === 'edit') {
                     $this->afterSaveCount--;
-                }
-
-                if ($operation === 'delete') {
-                    $this->afterDeleteCount--;
                 }
             }
         };
@@ -392,87 +254,6 @@ class SearchCommandTest extends TestCase
     public function testIndexWrongId(): void
     {
         $this->exec('search --index abcdefghi');
-        $this->assertExitCode(Command::CODE_ERROR);
-    }
-
-    /**
-     * Test `delete` method
-     *
-     * @return void
-     * @covers ::delete()
-     * @covers ::doSingleIndex()
-     * @covers ::doIndexResource()
-     */
-    public function testDelete(): void
-    {
-        $adapter1 = new class extends SimpleAdapter
-        {
-            public $afterDeleteCount = 0;
-            public $afterSaveCount = 0;
-            public function indexResource(EntityInterface $entity, string $operation): void
-            {
-                if ($operation === 'edit') {
-                    $this->afterSaveCount++;
-                }
-
-                if ($operation === 'delete') {
-                    $this->afterDeleteCount++;
-                }
-            }
-        };
-        $adapter2 = new class extends SimpleAdapter
-        {
-            public $afterDeleteCount = 0;
-            public $afterSaveCount = 0;
-            public function indexResource(EntityInterface $entity, string $operation): void
-            {
-                if ($operation === 'edit') {
-                    $this->afterSaveCount--;
-                }
-
-                if ($operation === 'delete') {
-                    $this->afterDeleteCount--;
-                }
-            }
-        };
-        Configure::write('Search.adapters.default', [
-            'className' => $adapter1,
-        ]);
-        Configure::write('Search.adapters.dummy', [
-            'className' => $adapter2,
-        ]);
-        $this->exec('search --delete 2');
-        static::assertSame(1, $adapter1->afterDeleteCount);
-        static::assertSame(-1, $adapter2->afterDeleteCount);
-        static::assertSame(0, $adapter1->afterDeleteCount + $adapter2->afterDeleteCount);
-        $this->assertExitCode(Command::CODE_SUCCESS);
-    }
-
-    /**
-     * Test `delete` method on missing ID
-     *
-     * @return void
-     * @covers ::delete()
-     * @covers ::doSingleIndex()
-     * @covers ::doIndexResource()
-     */
-    public function testDeleteMissingId(): void
-    {
-        $this->exec('search --delete');
-        $this->assertExitCode(Command::CODE_ERROR);
-    }
-
-    /**
-     * Test `delete` method on wrong ID
-     *
-     * @return void
-     * @covers ::delete()
-     * @covers ::doSingleIndex()
-     * @covers ::doIndexResource()
-     */
-    public function testDeleteWrongId(): void
-    {
-        $this->exec('search --delete abcdefghi');
         $this->assertExitCode(Command::CODE_ERROR);
     }
 }
