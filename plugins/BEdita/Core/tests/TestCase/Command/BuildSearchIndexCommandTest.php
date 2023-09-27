@@ -58,8 +58,9 @@ class BuildSearchIndexCommandTest extends TestCase
     public function testBuildOptionParser(): void
     {
         $this->exec('build_search_index --help');
-        $this->assertOutputContains('Interface to handle search indexes and data');
+        $this->assertOutputContains('Command to reindex objects for search');
         $this->assertOutputContains('Reindex only objects from one or more specific types');
+        $this->assertOutputContains('Reindex only one or more specific objects by ID');
         $this->assertOutputContains('Reindex only one or more specific objects by uname');
     }
 
@@ -68,6 +69,7 @@ class BuildSearchIndexCommandTest extends TestCase
      *
      * @return void
      * @covers ::execute()
+     * @covers ::objectsIterator()
      * @covers ::doIndexResource()
      */
     public function testExecute(): void
@@ -110,6 +112,7 @@ class BuildSearchIndexCommandTest extends TestCase
      *
      * @return void
      * @covers ::execute()
+     * @covers ::objectsIterator()
      * @covers ::doIndexResource()
      */
     public function testExecuteException(): void
@@ -133,6 +136,7 @@ class BuildSearchIndexCommandTest extends TestCase
      *
      * @return void
      * @covers ::execute()
+     * @covers ::objectsIterator()
      * @covers ::doIndexResource()
      */
     public function testExecuteByTypes(): void
@@ -175,6 +179,7 @@ class BuildSearchIndexCommandTest extends TestCase
      *
      * @return void
      * @covers ::execute()
+     * @covers ::objectsIterator()
      * @covers ::doIndexResource()
      */
     public function testExecuteById(): void
@@ -217,6 +222,7 @@ class BuildSearchIndexCommandTest extends TestCase
      *
      * @return void
      * @covers ::execute()
+     * @covers ::objectsIterator()
      * @covers ::doIndexResource()
      */
     public function testExecuteWrongId(): void
@@ -230,6 +236,7 @@ class BuildSearchIndexCommandTest extends TestCase
      *
      * @return void
      * @covers ::execute()
+     * @covers ::objectsIterator()
      * @covers ::doIndexResource()
      */
     public function testExecuteByUname(): void
@@ -272,6 +279,7 @@ class BuildSearchIndexCommandTest extends TestCase
      *
      * @return void
      * @covers ::execute()
+     * @covers ::objectsIterator()
      * @covers ::doIndexResource()
      */
     public function testExecuteWrongUname(): void

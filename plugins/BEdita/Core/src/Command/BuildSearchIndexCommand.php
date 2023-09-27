@@ -18,6 +18,7 @@ use Cake\Command\Command;
 use Cake\Console\Arguments;
 use Cake\Console\ConsoleIo;
 use Cake\Console\ConsoleOptionParser;
+use Cake\Database\Expression\QueryExpression;
 use Cake\Datasource\EntityInterface;
 use Cake\Utility\Hash;
 
@@ -51,7 +52,7 @@ class BuildSearchIndexCommand extends Command
     public function buildOptionParser(ConsoleOptionParser $parser): ConsoleOptionParser
     {
         $parser = parent::buildOptionParser($parser);
-        $parser->setDescription('Interface to handle search indexes and data.');
+        $parser->setDescription('Command to reindex objects for search.');
         $parser->addOption('type', [
             'help' => 'Reindex only objects from one or more specific types.',
             'required' => false,
@@ -82,9 +83,7 @@ class BuildSearchIndexCommand extends Command
         }
         foreach ($types as $type) {
             $io->out(sprintf('Reindex objects by type "%s"', $type));
-            $table = $this->fetchTable($type);
-            $query = $table->find('type', [$type])->where(['deleted' => false]);
-            foreach ($query->toArray() as $entity) {
+            foreach ($this->objectsIterator($type) as $entity) {
                 try {
                     $this->doIndexResource($entity, $io, 'edit');
                 } catch (\Exception $e) {
@@ -121,6 +120,34 @@ class BuildSearchIndexCommand extends Command
             );
             if (!$this->dryrun) {
                 $adapter->indexResource($entity, $idxOperation);
+            }
+        }
+    }
+
+    /**
+     * Get objects by type and return an iterable.
+     *
+     * @param string $type The object type
+     * @return iterable
+     */
+    protected function objectsIterator(string $type): iterable
+    {
+        $table = $this->fetchTable($type);
+        $query = $table->find()->orderAsc($table->aliasField('id'))->limit(200);
+        $query = $query->find('type', [$type])->where(['deleted' => false]);
+        $lastId = 0;
+        while (true) {
+            $q = clone $query;
+            $q = $q->where(fn (QueryExpression $exp): QueryExpression => $exp->gt($table->aliasField('id'), $lastId));
+            $results = $query->all();
+            if ($results->isEmpty()) {
+                break;
+            }
+
+            foreach ($results as $entity) {
+                $lastId = $entity->id;
+
+                yield $entity;
             }
         }
     }
