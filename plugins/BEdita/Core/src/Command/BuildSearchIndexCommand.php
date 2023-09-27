@@ -31,6 +31,7 @@ use Cake\Utility\Hash;
  * - `--type`: (multiple): reindex only objects from one or more specific types
  * - `--id` (multiple): reindex only one or more specific objects by ID
  * - `--uname` (multiple): same as --id, but using the object(s) unique names
+ * - `--adapter` (multiple): reindex only using one or more specific adapters
  *
  * Usage examples:
  *
@@ -64,6 +65,10 @@ class BuildSearchIndexCommand extends Command
             'help' => 'Reindex only one or more specific objects by uname.',
             'required' => false,
         ]);
+        $parser->addOption('adapter', [
+            'help' => 'Reindex only using one or more specific adapters.',
+            'required' => false,
+        ]);
 
         return $parser;
     }
@@ -86,12 +91,13 @@ class BuildSearchIndexCommand extends Command
             $types = (array)Hash::extract($result, '{n}.name');
         }
         $summary = [];
+        $adapters = array_filter(explode(',', (string)$args->getOption('adapter')));
         foreach ($types as $type) {
             $counter = 0;
             foreach ($this->objectsIterator($args, $type) as $entity) {
                 try {
-                    $this->doIndexResource($entity, $io, 'edit');
-                    $counter++;
+                    $indexed = $this->doIndexResource($entity, $adapters, $io);
+                    $counter = $counter + $indexed;
                 } catch (\Exception $e) {
                     $io->error($e->getMessage());
 
@@ -105,6 +111,9 @@ class BuildSearchIndexCommand extends Command
         $io->out('');
         $io->out('Done. Summary:');
         $io->out('');
+        if (empty($summary)) {
+            $io->out('0 objects indexed.');
+        }
         foreach ($summary as $msg) {
             $io->out($msg);
         }
@@ -117,13 +126,18 @@ class BuildSearchIndexCommand extends Command
      * Save or remove index for entity using all available adapters.
      *
      * @param \Cake\Datasource\EntityInterface $entity The entity
+     * @param array $adapters The adapters to use. If empty, use all available adapters.
      * @param \Cake\Console\ConsoleIo $io The console io
-     * @return void
+     * @return int
      */
-    protected function doIndexResource(EntityInterface $entity, ConsoleIo $io): void
+    protected function doIndexResource(EntityInterface $entity, array $adapters, ConsoleIo $io): int
     {
+        $indexed = 0;
         $table = $this->fetchTable($entity->getSource());
         foreach ($table->getSearchAdapters() as $adapter) {
+            if (!empty($adapters) && !in_array(get_class($adapter), $adapters)) {
+                continue;
+            }
             $io->out(
                 sprintf(
                     '> ID %s [%s] [Adapter: %s]',
@@ -133,7 +147,10 @@ class BuildSearchIndexCommand extends Command
                 )
             );
             $adapter->indexResource($entity, 'edit');
+            $indexed++;
         }
+
+        return $indexed;
     }
 
     /**

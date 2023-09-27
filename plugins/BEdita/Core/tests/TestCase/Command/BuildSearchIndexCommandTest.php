@@ -62,6 +62,7 @@ class BuildSearchIndexCommandTest extends TestCase
         $this->assertOutputContains('Reindex only objects from one or more specific types');
         $this->assertOutputContains('Reindex only one or more specific objects by ID');
         $this->assertOutputContains('Reindex only one or more specific objects by uname');
+        $this->assertOutputContains('Reindex only using one or more specific adapters');
     }
 
     /**
