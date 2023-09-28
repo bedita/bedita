@@ -17,7 +17,7 @@ use BEdita\Core\Utility\System;
 use Cake\Core\Configure;
 
 /**
- * @coversDefaultClass \BEdita\API\Controller\SysinfoController
+ * @coversDefaultClass \BEdita\API\Controller\Admin\SysinfoController
  */
 class SysinfoControllerTest extends IntegrationTestCase
 {
