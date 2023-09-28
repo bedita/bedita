@@ -48,10 +48,17 @@ use Cake\Utility\Hash;
  * @method \BEdita\Core\Model\Entity\ObjectEntity findOrCreate($search, callable $callback = null, $options = [])
  * @mixin \Cake\ORM\Behavior\TimestampBehavior
  * @mixin \BEdita\Core\Model\Behavior\UserModifiedBehavior
+ * @mixin \BEdita\Core\Model\Behavior\CategoriesBehavior
+ * @mixin \BEdita\Core\Model\Behavior\CustomProperties
+ * @mixin \BEdita\Core\Model\Behavior\DataCleanupBehavior
+ * @mixin \BEdita\Core\Model\Behavior\HistoryBehavior
+ * @mixin \BEdita\Core\Model\Behavior\ObjectModelBehavior
  * @mixin \BEdita\Core\Model\Behavior\ObjectTypeBehavior
  * @mixin \BEdita\Core\Model\Behavior\RelationsBehavior
  * @mixin \BEdita\Core\Model\Behavior\ResourceNameBehavior
+ * @mixin \BEdita\Core\Model\Behavior\SearchableBehavior
  * @mixin \BEdita\Core\Model\Behavior\StatusBehavior
+ * @mixin \BEdita\Core\Model\Behavior\UniqueName
  * @since 4.0.0
  */
 class ObjectsTable extends Table
