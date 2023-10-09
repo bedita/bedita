@@ -13,6 +13,7 @@
 namespace BEdita\Core\Command;
 
 use BEdita\Core\Utility\ProjectModel;
+use BEdita\Core\Utility\Properties;
 use BEdita\Core\Utility\Resources;
 use Cake\Cache\Cache;
 use Cake\Command\Command;
@@ -20,6 +21,7 @@ use Cake\Console\Arguments;
 use Cake\Console\ConsoleIo;
 use Cake\Console\ConsoleOptionParser;
 use Cake\Core\ConventionsTrait;
+use Cake\Utility\Hash;
 
 /**
  * Command to apply project model from input file.
@@ -57,6 +59,12 @@ class ProjectModelCommand extends Command
                 'help' => 'Plugin to use for loading default `project_model.json` file',
                 'short' => 'p',
                 'required' => false,
+            ])
+            ->addOption('delete', [
+                'help' => 'Delete resources not present in project model',
+                'short' => 'd',
+                'boolean' => true,
+                'required' => false,
             ]);
     }
 
@@ -82,6 +90,17 @@ class ProjectModelCommand extends Command
         $diff = ProjectModel::diff($project);
         if (!empty($diff['remove'])) {
             $io->warning('Items to remove: ' . json_encode($diff['remove']));
+            if ($args->getOption('delete')) {
+                $io->warning('Removing items');
+                $keys = array_keys($diff['remove']);
+                foreach ($keys as $key) {
+                    $this->remove(
+                        $key,
+                        (array)Hash::extract($diff, sprintf('remove.%s', $key)),
+                        $io
+                    );
+                }
+            }
             unset($diff['remove']);
         }
         if (empty($diff)) {
@@ -122,5 +141,33 @@ class ProjectModelCommand extends Command
         }
 
         return CONFIG . self::PROJECT_MODEL_FILE;
+    }
+
+    /**
+     * Remove items not found in project model but found in system.
+     *
+     * @param string $resourceType The resource type (can be 'categories', 'properties', etc.).
+     * @param array $items The items to remove.
+     * @param \Cake\Console\ConsoleIo $io Console IO.
+     * @return void
+     */
+    protected function remove(string $resourceType, array $items, ConsoleIo $io): void
+    {
+        foreach ($items as $item) {
+            $message = sprintf(
+                'Remove %s %s from model %s. Are you sure?',
+                $resourceType,
+                $item['name'],
+                $item['object']
+            );
+            $choice = $io->askChoice($message, ['y', 'n'], 'n');
+            if ($choice === 'y') {
+                if ($resourceType === 'properties') {
+                    Properties::remove([$item]);
+                } else {
+                    Resources::remove($resourceType, [$item]);
+                }
+            }
+        }
     }
 }
