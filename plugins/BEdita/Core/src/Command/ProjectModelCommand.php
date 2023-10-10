@@ -154,12 +154,12 @@ class ProjectModelCommand extends Command
     protected function remove(string $resourceType, array $items, ConsoleIo $io): void
     {
         foreach ($items as $item) {
-            $message = sprintf(
-                'Remove %s %s from model %s. Are you sure?',
-                $resourceType,
-                $item['name'],
-                $item['object']
-            );
+            $name = (string)Hash::get($item, 'name');
+            $message = sprintf('Remove %s %s', $resourceType, $name);
+            if (!empty($item['object'])) {
+                $message .= sprintf(' from model %s', (string)$item['object']);
+            }
+            $message .= '. Are you sure?';
             $choice = $io->askChoice($message, ['y', 'n'], 'n');
             if ($choice === 'y') {
                 if ($resourceType === 'properties') {
