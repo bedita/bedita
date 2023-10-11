@@ -13,7 +13,6 @@
 namespace BEdita\Core\Command;
 
 use BEdita\Core\Utility\ProjectModel;
-use BEdita\Core\Utility\Properties;
 use BEdita\Core\Utility\Resources;
 use Cake\Cache\Cache;
 use Cake\Command\Command;
