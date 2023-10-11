@@ -162,11 +162,7 @@ class ProjectModelCommand extends Command
             $message .= '. Are you sure?';
             $choice = $io->askChoice($message, ['y', 'n'], 'n');
             if ($choice === 'y') {
-                if ($resourceType === 'properties') {
-                    Properties::remove([$item]);
-                } else {
-                    Resources::remove($resourceType, [$item]);
-                }
+                Resources::remove($resourceType, [$item]);
             }
         }
     }

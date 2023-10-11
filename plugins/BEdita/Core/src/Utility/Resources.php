@@ -84,6 +84,7 @@ class Resources extends ResourcesBase
         'auth_providers',
         'categories',
         'config',
+        'properties',
         'property_types',
         'object_types',
         'roles',
