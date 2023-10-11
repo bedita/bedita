@@ -155,7 +155,7 @@ class ProjectModelCommand extends Command
         foreach ($items as $item) {
             $name = (string)Hash::get($item, 'name');
             $message = sprintf('Remove %s %s', $resourceType, $name);
-            $fromModel = sprintf(' from model %s', (string)$item['object']);
+            $fromModel = sprintf(' from model %s', (string)Hash::get($item, 'object'));
             $message = !empty($item['object']) ? $message . $fromModel : $message;
             $message .= '. Are you sure?';
             $choice = $io->askChoice($message, ['y', 'n'], 'n');
