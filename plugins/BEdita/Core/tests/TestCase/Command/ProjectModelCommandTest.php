@@ -156,6 +156,7 @@ class ProjectModelCommandTest extends TestCase
     {
         $model = ProjectModelTest::PROJECT_MODEL;
         unset($model['property_types'][0]);
+        unset($model['properties'][0]);
         $path = TMP . '__test.json';
         file_put_contents($path, json_encode($model));
         $this->exec('project_model --file ' . $path . ' --delete', ['y']);
