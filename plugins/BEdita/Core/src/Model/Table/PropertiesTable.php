@@ -26,6 +26,7 @@ use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
+use Cake\Utility\Hash;
 use Cake\Validation\Validation as CakeValidation;
 use Cake\Validation\Validator;
 
@@ -167,6 +168,29 @@ class PropertiesTable extends Table
                         ->select([$this->ObjectTypes->aliasField($this->ObjectTypes->getBindingKey())])
                 );
             });
+    }
+
+    /**
+     * Find property resource by name and object type.
+     * Options array argument MUST contain 'name' and 'object_type_name' keys.
+     *
+     * @param \Cake\ORM\Query $query Query object instance.
+     * @param array $options Options array.
+     * @return \Cake\ORM\Query
+     * @throws \BEdita\Core\Exception\BadFilterException
+     */
+    protected function findResource(Query $query, array $options): Query
+    {
+        if (empty($options['name'])) {
+            throw new BadFilterException(__d('bedita', 'Missing required parameter "{0}"', 'name'));
+        }
+        $object = Hash::get($options, 'object_type_name', Hash::get($options, 'object'));
+        if (empty($object)) {
+            throw new BadFilterException(__d('bedita', 'Missing required parameter "{0}"', 'object_type_name'));
+        }
+
+        return $this->find('objectType', [$object])
+            ->where([$this->aliasField('name') => $options['name']]);
     }
 
     /**
