@@ -15,8 +15,10 @@ declare(strict_types=1);
 namespace BEdita\Core\Search;
 
 use BadMethodCallException;
+use BEdita\Core\Search\Adapter\SimpleAdapter;
 use Cake\Core\App;
 use Cake\Core\ObjectRegistry;
+use Cake\Core\StaticConfigTrait;
 use RuntimeException;
 
 /**
@@ -26,6 +28,17 @@ use RuntimeException;
  */
 class SearchRegistry extends ObjectRegistry
 {
+    use StaticConfigTrait;
+
+    /**
+     * An array mapping url schemes to fully qualified search adapter class names
+     *
+     * @var array
+     */
+    protected static $_dsnClassMap = [
+        'simple' => SimpleAdapter::class,
+    ];
+
     /**
      * @inheritDoc
      */
