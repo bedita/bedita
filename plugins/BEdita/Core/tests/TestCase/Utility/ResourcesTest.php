@@ -312,6 +312,16 @@ class ResourcesTest extends TestCase
                     ],
                 ],
             ],
+            'properties' => [
+                'properties',
+                [
+                    [
+                        'name' => 'property_to_remove',
+                        'object' => 'documents',
+                        'property' => 'json',
+                    ],
+                ],
+            ],
         ];
     }
 
@@ -443,6 +453,17 @@ class ResourcesTest extends TestCase
                         'endpoint_name' => 'home',
                         'role_name' => 'first role',
                         'permission' => 0b1111,
+                    ],
+                ],
+            ],
+            'properties' => [
+                'properties',
+                [
+                    [
+                        'name' => 'another_title',
+                        'description' => 'Another Title',
+                        'object' => 'documents',
+                        'property' => 'string',
                     ],
                 ],
             ],

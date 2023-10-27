@@ -66,10 +66,11 @@ class Properties extends ResourcesBase
      *
      * @param array $properties Properties data
      * @param array $options Table locator options
-     * @return void
+     * @return array
      */
-    public static function create(array $properties, array $options = []): void
+    public static function create(array $properties, array $options = []): array
     {
+        $created = [];
         $Properties = static::getTable('Properties', $options);
 
         foreach ($properties as $p) {
@@ -83,8 +84,10 @@ class Properties extends ResourcesBase
                 'read_only' => (bool)Hash::get($p, 'read_only', false),
             ]);
 
-            $Properties->saveOrFail($property, static::$defaults['save']);
+            $created[] = $Properties->saveOrFail($property, static::$defaults['save']);
         }
+
+        return $created;
     }
 
     /**
@@ -120,10 +123,11 @@ class Properties extends ResourcesBase
      *
      * @param array $properties Properties data
      * @param array $options Table locator options
-     * @return void
+     * @return array
      */
-    public static function update(array $properties, array $options = []): void
+    public static function update(array $properties, array $options = []): array
     {
+        $updated = [];
         $Properties = static::getTable('Properties', $options);
         $ObjectTypes = static::getTable('ObjectTypes', $options);
 
@@ -143,8 +147,10 @@ class Properties extends ResourcesBase
             $property->set('is_nullable', (bool)Hash::get($p, 'is_nullable', true));
             $property->set('read_only', (bool)Hash::get($p, 'read_only', false));
 
-            $Properties->saveOrFail($property, static::$defaults['update']);
+            $updated[] = $Properties->saveOrFail($property, static::$defaults['update']);
         }
+
+        return $updated;
     }
 
     /**
