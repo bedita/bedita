@@ -439,4 +439,55 @@ class PropertiesTableTest extends TestCase
         static::assertEqualsCanonicalizing($expected, $result, '');
         static::assertEqualsWithDelta($expected, $result, 0, '');
     }
+
+    /**
+     * Data provider for `testFindResource()`.
+     *
+     * @return array
+     */
+    public function findResourceProvider(): array
+    {
+        return [
+            'property' => [
+                1,
+                [
+                    'name' => 'another_title',
+                    'object_type_name' => 'documents',
+                ],
+            ],
+            'no name' => [
+                new BadFilterException('Missing required parameter "name"'),
+                [
+                    'object_type_name' => 'documents',
+                ],
+            ],
+            'no type' => [
+                new BadFilterException('Missing required parameter "object_type_name"'),
+                [
+                    'name' => 'a-name',
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * Test custom finder `findResource()`.
+     *
+     * @param int $expected The value expected
+     * @param array $options The options for the finder
+     * @return void
+     * @covers ::findResource()
+     * @dataProvider findResourceProvider()
+     */
+    public function testFindResource($expected, $options)
+    {
+        if ($expected instanceof \Exception) {
+            $this->expectException(get_class($expected));
+            $this->expectExceptionMessage($expected->getMessage());
+        }
+        $query = $this->Properties->find('resource', $options);
+        $entity = $query->first();
+        static::assertEquals(1, $query->count());
+        static::assertEquals($expected, $entity->id);
+    }
 }
