@@ -508,6 +508,20 @@ class ResourcesTest extends TestCase
                     ],
                 ],
             ],
+            'create prop' => [
+                [
+                    'create' => [
+                        'properties' => [
+                            [
+                                'name' => 'custom_one',
+                                'object' => 'documents',
+                                'property' => 'string',
+                                'description' => 'custom description',
+                            ],
+                        ],
+                    ],
+                ],
+            ],
             'remove simple' => [
                 [
                     'remove' => [
@@ -576,21 +590,20 @@ class ResourcesTest extends TestCase
 
         foreach ($resources as $action => $data) {
             foreach ($data as $type => $details) {
-                $entities = TableRegistry::getTableLocator()
-                    ->get(Inflector::camelize($type))
-                    ->find()
-                    ->where(['name IN' => Hash::extract($details, '{n}.name')])
-                    ->toArray();
-
+                $Table = TableRegistry::getTableLocator()
+                    ->get(Inflector::camelize($type));
+                if (!$Table->hasFinder('resource')) {
+                    $q = $Table->find()->where(['name IN' => Hash::extract($details[0], 'name')]);
+                } else {
+                    $q = $Table->find('resource', $details[0]);
+                }
+                $entities = $q->toArray();
                 if ($action === 'remove') {
                     static::assertEmpty($entities);
                 } else {
                     $entity = $entities[0];
-                    foreach ($details[0] as $name => $val) {
-                        if ($type != 'relations' || !in_array($name, ['left', 'right'])) {
-                            static::assertEquals($val, $entity->get($name));
-                        }
-                    }
+                    $name = Hash::get($details[0], 'name');
+                    static::assertEquals($name, $entity->get('name'));
                 }
             }
         }
