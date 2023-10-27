@@ -7,6 +7,7 @@ use BEdita\Core\Model\Entity\StaticProperty;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use Cake\Validation\Validation;
+use PDOException;
 
 /**
  * {@see \BEdita\Core\Model\Table\PropertiesTable} Test Case
@@ -510,5 +511,38 @@ class PropertiesTableTest extends TestCase
         static::assertEquals(2, $property->object_type_id);
         static::assertEquals(11, $property->property_type_id);
         $this->Properties->delete($property);
+    }
+
+    /**
+     * Test properties `beforeSave` on exception.
+     *
+     * @return void
+     * @covers ::beforeSave()
+     */
+    public function testBeforeSaveException(): void
+    {
+        $message = 'SQLSTATE[23000]: Integrity constraint violation: 19 NOT NULL constraint failed: properties.property_type_id';
+        $expected = new PDOException($message);
+        $this->expectException(get_class($expected));
+        $this->expectExceptionMessage($expected->getMessage());
+        $property = $this->Properties->newEmptyEntity();
+        $property->name = 'random_property';
+        $property->description = '';
+        $property->is_nullable = true;
+        $property->read_only = false;
+        $property->object = 'documents';
+        $this->Properties->save($property);
+
+        $message = 'SQLSTATE[23000]: Integrity constraint violation: 19 NOT NULL constraint failed: properties.object_type_id';
+        $expected = new PDOException($message);
+        $this->expectException(get_class($expected));
+        $this->expectExceptionMessage($expected->getMessage());
+        $property = $this->Properties->newEmptyEntity();
+        $property->name = 'random_property';
+        $property->description = '';
+        $property->is_nullable = true;
+        $property->read_only = false;
+        $property->property = 'json';
+        $this->Properties->save($property);
     }
 }
