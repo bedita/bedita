@@ -316,9 +316,9 @@ class ResourcesTest extends TestCase
                 'properties',
                 [
                     [
-                        'name' => 'property_to_remove',
+                        'name' => 'another_description',
                         'object' => 'documents',
-                        'property' => 'json',
+                        'property' => 'string',
                     ],
                 ],
             ],
