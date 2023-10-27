@@ -152,7 +152,7 @@ class PropertiesTable extends Table
      * @param \BEdita\Core\Model\Entity\Property $entity Property object.
      * @return void
      */
-    public function beforeSave(EventInterface $event, Property $entity)
+    public function beforeSave(EventInterface $event, Property $entity): void
     {
         if ($entity->object_type_id === null && $entity->object !== null) {
             $entity->object_type_id = $this->ObjectTypes->find()
@@ -162,6 +162,7 @@ class PropertiesTable extends Table
             $entity->property_type_id = $this->PropertyTypes->find()
                 ->where(['name' => $entity->property])->firstOrFail()->id;
         }
+        parent::beforeSave($event, $entity);
     }
 
     /**
