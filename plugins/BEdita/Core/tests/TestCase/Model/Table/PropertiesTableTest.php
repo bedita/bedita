@@ -490,4 +490,25 @@ class PropertiesTableTest extends TestCase
         static::assertEqualsCanonicalizing($expected, $result, '');
         static::assertEqualsWithDelta($expected, $result, 0, '');
     }
+
+    /**
+     * Test properties `beforeSave`.
+     *
+     * @return void
+     * @covers ::beforeSave()
+     */
+    public function testBeforeSave(): void
+    {
+        $property = $this->Properties->newEmptyEntity();
+        $property->name = 'random_property';
+        $property->description = '';
+        $property->is_nullable = true;
+        $property->read_only = false;
+        $property->object = 'documents';
+        $property->property = 'json';
+        $this->Properties->save($property);
+        static::assertEquals(2, $property->object_type_id);
+        static::assertEquals(11, $property->property_type_id);
+        $this->Properties->delete($property);
+    }
 }

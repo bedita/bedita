@@ -66,6 +66,9 @@ class Resources extends ResourcesBase
             'parent' => 'objects',
             'enabled' => 1,
         ],
+        'properties' => [
+            'enabled' => 1,
+        ],
         'property_types' => [
             'core_type' => 0,
         ],

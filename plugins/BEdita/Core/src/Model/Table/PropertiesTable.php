@@ -146,6 +146,25 @@ class PropertiesTable extends Table
     }
 
     /**
+     * Set `object_type_id` and `property_type_id` before saving.
+     *
+     * @param \Cake\Event\EventInterface $event Dispatched event.
+     * @param \BEdita\Core\Model\Entity\Property $entity Property object.
+     * @return void
+     */
+    public function beforeSave(EventInterface $event, Property $entity)
+    {
+        if ($entity->object_type_id === null && $entity->object !== null) {
+            $entity->object_type_id = $this->ObjectTypes->find()
+                ->where(['name' => $entity->object])->firstOrFail()->id;
+        }
+        if ($entity->property_type_id === null && $entity->property !== null) {
+            $entity->property_type_id = $this->PropertyTypes->find()
+                ->where(['name' => $entity->property])->firstOrFail()->id;
+        }
+    }
+
+    /**
      * Return properties for an object type, considering inheritance.
      *
      * @param \Cake\ORM\Query $query Query object instance.
