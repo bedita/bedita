@@ -521,10 +521,9 @@ class PropertiesTableTest extends TestCase
      */
     public function testBeforeSaveException(): void
     {
-        $message = 'SQLSTATE[23000]: Integrity constraint violation: 19 NOT NULL constraint failed: properties.property_type_id';
-        $expected = new PDOException($message);
+        $expected = new PDOException();
         $this->expectException(get_class($expected));
-        $this->expectExceptionMessage($expected->getMessage());
+        $this->expectExceptionMessage('properties.property_type_id');
         $property = $this->Properties->newEmptyEntity();
         $property->name = 'random_property';
         $property->description = '';
@@ -533,10 +532,8 @@ class PropertiesTableTest extends TestCase
         $property->object = 'documents';
         $this->Properties->save($property);
 
-        $message = 'SQLSTATE[23000]: Integrity constraint violation: 19 NOT NULL constraint failed: properties.object_type_id';
-        $expected = new PDOException($message);
         $this->expectException(get_class($expected));
-        $this->expectExceptionMessage($expected->getMessage());
+        $this->expectExceptionMessage('properties.object_type_id');
         $property = $this->Properties->newEmptyEntity();
         $property->name = 'random_property';
         $property->description = '';
