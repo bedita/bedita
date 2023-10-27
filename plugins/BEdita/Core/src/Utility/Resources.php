@@ -87,7 +87,8 @@ class Resources extends ResourcesBase
         'auth_providers',
         'categories',
         'config',
-        'properties',
+        // properties has a custom handler BEdita\Core\Utility\Properties
+        // 'properties',
         'property_types',
         'object_types',
         'roles',

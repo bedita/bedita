@@ -195,6 +195,17 @@ class ResourcesTest extends TestCase
                     ],
                 ],
             ],
+            'properties' => [
+                'properties',
+                [
+                    [
+                        'name' => 'extra_data',
+                        'description' => 'Document extra data',
+                        'object' => 'documents',
+                        'property' => 'json',
+                    ],
+                ],
+            ],
         ];
     }
 
