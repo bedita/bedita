@@ -162,7 +162,6 @@ class PropertiesTable extends Table
             $entity->property_type_id = $this->PropertyTypes->find()
                 ->where(['name' => $entity->property])->firstOrFail()->id;
         }
-        parent::beforeSave($event, $entity);
     }
 
     /**
