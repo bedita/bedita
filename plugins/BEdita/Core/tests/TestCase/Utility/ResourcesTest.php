@@ -195,6 +195,17 @@ class ResourcesTest extends TestCase
                     ],
                 ],
             ],
+            'properties' => [
+                'properties',
+                [
+                    [
+                        'name' => 'extra_data',
+                        'description' => 'Document extra data',
+                        'object' => 'documents',
+                        'property' => 'json',
+                    ],
+                ],
+            ],
         ];
     }
 
@@ -298,6 +309,16 @@ class ResourcesTest extends TestCase
                         'application_name' => 'First app',
                         'endpoint_name' => null,
                         'role_name' => null,
+                    ],
+                ],
+            ],
+            'properties' => [
+                'properties',
+                [
+                    [
+                        'name' => 'another_description',
+                        'object' => 'documents',
+                        'property' => 'string',
                     ],
                 ],
             ],
@@ -432,6 +453,17 @@ class ResourcesTest extends TestCase
                         'endpoint_name' => 'home',
                         'role_name' => 'first role',
                         'permission' => 0b1111,
+                    ],
+                ],
+            ],
+            'properties' => [
+                'properties',
+                [
+                    [
+                        'name' => 'another_title',
+                        'description' => 'Another Title',
+                        'object' => 'documents',
+                        'property' => 'string',
                     ],
                 ],
             ],
