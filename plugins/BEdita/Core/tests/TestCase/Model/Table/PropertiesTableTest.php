@@ -7,7 +7,6 @@ use BEdita\Core\Model\Entity\StaticProperty;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use Cake\Validation\Validation;
-use PDOException;
 
 /**
  * {@see \BEdita\Core\Model\Table\PropertiesTable} Test Case
