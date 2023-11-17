@@ -20,6 +20,7 @@ use Cake\Routing\Router;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Security;
 use Firebase\JWT\JWT;
+use Firebase\JWT\Key;
 
 /**
  * @coversDefaultClass \BEdita\API\Utility\JWTHandler
@@ -34,9 +35,9 @@ class JWTHandlerTest extends TestCase
     public function decodeProvider(): array
     {
         $payload = ['someData' => 'someValue'];
-        $token = JWT::encode($payload, Security::getSalt());
+        $token = JWT::encode($payload, Security::getSalt(), 'HS256');
         $invalidToken = 'gustavo';
-        $expiredToken = JWT::encode(['exp' => time() - 10], Security::getSalt());
+        $expiredToken = JWT::encode(['exp' => time() - 10], Security::getSalt(), 'HS256');
 
         return [
             'default' => [
@@ -95,7 +96,7 @@ class JWTHandlerTest extends TestCase
         static::assertArrayHasKey('jwt', $tokens);
         static::assertArrayHasKey('renew', $tokens);
 
-        $jwt = (array)JWT::decode($tokens['jwt'], Security::getSalt(), ['HS256']);
+        $jwt = (array)JWT::decode($tokens['jwt'], new Key(Security::getSalt(), 'HS256'));
 
         static::assertArrayHasKey('iat', $jwt);
         static::assertArrayHasKey('nbf', $jwt);
@@ -108,7 +109,7 @@ class JWTHandlerTest extends TestCase
         ];
         static::assertEquals($expected, $jwt);
 
-        $renew = (array)JWT::decode($tokens['renew'], Security::getSalt(), ['HS256']);
+        $renew = (array)JWT::decode($tokens['renew'], new Key(Security::getSalt(), 'HS256'));
 
         static::assertArrayHasKey('iat', $renew);
         static::assertArrayHasKey('nbf', $renew);
@@ -136,7 +137,7 @@ class JWTHandlerTest extends TestCase
         CurrentApplication::setApplication(new Application($app));
         $tokens = JWTHandler::tokens([], 'http://api.example.org');
 
-        $jwt = (array)JWT::decode($tokens['jwt'], Security::getSalt(), ['HS256']);
+        $jwt = (array)JWT::decode($tokens['jwt'], new Key(Security::getSalt(), 'HS256'));
         static::assertEquals($app, (array)$jwt['app']);
 
         CurrentApplication::setApplication(null);

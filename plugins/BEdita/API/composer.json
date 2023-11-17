@@ -25,7 +25,7 @@
         "cakephp/authentication": "^2.9",
         "cakephp/authorization": "^2.2",
         "cakephp/cakephp": "~4.4.1",
-        "firebase/php-jwt": "^5.5.1"
+        "firebase/php-jwt": "^6.9"
     },
     "require-dev": {
         "phpunit/phpunit": "^9.5",
