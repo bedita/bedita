@@ -52,6 +52,13 @@ class JWTHandlerTest extends TestCase
                 new \Firebase\JWT\ExpiredException('Expired token'),
                 $expiredToken,
             ],
+            'wrongAlgorithmOption' => [
+                new \InvalidArgumentException('Algorithm must be a string'),
+                $token,
+                [
+                    'algorithm' => ['HS256'],
+                ],
+            ],
         ];
     }
 
