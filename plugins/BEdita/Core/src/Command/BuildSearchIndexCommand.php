@@ -136,7 +136,7 @@ class BuildSearchIndexCommand extends Command
         $indexed = 0;
         $table = $this->fetchTable($entity->getSource());
         foreach ($table->getSearchAdapters() as $adapter) {
-            if (!empty($adapters) && !in_array(get_class($adapter), $adapters)) {
+            if (!empty($adapters) && !in_array($adapter->getAlias(), $adapters)) {
                 continue;
             }
             $io->verbose(
