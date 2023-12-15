@@ -41,6 +41,9 @@
         "phpstan/phpstan-deprecation-rules": "^1.0",
         "dereuromark/cakephp-ide-helper": "^1.17"
     },
+    "conflict": {
+        "symfony/filesystem": "^7"
+    },
     "autoload": {
         "psr-4": {
             "BEdita\\App\\": "src"
