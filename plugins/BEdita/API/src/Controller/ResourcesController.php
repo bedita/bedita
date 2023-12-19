@@ -85,8 +85,8 @@ abstract class ResourcesController extends AppController
             }
         }
         // backward compatibility: set $defaultTable if deprecated $modelClass attribute is used
-        if (empty($this->defaultTable) && !empty($this->modelClass)) { /* @phpstan-ignore-line */
-            $this->defaultTable = $this->modelClass; /* @phpstan-ignore-line */
+        if (empty($this->defaultTable) && !empty($this->modelClass)) {
+            $this->defaultTable = $this->modelClass;
         }
         if (empty($this->Table)) {
             $this->Table = $this->fetchTable();
