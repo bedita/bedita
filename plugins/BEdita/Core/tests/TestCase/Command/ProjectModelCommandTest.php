@@ -150,6 +150,7 @@ class ProjectModelCommandTest extends TestCase
      *
      * @return void
      * @covers ::execute()
+     * @covers ::remove()
      */
     public function testRemove(): void
     {
@@ -157,7 +158,7 @@ class ProjectModelCommandTest extends TestCase
         unset($model['property_types'][0]);
         $path = TMP . '__test.json';
         file_put_contents($path, json_encode($model));
-        $this->exec('project_model --file ' . $path);
+        $this->exec('project_model --file ' . $path . ' --delete', ['y']);
         unlink($path);
         $this->assertErrorContains('Items to remove');
         $this->assertExitSuccess();

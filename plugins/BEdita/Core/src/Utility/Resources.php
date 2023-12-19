@@ -66,6 +66,9 @@ class Resources extends ResourcesBase
             'parent' => 'objects',
             'enabled' => 1,
         ],
+        'properties' => [
+            'enabled' => 1,
+        ],
         'property_types' => [
             'core_type' => 0,
         ],
@@ -84,6 +87,7 @@ class Resources extends ResourcesBase
         'auth_providers',
         'categories',
         'config',
+        'properties',
         'property_types',
         'object_types',
         'roles',
@@ -111,6 +115,9 @@ class Resources extends ResourcesBase
      */
     public static function create(string $type, array $data, array $options = []): array
     {
+        if (in_array($type, array_keys(static::$otherTypesMap))) {
+            return call_user_func_array([static::$otherTypesMap[$type], 'create'], [$data, $options]);
+        }
         $Table = static::getTable($type, $options);
         $result = [];
 
@@ -137,6 +144,11 @@ class Resources extends ResourcesBase
      */
     public static function remove(string $type, array $data, array $options = []): void
     {
+        if (in_array($type, array_keys(static::$otherTypesMap))) {
+            call_user_func_array([static::$otherTypesMap[$type], 'remove'], [$data, $options]);
+
+            return;
+        }
         $Table = static::getTable($type, $options);
 
         foreach ($data as $item) {
@@ -155,6 +167,9 @@ class Resources extends ResourcesBase
      */
     public static function update(string $type, array $data, array $options = []): array
     {
+        if (in_array($type, array_keys(static::$otherTypesMap))) {
+            return call_user_func_array([static::$otherTypesMap[$type], 'update'], [$data, $options]);
+        }
         $Table = static::getTable($type, $options);
         $result = [];
 
@@ -258,15 +273,9 @@ class Resources extends ResourcesBase
                 __d('bedita', 'Resource type "{0}" not supported', $type)
             );
         }
-
-        if (in_array($type, static::$allowed)) {
-            $class = static::class;
-            $args = [$type, $data, $options];
-        } else {
-            $class = static::$otherTypesMap[$type];
-            $args = [$data, $options];
-        }
-
+        $useOther = in_array($type, array_keys(static::$otherTypesMap));
+        $class = $useOther ? static::$otherTypesMap[$type] : static::class;
+        $args = $useOther ? [$data, $options] : [$type, $data, $options];
         $res = call_user_func_array([$class, $action], $args);
         if (!is_array($res)) {
             return [];

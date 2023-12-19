@@ -18,6 +18,7 @@ use Cake\Routing\Router;
 use Cake\Utility\Hash;
 use Cake\Utility\Security;
 use Firebase\JWT\JWT;
+use Firebase\JWT\Key;
 
 /**
  * Encode/decode JWT token.
@@ -48,21 +49,23 @@ class JWTHandler
     /**
      * Decode JWT token.
      * Options array may contain these keys:
-     *  - 'key' - Key or map of keys used in decode
-     *  - 'algorithms' -  List of supported verification algorithms
+     *  - 'key' - Key used in decode
+     *  - 'algorithm' -  Verification algorithm
      *
      * @param string $token JWT token to decode.
      * @param array $options Decode options including key and algorithms.
      * @return array The token's payload as a PHP array.
+     * @throws \InvalidArgumentException If algorithm is not a string
      */
     public static function decode(string $token, array $options = []): array
     {
-        $options += [
-            'key' => Security::getSalt(),
-            'algorithms' => Configure::read('Security.jwt.algorithm') ?: 'HS256',
-        ];
+        $keyMaterial = Hash::get($options, 'key', Security::getSalt());
+        $algorithm = Hash::get($options, 'algorithm', Configure::read('Security.jwt.algorithm', 'HS256'));
+        if (!is_string($algorithm)) {
+            throw new \InvalidArgumentException(__d('bedita', 'Algorithm must be a string'));
+        }
 
-        return (array)JWT::decode($token, $options['key'], (array)$options['algorithms']);
+        return (array)JWT::decode($token, new Key($keyMaterial, $algorithm));
     }
 
     /**
