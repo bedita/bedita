@@ -114,7 +114,7 @@ class TranslationsTable extends Table
             ->notEmptyString('status');
 
         $validator
-            ->isArray('translated_fields')
+            ->array('translated_fields')
             ->allowEmptyArray('translated_fields');
 
         return $validator;
