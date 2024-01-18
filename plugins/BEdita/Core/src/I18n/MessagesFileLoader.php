@@ -45,7 +45,7 @@ class MessagesFileLoader extends BaseLoader
     /**
      * {@inheritDoc}
      *
-     * @param string[] $plugins Additional plugins to look up in for translations.
+     * @param string[] $name Additional plugins to look up in for translations.
      */
     public function __construct(string $name, string $locale, string $extension = 'po', array $plugins = [])
     {
