@@ -65,6 +65,13 @@ class ObjectEntity extends Entity implements JsonApiSerializable
     }
 
     /**
+     * Extra inline associations.
+     *
+     * @var string[]
+     */
+    protected static $extraInlineAssociations = [];
+
+    /**
      * @inheritDoc
      */
     protected $_accessible = [
@@ -193,12 +200,23 @@ class ObjectEntity extends Entity implements JsonApiSerializable
     }
 
     /**
+     * Add extra associations
+     *
+     * @param string[] $associations list of associations names
+     * @return void
+     */
+    public static function setExtraInlineAssociations(array $associations, bool $merge = true): void
+    {
+        static::$extraInlineAssociations = array_merge($merge ? static::$extraInlineAssociations : [], $associations);
+    }
+
+    /**
      * @inheritDoc
      */
     protected static function listAssociations(Table $Table, array $hidden = [])
     {
         $associations = static::jsonApiListAssociations($Table, $hidden);
-        $associations = array_diff($associations, ['date_ranges', 'categories', 'tags']);
+        $associations = array_diff($associations, ['date_ranges', 'categories', 'tags'], static::$extraInlineAssociations);
 
         return $associations;
     }
