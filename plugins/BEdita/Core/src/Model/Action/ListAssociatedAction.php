@@ -292,8 +292,8 @@ class ListAssociatedAction extends BaseAction
      * Get association sort by association and primary key.
      * When association name is "Children", use Folders.getSort($primaryKey).
      *
-     * @param mixed $association Primary key
-     * @param \Cake\ORM\Association $primaryKey Association
+     * @param \Cake\ORM\Association $association Association
+     * @param  mixed $primaryKey Primary key
      * @return array
      */
     protected function sort(Association $association, $primaryKey): array
