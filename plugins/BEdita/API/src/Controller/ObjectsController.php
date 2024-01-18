@@ -179,8 +179,6 @@ class ObjectsController extends ResourcesController
         $objectType = null;
         if ($table === null) {
             $objectType = $this->objectType;
-        } elseif ($table->hasBehavior('ObjectType')) {
-            $objectType = $table->objectType();
         }
 
         if ($objectType instanceof ObjectType && $objectType->hasAssoc('Permissions')) {
