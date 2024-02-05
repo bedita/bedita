@@ -17,6 +17,7 @@ namespace BEdita\Core\Command;
 use Cake\Command\Command;
 use Cake\Console\Arguments;
 use Cake\Console\ConsoleIo;
+use Cake\Console\ConsoleOptionParser;
 use Cake\I18n\FrozenDate;
 use Cake\ORM\Locator\LocatorAwareTrait;
 
@@ -30,10 +31,34 @@ class AsyncJobsCleanCommand extends Command
     /**
      * @inheritDoc
      */
+    protected function buildOptionParser(ConsoleOptionParser $parser): ConsoleOptionParser
+    {
+        return $parser
+            ->addOption('since', [
+                'help' => 'Delete async jobs older than this date',
+                'required' => false,
+            ])
+            ->addOption('service', [
+                'help' => 'Delete async jobs for this service',
+                'required' => false,
+            ]);
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function execute(Arguments $args, ConsoleIo $io)
     {
-        $io->info('Cleaning async jobs older than 1 month');
-        $deleted = $this->fetchTable('AsyncJobs')->deleteAll(['created <' => new FrozenDate('-1 month')]);
+        $since = $args->getOption('since') ?? '-1 month';
+        $service = $args->getOption('service');
+        $message = 'Cleaning async jobs, since ' . $since;
+        $conditions = ['created <' => new FrozenDate($since)];
+        if ($service) {
+            $conditions['service'] = $service;
+            $message .= ', for service ' . $service;
+        }
+        $io->info($message);
+        $deleted = $this->fetchTable('AsyncJobs')->deleteAll($conditions);
         $io->success(sprintf('Deleted %d async jobs', $deleted));
         $io->info('Done');
 
