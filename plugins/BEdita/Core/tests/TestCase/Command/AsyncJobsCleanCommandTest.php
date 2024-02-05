@@ -49,10 +49,21 @@ class AsyncJobsCleanCommandTest extends TestCase
         $this->assertOutputContains('Cleaning async jobs, since -1 month');
         $this->assertOutputContains('Deleted');
         $this->assertOutputContains('Done');
+        $this->assertExitSuccess();
+    }
 
+    /**
+     * Test `execute` method with `--since` option and `--service` option
+     *
+     * @return void
+     * @covers ::execute()
+     */
+    public function testExecuteSinceService(): void
+    {
         $this->exec('async_jobs_clean --since 2024-01-01 --service dummy');
         $this->assertOutputContains('Cleaning async jobs, since 2024-01-01, for service dummy');
         $this->assertOutputContains('Deleted');
         $this->assertOutputContains('Done');
+        $this->assertExitSuccess();
     }
 }
