@@ -32,7 +32,7 @@ class AsyncJobsCleanCommandTest extends TestCase
      */
     public function testExecute(): void
     {
-        $this->exec('async_jobs_clean --help');
+        $this->exec('async_jobs_clean');
         $this->assertOutputContains('Cleaning async jobs older than 1 month');
         $this->assertOutputContains('Deleted');
         $this->assertOutputContains('Done');
