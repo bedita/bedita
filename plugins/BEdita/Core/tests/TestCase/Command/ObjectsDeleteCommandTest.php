@@ -27,6 +27,25 @@ class ObjectsDeleteCommandTest extends TestCase
     use ConsoleIntegrationTestTrait;
 
     /**
+     * Fixtures
+     *
+     * @var array
+     */
+    protected $fixtures = [
+        'plugin.BEdita/Core.ObjectTypes',
+        'plugin.BEdita/Core.PropertyTypes',
+        'plugin.BEdita/Core.Properties',
+        'plugin.BEdita/Core.Relations',
+        'plugin.BEdita/Core.RelationTypes',
+        'plugin.BEdita/Core.Objects',
+        'plugin.BEdita/Core.Locations',
+        'plugin.BEdita/Core.Media',
+        'plugin.BEdita/Core.Profiles',
+        'plugin.BEdita/Core.Users',
+        'plugin.BEdita/Core.Streams',
+    ];
+
+    /**
      * @inheritDoc
      */
     public function setUp(): void
@@ -58,7 +77,7 @@ class ObjectsDeleteCommandTest extends TestCase
     {
         $this->exec('objects_delete --type documents');
         $this->assertOutputContains('Deleting from trash objects, since -1 month, for type documents');
-        $this->assertOutputContains('Deleted from trash 0 objects [0 errors]');
+        $this->assertOutputContains('Deleted from trash 2 objects [0 errors]');
         $this->assertOutputContains('Done');
         $this->assertExitSuccess();
     }
