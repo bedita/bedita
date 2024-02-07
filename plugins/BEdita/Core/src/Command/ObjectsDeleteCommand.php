@@ -55,20 +55,22 @@ class ObjectsDeleteCommand extends Command
         $since = $args->getOption('since');
         $types = (array)$args->getOption('type');
         $message = 'Deleting from trash objects, since ' . $since;
-        $message .= $type ? ', for type ' . $type : '';
+        $message .= $types ? ', for type ' . implode(',', $types) : '';
         $io->info($message);
         $conditions = ['deleted' => true, 'locked' => false, 'modified <' => new FrozenDate($since)];
         $deleted = $errors = 0;
-        foreach ($this->objectsIterator($type, $conditions) as $object) {
-            try {
-                $io->verbose(sprintf('Deleting object %s', $object->id));
-                $object->getTable()->deleteOrFail($object);
-            } catch (\Throwable $e) {
-                $io->error(sprintf('Error deleting object %s: %s', $object->id, $e->getMessage()));
-                $errors++;
-                continue;
+        foreach ($types as $type) {
+            foreach ($this->objectsIterator($type, $conditions) as $object) {
+                try {
+                    $io->verbose(sprintf('Deleting object %s', $object->id));
+                    $object->getTable()->deleteOrFail($object);
+                } catch (\Throwable $e) {
+                    $io->error(sprintf('Error deleting object %s: %s', $object->id, $e->getMessage()));
+                    $errors++;
+                    continue;
+                }
+                $deleted++;
             }
-            $deleted++;
         }
         $io->success(sprintf('Deleted from trash %d objects [%d errors]', $deleted, $errors));
         $io->info('Done');
