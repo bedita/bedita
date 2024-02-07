@@ -52,8 +52,8 @@ class ObjectsDeleteCommand extends Command
      */
     public function execute(Arguments $args, ConsoleIo $io)
     {
-        $since = $args->getOption('since') ?? '-1 month';
-        $type = $args->getOption('type');
+        $since = $args->getOption('since');
+        $types = (array)$args->getOption('type');
         $message = 'Deleting from trash objects, since ' . $since;
         $message .= $type ? ', for type ' . $type : '';
         $io->info($message);
