@@ -77,7 +77,23 @@ class ObjectsDeleteCommandTest extends TestCase
     public function testExecute(): void
     {
         $this->exec('objects_delete --type documents');
-        $this->assertOutputContains('Deleting from trash objects, since -1 month, for type documents');
+        $this->assertOutputContains('Deleting from trash objects, since -1 month, for type(s) documents');
+        $this->assertOutputContains('Deleted from trash 2 objects [0 errors]');
+        $this->assertOutputContains('Done');
+        $this->assertExitSuccess();
+    }
+
+    /**
+     * Test `execute` method
+     *
+     * @return void
+     * @covers ::execute()
+     * @covers ::objectsIterator()
+     */
+    public function testExecuteSince(): void
+    {
+        $this->exec('objects_delete --since "-1 weeks"');
+        $this->assertOutputContains('Deleting from trash objects, since -1 weeks');
         $this->assertOutputContains('Deleted from trash 2 objects [0 errors]');
         $this->assertOutputContains('Done');
         $this->assertExitSuccess();

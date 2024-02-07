@@ -55,12 +55,15 @@ class ObjectsDeleteCommand extends Command
         $since = $args->getOption('since');
         $types = (array)$args->getOption('type');
         $message = 'Deleting from trash objects, since ' . $since;
-        $message .= $types ? ', for type ' . implode(',', $types) : '';
+        $message .= !empty($types) ? ', for type(s) ' . implode(',', $types) : '';
         $io->info($message);
         $conditions = ['deleted' => true, 'locked' => false, 'modified <' => new FrozenDate($since)];
         $deleted = $errors = 0;
-        foreach ($types as $type) {
-            foreach ($this->objectsIterator($type, $conditions) as $object) {
+        if (empty($types)) {
+            $types = [null];
+        }
+        foreach ($types as $objectType) {
+            foreach ($this->objectsIterator($objectType, $conditions) as $object) {
                 try {
                     $io->verbose(sprintf('Deleting object %s', $object->id));
                     $object->getTable()->deleteOrFail($object);
