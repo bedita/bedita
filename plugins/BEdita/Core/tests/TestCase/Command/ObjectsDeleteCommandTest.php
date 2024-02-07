@@ -72,6 +72,7 @@ class ObjectsDeleteCommandTest extends TestCase
      *
      * @return void
      * @covers ::execute()
+     * @covers ::objectsIterator()
      */
     public function testExecute(): void
     {
