@@ -38,10 +38,12 @@ class ObjectsDeleteCommand extends Command
             ->addOption('since', [
                 'help' => 'Delete objects in trash since this date',
                 'required' => false,
+                'default' => '-1 month',
             ])
             ->addOption('type', [
                 'help' => 'Delete objects in trash by type',
                 'required' => false,
+                'multiple' => true,
             ]);
     }
 
