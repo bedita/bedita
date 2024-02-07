@@ -14,6 +14,7 @@ declare(strict_types=1);
 
 namespace BEdita\Core\Command;
 
+use BEdita\Core\Model\Entity\ObjectEntity;
 use Cake\Command\Command;
 use Cake\Console\Arguments;
 use Cake\Console\ConsoleIo;
@@ -64,21 +65,34 @@ class ObjectsDeleteCommand extends Command
         }
         foreach ($types as $objectType) {
             foreach ($this->objectsIterator($objectType, $conditions) as $object) {
-                try {
-                    $io->verbose(sprintf('Deleting object %s', $object->id));
-                    $object->getTable()->deleteOrFail($object);
-                } catch (\Throwable $e) {
-                    $io->error(sprintf('Error deleting object %s: %s', $object->id, $e->getMessage()));
-                    $errors++;
-                    continue;
-                }
-                $deleted++;
+                $this->deleteObject($io, $object, $deleted, $errors);
             }
         }
         $io->success(sprintf('Deleted from trash %d objects [%d errors]', $deleted, $errors));
         $io->info('Done');
 
         return self::CODE_SUCCESS;
+    }
+
+    /**
+     * Delete object.
+     *
+     * @param \Cake\Console\ConsoleIo $io The console io
+     * @param \BEdita\Core\Model\Entity\ObjectEntity $object The object
+     * @param int $deleted The number of deleted objects
+     * @param int $errors The number of errors
+     * @return void
+     */
+    private function deleteObject(ConsoleIo $io, ObjectEntity $object, int &$deleted, int &$errors): void
+    {
+        try {
+            $io->verbose(sprintf('Deleting object %s', $object->id));
+            $object->getTable()->deleteOrFail($object);
+            $deleted++;
+        } catch (\Throwable $e) {
+            $io->error(sprintf('Error deleting object %s: %s', $object->id, $e->getMessage()));
+            $errors++;
+        }
     }
 
     /**

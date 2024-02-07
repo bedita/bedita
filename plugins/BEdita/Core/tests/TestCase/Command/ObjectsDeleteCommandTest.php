@@ -14,6 +14,8 @@ declare(strict_types=1);
 
 namespace BEdita\Core\Test\TestCase\Command;
 
+use BEdita\Core\Command\ObjectsDeleteCommand;
+use BEdita\Core\Model\Entity\ObjectEntity;
 use Cake\Console\TestSuite\ConsoleIntegrationTestTrait;
 use Cake\TestSuite\TestCase;
 
@@ -73,6 +75,7 @@ class ObjectsDeleteCommandTest extends TestCase
      * @return void
      * @covers ::execute()
      * @covers ::objectsIterator()
+     * @covers ::deleteObject()
      */
     public function testExecute(): void
     {
@@ -89,6 +92,7 @@ class ObjectsDeleteCommandTest extends TestCase
      * @return void
      * @covers ::execute()
      * @covers ::objectsIterator()
+     * @covers ::deleteObject()
      */
     public function testExecuteSince(): void
     {
@@ -97,5 +101,25 @@ class ObjectsDeleteCommandTest extends TestCase
         $this->assertOutputContains('Deleted from trash 2 objects [0 errors]');
         $this->assertOutputContains('Done');
         $this->assertExitSuccess();
+    }
+
+    /**
+     * Test `deleteObject` method
+     *
+     * @return void
+     * @covers ::deleteObject()
+     */
+    public function testDeleteObject(): void
+    {
+        $deleted = $errors = 0;
+        $io = $this->getMockBuilder('Cake\Console\ConsoleIo')->getMock();
+        $object = new ObjectEntity([]);
+        $command = new ObjectsDeleteCommand();
+        $reflectionClass = new \ReflectionClass($command);
+        $method = $reflectionClass->getMethod('deleteObject');
+        $method->setAccessible(true);
+        $method->invokeArgs($command, [$io, $object, &$deleted, &$errors]);
+        $this->assertEquals(0, $deleted);
+        $this->assertEquals(1, $errors);
     }
 }
