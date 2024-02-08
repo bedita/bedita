@@ -112,8 +112,9 @@ class ObjectsDeleteCommandTest extends TestCase
     public function testExecuteError(): void
     {
         $throwError = function () {
-            throw new \Exception('Fake error');
+            throw new \Exception('An error');
         };
+
         // add listener to global event manager
         EventManager::instance()->on('Model.beforeDelete', $throwError);
 
