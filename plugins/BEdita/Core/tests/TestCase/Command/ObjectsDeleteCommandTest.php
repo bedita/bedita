@@ -14,9 +14,8 @@ declare(strict_types=1);
 
 namespace BEdita\Core\Test\TestCase\Command;
 
-use BEdita\Core\Command\ObjectsDeleteCommand;
-use BEdita\Core\Model\Entity\ObjectEntity;
 use Cake\Console\TestSuite\ConsoleIntegrationTestTrait;
+use Cake\Event\EventManager;
 use Cake\TestSuite\TestCase;
 
 /**
@@ -104,22 +103,37 @@ class ObjectsDeleteCommandTest extends TestCase
     }
 
     /**
-     * Test `deleteObject` method
+     * Test `execute` method
      *
      * @return void
+     * @covers ::objectsIterator()
      * @covers ::deleteObject()
      */
-    public function testDeleteObject(): void
+    public function testExecuteError(): void
     {
-        $deleted = $errors = 0;
-        $io = $this->getMockBuilder('Cake\Console\ConsoleIo')->getMock();
-        $object = new ObjectEntity([]);
-        $command = new ObjectsDeleteCommand();
-        $reflectionClass = new \ReflectionClass($command);
-        $method = $reflectionClass->getMethod('deleteObject');
-        $method->setAccessible(true);
-        $method->invokeArgs($command, [$io, $object, &$deleted, &$errors]);
-        $this->assertEquals(0, $deleted);
-        $this->assertEquals(1, $errors);
+        $throwError = function () {
+            throw new \Exception('Fake error');
+        };
+        // add listener to global event manager
+        EventManager::instance()->on('Model.beforeDelete', $throwError);
+
+        // count trash items
+        $expected = $this->fetchTable('objects')->find()->where(['deleted' => 1])->count();
+
+        // run command
+        $this->exec('objects_delete --since "-1 weeks"');
+
+        // ensure to off listener from global event manager
+        EventManager::instance()->off('Model.beforeDelete', $throwError);
+
+        // count new trash items
+        $actual = $this->fetchTable('objects')->find()->where(['deleted' => 1])->count();
+
+        // test assertion
+        self::assertSame($expected, $actual);
+        $this->assertOutputContains('Deleting from trash objects, since -1 weeks');
+        $this->assertOutputContains('Deleted from trash 0 objects [2 errors]');
+        $this->assertOutputContains('Done');
+        $this->assertExitSuccess();
     }
 }
