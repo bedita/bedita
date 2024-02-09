@@ -75,6 +75,8 @@ class ObjectEntityTest extends TestCase
     {
         unset($this->Objects);
 
+        ObjectEntity::setExtraInlineAssociations([], false);
+
         parent::tearDown();
     }
 
@@ -388,6 +390,38 @@ class ObjectEntityTest extends TestCase
         $links = $entity['links'];
 
         static::assertSame($expected, $links);
+    }
+
+    /**
+     * Test inline associations extra.
+     *
+     * @return void
+     * @covers ::setExtraInlineAssociations()
+     * @covers ::listAssociations()
+     */
+    public function testExtraInlineAssociations(): void
+    {
+        ObjectEntity::setExtraInlineAssociations(['translations'], false);
+        $expected = [
+            'inverse_test',
+            'parents',
+            'test',
+        ];
+
+        $entity = TableRegistry::getTableLocator()
+            ->get('Documents')
+            ->newEntity([
+                'translations' => [],
+                'parents' => [],
+            ]);
+        $entity->set('type', 'documents');
+        $entity = $entity->jsonApiSerialize();
+
+        $relations = array_keys($entity['relationships']);
+        sort($relations);
+
+        static::assertSame($expected, $relations);
+        static::assertArrayHasKey('translations', $entity['attributes']);
     }
 
     /**
