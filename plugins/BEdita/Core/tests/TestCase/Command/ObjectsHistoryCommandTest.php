@@ -90,7 +90,27 @@ class ObjectsHistoryCommandTest extends TestCase
     }
 
     /**
-     * Test `delete` method
+     * Test `execute` method, by types
+     *
+     * @return void
+     * @covers ::execute()
+     * @covers ::read()
+     * @covers ::fetchQuery()
+     * @covers ::objectsIterator()
+     */
+    public function testExecuteByTypes(): void
+    {
+        $this->exec('objects_history --type users --type documents');
+        $this->assertOutputContains('<info>Perform "read" on objects history, for type(s) users,documents</info>');
+        $this->assertOutputContains('<info>======> {"id":1,"resource_id":"2","resource_type":"objects","created":"2016-05-13T07:09:22+00:00","user_id":1,"application_id":1,"user_action":"create","changed":{"title":"title one","description":"description here"}}</info>');
+        $this->assertOutputContains('<info>======> {"id":2,"resource_id":"2","resource_type":"objects","created":"2016-05-13T07:09:23+00:00","user_id":5,"application_id":1,"user_action":"update","changed":{"body":"body here","extra":{"abstract":"abstract here","list":["one","two","three"]}}}</info>');
+        $this->assertOutputContains('<success>Found 2 items</success>');
+        $this->assertOutputContains('<info>Done</info>');
+        $this->assertExitSuccess();
+    }
+
+    /**
+     * Test `delete` method, with exception
      *
      * @return void
      * @covers ::execute()
@@ -98,7 +118,7 @@ class ObjectsHistoryCommandTest extends TestCase
      * @covers ::fetchQuery()
      * @covers ::objectsIterator()
      */
-    public function testDelete(): void
+    public function testDeleteWithException(): void
     {
         $throwError = function () {
             throw new \Exception('An error');
@@ -112,6 +132,26 @@ class ObjectsHistoryCommandTest extends TestCase
         $this->assertOutputContains('======> Deleting history item 1');
         $this->assertOutputContains('======> Deleting history item 2');
         $this->assertOutputContains('<success>Deleted 0 items [2 errors]</success>');
+        $this->assertOutputContains('<info>Done</info>');
+        $this->assertExitSuccess();
+    }
+
+    /**
+     * Test `delete` method, with no exception
+     *
+     * @return void
+     * @covers ::execute()
+     * @covers ::delete()
+     * @covers ::fetchQuery()
+     * @covers ::objectsIterator()
+     */
+    public function testDeleteWithNoException(): void
+    {
+        $this->exec('objects_history --action delete --id 2 --verbose');
+        $this->assertOutputContains('<info>Perform "delete" on objects history, for resource(s) id(s) 2</info>');
+        $this->assertOutputContains('======> Deleting history item 1');
+        $this->assertOutputContains('======> Deleting history item 2');
+        $this->assertOutputContains('<success>Deleted 2 items [0 errors]</success>');
         $this->assertOutputContains('<info>Done</info>');
         $this->assertExitSuccess();
     }
