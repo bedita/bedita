@@ -87,5 +87,4 @@ class ObjectsHistoryCommandTest extends TestCase
         $this->assertOutputContains('Done');
         $this->assertExitSuccess();
     }
-
 }
