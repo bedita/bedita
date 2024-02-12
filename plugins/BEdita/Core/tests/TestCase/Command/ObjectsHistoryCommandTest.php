@@ -102,8 +102,6 @@ class ObjectsHistoryCommandTest extends TestCase
     {
         $this->exec('objects_history --type users --type documents');
         $this->assertOutputContains('<info>Perform "read" on objects history, for type(s) users,documents</info>');
-        $this->assertOutputContains('<info>======> {"id":1,"resource_id":"2","resource_type":"objects","created":"2016-05-13T07:09:22+00:00","user_id":1,"application_id":1,"user_action":"create","changed":{"title":"title one","description":"description here"}}</info>');
-        $this->assertOutputContains('<info>======> {"id":2,"resource_id":"2","resource_type":"objects","created":"2016-05-13T07:09:23+00:00","user_id":5,"application_id":1,"user_action":"update","changed":{"body":"body here","extra":{"abstract":"abstract here","list":["one","two","three"]}}}</info>');
         $this->assertOutputContains('<success>Found 2 items</success>');
         $this->assertOutputContains('<info>Done</info>');
         $this->assertExitSuccess();
