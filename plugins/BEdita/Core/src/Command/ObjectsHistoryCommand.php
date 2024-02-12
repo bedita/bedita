@@ -142,7 +142,12 @@ class ObjectsHistoryCommand extends Command
         $historyTable->belongsTo('Objects', [
             'foreignKey' => false,
             'joinType' => 'INNER',
-            'conditions' => ['CAST(' . $objectsTable->aliasField('id') . ' AS varchar) = ' . $historyTable->aliasField('resource_id')],
+            'conditions' => function (QueryExpression $exp, Query $q) use ($historyTable, $objectsTable) {
+                return $exp->eq(
+                    $historyTable->aliasField('resource_id'),
+                    $q->func()->cast($objectsTable->aliasField('id'), 'varchar')
+                );
+            },
         ]);
         $aliasCreated = $historyTable->aliasField('created');
         $aliasResourceId = $historyTable->aliasField('resource_id');
