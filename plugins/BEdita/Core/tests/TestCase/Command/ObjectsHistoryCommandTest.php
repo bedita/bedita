@@ -27,6 +27,21 @@ class ObjectsHistoryCommandTest extends TestCase
     use ConsoleIntegrationTestTrait;
 
     /**
+     * Fixtures
+     *
+     * @var array
+     */
+    protected $fixtures = [
+        'plugin.BEdita/Core.ObjectTypes',
+        'plugin.BEdita/Core.PropertyTypes',
+        'plugin.BEdita/Core.Properties',
+        'plugin.BEdita/Core.Relations',
+        'plugin.BEdita/Core.RelationTypes',
+        'plugin.BEdita/Core.Objects',
+        'plugin.BEdita/Core.History',
+    ];
+
+    /**
      * @inheritDoc
      */
     protected function setUp(): void
@@ -68,9 +83,9 @@ class ObjectsHistoryCommandTest extends TestCase
     {
         $this->exec('objects_history');
         $this->assertOutputContains('Perform "read" on objects history');
-        $this->assertOutputContains('Found ');
-        $this->assertOutputContains(' items');
+        $this->assertOutputContains('Found 2 items');
         $this->assertOutputContains('Done');
         $this->assertExitSuccess();
     }
+
 }

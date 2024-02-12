@@ -144,12 +144,8 @@ class ObjectsHistoryCommand extends Command
         $aliasCreated = $historyTable->aliasField('created');
         $aliasResourceId = $historyTable->aliasField('resource_id');
         $conditions = [];
-        if (!empty($options['id'])) {
-            $conditions += [$aliasResourceId . ' IN' => $options['id']];
-        }
-        if (!empty($options['since'])) {
-            $conditions += [$aliasCreated . ' >' => new FrozenDate($options['since'])];
-        }
+        $conditions += !empty($options['id']) ? [$aliasResourceId . ' IN' => $options['id']] : [];
+        $conditions += !empty($options['since']) ? [$aliasCreated . ' >' => new FrozenDate($options['since'])] : [];
         $query = $historyTable->find()->where($conditions);
         $types = (array)Hash::get($options, 'types', []);
 
