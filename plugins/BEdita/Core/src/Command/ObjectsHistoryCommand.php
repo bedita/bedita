@@ -95,8 +95,7 @@ class ObjectsHistoryCommand extends Command
         $historyTable = $this->fetchTable('Objects')->getBehavior('History')->Table;
         $aliasId = $historyTable->aliasField('id');
         foreach ($this->historyIterator($query, $aliasId) as $historyItem) {
-            $counter++;
-            $io->Verbose('======> Deleting history item ' . $historyItem->id);
+            $io->verbose('======> Deleting history item ' . $historyItem->id);
             try {
                 $historyTable->deleteOrFail($historyItem);
                 $counter++;

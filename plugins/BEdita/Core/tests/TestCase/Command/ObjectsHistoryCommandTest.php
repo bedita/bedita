@@ -15,6 +15,7 @@ declare(strict_types=1);
 namespace BEdita\Core\Test\TestCase\Command;
 
 use Cake\Console\TestSuite\ConsoleIntegrationTestTrait;
+use Cake\Event\EventManager;
 use Cake\TestSuite\TestCase;
 
 /**
@@ -82,9 +83,36 @@ class ObjectsHistoryCommandTest extends TestCase
     public function testExecute(): void
     {
         $this->exec('objects_history');
-        $this->assertOutputContains('Perform "read" on objects history');
-        $this->assertOutputContains('Found 2 items');
-        $this->assertOutputContains('Done');
+        $this->assertOutputContains('<info>Perform "read" on objects history</info>');
+        $this->assertOutputContains('<success>Found 2 items</success>');
+        $this->assertOutputContains('<info>Done</info>');
+        $this->assertExitSuccess();
+    }
+
+    /**
+     * Test `delete` method
+     *
+     * @return void
+     * @covers ::execute()
+     * @covers ::delete()
+     * @covers ::fetchQuery()
+     * @covers ::objectsIterator()
+     */
+    public function testDelete(): void
+    {
+        $throwError = function () {
+            throw new \Exception('An error');
+        };
+        // add listener to global event manager
+        EventManager::instance()->on('Model.beforeDelete', $throwError);
+        $this->exec('objects_history --action delete --id 2 --verbose');
+        // ensure to off listener from global event manager
+        EventManager::instance()->off('Model.beforeDelete', $throwError);
+        $this->assertOutputContains('<info>Perform "delete" on objects history, for resource(s) id(s) 2</info>');
+        $this->assertOutputContains('======> Deleting history item 1');
+        $this->assertOutputContains('======> Deleting history item 2');
+        $this->assertOutputContains('<success>Deleted 0 items [2 errors]</success>');
+        $this->assertOutputContains('<info>Done</info>');
         $this->assertExitSuccess();
     }
 }
