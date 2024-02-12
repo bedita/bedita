@@ -139,7 +139,11 @@ class ObjectsHistoryCommand extends Command
         $objectsTable = $this->fetchTable('Objects');
         $objectTypesTable = $this->fetchTable('ObjectTypes');
         $historyTable = $objectsTable->getBehavior('History')->Table;
-        $historyTable->belongsTo('Objects', ['foreignKey' => 'resource_id', 'joinType' => 'INNER']);
+        $historyTable->belongsTo('Objects', [
+            'foreignKey' => false,
+            'joinType' => 'INNER',
+            'conditions' => ['`Objects`.`id` = `History`.`resource_id`'],
+        ]);
         $aliasCreated = $historyTable->aliasField('created');
         $aliasResourceId = $historyTable->aliasField('resource_id');
         $conditions = [];
