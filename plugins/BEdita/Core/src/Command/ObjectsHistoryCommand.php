@@ -145,7 +145,7 @@ class ObjectsHistoryCommand extends Command
             'conditions' => function (QueryExpression $exp, Query $q) use ($historyTable, $objectsTable) {
                 return $exp->eq(
                     $historyTable->aliasField('resource_id'),
-                    $q->func()->cast($objectsTable->aliasField('id'), 'varchar')
+                    $q->func()->cast($objectsTable->aliasField('id'), 'char')
                 );
             },
         ]);
