@@ -225,12 +225,18 @@ class ObjectsTable extends Table
      *
      * @codeCoverageIgnore
      */
-    protected function _initializeSchema(TableSchemaInterface $schema): TableSchemaInterface
+    public function getSchema(): TableSchemaInterface
     {
-        $schema->setColumnType('custom_props', 'json');
-        $schema->setColumnType('extra', 'json');
+        if ($this->_schema === null) {
+            $this->_schema = $this->getConnection()
+                ->getSchemaCollection()
+                ->describe($this->getTable());
+            $this->_schema = $this->_initializeSchema($this->_schema);
+            $this->_schema->setColumnType('custom_props', 'json')
+                ->setColumnType('extra', 'json');
+        }
 
-        return $schema;
+        return $this->_schema;
     }
 
     /**

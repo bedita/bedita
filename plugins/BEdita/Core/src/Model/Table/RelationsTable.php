@@ -155,11 +155,17 @@ class RelationsTable extends Table
      *
      * @codeCoverageIgnore
      */
-    protected function _initializeSchema(TableSchemaInterface $schema): TableSchemaInterface
+    public function getSchema(): TableSchemaInterface
     {
-        $schema->setColumnType('params', 'jsonobject');
+        if ($this->_schema === null) {
+            $this->_schema = $this->getConnection()
+                ->getSchemaCollection()
+                ->describe($this->getTable());
+            $this->_schema = $this->_initializeSchema($this->_schema);
+            $this->_schema->setColumnType('params', 'jsonobject');
+        }
 
-        return $schema;
+        return $this->_schema;
     }
 
     /**

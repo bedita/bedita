@@ -179,10 +179,17 @@ class UsersTable extends Table
      *
      * @codeCoverageIgnore
      */
-    protected function _initializeSchema(TableSchemaInterface $schema): TableSchemaInterface
+    public function getSchema(): TableSchemaInterface
     {
-        return $schema
-            ->setColumnType('user_preferences', 'json');
+        if ($this->_schema === null) {
+            $this->_schema = $this->getConnection()
+                ->getSchemaCollection()
+                ->describe($this->getTable());
+            $this->_schema = $this->_initializeSchema($this->_schema);
+            $this->_schema->setColumnType('user_preferences', 'json');
+        }
+
+        return $this->_schema;
     }
 
     /**

@@ -124,10 +124,17 @@ class PropertiesTable extends Table
      *
      * @codeCoverageIgnore
      */
-    protected function _initializeSchema(TableSchemaInterface $schema): TableSchemaInterface
+    public function getSchema(): TableSchemaInterface
     {
-        return parent::_initializeSchema($schema)
-            ->setColumnType('id', 'string');
+        if ($this->_schema === null) {
+            $this->_schema = $this->getConnection()
+                ->getSchemaCollection()
+                ->describe($this->getTable());
+            $this->_schema = $this->_initializeSchema($this->_schema);
+            $this->_schema->setColumnType('id', 'string');
+        }
+
+        return $this->_schema;
     }
 
     /**

@@ -172,13 +172,19 @@ class ObjectTypesTable extends Table
      *
      * @codeCoverageIgnore
      */
-    protected function _initializeSchema(TableSchemaInterface $schema): TableSchemaInterface
+    public function getSchema(): TableSchemaInterface
     {
-        $schema->setColumnType('associations', 'json');
-        $schema->setColumnType('hidden', 'json');
-        $schema->setColumnType('translation_rules', 'json');
+        if ($this->_schema === null) {
+            $this->_schema = $this->getConnection()
+                ->getSchemaCollection()
+                ->describe($this->getTable());
+            $this->_schema = $this->_initializeSchema($this->_schema);
+            $this->_schema->setColumnType('associations', 'json')
+                ->setColumnType('hidden', 'json')
+                ->setColumnType('translation_rules', 'json');
+        }
 
-        return $schema;
+        return $this->_schema;
     }
 
     /**
