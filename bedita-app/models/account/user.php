@@ -90,6 +90,9 @@ class User extends BEAppModel
 
     public function useridValidation($values) {
         $value = array_shift($values);  // Get value.
+		if (filter_var($value, FILTER_VALIDATE_EMAIL)) { // email is valid
+			return true;
+		}
 
         return preg_match('/^[[:print:]]+$/', $value) && preg_match('/^[^<>\|&\'"]+$/', $value);
     }
