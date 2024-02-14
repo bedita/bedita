@@ -147,7 +147,7 @@ class StreamsTable extends Table
 
         return $rules;
     }
-s
+
     /**
      * {@inheritDoc}
      *
