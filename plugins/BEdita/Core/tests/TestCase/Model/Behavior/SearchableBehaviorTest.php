@@ -180,7 +180,7 @@ class SearchableBehaviorTest extends TestCase
      */
     public function testAfterSaveDelete(): void
     {
-        $adapter = new class extends BaseAdapter {
+        $newAdapter = fn () => new class extends BaseAdapter {
             public $initializedCount = 0;
             public $afterDeleteCount = 0;
             public $afterSaveCount = 0;
@@ -206,28 +206,120 @@ class SearchableBehaviorTest extends TestCase
             $event->getSubject()->initializedCount++;
         });
 
-        $backupConf = Configure::read('Search');
-
-        Configure::write('Search.adapters.default', [
-            'className' => $adapter,
+        $default = $newAdapter();
+        $foo = $newAdapter();
+        Configure::write('Search.adapters', [
+            'default' => ['className' => $default],
+            'foo' => ['className' => $foo, 'scopes' => ['foo']],
         ]);
 
         $table = $this->fetchTable('FakeMammals');
         $table->addBehavior('BEdita/Core.Searchable');
         $entity = $table->get(2);
 
-        static::assertEquals(0, $adapter->afterSaveCount);
+        static::assertEquals(0, $default->afterSaveCount);
+        static::assertEquals(0, $foo->afterSaveCount);
         $entity->setDirty('name');
         $table->saveOrFail($entity);
-        static::assertEquals(1, $adapter->afterSaveCount);
-        static::assertEquals(1, $adapter->initializedCount);
+        static::assertEquals(1, $default->afterSaveCount);
+        static::assertEquals(1, $foo->afterSaveCount);
+        static::assertEquals(1, $default->initializedCount);
+        static::assertEquals(1, $foo->initializedCount);
 
-        static::assertEquals(0, $adapter->afterDeleteCount);
+        static::assertEquals(0, $default->afterDeleteCount);
+        static::assertEquals(0, $foo->afterDeleteCount);
         $table->deleteOrFail($entity);
-        static::assertEquals(1, $adapter->afterDeleteCount);
-        static::assertEquals(1, $adapter->initializedCount);
+        static::assertEquals(1, $default->afterDeleteCount);
+        static::assertEquals(1, $foo->afterDeleteCount);
+        static::assertEquals(1, $default->initializedCount);
+        static::assertEquals(1, $foo->initializedCount);
 
-        Configure::write('Search', $backupConf);
+        EventManager::instance()->off('SearchAdapter.initialize');
+    }
+
+    /**
+     * Test afterSave() and afterDelete()
+     *
+     * @return void
+     * @covers ::afterSave()
+     * @covers ::afterDelete()
+     * @covers ::indexEntity()
+     * @covers ::getOperation()
+     * @covers ::getSearchAdapters()
+     * @covers ::getAdapter()
+     */
+    public function testAfterSaveDeleteScopes(): void
+    {
+        $newAdapter = fn () => new class extends BaseAdapter {
+            public $initializedCount = 0;
+            public $afterDeleteCount = 0;
+            public $afterSaveCount = 0;
+
+            public function search(Query $query, string $text, array $options = []): Query
+            {
+                return $query;
+            }
+
+            public function indexResource(EntityInterface $entity, string $operation): void
+            {
+                if ($operation === 'edit') {
+                    $this->afterSaveCount++;
+                }
+
+                if ($operation === 'delete') {
+                    $this->afterDeleteCount++;
+                }
+            }
+        };
+
+        EventManager::instance()->on('SearchAdapter.initialize', function (Event $event) {
+            $event->getSubject()->initializedCount++;
+        });
+
+        $default = $newAdapter();
+        $foo = $newAdapter();
+        $bar = $newAdapter();
+        $baz = $newAdapter();
+        Configure::write('Search.adapters', [
+            'default' => ['className' => $default],
+            'foo' => ['className' => $foo, 'scopes' => ['foo']],
+            'bar' => ['className' => $bar, 'scopes' => ['bar']],
+            'baz' => ['className' => $baz, 'scopes' => ['baz', 'foo']],
+        ]);
+
+        $table = $this->fetchTable('FakeMammals');
+        $table->addBehavior('BEdita/Core.Searchable', ['scopes' => ['foo']]);
+        $entity = $table->get(2);
+
+        static::assertEquals(0, $default->afterSaveCount);
+        static::assertEquals(0, $foo->afterSaveCount);
+        static::assertEquals(0, $bar->afterSaveCount);
+        static::assertEquals(0, $baz->afterSaveCount);
+        $entity->setDirty('name');
+        $table->saveOrFail($entity);
+        static::assertEquals(1, $default->afterSaveCount);
+        static::assertEquals(1, $foo->afterSaveCount);
+        static::assertEquals(0, $bar->afterSaveCount);
+        static::assertEquals(1, $baz->afterSaveCount);
+        static::assertEquals(1, $default->initializedCount);
+        static::assertEquals(1, $foo->initializedCount);
+        static::assertEquals(0, $bar->initializedCount);
+        static::assertEquals(1, $baz->initializedCount);
+
+        static::assertEquals(0, $default->afterDeleteCount);
+        static::assertEquals(0, $foo->afterDeleteCount);
+        static::assertEquals(0, $bar->afterDeleteCount);
+        static::assertEquals(0, $baz->afterDeleteCount);
+        $table->deleteOrFail($entity);
+        static::assertEquals(1, $default->afterDeleteCount);
+        static::assertEquals(1, $foo->afterDeleteCount);
+        static::assertEquals(0, $bar->afterDeleteCount);
+        static::assertEquals(1, $baz->afterDeleteCount);
+        static::assertEquals(1, $default->initializedCount);
+        static::assertEquals(1, $foo->initializedCount);
+        static::assertEquals(0, $bar->initializedCount);
+        static::assertEquals(1, $baz->initializedCount);
+
         EventManager::instance()->off('SearchAdapter.initialize');
     }
 }
