@@ -42,7 +42,7 @@ jobs:
 
       - name: Set up QEMU
         if: ${{ !contains(needs.release_job.outputs.version, 'undefined') }}
-        uses: docker/setup-qemu-action@v2
+        uses: docker/setup-qemu-action@v3
 
       - name: Set up Docker Buildx
         if: ${{ !contains(needs.release_job.outputs.version, 'undefined') }}
