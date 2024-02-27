@@ -12,4 +12,8 @@ updates:
       interval: "weekly"
     groups:
       gh-actions:
-        patterns: ['actions/*', 'docker/*', 'codecov/*']
+        patterns: ['actions/*']
+      docker:
+        patterns: ['docker/*']
+      codecov:
+        patterns: ['codecov/*']
