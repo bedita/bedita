@@ -5,6 +5,7 @@
 
 version: 2
 updates:
+
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
@@ -12,3 +13,7 @@ updates:
     groups:
       gh-actions:
         patterns: ['actions/*']
+      docker:
+        patterns: ['docker/*']
+      codecov:
+        patterns: ['codecov/*']
