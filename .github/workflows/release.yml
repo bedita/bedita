@@ -56,7 +56,7 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
 
       - name: Build and push
-        uses: docker/build-push-action@v3
+        uses: docker/build-push-action@v5
         if: ${{ !contains(needs.release_job.outputs.version, 'undefined') }}
         with:
           context: .
