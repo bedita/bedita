@@ -78,9 +78,27 @@ class JobsCommandTest extends TestCase
     }
 
     /**
+     * Test buildOptionParser method
+     *
+     * @return void
+     * @covers ::buildOptionParser()
+     */
+    public function testBuildOptionParser()
+    {
+        $this->exec('jobs --help');
+        $this->assertOutputContains('Action to perform: process, pending, run');
+        $this->assertOutputContains('UUID of job to be processed');
+        $this->assertOutputContains('Enable "fail hard" mode');
+        $this->assertOutputContains('Limit number of jobs being run');
+        $this->assertOutputContains('Run only pending jobs with a priority higher than');
+        $this->assertOutputContains('Run only pending jobs for the supplied service');
+    }
+
+    /**
      * Test `process` method via `jobs run <uuid>`.
      *
      * @return void
+     * @covers ::execute()
      * @covers ::process()
      */
     public function testRetrocompatibility(): void
@@ -97,6 +115,7 @@ class JobsCommandTest extends TestCase
      * Test `process` method.
      *
      * @return void
+     * @covers ::execute()
      * @covers ::process()
      */
     public function testProcess()
@@ -113,6 +132,7 @@ class JobsCommandTest extends TestCase
      * Test `process` method with invalid job.
      *
      * @return void
+     * @covers ::execute()
      * @covers ::process()
      */
     public function testProcessInvalid()
@@ -129,6 +149,7 @@ class JobsCommandTest extends TestCase
      * Test `process` method with smooth failure.
      *
      * @return void
+     * @covers ::execute()
      * @covers ::process()
      */
     public function testProcessFailException()
@@ -146,6 +167,7 @@ class JobsCommandTest extends TestCase
      * Test `process` method with smooth failure.
      *
      * @return void
+     * @covers ::execute()
      * @covers ::process()
      */
     public function testProcessFailSmooth()
@@ -161,6 +183,7 @@ class JobsCommandTest extends TestCase
      * Test `process` method with fail hard mode.
      *
      * @return void
+     * @covers ::execute()
      * @covers ::process()
      */
     public function testProcessFailHard()
@@ -176,6 +199,7 @@ class JobsCommandTest extends TestCase
      * Test run pending jobs.
      *
      * @return void
+     * @covers ::execute()
      * @covers ::pending()
      */
     public function testPending()
@@ -194,6 +218,7 @@ class JobsCommandTest extends TestCase
      * Test run pending jobs with no pending jobs to run.
      *
      * @return void
+     * @covers ::execute()
      * @covers ::pending()
      */
     public function testPendingEmpty()
@@ -209,6 +234,7 @@ class JobsCommandTest extends TestCase
      * Test run pending jobs with fail hard mode.
      *
      * @return void
+     * @covers ::execute()
      * @covers ::pending()
      */
     public function testPendingFailHard()

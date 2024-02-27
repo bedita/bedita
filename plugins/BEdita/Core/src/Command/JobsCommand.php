@@ -153,8 +153,6 @@ class JobsCommand extends Command
         }
         if ($success === false && $this->args->getOption('exit-on-error')) {
             $this->io->abort('=====> Aborting');
-
-            return self::CODE_ERROR;
         }
 
         return self::CODE_SUCCESS;
