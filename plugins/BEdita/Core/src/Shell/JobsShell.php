@@ -46,7 +46,7 @@ class JobsShell extends Shell /* @phpstan-ignore-line */
             ],
         ];
 
-        return parent::getOptionParser() /* @phpstan-ignore-line */
+        return parent::getOptionParser()
             ->addSubcommand('run', [
                 'help' => 'Process a job',
                 'parser' => [
