@@ -177,7 +177,7 @@ jobs:
           env_vars: PHP_VERSION,DB_VENDOR
 
       - name: 'Archive code coverage results'
-        uses: 'actions/upload-artifact@v3'
+        uses: 'actions/upload-artifact@v4'
         with:
           name: 'PHP ${{ matrix.php }} with ${{ fromJson(matrix.db).vendor }}'
           path: 'clover.xml'
