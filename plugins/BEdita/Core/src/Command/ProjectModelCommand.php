@@ -91,7 +91,7 @@ class ProjectModelCommand extends Command
             $io->warning('Items to remove: ' . json_encode($diff['remove']));
             if ($args->getOption('delete')) {
                 $io->warning('Removing items');
-                $keys = array_keys($diff['remove']);
+                $keys = array_reverse(array_keys($diff['remove']));
                 foreach ($keys as $key) {
                     $this->remove(
                         $key,
