@@ -58,7 +58,9 @@ class AsyncJobsCleanCommand extends Command
             $message .= ', for service ' . $service;
         }
         $io->info($message);
+        $this->log($message, 'info');
         $deleted = $this->fetchTable('AsyncJobs')->deleteAll($conditions);
+        $this->log(sprintf('Deleted %d async jobs', $deleted), 'info');
         $io->success(sprintf('Deleted %d async jobs', $deleted));
         $io->info('Done');
 
