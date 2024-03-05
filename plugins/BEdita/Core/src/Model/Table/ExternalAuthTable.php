@@ -107,15 +107,7 @@ class ExternalAuthTable extends Table
      */
     public function getSchema(): TableSchemaInterface
     {
-        if ($this->_schema === null) {
-            $this->_schema = $this->getConnection()
-                ->getSchemaCollection()
-                ->describe($this->getTable());
-            $this->_schema = $this->_initializeSchema($this->_schema);
-            $this->_schema->setColumnType('params', 'json');
-        }
-
-        return $this->_schema;
+        return parent::getSchema()->setColumnType('params', 'json');
     }
 
     /**

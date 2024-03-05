@@ -67,14 +67,6 @@ class MediaTable extends Table
      */
     public function getSchema(): TableSchemaInterface
     {
-        if ($this->_schema === null) {
-            $this->_schema = $this->getConnection()
-                ->getSchemaCollection()
-                ->describe($this->getTable());
-            $this->_schema = $this->_initializeSchema($this->_schema);
-            $this->_schema->setColumnType('provider_extra', 'json');
-        }
-
-        return $this->_schema;
+        return parent::getSchema()->setColumnType('provider_extra', 'json');
     }
 }

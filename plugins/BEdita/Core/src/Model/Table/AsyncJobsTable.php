@@ -113,17 +113,10 @@ class AsyncJobsTable extends Table
      */
     public function getSchema(): TableSchemaInterface
     {
-        if ($this->_schema === null) {
-            $this->_schema = $this->getConnection()
-                ->getSchemaCollection()
-                ->describe($this->getTable());
-            $this->_schema = $this->_initializeSchema($this->_schema);
-            $this->_schema->setColumnType('payload', 'json')
-                ->setColumnType('uuid', 'uuid')
-                ->setColumnType('results', 'json');
-        }
-
-        return $this->_schema;
+        return parent::getSchema()
+            ->setColumnType('payload', 'json')
+            ->setColumnType('uuid', 'uuid')
+            ->setColumnType('results', 'json');
     }
 
     /**
