@@ -15,6 +15,7 @@ namespace BEdita\Core\Model\Table;
 
 use BEdita\Core\Exception\ImmutableResourceException;
 use BEdita\Core\Model\Validation\Validation;
+use BEdita\Core\Search\SimpleSearchTrait;
 use BEdita\Core\Utility\LoggedUser;
 use Cake\Database\Expression\QueryExpression;
 use Cake\Datasource\EntityInterface;
@@ -39,6 +40,8 @@ use Cake\Validation\Validator;
  */
 class RolesTable extends Table
 {
+    use SimpleSearchTrait;
+
     /**
      * Administrator role id
      *
@@ -68,13 +71,10 @@ class RolesTable extends Table
         $this->hasMany('ObjectPermissions', [
             'dependent' => true,
         ]);
-        $this->addBehavior('BEdita/Core.Searchable', [
-            'fields' => [
-                'name' => 10,
-                'description' => 5,
-            ],
-        ]);
+        $this->addBehavior('BEdita/Core.Searchable');
         $this->addBehavior('BEdita/Core.ResourceName');
+
+        $this->setupSimpleSearch(['fields' => ['name', 'description']]);
     }
 
     /**

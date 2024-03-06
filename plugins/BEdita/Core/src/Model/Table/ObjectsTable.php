@@ -16,6 +16,7 @@ namespace BEdita\Core\Model\Table;
 use BEdita\Core\Exception\LockedResourceException;
 use BEdita\Core\Model\Entity\ObjectEntity;
 use BEdita\Core\Model\Validation\ObjectsValidator;
+use BEdita\Core\Search\SimpleSearchTrait;
 use BEdita\Core\Utility\LoggedUser;
 use Cake\Core\Configure;
 use Cake\Database\Expression\QueryExpression;
@@ -56,6 +57,8 @@ use Cake\Utility\Hash;
  */
 class ObjectsTable extends Table
 {
+    use SimpleSearchTrait;
+
     /**
      * @inheritDoc
      */

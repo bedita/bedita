@@ -17,6 +17,9 @@ use BEdita\Core\Model\Action\AddRelatedObjectsAction;
 use BEdita\Core\Model\Action\RemoveRelatedObjectsAction;
 use BEdita\Core\Model\Action\SetRelatedObjectsAction;
 use BEdita\Core\Model\Entity\ObjectEntity;
+use BEdita\Core\Search\SimpleSearchTrait;
+use Cake\Datasource\EntityInterface;
+use Cake\Event\EventInterface;
 use Cake\ORM\Behavior;
 
 /**
@@ -26,10 +29,12 @@ use Cake\ORM\Behavior;
  */
 class ObjectModelBehavior extends Behavior
 {
+    use SimpleSearchTrait;
+
     /**
-     * Add behaviors common to all tables implementing an object type model
-     *
      * {@inheritDoc}
+     *
+     * Add behaviors common to all tables implementing an object type model
      */
     public function initialize(array $config): void
     {
@@ -44,13 +49,20 @@ class ObjectModelBehavior extends Behavior
         $table->addBehavior('BEdita/Core.UniqueName');
         $table->addBehavior('BEdita/Core.Relations');
         $table->addBehavior('BEdita/Core.Searchable', [
-            'fields' => [
-                'title' => 10,
-                'description' => 7,
-                'body' => 5,
+            'operationName' => [
+                'Model.afterSave' => function (EventInterface $event, EntityInterface $entity): string {
+                    if (!$entity->isDirty('deleted')) {
+                        return 'edit';
+                    }
+
+                    return $entity->get('deleted') ? 'softDelete' : 'softDeleteRestore';
+                },
+                'Model.afterDelete' => 'delete',
             ],
         ]);
         $table->addBehavior('BEdita/Core.Status');
+
+        $this->setupSimpleSearch(['fields' => ['title', 'description', 'body']], $table);
     }
 
     /**

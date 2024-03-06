@@ -13,6 +13,7 @@
 namespace BEdita\Core\Model\Table;
 
 use BEdita\Core\ORM\Inheritance\Table;
+use BEdita\Core\Search\SimpleSearchTrait;
 
 /**
  * Base Table class for every Table implementing a BEdita Object
@@ -22,6 +23,8 @@ use BEdita\Core\ORM\Inheritance\Table;
  */
 abstract class ObjectsBaseTable extends Table
 {
+    use SimpleSearchTrait;
+
     /**
      * {@inheritDoc}
      *
