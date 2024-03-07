@@ -13,6 +13,7 @@
 
 namespace BEdita\Core\Model\Table;
 
+use BEdita\Core\Search\SimpleSearchTrait;
 use BEdita\Core\Utility\LoggedUser;
 use Cake\Database\Schema\TableSchemaInterface;
 use Cake\Datasource\EntityInterface;
@@ -39,6 +40,8 @@ use Cake\Validation\Validator;
  */
 class AnnotationsTable extends Table
 {
+    use SimpleSearchTrait;
+
     /**
      * @inheritDoc
      */
@@ -58,11 +61,7 @@ class AnnotationsTable extends Table
                 ],
             ],
         ]);
-        $this->addBehavior('BEdita/Core.Searchable', [
-            'fields' => [
-                'description' => 10,
-            ],
-        ]);
+        $this->addBehavior('BEdita/Core.Searchable');
 
         $this->belongsTo('Objects', [
             'foreignKey' => 'object_id',
@@ -74,6 +73,8 @@ class AnnotationsTable extends Table
             'joinType' => 'INNER',
             'className' => 'BEdita/Core.Users',
         ]);
+
+        $this->setupSimpleSearch(['fields' => ['description']]);
     }
 
     /**

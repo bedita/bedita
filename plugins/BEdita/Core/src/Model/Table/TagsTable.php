@@ -16,6 +16,7 @@ namespace BEdita\Core\Model\Table;
 use ArrayObject;
 use BEdita\Core\Exception\BadFilterException;
 use BEdita\Core\Model\Validation\Validation;
+use BEdita\Core\Search\SimpleSearchTrait;
 use Cake\Collection\CollectionInterface;
 use Cake\Database\Expression\QueryExpression;
 use Cake\Datasource\EntityInterface;
@@ -41,6 +42,8 @@ use Cake\Validation\Validator;
  */
 class TagsTable extends Table
 {
+    use SimpleSearchTrait;
+
     /**
      * Initialize method
      *
@@ -57,12 +60,7 @@ class TagsTable extends Table
         $this->setPrimaryKey('id');
 
         $this->addBehavior('Timestamp');
-        $this->addBehavior('BEdita/Core.Searchable', [
-            'fields' => [
-                'label' => 10,
-                'name' => 8,
-            ],
-        ]);
+        $this->addBehavior('BEdita/Core.Searchable');
 
         $this->hasMany('ObjectTags', [
             'foreignKey' => 'tag_id',
@@ -74,6 +72,8 @@ class TagsTable extends Table
             'targetForeignKey' => 'object_id',
             'through' => 'BEdita/Core.ObjectTags',
         ]);
+
+        $this->setupSimpleSearch(['fields' => ['label', 'name']]);
     }
 
     /**

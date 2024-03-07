@@ -15,6 +15,7 @@ namespace BEdita\Core\Model\Table;
 
 use BEdita\Core\Exception\ImmutableResourceException;
 use BEdita\Core\Model\Validation\Validation;
+use BEdita\Core\Search\SimpleSearchTrait;
 use Cake\Cache\Cache;
 use Cake\Database\Schema\TableSchemaInterface;
 use Cake\Datasource\EntityInterface;
@@ -38,6 +39,8 @@ use Cake\Validation\Validator;
  */
 class PropertyTypesTable extends Table
 {
+    use SimpleSearchTrait;
+
     /**
      * Map between specific column types and property types names.
      *
@@ -63,15 +66,12 @@ class PropertyTypesTable extends Table
         $this->setDisplayField('name');
 
         $this->addBehavior('Timestamp');
-        $this->addBehavior('BEdita/Core.Searchable', [
-            'fields' => [
-                'name' => 10,
-                'params' => 8,
-            ],
-        ]);
+        $this->addBehavior('BEdita/Core.Searchable');
         $this->addBehavior('BEdita/Core.ResourceName');
 
         $this->hasMany('Properties');
+
+        $this->setupSimpleSearch(['fields' => ['name', 'params']]);
     }
 
     /**

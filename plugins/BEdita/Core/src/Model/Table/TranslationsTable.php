@@ -14,6 +14,7 @@
 namespace BEdita\Core\Model\Table;
 
 use BEdita\Core\Exception\BadFilterException;
+use BEdita\Core\Search\SimpleSearchTrait;
 use Cake\Database\Expression\QueryExpression;
 use Cake\Database\Schema\TableSchemaInterface;
 use Cake\Datasource\Exception\RecordNotFoundException;
@@ -42,6 +43,8 @@ use Cake\Validation\Validator;
  */
 class TranslationsTable extends Table
 {
+    use SimpleSearchTrait;
+
     /**
      * {@inheritDoc}
      *
@@ -57,15 +60,7 @@ class TranslationsTable extends Table
 
         $this->addBehavior('Timestamp');
         $this->addBehavior('BEdita/Core.UserModified');
-        $this->addBehavior('BEdita/Core.Searchable', [
-            'fields' => [
-                'translated_fields' => 10,
-            ],
-            'columnTypes' => [
-                'json',
-                'text',
-            ],
-        ]);
+        $this->addBehavior('BEdita/Core.Searchable');
         $this->addBehavior('BEdita/Core.Status');
 
         $this->belongsTo('Objects', [
@@ -82,6 +77,14 @@ class TranslationsTable extends Table
             'className' => 'Users',
             'foreignKey' => 'modified_by',
             'joinType' => 'INNER',
+        ]);
+
+        $this->setupSimpleSearch([
+            'fields' => ['translated_fields'],
+            'columnTypes' => [
+                'json',
+                'text',
+            ],
         ]);
     }
 
