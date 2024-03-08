@@ -46,9 +46,8 @@ class ImageThumbsHandlerTest extends TestCase
      */
     public function afterSaveAssociatedProvider(): array
     {
-        $image = new ObjectEntity([
-            'type' => 'images',
-        ]);
+        $entity = new ObjectEntity();
+        $entity->type = 'images';
 
         return [
             'noStream' => [
@@ -68,7 +67,7 @@ class ImageThumbsHandlerTest extends TestCase
                 [
                     'entity' => $this->getMockBuilder('BEdita\Core\Model\Entity\Stream')->getMock(),
                     'relatedEntities' => [
-                        $image,
+                        $entity,
                     ],
                 ],
                 true,
