@@ -562,14 +562,16 @@ class ObjectTypesControllerTest extends IntegrationTestCase
                         'associations' => ['Streams'],
                         'hidden' => null,
                         'is_abstract' => false,
-                        'parent_name' => 'objects',
+                        'parent_name' => 'media',
                         'enabled' => true,
                         'translation_rules' => null,
                         'is_translatable' => true,
                     ],
                     'meta' => [
                         'alias' => 'Images',
-                        'relations' => [],
+                        'relations' => [
+                            'inverse_test_abstract',
+                        ],
                         'created' => '2024-03-08T11:21:51+00:00',
                         'modified' => '2024-03-08T11:21:51+00:00',
                         'core_type' => false,
