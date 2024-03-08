@@ -213,5 +213,24 @@ class ObjectTypesFixture extends TestFixture
             'translation_rules' => null,
             'is_translatable' => true,
         ],
+        // 11
+        [
+            'singular' => 'image',
+            'name' => 'images',
+            'is_abstract' => false,
+            'parent_id' => 1,
+            'tree_left' => 20,
+            'tree_right' => 21,
+            'description' => null,
+            'plugin' => 'BEdita/Core',
+            'model' => 'Media',
+            'associations' => ['Streams'],
+            'created' => '2024-03-08 11:21:51',
+            'modified' => '2024-03-08 11:21:51',
+            'enabled' => true,
+            'core_type' => false,
+            'translation_rules' => null,
+            'is_translatable' => true,
+        ],
     ];
 }
