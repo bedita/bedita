@@ -27,37 +27,6 @@ use Cake\TestSuite\TestCase;
 class ImageThumbsHandlerTest extends TestCase
 {
     /**
-     * Fixtures
-     *
-     * @var array
-     */
-    protected $fixtures = [
-        'plugin.BEdita/Core.ObjectTypes',
-        'plugin.BEdita/Core.Relations',
-        'plugin.BEdita/Core.RelationTypes',
-        'plugin.BEdita/Core.PropertyTypes',
-        'plugin.BEdita/Core.Properties',
-        'plugin.BEdita/Core.Objects',
-    ];
-
-    /**
-     * Entity for test
-     *
-     * @var \BEdita\Core\Model\Entity\ObjectEntity
-     */
-    protected $entity;
-
-    /**
-     * @inheritDoc
-     */
-    public function setUp(): void
-    {
-        parent::setUp();
-        $this->entity = new ObjectEntity();
-        $this->entity->type = 'images';
-    }
-
-    /**
      * Test `implementedEvents` method
      *
      * @return void
@@ -77,6 +46,11 @@ class ImageThumbsHandlerTest extends TestCase
      */
     public function afterSaveAssociatedProvider(): array
     {
+        $image = $this->getMockBuilder(ObjectEntity::class)
+            ->onlyMethods(['get'])
+            ->getMock();
+        $image->method('get')->willReturn('images');
+
         return [
             'noStream' => [
                 [
@@ -95,7 +69,7 @@ class ImageThumbsHandlerTest extends TestCase
                 [
                     'entity' => $this->getMockBuilder('BEdita\Core\Model\Entity\Stream')->getMock(),
                     'relatedEntities' => [
-                        $this->entity,
+                        $image,
                     ],
                 ],
                 true,
