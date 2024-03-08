@@ -146,7 +146,7 @@ class ProjectModelTest extends TestCase
                 'hidden' => null,
                 'enabled' => true,
                 'table' => 'BEdita/Core.Media',
-                'parent_name' => 'media',
+                'parent_name' => 'objects',
                 'translation_rules' => null,
                 'is_translatable' => true,
             ],
