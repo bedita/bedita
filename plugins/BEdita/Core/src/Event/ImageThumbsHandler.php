@@ -57,7 +57,7 @@ class ImageThumbsHandler implements EventListenerInterface
             return;
         }
         $image = Hash::get($data, 'relatedEntities.0');
-        $type = (string)$image->get('type');
+        $type = empty($image) ? null : (string)$image->get('type');
         if ($type !== 'images') {
             return;
         }
