@@ -551,6 +551,53 @@ class ObjectTypesControllerTest extends IntegrationTestCase
                         ],
                     ],
                 ],
+                [
+                    'id' => '11',
+                    'type' => 'object_types',
+                    'attributes' => [
+                        'singular' => 'image',
+                        'name' => 'images',
+                        'description' => null,
+                        'table' => 'BEdita/Core.Media',
+                        'associations' => ['Streams'],
+                        'hidden' => null,
+                        'is_abstract' => false,
+                        'parent_name' => 'objects',
+                        'enabled' => true,
+                        'translation_rules' => null,
+                        'is_translatable' => true,
+                    ],
+                    'meta' => [
+                        'alias' => 'Images',
+                        'relations' => [],
+                        'created' => '2024-03-08T11:21:51+00:00',
+                        'modified' => '2024-03-08T11:21:51+00:00',
+                        'core_type' => false,
+                    ],
+                    'links' => [
+                        'self' => 'http://api.example.com/model/object_types/11',
+                    ],
+                    'relationships' => [
+                        'left_relations' => [
+                            'links' => [
+                                'self' => 'http://api.example.com/model/object_types/11/relationships/left_relations',
+                                'related' => 'http://api.example.com/model/object_types/11/left_relations',
+                            ],
+                        ],
+                        'right_relations' => [
+                            'links' => [
+                                'self' => 'http://api.example.com/model/object_types/11/relationships/right_relations',
+                                'related' => 'http://api.example.com/model/object_types/11/right_relations',
+                            ],
+                        ],
+                        'parent' => [
+                            'links' => [
+                                'self' => 'http://api.example.com/model/object_types/11/relationships/parent',
+                                'related' => 'http://api.example.com/model/object_types/11/parent',
+                            ],
+                        ],
+                    ],
+                ],
             ],
         ];
 
