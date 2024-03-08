@@ -43,7 +43,6 @@ class ImageThumbsHandlerTest extends TestCase
         'plugin.BEdita/Core.Users',
     ];
 
-
     /**
      * Test `implementedEvents` method
      *
