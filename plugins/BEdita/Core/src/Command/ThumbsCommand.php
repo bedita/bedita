@@ -57,18 +57,15 @@ class ThumbsCommand extends Command
 
         $handler = new ImageThumbsHandler();
         $presets = $this->presets();
-        Configure::delete('AppCacheInvalidation'); // disable app cache invalidation
 
         $entities = $query->toArray();
         $count = 0;
         foreach ($entities as $image) {
             $stream = Hash::get($image, 'streams.0');
-
-            if (!$stream instanceof Stream) {
-                continue;
+            if ($stream instanceof Stream) {
+                $handler->updateThumbs($image, $stream, $presets);
+                $count++;
             }
-            $count++;
-            $handler->updateThumbs($image, $stream, $presets);
         }
         $io->out('=====> <success>Thumbs updated</success>');
         $io->out(sprintf('=====> <info>Updated %d images</info>', $count));
