@@ -27,6 +27,20 @@ use Cake\TestSuite\TestCase;
 class ImageThumbsHandlerTest extends TestCase
 {
     /**
+     * Fixtures
+     *
+     * @var array
+     */
+    protected $fixtures = [
+        'plugin.BEdita/Core.ObjectTypes',
+        'plugin.BEdita/Core.Relations',
+        'plugin.BEdita/Core.RelationTypes',
+        'plugin.BEdita/Core.PropertyTypes',
+        'plugin.BEdita/Core.Properties',
+        'plugin.BEdita/Core.Objects',
+    ];
+
+    /**
      * Test `implementedEvents` method
      *
      * @return void
