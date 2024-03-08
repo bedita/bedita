@@ -83,6 +83,7 @@ class ThumbsCommandTest extends TestCase
      *
      * @return void
      * @covers ::execute()
+     * @covers ::presets()
      */
     public function testExecute(): void
     {
@@ -97,6 +98,7 @@ class ThumbsCommandTest extends TestCase
      *
      * @return void
      * @covers ::execute()
+     * @covers ::presets()
      */
     public function testExecuteId(): void
     {
