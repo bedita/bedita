@@ -60,7 +60,7 @@ class TagsTable extends Table
         $this->setPrimaryKey('id');
 
         $this->addBehavior('Timestamp');
-        $this->addBehavior('BEdita/Core.Searchable');
+        $this->addBehavior('BEdita/Core.Searchable', ['scopes' => (array)$this->getTable()]);
 
         $this->hasMany('ObjectTags', [
             'foreignKey' => 'tag_id',

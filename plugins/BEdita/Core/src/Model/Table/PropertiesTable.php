@@ -74,7 +74,7 @@ class PropertiesTable extends Table
             'className' => 'BEdita/Core.ObjectTypes',
         ]);
 
-        $this->addBehavior('BEdita/Core.Searchable');
+        $this->addBehavior('BEdita/Core.Searchable', ['scopes' => (array)$this->getTable()]);
 
         $this->setupSimpleSearch(['fields' => ['name', 'description']]);
     }

@@ -60,7 +60,7 @@ class TranslationsTable extends Table
 
         $this->addBehavior('Timestamp');
         $this->addBehavior('BEdita/Core.UserModified');
-        $this->addBehavior('BEdita/Core.Searchable');
+        $this->addBehavior('BEdita/Core.Searchable', ['scopes' => (array)$this->getTable()]);
         $this->addBehavior('BEdita/Core.Status');
 
         $this->belongsTo('Objects', [
