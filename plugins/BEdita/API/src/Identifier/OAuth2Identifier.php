@@ -17,11 +17,13 @@ namespace BEdita\API\Identifier;
 use Authentication\Identifier\AbstractIdentifier;
 use Authentication\Identifier\Resolver\ResolverAwareTrait;
 use BEdita\Core\Utility\OAuth2;
+use Cake\Log\LogTrait;
 use Cake\Utility\Hash;
 
 class OAuth2Identifier extends AbstractIdentifier
 {
     use ResolverAwareTrait;
+    use LogTrait;
 
     /**
      * @inheritDoc
@@ -40,16 +42,26 @@ class OAuth2Identifier extends AbstractIdentifier
     public function identify(array $credentials)
     {
         /** @var \BEdita\Core\Model\Entity\AuthProvider $authProvider */
+        $this->log('[OAuth2Identifier] Identify with credentials: ' . json_encode($credentials), 'info');
         $authProvider = $this->getConfig('authProvider');
         $options = (array)Hash::get((array)$authProvider->get('params'), 'options');
-        $providerResponse = $this->getOAuth2Response(
-            $authProvider->get('url'),
-            $credentials['access_token'],
-            $options
-        );
 
-        if (!$authProvider->checkAuthorization($providerResponse, $credentials['provider_username'])) {
-            return null;
+        $credentialsCallback = Hash::get($options,'credentials_callback');
+        if ($credentialsCallback && is_callable($credentialsCallback)) {
+            $this->log('[OAuth2Identifier] Using callback: ' . json_encode($credentialsCallback), 'info');
+            if(!$credentialsCallback($credentials)) {
+                return null;
+            }
+        } else {
+            $providerResponse = $this->getOAuth2Response(
+                $authProvider->get('url'),
+                $credentials['access_token'],
+                $options
+            );
+
+            if (!$authProvider->checkAuthorization($providerResponse, $credentials['provider_username'])) {
+                return null;
+            }
         }
 
         $externalAuth = [
