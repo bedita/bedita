@@ -354,7 +354,7 @@ class SignupUserAction extends BaseAction implements EventListenerInterface
         $credentialsCallback = Hash::get($options, 'credentials_callback');
         if ($credentialsCallback && is_callable($credentialsCallback)) {
             if (!$credentialsCallback($data)) {
-                throw new UnauthorizedException(__d('bedita', 'External auth via callback failed'));
+                throw new UnauthorizedException(__d('bedita', 'External auth failed'));
             }
         } else {
             $providerResponse = $this->getOAuth2Response(
