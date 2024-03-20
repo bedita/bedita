@@ -181,5 +181,13 @@ class OAuth2IdentifierTest extends TestCase
         ]);
 
         static::assertNotEmpty($result);
+
+        $result = $identifier->identify([
+            'auth_provider' => 'example',
+            'provider_username' => 'another_user',
+            'access_token' => 'very-log-string',
+        ]);
+
+        static::assertNull($result);
     }
 }
