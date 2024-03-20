@@ -428,7 +428,6 @@ class SignupUserActionTest extends TestCase
         return false;
     }
 
-
     /**
      * Test signup action when activation is not required.
      *
