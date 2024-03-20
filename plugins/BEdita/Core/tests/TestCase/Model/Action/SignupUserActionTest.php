@@ -382,7 +382,7 @@ class SignupUserActionTest extends TestCase
     /**
      * Dummy test callback method
      *
-     * @return boolean
+     * @return bool
      */
     public static function testCallback(): bool
     {

@@ -43,9 +43,9 @@ class OAuth2Identifier extends AbstractIdentifier
         $authProvider = $this->getConfig('authProvider');
         $options = (array)Hash::get((array)$authProvider->get('params'), 'options');
 
-        $credentialsCallback = Hash::get($options,'credentials_callback');
+        $credentialsCallback = Hash::get($options, 'credentials_callback');
         if ($credentialsCallback && is_callable($credentialsCallback)) {
-            if(!$credentialsCallback($credentials)) {
+            if (!$credentialsCallback($credentials)) {
                 return null;
             }
         } else {

@@ -351,9 +351,9 @@ class SignupUserAction extends BaseAction implements EventListenerInterface
             throw new UnauthorizedException(__d('bedita', 'External auth provider not found'));
         }
         $options = (array)Hash::get((array)$authProvider->get('params'), 'options');
-        $credentialsCallback = Hash::get($options,'credentials_callback');
+        $credentialsCallback = Hash::get($options, 'credentials_callback');
         if ($credentialsCallback && is_callable($credentialsCallback)) {
-            if(!$credentialsCallback($data)) {
+            if (!$credentialsCallback($data)) {
                 throw new UnauthorizedException(__d('bedita', 'External auth via callback failed'));
             }
         } else {
