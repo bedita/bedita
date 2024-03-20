@@ -253,7 +253,7 @@ class Database
                         continue;
                     }
 
-                    $statmnt = $conn->prepare($query);
+                    $statmnt = $conn->getDriver()->prepare($query);
                     $success = $statmnt->execute() && (!$statmnt->errorCode() || $statmnt->errorCode() === '00000');
                     $rowCount += $statmnt->rowCount();
                     $queryCount++;

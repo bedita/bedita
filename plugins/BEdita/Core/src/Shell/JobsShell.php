@@ -149,8 +149,7 @@ class JobsShell extends Shell /* @phpstan-ignore-line */
             ->find('priority', [
                 'priority' => $this->param('min-priority'),
                 'service' => $this->param('service'),
-            ])
-            ->enableBufferedResults(false);
+            ]);
         if ($this->param('limit') !== null) {
             $query = $query->limit($this->param('limit'));
         }

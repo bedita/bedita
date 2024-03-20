@@ -120,7 +120,7 @@ class InitSchemaTask extends Shell /* @phpstan-ignore-line */
 
                     $sql = $connection->getSchemaCollection()->describe($table)->dropConstraintSql($connection);
                     foreach ($sql as $query) {
-                        $connection->query($query);
+                        $connection->updateQuery($query);
                     }
 
                     $this->verbose('<info>DONE</info>');
@@ -130,7 +130,7 @@ class InitSchemaTask extends Shell /* @phpstan-ignore-line */
 
                     $sql = $connection->getSchemaCollection()->describe($table)->dropSql($connection);
                     foreach ($sql as $query) {
-                        $connection->query($query);
+                        $connection->updateQuery($query);
                     }
 
                     $this->verbose('<info>DONE</info>');
