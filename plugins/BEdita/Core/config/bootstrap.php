@@ -114,3 +114,17 @@ if (!FilesystemRegistry::configured()) {
 if (!Thumbnail::configured()) {
     Thumbnail::setConfig(Configure::read('Thumbnails.generators') ?: []);
 }
+
+/**
+ * Set search default configuration, if missing.
+ */
+if (!Configure::isConfigured('Search')) {
+    Configure::write('Search', [
+        'use' => 'default',
+        'adapters' => [
+            'default' => [
+                'className' => 'BEdita/Core.Simple',
+            ],
+        ],
+    ]);
+}
