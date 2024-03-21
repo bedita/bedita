@@ -118,7 +118,7 @@ if (!Thumbnail::configured()) {
 /**
  * Set search default configuration, if missing.
  */
-if (!Configure::isConfigured('Search')) {
+if (!Configure::check('Search')) {
     Configure::write('Search', [
         'use' => 'default',
         'adapters' => [
