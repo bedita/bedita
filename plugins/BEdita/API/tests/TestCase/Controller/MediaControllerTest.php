@@ -126,7 +126,7 @@ class MediaControllerTest extends IntegrationTestCase
                         'url' => 'https://static.example.org/thumbs/a5xqx51s-3512-542x-r2t5-692x41956v0fs-sample.svg/a5xqx51s-3512-542x-r2t5-692x41956v0fs-sample.svg',
                     ],
                 ],
-                14,
+                16,
             ],
             'array of IDs, custom preset' => [
                 [
