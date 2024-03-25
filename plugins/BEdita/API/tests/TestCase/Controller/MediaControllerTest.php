@@ -117,6 +117,17 @@ class MediaControllerTest extends IntegrationTestCase
                 ],
                 14,
             ],
+            'svg' => [
+                [
+                    [
+                        'id' => 14,
+                        'uuid' => '?',
+                        'ready' => true,
+                        'url' => '?',
+                    ],
+                ],
+                14,
+            ],
             'array of IDs, custom preset' => [
                 [
                     [
