@@ -121,9 +121,9 @@ class MediaControllerTest extends IntegrationTestCase
                 [
                     [
                         'id' => 16,
-                        'uuid' => 'a5xqx51s-3512-542x-r2t5-692x41956v0f',
+                        'uuid' => '9b06b2cf-fce7-47e8-b367-a3e5b464ca85',
                         'ready' => true,
-                        'url' => 'https://static.example.org/files/a5xqx51s-3512-542x-r2t5-692x41956v0f-sample.svg',
+                        'url' => 'https://static.example.org/files/9b06b2cf-fce7-47e8-b367-a3e5b464ca85-sample.svg',
                     ],
                 ],
                 16,
@@ -537,7 +537,7 @@ class MediaControllerTest extends IntegrationTestCase
                         'published' => null,
                         'created_by' => 1,
                         'modified_by' => 1,
-                        'media_url' => 'https://static.example.org/files/a5xqx51s-3512-542x-r2t5-692x41956v0f-sample.svg',
+                        'media_url' => 'https://static.example.org/files/9b06b2cf-fce7-47e8-b367-a3e5b464ca85-sample.svg',
                     ],
                     'links' => [
                         'self' => 'http://api.example.com/files/16',
@@ -556,7 +556,7 @@ class MediaControllerTest extends IntegrationTestCase
                             ],
                             'data' => [
                                 0 => [
-                                    'id' => 'a5xqx51s-3512-542x-r2t5-692x41956v0f',
+                                    'id' => '9b06b2cf-fce7-47e8-b367-a3e5b464ca85',
                                     'type' => 'streams',
                                 ],
                             ],
@@ -644,7 +644,7 @@ class MediaControllerTest extends IntegrationTestCase
                     ],
                 ],
                 [
-                    'id' => 'a5xqx51s-3512-542x-r2t5-692x41956v0f',
+                    'id' => '9b06b2cf-fce7-47e8-b367-a3e5b464ca85',
                     'type' => 'streams',
                     'attributes' => [
                         'file_name' => 'sample.svg',
@@ -660,18 +660,18 @@ class MediaControllerTest extends IntegrationTestCase
                         'duration' => null,
                         'created' => '2024-03-25T16:11:18+00:00',
                         'modified' => '2024-03-25T16:11:18+00:00',
-                        'url' => 'https://static.example.org/files/a5xqx51s-3512-542x-r2t5-692x41956v0f-sample.svg',
+                        'url' => 'https://static.example.org/files/9b06b2cf-fce7-47e8-b367-a3e5b464ca85-sample.svg',
                         'file_metadata' => null,
                         'private_url' => false,
                     ],
                     'links' => [
-                        'self' => 'http://api.example.com/streams/a5xqx51s-3512-542x-r2t5-692x41956v0f',
+                        'self' => 'http://api.example.com/streams/9b06b2cf-fce7-47e8-b367-a3e5b464ca85',
                     ],
                     'relationships' => [
                         'object' => [
                             'links' => [
-                                'related' => 'http://api.example.com/streams/a5xqx51s-3512-542x-r2t5-692x41956v0f/object',
-                                'self' => 'http://api.example.com/streams/a5xqx51s-3512-542x-r2t5-692x41956v0f/relationships/object',
+                                'related' => 'http://api.example.com/streams/9b06b2cf-fce7-47e8-b367-a3e5b464ca85/object',
+                                'self' => 'http://api.example.com/streams/9b06b2cf-fce7-47e8-b367-a3e5b464ca85/relationships/object',
                             ],
                         ],
                     ],
