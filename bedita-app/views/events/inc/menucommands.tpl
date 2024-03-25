@@ -4,7 +4,6 @@ Menu a SX valido per tutte le pagine del controller.
 *}
 
 {$html->css('ui.datepicker', null, ['inline' => false])}
-{$html->script('libs/jquery/ui/jquery.ui.datepicker.min')}
 
 <div class="secondacolonna {if !empty($fixed)}fixed{/if}">
 	
