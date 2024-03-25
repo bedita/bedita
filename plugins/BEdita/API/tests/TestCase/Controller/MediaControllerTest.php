@@ -120,10 +120,10 @@ class MediaControllerTest extends IntegrationTestCase
             'svg' => [
                 [
                     [
-                        'id' => 14,
-                        'uuid' => '?',
+                        'id' => 16,
+                        'uuid' => 'a5xqx51s-3512-542x-r2t5-692x41956v0fs',
                         'ready' => true,
-                        'url' => '?',
+                        'url' => 'https://static.example.org/thumbs/a5xqx51s-3512-542x-r2t5-692x41956v0fs-sample.svg/a5xqx51s-3512-542x-r2t5-692x41956v0fs-sample.svg',
                     ],
                 ],
                 14,
