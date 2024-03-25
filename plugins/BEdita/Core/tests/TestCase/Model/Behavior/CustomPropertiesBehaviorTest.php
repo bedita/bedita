@@ -533,17 +533,17 @@ class CustomPropertiesBehaviorTest extends TestCase
                 ['media_property' => '1'],
             ],
             'filter bool false' => [
-                [14],
+                [14, 16],
                 'Files',
                 ['media_property' => false],
             ],
             'filter bool 0 as false' => [
-                [14],
+                [14, 16],
                 'Files',
                 ['media_property' => 0],
             ],
             'filter bool "0" as false' => [
-                [14],
+                [14, 16],
                 'Files',
                 ['media_property' => '0'],
             ],
