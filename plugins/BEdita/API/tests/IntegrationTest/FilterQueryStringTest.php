@@ -458,6 +458,7 @@ class FilterQueryStringTest extends IntegrationTestCase
                    '12',
                    '13',
                    '14',
+                   '16',
                ],
             ],
             'multi' => [

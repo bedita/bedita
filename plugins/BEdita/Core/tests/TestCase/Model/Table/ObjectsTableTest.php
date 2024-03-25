@@ -233,6 +233,7 @@ class ObjectsTableTest extends TestCase
                     12 => 'Sub Folder',
                     13 => 'Another Root Folder',
                     14 => 'second media',
+                    16 => 'svg media',
                 ],
                 ['ne' => 'documents'],
             ],
@@ -257,6 +258,7 @@ class ObjectsTableTest extends TestCase
                     13 => 'Another Root Folder',
                     14 => 'second media',
                     15 => null,
+                    16 => 'svg media',
                 ],
                 ['objects'],
             ],
@@ -674,11 +676,11 @@ class ObjectsTableTest extends TestCase
     {
         return [
             'no status' => [
-                12,
+                13,
                 ['id > 0'],
             ],
             'status on' => [
-                7,
+                8,
                 ['id > 5'],
                 'on',
             ],
@@ -714,14 +716,14 @@ class ObjectsTableTest extends TestCase
     {
         return [
             'on + publish' => [
-                10,
+                11,
                 [
                     'Status.level' => 'on',
                     'Publish.checkDate' => true,
                 ],
             ],
             'draft' => [
-                15,
+                16,
                 [
                     'Status.level' => 'draft',
                 ],
@@ -757,7 +759,7 @@ class ObjectsTableTest extends TestCase
     public function testFindPublishDateAllowed(): void
     {
         $result = $this->Objects->find('publishDateAllowed')->toArray();
-        static::assertSame(12, count($result));
+        static::assertSame(13, count($result));
     }
 
     /**

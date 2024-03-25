@@ -294,9 +294,9 @@ class CustomPropertiesBehaviorTest extends TestCase
     public function testBeforeFindFormatterPrepended()
     {
         $expected = [
-            'files_property' => ['media-one' => null, 'media-two' => null],
-            'media_property' => ['media-one' => true, 'media-two' => false],
-            'count' => 2,
+            'files_property' => ['media-one' => null, 'media-two' => null, 'media-svg' => null],
+            'media_property' => ['media-one' => true, 'media-two' => false, 'media-svg' => false],
+            'count' => 3,
         ];
 
         $result = $this->getTableLocator()->get('Files')->find()
