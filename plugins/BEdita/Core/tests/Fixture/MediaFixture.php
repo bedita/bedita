@@ -47,5 +47,16 @@ class MediaFixture extends TestFixture
             'provider_url' => null,
             'provider_thumbnail' => null,
         ],
+        [
+            'id' => 16,
+            'name' => 'An svg media',
+            'width' => null,
+            'height' => null,
+            'duration' => null,
+            'provider' => null,
+            'provider_uid' => null,
+            'provider_url' => null,
+            'provider_thumbnail' => null,
+        ],
     ];
 }

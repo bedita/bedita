@@ -123,7 +123,7 @@ class MediaControllerTest extends IntegrationTestCase
                         'id' => 16,
                         'uuid' => 'a5xqx51s-3512-542x-r2t5-692x41956v0fs',
                         'ready' => true,
-                        'url' => 'https://static.example.org/thumbs/a5xqx51s-3512-542x-r2t5-692x41956v0fs-sample.svg/a5xqx51s-3512-542x-r2t5-692x41956v0fs-sample.svg',
+                        'url' => 'https://static.example.org/files/a5xqx51s-3512-542x-r2t5-692x41956v0fs-sample.svg',
                     ],
                 ],
                 16,
@@ -363,10 +363,10 @@ class MediaControllerTest extends IntegrationTestCase
             ],
             'meta' => [
                 'pagination' => [
-                    'count' => 2,
+                    'count' => 3,
                     'page' => 1,
                     'page_count' => 1,
-                    'page_items' => 2,
+                    'page_items' => 3,
                     'page_size' => 20,
                 ],
                 'schema' => [
@@ -509,6 +509,72 @@ class MediaControllerTest extends IntegrationTestCase
                         ],
                     ],
                 ],
+                [
+                    'id' => '16',
+                    'type' => 'files',
+                    'attributes' => [
+                        'name' => 'An svg media',
+                        'provider' => null,
+                        'provider_uid' => null,
+                        'provider_url' => null,
+                        'provider_thumbnail' => null,
+                        'provider_extra' => null,
+                        'status' => 'on',
+                        'uname' => 'media-svg',
+                        'title' => 'svg media',
+                        'description' => 'an svg image',
+                        'body' => null,
+                        'extra' => null,
+                        'lang' => 'en',
+                        'publish_start' => null,
+                        'publish_end' => null,
+                        'media_property' => false,
+                    ],
+                    'meta' => [
+                        'locked' => false,
+                        'created' => '2024-03-25T16:11:18+00:00',
+                        'modified' => '2024-03-25T16:11:18+00:00',
+                        'published' => null,
+                        'created_by' => 1,
+                        'modified_by' => 1,
+                        'media_url' => 'https://static.example.org/files/a5xqx51s-3512-542x-r2t5-692x41956v0fs-sample.svg',
+                    ],
+                    'links' => [
+                        'self' => 'http://api.example.com/files/16',
+                    ],
+                    'relationships' => [
+                        'inverse_test_abstract' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/files/16/inverse_test_abstract',
+                                'self' => 'http://api.example.com/files/16/relationships/inverse_test_abstract',
+                            ],
+                        ],
+                        'streams' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/files/16/streams',
+                                'self' => 'http://api.example.com/files/16/relationships/streams',
+                            ],
+                            'data' => [
+                                0 => [
+                                    'id' => 'a5xqx51s-3512-542x-r2t5-692x41956v0fs',
+                                    'type' => 'streams',
+                                ],
+                            ],
+                        ],
+                        'parents' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/files/16/parents',
+                                'self' => 'http://api.example.com/files/16/relationships/parents',
+                            ],
+                        ],
+                        'translations' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/files/16/translations',
+                                'self' => 'http://api.example.com/files/16/relationships/translations',
+                            ],
+                        ],
+                    ],
+                ],
             ],
             'included' => [
                 [
@@ -573,6 +639,39 @@ class MediaControllerTest extends IntegrationTestCase
                             'links' => [
                                 'related' => 'http://api.example.com/streams/6aceb0eb-bd30-4f60-ac74-273083b921b6/object',
                                 'self' => 'http://api.example.com/streams/6aceb0eb-bd30-4f60-ac74-273083b921b6/relationships/object',
+                            ],
+                        ],
+                    ],
+                ],
+                [
+                    'id' => 'a5xqx51s-3512-542x-r2t5-692x41956v0fs',
+                    'type' => 'streams',
+                    'attributes' => [
+                        'file_name' => 'sample.svg',
+                        'mime_type' => 'image/svg+xml',
+                    ],
+                    'meta' => [
+                        'version' => 1,
+                        'file_size' => 461,
+                        'hash_md5' => '',
+                        'hash_sha1' => '',
+                        'width' => null,
+                        'height' => null,
+                        'duration' => null,
+                        'created' => '2024-03-25T16:11:18+00:00',
+                        'modified' => '2024-03-25T16:11:18+00:00',
+                        'url' => 'https://static.example.org/files/a5xqx51s-3512-542x-r2t5-692x41956v0fs-sample.svg',
+                        'file_metadata' => null,
+                        'private_url' => false,
+                    ],
+                    'links' => [
+                        'self' => 'http://api.example.com/streams/a5xqx51s-3512-542x-r2t5-692x41956v0fs',
+                    ],
+                    'relationships' => [
+                        'object' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/streams/a5xqx51s-3512-542x-r2t5-692x41956v0fs/object',
+                                'self' => 'http://api.example.com/streams/a5xqx51s-3512-542x-r2t5-692x41956v0fs/relationships/object',
                             ],
                         ],
                     ],

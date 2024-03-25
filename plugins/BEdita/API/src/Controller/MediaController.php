@@ -113,10 +113,10 @@ class MediaController extends ObjectsController
                 $id = $stream->object_id;
                 $uuid = $stream->uuid;
                 if ($stream->mime_type === 'image/svg+xml') {
-                    $acceptable = $ready = true;
+                    $ready = true;
                     $url = $stream->get('url');
 
-                    return compact('acceptable', 'ready', 'url', 'id', 'uuid');
+                    return compact('ready', 'url', 'id', 'uuid');
                 }
 
                 $info = Thumbnail::get($stream, $preset ?: $options ?: 'default');
