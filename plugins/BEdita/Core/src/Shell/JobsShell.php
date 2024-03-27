@@ -22,6 +22,7 @@ use Cake\Utility\Hash;
  *
  * @since 4.0.0
  * @property \BEdita\Core\Model\Table\AsyncJobsTable $AsyncJobs
+ * @deprecated version 5.18.0 Use `BEdita/Core.Command/JobsCommand` instead
  */
 class JobsShell extends Shell /* @phpstan-ignore-line */
 {
@@ -45,7 +46,7 @@ class JobsShell extends Shell /* @phpstan-ignore-line */
             ],
         ];
 
-        return parent::getOptionParser() /* @phpstan-ignore-line */
+        return parent::getOptionParser()
             ->addSubcommand('run', [
                 'help' => 'Process a job',
                 'parser' => [
