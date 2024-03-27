@@ -70,11 +70,11 @@ class CustomPropertiesFilterTest extends IntegrationTestCase
                 '/files?filter[media_property]=1',
             ],
             'bool false' => [
-                ['14'],
+                ['14', '16'],
                 '/files?filter[media_property]=false',
             ],
             'bool 0' => [
-                ['14'],
+                ['14', '16'],
                 '/files?filter[media_property]=0',
             ],
             'string' => [

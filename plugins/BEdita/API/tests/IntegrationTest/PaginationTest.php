@@ -39,16 +39,16 @@ class PaginationTest extends IntegrationTestCase
         return [
             'default' => [
                 [
-                    'count' => 12,
+                    'count' => 13,
                     'page' => 1,
                     'page_count' => 1,
-                    'page_items' => 12,
+                    'page_items' => 13,
                     'page_size' => 20,
                 ],
             ],
             'lower' => [
                 [
-                    'count' => 12,
+                    'count' => 13,
                     'page' => 1,
                     'page_count' => 3,
                     'page_items' => 5,
@@ -61,7 +61,7 @@ class PaginationTest extends IntegrationTestCase
             // set 10 as maxLimit, page_size of 20 not allowed
             'low max limit' => [
                 [
-                    'count' => 12,
+                    'count' => 13,
                     'page' => 1,
                     'page_count' => 2,
                     'page_items' => 10,
@@ -75,10 +75,10 @@ class PaginationTest extends IntegrationTestCase
             ],
             'higher' => [
                 [
-                    'count' => 12,
+                    'count' => 13,
                     'page' => 1,
                     'page_count' => 1,
-                    'page_items' => 12,
+                    'page_items' => 13,
                     'page_size' => 50,
                 ],
                 [
@@ -88,10 +88,10 @@ class PaginationTest extends IntegrationTestCase
             // set 200 as maxLimit, page_size of 200 allowed
             'increase max' => [
                 [
-                    'count' => 12,
+                    'count' => 13,
                     'page' => 1,
                     'page_count' => 1,
-                    'page_items' => 12,
+                    'page_items' => 13,
                     'page_size' => 200,
                 ],
                 [
@@ -103,10 +103,10 @@ class PaginationTest extends IntegrationTestCase
             // BEdita\API\Datasource\JsonApiPaginator::MAX_LIMIT (500) is used instead
             'too high' => [
                 [
-                    'count' => 12,
+                    'count' => 13,
                     'page' => 1,
                     'page_count' => 1,
-                    'page_items' => 12,
+                    'page_items' => 13,
                     'page_size' => 500,
                 ],
                 [
@@ -118,10 +118,10 @@ class PaginationTest extends IntegrationTestCase
             // set 500 as maxLimit, page_size of 300 is allowed
             'not too high' => [
                 [
-                    'count' => 12,
+                    'count' => 13,
                     'page' => 1,
                     'page_count' => 1,
-                    'page_items' => 12,
+                    'page_items' => 13,
                     'page_size' => 300,
                 ],
                 [

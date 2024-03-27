@@ -74,7 +74,7 @@ class FixHistoryCommandTest extends TestCase
     {
         $this->exec('fix_history');
         $this->assertExitSuccess();
-        $this->assertOutputContains('History creation items fixed: 14');
+        $this->assertOutputContains('History creation items fixed: 15');
         $this->assertOutputContains('History update items fixed: 1');
     }
 
