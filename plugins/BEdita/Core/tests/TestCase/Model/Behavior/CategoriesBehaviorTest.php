@@ -265,6 +265,7 @@ class CategoriesBehaviorTest extends TestCase
         $names = Hash::extract($tags, '{n}.name');
         sort($names);
         static::assertEquals(['first-tag', 'second', 'third'], $names);
+        $labels = [];
         foreach ($tags as $tag) {
             $labels[] = $tag->get('label');
         }
