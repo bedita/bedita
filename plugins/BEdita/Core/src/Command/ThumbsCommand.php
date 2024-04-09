@@ -15,7 +15,6 @@ declare(strict_types=1);
 namespace BEdita\Core\Command;
 
 use BEdita\Core\Event\ImageThumbsHandler;
-use Cake\Collection\Collection;
 use Cake\Command\Command;
 use Cake\Console\Arguments;
 use Cake\Console\ConsoleIo;
@@ -98,17 +97,11 @@ class ThumbsCommand extends Command
     /**
      * Retrieve thumbnail presets without 'async' generators
      *
-     * @return array
+     * @return string[]
      */
     protected static function availablePresets(): array
     {
-        $collection = new Collection((array)Configure::read('Thumbnails.presets'));
-
-        return $collection->map(function (array $preset) {
-            unset($preset['generator']); // remove 'async' generators
-
-            return $preset;
-        })->toArray();
+        return array_keys(array_filter((array)Configure::read('Thumbnails.presets'), fn (array $preset) => !isset($preset['generator'])));
     }
 
     /**
