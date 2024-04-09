@@ -19,7 +19,7 @@ class CategoriesLabels extends AbstractMigration
             ])
             ->update();
         // copy label into labels.default
-        $this->execute(
+        $this->query(
             'UPDATE categories SET labels = JSON_OBJECT("default", label)'
         );
         // drop field label
@@ -43,7 +43,7 @@ class CategoriesLabels extends AbstractMigration
             ])
             ->update();
         // copy labels.default into label
-        $this->execute(
+        $this->query(
             'UPDATE categories SET label = JSON_UNQUOTE(labels->>"$.default")'
         );
         // drop field labels
