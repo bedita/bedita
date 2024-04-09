@@ -16,6 +16,7 @@ namespace BEdita\Core\Model\Entity;
 use BEdita\Core\Utility\JsonApiSerializable;
 use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\ORM\Entity;
+use Cake\Utility\Hash;
 
 /**
  * Category Entity
@@ -23,7 +24,7 @@ use Cake\ORM\Entity;
  * @property int $id
  * @property int|null $object_type_id
  * @property string $name
- * @property string|null $label
+ * @property array|null $labels
  * @property int|null $parent_id
  * @property int|null $tree_left
  * @property int|null $tree_right
@@ -143,5 +144,17 @@ class Category extends Entity implements JsonApiSerializable
         }
 
         return $this->parent_category->name;
+    }
+
+    /**
+     * Getter for `label` virtual property.
+     *
+     * @return string|null
+     */
+    public function getLabel(): ?string
+    {
+        $label = (string)Hash::get((array)$this->labels, 'default');
+
+        return empty($label) ? null : $label;
     }
 }
