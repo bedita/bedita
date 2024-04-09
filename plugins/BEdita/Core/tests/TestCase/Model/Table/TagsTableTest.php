@@ -79,7 +79,7 @@ class TagsTableTest extends TestCase
         $expected = [
             'id' => 1,
             'name' => 'first-tag',
-            'label' => 'First tag',
+            'labels' => '{"default":"First tag"}',
             'enabled' => true,
         ];
         unset($tag['created'], $tag['modified']);
@@ -100,7 +100,7 @@ class TagsTableTest extends TestCase
         $expected = [
             [
                 'name' => 'first-tag',
-                'label' => 'First tag',
+                'labels' => '{"default":"First tag"}',
             ],
         ];
         static::assertArrayHasKey('tags', $profile);

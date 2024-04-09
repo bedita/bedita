@@ -791,12 +791,12 @@ class ObjectsControllerTest extends IntegrationTestCase
                     'categories' => [
                         [
                             'name' => 'first-cat',
-                            'label' => 'First category',
+                            'labels' => '{"default":"First category"}',
                             'params' => '100',
                         ],
                         [
                             'name' => 'second-cat',
-                            'label' => 'Second category',
+                            'labels' => '{"default":"Second category"}',
                             'params' => null,
                         ],
                     ],
@@ -1514,12 +1514,12 @@ class ObjectsControllerTest extends IntegrationTestCase
                         'categories' => [
                             [
                                 'name' => 'first-cat',
-                                'label' => 'First category',
+                                'labels' => '{"default":"First category"}',
                                 'params' => '100',
                             ],
                             [
                                 'name' => 'second-cat',
-                                'label' => 'Second category',
+                                'labels' => '{"default":"Second category"}',
                                 'params' => null,
                             ],
                         ],
@@ -2432,12 +2432,12 @@ class ObjectsControllerTest extends IntegrationTestCase
                     'categories' => [
                         [
                             'name' => 'first-cat',
-                            'label' => 'First category',
+                            'labels' => '{"default":"First category"}',
                             'params' => '100',
                         ],
                         [
                             'name' => 'second-cat',
-                            'label' => 'Second category',
+                            'labels' => '{"default":"Second category"}',
                             'params' => null,
                         ],
                     ],

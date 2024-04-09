@@ -29,7 +29,7 @@ class CategoriesFixture extends TestFixture
         [
             'object_type_id' => 2,
             'name' => 'first-cat',
-            'label' => 'First category',
+            'labels' => '{"default":"First category"}',
             'parent_id' => null,
             'tree_left' => 1,
             'tree_right' => 2,
@@ -41,7 +41,7 @@ class CategoriesFixture extends TestFixture
         [
             'object_type_id' => 2,
             'name' => 'second-cat',
-            'label' => 'Second category',
+            'labels' => '{"default":"Second category"}',
             'parent_id' => null,
             'tree_left' => 3,
             'tree_right' => 4,
@@ -53,7 +53,7 @@ class CategoriesFixture extends TestFixture
         [
             'object_type_id' => 2,
             'name' => 'disabled-cat',
-            'label' => 'Disabled category',
+            'labels' => '{"default":"Disabled category"}',
             'parent_id' => null,
             'tree_left' => 5,
             'tree_right' => 6,

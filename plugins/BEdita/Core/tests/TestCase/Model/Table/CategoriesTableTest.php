@@ -78,7 +78,7 @@ class CategoriesTableTest extends TestCase
         $expected = [
             'id' => 1,
             'name' => 'first-cat',
-            'label' => 'First category',
+            'labels' => '{"default":"First category"}',
             'parent_id' => null,
             'tree_left' => 1,
             'tree_right' => 2,
@@ -103,12 +103,12 @@ class CategoriesTableTest extends TestCase
         $expected = [
             [
                 'name' => 'first-cat',
-                'label' => 'First category',
+                'labels' => '{"default":"First category"}',
                 'params' => '100',
             ],
             [
                 'name' => 'second-cat',
-                'label' => 'Second category',
+                'labels' => '{"default":"Second category"}',
                 'params' => null,
             ],
         ];

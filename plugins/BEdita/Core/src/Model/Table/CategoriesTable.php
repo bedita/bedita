@@ -94,7 +94,7 @@ class CategoriesTable extends Table
             'through' => 'BEdita/Core.ObjectCategories',
         ]);
 
-        $this->setupSimpleSearch(['fields' => ['label', 'name']]);
+        $this->setupSimpleSearch(['fields' => ['labels', 'name']]);
     }
 
     /**
@@ -116,9 +116,8 @@ class CategoriesTable extends Table
             ->notEmptyString('name')
             ->regex('name', Validation::CATEGORY_NAME_REGEX)
 
-            ->scalar('label')
-            ->maxLength('label', 255)
-            ->allowEmptyString('label')
+            ->scalar('labels')
+            ->allowEmptyString('labels')
 
             ->boolean('enabled')
             ->notEmptyString('enabled');
