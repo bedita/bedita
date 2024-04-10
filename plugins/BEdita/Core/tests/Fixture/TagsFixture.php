@@ -28,7 +28,7 @@ class TagsFixture extends TestFixture
         // 1
         [
             'name' => 'first-tag',
-            'labels' => '{"default":"First tag"}',
+            'labels' => ['default' => 'First tag'],
             'enabled' => 1,
             'created' => '2019-11-26 12:15:51',
             'modified' => '2019-11-26 12:15:51',

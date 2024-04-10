@@ -120,13 +120,15 @@ class ListRelatedObjectsActionTest extends TestCase
                         'categories' => [
                             [
                                 'name' => 'first-cat',
-                                'labels' => '{"default":"First category"}',
+                                'labels' => ['default' => 'First category'],
                                 'params' => '100',
+                                'label' => 'First category',
                             ],
                             [
                                 'name' => 'second-cat',
-                                'labels' => '{"default":"Second category"}',
+                                'labels' => ['default' => 'Second category'],
                                 'params' => null,
+                                'label' => 'Second category',
                             ],
                         ],
                     ],
@@ -186,13 +188,15 @@ class ListRelatedObjectsActionTest extends TestCase
                         'categories' => [
                             [
                                 'name' => 'first-cat',
-                                'labels' => '{"default":"First category"}',
+                                'labels' => ['default' => 'First category'],
                                 'params' => '100',
+                                'label' => 'First category',
                             ],
                             [
                                 'name' => 'second-cat',
-                                'labels' => '{"default":"Second category"}',
+                                'labels' => ['default' => 'Second category'],
                                 'params' => null,
+                                'label' => 'Second category',
                             ],
                         ],
                     ],
