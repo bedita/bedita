@@ -75,7 +75,7 @@ class ThumbsCommandTest extends TestCase
     public function testBuildOptionParser()
     {
         $this->exec('thumbs --help');
-        $this->assertOutputContains('Image id');
+        $this->assertOutputContains('Image ID');
     }
 
     /**
@@ -83,13 +83,14 @@ class ThumbsCommandTest extends TestCase
      *
      * @return void
      * @covers ::execute()
-     * @covers ::presets()
+     * @covers ::availablePresets()
+     * @covers ::imagesIterator()
      */
     public function testExecute(): void
     {
         $this->exec('thumbs');
-        $this->assertOutputContains('Update image thumbs');
-        $this->assertOutputContains('Thumbs updated');
+        $this->assertOutputContains('Operation started at ');
+        $this->assertOutputContains('Operation completed at ');
         $this->assertExitSuccess();
     }
 
@@ -98,14 +99,14 @@ class ThumbsCommandTest extends TestCase
      *
      * @return void
      * @covers ::execute()
-     * @covers ::presets()
+     * @covers ::availablePresets()
+     * @covers ::imagesIterator()
      */
     public function testExecuteId(): void
     {
         $this->exec('thumbs --id 123');
-        $this->assertOutputContains('Update image thumbs');
-        $this->assertOutputContains('Thumbs updated');
-        $this->assertOutputContains('Updated 0 images');
+        $this->assertOutputContains('Operation started at ');
+        $this->assertOutputContains('Operation completed at ');
         $this->assertExitSuccess();
     }
 }
