@@ -55,8 +55,6 @@ class ThumbsCommand extends Command
      */
     public function execute(Arguments $args, ConsoleIo $io)
     {
-        $io->out(sprintf('=====> Operation started at <info>%s</info>', FrozenTime::now()->toIso8601String()));
-
         $handler = new ImageThumbsHandler();
         $ids = (array)$args->getOption('id');
         $startAt = filter_var(
@@ -65,6 +63,12 @@ class ThumbsCommand extends Command
             ['options' => ['min_range' => 1], 'flags' => FILTER_NULL_ON_FAILURE],
         );
         $presets = (array)$args->getOption('preset') ?: ThumbsCommand::availablePresets();
+
+        $io->out(sprintf(
+            '=====> Operation started at <info>%s</info>, using presets: %s',
+            FrozenTime::now()->toIso8601String(),
+            implode(', ', array_map(fn (string $preset) => sprintf('<comment>%s</comment>', $preset), $presets)),
+        ));
 
         $success = $failed = 0;
         foreach ($this->imagesIterator($ids, $startAt) as $image) {
@@ -117,7 +121,7 @@ class ThumbsCommand extends Command
         $id = $startAt ?? 0;
         $idField = $table->aliasField('id');
 
-        $query = $table->find()
+        $query = $table->find('type', ['images'])
             ->matching('Streams')
             ->contain('Streams');
         if (!empty($ids)) {
