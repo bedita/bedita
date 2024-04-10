@@ -60,6 +60,7 @@ class CategoriesBehaviorTest extends TestCase
                             'name' => 'second-cat',
                             'id' => 2,
                             'object_type_name' => null,
+                            'label' => null,
                         ],
                     ],
                 ],
@@ -78,6 +79,7 @@ class CategoriesBehaviorTest extends TestCase
                         [
                             'name' => 'first-tag',
                             'id' => 1,
+                            'label' => null,
                         ],
                     ],
                 ],
@@ -142,10 +144,12 @@ class CategoriesBehaviorTest extends TestCase
                         [
                             'name' => 'some-tag',
                             'id' => 2,
+                            'label' => null,
                         ],
                         [
                             'name' => 'other-tag',
                             'id' => 3,
+                            'label' => null,
                         ],
                     ],
                 ],
