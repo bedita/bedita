@@ -18,7 +18,15 @@ class CategoriesLabels extends AbstractMigration
                 'after' => 'name',
             ])
             ->update();
-        // TODO: copy labels.default into label
+        $statement = [
+            'mysql' => 'JSON_OBJECT("default", label)',
+            'mariadb' => 'JSON_OBJECT("default", label)',
+            'postgres' => 'JSON_BUILD_OBJECT("default", label)',
+            'sqlite' => 'JSON(\'{"default": "\' || label || \'"}\')',
+        ];
+        $this->query(
+            'UPDATE categories SET labels = ' . $statement[$this->getAdapter()->getAdapterType()]
+        );
         // drop field label
         $this->table('categories')
             ->removeColumn('label')
