@@ -50,6 +50,13 @@ class Tag extends Entity implements JsonApiSerializable
     ];
 
     /**
+     * @inheritDoc
+     */
+    protected $_virtual = [
+        'label',
+    ];
+
+    /**
      * Getter for `label` virtual property.
      *
      * @return string|null

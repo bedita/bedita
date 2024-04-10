@@ -66,6 +66,7 @@ class Category extends Entity implements JsonApiSerializable
      * @inheritDoc
      */
     protected $_virtual = [
+        'label',
         'object_type_name',
         'object',
         'parent',
