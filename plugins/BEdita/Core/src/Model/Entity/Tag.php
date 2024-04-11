@@ -63,8 +63,7 @@ class Tag extends Entity implements JsonApiSerializable
      */
     protected function _getLabel(): ?string
     {
-        $labels = is_array($this->labels) ? $this->labels : (array)json_decode((string)$this->labels, true);
-        $label = (string)Hash::get($labels, 'default');
+        $label = (string)Hash::get((array)$this->labels, 'default');
 
         return empty($label) ? null : $label;
     }
