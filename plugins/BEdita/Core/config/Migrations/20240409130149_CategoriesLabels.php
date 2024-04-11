@@ -21,7 +21,7 @@ class CategoriesLabels extends AbstractMigration
         $statement = [
             'mysql' => 'JSON_OBJECT("default", label)',
             'mariadb' => 'JSON_OBJECT("default", label)',
-            'postgres' => 'JSON_BUILD_OBJECT("default", label)',
+            'pgsql' => 'JSON_BUILD_OBJECT(\'default\', label)',
             'sqlite' => 'JSON(\'{"default": "\' || label || \'"}\')',
         ];
         $this->query(
