@@ -23,7 +23,6 @@ class CategoriesLabels extends AbstractMigration
             'mariadb' => 'JSON_OBJECT("default", label)',
             'postgres' => 'JSON_BUILD_OBJECT("default", label)',
             'sqlite' => 'JSON(\'{"default": "\' || label || \'"}\')',
-            'sqlite' => 'JSON({"default":"label"})',
         ];
         $this->query(
             'UPDATE categories SET labels = ' . $statement[$this->getAdapter()->getAdapterType()]
