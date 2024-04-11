@@ -1,10 +1,13 @@
 <?php
 declare(strict_types=1);
 
+use Cake\ORM\Locator\LocatorAwareTrait;
 use Migrations\AbstractMigration;
 
 class TagsLabels extends AbstractMigration
 {
+    use LocatorAwareTrait;
+
     /**
      * @inheritDoc
      */
@@ -18,16 +21,12 @@ class TagsLabels extends AbstractMigration
                 'after' => 'name',
             ])
             ->update();
-        $statement = [
-            'mysql' => 'JSON_OBJECT("default", label)',
-            'mariadb' => 'JSON_OBJECT("default", label)',
-            'postgres' => 'JSON_BUILD_OBJECT("default", label)',
-            'sqlite' => 'JSON(\'{"default": "\' || label || \'"}\')',
-        ];
-        $this->query(
-            'UPDATE tags SET labels = ' . $statement[$this->getAdapter()->getAdapterType()]
-        );
-
+        // update all tags with labels.default
+        $tags = $this->fetchTable('Tags')->find()->all();
+        foreach ($tags as $tag) {
+            $tag->set('labels', ['default' => $tag->get('label')]);
+            $this->fetchTable('Tags')->save($tag);
+        }
         // drop field label
         $this->table('tags')
             ->removeColumn('label')
