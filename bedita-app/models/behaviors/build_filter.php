@@ -1183,9 +1183,10 @@ class BuildFilterBehavior extends ModelBehavior {
 
                 if (!empty($forbiddenPub) || !empty($forbiddenSection)) {
 
-                    $query = "SELECT {$s}Tree{$e}.{$s}id{$e}
+                    $query = "SELECT DISTINCT {$s}Tree{$e}.{$s}id{$e}
                              FROM {$s}trees{$e} AS {$s}Tree{$e}
-                             WHERE {$s}BEObject{$e}.{$s}id{$e} = {$s}Tree{$e}.{$s}id{$e}";
+                             INNER JOIN {$s}objects{$e} AS {$s}BEObject{$e} ON {$s}BEObject{$e}.{$s}id{$e} = {$s}Tree{$e}.{$s}id{$e}
+                             WHERE 1=1";
 
                     if (!empty($forbiddenPub)) {
                         $forbiddenPubList = implode(',', $forbiddenPub);
@@ -1208,9 +1209,9 @@ class BuildFilterBehavior extends ModelBehavior {
                     $this->conditions[] = "(
                         (
                             NOT EXISTS (
-                                SELECT {$s}Tree{$e}.{$s}id{$e}
+                                SELECT DISTINCT {$s}Tree{$e}.{$s}id{$e}
                                 FROM {$s}trees{$e} AS {$s}Tree{$e}
-                                WHERE {$s}Tree{$e}.{$s}id{$e} = {$s}BEObject{$e}.{$s}id{$e}
+                                INNER JOIN {$s}objects{$e} AS {$s}BEObject{$e} ON {$s}BEObject{$e}.{$s}id{$e} = {$s}Tree{$e}.{$s}id{$e}
                             )
                         )
                         OR
