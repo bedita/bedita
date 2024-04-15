@@ -117,8 +117,7 @@ class CategoriesTable extends Table
             ->notEmptyString('name')
             ->regex('name', Validation::CATEGORY_NAME_REGEX)
 
-            ->scalar('labels')
-            ->allowEmptyString('labels')
+            ->allowEmptyArray('labels')
 
             ->boolean('enabled')
             ->notEmptyString('enabled');
