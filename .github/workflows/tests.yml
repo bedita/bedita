@@ -181,6 +181,7 @@ jobs:
       - name: 'Export coverage results'
         uses: 'codecov/codecov-action@v4'
         with:
+          token: ${{ secrets.CODECOV_TOKEN }} # required
           files: './clover.xml'
           env_vars: PHP_VERSION,DB_VENDOR
 
