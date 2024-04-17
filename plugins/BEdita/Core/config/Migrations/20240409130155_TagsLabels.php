@@ -49,8 +49,14 @@ class TagsLabels extends AbstractMigration
             ])
             ->update();
         // copy labels.default into label
+        $statement = [
+            'mysql' => 'JSON_UNQUOTE(labels->>"$.default")',
+            'mariadb' => 'JSON_UNQUOTE(labels->>"$.default")',
+            'pgsql' => 'labels->>\'default\'',
+            'sqlite' => 'labels->>\'$.default\'',
+        ];
         $this->query(
-            'UPDATE tags SET label = JSON_UNQUOTE(labels->>"$.default")'
+            'UPDATE tags SET label ' . $statement[$this->getAdapter()->getAdapterType()]
         );
         // drop field labels
         $this->table('tags')
