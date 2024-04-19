@@ -78,12 +78,13 @@ class CategoriesTableTest extends TestCase
         $expected = [
             'id' => 1,
             'name' => 'first-cat',
-            'label' => 'First category',
+            'labels' => ['default' => 'First category'],
             'parent_id' => null,
             'tree_left' => 1,
             'tree_right' => 2,
             'enabled' => true,
             'object_type_name' => 'documents',
+            'label' => 'First category',
         ];
         unset($category['created'], $category['modified']);
         static::assertEquals($expected, $category);
@@ -103,13 +104,15 @@ class CategoriesTableTest extends TestCase
         $expected = [
             [
                 'name' => 'first-cat',
-                'label' => 'First category',
+                'labels' => ['default' => 'First category'],
                 'params' => '100',
+                'label' => 'First category',
             ],
             [
                 'name' => 'second-cat',
-                'label' => 'Second category',
+                'labels' => ['default' => 'Second category'],
                 'params' => null,
+                'label' => 'Second category',
             ],
         ];
         static::assertEquals($expected, $document['categories']);

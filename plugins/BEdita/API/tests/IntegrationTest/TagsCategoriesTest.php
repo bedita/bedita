@@ -33,6 +33,7 @@ class TagsCategoriesTest extends IntegrationTestCase
                     'tags' => [
                         [
                             'name' => 'first-tag',
+                            'labels' => ['default' => 'First tag'],
                             'label' => 'First tag',
                         ],
                     ],
@@ -60,8 +61,9 @@ class TagsCategoriesTest extends IntegrationTestCase
                     'categories' => [
                         [
                             'name' => 'second-cat',
-                            'label' => 'Second category',
+                            'labels' => ['default' => 'Second category'],
                             'params' => null,
+                            'label' => 'Second category',
                         ],
                     ],
                 ],
@@ -141,6 +143,7 @@ class TagsCategoriesTest extends IntegrationTestCase
                     'tags' => [
                         [
                             'name' => 'first-tag',
+                            'labels' => ['default' => 'First tag'],
                             'label' => 'First tag',
                         ],
                     ],
@@ -159,13 +162,15 @@ class TagsCategoriesTest extends IntegrationTestCase
                     'categories' => [
                         [
                             'name' => 'first-cat',
-                            'label' => 'First category',
+                            'labels' => ['default' => 'First category'],
                             'params' => '100',
+                            'label' => 'First category',
                         ],
                         [
                             'name' => 'second-cat',
-                            'label' => 'Second category',
+                            'labels' => ['default' => 'Second category'],
                             'params' => null,
+                            'label' => 'Second category',
                         ],
                     ],
                 ],
@@ -183,8 +188,9 @@ class TagsCategoriesTest extends IntegrationTestCase
                     'categories' => [
                         [
                             'name' => 'first-cat',
-                            'label' => 'First category',
+                            'labels' => ['default' => 'First category'],
                             'params' => '100',
+                            'label' => 'First category',
                         ],
                     ],
                 ],
@@ -336,12 +342,13 @@ class TagsCategoriesTest extends IntegrationTestCase
                 'type' => 'categories',
                 'attributes' => [
                     'name' => 'first-cat',
-                    'label' => 'First category',
+                    'labels' => ['default' => 'First category'],
                     'parent_id' => null,
                     'tree_left' => 1,
                     'tree_right' => 2,
                     'enabled' => true,
                     'object_type_name' => 'documents',
+                    'label' => 'First category',
                 ],
             ],
             [
@@ -349,12 +356,13 @@ class TagsCategoriesTest extends IntegrationTestCase
                 'type' => 'categories',
                 'attributes' => [
                     'name' => 'second-cat',
-                    'label' => 'Second category',
+                    'labels' => ['default' => 'Second category'],
                     'parent_id' => null,
                     'tree_left' => 3,
                     'tree_right' => 4,
                     'enabled' => true,
                     'object_type_name' => 'documents',
+                    'label' => 'Second category',
                 ],
             ],
             [
@@ -362,12 +370,13 @@ class TagsCategoriesTest extends IntegrationTestCase
                 'type' => 'categories',
                 'attributes' => [
                     'name' => 'disabled-cat',
-                    'label' => 'Disabled category',
+                    'labels' => ['default' => 'Disabled category'],
                     'parent_id' => null,
                     'tree_left' => 5,
                     'tree_right' => 6,
                     'enabled' => false,
                     'object_type_name' => 'documents',
+                    'label' => 'Disabled category',
                 ],
             ],
         ];

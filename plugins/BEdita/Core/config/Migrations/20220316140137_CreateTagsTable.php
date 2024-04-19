@@ -32,31 +32,31 @@ class CreateTagsTable extends AbstractMigration
             ])
             ->addPrimaryKey(['id'])
             ->addColumn('name', 'string', [
-                'comment' => 'Tag name, URL-friendly and unique.',
+                //'comment' => 'Tag name, URL-friendly and unique.',
                 'default' => null,
                 'limit' => 50,
                 'null' => false,
             ])
             ->addColumn('label', 'string', [
-                'comment' => 'Tag label, human-friendly.',
+                //'comment' => 'Tag label, human-friendly.',
                 'default' => null,
                 'limit' => 255,
                 'null' => true,
             ])
             ->addColumn('enabled', 'boolean', [
-                'comment' => 'Tag enabled/disabled.',
+                //'comment' => 'Tag enabled/disabled.',
                 'default' => true,
                 'length' => null,
                 'null' => false,
             ])
             ->addColumn('created', 'datetime', [
-                'comment' => 'Creation date.',
+                //'comment' => 'Creation date.',
                 'default' => null,
                 'length' => null,
                 'null' => false,
             ])
             ->addColumn('modified', 'datetime', [
-                'comment' => 'Last modification date.',
+                //'comment' => 'Last modification date.',
                 'default' => null,
                 'length' => null,
                 'null' => false,

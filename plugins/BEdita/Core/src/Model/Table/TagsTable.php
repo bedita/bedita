@@ -19,6 +19,7 @@ use BEdita\Core\Model\Validation\Validation;
 use BEdita\Core\Search\SimpleSearchTrait;
 use Cake\Collection\CollectionInterface;
 use Cake\Database\Expression\QueryExpression;
+use Cake\Database\Schema\TableSchemaInterface;
 use Cake\Datasource\EntityInterface;
 use Cake\Event\EventInterface;
 use Cake\ORM\Query;
@@ -73,7 +74,7 @@ class TagsTable extends Table
             'through' => 'BEdita/Core.ObjectTags',
         ]);
 
-        $this->setupSimpleSearch(['fields' => ['label', 'name']]);
+        $this->setupSimpleSearch(['fields' => ['labels', 'name']]);
     }
 
     /**
@@ -95,12 +96,22 @@ class TagsTable extends Table
             ->notEmptyString('name')
             ->regex('name', Validation::CATEGORY_NAME_REGEX)
 
-            ->scalar('label')
-            ->maxLength('label', 255)
-            ->allowEmptyString('label')
+            ->allowEmptyArray('labels')
 
             ->boolean('enabled')
             ->notEmptyString('enabled');
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @codeCoverageIgnore
+     */
+    protected function _initializeSchema(TableSchemaInterface $schema): TableSchemaInterface
+    {
+        $schema->setColumnType('labels', 'json');
+
+        return $schema;
     }
 
     /**
