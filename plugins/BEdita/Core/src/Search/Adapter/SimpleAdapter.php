@@ -96,7 +96,7 @@ class SimpleAdapter extends BaseAdapter
         $validator = new Validator();
 
         return $validator
-            ->array('words')
+            ->isArray('words')
             ->add('words', 'checkWords', [
                 'rule' => function ($value) {
                     $value = (array)$value;
