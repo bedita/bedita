@@ -353,6 +353,82 @@ class SignupUserActionTest extends TestCase
     }
 
     /**
+     * Test action execution with external auth callback
+     *
+     * @return void
+     */
+    public function testExecuteExtAuthCallback(): void
+    {
+        $authProvider = $this->fetchTable('AuthProviders')->get(1);
+        $authProvider->params = [
+            'options' => [
+                'credentials_callback' => [static::class, 'testCallback'],
+            ],
+        ];
+        $this->fetchTable('AuthProviders')->saveOrFail($authProvider);
+        $data = [
+            'username' => 'testsignup',
+            'email' => 'testsignup@example.com',
+            'auth_provider' => 'example',
+            'provider_username' => 'not-found',
+            'provider_userdata' => [],
+            'access_token' => 'incredibly-long-string',
+        ];
+        $action = new SignupUserAction();
+        $result = $action(compact('data'));
+        static::assertTrue((bool)$result);
+    }
+
+    /**
+     * Dummy test callback method
+     *
+     * @return bool
+     */
+    public static function testCallback(): bool
+    {
+        return true;
+    }
+
+    /**
+     * Test action failure with external auth callback
+     *
+     * @return void
+     */
+    public function testExecuteExtAuthCallbackFail(): void
+    {
+        $this->expectException(UnauthorizedException::class);
+        $this->expectExceptionMessage('External auth failed');
+
+        $authProvider = $this->fetchTable('AuthProviders')->get(1);
+        $authProvider->params = [
+            'options' => [
+                'credentials_callback' => [static::class, 'testCallbackFalse'],
+            ],
+        ];
+        $this->fetchTable('AuthProviders')->saveOrFail($authProvider);
+        $data = [
+            'username' => 'testsignup',
+            'email' => 'testsignup@example.com',
+            'auth_provider' => 'example',
+            'provider_username' => 'not-found',
+            'provider_userdata' => [],
+            'access_token' => 'incredibly-long-string',
+        ];
+        $action = new SignupUserAction();
+        $result = $action(compact('data'));
+    }
+
+    /**
+     * Another dummy test callback method
+     *
+     * @return bool
+     */
+    public static function testCallbackFalse(): bool
+    {
+        return false;
+    }
+
+    /**
      * Test signup action when activation is not required.
      *
      * @return void

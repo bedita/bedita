@@ -244,7 +244,7 @@ class FilterQueryStringTest extends IntegrationTestCase
         $this->assertContentType('application/vnd.api+json');
 
         static::assertArrayHasKey('data', $result);
-        static::assertCount(1, $result['data']);
+        static::assertCount(2, $result['data']);
     }
 
     /**

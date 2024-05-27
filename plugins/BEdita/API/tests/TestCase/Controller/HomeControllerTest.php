@@ -351,6 +351,23 @@ class HomeControllerTest extends IntegrationTestCase
                             'multiple_types' => false,
                         ],
                     ],
+                    '/images' => [
+                        'href' => 'http://api.example.com/images',
+                        'hints' => [
+                            'allow' => [
+                                'GET', 'POST', 'PATCH', 'DELETE',
+                            ],
+                            'formats' => [
+                                'application/json',
+                                'application/vnd.api+json',
+                            ],
+                            'display' => [
+                                'label' => 'Images',
+                            ],
+                            'object_type' => true,
+                            'multiple_types' => false,
+                        ],
+                    ],
                 ],
                 'project' => $project,
                 'version' => $version,

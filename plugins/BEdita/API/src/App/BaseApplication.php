@@ -15,7 +15,9 @@ namespace BEdita\API\App;
 use Authentication\AuthenticationService;
 use Authentication\AuthenticationServiceInterface;
 use Authentication\AuthenticationServiceProviderInterface;
+use Authentication\Authenticator\AbstractAuthenticator;
 use Authentication\Authenticator\JwtAuthenticator;
+use Authentication\Identifier\AbstractIdentifier;
 use Authentication\Middleware\AuthenticationMiddleware;
 use Authorization\AuthorizationService;
 use Authorization\AuthorizationServiceInterface;
@@ -351,14 +353,24 @@ abstract class BaseApplication extends CakeBaseApplication implements Authentica
             ->all()
             ->each(function (AuthProvider $authProvider) use ($service, $name): void {
                 if ($authProvider->name === $name) {
-                    $service->loadAuthenticator(
+                    $authenticator = $service->loadAuthenticator(
                         $authProvider->auth_class,
                         compact('authProvider'),
                     );
-                    $service->loadIdentifier(
+                    if ($authenticator instanceof AbstractAuthenticator) {
+                        $authenticator->setConfig(
+                            Hash::get($authProvider->params, 'config.authenticator', [])
+                        );
+                    }
+                    $identifier = $service->loadIdentifier(
                         $authProvider->auth_class,
                         compact('authProvider'),
                     );
+                    if ($identifier instanceof AbstractIdentifier) {
+                        $identifier->setConfig(
+                            Hash::get($authProvider->params, 'config.identifier', [])
+                        );
+                    }
                 }
             });
         if ($service->authenticators()->isEmpty()) {
