@@ -15,6 +15,7 @@ namespace BEdita\Core\Model\Table;
 
 use BEdita\Core\Exception\BadFilterException;
 use BEdita\Core\Search\SimpleSearchTrait;
+use Cake\Core\Configure;
 use Cake\Database\Expression\QueryExpression;
 use Cake\Database\Schema\TableSchemaInterface;
 use Cake\Datasource\Exception\RecordNotFoundException;
@@ -189,5 +190,16 @@ class TranslationsTable extends Table
         }
 
         return $objectType->id;
+    }
+
+    /**
+     * Finder for available objects based on the status level.
+     *
+     * @param \Cake\ORM\Query $query Query object instance.
+     * @return \Cake\ORM\Query
+     */
+    protected function findAvailable(Query $query): Query
+    {
+        return $query->find('statusLevel', [Configure::read('Status.level', 'all')]);
     }
 }
