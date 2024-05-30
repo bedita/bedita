@@ -108,12 +108,10 @@ class Thumbnail
         }
 
         if ($stream->mime_type === 'image/svg+xml') {
-            $ready = true;
-            $url = $stream->get('url');
-            $id = $stream->object_id;
-            $uuid = $stream->uuid;
-
-            return compact('ready', 'url', 'id', 'uuid');
+            return [
+                'ready' => true,
+                'url' => $stream->get('url'),
+            ];
         }
 
         $options = self::getOptions($options);
