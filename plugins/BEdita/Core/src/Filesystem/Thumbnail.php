@@ -106,6 +106,14 @@ class Thumbnail
                 'acceptable' => false,
             ];
         }
+
+        if ($stream->mime_type === 'image/svg+xml') {
+            $ready = true;
+            $url = $stream->get('url');
+
+            return compact('ready', 'url', 'id', 'uuid');
+        }
+
         $options = self::getOptions($options);
 
         $generator = Hash::get($options, 'generator', 'default');
