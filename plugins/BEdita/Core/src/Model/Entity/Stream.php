@@ -334,7 +334,7 @@ class Stream extends Entity implements JsonApiSerializable
         );
 
         try {
-            $exif = exif_read_data($resource, null, true);
+            $exif = exif_read_data($resource, '', true);
         } catch (\ErrorException $e) {
             // Log a warning if reading EXIF throws an error, but keep going
             // so that other metadata is eventually updated
