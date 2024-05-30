@@ -15,14 +15,13 @@ declare(strict_types=1);
 namespace BEdita\Core\Command;
 
 use BEdita\Core\Event\ImageThumbsHandler;
-use BEdita\Core\Model\Entity\Stream;
-use Cake\Collection\Collection;
 use Cake\Command\Command;
 use Cake\Console\Arguments;
 use Cake\Console\ConsoleIo;
 use Cake\Console\ConsoleOptionParser;
 use Cake\Core\Configure;
-use Cake\Utility\Hash;
+use Cake\Database\Expression\QueryExpression;
+use Cake\I18n\FrozenTime;
 
 /**
  * Command to update/create thumbnails for all images.
@@ -34,10 +33,21 @@ class ThumbsCommand extends Command
      */
     public function buildOptionParser(ConsoleOptionParser $parser): ConsoleOptionParser
     {
-        $parser = parent::buildOptionParser($parser);
-        $parser->addOption('id', ['help' => 'Image id']);
-
-        return $parser;
+        return parent::buildOptionParser($parser)
+            ->addOption('id', [
+                'short' => 'i',
+                'help' => 'Image ID',
+                'multiple' => true,
+            ])
+            ->addOption('start-at', [
+                'help' => 'ID to start with, for resuming an interrupted operation',
+            ])
+            ->addOption('preset', [
+                'short' => 'p',
+                'help' => 'Preset to generate thumbnail for',
+                'multiple' => true,
+                'choices' => static::availablePresets(),
+            ]);
     }
 
     /**
@@ -45,45 +55,89 @@ class ThumbsCommand extends Command
      */
     public function execute(Arguments $args, ConsoleIo $io)
     {
-        $io->out('=====> <info>Update image thumbs...</info>');
-
-        $Images = $this->fetchTable('Images');
-        $query = $Images->find()
-            ->contain('Streams');
-
-        if ($args->getOption('id')) {
-            $query = $query->where(['id' => $args->getOption('id')]);
-        }
-
         $handler = new ImageThumbsHandler();
-        $presets = $this->presets();
+        $ids = (array)$args->getOption('id');
+        $startAt = filter_var(
+            $args->getOption('start-at'),
+            FILTER_VALIDATE_INT,
+            ['options' => ['min_range' => 1], 'flags' => FILTER_NULL_ON_FAILURE],
+        );
+        $presets = (array)$args->getOption('preset') ?: ThumbsCommand::availablePresets();
 
-        $entities = $query->toArray();
-        $count = 0;
-        foreach ($entities as $image) {
-            $stream = Hash::get($image, 'streams.0');
-            if ($stream instanceof Stream) {
+        $io->out(sprintf(
+            '=====> Operation started at <info>%s</info>, using presets: %s',
+            FrozenTime::now()->toIso8601String(),
+            implode(', ', array_map(fn (string $preset) => sprintf('<comment>%s</comment>', $preset), $presets)),
+        ));
+
+        $success = $failed = 0;
+        foreach ($this->imagesIterator($ids, $startAt) as $image) {
+            $stream = $image->streams[0];
+            if (!$stream) {
+                $io->warning(sprintf('No stream found for image #%d', $image->id));
+
+                continue;
+            }
+
+            try {
+                $io->verbose(sprintf('=====> Processing thumbs for image #%d... ', $image->id), 0);
                 $handler->updateThumbs($image, $stream, $presets);
-                $count++;
+                $io->verbose('<success>DONE</success>');
+                $success++;
+            } catch (\Exception $e) {
+                $io->verbose('<error>FAIL</error>');
+                $failed++;
             }
         }
-        $io->out('=====> <success>Thumbs updated</success>');
-        $io->out(sprintf('=====> <info>Updated %d images</info>', $count));
+
+        $io->out(sprintf(
+            '=====> Operation completed at <info>%s</info>: <success>%d</success> OK, <error>%d</error> failed',
+            FrozenTime::now()->toIso8601String(),
+            $success,
+            $failed,
+        ));
     }
 
     /**
      * Retrieve thumbnail presets without 'async' generators
      *
-     * @return array
+     * @return string[]
      */
-    protected function presets(): array
+    protected static function availablePresets(): array
     {
-        $collection = new Collection((array)Configure::read('Thumbnails.presets'));
+        return array_keys(array_filter((array)Configure::read('Thumbnails.presets'), fn (array $preset) => !isset($preset['generator'])));
+    }
 
-        return $collection->map(function (array $preset) {
-            unset($preset['generator']); // remove 'async' generators
+    /**
+     * Iterate through all images.
+     *
+     * @param string[] $ids IDs to filter by.
+     * @param int|null $startAt ID to start with, for resuming an interrupted operation.
+     * @return \Generator<\BEdita\Core\Model\Entity\Media>
+     */
+    protected function imagesIterator(array $ids, ?int $startAt): \Generator
+    {
+        $table = $this->fetchTable('Images');
+        $id = $startAt ?? 0;
+        $idField = $table->aliasField('id');
 
-            return $preset;
-        })->toArray();
+        $query = $table->find('type', ['images'])
+            ->matching('Streams')
+            ->contain('Streams');
+        if (!empty($ids)) {
+            $query = $query->where(fn (QueryExpression $exp): QueryExpression => $exp->in($idField, $ids));
+        }
+
+        do {
+            $results = $query->cleanCopy()
+                ->where(fn (QueryExpression $exp): QueryExpression => $exp->gt('id', $id))
+                ->limit(100)
+                ->orderAsc($idField)
+                ->all();
+
+            yield from $results;
+
+            $id = $results->extract('id')->last();
+        } while (!$results->isEmpty());
     }
 }

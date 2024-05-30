@@ -844,13 +844,15 @@ class ObjectsControllerTest extends IntegrationTestCase
                     'categories' => [
                         [
                             'name' => 'first-cat',
-                            'label' => 'First category',
+                            'labels' => ['default' => 'First category'],
                             'params' => '100',
+                            'label' => 'First category',
                         ],
                         [
                             'name' => 'second-cat',
-                            'label' => 'Second category',
+                            'labels' => ['default' => 'Second category'],
                             'params' => null,
+                            'label' => 'Second category',
                         ],
                     ],
                     'lang' => 'en',
@@ -1567,13 +1569,15 @@ class ObjectsControllerTest extends IntegrationTestCase
                         'categories' => [
                             [
                                 'name' => 'first-cat',
-                                'label' => 'First category',
+                                'labels' => ['default' => 'First category'],
                                 'params' => '100',
+                                'label' => 'First category',
                             ],
                             [
                                 'name' => 'second-cat',
-                                'label' => 'Second category',
+                                'labels' => ['default' => 'Second category'],
                                 'params' => null,
+                                'label' => 'Second category',
                             ],
                         ],
                         'lang' => 'en',
@@ -2485,13 +2489,15 @@ class ObjectsControllerTest extends IntegrationTestCase
                     'categories' => [
                         [
                             'name' => 'first-cat',
-                            'label' => 'First category',
+                            'labels' => ['default' => 'First category'],
                             'params' => '100',
+                            'label' => 'First category',
                         ],
                         [
                             'name' => 'second-cat',
-                            'label' => 'Second category',
+                            'labels' => ['default' => 'Second category'],
                             'params' => null,
+                            'label' => 'Second category',
                         ],
                     ],
                     'lang' => 'en',

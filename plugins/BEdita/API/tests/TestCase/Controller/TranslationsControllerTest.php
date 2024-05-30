@@ -40,10 +40,10 @@ class TranslationsControllerTest extends IntegrationTestCase
             ],
             'meta' => [
                 'pagination' => [
-                    'count' => 3,
+                    'count' => 4,
                     'page' => 1,
                     'page_count' => 1,
-                    'page_items' => 3,
+                    'page_items' => 4,
                     'page_size' => 20,
                 ],
             ],
@@ -147,6 +147,38 @@ class TranslationsControllerTest extends IntegrationTestCase
                         ],
                     ],
                 ],
+                [
+                    'id' => '4',
+                    'type' => 'translations',
+                    'attributes' => [
+                        'status' => 'off',
+                        'lang' => 'no',
+                        'object_id' => 2,
+                        'translated_fields' => [
+                            'description' => 'beskrivelse her',
+                            'extra' => [
+                                'list' => ['én', 'to', 'tre'],
+                            ],
+                        ],
+                    ],
+                    'meta' => [
+                        'created' => '2018-01-01T00:00:00+00:00',
+                        'modified' => '2018-01-01T00:00:00+00:00',
+                        'created_by' => 1,
+                        'modified_by' => 1,
+                    ],
+                    'links' => [
+                        'self' => 'http://api.example.com/translations/4',
+                    ],
+                    'relationships' => [
+                        'object' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/translations/4/object',
+                                'self' => 'http://api.example.com/translations/4/relationships/object',
+                            ],
+                        ],
+                    ],
+                ],
             ],
         ];
 
@@ -242,7 +274,7 @@ class TranslationsControllerTest extends IntegrationTestCase
         $this->assertResponseCode(201);
         $this->assertContentType('application/vnd.api+json');
         static::assertArrayHasKey('data', $result);
-        $this->assertHeader('Location', 'http://api.example.com/translations/4');
+        $this->assertHeader('Location', 'http://api.example.com/translations/5');
     }
 
     /**

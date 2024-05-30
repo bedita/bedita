@@ -74,6 +74,21 @@ class TranslationsFixture extends TestFixture
                     ],
                 ],
             ],
+            [
+                'object_id' => 2,
+                'lang' => 'no',
+                'status' => 'off',
+                'created' => '2018-01-01 00:00:00',
+                'modified' => '2018-01-01 00:00:00',
+                'created_by' => 1,
+                'modified_by' => 1,
+                'translated_fields' => [
+                    'description' => 'beskrivelse her',
+                    'extra' => [
+                        'list' => ['én', 'to', 'tre'],
+                    ],
+                ],
+            ],
         ];
 
         parent::init();
