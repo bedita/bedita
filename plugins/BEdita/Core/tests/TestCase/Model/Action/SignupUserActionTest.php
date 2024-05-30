@@ -364,7 +364,7 @@ class SignupUserActionTest extends TestCase
         $authProvider = $this->fetchTable('AuthProviders')->get(1);
         $authProvider->params = [
             'options' => [
-                'credentials_callback' => [static::class, 'testCallback'],
+                'credentials_callback' => [static::class, 'dummyCallback'],
             ],
         ];
         $this->fetchTable('AuthProviders')->saveOrFail($authProvider);
@@ -386,7 +386,7 @@ class SignupUserActionTest extends TestCase
      *
      * @return bool
      */
-    public static function testCallback(): bool
+    public static function dummyCallback(): bool
     {
         return true;
     }
@@ -404,7 +404,7 @@ class SignupUserActionTest extends TestCase
         $authProvider = $this->fetchTable('AuthProviders')->get(1);
         $authProvider->params = [
             'options' => [
-                'credentials_callback' => [static::class, 'testCallbackFalse'],
+                'credentials_callback' => [static::class, 'dummyCallbackFalse'],
             ],
         ];
         $this->fetchTable('AuthProviders')->saveOrFail($authProvider);
@@ -425,7 +425,7 @@ class SignupUserActionTest extends TestCase
      *
      * @return bool
      */
-    public static function testCallbackFalse(): bool
+    public static function dummyCallbackFalse(): bool
     {
         return false;
     }
