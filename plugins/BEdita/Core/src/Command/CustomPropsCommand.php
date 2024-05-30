@@ -71,7 +71,7 @@ class CustomPropsCommand extends Command
         }
         $errors = 0;
         foreach ($types as $type) {
-            $errors += $this->customPropsByType($type, $args->getOption('id'), $io);
+            $errors += $this->customPropsByType($type, (int)$args->getOption('id'), $io);
         }
         if ($errors) {
             $io->error(sprintf('Errors found (%d)', $errors));

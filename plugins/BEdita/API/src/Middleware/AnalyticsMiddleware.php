@@ -116,7 +116,7 @@ class AnalyticsMiddleware implements MiddlewareInterface
         if ($response->getStatusCode() < 400) {
             return null;
         }
-        $body = json_decode($response->getBody(), true);
+        $body = json_decode((string)$response->getBody(), true);
         if (empty($body['error']['code'])) {
             return null;
         }

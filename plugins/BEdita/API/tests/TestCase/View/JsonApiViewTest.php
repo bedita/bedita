@@ -463,7 +463,7 @@ class JsonApiViewTest extends TestCase
         $Controller->set($data);
         $Controller->viewBuilder()->setClassName('BEdita/API.JsonApi');
 
-        $result = $Controller->createView()->render(false);
+        $result = $Controller->createView()->render();
 
         static::assertJsonStringEqualsJsonString($expected, $result);
     }

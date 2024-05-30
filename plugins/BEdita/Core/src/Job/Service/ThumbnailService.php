@@ -50,7 +50,7 @@ class ThumbnailService implements JobService
             return true;
         } catch (\Exception $e) {
             // Another error occurred. Log the error, and mark job as failed.
-            Log::error($e);
+            Log::error($e->getMessage());
 
             return false;
         }

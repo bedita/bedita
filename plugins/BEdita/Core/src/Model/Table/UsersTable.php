@@ -343,7 +343,7 @@ class UsersTable extends Table
     {
         $names = $ids = [];
         foreach ($options as $opt) {
-            $items = (array)explode(',', $opt);
+            $items = (array)explode(',', (string)$opt);
             foreach ($items as $item) {
                 if (is_numeric($item)) {
                     $ids[] = $item;
