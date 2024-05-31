@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 /**
  * BEdita, API-first content management framework
  * Copyright 2017 ChannelWeb Srl, Chialab Srl
@@ -45,7 +47,7 @@ class MessagesFileLoader extends BaseLoader
     /**
      * {@inheritDoc}
      *
-     * @param string[] $plugins Additional plugins to look up in for translations.
+     * @param string[] $name Additional plugins to look up in for translations.
      */
     public function __construct(string $name, string $locale, string $extension = 'po', array $plugins = [])
     {
