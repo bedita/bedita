@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 /**
  * BEdita, API-first content management framework
  * Copyright 2017 ChannelWeb Srl, Chialab Srl
@@ -114,7 +116,7 @@ class AnalyticsMiddleware implements MiddlewareInterface
         if ($response->getStatusCode() < 400) {
             return null;
         }
-        $body = json_decode($response->getBody(), true);
+        $body = json_decode((string)$response->getBody(), true);
         if (empty($body['error']['code'])) {
             return null;
         }

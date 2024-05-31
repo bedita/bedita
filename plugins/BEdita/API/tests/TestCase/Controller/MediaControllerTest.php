@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 /**
  * BEdita, API-first content management framework
  * Copyright 2018 ChannelWeb Srl, Chialab Srl
@@ -179,7 +181,7 @@ class MediaControllerTest extends IntegrationTestCase
      * Test `thumbs` method.
      *
      * @param array $expected Expected thumbnails.
-     * @param int|int[] $id List of IDs.
+     * @param int|int[]|string $id List of IDs.
      * @param array $query Query options.
      * @return void
      * @dataProvider thumbsProvider()
@@ -192,7 +194,7 @@ class MediaControllerTest extends IntegrationTestCase
         $this->configRequestHeaders('GET');
 
         $path = '/media/thumbs';
-        if (!is_array($id) && strpos($id, ',') === false) {
+        if (!is_array($id) && strpos((string)$id, ',') === false) {
             $path .= '/' . $id;
         } else {
             $query['ids'] = $id;
