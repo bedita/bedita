@@ -14,6 +14,7 @@ namespace BEdita\Core\Test\TestCase\Utility;
 
 use BEdita\Core\Utility\Database;
 use Cake\Database\Connection;
+use Cake\Database\DriverInterface;
 use Cake\Database\Schema\Collection;
 use Cake\Datasource\ConnectionManager;
 use Cake\TestSuite\TestCase;
@@ -283,14 +284,18 @@ class DatabaseTest extends TestCase
                 ->willReturn($value);
         }
 
+        $mockDriver = $this->createMock(DriverInterface::class);
+
         $mockConnection = $this->getMockBuilder('\Cake\Database\Connection')
             ->disableOriginalConstructor()
             ->disableOriginalClone()
-            ->onlyMethods(['prepare', 'begin', 'commit', 'rollback', '__debugInfo'])
+            ->onlyMethods(['prepare', 'begin', 'commit', 'rollback', 'getDriver', '__debugInfo'])
             ->getMock();
 
         $mockConnection->method('prepare')
             ->willReturn($mockStatement);
+        $mockConnection->method('getDriver')
+            ->willReturn($mockDriver);
 
         $dbConfig = '__mockConnectionError';
 
