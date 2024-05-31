@@ -1,7 +1,9 @@
 <?php
+declare(strict_types=1);
+
 /**
  * BEdita, API-first content management framework
- * Copyright 2016 ChannelWeb Srl, Chialab Srl
+ * Copyright 2024 ChannelWeb Srl, Chialab Srl
  *
  * This file is part of BEdita: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published
@@ -10,21 +12,16 @@
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
+namespace BEdita\Core\ORM\Inheritance\Query;
 
-namespace BEdita\Core\ORM\Inheritance;
-
-use BEdita\Core\ORM\Inheritance\Query\InheritanceQueryTrait;
-use Cake\ORM\Query as CakeQuery;
+use Cake\ORM\Query\UpdateQuery as CakeUpdateQuery;
 
 /**
- * Extends `\Cake\ORM\Query` to set `FROM` clause and add default types and fields.
+ * Update Query class for tables that use class table inheritance (CTI).
  *
- * It will be removed in 6.x.
- *
- * @since 4.0.0
- * @property \BEdita\Core\ORM\Inheritance\Table _repository
+ * @since 5.24.0
  */
-class Query extends CakeQuery
+class UpdateQuery extends CakeUpdateQuery
 {
     use InheritanceQueryTrait;
 }
