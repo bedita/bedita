@@ -104,7 +104,7 @@ class TranslationsTableTest extends TestCase
                     'object_id.integer',
                     'lang.scalar',
                     'status.inList',
-                    'translated_fields.isArray',
+                    'translated_fields.array',
                 ],
                 [
                     'object_id' => 'definitely not a number',
