@@ -146,7 +146,7 @@ class RolesUsersTable extends Table
             ->where(['id IN' => $ids])
             ->disableHydration()
             ->all()
-            ->map(fn (array $row): int => Hash::get($row, 'min_value'))
+            ->map(fn (array $row): int => (int)Hash::get($row, 'min_value'))
             ->first();
 
         $priorityRole = $this->Roles->get($roleId)->get('priority');
