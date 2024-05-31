@@ -188,7 +188,7 @@ class Database
         $res = ['success' => false, 'error' => ''];
         try {
             $connection = ConnectionManager::get($dbConfig);
-            $res['success'] = $connection->connect();
+            $res['success'] = $connection->getDriver()->connect();
         } catch (\Exception $e) {
             $res['error'] = $e->getMessage();
         }
