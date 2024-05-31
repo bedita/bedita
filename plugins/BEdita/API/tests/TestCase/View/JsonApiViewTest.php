@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 /**
  * BEdita, API-first content management framework
  * Copyright 2019 ChannelWeb Srl, Chialab Srl
@@ -461,7 +463,7 @@ class JsonApiViewTest extends TestCase
         $Controller->set($data);
         $Controller->viewBuilder()->setClassName('BEdita/API.JsonApi');
 
-        $result = $Controller->createView()->render(false);
+        $result = $Controller->createView()->render();
 
         static::assertJsonStringEqualsJsonString($expected, $result);
     }

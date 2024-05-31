@@ -32,7 +32,7 @@
         "swaggest/json-schema": "~0.12.39"
     },
     "require-dev": {
-        "cakephp/cakephp-codesniffer": "~4.5.1",
+        "cakephp/cakephp-codesniffer": "^4.7",
         "enqueue/fs": "^0.10.16",
         "phpunit/phpunit": "^9.5"
     },

@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 /**
  * BEdita, API-first content management framework
  * Copyright 2019 ChannelWeb Srl, Chialab Srl
@@ -340,7 +342,7 @@ class UsersTable extends Table
     {
         $names = $ids = [];
         foreach ($options as $opt) {
-            $items = (array)explode(',', $opt);
+            $items = (array)explode(',', (string)$opt);
             foreach ($items as $item) {
                 if (is_numeric($item)) {
                     $ids[] = $item;
