@@ -16,6 +16,7 @@ namespace BEdita\Core\Test\TestCase\ORM\Inheritance;
 use BEdita\Core\ORM\Inheritance\AssociationCollection;
 use BEdita\Core\ORM\Inheritance\Marshaller;
 use BEdita\Core\ORM\Inheritance\Query;
+use BEdita\Core\ORM\Inheritance\Query\SelectQuery;
 use Cake\Datasource\EntityInterface;
 use Cake\I18n\FrozenTime;
 use Cake\ORM\Table;
@@ -534,9 +535,9 @@ class TableTest extends TestCase
             static::assertSame($animalsAlias, $this->fakeAnimals->getAlias());
         };
 
-        static::assertInstanceOf(Query::class, $this->fakeMammals->find('children', ['for' => 1, 'direct' => true]));
+        static::assertInstanceOf(SelectQuery::class, $this->fakeMammals->find('children', ['for' => 1, 'direct' => true]));
         $checkAliases();
-        static::assertInstanceOf(Query::class, $this->fakeFelines->find('children', ['for' => 1, 'direct' => true]));
+        static::assertInstanceOf(SelectQuery::class, $this->fakeFelines->find('children', ['for' => 1, 'direct' => true]));
         $checkAliases();
 
         static::assertTextNotContains('FakeAnimals', $this->fakeMammals->find('children', ['for' => 1, 'direct' => true])->sql());
