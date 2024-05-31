@@ -17,7 +17,6 @@ use BEdita\Core\ORM\Inheritance\Query\DeleteQuery;
 use BEdita\Core\ORM\Inheritance\Query\InsertQuery;
 use BEdita\Core\ORM\Inheritance\Query\SelectQuery;
 use BEdita\Core\ORM\Inheritance\Query\UpdateQuery;
-use Cake\Core\Configure;
 use Cake\ORM\Marshaller as CakeMarshaller;
 use Cake\ORM\Query as CakeQuery;
 use Cake\ORM\Table as CakeTable;
