@@ -68,10 +68,10 @@ class ObjectsControllerTest extends IntegrationTestCase
             ],
             'meta' => [
                 'pagination' => [
-                    'count' => 12,
+                    'count' => 13,
                     'page' => 1,
                     'page_count' => 1,
-                    'page_items' => 12,
+                    'page_items' => 13,
                     'page_size' => 20,
                 ],
                 'schema' => [
@@ -697,6 +697,59 @@ class ObjectsControllerTest extends IntegrationTestCase
                             'links' => [
                                 'related' => 'http://api.example.com/files/14/inverse_test_abstract',
                                 'self' => 'http://api.example.com/files/14/relationships/inverse_test_abstract',
+                            ],
+                        ],
+                    ],
+                ],
+                [
+                    'id' => '16',
+                    'type' => 'files',
+                    'attributes' => [
+                        'status' => 'on',
+                        'uname' => 'media-svg',
+                        'title' => 'svg media',
+                        'description' => 'an svg image',
+                        'body' => null,
+                        'extra' => null,
+                        'lang' => 'en',
+                        'publish_start' => null,
+                        'publish_end' => null,
+                        'media_property' => false,
+                    ],
+                    'meta' => [
+                        'locked' => false,
+                        'created' => '2024-03-25T16:11:18+00:00',
+                        'modified' => '2024-03-25T16:11:18+00:00',
+                        'published' => null,
+                        'created_by' => 1,
+                        'modified_by' => 1,
+                    ],
+                    'links' => [
+                        'self' => 'http://api.example.com/files/16',
+                    ],
+                    'relationships' => [
+                        'streams' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/files/16/streams',
+                                'self' => 'http://api.example.com/files/16/relationships/streams',
+                            ],
+                        ],
+                        'parents' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/files/16/parents',
+                                'self' => 'http://api.example.com/files/16/relationships/parents',
+                            ],
+                        ],
+                        'translations' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/files/16/translations',
+                                'self' => 'http://api.example.com/files/16/relationships/translations',
+                            ],
+                        ],
+                        'inverse_test_abstract' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/files/16/inverse_test_abstract',
+                                'self' => 'http://api.example.com/files/16/relationships/inverse_test_abstract',
                             ],
                         ],
                     ],

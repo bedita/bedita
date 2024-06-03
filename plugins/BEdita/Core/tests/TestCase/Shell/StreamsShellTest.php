@@ -100,7 +100,7 @@ class StreamsShellTest extends TestCase
         foreach ($data as $entry) {
             $entry['original_width'] = $entry['width'];
 
-            if (preg_match('/image\//', $entry['mime_type'])) {
+            if (preg_match('/image\//', $entry['mime_type']) && $entry['mime_type'] != 'image/svg+xml') {
                 $this->assertNotNull($entry['width']);
             }
         }
@@ -113,7 +113,7 @@ class StreamsShellTest extends TestCase
         $lastData = $results->toList();
 
         foreach ($lastData as $entry) {
-            if (preg_match('/image\//', $entry['mime_type'])) {
+            if (preg_match('/image\//', $entry['mime_type']) && $entry['mime_type'] != 'image/svg+xml') {
                 $originalEntry = current(array_filter($data, function ($e) use ($entry) {
                     return $e['uuid'] === $entry['uuid'];
                 }));

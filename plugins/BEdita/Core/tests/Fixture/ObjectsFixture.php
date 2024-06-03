@@ -330,6 +330,27 @@ class ObjectsFixture extends TestFixture
             'publish_start' => null,
             'publish_end' => null,
         ],
+        // 16
+        [
+            'object_type_id' => 9,
+            'status' => 'on',
+            'uname' => 'media-svg',
+            'locked' => 0,
+            'deleted' => 0,
+            'created' => '2024-03-25 16:11:18',
+            'modified' => '2024-03-25 16:11:18',
+            'published' => null,
+            'title' => 'svg media',
+            'description' => 'an svg image',
+            'body' => null,
+            'extra' => null,
+            'lang' => 'en',
+            'created_by' => 1,
+            'modified_by' => 1,
+            'publish_start' => null,
+            'publish_end' => null,
+            'custom_props' => ['media_property' => false],
+        ],
     ];
 
     /**

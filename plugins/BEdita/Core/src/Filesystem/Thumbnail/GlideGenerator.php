@@ -122,6 +122,10 @@ class GlideGenerator extends ThumbnailGenerator
      */
     public function getUrl(Stream $stream, array $options = []): string
     {
+        if ($this->isSvg($stream)) {
+            return $stream->get('url');
+        }
+
         $path = $this->getFilename($stream, $options);
 
         return FilesystemRegistry::getPublicUrl($path);
@@ -132,6 +136,10 @@ class GlideGenerator extends ThumbnailGenerator
      */
     public function generate(Stream $stream, array $options = []): bool
     {
+        if ($this->isSvg($stream)) {
+            return true;
+        }
+
         $path = $this->getFilename($stream, $options);
 
         try {
@@ -150,6 +158,10 @@ class GlideGenerator extends ThumbnailGenerator
      */
     public function exists(Stream $stream, array $options = []): bool
     {
+        if ($this->isSvg($stream)) {
+            return true;
+        }
+
         $path = $this->getFilename($stream, $options);
 
         return FilesystemRegistry::getMountManager()->fileExists($path);
@@ -164,5 +176,16 @@ class GlideGenerator extends ThumbnailGenerator
         $base = $stream->filesystemPath($filesystem);
 
         FilesystemRegistry::getMountManager()->deleteDirectory($base);
+    }
+
+    /**
+     * Check if the stream is an SVG image.
+     *
+     * @param \BEdita\Core\Model\Entity\Stream $stream Stream entity instance.
+     * @return bool
+     */
+    protected function isSvg(Stream $stream): bool
+    {
+        return $stream->mime_type === 'image/svg+xml';
     }
 }
