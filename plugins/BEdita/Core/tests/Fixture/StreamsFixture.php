@@ -68,5 +68,18 @@ class StreamsFixture extends TestFixture
             'created' => '2018-03-22 15:58:47',
             'modified' => '2018-03-22 15:58:47',
         ],
+        [
+            'uuid' => '9b06b2cf-fce7-47e8-b367-a3e5b464ca85',
+            'version' => 1,
+            'object_id' => 16,
+            'uri' => 'default://9b06b2cf-fce7-47e8-b367-a3e5b464ca85-sample.svg',
+            'file_name' => 'sample.svg',
+            'mime_type' => 'image/svg+xml',
+            'file_size' => 461,
+            'hash_md5' => '',
+            'hash_sha1' => '',
+            'created' => '2024-03-25 16:11:18',
+            'modified' => '2024-03-25 16:11:18',
+        ],
     ];
 }
