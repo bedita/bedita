@@ -106,6 +106,10 @@ class GlideGeneratorTest extends TestCase
                 '6aceb0eb-bd30-4f60-ac74-273083b921b6',
                 ['w' => 200],
             ],
+            'svg file' => [
+                'https://static.example.org/files/9b06b2cf-fce7-47e8-b367-a3e5b464ca85-sample.svg',
+                '9b06b2cf-fce7-47e8-b367-a3e5b464ca85',
+            ],
         ];
     }
 
@@ -119,6 +123,7 @@ class GlideGeneratorTest extends TestCase
      * @dataProvider getUrlProvider()
      * @covers ::getUrl()
      * @covers ::getFilename()
+     * @covers ::isSvg()
      */
     public function testGetUrl($expected, $uuid, array $options = [])
     {
@@ -208,6 +213,11 @@ class GlideGeneratorTest extends TestCase
                 '6aceb0eb-bd30-4f60-ac74-273083b921b6',
                 ['w' => 200],
             ],
+            'svg file returns itself' => [
+                true,
+                '9b06b2cf-fce7-47e8-b367-a3e5b464ca85',
+                ['w' => 200],
+            ],
         ];
     }
 
@@ -223,6 +233,7 @@ class GlideGeneratorTest extends TestCase
      * @covers ::getFilename()
      * @covers ::getGlideApi()
      * @covers ::makeThumbnail()
+     * @covers ::isSvg()
      */
     public function testGenerate($expected, $uuid, array $options = [])
     {
@@ -256,6 +267,10 @@ class GlideGeneratorTest extends TestCase
                 'e5afe167-7341-458d-a1e6-042e8791b0fe',
                 ['w' => 200, 'fm' => 'png'],
             ],
+            'svg always exists' => [
+                true,
+                '9b06b2cf-fce7-47e8-b367-a3e5b464ca85',
+            ],
         ];
     }
 
@@ -269,6 +284,7 @@ class GlideGeneratorTest extends TestCase
      * @dataProvider existsProvider()
      * @covers ::exists()
      * @covers ::getFilename()
+     * @covers ::isSvg()
      */
     public function testExists($expected, $uuid, array $options = [])
     {
