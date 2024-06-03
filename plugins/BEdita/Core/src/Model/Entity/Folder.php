@@ -197,7 +197,7 @@ class Folder extends ObjectEntity
     /**
      * Setter for `parent_id` virtual property.
      *
-     * @param int|null $parentId The parent id to set
+     * @param int|string|null $parentId The parent id to set. Can be a numeric string
      * @return int|null
      */
     protected function _setParentId($parentId): ?int
@@ -216,7 +216,7 @@ class Folder extends ObjectEntity
             ])
             ->firstOrFail();
 
-        return $parentId;
+        return $this->parent->id;
     }
 
     /**
