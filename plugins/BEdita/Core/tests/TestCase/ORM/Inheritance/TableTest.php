@@ -18,7 +18,10 @@ namespace BEdita\Core\Test\TestCase\ORM\Inheritance;
 use BEdita\Core\ORM\Inheritance\AssociationCollection;
 use BEdita\Core\ORM\Inheritance\Marshaller;
 use BEdita\Core\ORM\Inheritance\Query;
+use BEdita\Core\ORM\Inheritance\Query\DeleteQuery;
+use BEdita\Core\ORM\Inheritance\Query\InsertQuery;
 use BEdita\Core\ORM\Inheritance\Query\SelectQuery;
+use BEdita\Core\ORM\Inheritance\Query\UpdateQuery;
 use Cake\Datasource\EntityInterface;
 use Cake\I18n\FrozenTime;
 use Cake\ORM\Table;
@@ -66,6 +69,50 @@ class TableTest extends TestCase
     public function testQuery()
     {
         static::assertInstanceOf(Query::class, $this->fakeFelines->query());
+    }
+
+    /**
+     * Test selectQuery
+     *
+     * @return void
+     * @covers ::selectQuery()
+     */
+    public function testSelectQuery()
+    {
+        static::assertInstanceOf(SelectQuery::class, $this->fakeFelines->selectQuery());
+    }
+
+    /**
+     * Test insertQuery
+     *
+     * @return void
+     * @covers ::insertQuery()
+     */
+    public function testInsertQuery()
+    {
+        static::assertInstanceOf(InsertQuery::class, $this->fakeFelines->insertQuery());
+    }
+
+    /**
+     * Test updateQuery
+     *
+     * @return void
+     * @covers ::updateQuery()
+     */
+    public function testUpdateQuery()
+    {
+        static::assertInstanceOf(UpdateQuery::class, $this->fakeFelines->updateQuery());
+    }
+
+    /**
+     * Test deleteQuery
+     *
+     * @return void
+     * @covers ::deleteQuery()
+     */
+    public function testDeleteQuery()
+    {
+        static::assertInstanceOf(DeleteQuery::class, $this->fakeFelines->deleteQuery());
     }
 
     /**
