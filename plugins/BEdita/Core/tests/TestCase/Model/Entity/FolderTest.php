@@ -142,6 +142,10 @@ class FolderTest extends TestCase
         $folder->parent_id = null;
         static::assertEquals(null, $folder->parent);
         static::assertEquals([], $folder->parents);
+
+        $folder->parent_id = '13';
+        static::assertEquals($parent, $folder->parent);
+        static::assertEquals(13, $folder->parent_id);
     }
 
     /**
