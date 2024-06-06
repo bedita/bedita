@@ -24,7 +24,7 @@ class FakeSearchesFixture extends TestFixture
     /**
      * @inheritDoc
      */
-    public $records = [
+    public array $records = [
         ['name' => 'hippo-tiger'],
         ['name' => 'lion_snake'],
         ['name' => 'big mouse'],

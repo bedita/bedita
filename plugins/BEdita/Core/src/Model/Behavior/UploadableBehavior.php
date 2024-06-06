@@ -32,7 +32,7 @@ class UploadableBehavior extends Behavior
     /**
      * @inheritDoc
      */
-    protected $_defaultConfig = [
+    protected array $_defaultConfig = [
         'files' => [
             [
                 'path' => 'path',

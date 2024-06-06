@@ -21,7 +21,7 @@ use Cake\Event\EventInterface;
 use Cake\Event\EventListenerInterface;
 use Cake\Http\Exception\BadRequestException;
 use Cake\Http\Exception\ConflictException;
-use Cake\I18n\FrozenTime;
+use Cake\I18n\DateTime;
 use Cake\Mailer\MailerAwareTrait;
 use Cake\ORM\TableRegistry;
 
@@ -72,18 +72,18 @@ class SignupUserActivationAction extends BaseAction implements EventListenerInte
             throw new BadRequestException(__d('bedita', 'Parameter "{0}" missing', ['uuid']));
         }
 
-        $asyncJob = $this->AsyncJobs->get($data['uuid'], ['finder' => 'incomplete']);
+        $asyncJob = $this->AsyncJobs->get($data['uuid'], finder: 'incomplete');
 
         if (empty($asyncJob->payload['user_id'])) {
             throw new BadRequestException(__d('bedita', 'Invalid async job, missing user_id'));
         }
 
-        $user = $this->Users->get($asyncJob->payload['user_id'], ['contain' => ['Roles']]);
+        $user = $this->Users->get($asyncJob->payload['user_id'], contain: ['Roles']);
         if ($user->status === 'on' && $user->verified !== null) {
             throw new ConflictException(__d('bedita', 'User already active'));
         }
 
-        $now = new FrozenTime();
+        $now = new DateTime();
 
         // the user is the creator of himself
         $user->created_by = $user->id;

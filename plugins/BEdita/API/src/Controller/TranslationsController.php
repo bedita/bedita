@@ -29,7 +29,7 @@ class TranslationsController extends ResourcesController
     /**
      * @inheritDoc
      */
-    public $defaultTable = 'Translations';
+    public ?string $defaultTable = 'Translations';
 
     /**
      * @inheritDoc

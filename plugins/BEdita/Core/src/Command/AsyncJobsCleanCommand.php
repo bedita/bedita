@@ -19,7 +19,7 @@ use Cake\Command\Command;
 use Cake\Console\Arguments;
 use Cake\Console\ConsoleIo;
 use Cake\Console\ConsoleOptionParser;
-use Cake\I18n\FrozenDate;
+use Cake\I18n\Date;
 use Cake\ORM\Locator\LocatorAwareTrait;
 
 /**
@@ -53,7 +53,7 @@ class AsyncJobsCleanCommand extends Command
         $since = $args->getOption('since') ?? '-1 month';
         $service = $args->getOption('service');
         $message = 'Cleaning async jobs, since ' . $since;
-        $conditions = ['created <' => new FrozenDate($since)];
+        $conditions = ['created <' => new Date($since)];
         if ($service) {
             $conditions['service'] = $service;
             $message .= ', for service ' . $service;

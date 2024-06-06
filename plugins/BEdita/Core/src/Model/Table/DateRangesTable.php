@@ -20,7 +20,7 @@ use BEdita\Core\Model\Validation\Validation;
 use BEdita\Core\ORM\QueryFilterTrait;
 use Cake\Database\Expression\QueryExpression;
 use Cake\Database\Schema\TableSchemaInterface;
-use Cake\I18n\FrozenTime;
+use Cake\I18n\DateTime;
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
@@ -190,7 +190,7 @@ class DateRangesTable extends Table
         }
 
         try {
-            return new FrozenTime($time);
+            return new DateTime($time);
         } catch (\Exception $e) {
             throw new BadFilterException([
                 'title' => __d('bedita', 'Invalid data'),

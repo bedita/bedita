@@ -12,10 +12,9 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Mailer;
 
-use Cake\Mailer\Email as CakeEmail;
+use Cake\Mailer\Mailer;
 
 /**
  * Email class to send serialized emails.
@@ -25,7 +24,7 @@ use Cake\Mailer\Email as CakeEmail;
  *
  * @since 4.0.0
  */
-class Email extends CakeEmail /* @phpstan-ignore-line */
+class Email extends Mailer /* @phpstan-ignore-line */
 {
     /**
      * Send a raw email.

@@ -319,6 +319,6 @@ class TreesTable extends Table
                     ->lte($lft, $node['tree_left'])
                     ->gte($rgt, $node['tree_right'])
             )
-            ->orderAsc($lft);
+            ->orderByAsc($lft);
     }
 }

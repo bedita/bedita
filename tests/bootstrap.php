@@ -17,8 +17,8 @@ use Cake\Cache\Cache;
 use Cake\Core\Configure;
 use Cake\Core\Plugin;
 use Cake\Datasource\ConnectionManager;
-use Cake\I18n\FrozenDate;
-use Cake\I18n\FrozenTime;
+use Cake\I18n\Date;
+use Cake\I18n\DateTime;
 use Cake\Log\Log;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\Fixture\SchemaLoader;
@@ -51,9 +51,8 @@ if (getenv('DEBUG_LOG_QUERIES')) {
     ]);
 }
 
-$now = FrozenTime::parse('2018-01-01T00:00:00Z');
-FrozenTime::setTestNow($now);
-FrozenDate::setTestNow($now);
+$now = DateTime::parse('2018-01-01T00:00:00Z');
+DateTime::setTestNow($now);
 
 FilesystemRegistry::dropAll();
 Configure::write('Filesystem', [

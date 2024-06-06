@@ -40,7 +40,7 @@ class JsonApiViewTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.PropertyTypes',
         'plugin.BEdita/Core.Properties',
@@ -426,9 +426,9 @@ class JsonApiViewTest extends TestCase
                 function (Table $Table) {
                     return [
                         'objects' => [
-                            $Table->get(1, ['contain' => 'Users']),
-                            $Table->get(2, ['contain' => 'Users']),
-                            $Table->get(1, ['contain' => 'Users'])->set('id', 3),
+                            $Table->get(1, contain: 'Users'),
+                            $Table->get(2, contain: 'Users'),
+                            $Table->get(1, contain: 'Users')->set('id', 3),
                         ],
                         '_serialize' => true,
                         '_fields' => [

@@ -16,7 +16,6 @@ declare(strict_types=1);
 namespace BEdita\API\Test\IntegrationTest;
 
 use BEdita\API\TestSuite\IntegrationTestCase;
-use Cake\I18n\FrozenTime;
 use Cake\Utility\Text;
 
 /**
@@ -29,7 +28,7 @@ class MetadataTest extends IntegrationTestCase
     /**
      * @inheritDoc
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.Locations',
     ];
 
@@ -101,11 +100,11 @@ class MetadataTest extends IntegrationTestCase
         static::assertArrayHasKey('modified_by', $body['data']['meta']);
 
         static::assertEquals(
-            FrozenTime::now()->timestamp,
-            FrozenTime::parse($body['data']['meta']['modified'])->getTimestamp(),
+            \Cake\I18n\DateTime::now()->timestamp,
+            \Cake\I18n\DateTime::parse($body['data']['meta']['modified'])->getTimestamp(),
             '`modified` field not updated'
         );
-        static::assertEqualsWithDelta(FrozenTime::now()->timestamp, FrozenTime::parse($body['data']['meta']['modified'])->getTimestamp(), 5, '`modified` field not updated');
+        static::assertEqualsWithDelta(\Cake\I18n\DateTime::now()->timestamp, \Cake\I18n\DateTime::parse($body['data']['meta']['modified'])->getTimestamp(), 5, '`modified` field not updated');
         static::assertSame(5, $body['data']['meta']['modified_by'], '`modified_by` field not updated');
     }
 }

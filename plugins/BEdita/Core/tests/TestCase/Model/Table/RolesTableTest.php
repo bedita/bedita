@@ -39,7 +39,7 @@ class RolesTableTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.Relations',
         'plugin.BEdita/Core.RelationTypes',
@@ -153,7 +153,7 @@ class RolesTableTest extends TestCase
         ];
 
         $result = $this->Roles->find('mine')
-            ->find('list', ['keyField' => 'id', 'valueField' => 'id'])
+            ->find('list', keyField: 'id', valueField: 'id')
             ->toArray();
 
         static::assertEquals($expected, $result);

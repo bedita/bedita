@@ -31,7 +31,7 @@ class JsonApiPaginatorTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.Relations',
         'plugin.BEdita/Core.RelationTypes',
@@ -170,7 +170,7 @@ class JsonApiPaginatorTest extends TestCase
     {
         $paginator = new JsonApiPaginator();
 
-        $query = TableRegistry::getTableLocator()->get('Roles')->find()->order('id');
+        $query = TableRegistry::getTableLocator()->get('Roles')->find()->orderBy('id');
         $params = ['sort' => '-name'];
         $res = $paginator->paginate($query, $params);
 

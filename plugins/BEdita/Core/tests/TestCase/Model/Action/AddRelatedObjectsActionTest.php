@@ -38,7 +38,7 @@ class AddRelatedObjectsActionTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.Relations',
         'plugin.BEdita/Core.RelationTypes',
@@ -291,7 +291,7 @@ class AddRelatedObjectsActionTest extends TestCase
     {
         $Table = TableRegistry::getTableLocator()->get($tableName);
         $association = $Table->associations()->getByProperty($relation);
-        $relatedEntities = $Table->get($id, ['contain' => [$association->getName()]])->get($relation);
+        $relatedEntities = $Table->get($id, contain: [$association->getName()])->get($relation);
 
         // create new entity
         $entity = $Table->newEntity(['title' => 'Test Object']);
@@ -300,7 +300,7 @@ class AddRelatedObjectsActionTest extends TestCase
         $action = new AddRelatedObjectsAction(compact('association'));
         $action(compact('entity', 'relatedEntities'));
 
-        $entity = $Table->get($entity->id, ['contain' => [$association->getName()]]);
+        $entity = $Table->get($entity->id, contain: [$association->getName()]);
 
         $expected = collection($relatedEntities)->sortBy('id')->extract('id')->toList();
         $actual = collection($entity->get($relation))->sortBy('id')->extract('id')->toList();

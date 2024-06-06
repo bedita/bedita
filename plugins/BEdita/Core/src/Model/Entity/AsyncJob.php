@@ -16,7 +16,7 @@ namespace BEdita\Core\Model\Entity;
 
 use BEdita\Core\Job\ServiceRegistry;
 use BEdita\Core\Utility\JsonApiSerializable;
-use Cake\I18n\FrozenTime;
+use Cake\I18n\DateTime;
 use Cake\ORM\Entity;
 
 /**
@@ -44,7 +44,7 @@ class AsyncJob extends Entity implements JsonApiSerializable
     /**
      * @inheritDoc
      */
-    protected $_accessible = [
+    protected array $_accessible = [
         'uuid' => true,
         'service' => true,
         'priority' => true,
@@ -58,7 +58,7 @@ class AsyncJob extends Entity implements JsonApiSerializable
     /**
      * @inheritDoc
      */
-    protected $_virtual = [
+    protected array $_virtual = [
         'status',
     ];
 
@@ -73,7 +73,7 @@ class AsyncJob extends Entity implements JsonApiSerializable
             return 'completed';
         }
 
-        $now = new FrozenTime();
+        $now = new DateTime();
         if ($this->locked_until !== null && $this->locked_until->greaterThanOrEquals($now)) {
             return 'locked';
         }

@@ -40,7 +40,7 @@ class TreeRecoverCommandTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.Objects',
         'plugin.BEdita/Core.Trees',
@@ -54,8 +54,6 @@ class TreeRecoverCommandTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
-
-        $this->useCommandRunner();
         $this->Trees = $this->fetchTable('Trees');
     }
 

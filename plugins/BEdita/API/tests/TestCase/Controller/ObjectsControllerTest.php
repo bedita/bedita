@@ -35,7 +35,7 @@ class ObjectsControllerTest extends IntegrationTestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.DateRanges',
         'plugin.BEdita/Core.Locations',
         'plugin.BEdita/Core.Media',

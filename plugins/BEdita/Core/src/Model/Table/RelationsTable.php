@@ -175,7 +175,7 @@ class RelationsTable extends Table
     public function get($primaryKey, array $options = []): EntityInterface
     {
         if (!is_numeric($primaryKey)) {
-            $relation = $this->find('byName', ['name' => $primaryKey])
+            $relation = $this->find('byName', name: $primaryKey)
                 ->select('id')
                 ->firstOrFail();
 

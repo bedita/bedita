@@ -43,7 +43,7 @@ class Relation extends Entity implements JsonApiSerializable
     /**
      * @inheritDoc
      */
-    protected $_accessible = [
+    protected array $_accessible = [
         '*' => false,
         'name' => true,
         'label' => true,
@@ -56,7 +56,7 @@ class Relation extends Entity implements JsonApiSerializable
     /**
      * @inheritDoc
      */
-    protected $_hidden = [
+    protected array $_hidden = [
         'object_relations',
     ];
 

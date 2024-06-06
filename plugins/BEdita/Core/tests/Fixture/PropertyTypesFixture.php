@@ -24,7 +24,7 @@ class PropertyTypesFixture extends TestFixture
     /**
      * @inheritDoc
      */
-    public $table = 'property_types';
+    public string $table = 'property_types';
 
     /**
      * @inheritDoc

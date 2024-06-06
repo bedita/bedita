@@ -27,7 +27,7 @@ class AsyncJobsController extends ResourcesController
     /**
      * @inheritDoc
      */
-    public $defaultTable = 'AsyncJobs';
+    public ?string $defaultTable = 'AsyncJobs';
 
     /**
      * @inheritDoc

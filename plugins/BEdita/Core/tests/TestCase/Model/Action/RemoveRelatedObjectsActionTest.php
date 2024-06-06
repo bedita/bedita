@@ -33,7 +33,7 @@ class RemoveRelatedObjectsActionTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.Relations',
         'plugin.BEdita/Core.RelationTypes',
@@ -118,7 +118,7 @@ class RemoveRelatedObjectsActionTest extends TestCase
         $association = TableRegistry::getTableLocator()->get($table)->getAssociation($association);
         $action = new RemoveRelatedObjectsAction(compact('association'));
 
-        $entity = $association->getSource()->get($entity, ['contain' => [$association->getName()]]);
+        $entity = $association->getSource()->get($entity, contain: [$association->getName()]);
         $relatedEntities = null;
         if (is_int($related)) {
             $relatedEntities = $association->getTarget()->get($related);

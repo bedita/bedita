@@ -33,7 +33,6 @@ class AsyncJobsCleanCommandTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
-        $this->useCommandRunner();
     }
 
     /**

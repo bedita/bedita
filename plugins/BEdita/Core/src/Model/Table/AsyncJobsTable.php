@@ -22,7 +22,7 @@ use Cake\Database\Expression\QueryExpression;
 use Cake\Database\Schema\TableSchemaInterface;
 use Cake\Datasource\ConnectionManager;
 use Cake\Event\EventInterface;
-use Cake\I18n\FrozenTime;
+use Cake\I18n\DateTime;
 use Cake\ORM\Query;
 use Cake\ORM\Table;
 use Cake\Queue\QueueManager;
@@ -164,9 +164,9 @@ class AsyncJobsTable extends Table
     public function lock($uuid, $duration = '+5 minutes')
     {
         return $this->getConnection()->transactional(function () use ($uuid, $duration) {
-            $entity = $this->get($uuid, ['finder' => 'pending']);
+            $entity = $this->get($uuid, finder: 'pending');
             $entity->max_attempts -= 1;
-            $entity->locked_until = new FrozenTime($duration);
+            $entity->locked_until = new DateTime($duration);
 
             $expires = $entity->locked_until->timestamp;
             $this->dispatchEvent('AsyncJob.lock', compact('entity', 'expires'));
@@ -209,7 +209,7 @@ class AsyncJobsTable extends Table
      */
     protected function findPending(Query $query)
     {
-        $now = FrozenTime::now();
+        $now = DateTime::now();
 
         return $query->where(fn (QueryExpression $exp): QueryExpression => $exp->and([
             $exp->or(
@@ -244,7 +244,7 @@ class AsyncJobsTable extends Table
      */
     protected function findFailed(Query $query)
     {
-        $now = FrozenTime::now();
+        $now = DateTime::now();
 
         return $query->where(fn (QueryExpression $exp): QueryExpression => $exp->and([
             fn (QueryExpression $exp): QueryExpression => $exp->isNull($this->aliasField('completed')),
@@ -317,7 +317,7 @@ class AsyncJobsTable extends Table
 
         return $query
             ->find('pending')
-            ->orderDesc($this->aliasField('priority'));
+            ->orderByDesc($this->aliasField('priority'));
     }
 
     /**

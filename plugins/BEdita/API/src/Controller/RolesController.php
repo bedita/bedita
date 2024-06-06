@@ -25,7 +25,7 @@ class RolesController extends ResourcesController
     /**
      * @inheritDoc
      */
-    public $defaultTable = 'Roles';
+    public ?string $defaultTable = 'Roles';
 
     /**
      * @inheritDoc

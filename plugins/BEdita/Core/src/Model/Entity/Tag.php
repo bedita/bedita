@@ -38,7 +38,7 @@ class Tag extends Entity implements JsonApiSerializable
     /**
      * @inheritDoc
      */
-    protected $_accessible = [
+    protected array $_accessible = [
         '*' => true,
         'created' => false,
         'modified' => false,
@@ -47,14 +47,14 @@ class Tag extends Entity implements JsonApiSerializable
     /**
      * @inheritDoc
      */
-    protected $_hidden = [
+    protected array $_hidden = [
         '_joinData',
     ];
 
     /**
      * @inheritDoc
      */
-    protected $_virtual = [
+    protected array $_virtual = [
         'label',
     ];
 

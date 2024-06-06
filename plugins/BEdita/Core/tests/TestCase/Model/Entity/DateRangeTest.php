@@ -16,7 +16,7 @@ declare(strict_types=1);
 namespace BEdita\Core\Test\TestCase\Model\Entity;
 
 use BEdita\Core\Model\Entity\DateRange;
-use Cake\I18n\FrozenTime;
+use Cake\I18n\DateTime;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
@@ -30,7 +30,7 @@ class DateRangeTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.Objects',
         'plugin.BEdita/Core.DateRanges',
@@ -688,7 +688,7 @@ class DateRangeTest extends TestCase
                 new \LogicException('Invalid "end_date": expected "DateTimeInterface", got "string"'),
                 [
                     new DateRange([
-                        'start_date' => new FrozenTime(),
+                        'start_date' => new DateTime(),
                         'end_date' => 'better than yesterday, worse than tomorrow',
                     ]),
                 ],

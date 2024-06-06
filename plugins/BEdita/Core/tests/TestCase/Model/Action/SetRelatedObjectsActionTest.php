@@ -37,7 +37,7 @@ class SetRelatedObjectsActionTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.PropertyTypes',
         'plugin.BEdita/Core.Properties',
@@ -268,16 +268,16 @@ class SetRelatedObjectsActionTest extends TestCase
     public function testSetEntitiesRelatedToOtherObject(): void
     {
         $Documents = TableRegistry::getTableLocator()->get('Documents');
-        $relatedEntities = $Documents->get(3, ['contain' => ['Test']])->get('test');
+        $relatedEntities = $Documents->get(3, contain: ['Test'])->get('test');
 
-        $entity = $Documents->get(2, ['contain' => ['Test']]);
+        $entity = $Documents->get(2, contain: ['Test']);
         static::assertCount(2, $entity->get('test'));
 
         $association = $Documents->getAssociation('Test');
         $action = new SetRelatedObjectsAction(compact('association'));
         $action(compact('entity', 'relatedEntities'));
 
-        $entity = $Documents->get(2, ['contain' => ['Test']]);
+        $entity = $Documents->get(2, contain: ['Test']);
         static::assertCount(1, $entity->get('test'));
 
         $expected = collection($relatedEntities)->sortBy('id')->extract('id')->toList();

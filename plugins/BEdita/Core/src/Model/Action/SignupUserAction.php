@@ -28,7 +28,7 @@ use Cake\Event\EventDispatcherTrait;
 use Cake\Event\EventInterface;
 use Cake\Event\EventListenerInterface;
 use Cake\Http\Exception\UnauthorizedException;
-use Cake\I18n\FrozenTime;
+use Cake\I18n\DateTime;
 use Cake\Mailer\MailerAwareTrait;
 use Cake\ORM\TableRegistry;
 use Cake\Routing\Router;
@@ -324,7 +324,7 @@ class SignupUserAction extends BaseAction implements EventListenerInterface
         $data['status'] = $status;
         $entity = $this->Users->newEntity([]);
         if ($verified === true) {
-            $entity->set('verified', FrozenTime::now());
+            $entity->set('verified', DateTime::now());
         }
         $entityOptions = compact('validate');
 
@@ -437,7 +437,7 @@ class SignupUserAction extends BaseAction implements EventListenerInterface
                 'payload' => [
                     'user_id' => $user->id,
                 ],
-                'scheduled_from' => new FrozenTime('1 day'),
+                'scheduled_from' => new DateTime('1 day'),
                 'priority' => 1,
             ],
         ]);

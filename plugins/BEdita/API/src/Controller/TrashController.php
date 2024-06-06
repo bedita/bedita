@@ -32,7 +32,7 @@ class TrashController extends AppController
     /**
      * @inheritDoc
      */
-    public $defaultTable = 'Objects';
+    public ?string $defaultTable = 'Objects';
 
     /**
      * Table.

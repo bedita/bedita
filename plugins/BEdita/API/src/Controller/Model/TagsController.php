@@ -26,7 +26,7 @@ class TagsController extends ModelController
     /**
      * @inheritDoc
      */
-    public $defaultTable = 'Tags';
+    public ?string $defaultTable = 'Tags';
 
     /**
      * @inheritDoc

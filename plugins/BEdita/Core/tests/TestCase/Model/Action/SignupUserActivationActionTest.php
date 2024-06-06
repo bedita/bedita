@@ -25,7 +25,7 @@ use Cake\Event\Event;
 use Cake\Event\EventManager;
 use Cake\Http\Exception\BadRequestException;
 use Cake\Http\Exception\ConflictException;
-use Cake\I18n\FrozenTime;
+use Cake\I18n\DateTime;
 use Cake\Mailer\TransportFactory;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
@@ -40,7 +40,7 @@ class SignupUserActivationActionTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.PropertyTypes',
         'plugin.BEdita/Core.Properties',
@@ -156,7 +156,7 @@ class SignupUserActivationActionTest extends TestCase
         [$user, $asyncJob] = $this->signup();
 
         $user->status = 'on';
-        $user->verified = new FrozenTime();
+        $user->verified = new DateTime();
         $Users = TableRegistry::getTableLocator()->get('Users');
         $Users->save($user);
 
@@ -231,7 +231,7 @@ class SignupUserActivationActionTest extends TestCase
 
         /** @var \BEdita\Core\Model\Entity\AsyncJob $asyncJob */
         $asyncJob = $this->AsyncJobs->find()
-            ->order(['AsyncJobs.created' => 'DESC'])
+            ->orderBy(['AsyncJobs.created' => 'DESC'])
             ->first();
 
         $user = $this->Users->get($asyncJob->payload['user_id']);

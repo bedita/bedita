@@ -26,7 +26,7 @@ class ObjectTypesFixture extends TestFixture
      *
      * @var array
      */
-    public $records = [
+    public array $records = [
         // 1
         [
             'singular' => 'object',

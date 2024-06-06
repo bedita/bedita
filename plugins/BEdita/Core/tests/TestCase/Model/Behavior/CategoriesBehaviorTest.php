@@ -31,7 +31,7 @@ class CategoriesBehaviorTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.PropertyTypes',
         'plugin.BEdita/Core.Properties',
@@ -221,7 +221,7 @@ class CategoriesBehaviorTest extends TestCase
     public function testFetchCategories(): void
     {
         $table = TableRegistry::getTableLocator()->get('Documents');
-        $entity = $table->get(3, ['contain' => ['Categories']]);
+        $entity = $table->get(3, contain: ['Categories']);
         $data = [
             'categories' => [
                 [
@@ -248,7 +248,7 @@ class CategoriesBehaviorTest extends TestCase
     public function testFetchTags(): void
     {
         $table = TableRegistry::getTableLocator()->get('Profiles');
-        $entity = $table->get(4, ['contain' => ['Tags']]);
+        $entity = $table->get(4, contain: ['Tags']);
         $entity = $table->patchEntity($entity, [
             'tags' => [
                 [
@@ -266,7 +266,7 @@ class CategoriesBehaviorTest extends TestCase
         $entity = $table->save($entity);
         static::assertNotFalse($entity);
 
-        $entity = $table->get(4, ['contain' => ['Tags']]);
+        $entity = $table->get(4, contain: ['Tags']);
         $tags = (array)$entity->get('tags');
         $names = Hash::extract($tags, '{n}.name');
         sort($names);
@@ -294,7 +294,7 @@ class CategoriesBehaviorTest extends TestCase
         $table->saveOrFail($tag);
 
         $table = TableRegistry::getTableLocator()->get('Profiles');
-        $entity = $table->get(4, ['contain' => ['Tags']]);
+        $entity = $table->get(4, contain: ['Tags']);
         $entity = $table->patchEntity($entity, [
             'tags' => [
                 [

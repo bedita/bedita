@@ -17,7 +17,7 @@ namespace BEdita\API\Identifier;
 use Authentication\Identifier\AbstractIdentifier;
 use Authentication\Identifier\Resolver\ResolverAwareTrait;
 use Cake\Event\EventDispatcherTrait;
-use Cake\I18n\FrozenTime;
+use Cake\I18n\DateTime;
 use Cake\ORM\Locator\LocatorAwareTrait;
 use Cake\Utility\Hash;
 use Cake\Utility\Security;
@@ -127,7 +127,7 @@ class OTPIdentifier extends AbstractIdentifier
             'client_token' => $this->generateClientToken(),
             'secret_token' => $this->generateSecretToken(),
             'token_type' => 'otp',
-            'expires' => new FrozenTime($this->getConfig('expiry')),
+            'expires' => new DateTime($this->getConfig('expiry')),
         ];
 
         $entity = $this->UserTokens->newEntity($data);

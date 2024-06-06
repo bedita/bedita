@@ -32,7 +32,7 @@ class PropertyType extends Entity implements JsonApiSerializable
     /**
      * @inheritDoc
      */
-    protected $_accessible = [
+    protected array $_accessible = [
         '*' => false,
         'name' => true,
         'params' => true,

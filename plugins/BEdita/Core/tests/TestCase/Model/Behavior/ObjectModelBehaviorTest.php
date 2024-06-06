@@ -35,7 +35,7 @@ class ObjectModelBehaviorTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.FakeAnimals',
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.PropertyTypes',
@@ -76,7 +76,7 @@ class ObjectModelBehaviorTest extends TestCase
         $related = $this->Documents->get(2);
         $this->Documents->addRelated($entity, 'test', [$related]);
 
-        $entity = $this->Documents->get(3, ['contain' => 'Test']);
+        $entity = $this->Documents->get(3, contain: 'Test');
         $ids = Hash::extract($entity->get('test'), '{n}.id');
         sort($ids);
         static::assertEquals([2, 4], $ids);
@@ -94,7 +94,7 @@ class ObjectModelBehaviorTest extends TestCase
         $related = $this->Documents->get(2);
         $this->Documents->replaceRelated($entity, 'test', [$related]);
 
-        $entity = $this->Documents->get(3, ['contain' => 'Test']);
+        $entity = $this->Documents->get(3, contain: 'Test');
         $ids = Hash::extract($entity->get('test'), '{n}.id');
         static::assertEquals([2], $ids);
     }
@@ -111,7 +111,7 @@ class ObjectModelBehaviorTest extends TestCase
         $related = $this->Documents->get(4);
         $this->Documents->removeRelated($entity, 'test', [$related]);
 
-        $entity = $this->Documents->get(3, ['contain' => 'Test']);
+        $entity = $this->Documents->get(3, contain: 'Test');
         $ids = Hash::extract($entity->get('test'), '{n}.id');
         static::assertEquals([], $ids);
     }

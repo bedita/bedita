@@ -40,7 +40,7 @@ class ObjectEntityTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.Relations',
         'plugin.BEdita/Core.RelationTypes',
@@ -574,7 +574,7 @@ class ObjectEntityTest extends TestCase
      */
     public function testGetRelationshipsIncluded()
     {
-        $entity = TableRegistry::getTableLocator()->get('Documents')->get(2, ['contain' => ['Test']]);
+        $entity = TableRegistry::getTableLocator()->get('Documents')->get(2, contain: ['Test']);
         $entity = $entity->jsonApiSerialize();
 
         static::assertArrayHasKey('relationships', $entity);
@@ -593,7 +593,7 @@ class ObjectEntityTest extends TestCase
      */
     public function testGetRelationshipsSingleIncluded()
     {
-        $entity = TableRegistry::getTableLocator()->get('Folders')->get(12, ['contain' => ['Parents']]);
+        $entity = TableRegistry::getTableLocator()->get('Folders')->get(12, contain: ['Parents']);
         $entity = $entity->jsonApiSerialize();
 
         static::assertArrayHasKey('relationships', $entity);

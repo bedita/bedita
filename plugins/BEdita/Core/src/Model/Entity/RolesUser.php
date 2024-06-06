@@ -32,7 +32,7 @@ class RolesUser extends Entity
     /**
      * @inheritDoc
      */
-    protected $_accessible = [
+    protected array $_accessible = [
         '*' => true,
         'id' => false,
     ];
@@ -40,7 +40,7 @@ class RolesUser extends Entity
     /**
      * @inheritDoc
      */
-    protected $_hidden = [
+    protected array $_hidden = [
         'id',
         'role_id',
         'user_id',

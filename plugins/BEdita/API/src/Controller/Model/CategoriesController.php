@@ -26,7 +26,7 @@ class CategoriesController extends ModelController
     /**
      * @inheritDoc
      */
-    public $defaultTable = 'Categories';
+    public ?string $defaultTable = 'Categories';
 
     /**
      * @inheritDoc

@@ -62,7 +62,7 @@ class CustomPropsCommand extends Command
     public function execute(Arguments $args, ConsoleIo $io): ?int
     {
         $types = TableRegistry::getTableLocator()->get('ObjectTypes')
-            ->find('list', ['valueField' => 'name'])
+            ->find('list', valueField: 'name')
             ->where(['is_abstract' => false])
             ->all()
             ->toList();

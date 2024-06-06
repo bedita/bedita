@@ -47,7 +47,7 @@ class Category extends Entity implements JsonApiSerializable
     /**
      * @inheritDoc
      */
-    protected $_accessible = [
+    protected array $_accessible = [
         '*' => true,
         'created' => false,
         'modified' => false,
@@ -56,7 +56,7 @@ class Category extends Entity implements JsonApiSerializable
     /**
      * @inheritDoc
      */
-    protected $_hidden = [
+    protected array $_hidden = [
         'object_type_id',
         'object_type',
         '_joinData',
@@ -67,7 +67,7 @@ class Category extends Entity implements JsonApiSerializable
     /**
      * @inheritDoc
      */
-    protected $_virtual = [
+    protected array $_virtual = [
         'label',
         'object_type_name',
         'object',

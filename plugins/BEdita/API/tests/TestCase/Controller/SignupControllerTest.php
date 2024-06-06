@@ -16,7 +16,7 @@ namespace BEdita\API\Test\TestCase\Controller;
 
 use BEdita\API\TestSuite\IntegrationTestCase;
 use Cake\Core\Configure;
-use Cake\I18n\FrozenTime;
+use Cake\I18n\DateTime;
 use Cake\Mailer\TransportFactory;
 use Cake\ORM\TableRegistry;
 use Cake\Utility\Hash;
@@ -34,7 +34,7 @@ class SignupControllerTest extends IntegrationTestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.AsyncJobs',
     ];
 
@@ -389,7 +389,7 @@ class SignupControllerTest extends IntegrationTestCase
         $this->post('/signup', json_encode($data));
 
         $asyncJob = TableRegistry::getTableLocator()->get('AsyncJobs')->find()
-            ->order(['AsyncJobs.created' => 'DESC'])
+            ->orderBy(['AsyncJobs.created' => 'DESC'])
             ->first();
 
         $activationData = ['uuid' => $asyncJob->uuid];
@@ -424,18 +424,18 @@ class SignupControllerTest extends IntegrationTestCase
         $this->post('/signup', json_encode($data));
 
         $asyncJob = TableRegistry::getTableLocator()->get('AsyncJobs')->find()
-            ->order(['AsyncJobs.created' => 'DESC'])
+            ->orderBy(['AsyncJobs.created' => 'DESC'])
             ->first();
 
         $activationData = ['uuid' => $asyncJob->uuid];
 
         $Users = TableRegistry::getTableLocator()->get('Users');
         $user = $Users->find()
-            ->order(['created' => 'DESC'])
+            ->orderBy(['created' => 'DESC'])
             ->first();
 
         $user->status = 'on';
-        $user->verified = new FrozenTime();
+        $user->verified = new DateTime();
         $Users->save($user);
 
         $this->configRequestHeaders('POST', [

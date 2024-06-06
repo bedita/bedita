@@ -41,7 +41,7 @@ class UserModifiedBehavior extends Behavior
      *
      * @var array
      */
-    protected $_defaultConfig = [
+    protected array $_defaultConfig = [
         'implementedFinders' => [],
         'implementedMethods' => [
             'userId' => 'userId',

@@ -45,7 +45,7 @@ class ObjectTypesTableTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.Objects',
         'plugin.BEdita/Core.PropertyTypes',
@@ -864,7 +864,7 @@ class ObjectTypesTableTest extends TestCase
             $this->expectExceptionMessage($expected->getMessage());
         }
 
-        $type = $this->ObjectTypes->find('parent', $options)->order(['name' => 'ASC'])->firstOrFail();
+        $type = $this->ObjectTypes->find('parent', $options)->orderBy(['name' => 'ASC'])->firstOrFail();
         static::assertEquals($expected, $type->name);
     }
 }

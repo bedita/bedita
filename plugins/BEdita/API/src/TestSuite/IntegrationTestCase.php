@@ -44,7 +44,7 @@ abstract class IntegrationTestCase extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [];
+    protected array $fixtures = [];
 
     /**
      * The required fixtures for authentication.
@@ -254,7 +254,7 @@ abstract class IntegrationTestCase extends TestCase
         return TableRegistry::getTableLocator()->get('Objects')
             ->find()
             ->select('id')
-            ->order(['id' => 'DESC'])
+            ->orderBy(['id' => 'DESC'])
             ->first()
             ->id;
     }

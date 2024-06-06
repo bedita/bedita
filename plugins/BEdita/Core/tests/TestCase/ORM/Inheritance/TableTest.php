@@ -23,7 +23,7 @@ use BEdita\Core\ORM\Inheritance\Query\InsertQuery;
 use BEdita\Core\ORM\Inheritance\Query\SelectQuery;
 use BEdita\Core\ORM\Inheritance\Query\UpdateQuery;
 use Cake\Datasource\EntityInterface;
-use Cake\I18n\FrozenTime;
+use Cake\I18n\DateTime;
 use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
@@ -231,7 +231,7 @@ class TableTest extends TestCase
         $felines = $this->fakeFelines->find();
         static::assertEquals(1, $felines->count());
 
-        $updatedAt = new FrozenTime('2018-02-20 09:50:00');
+        $updatedAt = new DateTime('2018-02-20 09:50:00');
 
         $feline = $felines->first();
         $expected = [
@@ -317,7 +317,7 @@ class TableTest extends TestCase
             'id' => 1,
             'name' => 'cat',
             'legs' => 4,
-            'modified' => new FrozenTime('2018-02-20 09:50:00'),
+            'modified' => new DateTime('2018-02-20 09:50:00'),
             'subclass' => 'Eutheria',
             'family' => 'purring cats',
             'fake_articles' => [
@@ -536,7 +536,7 @@ class TableTest extends TestCase
         }
 
         $query = $this->fakeFelines->find('list', $listParams);
-        $query->order($order);
+        $query->orderBy($order);
 
         $result = $query->toArray();
         static::assertEquals($expected, $result);
@@ -584,14 +584,14 @@ class TableTest extends TestCase
             static::assertSame($animalsAlias, $this->fakeAnimals->getAlias());
         };
 
-        static::assertInstanceOf(SelectQuery::class, $this->fakeMammals->find('children', ['for' => 1, 'direct' => true]));
+        static::assertInstanceOf(SelectQuery::class, $this->fakeMammals->find('children', for: 1, direct: true));
         $checkAliases();
-        static::assertInstanceOf(SelectQuery::class, $this->fakeFelines->find('children', ['for' => 1, 'direct' => true]));
+        static::assertInstanceOf(SelectQuery::class, $this->fakeFelines->find('children', for: 1, direct: true));
         $checkAliases();
 
-        static::assertTextNotContains('FakeAnimals', $this->fakeMammals->find('children', ['for' => 1, 'direct' => true])->sql());
+        static::assertTextNotContains('FakeAnimals', $this->fakeMammals->find('children', for: 1, direct: true)->sql());
         $checkAliases();
-        static::assertTextNotContains('FakeAnimals', $this->fakeFelines->find('children', ['for' => 1, 'direct' => true])->sql());
+        static::assertTextNotContains('FakeAnimals', $this->fakeFelines->find('children', for: 1, direct: true)->sql());
         $checkAliases();
     }
 

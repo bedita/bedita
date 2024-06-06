@@ -42,7 +42,7 @@ class SearchableBehavior extends Behavior
      *
      * if present they are used in `SimpleAdapter` for backward compatibility.
      */
-    protected $_defaultConfig = [
+    protected array $_defaultConfig = [
         'operationName' => [
             'Model.afterSave' => 'edit',
             'Model.afterDelete' => 'delete',

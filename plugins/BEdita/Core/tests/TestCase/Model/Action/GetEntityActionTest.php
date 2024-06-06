@@ -30,7 +30,7 @@ class GetEntityActionTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.FakeAnimals',
         'plugin.BEdita/Core.FakeArticles',
     ];
@@ -73,6 +73,6 @@ class GetEntityActionTest extends TestCase
 
         $result = $action(['primaryKey' => 1, 'contain' => ['FakeArticles']]);
 
-        static::assertEquals($table->get(1, ['contain' => ['FakeArticles']]), $result);
+        static::assertEquals($table->get(1, contain: ['FakeArticles']), $result);
     }
 }

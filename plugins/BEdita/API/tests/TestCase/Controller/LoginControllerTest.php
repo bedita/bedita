@@ -19,7 +19,7 @@ use BEdita\API\TestSuite\IntegrationTestCase;
 use BEdita\Core\Model\Action\SaveEntityAction;
 use BEdita\Core\State\CurrentApplication;
 use Cake\Cache\Cache;
-use Cake\I18n\FrozenTime;
+use Cake\I18n\DateTime;
 use Cake\ORM\TableRegistry;
 use Cake\Utility\Hash;
 
@@ -80,8 +80,8 @@ class LoginControllerTest extends IntegrationTestCase
 
         $lastLogin = TableRegistry::getTableLocator()->get('Users')->get(1)->get('last_login');
         static::assertNotNull($lastLogin);
-        static::assertEquals(FrozenTime::now()->timestamp, $lastLogin->timestamp, '');
-        static::assertEqualsWithDelta(FrozenTime::now()->timestamp, $lastLogin->timestamp, 1, '');
+        static::assertEquals(DateTime::now()->timestamp, $lastLogin->timestamp, '');
+        static::assertEqualsWithDelta(DateTime::now()->timestamp, $lastLogin->timestamp, 1, '');
 
         return $result['meta'];
     }
@@ -205,7 +205,7 @@ class LoginControllerTest extends IntegrationTestCase
 
         $user = $this->fetchTable('Users')->get(1);
         static::assertNotNull($user->last_login_err);
-        static::assertEqualsWithDelta(FrozenTime::now()->timestamp, $user->last_login_err->timestamp, 1, '');
+        static::assertEqualsWithDelta(DateTime::now()->timestamp, $user->last_login_err->timestamp, 1, '');
         static::assertEquals(2, $user->num_login_err);
     }
 
@@ -571,7 +571,7 @@ class LoginControllerTest extends IntegrationTestCase
                 'payload' => [
                     'user_id' => 1,
                 ],
-                'scheduled_from' => new FrozenTime('1 day'),
+                'scheduled_from' => new DateTime('1 day'),
                 'priority' => 1,
             ],
         ]);

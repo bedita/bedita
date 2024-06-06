@@ -41,7 +41,7 @@ class LoggedUserMiddlewareTest extends TestCase
     /**
      * @inheritDoc
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.Relations',
         'plugin.BEdita/Core.RelationTypes',
@@ -222,7 +222,7 @@ class LoggedUserMiddlewareTest extends TestCase
     {
         $this->expectExceptionObject(new UnauthorizedException('Login request not successful'));
 
-        $app = $this->fetchTable('Applications')->find('apiKey', ['apiKey' => API_KEY])->firstOrFail();
+        $app = $this->fetchTable('Applications')->find('apiKey', apiKey: API_KEY)->firstOrFail();
         $jwts = $this->generateJwtTokens(['id' => 666, 'username' => 'ovatsug'], $app);
 
         $refreshJwt = Hash::get($jwts, 'renew');

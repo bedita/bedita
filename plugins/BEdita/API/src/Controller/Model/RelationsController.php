@@ -29,7 +29,7 @@ class RelationsController extends ModelController
     /**
      * @inheritDoc
      */
-    public $defaultTable = 'Relations';
+    public ?string $defaultTable = 'Relations';
 
     /**
      * @inheritDoc

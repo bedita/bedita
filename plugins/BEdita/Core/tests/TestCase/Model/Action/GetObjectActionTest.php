@@ -30,7 +30,7 @@ class GetObjectActionTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.Relations',
         'plugin.BEdita/Core.RelationTypes',
@@ -57,7 +57,7 @@ class GetObjectActionTest extends TestCase
 
         $result = $action(['primaryKey' => 9]);
 
-        static::assertEquals($table->get(9, ['contain' => ['ObjectTypes']]), $result);
+        static::assertEquals($table->get(9, contain: ['ObjectTypes']), $result);
     }
 
     /**

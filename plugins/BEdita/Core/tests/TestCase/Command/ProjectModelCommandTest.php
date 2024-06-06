@@ -34,7 +34,7 @@ class ProjectModelCommandTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.Applications',
         'plugin.BEdita/Core.Roles',
         'plugin.BEdita/Core.ObjectTypes',
@@ -54,7 +54,6 @@ class ProjectModelCommandTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
-        $this->useCommandRunner();
     }
 
     /**

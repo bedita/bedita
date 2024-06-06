@@ -31,7 +31,7 @@ class PriorityBehaviorTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.Objects',
         'plugin.BEdita/Core.Relations',
@@ -150,7 +150,7 @@ class PriorityBehaviorTest extends TestCase
                 'left_id' => 2,
                 'relation_id' => 1,
             ])
-            ->order(['priority'])
+            ->orderBy(['priority'])
             ->all()
             ->toList();
 
@@ -169,7 +169,7 @@ class PriorityBehaviorTest extends TestCase
                 'left_id' => 2,
                 'relation_id' => 1,
             ])
-            ->order(['priority'])
+            ->orderBy(['priority'])
             ->all()
             ->toList();
 
@@ -199,7 +199,7 @@ class PriorityBehaviorTest extends TestCase
                 'left_id' => 2,
                 'relation_id' => 1,
             ])
-            ->order(['priority'])
+            ->orderBy(['priority'])
             ->all()
             ->toList();
 
@@ -218,7 +218,7 @@ class PriorityBehaviorTest extends TestCase
                 'left_id' => 2,
                 'relation_id' => 1,
             ])
-            ->order(['priority'])
+            ->orderBy(['priority'])
             ->all()
             ->toList();
 
@@ -247,7 +247,7 @@ class PriorityBehaviorTest extends TestCase
                 'left_id' => 2,
                 'relation_id' => 1,
             ])
-            ->order(['priority'])
+            ->orderBy(['priority'])
             ->all()
             ->toList();
 
@@ -265,7 +265,7 @@ class PriorityBehaviorTest extends TestCase
                 'left_id' => 2,
                 'relation_id' => 1,
             ])
-            ->order(['priority'])
+            ->orderBy(['priority'])
             ->all()
             ->toList();
 

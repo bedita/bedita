@@ -26,7 +26,7 @@ class AnnotationsFixture extends TestFixture
      *
      * @var array
      */
-    public $records = [
+    public array $records = [
         [
             'object_id' => 2,
             'description' => 'Lorem ipsum dolor sit amet, aliquet feugiat. Best regards.',

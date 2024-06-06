@@ -30,7 +30,7 @@ use Cake\TestSuite\TestCase;
  */
 class ObjectPolicyTest extends TestCase
 {
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.Objects',
         'plugin.BEdita/Core.Profiles',

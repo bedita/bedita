@@ -195,7 +195,7 @@ class ObjectTypesTable extends Table
                     ->toArray()
             );
             $allTypes += array_flip(
-                $this->find('list', ['valueField' => 'singular'])
+                $this->find('list', valueField: 'singular')
                     ->cache('map_singular', self::CACHE_CONFIG)
                     ->toArray()
             );
@@ -481,7 +481,7 @@ class ObjectTypesTable extends Table
         // Everything is said and done by now. Fingers crossed!
         return $query
             ->where($conditionsBuilder)
-            ->order([$this->aliasField('tree_left') => 'asc']);
+            ->orderBy([$this->aliasField('tree_left') => 'asc']);
     }
 
     /**

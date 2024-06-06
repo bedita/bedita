@@ -21,7 +21,7 @@ use Cake\Console\Arguments;
 use Cake\Console\ConsoleIo;
 use Cake\Console\ConsoleOptionParser;
 use Cake\Database\Expression\QueryExpression;
-use Cake\I18n\FrozenDate;
+use Cake\I18n\Date;
 use Cake\ORM\Locator\LocatorAwareTrait;
 
 /**
@@ -59,7 +59,7 @@ class ObjectsDeleteCommand extends Command
         $message = 'Deleting from trash objects, since ' . $since;
         $message .= !empty($types) ? ', for type(s) ' . implode(',', $types) : '';
         $io->info($message);
-        $conditions = ['deleted' => true, 'locked' => false, 'modified <' => new FrozenDate($since)];
+        $conditions = ['deleted' => true, 'locked' => false, 'modified <' => new Date($since)];
         $deleted = $errors = 0;
         if (empty($types)) {
             $types = [null];

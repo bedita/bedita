@@ -32,7 +32,7 @@ class ListRelatedFoldersActionTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.Relations',
         'plugin.BEdita/Core.RelationTypes',
@@ -79,7 +79,7 @@ class ListRelatedFoldersActionTest extends TestCase
         $treesTable = TableRegistry::getTableLocator()->get('Trees');
         $node = $treesTable->find()->where(['object_id' => 11])->first();
         $expected = $treesTable
-            ->find('children', ['for' => $node->id, 'direct' => true])
+            ->find('children', for: $node->id, direct: true)
             ->toArray();
         $expected = Hash::extract($expected, '{n}.object_id');
         sort($expected);

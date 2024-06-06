@@ -44,7 +44,7 @@ class TreesTableTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.PropertyTypes',
         'plugin.BEdita/Core.Properties',
@@ -239,13 +239,13 @@ class TreesTableTest extends TestCase
     {
         $node = $this->Trees->get(2);
         static::assertEquals(11, $node->root_id);
-        $children = $this->Trees->find('children', ['for' => 2])->all()->toList();
+        $children = $this->Trees->find('children', for: 2)->all()->toList();
 
         $node->parent_id = $parentId;
         static::assertTrue((bool)$this->Trees->save($node));
 
         $node = $this->Trees->get(2);
-        $actualChildren = $this->Trees->find('children', ['for' => 2])->all()->toList();
+        $actualChildren = $this->Trees->find('children', for: 2)->all()->toList();
 
         static::assertEquals($rootExpected, $node->root_id);
         static::assertCount(count($children), $actualChildren);
@@ -486,10 +486,7 @@ class TreesTableTest extends TestCase
         }
 
         $path = $this->Trees->find('pathNodes', $options)
-            ->find('list', [
-                'keyField' => 'id',
-                'valueField' => 'object_id',
-            ])
+            ->find('list', keyField: 'id', valueField: 'object_id')
             ->toArray();
 
         static::assertSame($expected, array_values($path));

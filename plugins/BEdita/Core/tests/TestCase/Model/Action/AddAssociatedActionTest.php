@@ -36,7 +36,7 @@ class AddAssociatedActionTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.FakeAnimals',
         'plugin.BEdita/Core.FakeArticles',
         'plugin.BEdita/Core.FakeTags',
@@ -135,7 +135,7 @@ class AddAssociatedActionTest extends TestCase
         $association = TableRegistry::getTableLocator()->get($table)->getAssociation($association);
         $action = new AddAssociatedAction(compact('association'));
 
-        $entity = $association->getSource()->get($entity, ['contain' => [$association->getName()]]);
+        $entity = $association->getSource()->get($entity, contain: [$association->getName()]);
         $relatedEntities = null;
         if (is_int($related)) {
             $relatedEntities = $association->getTarget()->get($related);
@@ -259,7 +259,7 @@ class AddAssociatedActionTest extends TestCase
         $association = TableRegistry::getTableLocator()->get('FakeArticles')->getAssociation('FakeTags');
         $action = new AddAssociatedAction(compact('association'));
 
-        $entity = $association->getSource()->get(1, ['contain' => [$association->getName()]]);
+        $entity = $association->getSource()->get(1, contain: [$association->getName()]);
         $relatedEntities = array_map(
             function ($id) use ($association) {
                 $relatedEntity = $association->getTarget()->get($id);
@@ -275,10 +275,9 @@ class AddAssociatedActionTest extends TestCase
         $result = $action(compact('entity', 'relatedEntities'));
 
         $actual = $association->junction()
-            ->find('list', [
-                'keyField' => $association->getTargetForeignKey(),
-                'valueField' => 'fake_params',
-            ])
+            ->find('list',
+            keyField: $association->getTargetForeignKey(),
+            valueField: 'fake_params')
             ->toArray();
 
         static::assertEquals(count($expected), $result);

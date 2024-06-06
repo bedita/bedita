@@ -15,9 +15,8 @@ declare(strict_types=1);
 namespace BEdita\Core\Test\TestCase\Database\Type;
 
 use BEdita\Core\Database\Type\DateType;
-use Cake\I18n\FrozenTime;
+use Cake\I18n\DateTime;
 use Cake\TestSuite\TestCase;
-use DateTime;
 
 /**
  * {@see \BEdita\Core\Database\Type\DateType} Test Case
@@ -81,7 +80,7 @@ class DateTypeTest extends TestCase
         $result = $dateTimeType->marshal($input);
         if (is_string($expected)) {
             static::assertInstanceOf($dateTimeType->getDateTimeClassName(), $result);
-            $expected = FrozenTime::parse($expected);
+            $expected = DateTime::parse($expected);
         }
         static::assertSame($expected->getTimestamp(), $result->getTimestamp());
     }

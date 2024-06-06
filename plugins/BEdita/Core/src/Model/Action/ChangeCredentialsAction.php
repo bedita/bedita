@@ -17,7 +17,7 @@ namespace BEdita\Core\Model\Action;
 
 use BEdita\Core\Exception\InvalidDataException;
 use Cake\Event\EventDispatcherTrait;
-use Cake\I18n\FrozenTime;
+use Cake\I18n\DateTime;
 use Cake\ORM\TableRegistry;
 use Cake\Validation\Validator;
 
@@ -88,17 +88,17 @@ class ChangeCredentialsAction extends BaseAction
             throw new InvalidDataException(__d('bedita', 'Invalid data'), $errors);
         }
 
-        $asyncJob = $this->AsyncJobs->get($data['uuid'], ['finder' => 'incomplete']);
+        $asyncJob = $this->AsyncJobs->get($data['uuid'], finder: 'incomplete');
 
         if (empty($asyncJob->payload['user_id'])) {
             throw new \LogicException(__d('bedita', 'Parameter "{0}" missing', ['payload.user_id']));
         }
 
-        $user = $this->Users->get($asyncJob->payload['user_id'], ['contain' => ['Roles']]);
+        $user = $this->Users->get($asyncJob->payload['user_id'], contain: ['Roles']);
         $user->password_hash = $data['password'];
         $this->Users->saveOrFail($user);
 
-        $asyncJob->completed = new FrozenTime();
+        $asyncJob->completed = new DateTime();
         $this->AsyncJobs->saveOrFail($asyncJob);
 
         $this->dispatchEvent('Auth.credentialsChange', [$user, $asyncJob]);

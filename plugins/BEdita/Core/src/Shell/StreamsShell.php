@@ -18,6 +18,7 @@ use BEdita\Core\Model\Entity\Stream;
 use Cake\Console\ConsoleOptionParser;
 use Cake\Console\Shell;
 use Cake\Database\Expression\QueryExpression;
+use Cake\I18n\DateTime;
 use Cake\ORM\Query;
 
 /**
@@ -87,7 +88,7 @@ class StreamsShell extends Shell /* @phpstan-ignore-line */
         $query = $this->Streams->find()
             ->where([
                 'object_id IS NULL',
-                'created <' => \Cake\I18n\FrozenTime::now()->subDays($days),
+                'created <' => DateTime::now()->subDays($days),
             ]);
         $count = 0;
         foreach ($query as $stream) {
@@ -171,7 +172,7 @@ class StreamsShell extends Shell /* @phpstan-ignore-line */
         // Although `uuid` is not a monotonically increasing field, we will at most skip the streams that are created
         // AFTER we launch the script, and whose UUID is lexicographically less than the one we are currently
         // checking — but we still cover all streams created before our script starts!
-        $query = $query->orderAsc($this->Streams->aliasField('uuid'));
+        $query = $query->orderByAsc($this->Streams->aliasField('uuid'));
         $q = clone $query;
         do {
             $results = $q->limit($limit)->all();

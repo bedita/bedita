@@ -38,7 +38,7 @@ class AppController extends Controller
     /**
      * @inheritDoc
      */
-    public $paginate = [
+    public array $paginate = [
         'order' => [
             'id' => 'asc',
         ],

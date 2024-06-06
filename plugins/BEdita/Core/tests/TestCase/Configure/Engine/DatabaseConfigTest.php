@@ -39,7 +39,7 @@ class DatabaseConfigTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.Config',
         'plugin.BEdita/Core.Applications',
     ];

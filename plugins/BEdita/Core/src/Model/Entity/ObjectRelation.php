@@ -34,7 +34,7 @@ class ObjectRelation extends Entity
     /**
      * @inheritDoc
      */
-    protected $_accessible = [
+    protected array $_accessible = [
         '*' => true,
         'left_id' => false,
         'relation_id' => false,
@@ -44,7 +44,7 @@ class ObjectRelation extends Entity
     /**
      * @inheritDoc
      */
-    protected $_hidden = [
+    protected array $_hidden = [
         'left_id',
         'right_id',
         'relation_id',

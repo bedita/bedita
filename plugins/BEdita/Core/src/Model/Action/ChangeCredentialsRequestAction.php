@@ -23,7 +23,7 @@ use Cake\Database\Expression\QueryExpression;
 use Cake\Event\EventDispatcherTrait;
 use Cake\Event\EventInterface;
 use Cake\Event\EventListenerInterface;
-use Cake\I18n\FrozenTime;
+use Cake\I18n\DateTime;
 use Cake\Mailer\MailerAwareTrait;
 use Cake\ORM\TableRegistry;
 use Cake\Validation\Validator;
@@ -155,7 +155,7 @@ class ChangeCredentialsRequestAction extends BaseAction implements EventListener
                 'payload' => [
                     'user_id' => $user->id,
                 ],
-                'scheduled_from' => new FrozenTime('1 day'),
+                'scheduled_from' => new DateTime('1 day'),
                 'priority' => 1,
             ],
         ]);

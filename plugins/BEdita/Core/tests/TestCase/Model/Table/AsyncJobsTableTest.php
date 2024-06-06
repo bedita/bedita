@@ -38,7 +38,7 @@ class AsyncJobsTableTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.AsyncJobs',
     ];
 
@@ -365,7 +365,7 @@ class AsyncJobsTableTest extends TestCase
             ],
         ];
 
-        $actual = $this->AsyncJobs->find('priority', ['service' => 'example2'])->find('list')->toArray();
+        $actual = $this->AsyncJobs->find('priority', service: 'example2')->find('list')->toArray();
 
         static::assertSame($expected, $actual);
     }
@@ -387,7 +387,7 @@ class AsyncJobsTableTest extends TestCase
             ],
         ];
 
-        $actual = $this->AsyncJobs->find('priority', ['priority' => 5])->find('list')->toArray();
+        $actual = $this->AsyncJobs->find('priority', priority: 5)->find('list')->toArray();
 
         static::assertSame($expected, $actual);
     }

@@ -39,7 +39,7 @@ class Role extends Entity implements JsonApiSerializable
     /**
      * @inheritDoc
      */
-    protected $_accessible = [
+    protected array $_accessible = [
         '*' => false,
         'name' => true,
         'description' => true,
@@ -48,7 +48,7 @@ class Role extends Entity implements JsonApiSerializable
     /**
      * @inheritDoc
      */
-    protected $_hidden = [
+    protected array $_hidden = [
         'endpoint_permissions',
         'object_permissions',
     ];

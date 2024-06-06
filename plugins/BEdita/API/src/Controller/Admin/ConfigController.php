@@ -26,6 +26,11 @@ class ConfigController extends AdminController
     /**
      * @inheritDoc
      */
+    public ?string $defaultTable = 'Config';
+
+    /**
+     * @inheritDoc
+     */
     public function initialize(): void
     {
         parent::initialize();
@@ -34,9 +39,4 @@ class ConfigController extends AdminController
             $this->JsonApi->setConfig('clientGeneratedIds', true);
         }
     }
-
-    /**
-     * @inheritDoc
-     */
-    public $defaultTable = 'Config';
 }

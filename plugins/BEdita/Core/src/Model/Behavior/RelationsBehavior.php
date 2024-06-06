@@ -30,7 +30,7 @@ class RelationsBehavior extends Behavior
     /**
      * @inheritDoc
      */
-    protected $_defaultConfig = [
+    protected array $_defaultConfig = [
         'implementedMethods' => [
             'setupRelations' => 'setupRelations',
             'getRelations' => 'getRelations',

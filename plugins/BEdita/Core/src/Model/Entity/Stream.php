@@ -72,7 +72,7 @@ class Stream extends Entity implements JsonApiSerializable
     /**
      * @inheritDoc
      */
-    protected $_accessible = [
+    protected array $_accessible = [
         '*' => false,
         'file_name' => true,
         'mime_type' => true,
@@ -82,7 +82,7 @@ class Stream extends Entity implements JsonApiSerializable
     /**
      * @inheritDoc
      */
-    protected $_hidden = [
+    protected array $_hidden = [
         'object_id',
         'uri',
     ];
@@ -90,7 +90,7 @@ class Stream extends Entity implements JsonApiSerializable
     /**
      * @inheritDoc
      */
-    protected $_virtual = [
+    protected array $_virtual = [
         'url',
     ];
 

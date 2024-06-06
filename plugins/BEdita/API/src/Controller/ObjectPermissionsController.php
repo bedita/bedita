@@ -27,7 +27,7 @@ class ObjectPermissionsController extends ResourcesController
     /**
      * @inheritDoc
      */
-    public $defaultTable = 'ObjectPermissions';
+    public ?string $defaultTable = 'ObjectPermissions';
 
     /**
      * @inheritDoc

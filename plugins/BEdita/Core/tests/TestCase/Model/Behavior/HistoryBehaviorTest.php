@@ -17,7 +17,7 @@ namespace BEdita\Core\Test\TestCase\Model\Behavior;
 
 use BEdita\Core\Utility\LoggedUser;
 use Cake\Core\Configure;
-use Cake\I18n\FrozenTime;
+use Cake\I18n\DateTime;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
@@ -31,7 +31,7 @@ class HistoryBehaviorTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.Applications',
         'plugin.BEdita/Core.PropertyTypes',
@@ -165,7 +165,7 @@ class HistoryBehaviorTest extends TestCase
 
         $history = TableRegistry::getTableLocator()->get('History')->find()
                 ->where(['resource_id' => '3', 'resource_type' => 'objects'])
-                ->order(['id' => 'ASC'])
+                ->orderBy(['id' => 'ASC'])
                 ->all()
                 ->last()
                 ->toArray();
@@ -180,7 +180,7 @@ class HistoryBehaviorTest extends TestCase
             'changed' => $data,
         ];
         static::assertNotEmpty($history['created']);
-        static::assertEquals(FrozenTime::class, get_class($history['created']));
+        static::assertEquals(DateTime::class, get_class($history['created']));
         unset($history['created']);
         $history['changed'] = (array)$history['changed'];
         static::assertEquals($expected, $history);
@@ -201,7 +201,7 @@ class HistoryBehaviorTest extends TestCase
         $History = TableRegistry::getTableLocator()->get('History');
         $history = $History->find()
                 ->where(['resource_id' => '3', 'resource_type' => 'objects'])
-                ->order(['id' => 'ASC'])
+                ->orderBy(['id' => 'ASC'])
                 ->all()
                 ->last();
         static::assertEquals('trash', $history->get('user_action'));
@@ -210,7 +210,7 @@ class HistoryBehaviorTest extends TestCase
         $Documents->saveOrFail($entity);
         $history = $History->find()
                 ->where(['resource_id' => '3', 'resource_type' => 'objects'])
-                ->order(['id' => 'ASC'])
+                ->orderBy(['id' => 'ASC'])
                 ->all()
                 ->last();
         static::assertNotEmpty($history);
@@ -258,7 +258,7 @@ class HistoryBehaviorTest extends TestCase
 
         $history = TableRegistry::getTableLocator()->get('History')->find()
                 ->where(['resource_id' => '2', 'resource_type' => 'objects'])
-                ->order(['id' => 'ASC'])
+                ->orderBy(['id' => 'ASC'])
                 ->all()
                 ->last()
                 ->toArray();
@@ -273,7 +273,7 @@ class HistoryBehaviorTest extends TestCase
             'changed' => [],
         ];
         static::assertNotEmpty($history['created']);
-        static::assertEquals(FrozenTime::class, get_class($history['created']));
+        static::assertEquals(DateTime::class, get_class($history['created']));
         unset($history['created']);
         static::assertEquals($expected, $history);
     }
@@ -351,7 +351,7 @@ class HistoryBehaviorTest extends TestCase
 
         $result = TableRegistry::getTableLocator()->get('Documents')
             ->find('historyEditor', $options)
-            ->find('list', ['keyField' => 'id', 'valueField' => 'id'])
+            ->find('list', keyField: 'id', valueField: 'id')
             ->toArray();
 
         LoggedUser::resetUser();

@@ -274,7 +274,7 @@ class ApplicationsControllerTest extends IntegrationTestCase
 
         $application = TableRegistry::getTableLocator()->get('Applications')
             ->find()
-            ->order(['id' => 'DESC'])
+            ->orderBy(['id' => 'DESC'])
             ->first();
 
         $this->assertHeader('Location', 'http://api.example.com/admin/applications/' . $application->id);

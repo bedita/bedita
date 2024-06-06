@@ -39,7 +39,7 @@ class UpdateAssociatedActionTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.FakeAnimals',
         'plugin.BEdita/Core.FakeArticles',
         'plugin.BEdita/Core.FakeTags',

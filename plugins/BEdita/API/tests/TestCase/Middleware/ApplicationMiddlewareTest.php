@@ -41,7 +41,7 @@ class ApplicationMiddlewareTest extends TestCase
     /**
      * @inheritDoc
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.Config',
         'plugin.BEdita/Core.Applications',
     ];
@@ -102,7 +102,7 @@ class ApplicationMiddlewareTest extends TestCase
     {
         static::assertNull(CurrentApplication::getApplication());
 
-        $expected = $this->fetchTable('Applications')->find('apiKey', ['apiKey' => API_KEY])->firstOrFail();
+        $expected = $this->fetchTable('Applications')->find('apiKey', apiKey: API_KEY)->firstOrFail();
         $serviceMock = $this->getMockForAuthenticationService(new Identity($expected));
         $request = (new ServerRequest())->withAttribute('authentication', $serviceMock);
         $handler = new TestRequestHandler();

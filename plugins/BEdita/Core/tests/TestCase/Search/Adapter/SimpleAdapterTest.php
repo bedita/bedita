@@ -37,7 +37,7 @@ class SimpleAdapterTest extends TestCase
     /**
      * @inheritDoc
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.FakeAnimals',
         'plugin.BEdita/Core.FakeMammals',
         'plugin.BEdita/Core.FakeFelines',

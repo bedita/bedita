@@ -29,7 +29,7 @@ class AnnotationsController extends ResourcesController
     /**
      * @inheritDoc
      */
-    public $defaultTable = 'Annotations';
+    public ?string $defaultTable = 'Annotations';
 
     /**
      * @inheritDoc

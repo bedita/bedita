@@ -27,7 +27,7 @@ class AppConfig extends Config
     /**
      * @inheritDoc
      */
-    protected $_hidden = [
+    protected array $_hidden = [
         'application_id',
         'context',
     ];

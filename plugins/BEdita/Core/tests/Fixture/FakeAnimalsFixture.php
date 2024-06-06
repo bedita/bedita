@@ -24,7 +24,7 @@ class FakeAnimalsFixture extends TestFixture
     /**
      * @inheritDoc
      */
-    public $records = [
+    public array $records = [
         ['name' => 'cat', 'legs' => 4, 'modified' => '2018-02-20 09:50:00'],
         ['name' => 'koala', 'legs' => 4],
         ['name' => 'eagle', 'legs' => 2],

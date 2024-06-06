@@ -34,7 +34,7 @@ class GeometryBehavior extends Behavior
     /**
      * @inheritDoc
      */
-    protected $_defaultConfig = [
+    protected array $_defaultConfig = [
         'distanceFunction' => 'ST_Distance_Sphere',
         'field' => 'coords',
         'implementedFinders' => [
@@ -203,6 +203,6 @@ class GeometryBehavior extends Behavior
 
                 return $exp->isNotNull($field);
             })
-            ->orderAsc($this->getDistanceExpression($field, $center));
+            ->orderByAsc($this->getDistanceExpression($field, $center));
     }
 }

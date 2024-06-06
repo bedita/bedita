@@ -33,7 +33,7 @@ class RelatedToTest extends TestCase
      *
      * @var string[]
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.Relations',
         'plugin.BEdita/Core.RelationTypes',
@@ -393,7 +393,7 @@ class RelatedToTest extends TestCase
         $Table = $this->getTableLocator()->get($tableName);
         $Association = $Table->associations()->getByProperty($relation);
 
-        $result = $Table->find('list', ['valueField' => 'title'])
+        $result = $Table->find('list', valueField: 'title')
             ->innerJoinWith($Association->getName(), function (Query $q) use ($joinConditions) {
                 if (empty($joinConditions)) {
                     return $q;

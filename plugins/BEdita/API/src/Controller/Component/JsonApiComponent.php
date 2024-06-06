@@ -52,12 +52,12 @@ class JsonApiComponent extends Component
     /**
      * @inheritDoc
      */
-    public $components = ['RequestHandler'];
+    public array $components = ['RequestHandler'];
 
     /**
      * @inheritDoc
      */
-    protected $_defaultConfig = [
+    protected array $_defaultConfig = [
         'contentType' => null,
         'checkMediaType' => true,
         'resourceTypes' => null,

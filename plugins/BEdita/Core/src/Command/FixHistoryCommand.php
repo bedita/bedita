@@ -102,7 +102,7 @@ class FixHistoryCommand extends Command
     {
         $this->History = $this->Objects->getBehavior('History')->Table;
         $application = TableRegistry::getTableLocator()->get('Applications')
-            ->find()->orderAsc('id')->firstOrFail();
+            ->find()->orderByAsc('id')->firstOrFail();
         $this->appId = $application->get('id');
     }
 

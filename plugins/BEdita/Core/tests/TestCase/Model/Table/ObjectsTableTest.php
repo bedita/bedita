@@ -20,7 +20,7 @@ use BEdita\Core\Utility\Database;
 use BEdita\Core\Utility\LoggedUser;
 use Cake\Core\Configure;
 use Cake\Datasource\Exception\RecordNotFoundException;
-use Cake\I18n\FrozenTime;
+use Cake\I18n\DateTime;
 use Cake\ORM\Exception\PersistenceFailedException;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
@@ -787,7 +787,7 @@ class ObjectsTableTest extends TestCase
         static::assertNull($result);
 
         $object = $this->Objects->get(2);
-        $object->publish_end = FrozenTime::parse(time() + DAY);
+        $object->publish_end = DateTime::parse(time() + DAY);
         $this->Objects->saveOrFail($object);
 
         $result = $this->Objects->find('publishDateAllowed')->where(['id' => 2])->first();

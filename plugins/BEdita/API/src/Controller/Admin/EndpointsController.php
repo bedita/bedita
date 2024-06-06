@@ -26,5 +26,5 @@ class EndpointsController extends AdminController
     /**
      * @inheritDoc
      */
-    public $defaultTable = 'Endpoints';
+    public ?string $defaultTable = 'Endpoints';
 }

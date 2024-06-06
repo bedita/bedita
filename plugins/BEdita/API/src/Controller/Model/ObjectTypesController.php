@@ -28,7 +28,7 @@ class ObjectTypesController extends ModelController
     /**
      * @inheritDoc
      */
-    public $defaultTable = 'ObjectTypes';
+    public ?string $defaultTable = 'ObjectTypes';
 
     /**
      * @inheritDoc

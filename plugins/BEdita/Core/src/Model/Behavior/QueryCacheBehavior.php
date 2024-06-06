@@ -30,7 +30,7 @@ class QueryCacheBehavior extends Behavior
     /**
      * @inheritDoc
      */
-    protected $_defaultConfig = [
+    protected array $_defaultConfig = [
         'cacheConfig' => '_bedita_core_',
     ];
 

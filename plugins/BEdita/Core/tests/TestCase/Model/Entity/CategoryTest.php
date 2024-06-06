@@ -30,7 +30,7 @@ class CategoryTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.Categories',
         'plugin.BEdita/Core.Relations',

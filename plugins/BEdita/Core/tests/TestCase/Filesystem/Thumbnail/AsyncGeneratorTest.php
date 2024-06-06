@@ -17,7 +17,7 @@ namespace BEdita\Core\Test\TestCase\Filesystem\Thumbnail;
 
 use BEdita\Core\Filesystem\Thumbnail;
 use BEdita\Core\Filesystem\Thumbnail\AsyncGenerator;
-use Cake\I18n\FrozenTime;
+use Cake\I18n\DateTime;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use DMS\PHPUnitExtensions\ArraySubset\ArraySubsetAsserts;
@@ -34,7 +34,7 @@ class AsyncGeneratorTest extends TestCase
      *
      * @var string[]
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.AsyncJobs',
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.Objects',
@@ -159,7 +159,7 @@ class AsyncGeneratorTest extends TestCase
         $asyncJob = $this->AsyncJobs->find()
             ->where([
                 'service' => $this->generator->getConfig('service'),
-                'created' => FrozenTime::now(),
+                'created' => DateTime::now(),
             ])
             ->firstOrFail();
         $generator = 'test';
@@ -190,7 +190,7 @@ class AsyncGeneratorTest extends TestCase
         $asyncJob = $this->AsyncJobs->find()
             ->where([
                 'service' => $this->generator->getConfig('service'),
-                'created' => FrozenTime::now(),
+                'created' => DateTime::now(),
             ])
             ->firstOrFail();
         $generator = 'test';

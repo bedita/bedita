@@ -62,7 +62,7 @@ class UniqueNameBehavior extends Behavior
      *
      * @var array
      */
-    protected $_defaultConfig = [
+    protected array $_defaultConfig = [
         'sourceField' => 'title',
         'prefix' => '',
         'replacement' => '-',

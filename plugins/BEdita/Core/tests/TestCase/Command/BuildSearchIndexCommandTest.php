@@ -33,7 +33,7 @@ class BuildSearchIndexCommandTest extends TestCase
     /**
      * @inheritDoc
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.Objects',
     ];
@@ -46,7 +46,6 @@ class BuildSearchIndexCommandTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
-        $this->useCommandRunner();
     }
 
     /**

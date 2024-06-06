@@ -39,7 +39,7 @@ class UpdateRelatedActionTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.Objects',
         'plugin.BEdita/Core.Profiles',
@@ -182,7 +182,7 @@ class UpdateRelatedActionTest extends TestCase
         if ($data !== null) {
             $matching = Hash::extract(
                 $association->getSource()
-                    ->get($id, ['contain' => [$association->getName()]])
+                    ->get($id, contain: [$association->getName()])
                     ->get($association->getProperty()),
                 '{*}.id'
             );

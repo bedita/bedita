@@ -39,7 +39,7 @@ class Config extends Entity implements JsonApiSerializable
     /**
      * @inheritDoc
      */
-    protected $_accessible = [
+    protected array $_accessible = [
         '*' => true,
         'created' => false,
         'modified' => false,
@@ -61,7 +61,7 @@ class Config extends Entity implements JsonApiSerializable
 
         $table = TableRegistry::getTableLocator()->get('Applications');
         $this->application_id = $table
-            ->find('list', ['valueField' => 'id'])
+            ->find('list', valueField: 'id')
             ->where([
                 $table->aliasField('name') => $application,
             ])

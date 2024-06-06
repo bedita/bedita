@@ -80,12 +80,9 @@ class ParentsRelationshipTest extends IntegrationTestCase
         // POST: add 3 folders as parents relationships
         $foldersTable = TableRegistry::getTableLocator()->get('Folders');
         $folders = $foldersTable
-            ->find('list', [
-                'keyField' => 'uname',
-                'valueField' => 'id',
-            ])
+            ->find('list', keyField: 'uname', valueField: 'id')
             ->where(['object_type_id' => $foldersTable->objectType()->id])
-            ->order(['id' => 'ASC'])
+            ->orderBy(['id' => 'ASC'])
             ->limit(3)
             ->toArray();
 
@@ -245,9 +242,9 @@ class ParentsRelationshipTest extends IntegrationTestCase
         $this->post('/documents/2/relationships/parents', json_encode(compact('data')));
         $this->assertResponseCode(200);
 
-        $childrenIds = $this->Trees->find('list', ['valueField' => 'object_id'])
+        $childrenIds = $this->Trees->find('list', valueField: 'object_id')
             ->where(['parent_id' => 12])
-            ->order(['tree_left' => 'ASC'])
+            ->orderBy(['tree_left' => 'ASC'])
             ->all()
             ->toList();
 
@@ -306,9 +303,9 @@ class ParentsRelationshipTest extends IntegrationTestCase
         static::assertEquals('Invalid data', $result['error']['title']);
         static::assertEquals($expected, $result['error']['detail']);
 
-        $childrenIds = $this->Trees->find('list', ['valueField' => 'object_id'])
+        $childrenIds = $this->Trees->find('list', valueField: 'object_id')
             ->where(['parent_id' => 12])
-            ->order(['tree_left' => 'ASC'])
+            ->orderBy(['tree_left' => 'ASC'])
             ->all()
             ->toList();
 

@@ -42,7 +42,7 @@ class StreamsController extends ResourcesController
     /**
      * @inheritDoc
      */
-    public $defaultTable = 'Streams';
+    public ?string $defaultTable = 'Streams';
 
     /**
      * @inheritDoc

@@ -45,7 +45,7 @@ class Tree extends Entity
     /**
      * @inheritDoc
      */
-    protected $_accessible = [
+    protected array $_accessible = [
         '*' => false,
         'object_id' => true,
         'parent_id' => true,

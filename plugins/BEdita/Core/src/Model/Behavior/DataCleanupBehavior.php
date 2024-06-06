@@ -37,7 +37,7 @@ class DataCleanupBehavior extends Behavior
      *
      * @var array
      */
-    protected $_defaultConfig = [
+    protected array $_defaultConfig = [
         'fields' => [
             'status' => 'draft',
             'deleted' => 0,

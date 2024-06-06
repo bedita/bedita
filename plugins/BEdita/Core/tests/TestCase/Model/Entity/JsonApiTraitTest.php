@@ -44,7 +44,7 @@ class JsonApiTraitTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.Relations',
         'plugin.BEdita/Core.RelationTypes',
@@ -247,7 +247,7 @@ class JsonApiTraitTest extends TestCase
             ],
         ];
 
-        $role = $this->Roles->get(1, ['contain' => ['Users']])->jsonApiSerialize();
+        $role = $this->Roles->get(1, contain: ['Users'])->jsonApiSerialize();
 
         $relationships = $role['relationships'];
         $included = $role['included'];
@@ -303,7 +303,7 @@ class JsonApiTraitTest extends TestCase
             ],
         ];
 
-        $objectType = $this->ObjectTypes->get(2, ['contain' => ['Parent', 'RightRelations', 'LeftRelations']])->jsonApiSerialize();
+        $objectType = $this->ObjectTypes->get(2, contain: ['Parent', 'RightRelations', 'LeftRelations'])->jsonApiSerialize();
 
         $relationships = $objectType['relationships'];
         $included = $objectType['included'];
@@ -345,7 +345,7 @@ class JsonApiTraitTest extends TestCase
             ],
         ];
 
-        $role = $this->Roles->get(2, ['contain' => ['Users']])->jsonApiSerialize();
+        $role = $this->Roles->get(2, contain: ['Users'])->jsonApiSerialize();
 
         $relationships = $role['relationships'];
 
@@ -478,7 +478,7 @@ class JsonApiTraitTest extends TestCase
             'password_modified',
         ];
 
-        $user = $this->Roles->get(1, ['contain' => ['Users']])
+        $user = $this->Roles->get(1, contain: ['Users'])
             ->users[0]
             ->jsonApiSerialize();
 
@@ -499,7 +499,7 @@ class JsonApiTraitTest extends TestCase
      */
     public function testTreeJoinData(): void
     {
-        $folder = TableRegistry::getTableLocator()->get('Folders')->get(12, ['contain' => ['Children']]);
+        $folder = TableRegistry::getTableLocator()->get('Folders')->get(12, contain: ['Children']);
         $child = $folder->children[0]->jsonApiSerialize();
 
         $expected = [
@@ -553,7 +553,7 @@ class JsonApiTraitTest extends TestCase
             'user_id',
         ];
 
-        $user = $this->Roles->get(1, ['contain' => ['Users']])
+        $user = $this->Roles->get(1, contain: ['Users'])
             ->users[0];
         $user->_joinData->setHidden([]);
         $user = $user->jsonApiSerialize();

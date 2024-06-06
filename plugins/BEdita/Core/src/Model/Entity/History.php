@@ -45,7 +45,7 @@ class History extends Entity implements JsonApiSerializable
      *
      * @var array
      */
-    protected $_accessible = [
+    protected array $_accessible = [
         '*' => false,
     ];
 }

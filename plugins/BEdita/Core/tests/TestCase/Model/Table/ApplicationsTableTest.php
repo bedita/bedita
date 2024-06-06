@@ -48,7 +48,7 @@ class ApplicationsTableTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.Applications',
         'plugin.BEdita/Core.Config',
@@ -389,7 +389,7 @@ class ApplicationsTableTest extends TestCase
      */
     public function testAfterSave(): void
     {
-        $app = $this->Applications->find('apiKey', ['apiKey' => API_KEY])->first();
+        $app = $this->Applications->find('apiKey', apiKey: API_KEY)->first();
         $cacheConf = $this->Applications->behaviors()->get('QueryCache')->getConfig('cacheConfig');
         $read = Cache::read(sprintf('app_%s', API_KEY), $cacheConf);
         static::assertNotEmpty($read);

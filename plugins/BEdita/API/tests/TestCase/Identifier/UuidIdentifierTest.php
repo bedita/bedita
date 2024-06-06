@@ -31,7 +31,7 @@ class UuidIdentifierTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.History',
         'plugin.BEdita/Core.PropertyTypes',

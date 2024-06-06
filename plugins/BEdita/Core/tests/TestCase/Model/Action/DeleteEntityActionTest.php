@@ -31,7 +31,7 @@ class DeleteEntityActionTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.FakeAnimals',
     ];
 

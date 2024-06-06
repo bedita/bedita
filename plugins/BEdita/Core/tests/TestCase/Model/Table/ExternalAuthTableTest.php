@@ -18,7 +18,7 @@ namespace BEdita\Core\Test\TestCase\Model\Table;
 use BEdita\Core\Exception\BadFilterException;
 use BEdita\Core\Utility\LoggedUser;
 use Cake\Core\Configure;
-use Cake\I18n\FrozenTime;
+use Cake\I18n\DateTime;
 use Cake\ORM\Association\BelongsTo;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
@@ -43,7 +43,7 @@ class ExternalAuthTableTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.Relations',
         'plugin.BEdita/Core.RelationTypes',
@@ -259,8 +259,8 @@ class ExternalAuthTableTest extends TestCase
                         'auth_provider_id' => 1,
                         'params' => null,
                         'provider_username' => 'first_user',
-                        'created' => new FrozenTime('2018-04-07 12:51:27'),
-                        'modified' => new FrozenTime('2018-04-07 12:51:27'),
+                        'created' => new DateTime('2018-04-07 12:51:27'),
+                        'modified' => new DateTime('2018-04-07 12:51:27'),
                     ],
                 ],
                 'example',
@@ -273,8 +273,8 @@ class ExternalAuthTableTest extends TestCase
                         'auth_provider_id' => 1,
                         'params' => null,
                         'provider_username' => 'first_user',
-                        'created' => new FrozenTime('2018-04-07 12:51:27'),
-                        'modified' => new FrozenTime('2018-04-07 12:51:27'),
+                        'created' => new DateTime('2018-04-07 12:51:27'),
+                        'modified' => new DateTime('2018-04-07 12:51:27'),
                     ],
                 ],
                 [
@@ -289,8 +289,8 @@ class ExternalAuthTableTest extends TestCase
                         'auth_provider_id' => 1,
                         'params' => null,
                         'provider_username' => 'first_user',
-                        'created' => new FrozenTime('2018-04-07 12:51:27'),
-                        'modified' => new FrozenTime('2018-04-07 12:51:27'),
+                        'created' => new DateTime('2018-04-07 12:51:27'),
+                        'modified' => new DateTime('2018-04-07 12:51:27'),
                     ],
                 ],
                 1,
@@ -348,8 +348,8 @@ class ExternalAuthTableTest extends TestCase
                         'auth_provider_id' => 2,
                         'params' => null,
                         'provider_username' => '17fec0fa-068a-4d7c-8283-da91d47cef7d',
-                        'created' => new FrozenTime('2018-04-07 12:51:27'),
-                        'modified' => new FrozenTime('2018-04-07 12:51:27'),
+                        'created' => new DateTime('2018-04-07 12:51:27'),
+                        'modified' => new DateTime('2018-04-07 12:51:27'),
                         'auth_provider' => [
                             'id' => 2,
                             'name' => 'uuid',
@@ -357,8 +357,8 @@ class ExternalAuthTableTest extends TestCase
                             'url' => null,
                             'params' => ['status' => 'on'],
                             'enabled' => true,
-                            'created' => new FrozenTime('2018-04-07 12:51:27'),
-                            'modified' => new FrozenTime('2018-04-07 12:51:27'),
+                            'created' => new DateTime('2018-04-07 12:51:27'),
+                            'modified' => new DateTime('2018-04-07 12:51:27'),
                         ],
                     ],
                 ],
@@ -372,8 +372,8 @@ class ExternalAuthTableTest extends TestCase
                         'auth_provider_id' => 2,
                         'params' => null,
                         'provider_username' => '17fec0fa-068a-4d7c-8283-da91d47cef7d',
-                        'created' => new FrozenTime('2018-04-07 12:51:27'),
-                        'modified' => new FrozenTime('2018-04-07 12:51:27'),
+                        'created' => new DateTime('2018-04-07 12:51:27'),
+                        'modified' => new DateTime('2018-04-07 12:51:27'),
                         'auth_provider' => [
                             'id' => 2,
                             'name' => 'uuid',
@@ -381,8 +381,8 @@ class ExternalAuthTableTest extends TestCase
                             'url' => null,
                             'params' => ['status' => 'on'],
                             'enabled' => true,
-                            'created' => new FrozenTime('2018-04-07 12:51:27'),
-                            'modified' => new FrozenTime('2018-04-07 12:51:27'),
+                            'created' => new DateTime('2018-04-07 12:51:27'),
+                            'modified' => new DateTime('2018-04-07 12:51:27'),
                         ],
                     ],
                 ],

@@ -147,11 +147,8 @@ class JobsShell extends Shell /* @phpstan-ignore-line */
     {
         $this->out('=====> <info>Finding pending jobs...</info>');
         $query = $this->AsyncJobs
-            ->find('list', ['valueField' => $this->AsyncJobs->getPrimaryKey()])
-            ->find('priority', [
-                'priority' => $this->param('min-priority'),
-                'service' => $this->param('service'),
-            ]);
+            ->find('list', valueField: $this->AsyncJobs->getPrimaryKey())
+            ->find('priority', priority: $this->param('min-priority'), service: $this->param('service'));
         if ($this->param('limit') !== null) {
             $query = $query->limit($this->param('limit'));
         }

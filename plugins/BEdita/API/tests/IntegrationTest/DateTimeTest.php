@@ -75,7 +75,7 @@ class DateTimeTest extends IntegrationTestCase
                     'publish_start' => '2018-08-02T16:23:23+00:00',
                 ],
             ],
-            // Note: \Cake\I18n\FrozenDate::parse('1533117600') gives an error => parsing a date from a timestamp is questionable.. removing this test for now
+            // Note: \Cake\I18n\Date::parse('1533117600') gives an error => parsing a date from a timestamp is questionable.. removing this test for now
             // 'date timestamp' => [
             //     [
             //         'birthdate' => '2018-08-01',

@@ -28,7 +28,7 @@ class ApplicationsFixture extends TestFixture
      *
      * @var array
      */
-    public $records = [
+    public array $records = [
         [
             'api_key' => API_KEY,
             'client_secret' => null,

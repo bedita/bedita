@@ -54,7 +54,7 @@ class ObjectsController extends ResourcesController
     /**
      * @inheritDoc
      */
-    public $defaultTable = 'Objects';
+    public ?string $defaultTable = 'Objects';
 
     /**
      * The referred object type entity filled when `object_type` request param is set and valid

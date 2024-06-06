@@ -34,9 +34,9 @@ use Cake\Utility\Hash;
  * @property string $status
  * @property string $uname
  * @property bool $locked
- * @property \Cake\I18n\Time|\Cake\I18n\FrozenTime $created
- * @property \Cake\I18n\Time|\Cake\I18n\FrozenTime $modified
- * @property \Cake\I18n\Time|\Cake\I18n\FrozenTime $published
+ * @property \Cake\I18n\Time|\Cake\I18n\DateTime $created
+ * @property \Cake\I18n\Time|\Cake\I18n\DateTime $modified
+ * @property \Cake\I18n\Time|\Cake\I18n\DateTime $published
  * @property string $title
  * @property string $description
  * @property string $body
@@ -45,8 +45,8 @@ use Cake\Utility\Hash;
  * @property string $lang
  * @property int $created_by
  * @property int $modified_by
- * @property \Cake\I18n\Time|\Cake\I18n\FrozenTime $publish_start
- * @property \Cake\I18n\Time|\Cake\I18n\FrozenTime $publish_end
+ * @property \Cake\I18n\Time|\Cake\I18n\DateTime $publish_start
+ * @property \Cake\I18n\Time|\Cake\I18n\DateTime $publish_end
  * @property array $perms
  *
  * @property \BEdita\Core\Model\Entity\ObjectType $object_type
@@ -76,7 +76,7 @@ class ObjectEntity extends Entity implements JsonApiSerializable
     /**
      * @inheritDoc
      */
-    protected $_accessible = [
+    protected array $_accessible = [
         '*' => true,
         'id' => false,
         'object_type_id' => false,
@@ -95,7 +95,7 @@ class ObjectEntity extends Entity implements JsonApiSerializable
     /**
      * @inheritDoc
      */
-    protected $_virtual = [
+    protected array $_virtual = [
         'type',
         'perms',
     ];
@@ -103,7 +103,7 @@ class ObjectEntity extends Entity implements JsonApiSerializable
     /**
      * @inheritDoc
      */
-    protected $_hidden = [
+    protected array $_hidden = [
         'created_by_user',
         'modified_by_user',
         'object_type_id',

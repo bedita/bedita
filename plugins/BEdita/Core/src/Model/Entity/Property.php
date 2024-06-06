@@ -53,7 +53,7 @@ class Property extends Entity implements JsonApiSerializable
     /**
      * @inheritDoc
      */
-    protected $_accessible = [
+    protected array $_accessible = [
         '*' => true,
         'id' => false,
         'object_type_id' => false,
@@ -72,7 +72,7 @@ class Property extends Entity implements JsonApiSerializable
     /**
      * @inheritDoc
      */
-    protected $_virtual = [
+    protected array $_virtual = [
         'property_type_name',
         'object_type_name',
     ];
@@ -80,7 +80,7 @@ class Property extends Entity implements JsonApiSerializable
     /**
      * @inheritDoc
      */
-    protected $_hidden = [
+    protected array $_hidden = [
         'object_type_id',
         'object_type',
         'property_type_id',
@@ -101,9 +101,7 @@ class Property extends Entity implements JsonApiSerializable
 
         try {
             $this->_fields['property_type'] = TableRegistry::getTableLocator()->get('PropertyTypes')
-                ->get($this->property_type_id, [
-                    'cache' => ObjectTypesTable::CACHE_CONFIG,
-                ]);
+                ->get($this->property_type_id, cache: ObjectTypesTable::CACHE_CONFIG);
 
             return $this->_fields['property_type'];
         } catch (RecordNotFoundException $e) {

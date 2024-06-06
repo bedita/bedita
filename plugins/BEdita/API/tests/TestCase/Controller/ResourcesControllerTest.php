@@ -44,7 +44,7 @@ class ResourcesControllerTest extends IntegrationTestCase
         $request = (new ServerRequest())->withAttribute('authentication', $serviceMock);
 
         $controller = new class ($request) extends ResourcesController {
-            protected $modelClass = 'Users';
+            protected ?string $modelClass = 'Users';
 
             public function getDefaultTable()
             {

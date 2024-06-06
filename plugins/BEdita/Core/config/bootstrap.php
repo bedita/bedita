@@ -14,7 +14,6 @@ use Cake\Core\Configure\Engine\IniConfig;
 use Cake\Database\TypeFactory;
 use Cake\I18n\ChainMessagesLoader;
 use Cake\I18n\Date;
-use Cake\I18n\FrozenDate;
 use Cake\I18n\I18n;
 use Cake\ORM\TableRegistry;
 
@@ -58,7 +57,7 @@ if (!Configure::isConfigured('ini')) {
 /*
  * Set the default format used converting a date to json
  */
-FrozenDate::setJsonEncodeFormat('yyyy-MM-dd');
+Date::setJsonEncodeFormat('yyyy-MM-dd');
 Date::setJsonEncodeFormat('yyyy-MM-dd');
 
 /**

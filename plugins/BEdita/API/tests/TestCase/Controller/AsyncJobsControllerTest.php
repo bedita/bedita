@@ -285,7 +285,7 @@ class AsyncJobsControllerTest extends IntegrationTestCase
         $this->assertContentType('application/vnd.api+json');
         $asyncJob = TableRegistry::getTableLocator()->get('AsyncJobs')
             ->find()
-            ->order(['created' => 'DESC'])
+            ->orderBy(['created' => 'DESC'])
             ->first();
         $expected = array_merge(['uuid' => $asyncJob->get('uuid')], $data['attributes']);
         static::assertArraySubset($expected, $asyncJob->toArray());

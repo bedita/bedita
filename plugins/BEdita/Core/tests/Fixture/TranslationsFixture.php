@@ -14,7 +14,7 @@ declare(strict_types=1);
  */
 namespace BEdita\Core\Test\Fixture;
 
-use Cake\I18n\FrozenTime;
+use Cake\I18n\DateTime;
 use Cake\TestSuite\Fixture\TestFixture;
 
 /**
@@ -32,8 +32,8 @@ class TranslationsFixture extends TestFixture
                 'object_id' => 2,
                 'lang' => 'it-IT',
                 'status' => 'on',
-                'created' => FrozenTime::now(),
-                'modified' => FrozenTime::now(),
+                'created' => DateTime::now(),
+                'modified' => DateTime::now(),
                 'created_by' => 1,
                 'modified_by' => 1,
                 'translated_fields' => [
@@ -50,8 +50,8 @@ class TranslationsFixture extends TestFixture
                 'object_id' => 2,
                 'lang' => 'fr',
                 'status' => 'on',
-                'created' => FrozenTime::now(),
-                'modified' => FrozenTime::now(),
+                'created' => DateTime::now(),
+                'modified' => DateTime::now(),
                 'created_by' => 1,
                 'modified_by' => 1,
                 'translated_fields' => [

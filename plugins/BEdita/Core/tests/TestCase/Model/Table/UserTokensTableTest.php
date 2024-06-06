@@ -40,7 +40,7 @@ class UserTokensTableTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.Applications',
         'plugin.BEdita/Core.Objects',
@@ -144,7 +144,7 @@ class UserTokensTableTest extends TestCase
      */
     public function testValidFinder()
     {
-        $entity = $this->UserTokens->find('valid')->order(['id' => 'ASC'])->first();
+        $entity = $this->UserTokens->find('valid')->orderBy(['id' => 'ASC'])->first();
 
         static::assertNotEmpty($entity);
         static::assertEquals(1, $entity->get('id'));

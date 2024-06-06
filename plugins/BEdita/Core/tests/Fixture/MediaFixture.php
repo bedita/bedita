@@ -26,7 +26,7 @@ class MediaFixture extends TestFixture
      *
      * @var array
      */
-    public $records = [
+    public array $records = [
         [
             'id' => 10,
             'name' => 'My media name',

@@ -17,7 +17,7 @@ namespace BEdita\Core\Model\Table;
 
 use Cake\Core\Configure;
 use Cake\Database\Expression\QueryExpression;
-use Cake\I18n\FrozenTime;
+use Cake\I18n\DateTime;
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
@@ -150,7 +150,7 @@ class UserTokensTable extends Table
      */
     protected function findValid(Query $query)
     {
-        $now = FrozenTime::now();
+        $now = DateTime::now();
 
         return $query
             ->where(function (QueryExpression $exp) use ($now) {

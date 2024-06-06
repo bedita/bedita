@@ -22,7 +22,7 @@ use Cake\Auth\WeakPasswordHasher;
 use Cake\Core\Configure;
 use Cake\Http\Exception\BadRequestException;
 use Cake\Http\ServerRequest;
-use Cake\I18n\FrozenTime;
+use Cake\I18n\DateTime;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
@@ -225,7 +225,7 @@ class UsersTableTest extends TestCase
     public function testLogin()
     {
         $identity = new Identity($this->Users->get(1));
-        $expected = new FrozenTime();
+        $expected = new DateTime();
         $this->Users->dispatchEvent('Authentication.afterIdentify', compact('identity'));
 
         $lastLogin = $this->Users->get(1)->last_login;
@@ -261,7 +261,7 @@ class UsersTableTest extends TestCase
         $request = new ServerRequest();
         $request = $request->withData('grant_type', 'password')
             ->withData('username', 'second user');
-        $now = new FrozenTime();
+        $now = new DateTime();
         $this->Users->dispatchEvent('Authentication.failure', compact('request'));
 
         $user = $this->Users->get(5);

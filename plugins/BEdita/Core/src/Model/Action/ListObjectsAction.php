@@ -82,7 +82,7 @@ class ListObjectsAction extends BaseAction
         }
 
         if (!empty($data['lang'])) {
-            $query = $query->find('translations', ['lang' => $data['lang']]);
+            $query = $query->find('translations', lang: $data['lang']);
         }
 
         return $query->find('publishable');

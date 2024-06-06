@@ -26,7 +26,7 @@ class ObjectPropertiesFixture extends TestFixture
      *
      * @var array
      */
-    public $records = [
+    public array $records = [
         [
             'id' => 1,
             'property_id' => 1,

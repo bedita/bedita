@@ -34,7 +34,7 @@ class RemoveAssociatedActionTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.FakeAnimals',
         'plugin.BEdita/Core.FakeArticles',
         'plugin.BEdita/Core.FakeTags',
@@ -133,7 +133,7 @@ class RemoveAssociatedActionTest extends TestCase
         $association = TableRegistry::getTableLocator()->get($table)->getAssociation($association);
         $action = new RemoveAssociatedAction(compact('association'));
 
-        $entity = $association->getSource()->get($entity, ['contain' => [$association->getName()]]);
+        $entity = $association->getSource()->get($entity, contain: [$association->getName()]);
         $relatedEntities = null;
         if (is_int($related)) {
             $relatedEntities = $association->getTarget()->get($related);

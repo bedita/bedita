@@ -22,7 +22,7 @@ use Cake\Console\ConsoleIo;
 use Cake\Console\ConsoleOptionParser;
 use Cake\Core\Configure;
 use Cake\Database\Expression\QueryExpression;
-use Cake\I18n\FrozenTime;
+use Cake\I18n\DateTime;
 
 /**
  * Command to update/create thumbnails for all images.
@@ -67,7 +67,7 @@ class ThumbsCommand extends Command
 
         $io->out(sprintf(
             '=====> Operation started at <info>%s</info>, using presets: %s',
-            FrozenTime::now()->toIso8601String(),
+            DateTime::now()->toIso8601String(),
             implode(', ', array_map(fn (string $preset) => sprintf('<comment>%s</comment>', $preset), $presets)),
         ));
 
@@ -93,7 +93,7 @@ class ThumbsCommand extends Command
 
         $io->out(sprintf(
             '=====> Operation completed at <info>%s</info>: <success>%d</success> OK, <error>%d</error> failed',
-            FrozenTime::now()->toIso8601String(),
+            DateTime::now()->toIso8601String(),
             $success,
             $failed,
         ));

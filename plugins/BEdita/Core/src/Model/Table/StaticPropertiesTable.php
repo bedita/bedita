@@ -161,7 +161,7 @@ class StaticPropertiesTable extends Table
             function () {
                 return $this->ObjectTypes->find()
                     ->contain(['Parent'])
-                    ->order([
+                    ->orderBy([
                         $this->ObjectTypes->aliasField('tree_left') => 'ASC', // Ensure parent tables are processed first!
                     ])
                     ->all()

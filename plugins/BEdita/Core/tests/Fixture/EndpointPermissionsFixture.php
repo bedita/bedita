@@ -28,7 +28,7 @@ class EndpointPermissionsFixture extends TestFixture
      *
      * @var array
      */
-    public $records = [
+    public array $records = [
         [
             'endpoint_id' => null,
             'application_id' => null,

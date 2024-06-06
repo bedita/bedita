@@ -271,7 +271,7 @@ class EndpointsControllerTest extends IntegrationTestCase
 
         $endpoint = TableRegistry::getTableLocator()->get('Endpoints')
             ->find()
-            ->order(['id' => 'DESC'])
+            ->orderBy(['id' => 'DESC'])
             ->first();
 
         $this->assertHeader('Location', 'http://api.example.com/admin/endpoints/' . $endpoint->id);

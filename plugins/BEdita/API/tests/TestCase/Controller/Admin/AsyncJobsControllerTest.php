@@ -417,7 +417,7 @@ class AsyncJobsControllerTest extends IntegrationTestCase
 
         $asyncJob = TableRegistry::getTableLocator()->get('AsyncJobs')
             ->find()
-            ->order(['created' => 'DESC'])
+            ->orderBy(['created' => 'DESC'])
             ->first();
 
         $this->assertHeader('Location', 'http://api.example.com/admin/async_jobs/' . $asyncJob->get('uuid'));

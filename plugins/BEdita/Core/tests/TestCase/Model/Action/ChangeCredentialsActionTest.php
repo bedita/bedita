@@ -22,7 +22,7 @@ use BEdita\Core\Model\Entity\AsyncJob;
 use BEdita\Core\Model\Entity\User;
 use Cake\Event\Event;
 use Cake\Event\EventManager;
-use Cake\I18n\FrozenTime;
+use Cake\I18n\DateTime;
 use Cake\Mailer\TransportFactory;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
@@ -39,7 +39,7 @@ class ChangeCredentialsActionTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.Objects',
         'plugin.BEdita/Core.Profiles',
@@ -82,7 +82,7 @@ class ChangeCredentialsActionTest extends TestCase
                 'payload' => [
                     'user_id' => 1,
                 ],
-                'scheduled_from' => new FrozenTime('1 day'),
+                'scheduled_from' => new DateTime('1 day'),
                 'priority' => 1,
             ],
         ]);
@@ -116,7 +116,7 @@ class ChangeCredentialsActionTest extends TestCase
         $action = new ChangeCredentialsAction();
         $res = $action($data);
 
-        $user = TableRegistry::getTableLocator()->get('Users')->get(1, ['contain' => ['Roles']]);
+        $user = TableRegistry::getTableLocator()->get('Users')->get(1, contain: ['Roles']);
         static::assertEquals($res->id, $user->id);
         static::assertEquals($res->username, $user->username);
         static::assertSame(1, $eventDispatched, 'Event not dispatched');

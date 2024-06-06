@@ -32,7 +32,7 @@ class SimpleSearchTraitTest extends TestCase
     /**
      * @inheritDoc
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.FakeSearches',
     ];
 

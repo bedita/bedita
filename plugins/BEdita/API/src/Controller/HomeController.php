@@ -175,7 +175,7 @@ class HomeController extends AppController
     protected function objectTypesEndpoints(): array
     {
         $allTypes = TableRegistry::getTableLocator()->get('ObjectTypes')
-            ->find('list', ['keyField' => 'name', 'valueField' => 'is_abstract'])
+            ->find('list', keyField: 'name', valueField: 'is_abstract')
             ->where(['enabled' => true])
             ->toArray();
         $endPoints = [];

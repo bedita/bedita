@@ -25,8 +25,8 @@ use Cake\ORM\Entity;
  * @property int $object_id
  * @property string $lang
  * @property string $status
- * @property \Cake\I18n\Time|\Cake\I18n\FrozenTime $created
- * @property \Cake\I18n\Time|\Cake\I18n\FrozenTime $modified
+ * @property \Cake\I18n\Time|\Cake\I18n\DateTime $created
+ * @property \Cake\I18n\Time|\Cake\I18n\DateTime $modified
  * @property int $created_by
  * @property int $modified_by
  * @property array $translated_fields
@@ -42,7 +42,7 @@ class Translation extends Entity implements JsonApiSerializable
     /**
      * @inheritDoc
      */
-    protected $_accessible = [
+    protected array $_accessible = [
         'object_id' => true,
         'lang' => true,
         'status' => true,
@@ -52,7 +52,7 @@ class Translation extends Entity implements JsonApiSerializable
     /**
      * @inheritDoc
      */
-    protected $_hidden = [
+    protected array $_hidden = [
         'created_by_user',
         'modified_by_user',
     ];

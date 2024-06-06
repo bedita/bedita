@@ -39,7 +39,7 @@ class ObjectPermissionsTableTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.Objects',
         'plugin.BEdita/Core.Profiles',
@@ -245,7 +245,7 @@ class ObjectPermissionsTableTest extends TestCase
      */
     public function testBeforeSaveWithPermissionOk(): void
     {
-        $user = $this->fetchTable('Users')->get(5, ['contain' => 'Roles']);
+        $user = $this->fetchTable('Users')->get(5, contain: 'Roles');
         LoggedUser::setUser($user->toArray());
         $ObjectTypes = $this->fetchTable('ObjectTypes');
         /** @var \BEdita\Core\Model\Entity\ObjectType $ot */

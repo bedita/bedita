@@ -343,7 +343,7 @@ class RelationsControllerTest extends IntegrationTestCase
 
         $relation = TableRegistry::getTableLocator()->get('Relations')
             ->find()
-            ->order(['id' => 'DESC'])
+            ->orderBy(['id' => 'DESC'])
             ->first();
 
         $this->assertHeader('Location', 'http://api.example.com/model/relations/' . $relation->id);

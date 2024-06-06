@@ -33,7 +33,7 @@ class DateRange extends Entity
     /**
      * @inheritDoc
      */
-    protected $_accessible = [
+    protected array $_accessible = [
         '*' => true,
         'id' => false,
     ];
@@ -41,7 +41,7 @@ class DateRange extends Entity
     /**
      * @inheritDoc
      */
-    protected $_hidden = [
+    protected array $_hidden = [
         'id',
         'object_id',
     ];
@@ -177,15 +177,15 @@ class DateRange extends Entity
      * ### Example
      *
      * ```php
-     * $array1 = [new DateRange(['start_date' => new FrozenTime('2017-01-01 00:00:00'), 'end_date' => new FrozenTime('2017-01-31 12:59:59')])];
-     * $array2 = [new DateRange(['start_date' => new FrozenTime('2017-01-10 00:00:00'), 'end_date' => new FrozenTime('2017-01-19 12:59:59')])];
+     * $array1 = [new DateRange(['start_date' => new DateTime('2017-01-01 00:00:00'), 'end_date' => new DateTime('2017-01-31 12:59:59')])];
+     * $array2 = [new DateRange(['start_date' => new DateTime('2017-01-10 00:00:00'), 'end_date' => new DateTime('2017-01-19 12:59:59')])];
      *
      * $diff = DateRange::diff($array1, $array2);
      *
      * // $diff will now be equivalent to:
      * $diff = [
-     *     new DateRange(['start_date' => new FrozenTime('2017-01-10 00:00:00'), 'end_date' => new FrozenTime('2017-01-10 00:00:00')]),
-     *     new DateRange(['start_date' => new FrozenTime('2017-01-19 12:59:59'), 'end_date' => new FrozenTime('2017-01-19 12:59:59')]),
+     *     new DateRange(['start_date' => new DateTime('2017-01-10 00:00:00'), 'end_date' => new DateTime('2017-01-10 00:00:00')]),
+     *     new DateRange(['start_date' => new DateTime('2017-01-19 12:59:59'), 'end_date' => new DateTime('2017-01-19 12:59:59')]),
      * ];
      * ```
      *
