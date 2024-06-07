@@ -92,7 +92,7 @@ class TreeBehaviorTest extends TestCase
      *
      * @return array
      */
-    public function getCurrentPositionProvider(): array
+    public static function getCurrentPositionProvider(): array
     {
         return [
             '1st node, root' => [
@@ -143,7 +143,7 @@ class TreeBehaviorTest extends TestCase
      *
      * @return array
      */
-    public function moveAtProvider(): array
+    public static function moveAtProvider(): array
     {
         return [
             'first' => [

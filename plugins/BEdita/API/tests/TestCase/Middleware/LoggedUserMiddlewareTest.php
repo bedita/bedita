@@ -119,7 +119,7 @@ class LoggedUserMiddlewareTest extends TestCase
      *
      * @return array
      */
-    public function unauthorizedProvider(): array
+    public static function unauthorizedProvider(): array
     {
         return [
             'auth' => ['/auth'],
@@ -153,7 +153,7 @@ class LoggedUserMiddlewareTest extends TestCase
      *
      * @return array
      */
-    public function setupLoggedUserProvider(): array
+    public static function setupLoggedUserProvider(): array
     {
         return [
             'user with entity' => [

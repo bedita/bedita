@@ -101,7 +101,7 @@ class EndpointPermissionsTableTest extends TestCase
      *
      * @return array
      */
-    public function validationProvider()
+    public static function validationProvider(): array
     {
         return [
             'valid' => [
@@ -153,7 +153,7 @@ class EndpointPermissionsTableTest extends TestCase
      *
      * @return array
      */
-    public function buildRulesProvider()
+    public static function buildRulesProvider(): array
     {
         return [
             'inValidEndpoint' => [
@@ -204,7 +204,7 @@ class EndpointPermissionsTableTest extends TestCase
      *
      * @return array
      */
-    public function findByEndpointProvider()
+    public static function findByEndpointProvider(): array
     {
         return [
             'auth' => [
@@ -258,7 +258,7 @@ class EndpointPermissionsTableTest extends TestCase
      *
      * @return array
      */
-    public function findByApplicationProvider()
+    public static function findByApplicationProvider(): array
     {
         return [
             'application one' => [
@@ -308,7 +308,7 @@ class EndpointPermissionsTableTest extends TestCase
      *
      * @return array
      */
-    public function findByRoleProvider()
+    public static function findByRoleProvider(): array
     {
         return [
             'first' => [
@@ -362,7 +362,7 @@ class EndpointPermissionsTableTest extends TestCase
      *
      * @return array
      */
-    public function findResourceProvider(): array
+    public static function findResourceProvider(): array
     {
         return [
             'application, endpoint, role' => [
@@ -413,7 +413,7 @@ class EndpointPermissionsTableTest extends TestCase
     /**
      * Data provider for `testFetchCount`
      */
-    public function fetchCountProvider(): array
+    public static function fetchCountProvider(): array
     {
         return [
             'one' => [
@@ -446,7 +446,7 @@ class EndpointPermissionsTableTest extends TestCase
     /**
      * Data provider for `testFetchPermissions`
      */
-    public function fetchPermissionsProvider(): array
+    public static function fetchPermissionsProvider(): array
     {
         return [
             'one' => [

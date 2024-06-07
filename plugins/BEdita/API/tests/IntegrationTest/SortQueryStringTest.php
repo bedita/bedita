@@ -36,7 +36,7 @@ class SortQueryStringTest extends IntegrationTestCase
      *
      * @return array
      */
-    public function sortProvider()
+    public static function sortProvider(): array
     {
         return [
             'simpleObject' => [

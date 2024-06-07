@@ -96,7 +96,7 @@ class PropertiesTableTest extends TestCase
      *
      * @return array
      */
-    public function validationProvider()
+    public static function validationProvider(): array
     {
         return [
             'valid' => [
@@ -147,7 +147,7 @@ class PropertiesTableTest extends TestCase
      *
      * @return array
      */
-    public function findObjectTypeProvider()
+    public static function findObjectTypeProvider(): array
     {
         return [
             'objects' => [
@@ -237,7 +237,7 @@ class PropertiesTableTest extends TestCase
      *
      * @return array
      */
-    public function findTypeProvider()
+    public static function findTypeProvider(): array
     {
         $objects = [
             'id',
@@ -458,7 +458,7 @@ class PropertiesTableTest extends TestCase
      *
      * @return array
      */
-    public function findResourceProvider(): array
+    public static function findResourceProvider(): array
     {
         return [
             'property' => [

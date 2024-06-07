@@ -115,7 +115,7 @@ class DatabaseConfigTest extends TestCase
      *
      * @return array
      */
-    public function configProvider()
+    public static function configProvider(): array
     {
         return [
             'success' => [

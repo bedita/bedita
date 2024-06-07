@@ -62,7 +62,7 @@ class ImageThumbsHandlerTest extends TestCase
      *
      * @return array
      */
-    public function afterSaveAssociatedProvider(): array
+    public static function afterSaveAssociatedProvider(): array
     {
         $image = $this->getMockBuilder(ObjectEntity::class)
             ->onlyMethods(['get'])

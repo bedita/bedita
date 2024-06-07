@@ -41,7 +41,7 @@ class ObjectTypeBehaviorTest extends TestCase
      *
      * @return array
      */
-    public function objectTypeProvider()
+    public static function objectTypeProvider(): array
     {
         return [
             'getter' => [

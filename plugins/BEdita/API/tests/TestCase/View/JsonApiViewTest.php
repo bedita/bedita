@@ -83,7 +83,7 @@ class JsonApiViewTest extends TestCase
      *
      * @return array
      */
-    public function renderWithoutViewProvider()
+    public static function renderWithoutViewProvider(): array
     {
         return [
             'data' => [

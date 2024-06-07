@@ -113,7 +113,7 @@ class UsersTableTest extends TestCase
      *
      * @return array
      */
-    public function saveProvider()
+    public static function saveProvider(): array
     {
         return [
             'valid' => [
@@ -172,7 +172,7 @@ class UsersTableTest extends TestCase
      *
      * @return array
      */
-    public function validationProvider()
+    public static function validationProvider(): array
     {
         return [
             'valid' => [
@@ -496,7 +496,7 @@ class UsersTableTest extends TestCase
      *
      * @return array
      */
-    public function findExternalAuthProvider()
+    public static function findExternalAuthProvider(): array
     {
         return [
             'generic' => [
@@ -550,7 +550,7 @@ class UsersTableTest extends TestCase
      *
      * @return array
      */
-    public function validationSignupProvider()
+    public static function validationSignupProvider(): array
     {
         return [
             'valid' => [
@@ -695,7 +695,7 @@ class UsersTableTest extends TestCase
      *
      * @return array
      */
-    public function beforeMarshalProvider()
+    public static function beforeMarshalProvider(): array
     {
         return [
             'ok' => [
@@ -751,7 +751,7 @@ class UsersTableTest extends TestCase
      *
      * @return array
      */
-    public function customPropsCreateProvider()
+    public static function customPropsCreateProvider(): array
     {
         return [
             'users custom prop' => [
@@ -949,7 +949,7 @@ class UsersTableTest extends TestCase
      *
      * @return array
      */
-    public function prefixProvider()
+    public static function prefixProvider(): array
     {
         return [
             'valid' => [

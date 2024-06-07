@@ -160,7 +160,7 @@ class StaticPropertiesTableTest extends TestCase
      *
      * @return array
      */
-    public function addSchemaDetailsProvider()
+    public static function addSchemaDetailsProvider(): array
     {
         return [
             'objects.status' => [

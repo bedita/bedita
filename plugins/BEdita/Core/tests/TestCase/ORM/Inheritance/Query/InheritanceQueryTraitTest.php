@@ -67,7 +67,7 @@ class InheritanceQueryTraitTest extends TestCase
      *
      * @return array
      */
-    public function addDefaultFieldsProvider()
+    public static function addDefaultFieldsProvider(): array
     {
         return [
             'default' => [

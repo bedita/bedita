@@ -208,7 +208,7 @@ class DatabaseTest extends TestCase
      *
      * @return array
      */
-    public function sqlExecute()
+    public static function sqlExecute(): array
     {
         return [
             ["UPDATE roles SET name='gustavo' WHERE id = 1;\n" .
@@ -249,7 +249,7 @@ class DatabaseTest extends TestCase
      *
      * @return array
      */
-    public function connectionErrorProvider()
+    public static function connectionErrorProvider(): array
     {
         return [
             'errorExecute' => [

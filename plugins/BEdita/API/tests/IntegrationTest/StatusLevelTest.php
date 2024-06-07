@@ -28,7 +28,7 @@ class StatusLevelTest extends IntegrationTestCase
      *
      * @return array
      */
-    public function listProvider()
+    public static function listProvider(): array
     {
         return [
             'on docs' => [
@@ -88,7 +88,7 @@ class StatusLevelTest extends IntegrationTestCase
      *
      * @return array
      */
-    public function singleProvider()
+    public static function singleProvider(): array
     {
         return [
             'notFound' => [

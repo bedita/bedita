@@ -56,7 +56,7 @@ class ResourcesShellTest extends TestCase
      *
      * @return array
      */
-    public function addProvider()
+    public static function addProvider(): array
     {
         return [
             'role' => [
@@ -119,7 +119,7 @@ class ResourcesShellTest extends TestCase
      *
      * @return array
      */
-    public function addPermissionProvider()
+    public static function addPermissionProvider(): array
     {
         return [
             [
@@ -174,7 +174,7 @@ class ResourcesShellTest extends TestCase
      *
      * @return array
      */
-    public function editProvider()
+    public static function editProvider(): array
     {
         return [
             'Applications.api_key' => [
@@ -250,7 +250,7 @@ class ResourcesShellTest extends TestCase
      *
      * @return array
      */
-    public function listProvider()
+    public static function listProvider(): array
     {
         return [
             'applications' => [
@@ -291,7 +291,7 @@ class ResourcesShellTest extends TestCase
      *
      * @return array
      */
-    public function removeProvider()
+    public static function removeProvider(): array
     {
         return [
             'no confirm' => [

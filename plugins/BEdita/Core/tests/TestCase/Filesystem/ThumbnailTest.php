@@ -157,7 +157,7 @@ class ThumbnailTest extends TestCase
      *
      * @return array
      */
-    public function getProvider()
+    public static function getProvider(): array
     {
         return [
             'existing' => [

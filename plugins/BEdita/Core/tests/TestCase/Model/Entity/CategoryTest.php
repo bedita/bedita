@@ -67,7 +67,7 @@ class CategoryTest extends TestCase
      *
      * @return array
      */
-    public function getParentProvider()
+    public static function getParentProvider(): array
     {
         return [
             'no parent' => [
@@ -107,7 +107,7 @@ class CategoryTest extends TestCase
      *
      * @return array
      */
-    public function setParentProvider()
+    public static function setParentProvider(): array
     {
         return [
             'no parent' => [

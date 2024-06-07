@@ -29,7 +29,7 @@ class JsonObjectTypeTest extends TestCase
      *
      * @return array
      */
-    public function toPHPProvider()
+    public static function toPHPProvider(): array
     {
         $obj = new \stdClass();
         $obj->firstName = 'Gustavo';

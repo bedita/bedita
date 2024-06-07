@@ -63,7 +63,7 @@ class JsonApiComponentTest extends TestCase
      *
      * @return array
      */
-    public function initializeProvider()
+    public static function initializeProvider(): array
     {
         return [
             'default' => [
@@ -130,7 +130,7 @@ class JsonApiComponentTest extends TestCase
      *
      * @return array
      */
-    public function paginationProvider()
+    public static function paginationProvider(): array
     {
         return [
             'default' => [
@@ -305,7 +305,7 @@ class JsonApiComponentTest extends TestCase
      *
      * @return array
      */
-    public function beforeFilterProvider()
+    public static function beforeFilterProvider(): array
     {
         return [
             'valid' => [
@@ -371,7 +371,7 @@ class JsonApiComponentTest extends TestCase
      *
      * @return array
      */
-    public function allowedResourceTypesProvider()
+    public static function allowedResourceTypesProvider(): array
     {
         return [
             'single' => [
@@ -459,7 +459,7 @@ class JsonApiComponentTest extends TestCase
      *
      * @return array
      */
-    public function checkMediaTypeProvider()
+    public static function checkMediaTypeProvider(): array
     {
         return [
             'ok' => [
@@ -518,7 +518,7 @@ class JsonApiComponentTest extends TestCase
      *
      * @return array
      */
-    public function allowClientGeneratedIdsProvider()
+    public static function allowClientGeneratedIdsProvider(): array
     {
         return [
             'single' => [

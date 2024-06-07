@@ -94,7 +94,7 @@ class BaseApplicationTest extends TestCase
      *
      * @return array
      */
-    public function configPluginsProvider(): array
+    public static function configPluginsProvider(): array
     {
         return [
             'simple' => [
@@ -178,7 +178,7 @@ class BaseApplicationTest extends TestCase
      *
      * @return array
      */
-    public function authenticationServiceProvider(): array
+    public static function authenticationServiceProvider(): array
     {
         return [
             'default' => [
@@ -275,7 +275,7 @@ class BaseApplicationTest extends TestCase
      *
      * @return array
      */
-    public function loadAuthProvidersProvider(): array
+    public static function loadAuthProvidersProvider(): array
     {
         return [
             'ok' => [

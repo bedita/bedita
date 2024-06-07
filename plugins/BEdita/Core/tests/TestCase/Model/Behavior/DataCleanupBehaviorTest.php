@@ -45,7 +45,7 @@ class DataCleanupBehaviorTest extends TestCase
      *
      * @return array
      */
-    public function cleanupProvider()
+    public static function cleanupProvider(): array
     {
         return [
             'status' => [
@@ -154,7 +154,7 @@ class DataCleanupBehaviorTest extends TestCase
      *
      * @return array
      */
-    public function statusLevelProvider(): array
+    public static function statusLevelProvider(): array
     {
         return [
             'status' => [

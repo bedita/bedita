@@ -86,7 +86,7 @@ class JsonApiTest extends TestCase
      *
      * @return array
      */
-    public function formatDataProvider()
+    public static function formatDataProvider(): array
     {
         return [
             'multipleQueryItems' => [
@@ -504,7 +504,7 @@ class JsonApiTest extends TestCase
      *
      * @return array
      */
-    public function parseDataProvider()
+    public static function parseDataProvider(): array
     {
         return [
             'singleItem' => [
@@ -705,7 +705,7 @@ class JsonApiTest extends TestCase
      *
      * @return array
      */
-    public function schemaInfoProvider()
+    public static function schemaInfoProvider(): array
     {
         return [
             'roles' => [

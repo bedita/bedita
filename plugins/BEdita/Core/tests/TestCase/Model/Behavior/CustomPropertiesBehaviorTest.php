@@ -94,7 +94,7 @@ class CustomPropertiesBehaviorTest extends TestCase
      *
      * @return array
      */
-    public function getAvailableProvider()
+    public static function getAvailableProvider(): array
     {
         return [
             'locations' => [
@@ -234,7 +234,7 @@ class CustomPropertiesBehaviorTest extends TestCase
      *
      * @return array
      */
-    public function beforeFindProvider()
+    public static function beforeFindProvider(): array
     {
         return [
             'simple' => [
@@ -339,7 +339,7 @@ class CustomPropertiesBehaviorTest extends TestCase
      *
      * @return array
      */
-    public function beforeSaveProvider()
+    public static function beforeSaveProvider(): array
     {
         return [
             'simple' => [
@@ -501,7 +501,7 @@ class CustomPropertiesBehaviorTest extends TestCase
      *
      * @return array
      */
-    public function findCustomPropProvider(): array
+    public static function findCustomPropProvider(): array
     {
         return [
             'empty options' => [

@@ -105,7 +105,7 @@ class ApplicationsTableTest extends TestCase
      *
      * @return array
      */
-    public function validationProvider()
+    public static function validationProvider(): array
     {
         return [
             'valid' => [
@@ -184,7 +184,7 @@ class ApplicationsTableTest extends TestCase
      *
      * @return array
      */
-    public function apiKeyGenerationProvider()
+    public static function apiKeyGenerationProvider(): array
     {
         return [
             'new' => [
@@ -261,7 +261,7 @@ class ApplicationsTableTest extends TestCase
      *
      * @return array
      */
-    public function findApiKeyProvider()
+    public static function findApiKeyProvider(): array
     {
         return [
             'found' => [
@@ -309,7 +309,7 @@ class ApplicationsTableTest extends TestCase
      *
      * @return array
      */
-    public function findCredentialsProvider(): array
+    public static function findCredentialsProvider(): array
     {
         return [
             'no secret' => [

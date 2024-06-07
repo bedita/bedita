@@ -118,7 +118,7 @@ class ApplicationMiddlewareTest extends TestCase
      *
      * @return array
      */
-    public function appFromJWTProvider(): array
+    public static function appFromJWTProvider(): array
     {
         return [
             'read from jwt already decoded => user identity found' => [
@@ -264,7 +264,7 @@ class ApplicationMiddlewareTest extends TestCase
      *
      * @return array
      */
-    public function setFromApiKeyProvider(): array
+    public static function setFromApiKeyProvider(): array
     {
         return [
             'ok' => [

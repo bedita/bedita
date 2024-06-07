@@ -79,7 +79,7 @@ class RelationTypesTableTest extends TestCase
      *
      * @return array
      */
-    public function validationProvider()
+    public static function validationProvider(): array
     {
         return [
             'validLeft' => [

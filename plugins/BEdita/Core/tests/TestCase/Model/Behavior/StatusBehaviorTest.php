@@ -85,7 +85,7 @@ class StatusBehaviorTest extends TestCase
      *
      * @return array
      */
-    public function checkStatusProvider(): array
+    public static function checkStatusProvider(): array
     {
         return [
             'no conf' => [
@@ -145,7 +145,7 @@ class StatusBehaviorTest extends TestCase
      *
      * @return array
      */
-    public function findStatusLevelProvider()
+    public static function findStatusLevelProvider(): array
     {
         return [
             'too many options' => [

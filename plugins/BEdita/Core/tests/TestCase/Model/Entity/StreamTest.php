@@ -77,7 +77,7 @@ class StreamTest extends TestCase
      *
      * @return array
      */
-    public function filesystemPathProvider()
+    public static function filesystemPathProvider(): array
     {
         $uuid = Text::uuid();
         $hash = sha1($uuid);
@@ -196,7 +196,7 @@ class StreamTest extends TestCase
      *
      * @return array
      */
-    public function setContentsProvider()
+    public static function setContentsProvider(): array
     {
         static $exceptionMessage = 'Invalid contents provided, must be a PSR-7 stream, a resource or a value that can be converted to string';
 
@@ -208,7 +208,7 @@ class StreamTest extends TestCase
         fwrite($resource, 'this is a resource');
         fseek($resource, 0);
 
-        $serializable = $this->getMockBuilder(\stdClass::class)
+        $serializable = static::getMockBuilder(\stdClass::class)
             ->addMethods(['__toString'])
             ->getMock();
         $serializable
@@ -295,7 +295,7 @@ class StreamTest extends TestCase
      *
      * @return array
      */
-    public function getUrlProvider()
+    public static function getUrlProvider(): array
     {
         return [
             'available' => [

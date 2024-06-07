@@ -37,7 +37,7 @@ class AdminResourcesTest extends IntegrationTestCase
      *
      * @return array
      */
-    public function resourceProvider()
+    public static function resourceProvider(): array
     {
         return [
             'apps' => [

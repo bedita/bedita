@@ -51,7 +51,7 @@ class RelatedToTest extends TestCase
      *
      * @return array[]
      */
-    public function getSubQueryForMatchingProvider(): array
+    public static function getSubQueryForMatchingProvider(): array
     {
         return [
             'simple' => [
@@ -137,7 +137,7 @@ class RelatedToTest extends TestCase
      *
      * @return array[]
      */
-    public function isAbstractProvider(): array
+    public static function isAbstractProvider(): array
     {
         return [
             'abstract' => [
@@ -194,7 +194,7 @@ class RelatedToTest extends TestCase
      *
      * @return array[]
      */
-    public function isInverseProvider(): array
+    public static function isInverseProvider(): array
     {
         return [
             'direct' => [
@@ -280,7 +280,7 @@ class RelatedToTest extends TestCase
      *
      * @return array[]
      */
-    public function getTargetProvider(): array
+    public static function getTargetProvider(): array
     {
         return [
             'no object type set' => [null, [], 'BEdita/Core.Objects', null],
@@ -337,7 +337,7 @@ class RelatedToTest extends TestCase
      *
      * @return array
      */
-    public function attachToProvider(): array
+    public static function attachToProvider(): array
     {
         return [
             'no related inheritance table' => [

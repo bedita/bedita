@@ -50,7 +50,7 @@ class ValidationTest extends TestCase
      *
      * @return array
      */
-    public function reservedProvider()
+    public static function reservedProvider(): array
     {
         return [
             'simple' => [
@@ -85,7 +85,7 @@ class ValidationTest extends TestCase
      *
      * @return array
      */
-    public function urlProvider()
+    public static function urlProvider(): array
     {
         return [
             'https://example.com' => [
@@ -128,7 +128,7 @@ class ValidationTest extends TestCase
      *
      * @return array
      */
-    public function jsonSchemaProvider()
+    public static function jsonSchemaProvider(): array
     {
         $schema = [
             'type' => 'object',
@@ -228,7 +228,7 @@ class ValidationTest extends TestCase
      *
      * @return array
      */
-    public function languageTagProvider()
+    public static function languageTagProvider(): array
     {
         return [
             'bad lang' => [
@@ -277,7 +277,7 @@ class ValidationTest extends TestCase
      *
      * @return array
      */
-    public function dateTimeProvider()
+    public static function dateTimeProvider(): array
     {
         return [
             'bad date' => [

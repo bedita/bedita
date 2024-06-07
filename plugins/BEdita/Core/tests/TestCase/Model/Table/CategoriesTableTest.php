@@ -169,7 +169,7 @@ class CategoriesTableTest extends TestCase
      *
      * @return array
      */
-    public function findResourceProvider(): array
+    public static function findResourceProvider(): array
     {
         return [
             'category' => [

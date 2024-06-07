@@ -322,7 +322,7 @@ class HistoryBehaviorTest extends TestCase
      *
      * @return array
      */
-    public function findHistoryEditorProvider(): array
+    public static function findHistoryEditorProvider(): array
     {
         return [
             'logged' => [

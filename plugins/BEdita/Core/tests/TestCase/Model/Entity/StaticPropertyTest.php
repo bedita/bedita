@@ -103,7 +103,7 @@ class StaticPropertyTest extends TestCase
      *
      * @return array
      */
-    public function inferFromSchemaProvider()
+    public static function inferFromSchemaProvider(): array
     {
         return [
             'email' => [
@@ -172,7 +172,7 @@ class StaticPropertyTest extends TestCase
      *
      * @return array
      */
-    public function getTableProvider()
+    public static function getTableProvider(): array
     {
         return [
             'table' => [
@@ -221,7 +221,7 @@ class StaticPropertyTest extends TestCase
      *
      * @return array
      */
-    public function getDefaultProvider()
+    public static function getDefaultProvider(): array
     {
         return [
             'empty' => [
@@ -283,7 +283,7 @@ class StaticPropertyTest extends TestCase
      *
      * @return array
      */
-    public function getRequiredProvider()
+    public static function getRequiredProvider(): array
     {
         return [
             'no table, nullable' => [
@@ -345,7 +345,7 @@ class StaticPropertyTest extends TestCase
      *
      * @return array
      */
-    public function getSchemaProvider()
+    public static function getSchemaProvider(): array
     {
         return [
             'email' => [
@@ -427,7 +427,7 @@ class StaticPropertyTest extends TestCase
      *
      * @return array
      */
-    public function getTranslatableProvider(): array
+    public static function getTranslatableProvider(): array
     {
         return [
             'missing field' => [

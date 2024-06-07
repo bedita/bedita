@@ -57,7 +57,7 @@ class SignupControllerTest extends IntegrationTestCase
      *
      * @return array
      */
-    public function signupProvider()
+    public static function signupProvider(): array
     {
         return [
             'not allowed' => [
@@ -250,7 +250,7 @@ class SignupControllerTest extends IntegrationTestCase
      *
      * @return array
      */
-    public function activationErrorProvider()
+    public static function activationErrorProvider(): array
     {
         return [
             'not allowed' => [

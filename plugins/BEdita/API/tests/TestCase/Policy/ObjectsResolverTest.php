@@ -33,7 +33,7 @@ class ObjectsResolverTest extends TestCase
      *
      * @return array
      */
-    public function getPolicyProvider(): array
+    public static function getPolicyProvider(): array
     {
         $notFoundResource = new Role();
 

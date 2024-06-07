@@ -217,7 +217,7 @@ class FolderTest extends TestCase
      *
      * @return array
      */
-    public function getPathProvider()
+    public static function getPathProvider(): array
     {
         return [
             'root' => [
@@ -348,7 +348,7 @@ class FolderTest extends TestCase
      *
      * @return array[]
      */
-    public function descendantHavePermissionsProvider(): array
+    public static function descendantHavePermissionsProvider(): array
     {
         return [
             'guest user' => [

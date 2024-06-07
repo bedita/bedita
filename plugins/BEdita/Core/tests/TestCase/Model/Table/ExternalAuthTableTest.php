@@ -106,7 +106,7 @@ class ExternalAuthTableTest extends TestCase
      *
      * @return array
      */
-    public function validationProvider()
+    public static function validationProvider(): array
     {
         return [
             'valid' => [
@@ -241,7 +241,7 @@ class ExternalAuthTableTest extends TestCase
      *
      * @return array
      */
-    public function findAuthProviderProvider() // Nice name, huh!?
+    public static function findAuthProviderProvider(): array // Nice name, huh!?
     {
         return [
             'missing parameter' => [
@@ -330,7 +330,7 @@ class ExternalAuthTableTest extends TestCase
      *
      * @return array
      */
-    public function findByUserProvider(): array
+    public static function findByUserProvider(): array
     {
         return [
             'bad data' => [

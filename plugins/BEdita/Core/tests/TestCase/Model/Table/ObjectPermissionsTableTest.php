@@ -96,7 +96,7 @@ class ObjectPermissionsTableTest extends TestCase
      *
      * @return array
      */
-    public function buildRulesProvider()
+    public static function buildRulesProvider(): array
     {
         return [
             'invalidObject' => [
@@ -147,7 +147,7 @@ class ObjectPermissionsTableTest extends TestCase
      *
      * @return array
      */
-    public function beforeSaveProvider(): array
+    public static function beforeSaveProvider(): array
     {
         return [
             'admin' => [
@@ -274,7 +274,7 @@ class ObjectPermissionsTableTest extends TestCase
      *
      * @return array
      */
-    public function beforeDeleteProvider(): array
+    public static function beforeDeleteProvider(): array
     {
         return [
             'admin' => [

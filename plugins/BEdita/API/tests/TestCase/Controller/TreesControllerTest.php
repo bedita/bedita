@@ -116,7 +116,7 @@ class TreesControllerTest extends IntegrationTestCase
      *
      * @return void
      */
-    public function treesProvider(): array
+    public static function treesProvider(): array
     {
         $error = [
             'status' => '404',

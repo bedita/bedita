@@ -88,7 +88,7 @@ class GlideGeneratorTest extends TestCase
      *
      * @return array
      */
-    public function getUrlProvider()
+    public static function getUrlProvider(): array
     {
         return [
             'invalid txt file' => [
@@ -145,7 +145,7 @@ class GlideGeneratorTest extends TestCase
      *
      * @return array
      */
-    public function getExtensionThumb()
+    public static function getExtensionThumb(): array
     {
         return [
             'png file' => [
@@ -191,7 +191,7 @@ class GlideGeneratorTest extends TestCase
      *
      * @return array
      */
-    public function generateProvider()
+    public static function generateProvider(): array
     {
         return [
             'text file' => [
@@ -255,7 +255,7 @@ class GlideGeneratorTest extends TestCase
      *
      * @return array
      */
-    public function existsProvider()
+    public static function existsProvider(): array
     {
         return [
             'not valid' => [

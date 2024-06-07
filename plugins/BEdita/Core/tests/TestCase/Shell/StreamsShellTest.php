@@ -70,7 +70,7 @@ class StreamsShellTest extends TestCase
      *
      * @return array
      */
-    public function removeOrphansProvider()
+    public static function removeOrphansProvider(): array
     {
         return [
             'basic test' => [

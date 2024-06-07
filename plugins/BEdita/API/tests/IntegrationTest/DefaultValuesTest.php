@@ -35,7 +35,7 @@ class DefaultValuesTest extends IntegrationTestCase
      *
      * @return array
      */
-    public function createProvider(): array
+    public static function createProvider(): array
     {
         return [
             'files on' => [

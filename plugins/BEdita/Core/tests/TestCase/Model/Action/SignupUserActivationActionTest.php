@@ -94,7 +94,7 @@ class SignupUserActivationActionTest extends TestCase
      *
      * @return array
      */
-    public function executeFailureProvider()
+    public static function executeFailureProvider(): array
     {
         return [
             'missing uuid' => [

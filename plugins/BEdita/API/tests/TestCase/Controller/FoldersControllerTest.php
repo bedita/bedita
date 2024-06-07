@@ -619,7 +619,7 @@ class FoldersControllerTest extends IntegrationTestCase
      *
      * @return array
      */
-    public function setRelationshipsAllowedMethodsProvider()
+    public static function setRelationshipsAllowedMethodsProvider(): array
     {
         return [
             'get' => [
@@ -885,7 +885,7 @@ class FoldersControllerTest extends IntegrationTestCase
      *
      * @return array
      */
-    public function getOrphanFolderProvider()
+    public static function getOrphanFolderProvider(): array
     {
         return [
             'folders/:id' => ['12'],
@@ -928,7 +928,7 @@ class FoldersControllerTest extends IntegrationTestCase
      *
      * @return array
      */
-    public function moveFolderProvider()
+    public static function moveFolderProvider(): array
     {
         return [
             'becomeRoot' => [
@@ -1053,7 +1053,7 @@ class FoldersControllerTest extends IntegrationTestCase
      *
      * @return array
      */
-    public function setChildrenPositionInvalidProvider()
+    public static function setChildrenPositionInvalidProvider(): array
     {
         return [
             'zero' => [
@@ -1140,7 +1140,7 @@ class FoldersControllerTest extends IntegrationTestCase
      *
      * @return array
      */
-    public function moveChildrenProvider()
+    public static function moveChildrenProvider(): array
     {
         return [
             'noMove' => [

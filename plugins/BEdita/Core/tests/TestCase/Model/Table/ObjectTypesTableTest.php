@@ -107,7 +107,7 @@ class ObjectTypesTableTest extends TestCase
      *
      * @return array
      */
-    public function validationProvider()
+    public static function validationProvider(): array
     {
         return [
             'valid' => [
@@ -239,7 +239,7 @@ class ObjectTypesTableTest extends TestCase
      *
      * @return array
      */
-    public function getProvider()
+    public static function getProvider(): array
     {
         return [
             'id' => [
@@ -476,7 +476,7 @@ class ObjectTypesTableTest extends TestCase
      *
      * @return array
      */
-    public function findByRelationProvider()
+    public static function findByRelationProvider(): array
     {
         return [
             'error' => [
@@ -561,7 +561,7 @@ class ObjectTypesTableTest extends TestCase
      *
      * @return array
      */
-    public function modelRulesProvider()
+    public static function modelRulesProvider(): array
     {
         return [
             'foo' => [
@@ -610,7 +610,7 @@ class ObjectTypesTableTest extends TestCase
      *
      * @return array
      */
-    public function beforeDeleteProvider()
+    public static function beforeDeleteProvider(): array
     {
         return [
             'objects' => [
@@ -704,7 +704,7 @@ class ObjectTypesTableTest extends TestCase
      *
      * @return array
      */
-    public function beforeSaveProvider()
+    public static function beforeSaveProvider(): array
     {
         return [
             'objects' => [
@@ -783,7 +783,7 @@ class ObjectTypesTableTest extends TestCase
      *
      * @return array
      */
-    public function findObjectIdProvider()
+    public static function findObjectIdProvider(): array
     {
         return [
             'missingId' => [
@@ -830,7 +830,7 @@ class ObjectTypesTableTest extends TestCase
      *
      * @return array
      */
-    public function findParentProvider()
+    public static function findParentProvider(): array
     {
         return [
             'missing' => [

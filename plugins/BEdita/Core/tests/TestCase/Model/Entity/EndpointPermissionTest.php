@@ -97,7 +97,7 @@ class EndpointPermissionTest extends TestCase
      *
      * @return array
      */
-    public function encodeProvider()
+    public static function encodeProvider(): array
     {
         return [
             'no' => [EndpointPermission::PERM_NO, false],
@@ -129,7 +129,7 @@ class EndpointPermissionTest extends TestCase
      *
      * @return array
      */
-    public function decodeProvider()
+    public static function decodeProvider(): array
     {
         return [
             'no' => [false, EndpointPermission::PERM_NO],
@@ -161,7 +161,7 @@ class EndpointPermissionTest extends TestCase
      *
      * @return array
      */
-    public function setPermissionProvider()
+    public static function setPermissionProvider(): array
     {
         return [
             'integer' => [
@@ -235,7 +235,7 @@ class EndpointPermissionTest extends TestCase
      *
      * @return array
      */
-    public function getReadWriteProvider()
+    public static function getReadWriteProvider(): array
     {
         return [
             'readOnly' => [
@@ -287,7 +287,7 @@ class EndpointPermissionTest extends TestCase
      *
      * @return array
      */
-    public function setReadWriteProvider()
+    public static function setReadWriteProvider(): array
     {
         return [
             'no' => [
@@ -367,7 +367,7 @@ class EndpointPermissionTest extends TestCase
      *
      * @return array
      */
-    public function setEndpointNameProvider(): array
+    public static function setEndpointNameProvider(): array
     {
         return [
             'null' => [
@@ -421,7 +421,7 @@ class EndpointPermissionTest extends TestCase
      *
      * @return array
      */
-    public function setRoleNameProvider(): array
+    public static function setRoleNameProvider(): array
     {
         return [
             'null' => [
@@ -475,7 +475,7 @@ class EndpointPermissionTest extends TestCase
      *
      * @return array
      */
-    public function setApplicationNameProvider(): array
+    public static function setApplicationNameProvider(): array
     {
         return [
             'null' => [

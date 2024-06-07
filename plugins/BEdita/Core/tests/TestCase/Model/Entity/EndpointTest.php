@@ -102,7 +102,7 @@ class EndpointTest extends TestCase
      *
      * @return array
      */
-    public function setObjectTypeNameProvider(): array
+    public static function setObjectTypeNameProvider(): array
     {
         return [
             'null' => [

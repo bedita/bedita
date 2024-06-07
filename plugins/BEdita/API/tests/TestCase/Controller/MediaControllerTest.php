@@ -105,7 +105,7 @@ class MediaControllerTest extends IntegrationTestCase
      *
      * @return array
      */
-    public function thumbsProvider()
+    public static function thumbsProvider(): array
     {
         return [
             'single, default' => [

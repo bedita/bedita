@@ -92,7 +92,7 @@ class EndpointsTableTest extends TestCase
      *
      * @return array
      */
-    public function validationProvider()
+    public static function validationProvider(): array
     {
         return [
             'valid' => [
@@ -141,7 +141,7 @@ class EndpointsTableTest extends TestCase
      *
      * @return array
      */
-    public function buildRulesProvider()
+    public static function buildRulesProvider(): array
     {
         return [
             'wrongObjectType' => [
@@ -181,7 +181,7 @@ class EndpointsTableTest extends TestCase
      *
      * @return array
      */
-    public function fetchIdProvider()
+    public static function fetchIdProvider(): array
     {
         return [
             '/auth' => [

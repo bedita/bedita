@@ -74,7 +74,7 @@ class UniqueNameBehaviorTest extends TestCase
      *
      * @return array
      */
-    public function uniqueUserProvider()
+    public static function uniqueUserProvider(): array
     {
         return [
             'simple' => [
@@ -123,7 +123,7 @@ class UniqueNameBehaviorTest extends TestCase
      *
      * @return array
      */
-    public function uniqueNameProvider()
+    public static function uniqueNameProvider(): array
     {
         return [
             'mix' => [
@@ -164,7 +164,7 @@ class UniqueNameBehaviorTest extends TestCase
      *
      * @return array
      */
-    public function generateUniqueUserProvider()
+    public static function generateUniqueUserProvider(): array
     {
         return [
             'defaultConfig' => [
@@ -229,7 +229,7 @@ class UniqueNameBehaviorTest extends TestCase
      *
      * @return array
      */
-    public function regenerateUniqueNameProvider()
+    public static function regenerateUniqueNameProvider(): array
     {
         return [
             'providedUname' => [
@@ -272,7 +272,7 @@ class UniqueNameBehaviorTest extends TestCase
      *
      * @return array
      */
-    public function uniqueNameExistsProvider()
+    public static function uniqueNameExistsProvider(): array
     {
         return [
             'uname exists, id null' => [
@@ -327,7 +327,7 @@ class UniqueNameBehaviorTest extends TestCase
      *
      * @return array
      */
-    public function uniqueFromValueProvider()
+    public static function uniqueFromValueProvider(): array
     {
         return [
             'simpleNoConf' => [

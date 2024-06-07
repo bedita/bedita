@@ -90,7 +90,7 @@ class AsyncJobTest extends TestCase
      *
      * @return array
      */
-    public function getStatusProvider()
+    public static function getStatusProvider(): array
     {
         return [
             'pending' => [

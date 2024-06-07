@@ -29,7 +29,7 @@ class ErrorHandlerTest extends TestCase
      *
      * @return array
      */
-    public function displayErrorProvider()
+    public static function displayErrorProvider(): array
     {
         return [
             'simple' => [

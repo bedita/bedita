@@ -36,7 +36,7 @@ class PaginationTest extends IntegrationTestCase
      *
      * @return array
      */
-    public function optionsProvider()
+    public static function optionsProvider(): array
     {
         return [
             'default' => [

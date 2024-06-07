@@ -30,7 +30,7 @@ class DateTimeTypeTest extends TestCase
      *
      * @return array
      */
-    public function marshalSuccessProvider()
+    public static function marshalSuccessProvider(): array
     {
         return [
             [
@@ -123,7 +123,7 @@ class DateTimeTypeTest extends TestCase
      *
      * @return array
      */
-    public function marshalFailureProvider()
+    public static function marshalFailureProvider(): array
     {
         return [
             [

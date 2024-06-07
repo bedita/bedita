@@ -773,7 +773,7 @@ class LoginControllerTest extends IntegrationTestCase
      *
      * @return array
      */
-    public function statusProvider()
+    public static function statusProvider(): array
     {
         return [
             'draft' => [
@@ -830,7 +830,7 @@ class LoginControllerTest extends IntegrationTestCase
      *
      * @return array
      */
-    public function passwordChangeProvider()
+    public static function passwordChangeProvider(): array
     {
         return [
             'missing' => [
@@ -1027,7 +1027,7 @@ class LoginControllerTest extends IntegrationTestCase
      *
      * @return array
      */
-    public function optoutProvider()
+    public static function optoutProvider(): array
     {
         return [
             'ok' => [

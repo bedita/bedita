@@ -82,7 +82,7 @@ class RelationsTableTest extends TestCase
      *
      * @return array
      */
-    public function validationProvider()
+    public static function validationProvider(): array
     {
         return [
             'valid' => [
@@ -159,7 +159,7 @@ class RelationsTableTest extends TestCase
      *
      * @return array
      */
-    public function findByNameProvider()
+    public static function findByNameProvider(): array
     {
         return [
             'error' => [
@@ -307,7 +307,7 @@ class RelationsTableTest extends TestCase
      *
      * @return array
      */
-    public function getProvider()
+    public static function getProvider(): array
     {
         return [
             'int' => [

@@ -104,7 +104,7 @@ class TreesTableTest extends TestCase
      *
      * @return array
      */
-    public function isParentValidProvider()
+    public static function isParentValidProvider(): array
     {
         return [
             'null, no object ID' => [
@@ -158,7 +158,7 @@ class TreesTableTest extends TestCase
      *
      * @return array
      */
-    public function isPositionUniqueProvider()
+    public static function isPositionUniqueProvider(): array
     {
         return [
             'folder, not unique' => [
@@ -211,7 +211,7 @@ class TreesTableTest extends TestCase
      *
      * @return array
      */
-    public function changeRootProvider()
+    public static function changeRootProvider(): array
     {
         return [
             'becomeRoot' => [
@@ -306,7 +306,7 @@ class TreesTableTest extends TestCase
      *
      * @return array
      */
-    public function deleteOrphanedProvider()
+    public static function deleteOrphanedProvider(): array
     {
         return [
             'not a folder' => [
@@ -359,7 +359,7 @@ class TreesTableTest extends TestCase
      *
      * @return array
      */
-    public function setPositionProvider()
+    public static function setPositionProvider(): array
     {
         return [
             'first' => [
@@ -449,7 +449,7 @@ class TreesTableTest extends TestCase
      *
      * @return array
      */
-    public function findPathNodesProvider()
+    public static function findPathNodesProvider(): array
     {
         return [
             'first' => [

@@ -156,7 +156,7 @@ class CheckFilesystemTaskTest extends TestCase
      *
      * @return array
      */
-    public function executeNotWritableWebServerProvider()
+    public static function executeNotWritableWebServerProvider(): array
     {
         return [
             'no one can write' => [0555],

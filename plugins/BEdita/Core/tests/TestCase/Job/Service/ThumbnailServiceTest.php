@@ -105,7 +105,7 @@ class ThumbnailServiceTest extends TestCase
      *
      * @return array
      */
-    public function runProvider()
+    public static function runProvider(): array
     {
         return [
             'ok' => [

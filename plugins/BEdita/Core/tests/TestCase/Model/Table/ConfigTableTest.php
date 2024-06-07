@@ -83,7 +83,7 @@ class ConfigTableTest extends TestCase
      *
      * @return array
      */
-    public function validationProvider()
+    public static function validationProvider(): array
     {
         return [
             'valid' => [
@@ -160,7 +160,7 @@ class ConfigTableTest extends TestCase
      *
      * @return array
      */
-    public function findNameProvider()
+    public static function findNameProvider(): array
     {
         return [
             'simple' => [
@@ -234,7 +234,7 @@ class ConfigTableTest extends TestCase
     /**
      * Data provider for `testFetchConfig`
      */
-    public function fetchConfigProvider(): array
+    public static function fetchConfigProvider(): array
     {
         return [
             'group2' => [

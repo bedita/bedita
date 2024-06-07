@@ -60,7 +60,7 @@ class QueryFilterTraitTest extends TestCase
      *
      * @return array
      */
-    public function fieldsFilterProvider()
+    public static function fieldsFilterProvider(): array
     {
         return [
             'more' => [

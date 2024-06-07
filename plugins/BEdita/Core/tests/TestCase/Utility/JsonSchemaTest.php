@@ -65,7 +65,7 @@ class JsonSchemaTest extends TestCase
      *
      * @return array
      */
-    public function generateProvider()
+    public static function generateProvider(): array
     {
         return [
             'objects' => [
@@ -309,7 +309,7 @@ class JsonSchemaTest extends TestCase
      *
      * @return array
      */
-    public function schemaRevisionProvider()
+    public static function schemaRevisionProvider(): array
     {
         return [
             'objects' => [

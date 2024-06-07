@@ -55,7 +55,7 @@ class MailServiceTest extends TestCase
      *
      * @return array
      */
-    public function runProvider()
+    public static function runProvider(): array
     {
         return [
             'simple' => [

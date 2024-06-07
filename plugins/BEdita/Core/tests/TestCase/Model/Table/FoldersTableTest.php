@@ -118,7 +118,7 @@ class FoldersTableTest extends TestCase
      *
      * @return array
      */
-    public function hasAtMostOneParentProvider()
+    public static function hasAtMostOneParentProvider(): array
     {
         return [
             'emptyParents' => [
@@ -169,7 +169,7 @@ class FoldersTableTest extends TestCase
      *
      * @return array
      */
-    public function saveProvider()
+    public static function saveProvider(): array
     {
         return [
             'parentNotSet' => [
@@ -533,7 +533,7 @@ class FoldersTableTest extends TestCase
      *
      * @return array
      */
-    public function getSortProvider(): array
+    public static function getSortProvider(): array
     {
         return [
             'Order position Trees.tree_left asc' => [

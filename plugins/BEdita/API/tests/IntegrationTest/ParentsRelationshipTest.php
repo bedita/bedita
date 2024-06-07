@@ -256,7 +256,7 @@ class ParentsRelationshipTest extends IntegrationTestCase
      *
      * @return array
      */
-    public function setParentPositionInvalidProvider()
+    public static function setParentPositionInvalidProvider(): array
     {
         return [
             'zero' => [

@@ -153,7 +153,7 @@ class StreamsControllerTest extends IntegrationTestCase
      *
      * @return array
      */
-    public function linkStreamProvider()
+    public static function linkStreamProvider(): array
     {
         return [
             'not a media' => [

@@ -94,7 +94,7 @@ class UserTokensTableTest extends TestCase
      *
      * @return array
      */
-    public function validationProvider()
+    public static function validationProvider(): array
     {
         return [
             'ok' => [
@@ -155,7 +155,7 @@ class UserTokensTableTest extends TestCase
      *
      * @return array
      */
-    public function getTokenTypesProvider()
+    public static function getTokenTypesProvider(): array
     {
         return [
             'default' => [

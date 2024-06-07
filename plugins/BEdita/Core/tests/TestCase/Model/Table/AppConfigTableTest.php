@@ -81,7 +81,7 @@ class AppConfigTableTest extends TestCase
      *
      * @return array
      */
-    public function validationProvider(): array
+    public static function validationProvider(): array
     {
         return [
             'valid' => [

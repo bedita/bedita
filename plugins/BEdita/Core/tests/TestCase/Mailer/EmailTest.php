@@ -51,7 +51,7 @@ class EmailTest extends TestCase
      *
      * @return array
      */
-    public function sendRawProvider()
+    public static function sendRawProvider(): array
     {
         return [
             'simple' => [

@@ -73,7 +73,7 @@ class I18nTest extends IntegrationTestCase
      *
      * @return array
      */
-    public function langProvider()
+    public static function langProvider(): array
     {
         return [
             'document 2 fr' => [

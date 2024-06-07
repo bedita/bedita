@@ -108,7 +108,7 @@ class ProfileTest extends TestCase
      *
      * @return array
      */
-    public function setUrlProvider(): array
+    public static function setUrlProvider(): array
     {
         return [
             'ok' => [

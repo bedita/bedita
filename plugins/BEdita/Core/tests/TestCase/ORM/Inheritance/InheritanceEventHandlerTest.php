@@ -67,7 +67,7 @@ class InheritanceEventHandlerTest extends TestCase
      *
      * @return array
      */
-    public function saveProvider()
+    public static function saveProvider(): array
     {
         return [
             'only ancestor field' => [
@@ -280,7 +280,7 @@ class InheritanceEventHandlerTest extends TestCase
      *
      * @return array
      */
-    public function applicationRulesErrorsPropagationProvider()
+    public static function applicationRulesErrorsPropagationProvider(): array
     {
         $fakeFelinesError = [
             'family' => ['FakeFelinesFailure' => 'Invalid family.'],

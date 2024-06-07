@@ -124,7 +124,7 @@ class ObjectEntityTest extends TestCase
      *
      * @return array
      */
-    public function getTypeProvider()
+    public static function getTypeProvider(): array
     {
         return [
             'document' => [
@@ -178,7 +178,7 @@ class ObjectEntityTest extends TestCase
      *
      * @return array
      */
-    public function visiblePropertiesProvider()
+    public static function visiblePropertiesProvider(): array
     {
         return [
             'document' => [
@@ -264,7 +264,7 @@ class ObjectEntityTest extends TestCase
      *
      * @return array
      */
-    public function setTypeProvider()
+    public static function setTypeProvider(): array
     {
         return [
             'document' => [
@@ -686,7 +686,7 @@ class ObjectEntityTest extends TestCase
      *
      * @return array
      */
-    public function getPermissionsProvider(): array
+    public static function getPermissionsProvider(): array
     {
         return [
             'no perms' => [

@@ -30,7 +30,7 @@ class TextTest extends TestCase
      *
      * @return array
      */
-    public function uuid5Provider()
+    public static function uuid5Provider(): array
     {
         return [
             'invalid namespace' => [

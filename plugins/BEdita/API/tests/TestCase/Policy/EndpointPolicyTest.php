@@ -69,7 +69,7 @@ class EndpointPolicyTest extends TestCase
      *
      * @return array
      */
-    public function canAccessProvider()
+    public static function canAccessProvider(): array
     {
         $service = new AuthorizationService(new MapResolver());
         $arrayIdentity = new AuthenticationIdentity([

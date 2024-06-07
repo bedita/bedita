@@ -75,7 +75,7 @@ class SimpleAdapterTest extends TestCase
      *
      * @return array
      */
-    public function getFieldsProvider()
+    public static function getFieldsProvider(): array
     {
         return [
             'default' => [
@@ -148,7 +148,7 @@ class SimpleAdapterTest extends TestCase
      *
      * @return array
      */
-    public function searchProvider()
+    public static function searchProvider()
     {
         return [
             'basic' => [

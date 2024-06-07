@@ -60,7 +60,7 @@ class AnalyticsMiddlewareTest extends TestCase
      *
      * @return void
      */
-    public function customProvider()
+    public static function customProvider(): array
     {
         return [
             'empty' => [
@@ -106,7 +106,7 @@ class AnalyticsMiddlewareTest extends TestCase
      *
      * @return void
      */
-    public function errorCodeProvider()
+    public static function errorCodeProvider(): array
     {
         return [
             'empty' => [

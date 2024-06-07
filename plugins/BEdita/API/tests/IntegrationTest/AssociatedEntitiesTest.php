@@ -45,7 +45,7 @@ class AssociatedEntitiesTest extends IntegrationTestCase
      *
      * @return array
      */
-    public function eventAssocProvider(): array
+    public static function eventAssocProvider(): array
     {
         return [
             'moreDates' => [

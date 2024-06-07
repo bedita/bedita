@@ -43,7 +43,7 @@ class JsonApiPaginatorTest extends TestCase
      *
      * @return array
      */
-    public function checkLimitProvider()
+    public static function checkLimitProvider(): array
     {
         return [
             'default' => [
@@ -103,7 +103,7 @@ class JsonApiPaginatorTest extends TestCase
      *
      * @return array
      */
-    public function validateSortProvider()
+    public static function validateSortProvider(): array
     {
         return [
             'default' => [

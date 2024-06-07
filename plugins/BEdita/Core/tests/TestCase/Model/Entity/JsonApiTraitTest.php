@@ -576,7 +576,7 @@ class JsonApiTraitTest extends TestCase
      *
      * @return array
      */
-    public function jsonApiSerializeProvider()
+    public static function jsonApiSerializeProvider(): array
     {
         return [
             'full' => [
@@ -659,7 +659,7 @@ class JsonApiTraitTest extends TestCase
      *
      * @return array
      */
-    public function metaCountProvider(): array
+    public static function metaCountProvider(): array
     {
         return [
             'count' => [

@@ -59,7 +59,7 @@ class UploadComponentTest extends IntegrationTestCase
      *
      * @return array
      */
-    public function uploadProvider()
+    public static function uploadProvider(): array
     {
         return [
             'javascript' => [

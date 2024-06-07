@@ -74,7 +74,7 @@ class ObjectTagsTableTest extends TestCase
      *
      * @return array
      */
-    public function buildRulesProvider()
+    public static function buildRulesProvider(): array
     {
         return [
             'inValidObject' => [

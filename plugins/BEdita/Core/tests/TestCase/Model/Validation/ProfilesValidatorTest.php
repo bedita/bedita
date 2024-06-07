@@ -42,7 +42,7 @@ class ProfilesValidatorTest extends TestCase
      *
      * @return array
      */
-    public function validationProvider()
+    public static function validationProvider(): array
     {
         return [
             'empty' => [

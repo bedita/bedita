@@ -60,7 +60,7 @@ class AppControllerTest extends IntegrationTestCase
      *
      * @return array
      */
-    public function isIdentityRequiredProvider()
+    public static function isIdentityRequiredProvider(): array
     {
         return [
             'ok' => [
@@ -117,7 +117,7 @@ class AppControllerTest extends IntegrationTestCase
      *
      * @return array
      */
-    public function checkAcceptProvider()
+    public static function checkAcceptProvider(): array
     {
         return [
             'ok' => [
@@ -326,7 +326,7 @@ class AppControllerTest extends IntegrationTestCase
      *
      * @return array
      */
-    public function includeErrorProvider()
+    public static function includeErrorProvider(): array
     {
         return [
             'not a string' => [

@@ -36,7 +36,7 @@ class NewObjectTypesTest extends IntegrationTestCase
     /**
      * Data provider for `testNewTypes`
      */
-    public function newTypesProvider()
+    public static function newTypesProvider(): array
     {
         return [
             'cats' => [

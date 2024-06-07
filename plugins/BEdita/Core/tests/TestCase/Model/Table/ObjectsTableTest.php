@@ -109,7 +109,7 @@ class ObjectsTableTest extends TestCase
      *
      * @return array
      */
-    public function saveProvider()
+    public static function saveProvider(): array
     {
         return [
             'valid' => [
@@ -159,7 +159,7 @@ class ObjectsTableTest extends TestCase
      *
      * @return array
      */
-    public function validationProvider()
+    public static function validationProvider(): array
     {
         return [
             'valid' => [
@@ -210,7 +210,7 @@ class ObjectsTableTest extends TestCase
      *
      * @return array
      */
-    public function findTypeProvider()
+    public static function findTypeProvider(): array
     {
         return [
             'documents' => [
@@ -314,7 +314,7 @@ class ObjectsTableTest extends TestCase
      *
      * @return array
      */
-    public function findDateRangesProvider()
+    public static function findDateRangesProvider(): array
     {
         return [
             'simple' => [
@@ -445,7 +445,7 @@ class ObjectsTableTest extends TestCase
      *
      * @return array
      */
-    public function saveAbstractDisabledTypes()
+    public static function saveAbstractDisabledTypes(): array
     {
         return [
             'objects' => [
@@ -530,7 +530,7 @@ class ObjectsTableTest extends TestCase
      *
      * @return array
      */
-    public function checkLangTagProvider()
+    public static function checkLangTagProvider(): array
     {
         return [
             'any lang' => [
@@ -580,7 +580,7 @@ class ObjectsTableTest extends TestCase
      *
      * @return array
      */
-    public function checkLockedProvider(): array
+    public static function checkLockedProvider(): array
     {
         return [
             'not locked' => [
@@ -685,7 +685,7 @@ class ObjectsTableTest extends TestCase
      *
      * @return array
      */
-    public function findAvailableProvider(): array
+    public static function findAvailableProvider(): array
     {
         return [
             'no status' => [
@@ -725,7 +725,7 @@ class ObjectsTableTest extends TestCase
      *
      * @return array
      */
-    public function findPublishableProvider(): array
+    public static function findPublishableProvider(): array
     {
         return [
             'on + publish' => [

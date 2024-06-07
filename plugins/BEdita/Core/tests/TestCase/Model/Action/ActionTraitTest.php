@@ -66,7 +66,7 @@ class ActionTraitTest extends TestCase
      *
      * @return void
      */
-    public function createActionProvider()
+    public static function createActionProvider(): array
     {
         return [
             'simple' => [

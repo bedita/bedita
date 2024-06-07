@@ -35,7 +35,7 @@ class UniqueNameTest extends IntegrationTestCase
      *
      * @return array
      */
-    public function doubleInsertProvider()
+    public static function doubleInsertProvider(): array
     {
         return [
             'sameTitle' => [

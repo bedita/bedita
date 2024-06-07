@@ -60,7 +60,7 @@ class CustomPropertiesFilterTest extends IntegrationTestCase
      *
      * @return array
      */
-    public function filterProvider(): array
+    public static function filterProvider(): array
     {
         return [
             'bool true' => [

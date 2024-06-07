@@ -71,7 +71,7 @@ class SearchableBehaviorTest extends TestCase
      *
      * @return array
      */
-    public function findQueryProvider()
+    public static function findQueryProvider(): array
     {
         return [
             'ok' => [

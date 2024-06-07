@@ -68,7 +68,7 @@ class ListEntitiesActionTest extends TestCase
      *
      * @return array
      */
-    public function parseFilterProvider()
+    public static function parseFilterProvider(): array
     {
         return [
             'normal' => [
@@ -120,7 +120,7 @@ class ListEntitiesActionTest extends TestCase
      *
      * @return array
      */
-    public function executeProvider()
+    public static function executeProvider(): array
     {
         return [
             'plain' => [

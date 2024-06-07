@@ -55,7 +55,7 @@ class OAuth2IdentifierTest extends TestCase
      *
      * @return array
      */
-    public function identifyProvider(): array
+    public static function identifyProvider(): array
     {
         return [
             'found' => [

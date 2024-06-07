@@ -1341,7 +1341,7 @@ class ObjectsControllerTest extends IntegrationTestCase
      *
      * @return array
      */
-    public function editWithPermissionOnParentProvider(): array
+    public static function editWithPermissionOnParentProvider(): array
     {
         return [
             'forbidden uname change' => [
@@ -1785,7 +1785,7 @@ class ObjectsControllerTest extends IntegrationTestCase
      *
      * @return array
      */
-    public function linksAvailableProvider()
+    public static function linksAvailableProvider(): array
     {
         return [
             'children' => [
@@ -2403,7 +2403,7 @@ class ObjectsControllerTest extends IntegrationTestCase
      *
      * @return array
      */
-    public function missingAuthProvider()
+    public static function missingAuthProvider(): array
     {
         return [
             'get' => [
@@ -2781,7 +2781,7 @@ class ObjectsControllerTest extends IntegrationTestCase
      *
      * @return array
      */
-    public function resourceTypeProvider()
+    public static function resourceTypeProvider(): array
     {
         return [
             'mainResource' => [
@@ -2846,7 +2846,7 @@ class ObjectsControllerTest extends IntegrationTestCase
      *
      * @return array
      */
-    public function missingRouteProvider()
+    public static function missingRouteProvider(): array
     {
         return [
             'document' => [
@@ -2977,7 +2977,7 @@ class ObjectsControllerTest extends IntegrationTestCase
      *
      * @return array
      */
-    public function saveEntityOptionsProvider()
+    public static function saveEntityOptionsProvider(): array
     {
         return [
             'lock' => [

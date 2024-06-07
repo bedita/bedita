@@ -52,7 +52,7 @@ class CategoriesBehaviorTest extends TestCase
      *
      * @return array
      */
-    public function beforeSaveProvider()
+    public static function beforeSaveProvider(): array
     {
         return [
             'ok' => [

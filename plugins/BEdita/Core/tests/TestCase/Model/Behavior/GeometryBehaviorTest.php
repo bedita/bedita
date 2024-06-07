@@ -85,7 +85,7 @@ class GeometryBehaviorTest extends TestCase
      *
      * @return array
      */
-    public function findGeoProvider()
+    public static function findGeoProvider(): array
     {
         return [
             'near point' => [
@@ -148,7 +148,7 @@ class GeometryBehaviorTest extends TestCase
      *
      * @return array
      */
-    public function badGeoProvider()
+    public static function badGeoProvider(): array
     {
         return [
             'gustavo' => [

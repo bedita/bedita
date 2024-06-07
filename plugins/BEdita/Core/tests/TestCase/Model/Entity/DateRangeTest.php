@@ -58,7 +58,7 @@ class DateRangeTest extends TestCase
      *
      * @return array
      */
-    public function isBeforeProvider()
+    public static function isBeforeProvider(): array
     {
         return [
             [
@@ -199,7 +199,7 @@ class DateRangeTest extends TestCase
      *
      * @return array
      */
-    public function isAfterProvider()
+    public static function isAfterProvider(): array
     {
         return [
             [
@@ -340,7 +340,7 @@ class DateRangeTest extends TestCase
      *
      * @return array
      */
-    public function normalizeProvider()
+    public static function normalizeProvider(): array
     {
         return [
             'empty' => [
@@ -525,7 +525,7 @@ class DateRangeTest extends TestCase
      *
      * @return array
      */
-    public function diffProvider()
+    public static function diffProvider(): array
     {
         return [
             'empty' => [
@@ -658,7 +658,7 @@ class DateRangeTest extends TestCase
      *
      * @return array
      */
-    public function checkWellFormedProvider()
+    public static function checkWellFormedProvider(): array
     {
         return [
             'not a date range' => [

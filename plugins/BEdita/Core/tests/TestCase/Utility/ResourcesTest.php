@@ -61,7 +61,7 @@ class ResourcesTest extends TestCase
      *
      * @return array
      */
-    public function createProvider(): array
+    public static function createProvider(): array
     {
         return [
             'roles' => [
@@ -231,7 +231,7 @@ class ResourcesTest extends TestCase
      *
      * @return array
      */
-    public function removeProvider(): array
+    public static function removeProvider(): array
     {
         return [
             'roles' => [
@@ -362,7 +362,7 @@ class ResourcesTest extends TestCase
      *
      * @return array
      */
-    public function updateProvider(): array
+    public static function updateProvider(): array
     {
         return [
             'roles' => [
@@ -527,7 +527,7 @@ class ResourcesTest extends TestCase
      *
      * @return array
      */
-    public function saveProvider(): array
+    public static function saveProvider(): array
     {
         return [
             'simple' => [

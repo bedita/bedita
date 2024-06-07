@@ -43,7 +43,7 @@ class ObjectTypeNameTraitTest extends TestCase
      *
      * @return array
      */
-    public function getObjectTypeNameProvider()
+    public static function getObjectTypeNameProvider(): array
     {
         return [
             'document' => [
@@ -85,7 +85,7 @@ class ObjectTypeNameTraitTest extends TestCase
      *
      * @return array
      */
-    public function setObjectTypeNameProvider()
+    public static function setObjectTypeNameProvider(): array
     {
         return [
             'document' => [

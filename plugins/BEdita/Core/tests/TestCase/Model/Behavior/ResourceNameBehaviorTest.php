@@ -48,7 +48,7 @@ class ResourceNameBehaviorTest extends TestCase
      *
      * @return array
      */
-    public function getIdProvider()
+    public static function getIdProvider(): array
     {
         return [
             'id' => [

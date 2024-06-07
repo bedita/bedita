@@ -34,7 +34,7 @@ class JWTHandlerTest extends TestCase
      *
      * @return array
      */
-    public function decodeProvider(): array
+    public static function decodeProvider(): array
     {
         $payload = ['someData' => 'someValue'];
         $token = JWT::encode($payload, Security::getSalt(), 'HS256');

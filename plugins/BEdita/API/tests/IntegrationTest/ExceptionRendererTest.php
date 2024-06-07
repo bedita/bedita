@@ -43,7 +43,7 @@ class ExceptionRendererTest extends IntegrationTestCase
      *
      * @return array
      */
-    public function contentTypeProvider()
+    public static function contentTypeProvider(): array
     {
         return [
             'JSON' => [
@@ -96,7 +96,7 @@ class ExceptionRendererTest extends IntegrationTestCase
      *
      * @return array
      */
-    public function contentTypeErrorProvider()
+    public static function contentTypeErrorProvider(): array
     {
         // Using an exception that surely isn't thrown anywhere else in our code.
         $exception = new HttpException('I\'m a teapot', 418);

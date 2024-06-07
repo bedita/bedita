@@ -69,7 +69,7 @@ class CountRelatedObjectsActionTest extends TestCase
      *
      * @return array
      */
-    public function executeProvider(): array
+    public static function executeProvider(): array
     {
         return [
             'no count' => [

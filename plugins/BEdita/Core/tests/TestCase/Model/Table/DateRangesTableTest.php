@@ -85,7 +85,7 @@ class DateRangesTableTest extends TestCase
      *
      * @return array
      */
-    public function findDateProvider()
+    public static function findDateProvider(): array
     {
         return [
             'startAfter' => [
@@ -184,7 +184,7 @@ class DateRangesTableTest extends TestCase
      *
      * @return array
      */
-    public function fromToDateFilterProvider()
+    public static function fromToDateFilterProvider(): array
     {
         return [
             'from ok' => [

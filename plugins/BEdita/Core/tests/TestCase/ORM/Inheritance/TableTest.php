@@ -348,7 +348,7 @@ class TableTest extends TestCase
      *
      * @return array
      */
-    public function selectProvider()
+    public static function selectProvider(): array
     {
         return [
             'fieldsFromAllInherited' => [
@@ -450,7 +450,7 @@ class TableTest extends TestCase
      *
      * @return array
      */
-    public function findListProvider()
+    public static function findListProvider(): array
     {
         return [
             'fieldsOnMain' => [

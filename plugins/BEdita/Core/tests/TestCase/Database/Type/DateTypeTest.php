@@ -30,7 +30,7 @@ class DateTypeTest extends TestCase
      *
      * @return array
      */
-    public function marshalProvider()
+    public static function marshalProvider(): array
     {
         return [
             [

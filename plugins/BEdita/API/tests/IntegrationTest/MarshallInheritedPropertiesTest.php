@@ -27,7 +27,7 @@ class MarshallInheritedPropertiesTest extends IntegrationTestCase
      *
      * @return array
      */
-    public function marshallProvider()
+    public static function marshallProvider(): array
     {
         return [
             'date' => [

@@ -44,7 +44,7 @@ class PriorityBehaviorTest extends TestCase
      *
      * @return array
      */
-    public function initializeProvider()
+    public static function initializeProvider(): array
     {
         return [
             'default' => [
@@ -280,7 +280,7 @@ class PriorityBehaviorTest extends TestCase
      *
      * @return array
      */
-    public function compactEntityFieldProvider()
+    public static function compactEntityFieldProvider(): array
     {
         return [
             'empty scope' => [
@@ -348,7 +348,7 @@ class PriorityBehaviorTest extends TestCase
      *
      * @return array
      */
-    public function updateEntityPrioritiesProvider()
+    public static function updateEntityPrioritiesProvider(): array
     {
         return [
             'empty scope' => [

@@ -68,7 +68,7 @@ class AssociationCollectionTest extends TestCase
      *
      * @return array
      */
-    public function getProvider()
+    public static function getProvider(): array
     {
         return [
             'own' => [
@@ -281,7 +281,7 @@ class AssociationCollectionTest extends TestCase
      *
      * @return array
      */
-    public function inheritedAssociationsRelatedToProvider()
+    public static function inheritedAssociationsRelatedToProvider(): array
     {
         return [
             'isAbstract' => [

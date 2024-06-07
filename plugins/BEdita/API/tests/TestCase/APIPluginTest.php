@@ -37,7 +37,7 @@ class APIPluginTest extends TestCase
      *
      * @return array
      */
-    public function bootstrapProvider(): array
+    public static function bootstrapProvider(): array
     {
         return [
             'conf ok' => [ExceptionRenderer::class],

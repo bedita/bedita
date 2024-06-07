@@ -33,7 +33,7 @@ class AuthenticationTest extends IntegrationTestCase
      *
      * @return array
      */
-    public function authProvider(): array
+    public static function authProvider(): array
     {
         return [
             'client credentials' => [

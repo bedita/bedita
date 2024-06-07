@@ -71,7 +71,7 @@ class AddAssociatedActionTest extends TestCase
      *
      * @return array
      */
-    public function invocationProvider()
+    public static function invocationProvider(): array
     {
         return [
             'nothingToDo' => [

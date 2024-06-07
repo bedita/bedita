@@ -31,7 +31,7 @@ class BoolTypeTest extends TestCase
      *
      * @return array
      */
-    public function toDatabaseProvider()
+    public static function toDatabaseProvider(): array
     {
         return [
             [

@@ -78,7 +78,7 @@ class AddRelatedObjectsActionTest extends TestCase
      *
      * @return array
      */
-    public function invocationProvider()
+    public static function invocationProvider(): array
     {
         return [
             'nothingToDo' => [
@@ -262,7 +262,7 @@ class AddRelatedObjectsActionTest extends TestCase
      *
      * @return array
      */
-    public function linkEntitiesRelatedToOtherObjectProvider(): array
+    public static function linkEntitiesRelatedToOtherObjectProvider(): array
     {
         return [
             'direct' => [

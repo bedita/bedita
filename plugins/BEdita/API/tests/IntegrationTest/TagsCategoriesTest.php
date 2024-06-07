@@ -27,7 +27,7 @@ class TagsCategoriesTest extends IntegrationTestCase
      *
      * @return array
      */
-    public function createProvider(): array
+    public static function createProvider(): array
     {
         return [
             'simple tag' => [
@@ -137,7 +137,7 @@ class TagsCategoriesTest extends IntegrationTestCase
      *
      * @return array
      */
-    public function updateProvider(): array
+    public static function updateProvider(): array
     {
         return [
             'no cat' => [
@@ -267,7 +267,7 @@ class TagsCategoriesTest extends IntegrationTestCase
      *
      * @return array
      */
-    public function modelEndpointsProvider(): array
+    public static function modelEndpointsProvider(): array
     {
         return [
             'categories' => [

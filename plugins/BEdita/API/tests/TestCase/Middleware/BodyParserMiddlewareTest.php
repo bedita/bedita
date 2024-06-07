@@ -52,7 +52,7 @@ class BodyParserMiddlewareTest extends TestCase
      *
      * @return array
      */
-    public function decodeFormProvider(): array
+    public static function decodeFormProvider(): array
     {
         return [
             'empty' => [

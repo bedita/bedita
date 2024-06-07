@@ -60,7 +60,7 @@ class SearchRegistryTest extends TestCase
      *
      * @return array[]
      */
-    public function loadProvider(): array
+    public static function loadProvider(): array
     {
         return [
             'successful initialization' => [

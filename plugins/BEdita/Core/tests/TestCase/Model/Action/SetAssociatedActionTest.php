@@ -79,7 +79,7 @@ class SetAssociatedActionTest extends TestCase
      *
      * @return array
      */
-    public function invocationProvider()
+    public static function invocationProvider(): array
     {
         return [
             'belongsToManyEmpty' => [
@@ -315,7 +315,7 @@ class SetAssociatedActionTest extends TestCase
      *
      * @return array
      */
-    public function invocationWithValidationErrorsProvider()
+    public static function invocationWithValidationErrorsProvider(): array
     {
         return [
             'new link' => [1, 2],
@@ -374,7 +374,7 @@ class SetAssociatedActionTest extends TestCase
      *
      * @return array
      */
-    public function joinDataProvider()
+    public static function joinDataProvider(): array
     {
         return [
             'entity' => [

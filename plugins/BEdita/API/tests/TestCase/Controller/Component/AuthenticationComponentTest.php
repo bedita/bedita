@@ -37,7 +37,7 @@ class AuthenticationComponentTest extends TestCase
      *
      * @return array
      */
-    public function checkExpiredTokenProvider()
+    public static function checkExpiredTokenProvider(): array
     {
         return [
             'ok' => [

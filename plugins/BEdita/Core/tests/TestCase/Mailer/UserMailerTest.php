@@ -98,7 +98,7 @@ class UserMailerTest extends TestCase
      *
      * @return array
      */
-    public function signupProvider()
+    public static function signupProvider(): array
     {
         return [
             'ok' => [
@@ -197,7 +197,7 @@ class UserMailerTest extends TestCase
      *
      * @return array
      */
-    public function welcomeProvider()
+    public static function welcomeProvider(): array
     {
         return [
             'ok' => [
@@ -254,7 +254,7 @@ class UserMailerTest extends TestCase
      *
      * @return array
      */
-    public function changeRequestProvider()
+    public static function changeRequestProvider(): array
     {
         return [
             'ok' => [
@@ -316,7 +316,7 @@ class UserMailerTest extends TestCase
      *
      * @return array
      */
-    public function getProjectNameProvider()
+    public static function getProjectNameProvider(): array
     {
         return [
             'default' => [

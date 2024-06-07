@@ -73,7 +73,7 @@ class ObjectRelationsTableTest extends TestCase
      *
      * @return array
      */
-    public function validationProvider()
+    public static function validationProvider(): array
     {
         $schema = (object)[
             'type' => 'object',
@@ -184,7 +184,7 @@ class ObjectRelationsTableTest extends TestCase
      *
      * @return array
      */
-    public function jsonSchemaProvider()
+    public static function jsonSchemaProvider(): array
     {
         $schema = (object)[
             'type' => 'object',

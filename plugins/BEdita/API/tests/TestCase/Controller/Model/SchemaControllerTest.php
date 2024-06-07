@@ -45,7 +45,7 @@ class SchemaControllerTest extends IntegrationTestCase
      *
      * @return array
      */
-    public function jsonSchemaProvider()
+    public static function jsonSchemaProvider(): array
     {
         return [
             'locations' => [

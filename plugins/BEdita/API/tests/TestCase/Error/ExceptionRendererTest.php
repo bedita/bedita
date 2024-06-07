@@ -68,7 +68,7 @@ class ExceptionRendererTest extends TestCase
      *
      * @return array
      */
-    public function errorDetailsProvider()
+    public static function errorDetailsProvider(): array
     {
         return [
             'simple' => [
@@ -159,7 +159,7 @@ class ExceptionRendererTest extends TestCase
      *
      * @return array
      */
-    public function renderJsonProvider()
+    public static function renderJsonProvider(): array
     {
         return [
             'debugOn' => [

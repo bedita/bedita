@@ -29,7 +29,7 @@ class CountQueryStringTest extends IntegrationTestCase
      *
      * @return array
      */
-    public function countSingleProvider(): array
+    public static function countSingleProvider(): array
     {
         return [
             'empty' => [

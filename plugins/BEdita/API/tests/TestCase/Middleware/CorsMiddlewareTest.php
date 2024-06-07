@@ -41,7 +41,7 @@ class CorsMiddlewareTest extends TestCase
      *
      * @return array
      */
-    public function corsProvider()
+    public static function corsProvider(): array
     {
         return [
             'noCors' => [

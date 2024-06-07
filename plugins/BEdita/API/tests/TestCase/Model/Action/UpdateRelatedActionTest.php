@@ -62,7 +62,7 @@ class UpdateRelatedActionTest extends TestCase
      *
      * @return array[]
      */
-    public function invocationProvider(): array
+    public static function invocationProvider(): array
     {
         return [
             'simple' => [

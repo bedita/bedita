@@ -106,7 +106,7 @@ class AuthProviderTest extends TestCase
      *
      * @return array
      */
-    public function getRolesProvider()
+    public static function getRolesProvider(): array
     {
         return [
             'empty' => [
@@ -153,7 +153,7 @@ class AuthProviderTest extends TestCase
      *
      * @return array
      */
-    public function checkAuthorizationProvider()
+    public static function checkAuthorizationProvider(): array
     {
         return [
             'ok' => [

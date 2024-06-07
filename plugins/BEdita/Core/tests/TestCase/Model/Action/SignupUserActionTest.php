@@ -83,7 +83,7 @@ class SignupUserActionTest extends TestCase
      *
      * @return array
      */
-    public function executeProvider()
+    public static function executeProvider(): array
     {
         return [
             'ok' => [
@@ -232,7 +232,7 @@ class SignupUserActionTest extends TestCase
      *
      * @return array
      */
-    public function executeExtAuthProvider()
+    public static function executeExtAuthProvider(): array
     {
         return [
             'ok' => [
@@ -568,7 +568,7 @@ class SignupUserActionTest extends TestCase
      *
      * @return array
      */
-    public function rolesProvider()
+    public static function rolesProvider(): array
     {
         return [
             'roleAsFromConfig' => [

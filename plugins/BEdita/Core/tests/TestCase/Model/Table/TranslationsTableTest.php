@@ -87,7 +87,7 @@ class TranslationsTableTest extends TestCase
      *
      * @return array
      */
-    public function validationProvider()
+    public static function validationProvider(): array
     {
         return [
             'ok' => [
@@ -153,7 +153,7 @@ class TranslationsTableTest extends TestCase
      *
      * @return array
      */
-    public function findTypeProvider(): array
+    public static function findTypeProvider(): array
     {
         return [
             'documents' => [
@@ -209,7 +209,7 @@ class TranslationsTableTest extends TestCase
      *
      * @return array
      */
-    public function findAvailableProvider(): array
+    public static function findAvailableProvider(): array
     {
         return [
             'no status' => [

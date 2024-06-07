@@ -42,7 +42,7 @@ class LocationsValidatorTest extends TestCase
      *
      * @return array
      */
-    public function validationProvider()
+    public static function validationProvider(): array
     {
         return [
             'empty' => [
@@ -122,7 +122,7 @@ class LocationsValidatorTest extends TestCase
      *
      * @return array
      */
-    public function checkWktProvider()
+    public static function checkWktProvider(): array
     {
         return [
             'not a string' => [
@@ -169,7 +169,7 @@ class LocationsValidatorTest extends TestCase
      *
      * @return array
      */
-    public function checkCoordinatesProvider()
+    public static function checkCoordinatesProvider(): array
     {
         return [
             'not an array' => [

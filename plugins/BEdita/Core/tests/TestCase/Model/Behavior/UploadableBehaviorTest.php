@@ -72,7 +72,7 @@ class UploadableBehaviorTest extends TestCase
      *
      * @return array
      */
-    public function afterSaveProvider(): array
+    public static function afterSaveProvider(): array
     {
         $originalContents = "Sample uploaded file.\n";
         $newContents = 'Modified contents.';

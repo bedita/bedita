@@ -65,7 +65,7 @@ class MarshallerTest extends TestCase
      *
      * @return array
      */
-    public function buildPropertyMapProvider()
+    public static function buildPropertyMapProvider(): array
     {
         return [
             'marshallInheritedDate' => [

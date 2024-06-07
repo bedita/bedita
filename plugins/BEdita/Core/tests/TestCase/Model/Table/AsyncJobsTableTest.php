@@ -436,7 +436,7 @@ class AsyncJobsTableTest extends TestCase
      *
      * @return array
      */
-    public function updateResultsProvider(): array
+    public static function updateResultsProvider(): array
     {
         return [
             'success false, some message' => [

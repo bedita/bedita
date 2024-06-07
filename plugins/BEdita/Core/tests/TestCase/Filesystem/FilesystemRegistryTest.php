@@ -74,9 +74,9 @@ class FilesystemRegistryTest extends TestCase
      *
      * @return array
      */
-    public function registryProvider()
+    public static function registryProvider(): array
     {
-        $failedInitialization = $this->getMockBuilder(FilesystemAdapter::class)->getMock();
+        $failedInitialization = static::getMockBuilder(FilesystemAdapter::class)->getMock();
         $failedInitialization
             ->method('initialize')
             ->willReturn(false);
@@ -244,7 +244,7 @@ class FilesystemRegistryTest extends TestCase
      *
      * @return array
      */
-    public function getPublicUrlProvider()
+    public static function getPublicUrlProvider(): array
     {
         return [
             'ok' => [

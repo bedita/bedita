@@ -58,7 +58,7 @@ class RelationshipsPriorityTest extends IntegrationTestCase
      *
      * @return array
      */
-    public function priorityProvider(): array
+    public static function priorityProvider(): array
     {
         return [
             'ok' => [

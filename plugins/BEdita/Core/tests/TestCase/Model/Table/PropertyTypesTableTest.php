@@ -104,7 +104,7 @@ class PropertyTypesTableTest extends TestCase
      *
      * @return array
      */
-    public function validationProvider()
+    public static function validationProvider(): array
     {
         return [
             'valid' => [
@@ -221,7 +221,7 @@ class PropertyTypesTableTest extends TestCase
      *
      * @return array
      */
-    public function detectProvider()
+    public static function detectProvider(): array
     {
         return [
             'by name' => [

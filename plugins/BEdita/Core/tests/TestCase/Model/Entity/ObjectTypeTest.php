@@ -138,7 +138,7 @@ class ObjectTypeTest extends TestCase
      *
      * @return array
      */
-    public function getSetSingularProvider()
+    public static function getSetSingularProvider(): array
     {
         return [
             'default' => ['foo_bar', 'foo_bars', 'FooBar'],
@@ -186,7 +186,7 @@ class ObjectTypeTest extends TestCase
      *
      * @return array
      */
-    public function getSetTableProvider()
+    public static function getSetTableProvider(): array
     {
         return [
             'pluginSyntax' => ['BEdita/Core.Objects', 'BEdita/Core', 'Objects', 'BEdita/Core.Objects'],
@@ -221,7 +221,7 @@ class ObjectTypeTest extends TestCase
      *
      * @return array
      */
-    public function getRelationsByNameProvider()
+    public static function getRelationsByNameProvider(): array
     {
         return [
             'empty' => [
@@ -328,7 +328,7 @@ class ObjectTypeTest extends TestCase
      *
      * @return array[]
      */
-    public function getParentProvider(): array
+    public static function getParentProvider(): array
     {
         return [
             'no parent' => [
@@ -380,7 +380,7 @@ class ObjectTypeTest extends TestCase
      *
      * @return array
      */
-    public function getSetParentNameProvider()
+    public static function getSetParentNameProvider(): array
     {
         return [
             'objects' => [
@@ -466,7 +466,7 @@ class ObjectTypeTest extends TestCase
      *
      * @return array
      */
-    public function getSchemaProvider()
+    public static function getSchemaProvider(): array
     {
         return [
             'objects' => [
@@ -1224,7 +1224,7 @@ class ObjectTypeTest extends TestCase
      *
      * @return array[]
      */
-    public function getFullInheritanceChainProvider(): array
+    public static function getFullInheritanceChainProvider(): array
     {
         return [
             'objects' => [
@@ -1276,7 +1276,7 @@ class ObjectTypeTest extends TestCase
      *
      * @return array[]
      */
-    public function isDescendantOfProvider(): array
+    public static function isDescendantOfProvider(): array
     {
         return [
             'media descendant of objects' => [true, 'media', 'objects'],
@@ -1316,7 +1316,7 @@ class ObjectTypeTest extends TestCase
      *
      * @return array[]
      */
-    public function getClosestCommonAncestorProvider(): array
+    public static function getClosestCommonAncestorProvider(): array
     {
         return [
             'Ø = null' => [null, []],

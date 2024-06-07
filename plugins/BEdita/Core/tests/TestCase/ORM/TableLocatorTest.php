@@ -76,7 +76,7 @@ class TableLocatorTest extends TestCase
      *
      * @return array
      */
-    public function getClassNameProvider()
+    public static function getClassNameProvider(): array
     {
         return [
             'withPluginName' => [

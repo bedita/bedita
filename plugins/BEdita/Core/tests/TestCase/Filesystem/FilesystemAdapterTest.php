@@ -52,12 +52,12 @@ class FilesystemAdapterTest extends TestCase
      *
      * @return array
      */
-    public function getInnerAdapterProvider()
+    public static function getInnerAdapterProvider(): array
     {
         return [
             'ok' => [
                 true,
-                $this->getMockBuilder(LeagueFilesystemAdapter::class)->getMock(),
+                static::getMockBuilder(LeagueFilesystemAdapter::class)->getMock(),
             ],
             'wrong class' => [
                 new \RuntimeException('Filesystem adapters must use BEdita\Core\Filesystem\AdapterInterface as a base class.'),
@@ -117,7 +117,7 @@ class FilesystemAdapterTest extends TestCase
      *
      * @return array
      */
-    public function getPublicUrlProvider()
+    public static function getPublicUrlProvider(): array
     {
         return [
             [

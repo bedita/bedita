@@ -46,7 +46,7 @@ class ObjectPolicyTest extends TestCase
      *
      * @return array
      */
-    public function beforeProvider(): array
+    public static function beforeProvider(): array
     {
         return [
             'no identity' => [
@@ -95,7 +95,7 @@ class ObjectPolicyTest extends TestCase
      *
      * @return array
      */
-    public function canUpdateProvider(): array
+    public static function canUpdateProvider(): array
     {
         return [
             'no permissions set' => [
@@ -176,7 +176,7 @@ class ObjectPolicyTest extends TestCase
      *
      * @return array
      */
-    public function canUpdateParentsProvider(): array
+    public static function canUpdateParentsProvider(): array
     {
         return [
             'no permissions set' => [

@@ -110,7 +110,7 @@ class PropertyTest extends TestCase
      *
      * @return array
      */
-    public function getPropertyTypeNameProvider()
+    public static function getPropertyTypeNameProvider(): array
     {
         return [
             'document' => [
@@ -218,7 +218,7 @@ class PropertyTest extends TestCase
      *
      * @return array
      */
-    public function getRequiredProvider()
+    public static function getRequiredProvider(): array
     {
         return [
             'true' => [
@@ -254,7 +254,7 @@ class PropertyTest extends TestCase
      *
      * @return array
      */
-    public function getSchemaProvider()
+    public static function getSchemaProvider(): array
     {
         return [
             'email' => [
@@ -350,7 +350,7 @@ class PropertyTest extends TestCase
      *
      * @return array
      */
-    public function getTranslatableProvider(): array
+    public static function getTranslatableProvider(): array
     {
         return [
             'missing type' => [

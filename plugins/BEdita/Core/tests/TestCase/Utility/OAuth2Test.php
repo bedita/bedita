@@ -32,7 +32,7 @@ class OAuth2Test extends TestCase
      *
      * @return array
      */
-    public function responseProvider(): array
+    public static function responseProvider(): array
     {
         return [
             'default' => [

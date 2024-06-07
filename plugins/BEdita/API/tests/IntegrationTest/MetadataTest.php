@@ -37,7 +37,7 @@ class MetadataTest extends IntegrationTestCase
      *
      * @return array
      */
-    public function lastModifiedProvider()
+    public static function lastModifiedProvider(): array
     {
         return [
             'documents' => [
