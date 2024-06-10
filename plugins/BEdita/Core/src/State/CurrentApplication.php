@@ -35,14 +35,14 @@ class CurrentApplication
      *
      * @var \BEdita\Core\Model\Entity\Application|null
      */
-    protected $application = null;
+    protected ?Application $application = null;
 
     /**
      * Get current application.
      *
      * @return \BEdita\Core\Model\Entity\Application|null
      */
-    public function get()
+    public function get(): ?Application
     {
         return $this->application;
     }
@@ -53,7 +53,7 @@ class CurrentApplication
      *
      * @return int|null
      */
-    public function id()
+    public function id(): ?int
     {
         return $this->application ? $this->application->id : null;
     }
@@ -63,7 +63,7 @@ class CurrentApplication
      *
      * @return int|null
      */
-    public static function getApplicationId()
+    public static function getApplicationId(): ?int
     {
         return static::getInstance()->id();
     }
@@ -73,7 +73,7 @@ class CurrentApplication
      *
      * @return \BEdita\Core\Model\Entity\Application|null
      */
-    public static function getApplication()
+    public static function getApplication(): ?Application
     {
         return static::getInstance()->get();
     }
@@ -84,7 +84,7 @@ class CurrentApplication
      * @param \BEdita\Core\Model\Entity\Application|null $application Application instance.
      * @return self
      */
-    public function set(?Application $application = null)
+    public function set(?Application $application = null): self
     {
         $this->application = $application;
         $this->loadConfiguration();
@@ -98,7 +98,7 @@ class CurrentApplication
      * @param string $context Configuration context to load, default `core`
      * @return void
      */
-    public function loadConfiguration($context = 'core')
+    public function loadConfiguration(string $context = 'core'): void
     {
         $id = $this->id();
         if ($id !== null) {
@@ -113,7 +113,7 @@ class CurrentApplication
      * @param \BEdita\Core\Model\Entity\Application|null $application Application instance.
      * @return void
      */
-    public static function setApplication(?Application $application = null)
+    public static function setApplication(?Application $application = null): void
     {
         static::getInstance()->set($application);
     }
@@ -141,7 +141,7 @@ class CurrentApplication
      * @param string $context Configuration context to load
      * @return void
      */
-    public static function loadApplicationConfiguration($context)
+    public static function loadApplicationConfiguration(string $context): void
     {
         static::getInstance()->loadConfiguration($context);
     }

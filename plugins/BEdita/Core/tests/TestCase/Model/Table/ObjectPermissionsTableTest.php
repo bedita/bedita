@@ -19,6 +19,7 @@ use Cake\Http\Exception\ForbiddenException;
 use Cake\ORM\Association\BelongsTo;
 use Cake\ORM\Behavior\TimestampBehavior;
 use Cake\TestSuite\TestCase;
+use Exception;
 
 /**
  * {@see \BEdita\Core\Model\Table\ObjectPermissionsTable} Test Case
@@ -219,7 +220,7 @@ class ObjectPermissionsTableTest extends TestCase
      */
     public function testBeforeSave($expected, array $user, array $data): void
     {
-        if ($expected instanceof \Exception) {
+        if ($expected instanceof Exception) {
             $this->expectExceptionObject($expected);
         }
 
@@ -308,7 +309,7 @@ class ObjectPermissionsTableTest extends TestCase
      */
     public function testBeforeDelete($expected, array $user): void
     {
-        if ($expected instanceof \Exception) {
+        if ($expected instanceof Exception) {
             $this->expectExceptionObject($expected);
         }
 

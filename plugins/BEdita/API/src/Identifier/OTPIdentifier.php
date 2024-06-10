@@ -14,6 +14,8 @@ declare(strict_types=1);
  */
 namespace BEdita\API\Identifier;
 
+use AllowDynamicProperties;
+use ArrayAccess;
 use Authentication\Identifier\AbstractIdentifier;
 use Authentication\Identifier\Resolver\ResolverAwareTrait;
 use Cake\Event\EventDispatcherTrait;
@@ -26,7 +28,7 @@ use Cake\Utility\Text;
 /**
  * @property \BEdita\Core\Model\Table\UserTokensTable $UserTokens
  */
-#[\AllowDynamicProperties]
+#[AllowDynamicProperties]
 class OTPIdentifier extends AbstractIdentifier
 {
     use EventDispatcherTrait;
@@ -81,7 +83,7 @@ class OTPIdentifier extends AbstractIdentifier
      * @param string $token The secret token
      * @return \ArrayAccess|array|null User data array on success, null on failure
      */
-    protected function otpAccess(string $username, string $authCode, string $token)
+    protected function otpAccess(string $username, string $authCode, string $token): ArrayAccess|array|null
     {
         $result = $this->getResolver()->find(compact('username'));
         if (empty($result)) {
@@ -113,7 +115,7 @@ class OTPIdentifier extends AbstractIdentifier
      * @param string $username User name
      * @return \ArrayAccess|array|null Authorization array on success, null on failure
      */
-    protected function otpRequest($username)
+    protected function otpRequest(string $username): ArrayAccess|array|null
     {
         $result = $this->getResolver()->find(compact('username'));
         if (empty($result)) {

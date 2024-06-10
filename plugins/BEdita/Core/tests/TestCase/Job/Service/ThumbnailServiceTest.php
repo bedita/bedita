@@ -21,6 +21,7 @@ use BEdita\Core\Job\Service\ThumbnailService;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Text;
+use Exception;
 use PHPUnit\Framework\MockObject\Rule\InvocationOrder;
 
 /**
@@ -167,7 +168,7 @@ class ThumbnailServiceTest extends TestCase
             ->method('generate')
             ->with($stream, $payload['options']);
         if ($shouldThrow) {
-            $method->willThrowException(new \Exception('This is an exception'));
+            $method->willThrowException(new Exception('This is an exception'));
         } else {
             $method->willReturn(true);
         }

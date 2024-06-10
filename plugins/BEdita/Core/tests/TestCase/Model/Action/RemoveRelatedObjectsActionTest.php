@@ -15,12 +15,15 @@ declare(strict_types=1);
 
 namespace BEdita\Core\Test\TestCase\Model\Action;
 
+use ArrayObject;
 use BEdita\Core\Model\Action\RemoveRelatedObjectsAction;
 use Cake\Event\Event;
-use Cake\ORM\Query;
+use Cake\ORM\Query\SelectQuery;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Inflector;
+use Exception;
+use RuntimeException;
 
 /**
  * @covers \BEdita\Core\Model\Action\RemoveRelatedObjectsAction
@@ -85,7 +88,7 @@ class RemoveRelatedObjectsActionTest extends TestCase
                 [4, 3],
             ],
             'removingParent' => [
-                new \RuntimeException(
+                new RuntimeException(
                     'Unable to remove existing links with association of type "Cake\ORM\Association\BelongsTo"'
                 ),
                 'Folders',
@@ -110,7 +113,7 @@ class RemoveRelatedObjectsActionTest extends TestCase
      */
     public function testInvocation($expected, $table, $association, $entity, $related)
     {
-        if ($expected instanceof \Exception) {
+        if ($expected instanceof Exception) {
             $this->expectException(get_class($expected));
             $this->expectExceptionMessage($expected->getMessage());
         }
@@ -137,7 +140,7 @@ class RemoveRelatedObjectsActionTest extends TestCase
             static::assertSame('remove', $event->getData('action'));
             static::assertSame($association, $event->getData('association'));
             static::assertSame($entity, $event->getData('entity'));
-            static::assertInstanceOf(\ArrayObject::class, $event->getData('relatedEntities'));
+            static::assertInstanceOf(ArrayObject::class, $event->getData('relatedEntities'));
             $rel = is_object($relatedEntities) ? [$relatedEntities] : (array)$relatedEntities;
             static::assertSameSize($rel, $event->getData('relatedEntities'));
             $n = count($rel);
@@ -166,7 +169,7 @@ class RemoveRelatedObjectsActionTest extends TestCase
                 ])
                 ->matching(
                     Inflector::camelize($association->getSource()->getAlias()),
-                    function (Query $query) use ($association, $entity) {
+                    function (SelectQuery $query) use ($association, $entity) {
                         return $query->where([
                             $association->getSource()->aliasField($association->getSource()->getPrimaryKey()) => $entity->id,
                         ]);

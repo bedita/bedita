@@ -29,14 +29,14 @@ class LayeredEngine extends CacheEngine
      *
      * @var \Cake\Cache\CacheEngine
      */
-    protected $persistent = null;
+    protected CacheEngine $persistent;
 
     /**
      * In-memory cache instance.
      *
      * @var \Cake\Cache\Engine\ArrayEngine
      */
-    protected $memory = null;
+    protected ArrayEngine $memory;
 
     /**
      * The default config used unless overridden by runtime configuration
@@ -45,7 +45,7 @@ class LayeredEngine extends CacheEngine
      *
      * @var array
      */
-    protected $_defaultConfig = [
+    protected array $_defaultConfig = [
         'duration' => 3600,
         'groups' => [],
         'prefix' => 'cake_',
@@ -79,7 +79,7 @@ class LayeredEngine extends CacheEngine
      * @return \Cake\Cache\CacheEngine The engine instance
      * @throws \Exception If the configuration is wrong
      */
-    protected function getEngineInstance($config): CacheEngine
+    protected function getEngineInstance(array|string $config): CacheEngine
     {
         $registry = Cache::getRegistry();
 

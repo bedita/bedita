@@ -19,6 +19,7 @@ use Cake\Cache\Cache;
 use Cake\Http\Exception\NotFoundException;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
+use Exception;
 
 /**
  * BEdita\Core\Model\Table\EndpointsTable Test Case
@@ -220,7 +221,7 @@ class EndpointsTableTest extends TestCase
     {
         $cacheConf = $this->Endpoints->behaviors()->get('QueryCache')->getConfig('cacheConfig');
         Cache::clear($cacheConf);
-        if ($expected instanceof \Exception) {
+        if ($expected instanceof Exception) {
             $this->expectException(get_class($expected));
             $this->expectExceptionMessage($expected->getMessage());
         }

@@ -19,6 +19,7 @@ use BEdita\Core\Exception\InvalidDataException;
 use BEdita\Core\Model\Action\ChangeCredentialsRequestAction;
 use BEdita\Core\Model\Entity\AsyncJob;
 use BEdita\Core\Model\Entity\User;
+use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\Event\Event;
 use Cake\Event\EventManager;
 use Cake\Mailer\TransportFactory;
@@ -118,7 +119,7 @@ class ChangeCredentialsRequestActionTest extends TestCase
      */
     public function testExecuteFail()
     {
-        $this->expectException(\Cake\Datasource\Exception\RecordNotFoundException::class);
+        $this->expectException(RecordNotFoundException::class);
         $data = [
             'contact' => 'mr.gustavo@example.com',
             'change_url' => 'http://users.example.com',

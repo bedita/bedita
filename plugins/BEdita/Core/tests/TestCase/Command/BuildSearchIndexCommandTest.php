@@ -20,6 +20,7 @@ use Cake\Console\TestSuite\ConsoleIntegrationTestTrait;
 use Cake\Core\Configure;
 use Cake\Datasource\EntityInterface;
 use Cake\TestSuite\TestCase;
+use Exception;
 
 /**
  * BEdita\Core\Command\BuildSearchIndexCommand Test Case
@@ -121,7 +122,7 @@ class BuildSearchIndexCommandTest extends TestCase
         {
             public function indexResource(EntityInterface $entity, string $operation): void
             {
-                throw new \Exception('Test exception');
+                throw new Exception('Test exception');
             }
         };
         Configure::write('Search.adapters.default', [

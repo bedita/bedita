@@ -17,6 +17,7 @@ namespace BEdita\Core\Test\TestCase\Model\Action;
 
 use BEdita\Core\Exception\InvalidDataException;
 use BEdita\Core\Model\Action\SaveEntityAction;
+use Cake\Http\Exception\InternalErrorException;
 use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
@@ -98,7 +99,7 @@ class SaveEntityActionTest extends TestCase
      */
     public function testExecuteSaveErrors()
     {
-        $this->expectException(\Cake\Http\Exception\InternalErrorException::class);
+        $this->expectException(InternalErrorException::class);
         $entity = TableRegistry::getTableLocator()->get('FakeAnimals')->get(1);
 
         $table = $this->getMockBuilder(Table::class)

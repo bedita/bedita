@@ -22,6 +22,7 @@ use Cake\Database\Connection;
 use Cake\Datasource\ConnectionManager;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Hash;
+use PDOException;
 
 /**
  * WARNING: This test is excluded from test suite (see phpunit.xml.dist)
@@ -59,7 +60,7 @@ class BeditaShellTest extends TestCase
         // Try to avoid "database schema has changed" error on SQLite.
         try {
             ConnectionManager::get('default')->getSchemaCollection()->listTables();
-        } catch (\PDOException $e) {
+        } catch (PDOException $e) {
             // Do nothing.
         }
     }

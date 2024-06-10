@@ -15,7 +15,9 @@ declare(strict_types=1);
 
 namespace BEdita\Core\Model\Action;
 
+use BEdita\Core\Model\Entity\ObjectType;
 use Cake\Datasource\Exception\InvalidPrimaryKeyException;
+use Cake\ORM\Table;
 use Cake\Utility\Hash;
 
 /**
@@ -30,19 +32,19 @@ class GetObjectAction extends BaseAction
      *
      * @var \Cake\ORM\Table
      */
-    protected $Table;
+    protected Table $Table;
 
     /**
      * Object type.
      *
      * @var \BEdita\Core\Model\Entity\ObjectType|null
      */
-    protected $objectType;
+    protected ?ObjectType $objectType = null;
 
     /**
      * @inheritDoc
      */
-    protected function initialize(array $data)
+    protected function initialize(array $data): void
     {
         $this->Table = $this->getConfig('table');
         $this->objectType = $this->getConfig('objectType');
@@ -92,7 +94,7 @@ class GetObjectAction extends BaseAction
      * @param array $data Action data.
      * @return array
      */
-    protected function getPrimaryKeyConditions(array $data)
+    protected function getPrimaryKeyConditions(array $data): array
     {
         $key = array_map([$this->Table, 'aliasField'], (array)$this->Table->getPrimaryKey());
         $primaryKey = (array)$data['primaryKey'];

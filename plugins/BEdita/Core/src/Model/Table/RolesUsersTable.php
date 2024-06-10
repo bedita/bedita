@@ -100,7 +100,7 @@ class RolesUsersTable extends Table
      * @throws \Cake\Http\Exception\ForbiddenException; if logged user cannot modify user role
      * @throws \BEdita\Core\Exception\ImmutableResourceException; if entity is not deletable
      */
-    public function beforeDelete(EventInterface $event, EntityInterface $entity)
+    public function beforeDelete(EventInterface $event, EntityInterface $entity): void
     {
         if ($entity->role_id === RolesTable::ADMIN_ROLE && $entity->user_id === UsersTable::ADMIN_USER) {
             throw new ImmutableResourceException(__d('bedita', 'Could not update relationship for users/roles for ADMIN_USER and ADMIN_ROLE'));
@@ -118,7 +118,7 @@ class RolesUsersTable extends Table
      * @return void
      * @throws \Cake\Http\Exception\ForbiddenException; if logged user cannot modify user role
      */
-    public function beforeSave(EventInterface $event, EntityInterface $entity)
+    public function beforeSave(EventInterface $event, EntityInterface $entity): void
     {
         if (!$this->canHandle($entity->role_id)) {
             throw new ForbiddenException(__d('bedita', 'Could not update role. Insufficient priority'));

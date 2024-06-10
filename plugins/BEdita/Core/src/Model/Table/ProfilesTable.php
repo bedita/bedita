@@ -88,7 +88,7 @@ class ProfilesTable extends Table
      * @param \Cake\Datasource\EntityInterface $entity the entity that is going to be saved
      * @return void
      */
-    public function beforeSave(EventInterface $event, EntityInterface $entity)
+    public function beforeSave(EventInterface $event, EntityInterface $entity): void
     {
         if (empty($entity->get('email'))) {
             $entity->set('email', null);

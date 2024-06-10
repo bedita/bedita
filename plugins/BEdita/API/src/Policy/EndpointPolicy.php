@@ -56,14 +56,14 @@ class EndpointPolicy implements RequestPolicyInterface
      * responsibility to interpret, as it may vary. Some controller may also decide to ignore this
      * fine-grained authorization level.
      *
-     * @var bool|string
+     * @var string|bool
      */
-    protected $authorized;
+    protected bool|string $authorized;
 
     /**
      * @inheritDoc
      */
-    public function canAccess(?IdentityInterface $identity, ServerRequest $request)
+    public function canAccess(?IdentityInterface $identity, ServerRequest $request): bool|ResultInterface
     {
         $user = $this->getUser($identity);
 
@@ -142,11 +142,11 @@ class EndpointPolicy implements RequestPolicyInterface
     /**
      * Checks if request can be authorized basing on a set of applicable permissions.
      *
-     * @param \BEdita\Core\Model\Entity\EndpointPermission[] $permissions Set of applicable permissions.
+     * @param array<\BEdita\Core\Model\Entity\EndpointPermission> $permissions Set of applicable permissions.
      * @param bool $readRequest Read request flag.
-     * @return bool|string
+     * @return string|bool
      */
-    protected function checkPermissions(array $permissions, bool $readRequest)
+    protected function checkPermissions(array $permissions, bool $readRequest): bool|string
     {
         $shift = EndpointPermission::PERM_READ;
         if (!$readRequest) {

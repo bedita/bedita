@@ -20,7 +20,7 @@ use BEdita\Core\Utility\LoggedUser;
 use Cake\Database\Schema\TableSchemaInterface;
 use Cake\Datasource\EntityInterface;
 use Cake\Event\EventInterface;
-use Cake\ORM\Query;
+use Cake\ORM\Query\SelectQuery;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Utility\Hash;
@@ -119,7 +119,7 @@ class ExternalAuthTable extends Table
      * @param \Cake\Datasource\EntityInterface $entity Entity.
      * @return bool
      */
-    public function beforeSave(EventInterface $event, EntityInterface $entity)
+    public function beforeSave(EventInterface $event, EntityInterface $entity): bool
     {
         if (!$entity->has('user_id')) {
             /** @var \BEdita\Core\Model\Entity\AuthProvider $authProvider*/
@@ -155,11 +155,11 @@ class ExternalAuthTable extends Table
     /**
      * Find external auth by their auth provider.
      *
-     * @param \Cake\ORM\Query $query Query object instance.
+     * @param \Cake\ORM\Query\SelectQuery $query Query object instance.
      * @param array $options Additional options.
-     * @return \Cake\ORM\Query
+     * @return \Cake\ORM\Query\SelectQuery
      */
-    protected function findAuthProvider(Query $query, array $options = [])
+    protected function findAuthProvider(SelectQuery $query, array $options = []): SelectQuery
     {
         if (empty($options['auth_provider'])) {
             throw new BadFilterException([
@@ -171,7 +171,7 @@ class ExternalAuthTable extends Table
         $authProvider = $options['auth_provider'];
         if (is_string($authProvider)) {
             return $query
-                ->innerJoinWith('AuthProviders', function (Query $query) use ($authProvider) {
+                ->innerJoinWith('AuthProviders', function (SelectQuery $query) use ($authProvider) {
                     return $query->where([
                         $this->AuthProviders->aliasField('name') => $authProvider,
                     ]);
@@ -190,12 +190,12 @@ class ExternalAuthTable extends Table
     /**
      * Find enabled external auth by user.
      *
-     * @param \Cake\ORM\Query $query Query object instance.
+     * @param \Cake\ORM\Query\SelectQuery $query Query object instance.
      * @param array $options Additional options.
-     * @return \Cake\ORM\Query
+     * @return \Cake\ORM\Query\SelectQuery
      * @throws \BEdita\Core\Exception\BadFilterException If missing `$options` data
      */
-    protected function findUser(Query $query, array $options = []): Query
+    protected function findUser(SelectQuery $query, array $options = []): SelectQuery
     {
         if (empty($options['user'])) {
             throw new BadFilterException([
@@ -211,7 +211,7 @@ class ExternalAuthTable extends Table
 
         return $query
             ->contain('AuthProviders')
-            ->innerJoinWith('AuthProviders', function (Query $q) {
+            ->innerJoinWith('AuthProviders', function (SelectQuery $q) {
                 return $q->where(['AuthProviders.enabled' => true]);
             })
             ->where(['ExternalAuth.user_id' => $user]);

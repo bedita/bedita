@@ -19,10 +19,11 @@ use BEdita\Core\Exception\BadFilterException;
 use BEdita\Core\Model\Validation\LocationsValidator;
 use Cake\Database\Expression\FunctionExpression;
 use Cake\Database\Expression\QueryExpression;
-use Cake\Database\Query as DatabaseQuery;
+use Cake\Database\Query\SelectQuery as DatabaseSelectQuery;
 use Cake\ORM\Behavior;
-use Cake\ORM\Query;
+use Cake\ORM\Query\SelectQuery;
 use Cake\Utility\Hash;
+use PDOException;
 
 /**
  * Behavior for geographic searches.
@@ -47,7 +48,7 @@ class GeometryBehavior extends Behavior
      *
      * @var bool
      */
-    protected $hasGeoSupport;
+    protected bool $hasGeoSupport;
 
     /**
      * Get database expression to find distance between two points on a spheroid.
@@ -55,11 +56,11 @@ class GeometryBehavior extends Behavior
      * Points are expressed as pairs of floats, where the first number is the latitude,
      * and the latter is the longitude.
      *
-     * @param string|float[] $point1 First point. Can be either a field name or a pair of floats.
-     * @param string|float[] $point2 Second point. Can be either a field name or a pair of floats.
+     * @param array<float>|string $point1 First point. Can be either a field name or a pair of floats.
+     * @param array<float>|string $point2 Second point. Can be either a field name or a pair of floats.
      * @return \Cake\Database\Expression\FunctionExpression
      */
-    protected function getDistanceExpression($point1, $point2)
+    protected function getDistanceExpression(string|array $point1, string|array $point2): FunctionExpression
     {
         $point1 = is_string($point1) ? [$point1 => 'identifier'] : [sprintf('POINT (%s %s)', ...array_reverse($point1))];
         $point2 = is_string($point2) ? [$point2 => 'identifier'] : [sprintf('POINT (%s %s)', ...array_reverse($point2))];
@@ -87,10 +88,10 @@ class GeometryBehavior extends Behavior
      * while many systems restrict longitude range to (-180, 180], here -180 is an accepted value.
      *
      * @param mixed $point Coordinates.
-     * @return float[] Latitude, longitude.
+     * @return array<float> Latitude, longitude.
      * @throws \BEdita\Core\Exception\BadFilterException Throws an exception if value could not be parsed into coords.
      */
-    public static function parseCoordinates($point)
+    public static function parseCoordinates(mixed $point): array
     {
         if (empty($point)) {
             throw new BadFilterException([
@@ -119,19 +120,19 @@ class GeometryBehavior extends Behavior
      *
      * @return bool
      */
-    public function checkGeoSupport()
+    public function checkGeoSupport(): bool
     {
         $connection = $this->table()->getConnection();
         if (!isset($this->hasGeoSupport)) {
             try {
-                $query = new DatabaseQuery($connection);
+                $query = new DatabaseSelectQuery($connection);
                 $query = $query->select([
                     'dist' => $this->getDistanceExpression([0, 0], [1, 1]),
                 ]);
                 $query->execute();
 
                 $this->hasGeoSupport = true;
-            } catch (\PDOException $e) {
+            } catch (PDOException $e) {
                 $this->hasGeoSupport = false;
             }
         }
@@ -179,7 +180,7 @@ class GeometryBehavior extends Behavior
      * @throws \BEdita\Core\Exception\BadFilterException Throws an exception if value could not be parsed into
      *      valid coordinates, or if GIS SQL functions are not available.
      */
-    public function findGeo(Query $query, array $options)
+    public function findGeo(SelectQuery $query, array $options): Query
     {
         $center = static::parseCoordinates(Hash::get($options, 'center'));
         $distanceCenter = static::parseCoordinates(Hash::get($options, 'from', $center));

@@ -16,6 +16,8 @@ declare(strict_types=1);
 namespace BEdita\Core\Model\Entity;
 
 use Cake\ORM\Entity;
+use DateTimeInterface;
+use LogicException;
 
 /**
  * DateRange Entity
@@ -58,7 +60,7 @@ class DateRange extends Entity
      * @param \BEdita\Core\Model\Entity\DateRange $dateRange Date Range being compared.
      * @return bool
      */
-    public function isBefore(DateRange $dateRange)
+    public function isBefore(DateRange $dateRange): bool
     {
         static::checkWellFormed($this, $dateRange);
 
@@ -77,7 +79,7 @@ class DateRange extends Entity
      * @param \BEdita\Core\Model\Entity\DateRange $dateRange Date Range being compared.
      * @return bool
      */
-    public function isAfter(DateRange $dateRange)
+    public function isAfter(DateRange $dateRange): bool
     {
         static::checkWellFormed($this, $dateRange);
 
@@ -94,10 +96,10 @@ class DateRange extends Entity
      *
      * **Warning**: this method **does not** take `params` into account.
      *
-     * @param \BEdita\Core\Model\Entity\DateRange[] $dateRanges Set of Date Ranges.
-     * @return \BEdita\Core\Model\Entity\DateRange[]
+     * @param array<\BEdita\Core\Model\Entity\DateRange> $dateRanges Set of Date Ranges.
+     * @return array<\BEdita\Core\Model\Entity\DateRange>
      */
-    public static function normalize(array $dateRanges)
+    public static function normalize(array $dateRanges): array
     {
         if (empty($dateRanges)) {
             return [];
@@ -145,10 +147,10 @@ class DateRange extends Entity
      *
      * **Warning**: this method **does not** take `params` into account.
      *
-     * @param \BEdita\Core\Model\Entity\DateRange[][] ...$dateRanges Set of Date Ranges.
-     * @return \BEdita\Core\Model\Entity\DateRange[]
+     * @param array<\BEdita\Core\Model\Entity\DateRange[]> ...$dateRanges Set of Date Ranges.
+     * @return array<\BEdita\Core\Model\Entity\DateRange>
      */
-    public static function union(...$dateRanges)
+    public static function union(array ...$dateRanges): array
     {
         $dateRanges = array_merge(...$dateRanges);
 
@@ -189,11 +191,11 @@ class DateRange extends Entity
      * ];
      * ```
      *
-     * @param \BEdita\Core\Model\Entity\DateRange[] $array1 First set of Date Ranges.
-     * @param \BEdita\Core\Model\Entity\DateRange[] $array2 Second set of Date Ranges.
-     * @return \BEdita\Core\Model\Entity\DateRange[]
+     * @param array<\BEdita\Core\Model\Entity\DateRange> $array1 First set of Date Ranges.
+     * @param array<\BEdita\Core\Model\Entity\DateRange> $array2 Second set of Date Ranges.
+     * @return array<\BEdita\Core\Model\Entity\DateRange>
      */
-    public static function diff(array $array1, array $array2)
+    public static function diff(array $array1, array $array2): array
     {
         // Ensure arrays are normalized.
         $array1 = static::normalize($array1);
@@ -268,7 +270,7 @@ class DateRange extends Entity
      * @return void
      * @throws \LogicException Throws an exception if a malformed Date Range is encountered.
      */
-    public static function checkWellFormed(...$dateRanges)
+    public static function checkWellFormed(array ...$dateRanges): void
     {
         $getType = function ($var) {
             if (!is_object($var)) {
@@ -280,20 +282,20 @@ class DateRange extends Entity
 
         foreach ($dateRanges as $dateRange) {
             if (!($dateRange instanceof self)) {
-                throw new \LogicException(
+                throw new LogicException(
                     __d('bedita', 'Invalid Date Range entity class: expected "{0}", got "{1}"', static::class, $getType($dateRange))
                 );
             }
 
-            if (!($dateRange->start_date instanceof \DateTimeInterface)) {
-                throw new \LogicException(
-                    __d('bedita', 'Invalid "{0}": expected "{1}", got "{2}"', 'start_date', \DateTimeInterface::class, $getType($dateRange->start_date))
+            if (!($dateRange->start_date instanceof DateTimeInterface)) {
+                throw new LogicException(
+                    __d('bedita', 'Invalid "{0}": expected "{1}", got "{2}"', 'start_date', DateTimeInterface::class, $getType($dateRange->start_date))
                 );
             }
 
-            if (!($dateRange->end_date instanceof \DateTimeInterface) && $dateRange->end_date !== null) {
-                throw new \LogicException(
-                    __d('bedita', 'Invalid "{0}": expected "{1}", got "{2}"', 'end_date', \DateTimeInterface::class, $getType($dateRange->end_date))
+            if (!($dateRange->end_date instanceof DateTimeInterface) && $dateRange->end_date !== null) {
+                throw new LogicException(
+                    __d('bedita', 'Invalid "{0}": expected "{1}", got "{2}"', 'end_date', DateTimeInterface::class, $getType($dateRange->end_date))
                 );
             }
         }

@@ -99,9 +99,9 @@ class ProjectModel
     {
         return TableRegistry::getTableLocator()->get('ObjectTypes')
             ->find()
-            ->order(['name' => 'ASC'])
+            ->orderBy(['name' => 'ASC'])
             ->all()
-            ->each(function (EntityInterface $row) {
+            ->each(function (EntityInterface $row): void {
                 unset($row['id']);
                 unset($row['left_relations']);
                 unset($row['right_relations']);
@@ -123,9 +123,9 @@ class ProjectModel
         $relations = TableRegistry::getTableLocator()
             ->get('Relations')
             ->find('all', ['contain' => ['LeftObjectTypes', 'RightObjectTypes']])
-            ->order(['name' => 'ASC'])
+            ->orderBy(['name' => 'ASC'])
             ->all()
-            ->each(function (EntityInterface $row) {
+            ->each(function (EntityInterface $row): void {
                 $left = (array)Hash::extract($row, 'left_object_types.{n}.name');
                 $right = (array)Hash::extract($row, 'right_object_types.{n}.name');
                 sort($left);
@@ -158,9 +158,9 @@ class ProjectModel
     {
         return TableRegistry::getTableLocator()->get('Properties')
             ->find('type', ['dynamic'])
-            ->order(['name' => 'ASC'])
+            ->orderBy(['name' => 'ASC'])
             ->all()
-            ->each(function (EntityInterface $row) {
+            ->each(function (EntityInterface $row): void {
                 $hidden = [
                     'id',
                     'created',
@@ -186,9 +186,9 @@ class ProjectModel
     {
         return TableRegistry::getTableLocator()->get('Categories')
             ->find()
-            ->order(['tree_left' => 'ASC'])
+            ->orderBy(['tree_left' => 'ASC'])
             ->all()
-            ->each(function (EntityInterface $row) {
+            ->each(function (EntityInterface $row): void {
                 $row->setHidden([
                     'id',
                     'created',

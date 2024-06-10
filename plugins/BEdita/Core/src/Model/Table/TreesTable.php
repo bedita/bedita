@@ -14,13 +14,14 @@ declare(strict_types=1);
  */
 namespace BEdita\Core\Model\Table;
 
+use ArrayObject;
 use BEdita\Core\Exception\LockedResourceException;
 use BEdita\Core\Model\Entity\Tree;
 use Cake\Database\Driver\Mysql;
 use Cake\Database\Expression\QueryExpression;
 use Cake\Event\EventInterface;
 use Cake\Http\Exception\BadRequestException;
-use Cake\ORM\Query;
+use Cake\ORM\Query\SelectQuery;
 use Cake\ORM\Rule\IsUnique;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
@@ -175,7 +176,7 @@ class TreesTable extends Table
      * @param \BEdita\Core\Model\Entity\Tree $entity The tree entity to validate
      * @return bool
      */
-    public function isParentValid(Tree $entity)
+    public function isParentValid(Tree $entity): bool
     {
         // if parent_id is null then the object_id must refer to a folder (root)
         if ($entity->parent_id === null) {
@@ -191,7 +192,7 @@ class TreesTable extends Table
      * @param \BEdita\Core\Model\Entity\Tree $entity The tree entity to validate.
      * @return bool
      */
-    public function isPositionUnique(Tree $entity)
+    public function isPositionUnique(Tree $entity): bool
     {
         $rule = new IsUnique(['parent_id', 'object_id']);
         if ($this->isFolder($entity->object_id)) {
@@ -208,7 +209,7 @@ class TreesTable extends Table
      * @param \BEdita\Core\Model\Entity\Tree $entity The entity persisted
      * @return void
      */
-    public function afterSave(EventInterface $event, Tree $entity)
+    public function afterSave(EventInterface $event, Tree $entity): void
     {
         if ($entity->has('position')) {
             if ($this->moveAt($entity, $entity->get('position')) === false) {
@@ -252,7 +253,7 @@ class TreesTable extends Table
      * @throws \BEdita\Core\Exception\LockedResourceException Throws an exception when the delete operation would
      *  leave an orphaned folder.
      */
-    public function beforeDelete(EventInterface $event, Tree $entity, \ArrayObject $options)
+    public function beforeDelete(EventInterface $event, Tree $entity, ArrayObject $options): void
     {
         if (empty($options['_primary'])) {
             return;
@@ -270,7 +271,7 @@ class TreesTable extends Table
      * @param int $id ID of object being checked.
      * @return bool
      */
-    protected function isFolder($id)
+    protected function isFolder(int $id): bool
     {
         static $foldersType = null;
         if ($foldersType === null) {
@@ -286,11 +287,11 @@ class TreesTable extends Table
     /**
      * Find path nodes from object id.
      *
-     * @param \Cake\ORM\Query $query Query object instance.
+     * @param \Cake\ORM\Query\SelectQuery $query Query object instance.
      * @param array $options Array with object id as first element.
-     * @return \Cake\ORM\Query
+     * @return \Cake\ORM\Query\SelectQuery
      */
-    protected function findPathNodes(Query $query, array $options)
+    protected function findPathNodes(SelectQuery $query, array $options): SelectQuery
     {
         if (empty($options)) {
             throw new BadRequestException(__d('bedita', 'Missing required parameter "{0}"', 'object id'));

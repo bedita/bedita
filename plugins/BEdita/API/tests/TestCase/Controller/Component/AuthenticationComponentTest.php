@@ -23,6 +23,7 @@ use Cake\Controller\ComponentRegistry;
 use Cake\Controller\Controller;
 use Cake\Http\ServerRequest;
 use Cake\TestSuite\TestCase;
+use Exception;
 use Firebase\JWT\ExpiredException;
 
 /**
@@ -72,7 +73,7 @@ class AuthenticationComponentTest extends TestCase
      */
     public function testCheckExpiredToken($expected, ?ResultInterface $result): void
     {
-        if ($expected instanceof \Exception) {
+        if ($expected instanceof Exception) {
             $this->expectException(get_class($expected));
             $this->expectExceptionCode($expected->getCode());
             $this->expectExceptionMessage($expected->getMessage());

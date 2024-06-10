@@ -24,7 +24,12 @@ use Cake\Utility\Hash;
  */
 class DateTimeTest extends IntegrationTestCase
 {
-    public function dateTimeInputProvider()
+    /**
+     * Data provider for `testDateTimeInput`
+     *
+     * @return array
+     */
+    public static function dateTimeInputProvider(): array
     {
         return [
             'simple date' => [

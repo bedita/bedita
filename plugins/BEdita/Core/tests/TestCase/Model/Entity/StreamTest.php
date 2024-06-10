@@ -22,8 +22,11 @@ use Cake\Core\Configure;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Text;
+use Exception;
+use InvalidArgumentException;
 use Laminas\Diactoros\Stream;
 use Psr\Http\Message\StreamInterface;
+use stdClass;
 
 /**
  * @coversDefaultClass \BEdita\Core\Model\Entity\Stream
@@ -208,7 +211,7 @@ class StreamTest extends TestCase
         fwrite($resource, 'this is a resource');
         fseek($resource, 0);
 
-        $serializable = static::getMockBuilder(\stdClass::class)
+        $serializable = static::getMockBuilder(stdClass::class)
             ->addMethods(['__toString'])
             ->getMock();
         $serializable
@@ -241,18 +244,18 @@ class StreamTest extends TestCase
                 $serializable,
             ],
             'array' => [
-                new \InvalidArgumentException($exceptionMessage),
+                new InvalidArgumentException($exceptionMessage),
                 [1, 2, 3],
             ],
             'hash' => [
-                new \InvalidArgumentException($exceptionMessage),
+                new InvalidArgumentException($exceptionMessage),
                 [
                     'hello' => 'it\'s me',
                 ],
             ],
             'other object' => [
-                new \InvalidArgumentException($exceptionMessage),
-                new \stdClass(),
+                new InvalidArgumentException($exceptionMessage),
+                new stdClass(),
             ],
         ];
     }
@@ -269,7 +272,7 @@ class StreamTest extends TestCase
      */
     public function testSetContents($expected, $contents)
     {
-        if ($expected instanceof \Exception) {
+        if ($expected instanceof Exception) {
             $this->expectException(get_class($expected));
             $this->expectExceptionCode($expected->getCode());
             $this->expectExceptionMessage($expected->getMessage());

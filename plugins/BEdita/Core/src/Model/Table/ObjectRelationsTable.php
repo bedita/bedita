@@ -19,6 +19,7 @@ use Cake\Database\Schema\TableSchemaInterface;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
+use stdClass;
 
 /**
  * ObjectRelations Model
@@ -110,16 +111,16 @@ class ObjectRelationsTable extends Table
      *
      * @param mixed $value Value being validated.
      * @param array $context Validation context.
-     * @return true|string
+     * @return string|true
      */
-    public static function jsonSchema($value, $context)
+    public static function jsonSchema(mixed $value, array $context): bool|string
     {
         if (empty($context['providers']['jsonSchema'])) {
             return true;
         }
 
         $success = Validation::jsonSchema($value, $context['providers']['jsonSchema']);
-        if ($success !== true && $value === null && Validation::jsonSchema(new \stdClass(), $context['providers']['jsonSchema']) === true) {
+        if ($success !== true && $value === null && Validation::jsonSchema(new stdClass(), $context['providers']['jsonSchema']) === true) {
             // For the sake of validation, `null` is equivalent to empty object.
             $success = true;
         }

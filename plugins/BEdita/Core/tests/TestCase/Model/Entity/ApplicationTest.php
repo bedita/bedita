@@ -18,6 +18,7 @@ namespace BEdita\Core\Test\TestCase\Model\Entity;
 use BEdita\Core\Model\Entity\Application;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
+use InvalidArgumentException;
 
 /**
  * {@see \BEdita\Core\Model\Entity\Application} Test Case
@@ -84,7 +85,7 @@ class ApplicationTest extends TestCase
         ];
         $application = $this->Applications->patchEntity($application, $data);
         if (!($application instanceof Application)) {
-            throw new \InvalidArgumentException();
+            throw new InvalidArgumentException();
         }
 
         $this->assertEquals(1, $application->id);

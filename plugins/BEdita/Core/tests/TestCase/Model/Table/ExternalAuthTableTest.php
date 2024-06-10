@@ -23,6 +23,7 @@ use Cake\ORM\Association\BelongsTo;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Hash;
+use Exception;
 
 /**
  * {@see \BEdita\Core\Model\Table\ExternalAuthTable} Test Case
@@ -309,7 +310,7 @@ class ExternalAuthTableTest extends TestCase
      */
     public function testFindAuthProvider($expected, $authProvider)
     {
-        if ($expected instanceof \Exception) {
+        if ($expected instanceof Exception) {
             $this->expectException(get_class($expected));
             $this->expectExceptionMessage($expected->getMessage());
         }
@@ -402,7 +403,7 @@ class ExternalAuthTableTest extends TestCase
      */
     public function testFindByUser($expected, $user): void
     {
-        if ($expected instanceof \Exception) {
+        if ($expected instanceof Exception) {
             $this->expectException(get_class($expected));
             $this->expectExceptionMessage($expected->getMessage());
         }

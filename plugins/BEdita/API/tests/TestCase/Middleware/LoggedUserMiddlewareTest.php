@@ -14,6 +14,7 @@ declare(strict_types=1);
  */
 namespace BEdita\API\Test\TestCase\Middleware;
 
+use ArrayObject;
 use Authentication\AuthenticationServiceInterface;
 use Authentication\Authenticator\JwtAuthenticator;
 use Authentication\Identifier\JwtSubjectIdentifier;
@@ -166,7 +167,7 @@ class LoggedUserMiddlewareTest extends TestCase
             ],
             'user with ArrayObject' => [
                 1,
-                new \ArrayObject(['id' => 1, 'username' => 'gustavo']),
+                new ArrayObject(['id' => 1, 'username' => 'gustavo']),
             ],
             'no user with array missing username' => [
                 null,
@@ -174,7 +175,7 @@ class LoggedUserMiddlewareTest extends TestCase
             ],
             'no user with ArrayObject missing username' => [
                 null,
-                new \ArrayObject(['id' => 1]),
+                new ArrayObject(['id' => 1]),
             ],
             'instance of Application' => [
                 null,

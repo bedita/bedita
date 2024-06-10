@@ -83,7 +83,7 @@ class GlideGenerator extends ThumbnailGenerator
      *
      * @return \League\Glide\Api\Api
      */
-    protected function getGlideApi()
+    protected function getGlideApi(): GlideApi
     {
         $driver = $this->getConfig('driver', 'gd');
         $api = new GlideApi(

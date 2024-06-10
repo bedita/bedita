@@ -21,6 +21,7 @@ use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\Log\Log;
 use Cake\ORM\TableRegistry;
 use Cake\Utility\Hash;
+use Exception;
 
 /**
  * Service to handle asynchronous generation of thumbnails.
@@ -48,7 +49,7 @@ class ThumbnailService implements JobService
             Log::info(sprintf('Thumbnail service could not find stream "%s"', Hash::get($payload, 'uuid')));
 
             return true;
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             // Another error occurred. Log the error, and mark job as failed.
             Log::error($e->getMessage());
 

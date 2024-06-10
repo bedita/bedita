@@ -25,6 +25,7 @@ use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Hash;
+use InvalidArgumentException;
 
 /**
  * @coversDefaultClass \BEdita\API\Utility\JsonApi
@@ -811,7 +812,7 @@ class JsonApiTest extends TestCase
      */
     public function testNotJsonSerializable(): void
     {
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage(sprintf('Objects must implement "%s", got "array" instead', JsonApiSerializable::class));
 
         JsonApi::formatData(['name' => 'Gustavo']);

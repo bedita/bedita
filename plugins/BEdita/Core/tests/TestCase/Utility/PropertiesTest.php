@@ -15,6 +15,7 @@ declare(strict_types=1);
 
 namespace BEdita\Core\Test\TestCase\Utility;
 
+use AllowDynamicProperties;
 use BEdita\Core\Utility\Properties;
 use Cake\Http\Exception\BadRequestException;
 use Cake\TestSuite\TestCase;
@@ -25,7 +26,7 @@ use Cake\TestSuite\TestCase;
  * @coversDefaultClass \BEdita\Core\Utility\Properties
  * @property \BEdita\Core\Model\Table\PropertiesTable $Properties
  */
-#[\AllowDynamicProperties]
+#[AllowDynamicProperties]
 class PropertiesTest extends TestCase
 {
     /**

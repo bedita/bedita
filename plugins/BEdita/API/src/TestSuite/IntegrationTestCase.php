@@ -52,7 +52,7 @@ abstract class IntegrationTestCase extends TestCase
      *
      * @var array
      */
-    protected $authFixtures = [
+    protected array $authFixtures = [
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.Objects',
         'plugin.BEdita/Core.Locations',
@@ -89,7 +89,7 @@ abstract class IntegrationTestCase extends TestCase
      *
      * @var array
      */
-    protected $defaultUser = [
+    protected array $defaultUser = [
         'username' => 'first user',
         'password' => 'password1',
     ];
@@ -137,7 +137,7 @@ abstract class IntegrationTestCase extends TestCase
      *
      * @return void
      */
-    protected function addAuthFixtures()
+    protected function addAuthFixtures(): void
     {
         $this->fixtures = array_unique(array_merge($this->authFixtures, $this->fixtures));
     }
@@ -149,7 +149,7 @@ abstract class IntegrationTestCase extends TestCase
      * @param string $password The user password
      * @return array
      */
-    public function getUserAuthHeader($username = null, $password = null)
+    public function getUserAuthHeader(?string $username = null, ?string $password = null): array
     {
         $tokens = $this->authUser($username, $password);
 
@@ -182,7 +182,7 @@ abstract class IntegrationTestCase extends TestCase
      * @param string $password The user password
      * @return array
      */
-    public function authUser($username = null, $password = null)
+    public function authUser(?string $username = null, ?string $password = null): array
     {
         $fullBaseUrl = Router::fullBaseUrl();
         $prevRequest = $this->_request;
@@ -227,7 +227,7 @@ abstract class IntegrationTestCase extends TestCase
      * @param array $options Header content options
      * @return void
      */
-    public function configRequestHeaders($method = 'GET', array $options = [])
+    public function configRequestHeaders(string $method = 'GET', array $options = []): void
     {
         $headers = [
             'Host' => 'api.example.com',
@@ -249,7 +249,7 @@ abstract class IntegrationTestCase extends TestCase
      * @return int
      * @codeCoverageIgnore
      */
-    public function lastObjectId()
+    public function lastObjectId(): int
     {
         return TableRegistry::getTableLocator()->get('Objects')
             ->find()

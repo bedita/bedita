@@ -19,6 +19,8 @@ use BEdita\Core\Model\Action\ActionTrait;
 use BEdita\Core\Model\Action\SignupUserAction;
 use Cake\Core\Configure;
 use Cake\TestSuite\TestCase;
+use RuntimeException;
+use Throwable;
 
 /**
  *  {@see \BEdita\Core\Model\Action\ActionTrait} Test Case
@@ -84,11 +86,11 @@ class ActionTraitTest extends TestCase
                 'BEdita/Core',
             ],
             'fail with config' => [
-                new \RuntimeException('Unable to find class "MyPlugin.MyListAction"'),
+                new RuntimeException('Unable to find class "MyPlugin.MyListAction"'),
                 'ListObjectsAction',
             ],
             'direct fail' => [
-                new \RuntimeException('Unable to find class "BEdita/Core.\My\Class'),
+                new RuntimeException('Unable to find class "BEdita/Core.\My\Class'),
                 '\My\Class',
             ],
         ];
@@ -107,7 +109,7 @@ class ActionTraitTest extends TestCase
      */
     public function testCreateAction($expected, string $class, array $options = [], string $prefix = 'BEdita/Core')
     {
-        if ($expected instanceof \Throwable) {
+        if ($expected instanceof Throwable) {
             $this->expectException(get_class($expected));
             $this->expectExceptionMessage($expected->getMessage());
         }

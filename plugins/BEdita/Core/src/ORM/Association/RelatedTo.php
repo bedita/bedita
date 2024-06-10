@@ -19,6 +19,7 @@ use BEdita\Core\Model\Entity\ObjectType;
 use BEdita\Core\ORM\Inheritance\Table as InheritanceTable;
 use Cake\ORM\Association\BelongsToMany;
 use Cake\ORM\Query;
+use Cake\ORM\Query\SelectQuery;
 use Cake\ORM\Table;
 
 /**
@@ -33,16 +34,16 @@ class RelatedTo extends BelongsToMany
      * This key is compared to `self::_foreignKey` to know the direction of the relation.
      * Default is `right_id`.
      *
-     * @var string|string[]
+     * @var array<string>|string
      */
-    protected $inverseKey = 'right_id';
+    protected string|array $inverseKey = 'right_id';
 
     /**
      * Target object type.
      *
      * @var \BEdita\Core\Model\Entity\ObjectType|null
      */
-    private $objectType = null;
+    private ?ObjectType $objectType = null;
 
     /**
      * @inheritDoc
@@ -107,10 +108,10 @@ class RelatedTo extends BelongsToMany
      * Set the name of the field used to check if the association represents
      * an inverse relation.
      *
-     * @param string|string[] $key The key or keys used for inverse relation check.
+     * @param array<string>|string $key The key or keys used for inverse relation check.
      * @return $this
      */
-    public function setInverseKey($key)
+    public function setInverseKey(string|array $key)
     {
         $this->inverseKey = $key;
 
@@ -120,9 +121,9 @@ class RelatedTo extends BelongsToMany
     /**
      * Return the inverse key.
      *
-     * @return string|string[]
+     * @return array<string>|string
      */
-    public function getInverseKey()
+    public function getInverseKey(): string|array
     {
         return $this->inverseKey;
     }
@@ -131,9 +132,9 @@ class RelatedTo extends BelongsToMany
      * Get sub-query for matching.
      *
      * @param array $options Options array.
-     * @return \Cake\ORM\Query
+     * @return \Cake\ORM\Query\SelectQuery
      */
-    public function getSubQueryForMatching(array $options)
+    public function getSubQueryForMatching(array $options): SelectQuery
     {
         if (!isset($options['conditions'])) {
             $options['conditions'] = [];
@@ -165,7 +166,7 @@ class RelatedTo extends BelongsToMany
      *
      * @return bool
      */
-    public function isSourceAbstract()
+    public function isSourceAbstract(): bool
     {
         return $this->isAbstract($this->getSource());
     }
@@ -175,7 +176,7 @@ class RelatedTo extends BelongsToMany
      *
      * @return bool
      */
-    public function isTargetAbstract()
+    public function isTargetAbstract(): bool
     {
         return $this->isAbstract($this->getTarget());
     }
@@ -186,7 +187,7 @@ class RelatedTo extends BelongsToMany
      * @param \Cake\ORM\Table $table The table to verify
      * @return bool
      */
-    protected function isAbstract(Table $table)
+    protected function isAbstract(Table $table): bool
     {
         if (!$table->behaviors()->has('ObjectType')) {
             return false;
@@ -211,7 +212,7 @@ class RelatedTo extends BelongsToMany
      *
      * Use inheritance subquery as table for target that is an inheritance table.
      */
-    public function attachTo(Query $query, array $options = []): void
+    public function attachTo(SelectQuery $query, array $options = []): void
     {
         $targetTable = $this->getTarget();
         if ($targetTable instanceof InheritanceTable) {

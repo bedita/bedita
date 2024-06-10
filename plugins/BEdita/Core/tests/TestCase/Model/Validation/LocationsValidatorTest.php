@@ -18,6 +18,7 @@ namespace BEdita\Core\Test\TestCase\Model\Validation;
 use BEdita\Core\Model\Validation\LocationsValidator;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Hash;
+use stdClass;
 
 /**
  * @coversDefaultClass \BEdita\Core\Model\Validation\LocationsValidator
@@ -127,7 +128,7 @@ class LocationsValidatorTest extends TestCase
         return [
             'not a string' => [
                 'invalid Well-Known Text',
-                new \stdClass(),
+                new stdClass(),
             ],
             'random string' => [
                 'invalid Well-Known Text',
@@ -174,7 +175,7 @@ class LocationsValidatorTest extends TestCase
         return [
             'not an array' => [
                 'coordinates must be a pair of values',
-                new \stdClass(),
+                new stdClass(),
             ],
             'wrong length' => [
                 'coordinates must be a pair of values',

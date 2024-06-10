@@ -16,6 +16,7 @@ declare(strict_types=1);
 namespace BEdita\API\Test\IntegrationTest;
 
 use BEdita\API\TestSuite\IntegrationTestCase;
+use Cake\I18n\DateTime;
 use Cake\Utility\Text;
 
 /**
@@ -100,11 +101,11 @@ class MetadataTest extends IntegrationTestCase
         static::assertArrayHasKey('modified_by', $body['data']['meta']);
 
         static::assertEquals(
-            \Cake\I18n\DateTime::now()->timestamp,
-            \Cake\I18n\DateTime::parse($body['data']['meta']['modified'])->getTimestamp(),
+            DateTime::now()->timestamp,
+            DateTime::parse($body['data']['meta']['modified'])->getTimestamp(),
             '`modified` field not updated'
         );
-        static::assertEqualsWithDelta(\Cake\I18n\DateTime::now()->timestamp, \Cake\I18n\DateTime::parse($body['data']['meta']['modified'])->getTimestamp(), 5, '`modified` field not updated');
+        static::assertEqualsWithDelta(DateTime::now()->timestamp, DateTime::parse($body['data']['meta']['modified'])->getTimestamp(), 5, '`modified` field not updated');
         static::assertSame(5, $body['data']['meta']['modified_by'], '`modified_by` field not updated');
     }
 }

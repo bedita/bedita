@@ -85,7 +85,7 @@ class StreamsController extends ResourcesController
      * @param string $fileName Original file name.
      * @return void
      */
-    public function upload($fileName): void
+    public function upload(string $fileName): void
     {
         $data = $this->Upload->upload($fileName);
 
@@ -163,7 +163,7 @@ class StreamsController extends ResourcesController
      *
      * @throws \Cake\Http\Exception\ForbiddenException An exception is thrown on attempts to update existing streams.
      */
-    public function resource($id)
+    public function resource($id): ?Response
     {
         if ($this->request->is('patch')) {
             throw new ForbiddenException(__d(

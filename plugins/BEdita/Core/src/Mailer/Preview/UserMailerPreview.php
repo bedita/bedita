@@ -15,6 +15,8 @@ declare(strict_types=1);
 
 namespace BEdita\Core\Mailer\Preview;
 
+use AllowDynamicProperties;
+use BEdita\Core\Model\Entity\User;
 use Cake\Mailer\Mailer;
 use Cake\Utility\Text;
 use DebugKit\Mailer\MailPreview;
@@ -26,7 +28,7 @@ use DebugKit\Mailer\MailPreview;
  * @since 4.0.0
  * @codeCoverageIgnore
  */
-#[\AllowDynamicProperties]
+#[AllowDynamicProperties]
 class UserMailerPreview extends MailPreview
 {
     /**
@@ -92,7 +94,7 @@ class UserMailerPreview extends MailPreview
      *
      * @return \BEdita\Core\Model\Entity\User
      */
-    protected function getUser()
+    protected function getUser(): User
     {
         $this->Users = $this->fetchTable('Users');
 

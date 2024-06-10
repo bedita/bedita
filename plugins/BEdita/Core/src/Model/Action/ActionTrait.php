@@ -17,6 +17,7 @@ namespace BEdita\Core\Model\Action;
 
 use Cake\Core\App;
 use Cake\Core\Configure;
+use RuntimeException;
 
 /**
  * Trait to create actions allowing custom actions load svia configuration.
@@ -66,7 +67,7 @@ trait ActionTrait
      * @param string $prefix Prefix to use, defaults to 'BEdita/Core'
      * @return \BEdita\Core\Model\Action\BaseAction
      */
-    protected function createAction(string $class, array $options = [], $prefix = 'BEdita/Core'): BaseAction
+    protected function createAction(string $class, array $options = [], string $prefix = 'BEdita/Core'): BaseAction
     {
         // instantiate class in namespaced format like '\MyNamespace\MyClass'
         $className = App::className($class);
@@ -79,7 +80,7 @@ trait ActionTrait
         $class = Configure::read(sprintf('Actions.%s', $class), $defaultClass);
         $className = App::className($class, 'Model/Action');
         if ($className === null) {
-            throw new \RuntimeException(__d('bedita', 'Unable to find class "{0}"', $class));
+            throw new RuntimeException(__d('bedita', 'Unable to find class "{0}"', $class));
         }
 
         return new $className($options);

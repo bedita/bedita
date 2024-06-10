@@ -20,6 +20,7 @@ use BEdita\Core\Model\Table\ObjectsTable;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Hash;
+use InvalidArgumentException;
 
 /**
  * {@see \BEdita\Core\Model\Entity\ObjectEntity} Test Case
@@ -107,7 +108,7 @@ class ObjectEntityTest extends TestCase
         ];
         $object = $this->Objects->patchEntity($object, $data);
         if (!($object instanceof ObjectEntity)) {
-            throw new \InvalidArgumentException();
+            throw new InvalidArgumentException();
         }
 
         $this->assertEquals(1, $object->id);

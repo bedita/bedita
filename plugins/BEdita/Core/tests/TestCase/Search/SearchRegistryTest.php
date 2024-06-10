@@ -14,6 +14,7 @@ declare(strict_types=1);
  */
 namespace BEdita\Core\Test\TestCase\Search;
 
+use BadMethodCallException;
 use BEdita\Core\Search\Adapter\SimpleAdapter;
 use BEdita\Core\Search\BaseAdapter;
 use BEdita\Core\Search\SearchRegistry;
@@ -21,7 +22,9 @@ use Cake\Datasource\EntityInterface;
 use Cake\ORM\Query;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Hash;
+use Exception;
 use RuntimeException;
+use stdClass;
 
 /**
  * @coversDefaultClass \BEdita\Core\Search\SearchRegistry
@@ -83,7 +86,7 @@ class SearchRegistryTest extends TestCase
                 new RuntimeException(sprintf('Search adapters must use %s as a base class.', BaseAdapter::class)),
                 'default',
                 [
-                    'className' => new \stdClass(),
+                    'className' => new stdClass(),
                 ],
             ],
             'SimpleAdapter by name' => [
@@ -92,7 +95,7 @@ class SearchRegistryTest extends TestCase
                 [],
             ],
             'Adapter not found' => [
-                new \BadMethodCallException('Search adapter FakeAdapter is not available.'),
+                new BadMethodCallException('Search adapter FakeAdapter is not available.'),
                 'FakeAdapter',
                 [],
             ],
@@ -113,7 +116,7 @@ class SearchRegistryTest extends TestCase
      */
     public function testLoad($expected, string $name, array $config): void
     {
-        if ($expected instanceof \Exception) {
+        if ($expected instanceof Exception) {
             $this->expectExceptionObject($expected);
         }
 

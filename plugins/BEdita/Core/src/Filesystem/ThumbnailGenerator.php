@@ -31,7 +31,7 @@ abstract class ThumbnailGenerator implements GeneratorInterface
      *
      * @var array
      */
-    protected $_defaultConfig = [];
+    protected array $_defaultConfig = [];
 
     /**
      * Initialize filesystem adapter class.

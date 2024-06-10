@@ -20,6 +20,7 @@ use BEdita\Core\Utility\LoggedUser;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use DMS\PHPUnitExtensions\ArraySubset\ArraySubsetAsserts;
+use UnexpectedValueException;
 
 /**
  * {@see \BEdita\Core\Model\Behavior\UserModifiedBehavior} Test Case
@@ -158,7 +159,7 @@ class UserModifiedBehaviorTest extends TestCase
      */
     public function testHandleEventFailure()
     {
-        $this->expectException(\UnexpectedValueException::class);
+        $this->expectException(UnexpectedValueException::class);
         $this->expectExceptionMessage('When should be one of "always", "new" or "existing". The passed value "sometimes" is invalid');
         $this->Objects->behaviors()->get('UserModified')->setConfig('events', [
             'Model.beforeSave' => [

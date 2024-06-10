@@ -16,6 +16,8 @@ declare(strict_types=1);
 namespace BEdita\Core\Model\Action;
 
 use BEdita\Core\Model\Entity\User;
+use BEdita\Core\Model\Table\AsyncJobsTable;
+use BEdita\Core\Model\Table\UsersTable;
 use Cake\Event\EventDispatcherTrait;
 use Cake\Event\EventInterface;
 use Cake\Event\EventListenerInterface;
@@ -40,19 +42,19 @@ class SignupUserActivationAction extends BaseAction implements EventListenerInte
      *
      * @var \BEdita\Core\Model\Table\UsersTable
      */
-    protected $Users;
+    protected UsersTable $Users;
 
     /**
      * The AsyncJobs table
      *
      * @var \BEdita\Core\Model\Table\AsyncJobsTable
      */
-    protected $AsyncJobs;
+    protected AsyncJobsTable $AsyncJobs;
 
     /**
      * @inheritDoc
      */
-    protected function initialize(array $config)
+    protected function initialize(array $config): void
     {
         $this->Users = TableRegistry::getTableLocator()->get('Users');
         $this->AsyncJobs = TableRegistry::getTableLocator()->get('AsyncJobs');
@@ -107,7 +109,7 @@ class SignupUserActivationAction extends BaseAction implements EventListenerInte
      * @param \BEdita\Core\Model\Entity\User $user The user
      * @return void
      */
-    public function sendMail(EventInterface $event, User $user)
+    public function sendMail(EventInterface $event, User $user): void
     {
         $options = [
             'params' => compact('user'),

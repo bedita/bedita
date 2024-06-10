@@ -17,6 +17,8 @@ namespace BEdita\Core\Test\TestCase\Utility;
 
 use BEdita\Core\Utility\Text;
 use Cake\TestSuite\TestCase;
+use Exception;
+use LogicException;
 
 /**
  * {@see \BEdita\Core\Utility\Text} Test Case
@@ -34,7 +36,7 @@ class TextTest extends TestCase
     {
         return [
             'invalid namespace' => [
-                new \LogicException('The UUID provided for the namespace is not valid.'),
+                new LogicException('The UUID provided for the namespace is not valid.'),
                 'whatever',
                 'invalid uuid',
             ],
@@ -85,7 +87,7 @@ class TextTest extends TestCase
      */
     public function testUuid5($expected, $name, $namespace)
     {
-        if ($expected instanceof \Exception) {
+        if ($expected instanceof Exception) {
             $this->expectException(get_class($expected));
             $this->expectExceptionCode($expected->getCode());
             $this->expectExceptionMessage($expected->getMessage());

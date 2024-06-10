@@ -19,6 +19,7 @@ use Cake\Core\Configure;
 use Cake\Http\Exception\BadRequestException;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
+use Exception;
 
 /**
  * {@see \BEdita\Core\Model\Behavior\StatusBehavior} Test Case
@@ -124,7 +125,7 @@ class StatusBehaviorTest extends TestCase
      */
     public function testCheckStatus($expected, array $data, string $config = ''): void
     {
-        if ($expected instanceof \Exception) {
+        if ($expected instanceof Exception) {
             $this->expectException(get_class($expected));
             $this->expectExceptionMessage($expected->getMessage());
         }
@@ -190,7 +191,7 @@ class StatusBehaviorTest extends TestCase
      */
     public function testFindStatus($expected, array $options)
     {
-        if ($expected instanceof \Exception) {
+        if ($expected instanceof Exception) {
             $this->expectException(get_class($expected));
             $this->expectExceptionCode($expected->getCode());
             $this->expectExceptionMessage($expected->getMessage());

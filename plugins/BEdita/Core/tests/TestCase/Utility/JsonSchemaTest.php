@@ -22,6 +22,7 @@ use Cake\Cache\Cache;
 use Cake\Http\Exception\NotFoundException;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
+use Exception;
 
 /**
  * {@see \BEdita\Core\Utility\JsonSchema} Test Case
@@ -224,7 +225,7 @@ class JsonSchemaTest extends TestCase
      */
     public function testGenerate($expected, $name)
     {
-        if ($expected instanceof \Exception) {
+        if ($expected instanceof Exception) {
             $this->expectException(get_class($expected));
             $this->expectExceptionMessage($expected->getMessage());
         }

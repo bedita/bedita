@@ -16,6 +16,7 @@ declare(strict_types=1);
 namespace BEdita\Core\Test\TestCase\Model\Table;
 
 use BEdita\Core\Utility\LoggedUser;
+use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
@@ -288,7 +289,7 @@ class ProfilesTableTest extends TestCase
             try {
                 $table->get($id);
                 $this->fail($table->getAlias() . ' record not deleted');
-            } catch (\Cake\Datasource\Exception\RecordNotFoundException $ex) {
+            } catch (RecordNotFoundException $ex) {
                 continue;
             }
         }

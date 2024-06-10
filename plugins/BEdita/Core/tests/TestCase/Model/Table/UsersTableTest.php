@@ -16,6 +16,8 @@ declare(strict_types=1);
 namespace BEdita\Core\Test\TestCase\Model\Table;
 
 use Authentication\Identity;
+use BEdita\Core\Exception\BadFilterException;
+use BEdita\Core\Exception\ImmutableResourceException;
 use BEdita\Core\Model\Table\UsersTable;
 use BEdita\Core\Utility\LoggedUser;
 use Cake\Auth\WeakPasswordHasher;
@@ -25,6 +27,7 @@ use Cake\Http\ServerRequest;
 use Cake\I18n\DateTime;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
+use Exception;
 
 /**
  * {@see \BEdita\Core\Model\Table\UsersTable} Test Case
@@ -426,7 +429,7 @@ class UsersTableTest extends TestCase
      */
     public function testSoftDeleteAdminUser()
     {
-        $this->expectException(\BEdita\Core\Exception\ImmutableResourceException::class);
+        $this->expectException(ImmutableResourceException::class);
         $this->expectExceptionCode('403');
         $this->expectExceptionMessage('Could not delete "User" 1');
         $user = $this->Users->get(UsersTable::ADMIN_USER);
@@ -442,7 +445,7 @@ class UsersTableTest extends TestCase
      */
     public function testSoftDeleteLoggedUser()
     {
-        $this->expectException(\Cake\Http\Exception\BadRequestException::class);
+        $this->expectException(BadRequestException::class);
         $this->expectExceptionCode('400');
         $this->expectExceptionMessage('Logged users cannot delete their own account');
         LoggedUser::setUser(['id' => 5]);
@@ -472,7 +475,7 @@ class UsersTableTest extends TestCase
      */
     public function testHardDeleteAdminUser()
     {
-        $this->expectException(\BEdita\Core\Exception\ImmutableResourceException::class);
+        $this->expectException(ImmutableResourceException::class);
         $this->expectExceptionCode('403');
         $this->expectExceptionMessage('Could not delete "User" 1');
         $user = $this->Users->get(UsersTable::ADMIN_USER);
@@ -684,7 +687,7 @@ class UsersTableTest extends TestCase
      */
     public function testFindRolesFail()
     {
-        $this->expectException(\BEdita\Core\Exception\BadFilterException::class);
+        $this->expectException(BadFilterException::class);
         $this->expectExceptionMessage('Missing required parameter "roles"');
         $this->Users->find('roles', [])
             ->toArray();
@@ -734,7 +737,7 @@ class UsersTableTest extends TestCase
     {
         Configure::write('Auth.passwordPolicy.rule', $passwdRule);
         Configure::write('Auth.passwordPolicy.message', $passwdMessage);
-        if ($expected instanceof \Exception) {
+        if ($expected instanceof Exception) {
             $this->expectException(get_class($expected));
             $this->expectExceptionMessage($expected->getMessage());
         }
@@ -986,7 +989,7 @@ class UsersTableTest extends TestCase
      */
     public function testPrefix($expected, array $data)
     {
-        if ($expected instanceof \Exception) {
+        if ($expected instanceof Exception) {
             $this->expectException(get_class($expected));
             $this->expectExceptionCode($expected->getCode());
             $this->expectExceptionMessage($expected->getMessage());

@@ -16,9 +16,14 @@ namespace BEdita\API\Controller;
 
 use BEdita\Core\Model\Action\GetObjectAction;
 use BEdita\Core\Model\Entity\ObjectType;
+use BEdita\Core\Model\Entity\Tree;
+use BEdita\Core\Model\Table\ObjectsBaseTable;
+use BEdita\Core\Model\Table\ObjectsTable;
+use BEdita\Core\Model\Table\TreesTable;
 use Cake\Core\InstanceConfigTrait;
 use Cake\Datasource\EntityInterface;
 use Cake\Http\Exception\NotFoundException;
+use Cake\Http\Response;
 use Cake\ORM\Association;
 use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
@@ -38,21 +43,21 @@ class TreesController extends AppController
      *
      * @var \BEdita\Core\Model\Table\ObjectsTable
      */
-    protected $Objects;
+    protected ObjectsTable $Objects;
 
     /**
      * Trees Table.
      *
      * @var \BEdita\Core\Model\Table\TreesTable
      */
-    protected $Trees;
+    protected TreesTable $Trees;
 
     /**
      * Request object Table.
      *
      * @var \BEdita\Core\Model\Table\ObjectsBaseTable
      */
-    protected $Table;
+    protected ObjectsBaseTable $Table;
 
     /**
      * Path information with ID, object type and uname of each object
@@ -63,7 +68,7 @@ class TreesController extends AppController
      *
      * @var array
      */
-    protected $pathInfo = [
+    protected array $pathInfo = [
         'ids' => [],
         'unames' => [],
         'types' => [],
@@ -75,7 +80,7 @@ class TreesController extends AppController
      *
      * @var array
      */
-    protected $_defaultConfig = [
+    protected array $_defaultConfig = [
         'allowedAssociations' => [],
     ];
 
@@ -84,7 +89,7 @@ class TreesController extends AppController
      *
      * @var \BEdita\Core\Model\Entity\Tree
      */
-    protected $treesNode;
+    protected Tree $treesNode;
 
     /**
      * @inheritDoc
@@ -103,7 +108,7 @@ class TreesController extends AppController
      * @param string $path Trees path
      * @return \Cake\Http\Response|null
      */
-    public function index(string $path)
+    public function index(string $path): ?Response
     {
         $this->request->allowMethod(['get']);
 

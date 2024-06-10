@@ -22,6 +22,7 @@ use BEdita\Core\Filesystem\Thumbnail\GlideGenerator;
 use BEdita\Core\Test\Utility\TestFilesystemTrait;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
+use Exception;
 use League\Flysystem\StorageAttributes;
 
 /**
@@ -127,7 +128,7 @@ class GlideGeneratorTest extends TestCase
      */
     public function testGetUrl($expected, $uuid, array $options = [])
     {
-        if ($expected instanceof \Exception) {
+        if ($expected instanceof Exception) {
             $this->expectException(get_class($expected));
             $this->expectExceptionCode($expected->getCode());
             $this->expectExceptionMessage($expected->getMessage());
@@ -237,7 +238,7 @@ class GlideGeneratorTest extends TestCase
      */
     public function testGenerate($expected, $uuid, array $options = [])
     {
-        if ($expected instanceof \Exception) {
+        if ($expected instanceof Exception) {
             $this->expectException(get_class($expected));
             $this->expectExceptionCode($expected->getCode());
             $this->expectExceptionMessage($expected->getMessage());

@@ -19,6 +19,7 @@ use BEdita\API\TestSuite\IntegrationTestCase;
 use Cake\ORM\TableRegistry;
 use Cake\Utility\Hash;
 use DMS\PHPUnitExtensions\ArraySubset\ArraySubsetAsserts;
+use stdClass;
 
 /**
  * @coversDefaultClass \BEdita\API\Controller\Model\RelationsController
@@ -350,7 +351,7 @@ class RelationsControllerTest extends IntegrationTestCase
 
         $expected = array_merge(['id' => $relation->id], $data['attributes'], [
             'params' => [
-                'definitions' => new \stdClass(),
+                'definitions' => new stdClass(),
                 '$schema' => 'http://json-schema.org/draft-06/schema#',
                 'type' => 'object',
                 'test' => 'ok',

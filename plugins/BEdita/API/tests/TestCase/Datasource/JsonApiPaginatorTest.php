@@ -20,6 +20,7 @@ use Cake\Http\Exception\BadRequestException;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Hash;
+use Exception;
 
 /**
  * @coversDefaultClass \BEdita\API\Datasource\JsonApiPaginator
@@ -147,7 +148,7 @@ class JsonApiPaginatorTest extends TestCase
      */
     public function testValidateSort($expected, $sort = null)
     {
-        if ($expected instanceof \Exception) {
+        if ($expected instanceof Exception) {
             $this->expectException(get_class($expected));
             $this->expectExceptionCode($expected->getCode());
             $this->expectExceptionMessage($expected->getMessage());

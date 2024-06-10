@@ -93,7 +93,7 @@ class StaticPropertiesTable extends Table
      *
      * @return void
      */
-    protected function createTable()
+    protected function createTable(): void
     {
         Log::debug('Using temporary table for static properties'); // Log for statistics purposes... :/
 
@@ -140,7 +140,7 @@ class StaticPropertiesTable extends Table
 
         // Execute SQL to create table. In MySQL the transaction is completely useless,
         // because `CREATE TABLE` implicitly implies a commit.
-        $this->getConnection()->transactional(function (Connection $connection) use ($table) {
+        $this->getConnection()->transactional(function (Connection $connection) use ($table): void {
             foreach ($table->createSql($connection) as $statement) {
                 $connection->execute($statement);
             }
@@ -154,7 +154,7 @@ class StaticPropertiesTable extends Table
      *
      * @return void
      */
-    protected function addSchemaDetails()
+    protected function addSchemaDetails(): void
     {
         $properties = Cache::remember(
             'static_properties',
@@ -189,9 +189,9 @@ class StaticPropertiesTable extends Table
      * List models that are specific for the object type.
      *
      * @param \BEdita\Core\Model\Entity\ObjectType $objectType Object type to be described.
-     * @return \Cake\ORM\Table[]
+     * @return array<\Cake\ORM\Table>
      */
-    protected function listOwnTables(ObjectType $objectType)
+    protected function listOwnTables(ObjectType $objectType): array
     {
         $table = TableRegistry::getTableLocator()->get($objectType->alias);
         $tables = [$table];
@@ -236,9 +236,9 @@ class StaticPropertiesTable extends Table
      *
      * @param \BEdita\Core\Model\Entity\ObjectType $objectType Object type to be described.
      * @param \Cake\ORM\Table $table Table object.
-     * @return \BEdita\Core\Model\Entity\Property[]
+     * @return array<\BEdita\Core\Model\Entity\Property>
      */
-    protected function prepareTableFields(ObjectType $objectType, Table $table)
+    protected function prepareTableFields(ObjectType $objectType, Table $table): array
     {
         $schema = $table->getSchema();
         $sampleEntity = $table->newEntity([]);

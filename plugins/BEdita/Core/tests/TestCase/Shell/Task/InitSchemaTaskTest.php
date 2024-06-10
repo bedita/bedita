@@ -24,6 +24,7 @@ use Cake\Database\Schema\TableSchema;
 use Cake\Datasource\ConnectionManager;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
+use RuntimeException;
 
 /**
  * WARNING: This test is excluded from test suite (see phpunit.xml.dist)
@@ -82,7 +83,7 @@ class InitSchemaTaskTest extends TestCase
     {
         $connection = ConnectionManager::get('default');
         if (!($connection instanceof Connection)) {
-            throw new \RuntimeException('Unable to use database connection');
+            throw new RuntimeException('Unable to use database connection');
         }
 
         $table = new TableSchema('foo_bar', ['foo' => ['type' => 'string', 'length' => 255, 'null' => true, 'default' => null]]);
@@ -105,7 +106,7 @@ class InitSchemaTaskTest extends TestCase
     {
         $connection = ConnectionManager::get('default');
         if (!($connection instanceof Connection)) {
-            throw new \RuntimeException('Unable to use database connection');
+            throw new RuntimeException('Unable to use database connection');
         }
 
         $this->exec(sprintf('%s --no-force --no-seed', InitSchemaTask::class));
@@ -128,7 +129,7 @@ class InitSchemaTaskTest extends TestCase
     {
         $connection = ConnectionManager::get('default');
         if (!($connection instanceof Connection)) {
-            throw new \RuntimeException('Unable to use database connection');
+            throw new RuntimeException('Unable to use database connection');
         }
 
         $table = new TableSchema('foo_bar', ['foo' => ['type' => 'string', 'length' => 255, 'null' => true, 'default' => null]]);
@@ -155,7 +156,7 @@ class InitSchemaTaskTest extends TestCase
     {
         $connection = ConnectionManager::get('default');
         if (!($connection instanceof Connection)) {
-            throw new \RuntimeException('Unable to use database connection');
+            throw new RuntimeException('Unable to use database connection');
         }
 
         $this->exec(sprintf('%s --no-force --seed', InitSchemaTask::class));
@@ -178,7 +179,7 @@ class InitSchemaTaskTest extends TestCase
     {
         $connection = ConnectionManager::get('default');
         if (!($connection instanceof Connection)) {
-            throw new \RuntimeException('Unable to use database connection');
+            throw new RuntimeException('Unable to use database connection');
         }
 
         $table = new TableSchema('foo_bar', ['foo' => ['type' => 'string', 'length' => 255, 'null' => true, 'default' => null]]);

@@ -37,10 +37,10 @@ class ResourceNameBehavior extends Behavior
      * If `$name` is numeric it returns immediately.
      * else try to find it from the string identifier field.
      *
-     * @param int|string $name Unique string identifier for the object.
+     * @param string|int $name Unique string identifier for the object.
      * @return int
      */
-    public function getId($name): int
+    public function getId(int|string $name): int
     {
         if (is_numeric($name)) {
             return (int)$name;

@@ -17,7 +17,7 @@ namespace BEdita\Core\ORM;
 
 use Cake\Database\Expression\ComparisonExpression;
 use Cake\Database\Expression\QueryExpression;
-use Cake\ORM\Query;
+use Cake\ORM\Query\SelectQuery;
 
 /**
  * Query Filter trait.
@@ -60,11 +60,11 @@ trait QueryFilterTrait
      *
      * //
 
-     * @param \Cake\ORM\Query $query Query object instance.
+     * @param \Cake\ORM\Query\SelectQuery $query Query object instance.
      * @param array $options Array of acceptable fields and conditions.
-     * @return \Cake\ORM\Query
+     * @return \Cake\ORM\Query\SelectQuery
      */
-    public function fieldsFilter(Query $query, array $options)
+    public function fieldsFilter(SelectQuery $query, array $options): SelectQuery
     {
         return $query->where(function (QueryExpression $exp) use ($options) {
             foreach ($options as $field => $conditions) {
@@ -113,7 +113,7 @@ trait QueryFilterTrait
      * @param string $value Filter value
      * @return \Cake\Database\Expression\QueryExpression Operator query expression
      */
-    protected function operatorExpression(QueryExpression $exp, $operator, $field, $value)
+    protected function operatorExpression(QueryExpression $exp, string $operator, string $field, string $value): QueryExpression
     {
         switch ($operator) {
             case 'eq':

@@ -20,12 +20,14 @@ use BEdita\Core\Model\Action\ChangeCredentialsAction;
 use BEdita\Core\Model\Action\SaveEntityAction;
 use BEdita\Core\Model\Entity\AsyncJob;
 use BEdita\Core\Model\Entity\User;
+use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\Event\Event;
 use Cake\Event\EventManager;
 use Cake\I18n\DateTime;
 use Cake\Mailer\TransportFactory;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
+use LogicException;
 
 /**
  * {@see \BEdita\Core\Model\Action\ChangeCredentialsAction} Test Case
@@ -153,7 +155,7 @@ class ChangeCredentialsActionTest extends TestCase
      */
     public function testExecuteFail()
     {
-        $this->expectException(\Cake\Datasource\Exception\RecordNotFoundException::class);
+        $this->expectException(RecordNotFoundException::class);
         $data = [
             'uuid' => '66594f3c-8888-49d2-9999-382baf1a12b3',
             'password' => 'unbreakablepassword',
@@ -176,7 +178,7 @@ class ChangeCredentialsActionTest extends TestCase
      */
     public function testPayloadFail()
     {
-        $this->expectException(\LogicException::class);
+        $this->expectException(LogicException::class);
         $data = [
             'uuid' => '66594f3c-995f-49d2-9192-382baf1a12b3',
             'password' => 'unbreakablepassword',

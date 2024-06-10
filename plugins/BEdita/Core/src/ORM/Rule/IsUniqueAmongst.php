@@ -32,7 +32,7 @@ class IsUniqueAmongst extends IsUnique
      * @param array $extracted Extracted fields.
      * @return array
      */
-    protected function buildConditions($alias, $extracted)
+    protected function buildConditions(string $alias, array $extracted): array
     {
         $conditions = [];
         foreach ($extracted as $field => $value) {

@@ -19,6 +19,7 @@ use Cake\Core\App;
 use Cake\Log\LogTrait;
 use Cake\ORM\Locator\TableLocator as CakeLocator;
 use Cake\Utility\Inflector;
+use Exception;
 
 /**
  * Custom table locator for BEdita.
@@ -36,7 +37,7 @@ class TableLocator extends CakeLocator
      * @param array $options Table options array.
      * @return string
      */
-    protected function _getClassName($alias, array $options = []): ?string
+    protected function _getClassName(string $alias, array $options = []): ?string
     {
         if (empty($options['className'])) {
             $options['className'] = Inflector::camelize($alias);
@@ -60,7 +61,7 @@ class TableLocator extends CakeLocator
                 $objectTypes = $this->get('ObjectTypes');
                 $objectType = $objectTypes->get($alias);
                 $options['className'] = $objectType->table;
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 $this->log(sprintf('%s using alias "%s"', $e->getMessage(), $alias), 'warning');
             }
         }

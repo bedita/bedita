@@ -52,7 +52,7 @@ class AuthProvider extends Entity
      *
      * @return string
      */
-    protected function _getSlug()
+    protected function _getSlug(): string
     {
         [, $name] = pluginSplit($this->name);
 
@@ -62,9 +62,9 @@ class AuthProvider extends Entity
     /**
      * Get list of roles to be associated to users logging in with this auth provider.
      *
-     * @return \BEdita\Core\Model\Entity\Role[]
+     * @return array<\BEdita\Core\Model\Entity\Role>
      */
-    public function getRoles()
+    public function getRoles(): array
     {
         $roles = (array)Configure::read(sprintf('Roles.%s', $this->auth_class));
         if (empty($roles)) {
@@ -88,7 +88,7 @@ class AuthProvider extends Entity
      * @param string $providerUsername Provider username to match
      * @return bool True on success, false on failure
      */
-    public function checkAuthorization($providerResponse, $providerUsername)
+    public function checkAuthorization(array $providerResponse, string $providerUsername): bool
     {
         $fieldPath = Hash::get($this->get('params'), 'provider_username_field', 'id');
         $userName = Hash::get($providerResponse, (string)$fieldPath);

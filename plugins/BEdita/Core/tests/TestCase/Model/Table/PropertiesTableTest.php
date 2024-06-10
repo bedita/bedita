@@ -20,6 +20,7 @@ use BEdita\Core\Model\Entity\StaticProperty;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use Cake\Validation\Validation;
+use Exception;
 
 /**
  * {@see \BEdita\Core\Model\Table\PropertiesTable} Test Case
@@ -213,7 +214,7 @@ class PropertiesTableTest extends TestCase
      */
     public function testFindObjectType($expected, array $options)
     {
-        if ($expected instanceof \Exception) {
+        if ($expected instanceof Exception) {
             $this->expectException(get_class($expected));
             $this->expectExceptionCode($expected->getCode());
             $this->expectExceptionMessage($expected->getMessage());
@@ -341,7 +342,7 @@ class PropertiesTableTest extends TestCase
      */
     public function testFindType($expected, $objectType, $type = 'both')
     {
-        if ($expected instanceof \Exception) {
+        if ($expected instanceof Exception) {
             $this->expectException(get_class($expected));
             $this->expectExceptionCode($expected->getCode());
             $this->expectExceptionMessage($expected->getMessage());
@@ -494,7 +495,7 @@ class PropertiesTableTest extends TestCase
      */
     public function testFindResource($expected, $options)
     {
-        if ($expected instanceof \Exception) {
+        if ($expected instanceof Exception) {
             $this->expectException(get_class($expected));
             $this->expectExceptionMessage($expected->getMessage());
         }

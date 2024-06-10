@@ -57,7 +57,7 @@ class LocationsValidator extends ObjectsValidator
      * @param mixed $value WKT to be validated.
      * @return string|true
      */
-    public static function checkWkt($value)
+    public static function checkWkt(mixed $value): string|bool
     {
         static $regex = '/^POINT\s?\((?P<lng>\-?[0-9\.]+) (?P<lat>\-?[0-9\.]+)\)$/i';
 
@@ -74,7 +74,7 @@ class LocationsValidator extends ObjectsValidator
      * @param mixed $value Coordinates to be validated.
      * @return string|true
      */
-    public static function checkCoordinates($value)
+    public static function checkCoordinates(mixed $value): string|bool
     {
         if (!is_array($value) || count($value) !== 2 || !isset($value[0]) || !isset($value[1])) {
             return 'coordinates must be a pair of values';

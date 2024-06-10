@@ -49,7 +49,7 @@ class Properties extends ResourcesBase
      *
      * @var array
      */
-    protected static $defaults = [
+    protected static array $defaults = [
         // since default usage is in migrations
         // don't commit transactions but let migrations do it
         'save' => [

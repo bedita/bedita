@@ -23,6 +23,7 @@ use Cake\ORM\Association\BelongsToMany;
 use Cake\ORM\Association\HasMany;
 use Cake\ORM\Association\HasOne;
 use InvalidArgumentException;
+use RuntimeException;
 
 /**
  * Command to replace all entities associated to another entity.
@@ -37,11 +38,11 @@ class SetAssociatedAction extends UpdateAssociatedAction
      * Replace existing relations.
      *
      * @param \Cake\Datasource\EntityInterface $entity Source entity.
-     * @param \Cake\Datasource\EntityInterface|\Cake\Datasource\EntityInterface[]|null $relatedEntities Related entity(-ies).
+     * @param \Cake\Datasource\EntityInterface|array<\Cake\Datasource\EntityInterface>|null $relatedEntities Related entity(-ies).
      * @return int|false Number of updated relationships, or `false` on failure.
      * @throws \RuntimeException Throws an exception if an unsupported association is passed.
      */
-    protected function update(EntityInterface $entity, $relatedEntities)
+    protected function update(EntityInterface $entity, EntityInterface|array|null $relatedEntities): int|false
     {
         if ($this->Association instanceof BelongsToMany || $this->Association instanceof HasMany) {
             if ($relatedEntities === null) {
@@ -87,17 +88,17 @@ class SetAssociatedAction extends UpdateAssociatedAction
             });
         }
 
-        throw new \RuntimeException(__d('bedita', 'Unknown association of type "{0}"', get_class($this->Association)));
+        throw new RuntimeException(__d('bedita', 'Unknown association of type "{0}"', get_class($this->Association)));
     }
 
     /**
      * Process action for to-many relationships.
      *
      * @param \Cake\Datasource\EntityInterface $entity Source entity.
-     * @param \Cake\Datasource\EntityInterface[] $relatedEntities Related entities.
+     * @param array<\Cake\Datasource\EntityInterface> $relatedEntities Related entities.
      * @return int|false
      */
-    protected function toMany(EntityInterface $entity, array $relatedEntities)
+    protected function toMany(EntityInterface $entity, array $relatedEntities): int|false
     {
         $relatedEntities = new ArrayObject($relatedEntities);
         $this->dispatchEvent('Associated.beforeSave', compact('entity', 'relatedEntities') + ['action' => 'set', 'association' => $this->Association]);
@@ -136,7 +137,7 @@ class SetAssociatedAction extends UpdateAssociatedAction
      * @param \Cake\Datasource\EntityInterface|null $relatedEntity Related entity.
      * @return int|false
      */
-    protected function belongsTo(EntityInterface $entity, ?EntityInterface $relatedEntity = null)
+    protected function belongsTo(EntityInterface $entity, ?EntityInterface $relatedEntity = null): int|false
     {
         // `Tree` Entity can be dirty as join data are set in `ParentObjects`
         $dirty = $entity->isDirty();
@@ -174,7 +175,7 @@ class SetAssociatedAction extends UpdateAssociatedAction
      * @param \Cake\Datasource\EntityInterface|null $relatedEntity Related entity.
      * @return int|false
      */
-    protected function hasOne(EntityInterface $entity, ?EntityInterface $relatedEntity = null)
+    protected function hasOne(EntityInterface $entity, ?EntityInterface $relatedEntity = null): int|false
     {
         $foreignKey = (array)$this->Association->getForeignKey();
         $bindingKeyValue = $entity->extract((array)$this->Association->getBindingKey());

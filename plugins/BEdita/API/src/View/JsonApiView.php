@@ -129,7 +129,7 @@ class JsonApiView extends JsonView
      *
      * @return array
      */
-    protected function serializeError()
+    protected function serializeError(): array
     {
         $error = $this->get('_error');
         if (!empty($error['status'])) {
@@ -148,7 +148,7 @@ class JsonApiView extends JsonView
      *
      * @return array Formatted `fields` associative array
      */
-    protected function parseFieldsQuery()
+    protected function parseFieldsQuery(): array
     {
         $fields = $this->get('_fields');
         if (empty($fields)) {

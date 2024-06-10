@@ -18,6 +18,7 @@ namespace BEdita\Core\Model\Action;
 use BEdita\Core\Exception\InvalidDataException;
 use Cake\Http\Exception\InternalErrorException;
 use Cake\Log\LogTrait;
+use Cake\ORM\Table;
 use Cake\Utility\Hash;
 
 /**
@@ -34,12 +35,12 @@ class SaveEntityAction extends BaseAction
      *
      * @var \Cake\ORM\Table
      */
-    protected $Table;
+    protected Table $Table;
 
     /**
      * @inheritDoc
      */
-    protected function initialize(array $config)
+    protected function initialize(array $config): void
     {
         $this->Table = $this->getConfig('table');
     }

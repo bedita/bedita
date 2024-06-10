@@ -30,6 +30,8 @@ use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
 use Cake\Utility\Hash;
 use Cake\Utility\Inflector;
+use InvalidArgumentException;
+use LogicException;
 
 /**
  * Command to list entities associated to another entity.
@@ -50,19 +52,19 @@ class ListAssociatedAction extends BaseAction
      *
      * @var \Cake\ORM\Association
      */
-    protected $Association;
+    protected Association $Association;
 
     /**
      * Action used for listing entities.
      *
      * @var \BEdita\Core\Model\Action\BaseAction
      */
-    protected $ListAction;
+    protected BaseAction $ListAction;
 
     /**
      * @inheritDoc
      */
-    protected function initialize(array $config)
+    protected function initialize(array $config): void
     {
         $this->Association = $this->getConfig('association');
 
@@ -78,7 +80,7 @@ class ListAssociatedAction extends BaseAction
      * @return array
      * @throws \Cake\Datasource\Exception\InvalidPrimaryKeyException Throws an exception if primary key is invalid.
      */
-    protected function primaryKeyConditions(Table $table, $primaryKey)
+    protected function primaryKeyConditions(Table $table, mixed $primaryKey): array
     {
         $primaryKeyFields = array_map([$table, 'aliasField'], (array)$table->getPrimaryKey());
 
@@ -107,10 +109,10 @@ class ListAssociatedAction extends BaseAction
      * @throws \InvalidArgumentException Throws an exception if required option `primaryKey` is missing.
      * @throws \Cake\Datasource\Exception\RecordNotFoundException Throws an exception if the record could not be found.
      */
-    protected function checkEntityExists(array $data)
+    protected function checkEntityExists(array $data): void
     {
         if (empty($data['primaryKey'])) {
-            throw new \InvalidArgumentException(__d('bedita', 'Missing required option "{0}"', 'primaryKey'));
+            throw new InvalidArgumentException(__d('bedita', 'Missing required option "{0}"', 'primaryKey'));
         }
 
         $source = $this->Association->getSource();
@@ -130,7 +132,7 @@ class ListAssociatedAction extends BaseAction
      * @return \Cake\ORM\Association
      * @throws \LogicException Throws an exception if an Association of an unknown type is passed.
      */
-    protected function buildInverseAssociation()
+    protected function buildInverseAssociation(): Association
     {
         $this->clearInverseAssociation();
         $sourceTable = $this->Association->getTarget();
@@ -165,7 +167,7 @@ class ListAssociatedAction extends BaseAction
 
             $association = new BelongsToMany(static::INVERSE_ASSOCIATION_NAME, $options);
         } else {
-            throw new \LogicException(sprintf('Unknown association type "%s"', get_class($this->Association)));
+            throw new LogicException(sprintf('Unknown association type "%s"', get_class($this->Association)));
         }
 
         return $sourceTable->associations()->add($association->getName(), $association);
@@ -195,7 +197,7 @@ class ListAssociatedAction extends BaseAction
      * @return \Cake\ORM\Query
      * @throws \LogicException Throws an exception if the result of the inner invoked action is not a Query object.
      */
-    protected function buildQuery($primaryKey, array $data, Association $inverseAssociation)
+    protected function buildQuery(mixed $primaryKey, array $data, Association $inverseAssociation): Query
     {
         $joinData = !empty($data['joinData']);
         $list = !empty($data['list']);
@@ -207,7 +209,7 @@ class ListAssociatedAction extends BaseAction
         if (!($query instanceof Query)) {
             $type = is_object($query) ? get_class($query) : gettype($query);
 
-            throw new \LogicException(sprintf('Instance of "%s" expected, got "%s"', Query::class, $type));
+            throw new LogicException(sprintf('Instance of "%s" expected, got "%s"', Query::class, $type));
         }
 
         if ($list) {
@@ -295,10 +297,10 @@ class ListAssociatedAction extends BaseAction
      * When association name is "Children", use Folders.getSort($primaryKey).
      *
      * @param \Cake\ORM\Association $association Association
-     * @param  mixed $primaryKey Primary key
+     * @param mixed $primaryKey Primary key
      * @return array
      */
-    protected function sort(Association $association, $primaryKey): array
+    protected function sort(Association $association, mixed $primaryKey): array
     {
         if ($association->getName() === 'Children') {
             return (array)TableRegistry::getTableLocator()->get('Folders')->getSort($primaryKey);

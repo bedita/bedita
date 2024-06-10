@@ -243,7 +243,7 @@ class ObjectType extends Entity implements JsonApiSerializable, EventDispatcherI
     /**
      * Iterate through full inheritance chain.
      *
-     * @return \Generator|self[]
+     * @return \Generator|array<self>
      */
     public function getFullInheritanceChain(): Generator
     {
@@ -259,7 +259,7 @@ class ObjectType extends Entity implements JsonApiSerializable, EventDispatcherI
      * Get all relations, including relations inherited from parent object types, indexed by their name.
      *
      * @param string $side Filter relations by side this object type stays on. Either `left`, `right` or `both`.
-     * @return \BEdita\Core\Model\Entity\Relation[]
+     * @return array<\BEdita\Core\Model\Entity\Relation>
      */
     public function getRelations(string $side = 'both'): array
     {
@@ -285,7 +285,7 @@ class ObjectType extends Entity implements JsonApiSerializable, EventDispatcherI
     /**
      * Getter for virtual property `relations`.
      *
-     * @return string[]|null
+     * @return array<string>|null
      */
     protected function _getRelations(): ?array
     {
@@ -360,7 +360,7 @@ class ObjectType extends Entity implements JsonApiSerializable, EventDispatcherI
      *
      * @return mixed
      */
-    protected function _getSchema()
+    protected function _getSchema(): mixed
     {
         if ($this->is_abstract || empty($this->id) || $this->enabled === false) {
             return false;
@@ -464,7 +464,7 @@ class ObjectType extends Entity implements JsonApiSerializable, EventDispatcherI
      */
     protected function objectTypeProperties(): array
     {
-        /** @var \BEdita\Core\Model\Entity\Property[] $allProperties */
+        /** @var array<\BEdita\Core\Model\Entity\Property> $allProperties */
         // Fetch all properties, properties with `is_static` true at the end.
         // This way we can override default property type of a static property.
         $allProperties = $this->getTableLocator()->get('Properties')

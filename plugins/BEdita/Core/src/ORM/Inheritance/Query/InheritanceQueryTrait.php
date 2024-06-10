@@ -16,6 +16,7 @@ namespace BEdita\Core\ORM\Inheritance\Query;
 
 use BEdita\Core\ORM\Inheritance\Table;
 use Cake\Database\Expression\QueryExpression;
+use Cake\ORM\Query\SelectQuery;
 use Cake\ORM\Table as CakeTable;
 
 /**
@@ -92,7 +93,7 @@ trait InheritanceQueryTrait
      *
      * @return \Cake\ORM\Query
      */
-    public function getInheritanceSubQuery()
+    public function getInheritanceSubQuery(): SelectQuery
     {
         // @codingStandardsIgnoreStart
         $subQuery = new parent($this->getConnection(), $this->_repository);
@@ -145,11 +146,11 @@ trait InheritanceQueryTrait
      * For instance, a field named `foo` in the table `bars` would be aliased by Cake as `Bars__foo`, but we
      * want it to be _exactly_ `foo` so that the main query can use the correct name.
      *
-     * @param string[] $fields Fields to be aliased.
+     * @param array<string> $fields Fields to be aliased.
      * @param \Cake\ORM\Table $table Table instance.
      * @return array
      */
-    protected function subQueryAliasFields(array $fields, CakeTable $table)
+    protected function subQueryAliasFields(array $fields, CakeTable $table): array
     {
         $result = [];
         foreach ($fields as $field) {

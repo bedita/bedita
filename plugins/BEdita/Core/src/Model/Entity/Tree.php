@@ -69,7 +69,7 @@ class Tree extends Entity
      * @param int|null $parentId The value to set
      * @return int|null
      */
-    protected function _setParentId($parentId)
+    protected function _setParentId(?int $parentId): ?int
     {
         if (array_key_exists('parent_id', $this->_fields) && $this->_fields['parent_id'] === $parentId) {
             return $parentId;
@@ -105,7 +105,7 @@ class Tree extends Entity
      * @param \BEdita\Core\Model\Entity\Folder|null $folder The folder entity to set as parent
      * @return \BEdita\Core\Model\Entity\Folder|null
      */
-    protected function _setParentObject(?Folder $folder = null)
+    protected function _setParentObject(?Folder $folder = null): ?Folder
     {
         $parentId = null;
         if ($folder !== null) {

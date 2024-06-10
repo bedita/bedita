@@ -29,6 +29,7 @@ use Cake\Http\Exception\UnauthorizedException;
 use Cake\Http\ServerRequest;
 use Cake\ORM\Locator\LocatorAwareTrait;
 use Cake\TestSuite\TestCase;
+use Exception;
 use Laminas\Diactoros\Uri;
 use Psr\Http\Message\UriInterface;
 
@@ -155,7 +156,7 @@ class EndpointPolicyTest extends TestCase
         $requestMethod = 'GET',
         ?string $attribute = null
     ) {
-        if ($expected instanceof \Exception) {
+        if ($expected instanceof Exception) {
             $this->expectException(get_class($expected));
             $this->expectExceptionMessage($expected->getMessage());
         }
@@ -236,7 +237,7 @@ class EndpointPolicyTest extends TestCase
      */
     public function testBlockAnonymousWritesByDefault()
     {
-        $this->expectException(\Cake\Http\Exception\UnauthorizedException::class);
+        $this->expectException(UnauthorizedException::class);
         $this->expectExceptionMessage('Unauthorized');
         // Ensure no permissions apply to anonymous user on `/home` endpoint.
         $this->fetchTable('EndpointPermissions')->deleteAll(['role_id IS' => null, 'endpoint_id' => 2]);
@@ -259,7 +260,7 @@ class EndpointPolicyTest extends TestCase
      */
     public function testBlockUnloggedByDefault()
     {
-        $this->expectException(\Cake\Http\Exception\UnauthorizedException::class);
+        $this->expectException(UnauthorizedException::class);
         $this->expectExceptionMessage('Unauthorized');
         // Ensure no permissions apply to anonymous user on `/home` endpoint.
         $this->fetchTable('EndpointPermissions')->deleteAll(['role_id IS' => null, 'endpoint_id' => 2]);

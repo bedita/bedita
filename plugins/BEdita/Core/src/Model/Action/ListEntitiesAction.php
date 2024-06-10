@@ -17,7 +17,8 @@ namespace BEdita\Core\Model\Action;
 
 use BEdita\Core\Exception\BadFilterException;
 use BEdita\Core\ORM\QueryFilterTrait;
-use Cake\ORM\Query;
+use Cake\ORM\Query\SelectQuery;
+use Cake\ORM\Table;
 use Cake\Utility\Inflector;
 
 /**
@@ -34,12 +35,12 @@ class ListEntitiesAction extends BaseAction
      *
      * @var \Cake\ORM\Table
      */
-    protected $Table;
+    protected Table $Table;
 
     /**
      * @inheritDoc
      */
-    protected function initialize(array $data)
+    protected function initialize(array $data): void
     {
         $this->Table = $this->getConfig('table');
     }
@@ -50,7 +51,7 @@ class ListEntitiesAction extends BaseAction
      * @param string $filter Filter string.
      * @return array
      */
-    public static function parseFilter($filter)
+    public static function parseFilter(string $filter): array
     {
         if (is_array($filter)) {
             return $filter;
@@ -87,7 +88,7 @@ class ListEntitiesAction extends BaseAction
      * @return \Cake\ORM\Query
      * @throws \BEdita\Core\Exception\BadFilterException
      */
-    protected function buildFilter(Query $query, array $filter)
+    protected function buildFilter(SelectQuery $query, array $filter): Query
     {
         $customPropsOptions = [];
         foreach ($filter as $key => $value) {

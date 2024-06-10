@@ -16,10 +16,13 @@ declare(strict_types=1);
 namespace BEdita\Core\Model\Action;
 
 use BEdita\Core\Exception\InvalidDataException;
+use BEdita\Core\Model\Table\AsyncJobsTable;
+use BEdita\Core\Model\Table\UsersTable;
 use Cake\Event\EventDispatcherTrait;
 use Cake\I18n\DateTime;
 use Cake\ORM\TableRegistry;
 use Cake\Validation\Validator;
+use LogicException;
 
 /**
  * Command to change user access credentials (password)
@@ -35,14 +38,14 @@ class ChangeCredentialsAction extends BaseAction
      *
      * @var \BEdita\Core\Model\Table\UsersTable
      */
-    protected $Users;
+    protected UsersTable $Users;
 
     /**
      * The AsyncJobs table
      *
      * @var \BEdita\Core\Model\Table\AsyncJobsTable
      */
-    protected $AsyncJobs;
+    protected AsyncJobsTable $AsyncJobs;
 
     /**
      * {@inheritDoc}
@@ -61,7 +64,7 @@ class ChangeCredentialsAction extends BaseAction
      * @param array $data Input
      * @return array|true Array of validation errors, or true if input is valid.
      */
-    public function validate(array $data)
+    public function validate(array $data): array|bool
     {
         $validator = (new Validator())
             ->notEmptyString('uuid')
@@ -91,7 +94,7 @@ class ChangeCredentialsAction extends BaseAction
         $asyncJob = $this->AsyncJobs->get($data['uuid'], finder: 'incomplete');
 
         if (empty($asyncJob->payload['user_id'])) {
-            throw new \LogicException(__d('bedita', 'Parameter "{0}" missing', ['payload.user_id']));
+            throw new LogicException(__d('bedita', 'Parameter "{0}" missing', ['payload.user_id']));
         }
 
         $user = $this->Users->get($asyncJob->payload['user_id'], contain: ['Roles']);

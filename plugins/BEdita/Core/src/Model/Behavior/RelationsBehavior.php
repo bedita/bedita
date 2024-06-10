@@ -18,6 +18,7 @@ namespace BEdita\Core\Model\Behavior;
 use BEdita\Core\Model\Entity\ObjectType;
 use BEdita\Core\ORM\Association\RelatedTo;
 use Cake\Datasource\Exception\RecordNotFoundException;
+use Cake\ORM\Association;
 use Cake\ORM\Behavior;
 use Cake\ORM\TableRegistry;
 use Swaggest\JsonSchema\Schema;
@@ -58,7 +59,7 @@ class RelationsBehavior extends Behavior
      * @param array $args Method arguments.
      * @return \BEdita\Core\Model\Entity\ObjectType
      */
-    protected function objectType(...$args)
+    protected function objectType(array ...$args): ObjectType
     {
         return $this->table()->behaviors()->call('objectType', $args);
     }
@@ -80,7 +81,7 @@ class RelationsBehavior extends Behavior
      * @param array $options List of options to configure the association definition.
      * @return \Cake\ORM\Association
      */
-    protected function relatedTo($associated, array $options = [])
+    protected function relatedTo(string $associated, array $options = []): Association
     {
         $options += ['sourceTable' => $this->table()];
         $association = new RelatedTo($associated, $options);
@@ -94,7 +95,7 @@ class RelationsBehavior extends Behavior
      * @param string|int|null $objectType Object type name or ID.
      * @return void
      */
-    public function setupRelations($objectType = null)
+    public function setupRelations(string|int|null $objectType = null): void
     {
         if ($objectType === null) {
             $objectType = $this->table()->getAlias();
@@ -174,10 +175,10 @@ class RelationsBehavior extends Behavior
     /**
      * Get a list of all available relations indexed by their name with regards of side.
      *
-     * @return \BEdita\Core\Model\Entity\Relation[]
+     * @return array<\BEdita\Core\Model\Entity\Relation>
      * @deprecated Use `ObjectType::getRelations()` instead.
      */
-    public function getRelations()
+    public function getRelations(): array
     {
         return $this->objectType()->getRelations();
     }

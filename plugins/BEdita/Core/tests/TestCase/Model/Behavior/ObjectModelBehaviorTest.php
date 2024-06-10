@@ -15,6 +15,7 @@ declare(strict_types=1);
 
 namespace BEdita\Core\Test\TestCase\Model\Behavior;
 
+use AllowDynamicProperties;
 use Cake\ORM\Locator\LocatorAwareTrait;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Hash;
@@ -25,7 +26,7 @@ use Cake\Utility\Hash;
  * @property \BEdita\Core\Model\Table\ObjectsTable $Documents
  * @coversDefaultClass \BEdita\Core\Model\Behavior\ObjectModelBehavior
  */
-#[\AllowDynamicProperties]
+#[AllowDynamicProperties]
 class ObjectModelBehaviorTest extends TestCase
 {
     use LocatorAwareTrait;

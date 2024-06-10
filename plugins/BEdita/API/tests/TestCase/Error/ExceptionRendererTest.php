@@ -25,6 +25,7 @@ use Cake\Http\Exception\NotFoundException;
 use Cake\Http\Response;
 use Cake\TestSuite\TestCase;
 use Exception;
+use LogicException;
 
 /**
  * @coversDefaultClass \BEdita\API\Error\ExceptionRenderer
@@ -107,12 +108,12 @@ class ExceptionRendererTest extends TestCase
                 'err title',
             ],
             'previous exception' => [
-                new BadRequestException('Bad', 400, new \LogicException('Logic Error')),
+                new BadRequestException('Bad', 400, new LogicException('Logic Error')),
                 'Bad',
                 'Logic Error',
             ],
             'not a Cake exception' => [
-                new \LogicException('hello'),
+                new LogicException('hello'),
                 'hello',
             ],
         ];

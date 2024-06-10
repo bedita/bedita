@@ -69,9 +69,9 @@ class ObjectEntity extends Entity implements JsonApiSerializable
     /**
      * Extra inline associations.
      *
-     * @var string[]
+     * @var array<string>
      */
-    protected static $extraInlineAssociations = [];
+    protected static array $extraInlineAssociations = [];
 
     /**
      * @inheritDoc
@@ -120,7 +120,7 @@ class ObjectEntity extends Entity implements JsonApiSerializable
      *
      * @var array
      */
-    protected $notTranslatable = [
+    protected array $notTranslatable = [
         'custom_props',
         'extra',
         'lang',
@@ -138,7 +138,7 @@ class ObjectEntity extends Entity implements JsonApiSerializable
      * @param bool $virtual Include virtual (default false)
      * @return bool
      */
-    public function hasProperty(string $property, bool $hidden = true, bool $virtual = false)
+    public function hasProperty(string $property, bool $hidden = true, bool $virtual = false): bool
     {
         if ($hidden && !$virtual) {
             return array_key_exists($property, $this->_fields);
@@ -204,7 +204,7 @@ class ObjectEntity extends Entity implements JsonApiSerializable
     /**
      * Add extra associations
      *
-     * @param string[] $associations list of associations names
+     * @param array<string> $associations list of associations names
      * @return void
      */
     public static function setExtraInlineAssociations(array $associations, bool $merge = true): void
@@ -312,7 +312,7 @@ class ObjectEntity extends Entity implements JsonApiSerializable
      *
      * @return void
      */
-    protected function loadObjectType()
+    protected function loadObjectType(): void
     {
         if (!$this->object_type) {
             try {
@@ -329,7 +329,7 @@ class ObjectEntity extends Entity implements JsonApiSerializable
      *
      * @return string
      */
-    protected function _getType()
+    protected function _getType(): string
     {
         $this->loadObjectType();
         if (!$this->object_type) {
@@ -345,7 +345,7 @@ class ObjectEntity extends Entity implements JsonApiSerializable
      * @param string $type Object type name.
      * @return string
      */
-    protected function _setType($type)
+    protected function _setType(string $type): string
     {
         try {
             $this->object_type = TableRegistry::getTableLocator()->get('ObjectTypes')->get($type);

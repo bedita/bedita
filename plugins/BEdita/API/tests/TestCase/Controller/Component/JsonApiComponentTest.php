@@ -25,6 +25,7 @@ use Cake\Http\ServerRequest;
 use Cake\ORM\TableRegistry;
 use Cake\Routing\Router;
 use Cake\TestSuite\TestCase;
+use Exception;
 
 /**
  * @coversDefaultClass \BEdita\API\Controller\Component\JsonApiComponent
@@ -347,7 +348,7 @@ class JsonApiComponentTest extends TestCase
      */
     public function testParseJsonInput($expected, array $input, array $config = []): void
     {
-        if ($expected instanceof \Exception) {
+        if ($expected instanceof Exception) {
             $this->expectException(get_class($expected));
             $this->expectExceptionMessage($expected->getMessage());
         }
@@ -492,7 +493,7 @@ class JsonApiComponentTest extends TestCase
      */
     public function testCheckMediaType($expected, $accept, $checkMediaType)
     {
-        if ($expected instanceof \Exception) {
+        if ($expected instanceof Exception) {
             $this->expectException(get_class($expected));
             $this->expectExceptionCode($expected->getCode());
             $this->expectExceptionMessage($expected->getMessage());

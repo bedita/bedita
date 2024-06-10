@@ -21,6 +21,7 @@ use Cake\ORM\Association\BelongsTo;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Hash;
+use Exception;
 
 /**
  * @coversDefaultClass \BEdita\Core\Model\Table\TranslationsTable
@@ -191,7 +192,7 @@ class TranslationsTableTest extends TestCase
      */
     public function testFindType($expected, array $types): void
     {
-        if ($expected instanceof \Exception) {
+        if ($expected instanceof Exception) {
             $this->expectException(get_class($expected));
             $this->expectExceptionCode($expected->getCode());
             $this->expectExceptionMessage($expected->getMessage());

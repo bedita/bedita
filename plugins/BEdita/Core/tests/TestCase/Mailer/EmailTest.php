@@ -18,6 +18,8 @@ namespace BEdita\Core\Test\TestCase\Mailer;
 use BEdita\Core\Mailer\Email;
 use Cake\Mailer\TransportFactory;
 use Cake\TestSuite\TestCase;
+use Exception;
+use LogicException;
 
 /**
  * @coversDefaultClass \BEdita\Core\Mailer\Email
@@ -81,17 +83,17 @@ class EmailTest extends TestCase
                 ],
             ],
             'empty from' => [
-                new \LogicException('From is not specified.'),
+                new LogicException('From is not specified.'),
                 [],
             ],
             'empty to' => [
-                new \LogicException('You need specify one destination on to, cc or bcc.'),
+                new LogicException('You need specify one destination on to, cc or bcc.'),
                 [
                     'from' => ['gustavo.supporto@example.org' => 'Gustavo'],
                 ],
             ],
             'wrong transport' => [
-                new \LogicException('Cannot send email, transport was not defined. Did you call transport() or define a transport in the set profile?'),
+                new LogicException('Cannot send email, transport was not defined. Did you call transport() or define a transport in the set profile?'),
                 [
                     'from' => ['gustavo.supporto@example.org' => 'Gustavo'],
                     'to' => ['evermannella@example.org' => 'Evermannella'],
@@ -113,7 +115,7 @@ class EmailTest extends TestCase
      */
     public function testRun($expected, array $config, $setTransport = true)
     {
-        if ($expected instanceof \Exception) {
+        if ($expected instanceof Exception) {
             $this->expectException(get_class($expected));
             $this->expectExceptionCode($expected->getCode());
             $this->expectExceptionMessage($expected->getMessage());

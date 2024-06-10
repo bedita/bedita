@@ -73,14 +73,14 @@ class SqlConventionsValidator extends Validator
      *
      * @var array
      */
-    protected static $reservedWords = [];
+    protected static array $reservedWords = [];
 
     /**
      * Get list of reserved words.
      *
      * @return array
      */
-    protected static function getReservedWords()
+    protected static function getReservedWords(): array
     {
         if (!empty(static::$reservedWords)) {
             return static::$reservedWords;
@@ -109,7 +109,7 @@ class SqlConventionsValidator extends Validator
      * @param array $context Context.
      * @return string
      */
-    protected static function getPrefix(array $context)
+    protected static function getPrefix(array $context): string
     {
         $table = Hash::get($context, 'providers.table', '');
 
@@ -122,7 +122,7 @@ class SqlConventionsValidator extends Validator
      * @param array $context Context.
      * @return string
      */
-    protected static function getSuffix(array $context)
+    protected static function getSuffix(array $context): string
     {
         $type = Hash::get($context, 'providers.type', '');
         switch ($type) {
@@ -148,7 +148,7 @@ class SqlConventionsValidator extends Validator
      * @param mixed $symbol Symbol being checked.
      * @return bool
      */
-    public static function isString($symbol)
+    public static function isString(mixed $symbol): bool
     {
         return is_string($symbol);
     }
@@ -159,7 +159,7 @@ class SqlConventionsValidator extends Validator
      * @param string $symbol Symbol being checked.
      * @return bool
      */
-    public static function reservedWord($symbol)
+    public static function reservedWord(string $symbol): bool
     {
         return !in_array(strtoupper($symbol), static::getReservedWords());
     }
@@ -170,7 +170,7 @@ class SqlConventionsValidator extends Validator
      * @param string $symbol Symbol being checked.
      * @return bool
      */
-    public static function underscored($symbol)
+    public static function underscored(string $symbol): bool
     {
         return Inflector::underscore($symbol) === $symbol;
     }
@@ -181,7 +181,7 @@ class SqlConventionsValidator extends Validator
      * @param string $symbol Symbol being checked.
      * @return bool
      */
-    public static function noLeadingUnderscore($symbol)
+    public static function noLeadingUnderscore(string $symbol): bool
     {
         return substr($symbol, 0, 1) !== '_';
     }
@@ -192,7 +192,7 @@ class SqlConventionsValidator extends Validator
      * @param string $symbol Symbol being checked.
      * @return bool
      */
-    public static function noTrailingUnderscore($symbol)
+    public static function noTrailingUnderscore(string $symbol): bool
     {
         return substr($symbol, -1) !== '_';
     }
@@ -203,7 +203,7 @@ class SqlConventionsValidator extends Validator
      * @param string $symbol Symbol being checked.
      * @return bool
      */
-    public static function noDoubleUnderscore($symbol)
+    public static function noDoubleUnderscore(string $symbol): bool
     {
         return strpos($symbol, '__') === false;
     }
@@ -214,7 +214,7 @@ class SqlConventionsValidator extends Validator
      * @param string $symbol Symbol being checked.
      * @return bool
      */
-    public static function noLeadingDigit($symbol)
+    public static function noLeadingDigit(string $symbol): bool
     {
         return !is_numeric(substr($symbol, 0, 1));
     }
@@ -226,7 +226,7 @@ class SqlConventionsValidator extends Validator
      * @param array $context Context.
      * @return bool
      */
-    public static function differentFromTable($symbol, array $context)
+    public static function differentFromTable(string $symbol, array $context): bool
     {
         return $symbol !== Hash::get($context, 'providers.table');
     }
@@ -236,9 +236,9 @@ class SqlConventionsValidator extends Validator
      *
      * @param string $symbol Symbol being checked.
      * @param array $context Context.
-     * @return bool|string
+     * @return string|bool
      */
-    public static function prefix($symbol, array $context)
+    public static function prefix(string $symbol, array $context): bool|string
     {
         $prefix = static::getPrefix($context);
         if (substr($symbol, 0, strlen($prefix)) === $prefix) {
@@ -254,9 +254,9 @@ class SqlConventionsValidator extends Validator
      *
      * @param string $symbol Symbol being checked.
      * @param array $context Context.
-     * @return bool|string
+     * @return string|bool
      */
-    public static function suffix($symbol, array $context)
+    public static function suffix(string $symbol, array $context): bool|string
     {
         $suffix = static::getSuffix($context);
         if (substr($symbol, -strlen($suffix)) === $suffix) {
@@ -274,7 +274,7 @@ class SqlConventionsValidator extends Validator
      * @param array $context Context.
      * @return bool
      */
-    public static function uniqueIdentifier($symbol, array $context)
+    public static function uniqueIdentifier(string $symbol, array $context): bool
     {
         $prefix = static::getPrefix($context);
         $suffix = static::getSuffix($context);
@@ -287,9 +287,9 @@ class SqlConventionsValidator extends Validator
      *
      * @param string $symbol Symbol being checked.
      * @param array $context Context.
-     * @return bool|string
+     * @return string|bool
      */
-    public static function globalName($symbol, array $context)
+    public static function globalName(string $symbol, array $context): bool|string
     {
         $allowedDuplicates = explode(',', static::ALLOWED_DUPLICATES);
         if (in_array($symbol, $allowedDuplicates) || substr($symbol, -3) === '_id') {

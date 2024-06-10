@@ -52,10 +52,10 @@ class CheckFilesystemTask extends Shell /* @phpstan-ignore-line */
     /**
      * Perform basic checks on filesystem.
      *
-     * @param string[] ...$paths List of paths to check if they are writable.
+     * @param array<string> ...$paths List of paths to check if they are writable.
      * @return bool
      */
-    public function main(...$paths)
+    public function main(array ...$paths): bool
     {
         // Load paths to be checked.
         $paths = array_unique(array_filter($paths) ?: [TMP, LOGS]);
@@ -85,7 +85,7 @@ class CheckFilesystemTask extends Shell /* @phpstan-ignore-line */
      *
      * @return string
      */
-    protected function getHttpdUser()
+    protected function getHttpdUser(): string
     {
         static $cmd = 'ps aux | grep -E "[a]pache|[h]ttpd|[_]www|[w]ww-data|[n]ginx" | grep -v root | head -1 | cut -d\\  -f1';
 
@@ -104,11 +104,11 @@ class CheckFilesystemTask extends Shell /* @phpstan-ignore-line */
     /**
      * Check that paths
      *
-     * @param string[] $paths List of paths to check.
+     * @param array<string> $paths List of paths to check.
      * @param string $user Name of user to check permissions for.
      * @return bool
      */
-    protected function checkPaths(array $paths, $user)
+    protected function checkPaths(array $paths, string $user): bool
     {
         // Get info about HTTP daemon user.
         $user = posix_getpwnam($user);

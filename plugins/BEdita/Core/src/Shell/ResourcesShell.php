@@ -20,6 +20,7 @@ use BEdita\Core\Model\Table\ApplicationsTable;
 use Cake\Console\ConsoleOptionParser;
 use Cake\Console\Shell;
 use Cake\Datasource\EntityInterface;
+use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
 use Cake\Utility\Inflector;
 
@@ -33,16 +34,16 @@ class ResourcesShell extends Shell /* @phpstan-ignore-line */
     /**
      * Accepted resource types
      *
-     * @var string[]
+     * @var array<string>
      */
-    protected static $acceptedTypes = ['applications', 'roles', 'endpoints', 'endpoint_permissions'];
+    protected static array $acceptedTypes = ['applications', 'roles', 'endpoints', 'endpoint_permissions'];
 
     /**
      * Editable resource fields
      *
-     * @var string[]
+     * @var array<string>
      */
-    protected static $editableFields = ['api_key', 'description', 'enabled', 'name', 'unchangeable'];
+    protected static array $editableFields = ['api_key', 'description', 'enabled', 'name', 'unchangeable'];
 
     /**
      * {@inheritDoc}
@@ -132,7 +133,7 @@ class ResourcesShell extends Shell /* @phpstan-ignore-line */
      *
      * @return \Cake\ORM\Table
      */
-    protected function getTable()
+    protected function getTable(): Table
     {
         $modelName = Inflector::camelize($this->param('type'));
 
@@ -145,7 +146,7 @@ class ResourcesShell extends Shell /* @phpstan-ignore-line */
      * @param mixed $id Entity ID or name.
      * @return \Cake\Datasource\EntityInterface|null
      */
-    protected function getEntity($id)
+    protected function getEntity(mixed $id): ?EntityInterface
     {
         $condition = compact('id');
         if (!is_numeric($id)) {
@@ -163,7 +164,7 @@ class ResourcesShell extends Shell /* @phpstan-ignore-line */
      *
      * @return void
      */
-    public function add()
+    public function add(): void
     {
         $table = $this->getTable();
         $entity = $table->newEntity([]);
@@ -183,7 +184,7 @@ class ResourcesShell extends Shell /* @phpstan-ignore-line */
      * @param \Cake\Datasource\EntityInterface $entity Entity to add
      * @return void
      */
-    protected function setupEndpointPermissionEntity(EntityInterface $entity)
+    protected function setupEndpointPermissionEntity(EntityInterface $entity): void
     {
         $fieldsTables = [
             'application_id' => 'Applications',
@@ -211,7 +212,7 @@ class ResourcesShell extends Shell /* @phpstan-ignore-line */
      * @param \Cake\Datasource\EntityInterface $entity Entity to add
      * @return void
      */
-    protected function setupDefaultEntity(EntityInterface $entity)
+    protected function setupDefaultEntity(EntityInterface $entity): void
     {
         $name = $this->in('Resource name');
         if (empty($name)) {
@@ -228,7 +229,7 @@ class ResourcesShell extends Shell /* @phpstan-ignore-line */
      * @param mixed $id Resource sid or name
      * @return void
      */
-    public function edit($id)
+    public function edit(mixed $id): void
     {
         $table = $this->getTable();
         $entity = $this->getEntity($id);
@@ -251,7 +252,7 @@ class ResourcesShell extends Shell /* @phpstan-ignore-line */
      *
      * @return void
      */
-    public function ls()
+    public function ls(): void
     {
         $table = $this->getTable();
         $action = new ListEntitiesAction(compact('table'));
@@ -267,7 +268,7 @@ class ResourcesShell extends Shell /* @phpstan-ignore-line */
      * @param mixed $id Resource id or name
      * @return bool True on success, false on blocked execution
      */
-    public function rm($id)
+    public function rm(mixed $id): bool
     {
         $table = $this->getTable();
         $res = $this->in(sprintf('You are REMOVING "%s" with name or id "%s" - are you sure?', $this->param('type'), $id), ['y', 'n'], 'n');

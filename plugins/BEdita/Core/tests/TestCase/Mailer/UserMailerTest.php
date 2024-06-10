@@ -22,6 +22,8 @@ use Cake\Mailer\MailerAwareTrait;
 use Cake\Mailer\TransportFactory;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
+use Exception;
+use LogicException;
 
 /**
  * @coversDefaultClass \BEdita\Core\Mailer\UserMailer
@@ -111,7 +113,7 @@ class UserMailerTest extends TestCase
                 ],
             ],
             'missing user' => [
-                new \LogicException('Parameter "params.user" missing'),
+                new LogicException('Parameter "params.user" missing'),
                 [
                     'params' => [
                         'activationUrl' => 'http://example.com',
@@ -119,7 +121,7 @@ class UserMailerTest extends TestCase
                 ],
             ],
             'invalid user entity' => [
-                new \LogicException('Invalid user, it must be an User Entity'),
+                new LogicException('Invalid user, it must be an User Entity'),
                 [
                     'params' => [
                         'user' => ['id' => 1],
@@ -128,7 +130,7 @@ class UserMailerTest extends TestCase
                 ],
             ],
             'missing activationUrl' => [
-                new \LogicException('Parameter "params.activationUrl" missing'),
+                new LogicException('Parameter "params.activationUrl" missing'),
                 [
                     'params' => [
                         'userId' => 5,
@@ -151,7 +153,7 @@ class UserMailerTest extends TestCase
      */
     public function testSignup($expected, $options)
     {
-        if ($expected instanceof \Exception) {
+        if ($expected instanceof Exception) {
             $this->expectException(get_class($expected));
             $this->expectExceptionMessage($expected->getMessage());
         }
@@ -179,7 +181,7 @@ class UserMailerTest extends TestCase
         $user->email = null;
         $Users->save($user);
 
-        $this->expectException(\LogicException::class);
+        $this->expectException(LogicException::class);
         $this->expectExceptionMessage('User email missing');
 
         $options = [
@@ -209,11 +211,11 @@ class UserMailerTest extends TestCase
                 ],
             ],
             'missing user' => [
-                new \LogicException('Parameter "params.user" missing'),
+                new LogicException('Parameter "params.user" missing'),
                 [],
             ],
             'invalid user entity' => [
-                new \LogicException('Invalid user, it must be an User Entity'),
+                new LogicException('Invalid user, it must be an User Entity'),
                 [
                     'params' => [
                         'user' => ['id' => 1],
@@ -235,7 +237,7 @@ class UserMailerTest extends TestCase
      */
     public function testWelcome($expected, $options)
     {
-        if ($expected instanceof \Exception) {
+        if ($expected instanceof Exception) {
             $this->expectException(get_class($expected));
             $this->expectExceptionMessage($expected->getMessage());
         }
@@ -267,7 +269,7 @@ class UserMailerTest extends TestCase
                 ],
             ],
             'missing userId' => [
-                new \LogicException('Parameter "params.user" missing'),
+                new LogicException('Parameter "params.user" missing'),
                 [
                     'params' => [
                         'changeUrl' => 'http://example.com',
@@ -275,7 +277,7 @@ class UserMailerTest extends TestCase
                 ],
             ],
             'missing changeUrl' => [
-                new \LogicException('Parameter "params.changeUrl" missing'),
+                new LogicException('Parameter "params.changeUrl" missing'),
                 [
                     'params' => [
                         'userId' => 1,
@@ -297,7 +299,7 @@ class UserMailerTest extends TestCase
      */
     public function testChangeRequest($expected, $options)
     {
-        if ($expected instanceof \Exception) {
+        if ($expected instanceof Exception) {
             $this->expectException(get_class($expected));
             $this->expectExceptionMessage($expected->getMessage());
         }

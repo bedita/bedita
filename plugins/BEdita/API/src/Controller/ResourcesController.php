@@ -30,6 +30,7 @@ use Cake\Datasource\EntityInterface;
 use Cake\Http\Exception\ConflictException;
 use Cake\Http\Exception\InternalErrorException;
 use Cake\Http\Exception\NotFoundException;
+use Cake\Http\Response;
 use Cake\ORM\Association;
 use Cake\ORM\Association\BelongsTo;
 use Cake\ORM\Association\HasOne;
@@ -56,7 +57,7 @@ abstract class ResourcesController extends AppController
      *
      * @var array
      */
-    protected $_defaultConfig = [
+    protected array $_defaultConfig = [
         'allowedAssociations' => [],
     ];
 
@@ -65,7 +66,7 @@ abstract class ResourcesController extends AppController
      *
      * @var \Cake\ORM\Table
      */
-    protected $Table;
+    protected Table $Table;
 
     /**
      * @inheritDoc
@@ -130,7 +131,7 @@ abstract class ResourcesController extends AppController
      *
      * @return void
      */
-    public function index()
+    public function index(): void
     {
         $this->request->allowMethod(['get', 'post']);
 
@@ -175,7 +176,7 @@ abstract class ResourcesController extends AppController
      * @param string $primaryKey Primary key name
      * @return string Requested URL
      */
-    protected function resourceUrl(EntityInterface $entity, $primaryKey)
+    protected function resourceUrl(EntityInterface $entity, string $primaryKey): string
     {
         $prefix = 'api:resources';
         if ($entity instanceof JsonApiSerializable) {
@@ -202,7 +203,7 @@ abstract class ResourcesController extends AppController
      * @param mixed $id Entity ID.
      * @return \Cake\Http\Response|null
      */
-    public function resource($id)
+    public function resource(mixed $id): ?Response
     {
         $this->request->allowMethod(['get', 'patch', 'delete']);
 
@@ -248,7 +249,7 @@ abstract class ResourcesController extends AppController
      * @param string|int $id Resource identifier, can be ID or name.
      * @return string
      */
-    protected function getResourceId($id): string
+    protected function getResourceId(string|int $id): string
     {
         if ($this->fetchTable()->behaviors()->has('ResourceName')) {
             return (string)$this->fetchTable()->getId($id);
@@ -264,7 +265,7 @@ abstract class ResourcesController extends AppController
      *
      * @return void
      */
-    public function related()
+    public function related(): void
     {
         $this->request->allowMethod(['get']);
 
@@ -296,7 +297,7 @@ abstract class ResourcesController extends AppController
      * @param \Cake\ORM\Association $association The association to use.
      * @return \BEdita\Core\Model\Action\ListAssociatedAction
      */
-    protected function getAssociatedAction(Association $association)
+    protected function getAssociatedAction(Association $association): ListAssociatedAction
     {
         return new ListAssociatedAction(compact('association'));
     }
@@ -307,7 +308,7 @@ abstract class ResourcesController extends AppController
      * @param \Cake\ORM\Association $association The association.
      * @return void
      */
-    protected function setRelationshipsAllowedMethods(Association $association)
+    protected function setRelationshipsAllowedMethods(Association $association): void
     {
         $allowedMethods = ['get', 'post', 'patch', 'delete'];
         if ($association instanceof BelongsTo || $association instanceof HasOne) {
@@ -327,7 +328,7 @@ abstract class ResourcesController extends AppController
      *
      * @return \Cake\Http\Response|null
      */
-    public function relationships()
+    public function relationships(): ?Response
     {
         $id = $this->request->getParam('id');
         $relationship = $this->request->getParam('relationship');
@@ -392,7 +393,7 @@ abstract class ResourcesController extends AppController
      * @param string $relationship Relationship name.
      * @return string|null
      */
-    protected function getAvailableUrl($relationship)
+    protected function getAvailableUrl(string $relationship): ?string
     {
         $destinationEntity = $this->findAssociation($relationship)->getTarget()->newEntity([]);
         if (!($destinationEntity instanceof JsonApiSerializable)) {

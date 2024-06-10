@@ -61,7 +61,7 @@ class UploadComponent extends Component
      * @param int|null $objectId Object id.
      * @return \Cake\Datasource\EntityInterface
      */
-    public function upload($fileName, ?int $objectId = null): EntityInterface
+    public function upload(string $fileName, ?int $objectId = null): EntityInterface
     {
         $request = $this->getController()->getRequest();
         $request->allowMethod(['post']);

@@ -18,6 +18,7 @@ namespace BEdita\Core\Test\TestCase\Database\Type;
 use BEdita\Core\Database\Type\JsonObjectType;
 use Cake\Datasource\ConnectionManager;
 use Cake\TestSuite\TestCase;
+use stdClass;
 
 /**
  * @coversDefaultClass \BEdita\Core\Database\Type\JsonObjectType
@@ -31,12 +32,12 @@ class JsonObjectTypeTest extends TestCase
      */
     public static function toPHPProvider(): array
     {
-        $obj = new \stdClass();
+        $obj = new stdClass();
         $obj->firstName = 'Gustavo';
         $obj->lastName = 'Supporto';
         $obj->age = 42;
         $obj->skills = [];
-        $obj->randomEmptyObject = new \stdClass();
+        $obj->randomEmptyObject = new stdClass();
 
         return [
             'string' => [
@@ -64,7 +65,7 @@ class JsonObjectTypeTest extends TestCase
                 '[]',
             ],
             'empty object' => [
-                new \stdClass(),
+                new stdClass(),
                 '{}',
             ],
             'complex' => [

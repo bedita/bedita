@@ -20,6 +20,7 @@ use BEdita\Core\Test\Utility\TestFilesystemTrait;
 use BEdita\Core\Utility\Relations;
 use Cake\ORM\TableRegistry;
 use Cake\Utility\Hash;
+use DateTime;
 
 /**
  * Test CRUD operations on objects with associated entities
@@ -138,7 +139,7 @@ class AssociatedEntitiesTest extends IntegrationTestCase
         for ($i = 0; $i < $count; $i++) {
             foreach ($expectedDates[$i] as $k => $d) {
                 $found = $resultDates[$i][$k];
-                $exp = new \DateTime($d);
+                $exp = new DateTime($d);
                 $exp = $exp->format('Y-m-d\TH:i:s+00:00');
                 static::assertEquals($found, $exp);
             }

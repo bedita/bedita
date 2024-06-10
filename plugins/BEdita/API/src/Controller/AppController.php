@@ -127,12 +127,12 @@ class AppController extends Controller
     /**
      * Prepare a list of associations to be contained from `?include` query parameter.
      *
-     * @param string|array|null $include Association(s) to be included.
+     * @param array|string|null $include Association(s) to be included.
      * @param \Cake\ORM\Table|null $table Table to consider.
      * @return array
      * @throws \Cake\Http\Exception\BadRequestException Throws an exception if a
      */
-    protected function prepareInclude($include, ?Table $table = null): array
+    protected function prepareInclude(string|array|null $include, ?Table $table = null): array
     {
         if ($include === null) {
             return [];

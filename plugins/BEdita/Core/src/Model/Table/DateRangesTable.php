@@ -21,12 +21,13 @@ use BEdita\Core\ORM\QueryFilterTrait;
 use Cake\Database\Expression\QueryExpression;
 use Cake\Database\Schema\TableSchemaInterface;
 use Cake\I18n\DateTime;
-use Cake\ORM\Query;
+use Cake\ORM\Query\SelectQuery;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Utility\Hash;
 use Cake\Validation\Validator;
 use DateTimeInterface;
+use Exception;
 
 /**
  * DateRanges Model
@@ -144,12 +145,12 @@ class DateRangesTable extends Table
      * $table->find('dateRanges', [to_date' => '2018-05-01 22:00:00']);
      * ```
      *
-     * @param \Cake\ORM\Query $query Query object instance.
+     * @param \Cake\ORM\Query\SelectQuery $query Query object instance.
      * @param array $options Array of acceptable date range conditions.
-     * @return \Cake\ORM\Query
+     * @return \Cake\ORM\Query\SelectQuery
      * @throws \BEdita\Core\Exception\BadFilterException
      */
-    protected function findDateRanges(Query $query, array $options)
+    protected function findDateRanges(SelectQuery $query, array $options): SelectQuery
     {
         $allowed = array_flip([
             'start_date',
@@ -183,7 +184,7 @@ class DateRangesTable extends Table
      * @param \DateTimeInterface|string|null $time Input time.
      * @return \DateTimeInterface|null
      */
-    protected function getTime($time): ?DateTimeInterface
+    protected function getTime(DateTimeInterface|string|null $time): ?DateTimeInterface
     {
         if (empty($time)) {
             return null;
@@ -191,7 +192,7 @@ class DateRangesTable extends Table
 
         try {
             return new DateTime($time);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             throw new BadFilterException([
                 'title' => __d('bedita', 'Invalid data'),
                 'detail' => __d('bedita', 'Wrong date time format "{0}"', $time),
@@ -202,11 +203,11 @@ class DateRangesTable extends Table
     /**
      * Modify query object with `from_date`and `to_date` params
      *
-     * @param \Cake\ORM\Query $query Query object instance.
+     * @param \Cake\ORM\Query\SelectQuery $query Query object instance.
      * @param array $options Array of date conditions.
-     * @return \Cake\ORM\Query
+     * @return \Cake\ORM\Query\SelectQuery
      */
-    protected function fromToDateFilter(Query $query, array $options): Query
+    protected function fromToDateFilter(SelectQuery $query, array $options): SelectQuery
     {
         $from = $this->getTime(Hash::get($options, 'from_date'));
         $to = $this->getTime(Hash::get($options, 'to_date'));
@@ -227,13 +228,13 @@ class DateRangesTable extends Table
     /**
      * Add `from_date` query condition
      *
-     * @param \Cake\ORM\Query $query Query object instance.
+     * @param \Cake\ORM\Query\SelectQuery $query Query object instance.
      * @param \DateTimeInterface $from From date.
-     * @return \Cake\ORM\Query
+     * @return \Cake\ORM\Query\SelectQuery
      */
-    protected function fromDateFilter(Query $query, DateTimeInterface $from): Query
+    protected function fromDateFilter(SelectQuery $query, DateTimeInterface $from): SelectQuery
     {
-        return $query->where(function (QueryExpression $exp, Query $q) use ($from) {
+        return $query->where(function (QueryExpression $exp, SelectQuery $q) use ($from) {
             return $exp->gte(
                 $q->func()->coalesce([
                     $this->aliasField('end_date') => 'identifier',
@@ -248,13 +249,13 @@ class DateRangesTable extends Table
     /**
      * Add `to_date` query condition
      *
-     * @param \Cake\ORM\Query $query Query object instance.
+     * @param \Cake\ORM\Query\SelectQuery $query Query object instance.
      * @param \DateTimeInterface $to To date.
-     * @return \Cake\ORM\Query
+     * @return \Cake\ORM\Query\SelectQuery
      */
-    protected function toDateFilter(Query $query, DateTimeInterface $to): Query
+    protected function toDateFilter(SelectQuery $query, DateTimeInterface $to): SelectQuery
     {
-        return $query->where(function (QueryExpression $exp, Query $q) use ($to) {
+        return $query->where(function (QueryExpression $exp, SelectQuery $q) use ($to) {
             return $exp->lte(
                 $q->func()->coalesce([
                     $this->aliasField('end_date') => 'identifier',
@@ -269,14 +270,14 @@ class DateRangesTable extends Table
     /**
      * Add `from_date`/`to_date` query condition
      *
-     * @param \Cake\ORM\Query $query Query object instance.
+     * @param \Cake\ORM\Query\SelectQuery $query Query object instance.
      * @param \DateTimeInterface $from From date.
      * @param \DateTimeInterface $to To date.
-     * @return \Cake\ORM\Query
+     * @return \Cake\ORM\Query\SelectQuery
      */
-    protected function betweenDatesFilter(Query $query, DateTimeInterface $from, DateTimeInterface $to): Query
+    protected function betweenDatesFilter(SelectQuery $query, DateTimeInterface $from, DateTimeInterface $to): SelectQuery
     {
-        return $query->where(function (QueryExpression $exp, Query $q) use ($from, $to) {
+        return $query->where(function (QueryExpression $exp, SelectQuery $q) use ($from, $to) {
             return $exp
                 ->lte($this->aliasField('start_date'), $to, 'datetime')
                 ->gte(

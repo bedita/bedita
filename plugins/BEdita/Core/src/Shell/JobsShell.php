@@ -18,6 +18,7 @@ use Cake\Console\ConsoleOptionParser;
 use Cake\Console\Shell;
 use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\Utility\Hash;
+use Exception;
 
 /**
  * Shell class to run pending jobs
@@ -93,7 +94,7 @@ class JobsShell extends Shell /* @phpstan-ignore-line */
      * @param string $uuid Job UUID.
      * @return void
      */
-    public function run($uuid)
+    public function run(string $uuid): void
     {
         try {
             $this->verbose(sprintf('=====> Locking job "<info>%s</info>"...', $uuid));
@@ -111,7 +112,7 @@ class JobsShell extends Shell /* @phpstan-ignore-line */
             $result = $asyncJob->run();
             $success = is_bool($result) ? $result : (bool)Hash::get((array)$result, 'success');
             $messages = is_array($result) ? (array)Hash::get($result, 'messages') : [];
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $success = false;
             $messages[] = $e->getMessage();
             $this->log($e->getMessage(), 'error');
@@ -143,7 +144,7 @@ class JobsShell extends Shell /* @phpstan-ignore-line */
      *
      * @return void
      */
-    public function pending()
+    public function pending(): void
     {
         $this->out('=====> <info>Finding pending jobs...</info>');
         $query = $this->AsyncJobs

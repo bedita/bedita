@@ -17,6 +17,7 @@ namespace BEdita\Core\Test\TestCase\Database\Type;
 use BEdita\Core\Database\Type\BoolType;
 use Cake\Datasource\ConnectionManager;
 use Cake\TestSuite\TestCase;
+use Exception;
 use InvalidArgumentException;
 
 /**
@@ -92,7 +93,7 @@ class BoolTypeTest extends TestCase
      */
     public function testToDatabase($input, $expected)
     {
-        if ($expected instanceof \Exception) {
+        if ($expected instanceof Exception) {
             $this->expectException(get_class($expected));
             $this->expectExceptionMessage($expected->getMessage());
         }

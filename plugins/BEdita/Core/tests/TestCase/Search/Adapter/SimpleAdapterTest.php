@@ -21,6 +21,7 @@ use Cake\Database\Driver\Postgres;
 use Cake\Datasource\ConnectionManager;
 use Cake\ORM\Table;
 use Cake\TestSuite\TestCase;
+use Exception;
 
 /**
  * @coversDefaultClass \BEdita\Core\Search\Adapter\SimpleAdapter
@@ -265,7 +266,7 @@ class SimpleAdapterTest extends TestCase
             static::markTestSkipped('Case-insensitive test cases are skipped on Postgres');
         }
 
-        if ($expected instanceof \Exception) {
+        if ($expected instanceof Exception) {
             $this->expectExceptionObject($expected);
         }
 

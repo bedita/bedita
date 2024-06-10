@@ -17,6 +17,7 @@ namespace BEdita\Core\Test\TestCase\Model\Table;
 use BEdita\Core\Model\Entity\AsyncJob;
 use BEdita\Core\Model\Table\AsyncJobsTable;
 use Cake\Datasource\ConnectionManager;
+use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\ORM\TableRegistry;
 use Cake\Queue\QueueManager;
 use Cake\TestSuite\TestCase;
@@ -142,7 +143,7 @@ class AsyncJobsTableTest extends TestCase
      */
     public function testLockNotPending()
     {
-        $this->expectException(\Cake\Datasource\Exception\RecordNotFoundException::class);
+        $this->expectException(RecordNotFoundException::class);
         $this->AsyncJobs->lock('6407afa6-96a3-4aeb-90c1-1541756efdef');
     }
 

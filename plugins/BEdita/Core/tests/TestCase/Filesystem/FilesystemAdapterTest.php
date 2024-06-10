@@ -17,7 +17,10 @@ namespace BEdita\Core\Test\TestCase\Filesystem;
 
 use BEdita\Core\Filesystem\FilesystemAdapter;
 use Cake\TestSuite\TestCase;
+use Exception;
 use League\Flysystem\FilesystemAdapter as LeagueFilesystemAdapter;
+use RuntimeException;
+use stdClass;
 
 /**
  * @coversDefaultClass \BEdita\Core\Filesystem\FilesystemAdapter
@@ -60,11 +63,11 @@ class FilesystemAdapterTest extends TestCase
                 static::getMockBuilder(LeagueFilesystemAdapter::class)->getMock(),
             ],
             'wrong class' => [
-                new \RuntimeException('Filesystem adapters must use BEdita\Core\Filesystem\AdapterInterface as a base class.'),
-                new \stdClass(),
+                new RuntimeException('Filesystem adapters must use BEdita\Core\Filesystem\AdapterInterface as a base class.'),
+                new stdClass(),
             ],
             'definitely not an object' => [
-                new \RuntimeException('Filesystem adapters must use BEdita\Core\Filesystem\AdapterInterface as a base class.'),
+                new RuntimeException('Filesystem adapters must use BEdita\Core\Filesystem\AdapterInterface as a base class.'),
                 [null, 'gustavo supporto'],
             ],
         ];
@@ -81,7 +84,7 @@ class FilesystemAdapterTest extends TestCase
      */
     public function testGetInnerAdapter($expected, $innerAdapter)
     {
-        if ($expected instanceof \Exception) {
+        if ($expected instanceof Exception) {
             $this->expectException(get_class($expected));
             $this->expectExceptionCode($expected->getCode());
             $this->expectExceptionMessage($expected->getMessage());

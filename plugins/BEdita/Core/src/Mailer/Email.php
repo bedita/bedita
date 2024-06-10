@@ -14,6 +14,7 @@ declare(strict_types=1);
  */
 namespace BEdita\Core\Mailer;
 
+use BadMethodCallException;
 use Cake\Mailer\Mailer;
 
 /**
@@ -34,20 +35,20 @@ class Email extends Mailer /* @phpstan-ignore-line */
      *
      * @return array
      */
-    public function sendRaw()
+    public function sendRaw(): array
     {
         if (empty($this->message->getFrom())) {
-            throw new \BadMethodCallException('From is not specified.');
+            throw new BadMethodCallException('From is not specified.');
         }
         if (empty($this->message->getTo()) && empty($this->message->getCc()) && empty($this->message->getBcc())) {
-            throw new \BadMethodCallException('You need specify one destination on to, cc or bcc.');
+            throw new BadMethodCallException('You need specify one destination on to, cc or bcc.');
         }
 
         $transport = $this->getTransport();
         if (!$transport) {
             $msg = 'Cannot send email, transport was not defined. Did you call transport() or define ' .
                 'a transport in the set profile?';
-            throw new \BadMethodCallException($msg);
+            throw new BadMethodCallException($msg);
         }
         $contents = $transport->send($this->message);
         $this->_logDelivery($contents);

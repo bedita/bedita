@@ -48,7 +48,7 @@ abstract class UpdateRelatedObjectsAction extends UpdateAssociatedAction
      * @param array $data Action data.
      * @return array
      */
-    protected function prepareData(array $data)
+    protected function prepareData(array $data): array
     {
         if (empty($data['entity']) || !($data['entity'] instanceof Folder) || $this->Association->getName() !== 'Parents') {
             $this->setupPriority($data);

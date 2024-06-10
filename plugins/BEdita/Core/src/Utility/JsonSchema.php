@@ -24,6 +24,7 @@ use Cake\Http\Exception\NotFoundException;
 use Cake\ORM\TableRegistry;
 use Cake\Utility\Hash;
 use Cake\Utility\Inflector;
+use stdClass;
 
 /**
  * JSON Schema generation utilities
@@ -50,7 +51,7 @@ class JsonSchema
      * @param string $url Url of this schema
      * @return mixed
      */
-    public static function generate($type, $url)
+    public static function generate(string $type, string $url): mixed
     {
         $schema = Cache::remember(
             'schema_' . $type,
@@ -65,7 +66,7 @@ class JsonSchema
         }
 
         $baseSchema = [
-            'definitions' => new \stdClass(),
+            'definitions' => new stdClass(),
             '$id' => $url,
             '$schema' => 'http://json-schema.org/draft-06/schema#',
             'type' => 'object',
@@ -81,7 +82,7 @@ class JsonSchema
      * @return mixed
      * @throws \Cake\Http\Exception\NotFoundException if no type is found
      */
-    public static function typeSchema($type)
+    public static function typeSchema(string $type): mixed
     {
         if (in_array($type, static::VALID_RESOURCES)) {
             return static::resourceSchema($type);
@@ -104,7 +105,7 @@ class JsonSchema
      * @param array|bool $schema Schema array or `false`
      * @return array|bool Schema with `revision` or `false`
      */
-    protected static function addRevision($schema)
+    protected static function addRevision(array|bool $schema): array|bool
     {
         if (!is_array($schema)) {
             return $schema;
@@ -125,7 +126,7 @@ class JsonSchema
      * @return string|bool Schema revision or `false` if no schema is found
      * @throws \Cake\Http\Exception\NotFoundException if no type is found
      */
-    public static function schemaRevision($type)
+    public static function schemaRevision(string $type): string|bool
     {
         return Cache::remember(
             'revision_schema_' . $type,
@@ -147,7 +148,7 @@ class JsonSchema
      * @param string $resource Resource type name
      * @return array JSON Schema array with `properties` and `required`
      */
-    public static function resourceSchema($resource)
+    public static function resourceSchema(string $resource): array
     {
         $table = TableRegistry::getTableLocator()->get((string)Inflector::camelize($resource));
         $entity = $table->newEntity([]);
@@ -183,7 +184,7 @@ class JsonSchema
      * @param \BEdita\Core\Model\Entity\ObjectType $objectType Object type to represent
      * @return mixed JSON Schema array with `properties` and `required`
      */
-    public static function objectSchema(ObjectType $objectType)
+    public static function objectSchema(ObjectType $objectType): mixed
     {
         return $objectType->schema;
     }

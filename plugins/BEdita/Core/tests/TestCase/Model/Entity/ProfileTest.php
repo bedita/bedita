@@ -18,6 +18,7 @@ namespace BEdita\Core\Test\TestCase\Model\Entity;
 use BEdita\Core\Model\Entity\Profile;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
+use InvalidArgumentException;
 
 /**
  * {@see \BEdita\Core\Model\Entity\Profile} Test Case
@@ -85,7 +86,7 @@ class ProfileTest extends TestCase
         ];
         $profile = $this->Profiles->patchEntity($profile, $data);
         if (!($profile instanceof Profile)) {
-            throw new \InvalidArgumentException();
+            throw new InvalidArgumentException();
         }
 
         $this->assertEquals(4, $profile->id);

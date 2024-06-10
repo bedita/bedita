@@ -15,6 +15,7 @@ declare(strict_types=1);
 
 namespace BEdita\Core\Test\TestCase\ORM\Inheritance;
 
+use BadMethodCallException;
 use BEdita\Core\ORM\Inheritance\AssociationCollection;
 use BEdita\Core\ORM\Inheritance\Marshaller;
 use BEdita\Core\ORM\Inheritance\Query;
@@ -603,7 +604,7 @@ class TableTest extends TestCase
      */
     public function testCallMissingFinder()
     {
-        $this->expectException(\BadMethodCallException::class);
+        $this->expectException(BadMethodCallException::class);
         $this->expectExceptionMessage('Unknown finder method "gustavo"');
         $this->fakeMammals->find('gustavo');
     }

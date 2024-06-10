@@ -17,6 +17,8 @@ namespace BEdita\Core\Job;
 
 use Cake\Core\App;
 use Cake\Utility\Inflector;
+use LogicException;
+use ReflectionClass;
 
 /**
  * Utility class to run async job services.
@@ -28,9 +30,9 @@ class ServiceRegistry
     /**
      * Registered instances.
      *
-     * @var \BEdita\Core\Job\JobService[]
+     * @var array<\BEdita\Core\Job\JobService>
      */
-    protected static $instances = [];
+    protected static array $instances = [];
 
     /**
      * Get a service class instance for a given name.
@@ -63,11 +65,11 @@ class ServiceRegistry
         $fullClassName = App::className($className, 'Job/Service', 'Service');
 
         if ($fullClassName === null) {
-            throw new \LogicException(__d('bedita', 'Unknown service "{0}"', [$name]));
+            throw new LogicException(__d('bedita', 'Unknown service "{0}"', [$name]));
         }
 
-        if (!(new \ReflectionClass($fullClassName))->implementsInterface(JobService::class)) {
-            throw new \LogicException(__d('bedita', 'Bad service class "{0}"', [$fullClassName]));
+        if (!(new ReflectionClass($fullClassName))->implementsInterface(JobService::class)) {
+            throw new LogicException(__d('bedita', 'Bad service class "{0}"', [$fullClassName]));
         }
 
         $instance = new $fullClassName();
@@ -91,7 +93,7 @@ class ServiceRegistry
     /**
      * Registered service names
      *
-     * @return string[]
+     * @return array<string>
      */
     public static function keys(): array
     {

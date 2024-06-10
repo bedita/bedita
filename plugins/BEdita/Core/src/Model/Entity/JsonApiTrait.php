@@ -23,6 +23,8 @@ use Cake\ORM\TableRegistry;
 use Cake\Routing\Router;
 use Cake\Utility\Hash;
 use Cake\Utility\Inflector;
+use InvalidArgumentException;
+use JsonSerializable;
 
 /**
  * Trait for exposing useful properties required for JSON API response formatting at the entity level.
@@ -40,42 +42,42 @@ trait JsonApiTrait
      *
      * @var array
      */
-    protected $_selected = [];
+    protected array $_selected = [];
 
     /**
      * Getter for entity's visible properties.
      *
-     * @return string[]
+     * @return array<string>
      */
-    abstract public function getVisible();
+    abstract public function getVisible(): array;
 
     /**
      * Getter for entity's hidden properties.
      *
-     * @return string[]
+     * @return array<string>
      */
-    abstract public function getHidden();
+    abstract public function getHidden(): array;
 
     /**
      * Getter for entity's virtual properties.
      *
-     * @return string[]
+     * @return array<string>
      */
-    abstract public function getVirtual();
+    abstract public function getVirtual(): array;
 
     /**
      * Getter for source model registry alias.
      *
      * @return string
      */
-    abstract public function getSource();
+    abstract public function getSource(): string;
 
     /**
      * Getter for model table.
      *
      * @return \Cake\ORM\Table
      */
-    public function getTable()
+    public function getTable(): Table
     {
         return TableRegistry::getTableLocator()->get($this->getSource());
     }
@@ -111,14 +113,14 @@ trait JsonApiTrait
      * @param string $property Property name.
      * @return mixed
      */
-    abstract public function &get(string $property);
+    abstract public function &get(string $property): mixed;
 
     /**
      * Getter for `id`.
      *
      * @return string
      */
-    protected function getId()
+    protected function getId(): string
     {
         return implode(',', $this->extract((array)$this->getTable()->getPrimaryKey()));
     }
@@ -128,7 +130,7 @@ trait JsonApiTrait
      *
      * @return string
      */
-    protected function getType()
+    protected function getType(): string
     {
         return $this->getTable()->getTable();
     }
@@ -139,7 +141,7 @@ trait JsonApiTrait
      * @param array $fields List of fields.
      * @return void
      */
-    protected function setSelected(array $fields)
+    protected function setSelected(array $fields): void
     {
         $this->_selected = $fields;
     }
@@ -150,7 +152,7 @@ trait JsonApiTrait
      * @param array $fields List of fields.
      * @return array
      */
-    protected function filterFields(array $fields)
+    protected function filterFields(array $fields): array
     {
         if (empty($this->_selected)) {
             return $fields;
@@ -164,7 +166,7 @@ trait JsonApiTrait
      *
      * @return array
      */
-    protected function getAttributes()
+    protected function getAttributes(): array
     {
         $table = $this->getTable();
         $associations = static::listAssociations($table, $this->getHidden());
@@ -183,7 +185,7 @@ trait JsonApiTrait
      *
      * @return array
      */
-    protected function getMeta()
+    protected function getMeta(): array
     {
         $table = $this->getTable();
         $associations = static::listAssociations($table, $this->getHidden());
@@ -239,7 +241,7 @@ trait JsonApiTrait
     protected function joinData(): array
     {
         $joinData = $this->get('_joinData');
-        if (!$joinData instanceof \JsonSerializable) {
+        if (!$joinData instanceof JsonSerializable) {
             return [];
         }
 
@@ -263,7 +265,7 @@ trait JsonApiTrait
      *
      * @return string
      */
-    public function routeNamePrefix()
+    public function routeNamePrefix(): string
     {
         return 'api:resources';
     }
@@ -273,7 +275,7 @@ trait JsonApiTrait
      *
      * @return array
      */
-    protected function getLinks()
+    protected function getLinks(): array
     {
         $self = Router::url(
             [
@@ -293,7 +295,7 @@ trait JsonApiTrait
      * @param mixed $related Related entities.
      * @return array
      */
-    protected function getIncluded($related)
+    protected function getIncluded(mixed $related): array
     {
         $data = [];
         if (empty($related)) {
@@ -307,7 +309,7 @@ trait JsonApiTrait
         }
         foreach ($related as $item) {
             if (!$item instanceof JsonApiSerializable) {
-                throw new \InvalidArgumentException(sprintf(
+                throw new InvalidArgumentException(sprintf(
                     'Objects must implement "%s", got "%s" instead',
                     JsonApiSerializable::class,
                     is_object($item) ? get_class($item) : gettype($item)
@@ -323,9 +325,9 @@ trait JsonApiTrait
     /**
      * Getter for `relationships`.
      *
-     * @return array[]
+     * @return array<array>
      */
-    protected function getRelationships()
+    protected function getRelationships(): array
     {
         $relationships = $included = [];
 
@@ -402,7 +404,7 @@ trait JsonApiTrait
      * @param array $hidden List of relationships to be excluded.
      * @return array
      */
-    protected static function listAssociations(Table $Table, array $hidden = [])
+    protected static function listAssociations(Table $Table, array $hidden = []): array
     {
         $associations = $Table->associations();
         $btmJunctionAliases = array_map(
@@ -437,7 +439,7 @@ trait JsonApiTrait
      * @param array $fields Selected fields to view in `attributes` and `meta`, default empty => all fields are serialized
      * @return array
      */
-    public function jsonApiSerialize($options = 0, $fields = [])
+    public function jsonApiSerialize(int $options = 0, array $fields = []): array
     {
         $id = $this->getId();
         $type = $this->getType();

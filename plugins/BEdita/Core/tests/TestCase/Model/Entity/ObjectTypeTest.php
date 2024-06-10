@@ -21,6 +21,8 @@ use Cake\Event\Event;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Hash;
+use Iterator;
+use stdClass;
 
 /**
  * {@see \BEdita\Core\Model\Entity\ObjectType} Test Case
@@ -564,7 +566,7 @@ class ObjectTypeTest extends TestCase
                                 [
                                     'type' => 'null',
                                 ],
-                                new \stdClass(),
+                                new stdClass(),
                             ],
                         ],
                         'created' => [
@@ -655,7 +657,7 @@ class ObjectTypeTest extends TestCase
                                 [
                                     'type' => 'null',
                                 ],
-                                new \stdClass(),
+                                new stdClass(),
                             ],
                             '$id' => '/properties/files_property',
                             'title' => 'Files Property',
@@ -728,7 +730,7 @@ class ObjectTypeTest extends TestCase
                                 [
                                     'type' => 'null',
                                 ],
-                                new \stdClass(),
+                                new stdClass(),
                             ],
                             '$id' => '/properties/provider_extra',
                             'title' => 'Provider Extra',
@@ -843,7 +845,7 @@ class ObjectTypeTest extends TestCase
                                 [
                                     'type' => 'null',
                                 ],
-                                new \stdClass(),
+                                new stdClass(),
                             ],
                         ],
                         'created' => [
@@ -1260,7 +1262,7 @@ class ObjectTypeTest extends TestCase
         $objectType = $this->ObjectTypes->get($name);
 
         $fullChain = $objectType->getFullInheritanceChain();
-        static::assertInstanceOf(\Iterator::class, $fullChain);
+        static::assertInstanceOf(Iterator::class, $fullChain);
 
         $fullChain = iterator_to_array($fullChain);
         foreach ($fullChain as $ancestor) {

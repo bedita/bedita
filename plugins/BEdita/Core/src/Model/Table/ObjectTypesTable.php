@@ -29,11 +29,12 @@ use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\Event\EventInterface;
 use Cake\Http\Exception\BadRequestException;
 use Cake\Http\Exception\ForbiddenException;
-use Cake\ORM\Query;
+use Cake\ORM\Query\SelectQuery;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
 use Cake\Utility\Inflector;
+use LogicException;
 
 /**
  * ObjectTypes Model
@@ -236,7 +237,7 @@ class ObjectTypesTable extends Table
      * @return void
      * @throws \Cake\Http\Exception\ForbiddenException if operation on entity is not allowed
      */
-    public function beforeRules(EventInterface $event, EntityInterface $entity)
+    public function beforeRules(EventInterface $event, EntityInterface $entity): void
     {
         if ($entity->isNew()) {
             if (empty($entity->get('parent_id'))) {
@@ -265,7 +266,7 @@ class ObjectTypesTable extends Table
      *
      * @return void
      */
-    public function afterSave()
+    public function afterSave(): void
     {
         Cache::clear(self::CACHE_CONFIG);
     }
@@ -282,7 +283,7 @@ class ObjectTypesTable extends Table
      * @return void
      * @throws \Cake\Http\Exception\ForbiddenException|\Cake\Http\Exception\BadRequestException if entity is not saveable
      */
-    public function beforeSave(EventInterface $event, EntityInterface $entity)
+    public function beforeSave(EventInterface $event, EntityInterface $entity): void
     {
         if ($entity->isDirty('is_abstract')) {
             if ($entity->get('is_abstract') && $this->objectsExist($entity->get('id'))) {
@@ -309,7 +310,7 @@ class ObjectTypesTable extends Table
      * @param int $typeId Object type id
      * @return bool True if at least an object exists, false otherwise
      */
-    protected function objectsExist($typeId)
+    protected function objectsExist(int $typeId): bool
     {
         return TableRegistry::getTableLocator()->get('Objects')->exists(['object_type_id IS' => $typeId]);
     }
@@ -322,7 +323,7 @@ class ObjectTypesTable extends Table
      * @return void
      * @throws \Cake\Http\Exception\ForbiddenException if entity is not deletable
      */
-    public function beforeDelete(EventInterface $event, EntityInterface $entity)
+    public function beforeDelete(EventInterface $event, EntityInterface $entity): void
     {
         if ($this->objectsExist($entity->get('id'))) {
             throw new ForbiddenException(__d('bedita', 'Objects of this type exist'));
@@ -334,7 +335,7 @@ class ObjectTypesTable extends Table
      *
      * @return void
      */
-    public function afterDelete()
+    public function afterDelete(): void
     {
         Cache::clear(self::CACHE_CONFIG);
     }
@@ -342,7 +343,7 @@ class ObjectTypesTable extends Table
     /**
      * @inheritDoc
      */
-    public function findContainRelations(Query $query, array $options): Query
+    public function findContainRelations(SelectQuery $query, array $options): SelectQuery
     {
         return $query->contain(['LeftRelations', 'RightRelations']);
     }
@@ -350,12 +351,12 @@ class ObjectTypesTable extends Table
     /**
      * Find object types having a parent by `name` or `id`
      *
-     * @param \Cake\ORM\Query $query Query object.
+     * @param \Cake\ORM\Query\SelectQuery $query Query object.
      * @param array $options Additional options. The first element containing `id` or `name` is required.
-     * @return \Cake\ORM\Query
+     * @return \Cake\ORM\Query\SelectQuery
      * @throws \BEdita\Core\Exception\BadFilterException When missing required parameters.
      */
-    public function findParent(Query $query, array $options)
+    public function findParent(SelectQuery $query, array $options): SelectQuery
     {
         if (empty($options[0])) {
             throw new BadFilterException(__d('bedita', 'Missing required parameter "{0}"', 'parent'));
@@ -398,16 +399,16 @@ class ObjectTypesTable extends Table
      *     ->find('byRelation', ['name' => 'my_relation', 'descendants' => true]);
      * ```
      *
-     * @param \Cake\ORM\Query $query Query object.
+     * @param \Cake\ORM\Query\SelectQuery $query Query object.
      * @param array $options Additional options. The `name` key is required, while `side` is optional
      *      and assumed to be `'right'` by default.
-     * @return \Cake\ORM\Query
+     * @return \Cake\ORM\Query\SelectQuery
      * @throws \LogicException When missing required parameters.
      */
-    protected function findByRelation(Query $query, array $options = [])
+    protected function findByRelation(SelectQuery $query, array $options = []): SelectQuery
     {
         if (empty($options['name'])) {
-            throw new \LogicException(__d('bedita', 'Missing required parameter "{0}"', 'name'));
+            throw new LogicException(__d('bedita', 'Missing required parameter "{0}"', 'name'));
         }
         $name = Inflector::underscore($options['name']);
 
@@ -420,13 +421,13 @@ class ObjectTypesTable extends Table
 
         // Build sub-queries to find object-types that lay on the left and right side of searched relationship, respectively.
         $leftSubQuery = $this->find()
-            ->innerJoinWith('LeftRelations', function (Query $query) use ($name, $leftField) {
+            ->innerJoinWith('LeftRelations', function (SelectQuery $query) use ($name, $leftField) {
                 return $query->where(function (QueryExpression $exp) use ($name, $leftField) {
                     return $exp->eq($this->LeftRelations->aliasField($leftField), $name);
                 });
             });
         $rightSubQuery = $this->find()
-            ->innerJoinWith('RightRelations', function (Query $query) use ($name, $rightField) {
+            ->innerJoinWith('RightRelations', function (SelectQuery $query) use ($name, $rightField) {
                 return $query->where(function (QueryExpression $exp) use ($name, $rightField) {
                     return $exp->eq($this->RightRelations->aliasField($rightField), $name);
                 });
@@ -487,18 +488,18 @@ class ObjectTypesTable extends Table
     /**
      * Finder to get object type starting from object id or uname.
      *
-     * @param \Cake\ORM\Query $query Query object.
+     * @param \Cake\ORM\Query\SelectQuery $query Query object.
      * @param array $options Additional options. The `id` key is required.
-     * @return \Cake\ORM\Query
+     * @return \Cake\ORM\Query\SelectQuery
      * @throws \BEdita\Core\Exception\BadFilterException When missing required parameters.
      */
-    protected function findObjectId(Query $query, array $options = [])
+    protected function findObjectId(SelectQuery $query, array $options = []): SelectQuery
     {
         if (empty($options['id'])) {
             throw new BadFilterException(__d('bedita', 'Missing required parameter "{0}"', 'id'));
         }
 
-        return $query->innerJoinWith('Objects', function (Query $query) use ($options) {
+        return $query->innerJoinWith('Objects', function (SelectQuery $query) use ($options) {
             if (!is_numeric($options['id'])) {
                 return $query->where([$this->Objects->aliasField('uname') => $options['id']]);
             }

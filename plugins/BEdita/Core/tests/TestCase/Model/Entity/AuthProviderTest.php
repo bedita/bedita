@@ -20,6 +20,7 @@ use Cake\Core\Configure;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Hash;
+use InvalidArgumentException;
 
 /**
  * {@see \BEdita\Core\Model\Entity\AuthProvider} Test Case
@@ -81,7 +82,7 @@ class AuthProviderTest extends TestCase
         ];
         $authProvider = $this->AuthProviders->patchEntity($authProvider, $data);
         if (!($authProvider instanceof AuthProvider)) {
-            throw new \InvalidArgumentException();
+            throw new InvalidArgumentException();
         }
 
         static::assertEquals(1, $authProvider->id);

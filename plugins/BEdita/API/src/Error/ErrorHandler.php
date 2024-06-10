@@ -17,6 +17,7 @@ namespace BEdita\API\Error;
 
 use Cake\Error\ErrorHandler as CakeErrorHandler;
 use Cake\Utility\Hash;
+use LogicException;
 
 class ErrorHandler extends CakeErrorHandler
 {
@@ -31,6 +32,6 @@ class ErrorHandler extends CakeErrorHandler
         $msg = Hash::get($error, 'error');
         $code = Hash::get($error, 'code');
         $description = Hash::get($error, 'description');
-        throw new \LogicException(sprintf('%s [%s] %s', $msg, $code, $description));
+        throw new LogicException(sprintf('%s [%s] %s', $msg, $code, $description));
     }
 }

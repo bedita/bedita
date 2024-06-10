@@ -19,6 +19,7 @@ use BEdita\Core\State\CurrentApplication;
 use Cake\Database\Expression\QueryExpression;
 use Cake\Http\Exception\BadRequestException;
 use Cake\ORM\Query;
+use Cake\ORM\Query\SelectQuery;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Utility\Hash;
@@ -36,7 +37,7 @@ use Cake\Validation\Validator;
  * @method \BEdita\Core\Model\Entity\Config patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
  * @method \BEdita\Core\Model\Entity\Config[] patchEntities($entities, array $data, array $options = [])
  * @method \BEdita\Core\Model\Entity\Config findOrCreate($search, callable $callback = null, $options = [])
- * @method \Cake\ORM\Query queryCache(\Cake\ORM\Query $query, string $key)
+ * @method \Cake\ORM\Query\SelectQuery queryCache(\Cake\ORM\Query\SelectQuery $query, string $key)
  * @mixin \Cake\ORM\Behavior\TimestampBehavior
  * @since 4.0.0
  */
@@ -105,10 +106,10 @@ class ConfigTable extends Table
      * Common configuration (where `application_id` is NULL)
      * and configuration of the current application is returned.
      *
-     * @param \Cake\ORM\Query $query Query object instance.
-     * @return \Cake\ORM\Query
+     * @param \Cake\ORM\Query\SelectQuery $query Query object instance.
+     * @return \Cake\ORM\Query\SelectQuery
      */
-    protected function findMine(Query $query)
+    protected function findMine(SelectQuery $query): SelectQuery
     {
         return $query->where(function (QueryExpression $exp) {
             return $exp->or(function (QueryExpression $exp) {
@@ -128,11 +129,11 @@ class ConfigTable extends Table
      *  - an associative array with `name` and optionally `application` (application name) or `application_id`
      *  - a non empty indexed array, the first element is then used as `name`
      *
-     * @param \Cake\ORM\Query $query Query object instance.
+     * @param \Cake\ORM\Query\SelectQuery $query Query object instance.
      * @param array $options Options array.
-     * @return \Cake\ORM\Query
+     * @return \Cake\ORM\Query\SelectQuery
      */
-    protected function findName(Query $query, array $options): Query
+    protected function findName(SelectQuery $query, array $options): SelectQuery
     {
         if (empty($options[0]) && empty($options['name'])) {
             throw new BadRequestException(__d('bedita', 'Missing mandatory option "name"'));
@@ -158,12 +159,12 @@ class ConfigTable extends Table
      * Alias for `name` finder.
      * Used to load entity in `BEdita\Core\Utility\Resources`
      *
-     * @param \Cake\ORM\Query $query Query object instance.
+     * @param \Cake\ORM\Query\SelectQuery $query Query object instance.
      * @param array $options Options array.
-     * @return \Cake\ORM\Query
+     * @return \Cake\ORM\Query\SelectQuery
      * @codeCoverageIgnore
      */
-    protected function findResource(Query $query, array $options): Query
+    protected function findResource(SelectQuery $query, array $options): SelectQuery
     {
         return $query->find('name', $options);
     }
@@ -173,9 +174,9 @@ class ConfigTable extends Table
      *
      * @param int|null $applicationId Application ID.
      * @param string|null $context Config context.
-     * @return \Cake\ORM\Query
+     * @return \Cake\ORM\Query\SelectQuery
      */
-    public function fetchConfig(?int $applicationId, ?string $context): Query
+    public function fetchConfig(?int $applicationId, ?string $context): SelectQuery
     {
         $query = $this->find()
             ->select(['name', 'content'])

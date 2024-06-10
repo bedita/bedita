@@ -17,6 +17,7 @@ namespace BEdita\Core\Filesystem;
 
 use Cake\Core\InstanceConfigTrait;
 use League\Flysystem\FilesystemAdapter as LeagueFilesystemAdapter;
+use RuntimeException;
 
 /**
  * Filesystem adapter.
@@ -38,7 +39,7 @@ abstract class FilesystemAdapter
      *
      * @var array
      */
-    protected $_defaultConfig = [
+    protected array $_defaultConfig = [
         'baseUrl' => null,
         'visibility' => 'public',
     ];
@@ -48,7 +49,7 @@ abstract class FilesystemAdapter
      *
      * @var \League\Flysystem\FilesystemAdapter
      */
-    protected $adapter;
+    protected LeagueFilesystemAdapter $adapter;
 
     /**
      * Initialize filesystem adapter class.
@@ -68,7 +69,7 @@ abstract class FilesystemAdapter
      *
      * @return \League\Flysystem\FilesystemAdapter
      */
-    public function getInnerAdapter()
+    public function getInnerAdapter(): LeagueFilesystemAdapter
     {
         if (!empty($this->adapter)) {
             return $this->adapter;
@@ -76,7 +77,7 @@ abstract class FilesystemAdapter
 
         $adapter = $this->buildAdapter($this->getConfig());
         if (!($adapter instanceof LeagueFilesystemAdapter)) {
-            throw new \RuntimeException(
+            throw new RuntimeException(
                 sprintf('Filesystem adapters must use %s as a base class.', AdapterInterface::class)
             );
         }
@@ -90,7 +91,7 @@ abstract class FilesystemAdapter
      * @param array $config Adapter configuration.
      * @return \League\Flysystem\FilesystemAdapter
      */
-    abstract protected function buildAdapter(array $config);
+    abstract protected function buildAdapter(array $config): LeagueFilesystemAdapter;
 
     /**
      * Get public URL for an item.
@@ -98,7 +99,7 @@ abstract class FilesystemAdapter
      * @param string $path Resource path.
      * @return string
      */
-    public function getPublicUrl($path): string
+    public function getPublicUrl(string $path): string
     {
         return sprintf(
             '%s/%s',

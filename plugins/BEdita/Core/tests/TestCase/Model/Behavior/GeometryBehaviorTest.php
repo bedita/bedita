@@ -190,7 +190,7 @@ class GeometryBehaviorTest extends TestCase
      */
     public function testBadGeo($conditions)
     {
-        $this->expectException(\BEdita\Core\Exception\BadFilterException::class);
+        $this->expectException(BadFilterException::class);
         $this->Locations->find('geo', $conditions)->toArray();
     }
 }

@@ -25,6 +25,8 @@ use Cake\ORM\Association\HasMany;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Hash;
+use Exception;
+use LogicException;
 
 /**
  * {@see \BEdita\Core\Model\Table\ObjectTypesTable} Test Case
@@ -389,7 +391,7 @@ class ObjectTypesTableTest extends TestCase
      */
     public function testGet($expected, $primaryKey)
     {
-        if ($expected instanceof \Exception) {
+        if ($expected instanceof Exception) {
             $this->expectException(get_class($expected));
             $this->expectExceptionMessage($expected->getMessage());
         }
@@ -480,7 +482,7 @@ class ObjectTypesTableTest extends TestCase
     {
         return [
             'error' => [
-                new \LogicException('Missing required parameter "name"'),
+                new LogicException('Missing required parameter "name"'),
                 [],
             ],
             'right' => [
@@ -525,7 +527,7 @@ class ObjectTypesTableTest extends TestCase
      */
     public function testFindByRelation($expected, array $options)
     {
-        if ($expected instanceof \Exception) {
+        if ($expected instanceof Exception) {
             $this->expectException(get_class($expected));
             $this->expectExceptionMessage($expected->getMessage());
         }
@@ -640,7 +642,7 @@ class ObjectTypesTableTest extends TestCase
      */
     public function testBeforeDelete($typeName, $expected)
     {
-        if ($expected instanceof \Exception) {
+        if ($expected instanceof Exception) {
             $this->expectException(get_class($expected));
             $this->expectExceptionMessage($expected->getMessage());
         }
@@ -692,7 +694,7 @@ class ObjectTypesTableTest extends TestCase
      */
     public function testChangeParent()
     {
-        $this->expectException(\Cake\Http\Exception\ForbiddenException::class);
+        $this->expectException(ForbiddenException::class);
         $this->expectExceptionMessage('Parent type change forbidden: objects of this type exist');
         $objectType = $this->ObjectTypes->get('users');
         $objectType->set('parent_name', 'media');
@@ -765,7 +767,7 @@ class ObjectTypesTableTest extends TestCase
      */
     public function testBeforeSave($data, $expected)
     {
-        if ($expected instanceof \Exception) {
+        if ($expected instanceof Exception) {
             $this->expectException(get_class($expected));
             $this->expectExceptionMessage($expected->getMessage());
         }
@@ -816,7 +818,7 @@ class ObjectTypesTableTest extends TestCase
      */
     public function testFindObjectId($expected, array $options)
     {
-        if ($expected instanceof \Exception) {
+        if ($expected instanceof Exception) {
             $this->expectException(get_class($expected));
             $this->expectExceptionMessage($expected->getMessage());
         }
@@ -859,7 +861,7 @@ class ObjectTypesTableTest extends TestCase
      */
     public function testFindParent($expected, array $options)
     {
-        if ($expected instanceof \Exception) {
+        if ($expected instanceof Exception) {
             $this->expectException(get_class($expected));
             $this->expectExceptionMessage($expected->getMessage());
         }

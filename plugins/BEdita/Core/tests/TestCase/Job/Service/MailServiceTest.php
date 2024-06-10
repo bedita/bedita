@@ -19,6 +19,8 @@ use BEdita\Core\Job\Service\MailService;
 use Cake\Mailer\TransportFactory;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Hash;
+use Exception;
+use LogicException;
 
 /**
  * {@see \BEdita\Core\Job\Service\MailService} Test Case
@@ -85,7 +87,7 @@ class MailServiceTest extends TestCase
                 ],
             ],
             'missing' => [
-                new \LogicException('You need specify one destination on to, cc or bcc.'),
+                new LogicException('You need specify one destination on to, cc or bcc.'),
                 [],
             ],
         ];
@@ -102,7 +104,7 @@ class MailServiceTest extends TestCase
      */
     public function testRun($expected, array $payload)
     {
-        if ($expected instanceof \Exception) {
+        if ($expected instanceof Exception) {
             $this->expectException(get_class($expected));
             $this->expectExceptionCode($expected->getCode());
             $this->expectExceptionMessage($expected->getMessage());

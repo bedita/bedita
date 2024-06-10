@@ -15,6 +15,8 @@ declare(strict_types=1);
 
 namespace BEdita\Core\Model\Action;
 
+use BEdita\Core\Model\Entity\ObjectType;
+use Cake\ORM\Table;
 use Cake\Utility\Hash;
 
 /**
@@ -29,19 +31,19 @@ class ListObjectsAction extends BaseAction
      *
      * @var \Cake\ORM\Table
      */
-    protected $Table;
+    protected Table $Table;
 
     /**
      * Object type.
      *
      * @var \BEdita\Core\Model\Entity\ObjectType|null
      */
-    protected $objectType;
+    protected ?ObjectType $objectType = null;
 
     /**
      * @inheritDoc
      */
-    protected function initialize(array $config)
+    protected function initialize(array $config): void
     {
         $this->Table = $this->getConfig('table');
         $this->objectType = $this->getConfig('objectType');

@@ -19,6 +19,7 @@ use BEdita\Core\Exception\BadFilterException;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Hash;
+use Exception;
 
 /**
  * {@see \BEdita\Core\Model\Table\CategoriesTable} Test Case
@@ -205,7 +206,7 @@ class CategoriesTableTest extends TestCase
      */
     public function testFindResource($expected, $options): void
     {
-        if ($expected instanceof \Exception) {
+        if ($expected instanceof Exception) {
             $this->expectException(get_class($expected));
             $this->expectExceptionMessage($expected->getMessage());
         }

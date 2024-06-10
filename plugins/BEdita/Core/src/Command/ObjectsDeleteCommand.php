@@ -23,6 +23,7 @@ use Cake\Console\ConsoleOptionParser;
 use Cake\Database\Expression\QueryExpression;
 use Cake\I18n\Date;
 use Cake\ORM\Locator\LocatorAwareTrait;
+use Throwable;
 
 /**
  * ObjectsDelete command.
@@ -90,7 +91,7 @@ class ObjectsDeleteCommand extends Command
             $io->verbose(sprintf('Deleting object %s', $object->id));
             $object->getTable()->deleteOrFail($object);
             $deleted++;
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             $io->error(sprintf('Error deleting object %s: %s', $object->id, $e->getMessage()));
             $errors++;
         }

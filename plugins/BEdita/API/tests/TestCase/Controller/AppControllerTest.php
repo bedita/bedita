@@ -27,6 +27,7 @@ use Cake\Core\Configure;
 use Cake\Http\Exception\NotAcceptableException;
 use Cake\Http\ServerRequest;
 use DMS\PHPUnitExtensions\ArraySubset\ArraySubsetAsserts;
+use Exception;
 
 /**
  * @coversDefaultClass \BEdita\API\Controller\AppController
@@ -85,7 +86,7 @@ class AppControllerTest extends IntegrationTestCase
      */
     public function testIsIdentityRequired($expected, $method): void
     {
-        if ($expected instanceof \Exception) {
+        if ($expected instanceof Exception) {
             $this->expectException(get_class($expected));
             $this->expectExceptionCode($expected->getCode());
             $this->expectExceptionMessage($expected->getMessage());
@@ -143,7 +144,7 @@ class AppControllerTest extends IntegrationTestCase
      */
     public function testCheckAccept($expected, $accept)
     {
-        if ($expected instanceof \Exception) {
+        if ($expected instanceof Exception) {
             $this->expectException(get_class($expected));
             $this->expectExceptionCode($expected->getCode());
             $this->expectExceptionMessage($expected->getMessage());

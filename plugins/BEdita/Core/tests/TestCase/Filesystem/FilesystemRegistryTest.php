@@ -15,14 +15,19 @@ declare(strict_types=1);
 
 namespace BEdita\Core\Test\TestCase\Filesystem;
 
+use BadMethodCallException;
 use BEdita\Core\Filesystem\Adapter\LocalAdapter;
 use BEdita\Core\Filesystem\FilesystemAdapter;
 use BEdita\Core\Filesystem\FilesystemRegistry;
 use Cake\TestSuite\TestCase;
+use Exception;
+use InvalidArgumentException;
 use League\Flysystem\DirectoryListing;
 use League\Flysystem\MountManager;
 use League\Flysystem\UnableToMountFilesystem;
 use League\Flysystem\UnableToResolveFilesystemMount;
+use RuntimeException;
+use stdClass;
 
 /**
  * @coversDefaultClass \BEdita\Core\Filesystem\FilesystemRegistry
@@ -94,20 +99,20 @@ class FilesystemRegistryTest extends TestCase
                 ],
             ],
             'class not found' => [
-                new \BadMethodCallException('Filesystem adapter ThisDoesNotExist is not available.'),
+                new BadMethodCallException('Filesystem adapter ThisDoesNotExist is not available.'),
                 'BEdita/Core.ThisDoesNotExist',
             ],
             'bad instance' => [
-                new \RuntimeException(
+                new RuntimeException(
                     sprintf('Filesystem adapters must use %s as a base class.', FilesystemAdapter::class)
                 ),
                 'Bad',
                 [
-                    'className' => new \stdClass(),
+                    'className' => new stdClass(),
                 ],
             ],
             'failed initialization' => [
-                new \RuntimeException(
+                new RuntimeException(
                     sprintf('Filesystem adapter %s is not properly configured', get_class($failedInitialization))
                 ),
                 'Bad',
@@ -132,7 +137,7 @@ class FilesystemRegistryTest extends TestCase
      */
     public function testRegistry($expected, $objectName, array $config = [])
     {
-        if ($expected instanceof \Exception) {
+        if ($expected instanceof Exception) {
             $this->expectException(get_class($expected));
             $this->expectExceptionCode($expected->getCode());
             $this->expectExceptionMessage($expected->getMessage());
@@ -255,7 +260,7 @@ class FilesystemRegistryTest extends TestCase
                 ],
             ],
             'missing prefix' => [
-                new \InvalidArgumentException('No prefix detected in path: path/image.png'),
+                new InvalidArgumentException('No prefix detected in path: path/image.png'),
                 'path/image.png',
                 [],
             ],
@@ -280,7 +285,7 @@ class FilesystemRegistryTest extends TestCase
      */
     public function testGetPublicUrl($expected, $path, array $config)
     {
-        if ($expected instanceof \Exception) {
+        if ($expected instanceof Exception) {
             $this->expectException(get_class($expected));
             $this->expectExceptionCode($expected->getCode());
             $this->expectExceptionMessage($expected->getMessage());

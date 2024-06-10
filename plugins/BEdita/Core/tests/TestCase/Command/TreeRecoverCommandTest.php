@@ -15,6 +15,7 @@ declare(strict_types=1);
 
 namespace BEdita\Core\Test\TestCase\Command;
 
+use AllowDynamicProperties;
 use BEdita\Core\Command\TreeRecoverCommand;
 use Cake\Command\Command;
 use Cake\Console\TestSuite\ConsoleIntegrationTestTrait;
@@ -29,7 +30,7 @@ use Cake\TestSuite\TestCase;
  * @property \BEdita\Core\Model\Table\TreesTable $Trees
  * @covers \BEdita\Core\Command\TreeRecoverCommand
  */
-#[\AllowDynamicProperties]
+#[AllowDynamicProperties]
 class TreeRecoverCommandTest extends TestCase
 {
     use ConsoleIntegrationTestTrait;

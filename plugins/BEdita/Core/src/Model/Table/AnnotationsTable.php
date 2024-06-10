@@ -137,7 +137,7 @@ class AnnotationsTable extends Table
      * @return void
      * @throws \BEdita\Core\Exception\ForbiddenException on save check failure
      */
-    public function beforeSave(EventInterface $event, EntityInterface $entity)
+    public function beforeSave(EventInterface $event, EntityInterface $entity): void
     {
         if (!$entity->isNew() && $entity->get('user_id') !== LoggedUser::id()) {
             throw new ForbiddenException(
@@ -168,7 +168,7 @@ class AnnotationsTable extends Table
      * @return void
      * @throws \BEdita\Core\Exception\ForbiddenException on delete check failure
      */
-    public function beforeDelete(EventInterface $event, EntityInterface $entity)
+    public function beforeDelete(EventInterface $event, EntityInterface $entity): void
     {
         if ($entity->get('user_id') !== LoggedUser::id()) {
             throw new ForbiddenException(

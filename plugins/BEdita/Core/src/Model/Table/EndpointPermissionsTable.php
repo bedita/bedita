@@ -15,10 +15,11 @@ declare(strict_types=1);
 
 namespace BEdita\Core\Model\Table;
 
+use ArrayAccess;
 use BEdita\Core\State\CurrentApplication;
 use Cake\Database\Expression\ComparisonExpression;
 use Cake\Database\Expression\QueryExpression;
-use Cake\ORM\Query;
+use Cake\ORM\Query\SelectQuery;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Utility\Hash;
@@ -96,11 +97,11 @@ class EndpointPermissionsTable extends Table
      *  - `strict`: enable strict mode to exclude endpoint permissions applied to all endpoints
      *      (filter out endpoint permissions with `endpoint_id = NULL`).
      *
-     * @param \Cake\ORM\Query $query Query object instance.
+     * @param \Cake\ORM\Query\SelectQuery $query Query object instance.
      * @param array $options Additional options.
-     * @return \Cake\ORM\Query
+     * @return \Cake\ORM\Query\SelectQuery
      */
-    protected function findByEndpoint(Query $query, array $options): Query
+    protected function findByEndpoint(SelectQuery $query, array $options): SelectQuery
     {
         $field = $this->aliasField($this->Endpoints->getForeignKey());
         $ids = array_filter((array)Hash::get($options, 'endpointIds', []));
@@ -133,11 +134,11 @@ class EndpointPermissionsTable extends Table
      *  - `strict`: enable strict mode to exclude endpoint permissions applied to all applications
      *      (filter out endpoint permissions with `application_id = NULL`).
      *
-     * @param \Cake\ORM\Query $query Query object instance.
+     * @param \Cake\ORM\Query\SelectQuery $query Query object instance.
      * @param array $options Additional options.
-     * @return \Cake\ORM\Query
+     * @return \Cake\ORM\Query\SelectQuery
      */
-    protected function findByApplication(Query $query, array $options): Query
+    protected function findByApplication(SelectQuery $query, array $options): SelectQuery
     {
         $field = $this->aliasField($this->Applications->getForeignKey());
         $id = Hash::get($options, 'applicationId');
@@ -170,11 +171,11 @@ class EndpointPermissionsTable extends Table
      *  - `strict`: enable strict mode to exclude endpoint permissions applied to all roles
      *      (filter out endpoint permissions with `role_id = NULL`).
      *
-     * @param \Cake\ORM\Query $query Query object instance.
+     * @param \Cake\ORM\Query\SelectQuery $query Query object instance.
      * @param array $options Additional options.
-     * @return \Cake\ORM\Query
+     * @return \Cake\ORM\Query\SelectQuery
      */
-    protected function findByRole(Query $query, array $options): Query
+    protected function findByRole(SelectQuery $query, array $options): SelectQuery
     {
         $field = $this->aliasField($this->Roles->getForeignKey());
         $ids = array_filter((array)Hash::get($options, 'roleIds', []));
@@ -207,11 +208,11 @@ class EndpointPermissionsTable extends Table
      * - `role_name`: the role name
      * - `application_name`: the application name
      *
-     * @param \Cake\ORM\Query $query Query object instance.
+     * @param \Cake\ORM\Query\SelectQuery $query Query object instance.
      * @param array $options Additional options.
-     * @return \Cake\ORM\Query
+     * @return \Cake\ORM\Query\SelectQuery
      */
-    protected function findResource(Query $query, array $options): Query
+    protected function findResource(SelectQuery $query, array $options): SelectQuery
     {
         $endpoint = Hash::get($options, 'endpoint_name');
         $role = Hash::get($options, 'role_name');
@@ -220,7 +221,7 @@ class EndpointPermissionsTable extends Table
         if ($endpoint === null) {
             $query = $query->whereNull('endpoint_id');
         } else {
-            $query = $query->innerJoinWith('Endpoints', function (Query $query) use ($endpoint) {
+            $query = $query->innerJoinWith('Endpoints', function (SelectQuery $query) use ($endpoint) {
                 return $query->where(['Endpoints.name' => $endpoint]);
             });
         }
@@ -228,7 +229,7 @@ class EndpointPermissionsTable extends Table
         if ($role === null) {
             $query = $query->whereNull('role_id');
         } else {
-            $query = $query->innerJoinWith('Roles', function (Query $query) use ($role) {
+            $query = $query->innerJoinWith('Roles', function (SelectQuery $query) use ($role) {
                 return $query->where(['Roles.name' => $role]);
             });
         }
@@ -236,7 +237,7 @@ class EndpointPermissionsTable extends Table
         if ($application === null) {
             $query = $query->whereNull('application_id');
         } else {
-            $query = $query->innerJoinWith('Applications', function (Query $query) use ($application) {
+            $query = $query->innerJoinWith('Applications', function (SelectQuery $query) use ($application) {
                 return $query->where(['Applications.name' => $application]);
             });
         }
@@ -267,11 +268,11 @@ class EndpointPermissionsTable extends Table
      * Fetch endpoint permissions using cache.
      *
      * @param int|null $endpointId Endpoint id.
-     * @param null|array|\ArrayAccess $user User data. Is null if user is unlogged and contains `roles` array if logged.
+     * @param \ArrayAccess|array|null $user User data. Is null if user is unlogged and contains `roles` array if logged.
      * @param bool $strict Strict check.
      * @return array
      */
-    public function fetchPermissions(?int $endpointId, $user, bool $strict): array
+    public function fetchPermissions(?int $endpointId, array|ArrayAccess|null $user, bool $strict): array
     {
         $applicationId = CurrentApplication::getApplicationId();
         $endpointIds = array_filter([$endpointId]);

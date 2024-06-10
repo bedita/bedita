@@ -52,7 +52,7 @@ class System
      *
      * @return array Information on environment and datasource/cache connections
      */
-    public static function status()
+    public static function status(): array
     {
         $env = 'ok';
         $errors = [];
@@ -92,7 +92,7 @@ class System
      *   - 'success' true if check ok, false otherwise
      *   - 'message' array of error messages
      */
-    public static function checkPHP()
+    public static function checkPHP(): array
     {
         $success = true;
         $messages = [];
@@ -120,7 +120,7 @@ class System
      *   - 'success' true if check ok, false otherwise
      *   - 'message' array of error messages
      */
-    public static function checkFS()
+    public static function checkFS(): array
     {
         $success = true;
         $messages = [];
@@ -141,7 +141,7 @@ class System
      *
      * @return void
      */
-    protected static function loadRequirements()
+    protected static function loadRequirements(): void
     {
         if (!Configure::read('Requirements')) {
             Configure::load('BEdita/Core.requirements');

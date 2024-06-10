@@ -28,6 +28,7 @@ use Cake\Http\Exception\UnauthorizedException;
 use Cake\Http\ServerRequest;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Hash;
+use Exception;
 
 /**
  * {@see \BEdita\API\Middleware\ApplicationMiddleware} Test Case
@@ -306,7 +307,7 @@ class ApplicationMiddlewareTest extends TestCase
      */
     public function testSetAppFromApiKey($expected, ?string $apiKey, array $config = []): void
     {
-        if ($expected instanceof \Exception) {
+        if ($expected instanceof Exception) {
             $this->expectExceptionObject($expected);
         }
 

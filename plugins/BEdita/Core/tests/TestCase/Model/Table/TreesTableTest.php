@@ -24,6 +24,8 @@ use Cake\ORM\Association\HasMany;
 use Cake\ORM\Behavior\TreeBehavior;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
+use Exception;
+use RuntimeException;
 
 /**
  * BEdita\Core\Model\Table\TreesTable Test Case
@@ -281,7 +283,7 @@ class TreesTableTest extends TestCase
      */
     public function testMoveParentAsChild()
     {
-        $this->expectException(\RuntimeException::class);
+        $this->expectException(RuntimeException::class);
         // create new Folder
         LoggedUser::setUserAdmin();
         $Folders = TableRegistry::getTableLocator()->get('Folders');
@@ -339,7 +341,7 @@ class TreesTableTest extends TestCase
      */
     public function testDeleteOrphaned($expected, $objectId, $primary = true)
     {
-        if ($expected instanceof \Exception) {
+        if ($expected instanceof Exception) {
             $this->expectException(get_class($expected));
             $this->expectExceptionCode($expected->getCode());
             $this->expectExceptionMessage($expected->getMessage());
@@ -392,7 +394,7 @@ class TreesTableTest extends TestCase
      */
     public function testSetPosition($expected, $objectId, $position)
     {
-        if ($expected instanceof \Exception) {
+        if ($expected instanceof Exception) {
             $this->expectException(get_class($expected));
             $this->expectExceptionCode($expected->getCode());
             $this->expectExceptionMessage($expected->getMessage());
@@ -479,7 +481,7 @@ class TreesTableTest extends TestCase
      */
     public function testFindPathNodes($expected, array $options): void
     {
-        if ($expected instanceof \Exception) {
+        if ($expected instanceof Exception) {
             $this->expectException(get_class($expected));
             $this->expectExceptionCode($expected->getCode());
             $this->expectExceptionMessage($expected->getMessage());

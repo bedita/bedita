@@ -28,6 +28,8 @@ use Cake\ORM\Query;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Inflector;
+use Exception;
+use InvalidArgumentException;
 
 /**
  * @covers \BEdita\API\Model\Action\UpdateAssociatedAction
@@ -130,7 +132,7 @@ class UpdateAssociatedActionTest extends TestCase
                 ],
             ],
             'unsupportedMultipleEntities' => [
-                new \InvalidArgumentException(
+                new InvalidArgumentException(
                     'Unable to link multiple entities'
                 ),
                 'FakeArticles',
@@ -216,7 +218,7 @@ class UpdateAssociatedActionTest extends TestCase
      */
     public function testInvocation($expected, $table, $association, $id, $data)
     {
-        if ($expected instanceof \Exception) {
+        if ($expected instanceof Exception) {
             $this->expectException(get_class($expected));
             $this->expectExceptionMessage($expected->getMessage());
         }

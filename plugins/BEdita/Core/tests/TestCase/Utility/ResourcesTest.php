@@ -21,6 +21,7 @@ use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Hash;
 use Cake\Utility\Inflector;
+use Exception;
 
 /**
  * {@see \BEdita\Core\Utility\Resources} Test Case
@@ -599,7 +600,7 @@ class ResourcesTest extends TestCase
      * @covers ::saveType()
      * @dataProvider saveProvider
      */
-    public function testSave(array $resources, ?\Exception $exception = null): void
+    public function testSave(array $resources, ?Exception $exception = null): void
     {
         if ($exception) {
             $this->expectException(get_class($exception));

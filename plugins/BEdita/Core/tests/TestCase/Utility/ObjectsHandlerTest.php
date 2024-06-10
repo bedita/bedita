@@ -16,6 +16,9 @@ namespace BEdita\Core\Test\TestCase\Utility;
 
 use BEdita\Core\Utility\LoggedUser;
 use BEdita\Core\Utility\ObjectsHandler;
+use Cake\Console\Exception\StopException;
+use Cake\Datasource\Exception\RecordNotFoundException;
+use Cake\ORM\Exception\PersistenceFailedException;
 use Cake\TestSuite\TestCase;
 
 /**
@@ -109,7 +112,7 @@ class ObjectsHandlerTest extends TestCase
      */
     public function testSaveException()
     {
-        $this->expectException(\Cake\ORM\Exception\PersistenceFailedException::class);
+        $this->expectException(PersistenceFailedException::class);
         $data = [];
         ObjectsHandler::save('users', $data);
     }
@@ -151,7 +154,7 @@ class ObjectsHandlerTest extends TestCase
      */
     public function testDeleteException()
     {
-        $this->expectException(\Cake\Datasource\Exception\RecordNotFoundException::class);
+        $this->expectException(RecordNotFoundException::class);
         ObjectsHandler::remove(123456);
     }
 
@@ -163,7 +166,7 @@ class ObjectsHandlerTest extends TestCase
      */
     public function testEnvironment()
     {
-        $this->expectException(\Cake\Console\Exception\StopException::class);
+        $this->expectException(StopException::class);
         $this->expectExceptionMessage('Operation avilable only in CLI environment');
         $testClass = new class extends ObjectsHandler {
             protected static function isCli(): bool

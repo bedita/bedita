@@ -18,6 +18,8 @@ namespace BEdita\API\Test\TestCase\Error;
 use BEdita\API\Error\ErrorHandler;
 use Cake\Core\Configure;
 use Cake\TestSuite\TestCase;
+use Exception;
+use LogicException;
 
 /**
  * @coversDefaultClass \BEdita\API\Error\ErrorHandler
@@ -33,7 +35,7 @@ class ErrorHandlerTest extends TestCase
     {
         return [
             'simple' => [
-                new \LogicException(' [8192] Very bad coder!'),
+                new LogicException(' [8192] Very bad coder!'),
                 8192,
                 'Very bad coder!',
                 true,
@@ -56,7 +58,7 @@ class ErrorHandlerTest extends TestCase
      */
     public function testDisplayError($expected, $code, $description, $debug)
     {
-        if ($expected instanceof \Exception) {
+        if ($expected instanceof Exception) {
             $this->expectException(get_class($expected));
             $this->expectExceptionMessage($expected->getMessage());
         }

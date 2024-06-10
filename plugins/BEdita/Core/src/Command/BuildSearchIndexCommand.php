@@ -21,6 +21,7 @@ use Cake\Console\ConsoleOptionParser;
 use Cake\Database\Expression\QueryExpression;
 use Cake\Datasource\EntityInterface;
 use Cake\Utility\Hash;
+use Exception;
 
 /**
  * Build search index command.
@@ -98,7 +99,7 @@ class BuildSearchIndexCommand extends Command
                 try {
                     $indexed = $this->doIndexResource($entity, $adapters, $io);
                     $counter = $counter + $indexed;
-                } catch (\Exception $e) {
+                } catch (Exception $e) {
                     $io->error($e->getMessage());
 
                     return Command::CODE_ERROR;

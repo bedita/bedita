@@ -111,7 +111,7 @@ class User extends Profile
      * @param string|null $password Password to be hashed.
      * @return null
      */
-    protected function _setPassword(?string $password)
+    protected function _setPassword(?string $password): null
     {
         $this->password_hash = $password;
 

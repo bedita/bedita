@@ -17,7 +17,7 @@ namespace BEdita\Core\Model\Table;
 
 use BEdita\Core\Model\Validation\Validation;
 use Cake\Database\Schema\TableSchemaInterface;
-use Cake\ORM\Query;
+use Cake\ORM\Query\SelectQuery;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
@@ -110,10 +110,10 @@ class AuthProvidersTable extends Table
     /**
      * Finder to find all enabled providers or by name
      *
-     * @param \Cake\ORM\Query $query Query object.
-     * @return \Cake\ORM\Query
+     * @param \Cake\ORM\Query\SelectQuery $query Query object.
+     * @return \Cake\ORM\Query\SelectQuery
      */
-    protected function findEnabled(Query $query)
+    protected function findEnabled(SelectQuery $query): SelectQuery
     {
         return $query->where([
             $this->aliasField('enabled') => true,

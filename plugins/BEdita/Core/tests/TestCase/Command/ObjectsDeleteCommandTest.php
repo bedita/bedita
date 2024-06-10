@@ -18,6 +18,7 @@ namespace BEdita\Core\Test\TestCase\Command;
 use Cake\Console\TestSuite\ConsoleIntegrationTestTrait;
 use Cake\Event\EventManager;
 use Cake\TestSuite\TestCase;
+use Exception;
 
 /**
  * {@see BEdita\Core\Command\ObjectsDeleteCommand} Test Case
@@ -112,7 +113,7 @@ class ObjectsDeleteCommandTest extends TestCase
     public function testExecuteError(): void
     {
         $throwError = function () {
-            throw new \Exception('An error');
+            throw new Exception('An error');
         };
 
         // add listener to global event manager

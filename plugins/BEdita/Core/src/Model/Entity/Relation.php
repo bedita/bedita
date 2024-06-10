@@ -18,6 +18,7 @@ namespace BEdita\Core\Model\Entity;
 use BEdita\Core\Utility\JsonApiSerializable;
 use Cake\ORM\Entity;
 use Cake\Utility\Inflector;
+use stdClass;
 
 /**
  * Relation Entity
@@ -73,7 +74,7 @@ class Relation extends Entity implements JsonApiSerializable
      * @param string $name Relation name.
      * @return string
      */
-    protected function _setName($name)
+    protected function _setName(string $name): string
     {
         return Inflector::underscore($name);
     }
@@ -84,7 +85,7 @@ class Relation extends Entity implements JsonApiSerializable
      * @param string $inverseName Relation inverse name.
      * @return string
      */
-    protected function _setInverseName($inverseName)
+    protected function _setInverseName(string $inverseName): string
     {
         return Inflector::underscore($inverseName);
     }
@@ -94,7 +95,7 @@ class Relation extends Entity implements JsonApiSerializable
      *
      * @return string
      */
-    protected function _getAlias()
+    protected function _getAlias(): string
     {
         return Inflector::camelize($this->name);
     }
@@ -104,7 +105,7 @@ class Relation extends Entity implements JsonApiSerializable
      *
      * @return string
      */
-    protected function _getInverseAlias()
+    protected function _getInverseAlias(): string
     {
         return Inflector::camelize($this->inverse_name);
     }
@@ -115,11 +116,11 @@ class Relation extends Entity implements JsonApiSerializable
      * @param array $params Relation params.
      * @return array
      */
-    protected function _setParams($params)
+    protected function _setParams(array $params): array
     {
         if (is_array($params) && !empty($params)) {
             $params = array_merge([
-                'definitions' => new \stdClass(),
+                'definitions' => new stdClass(),
                 '$schema' => self::DEFAULT_SCHEMA,
                 'type' => 'object',
             ], $params);

@@ -20,6 +20,7 @@ use Cake\Core\Configure\Engine\PhpConfig;
 use Cake\Utility\Hash;
 use Cake\Validation\Validation as CakeValidation;
 use DateTimeInterface;
+use Exception;
 use Swaggest\JsonSchema\Schema;
 
 /**
@@ -54,16 +55,16 @@ class Validation
     /**
      * The list of reserved names
      *
-     * @var string[]|null
+     * @var array<string>|null
      */
-    protected static $reserved = null;
+    protected static ?array $reserved = null;
 
     /**
      * Load list of reserved names in `$reserved`
      *
-     * @return string[]
+     * @return array<string>
      */
-    public static function reservedWords()
+    public static function reservedWords(): array
     {
         if (static::$reserved === null) {
             static::$reserved = (new PhpConfig())->read('BEdita/Core.reserved');
@@ -78,7 +79,7 @@ class Validation
      * @param mixed $value Value to check
      * @return bool
      */
-    public static function notReserved($value)
+    public static function notReserved(mixed $value): bool
     {
         if ($value && in_array($value, static::reservedWords())) {
             return false;
@@ -93,7 +94,7 @@ class Validation
      * @param mixed $value Value to check
      * @return bool
      */
-    public static function requireNull($value)
+    public static function requireNull(mixed $value): bool
     {
         return $value === null;
     }
@@ -104,7 +105,7 @@ class Validation
      * @param string $value The url to check
      * @return bool
      */
-    public static function url($value)
+    public static function url(string $value): bool
     {
         // check for a valid scheme (https://, myapp://,...)
         $regex = '/(?<scheme>^[a-z][a-z0-9+\-.]*:\/\/).*/';
@@ -125,9 +126,9 @@ class Validation
      *
      * @param mixed $value Value being validated.
      * @param mixed $schema Schema to validate against.
-     * @return true|string
+     * @return string|true
      */
-    public static function jsonSchema($value, $schema)
+    public static function jsonSchema(mixed $value, mixed $schema): bool|string
     {
         if (empty($schema)) {
             return true;
@@ -138,7 +139,7 @@ class Validation
             $schema->in(json_decode(json_encode($value)));
 
             return true;
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return $e->getMessage();
         }
     }
@@ -147,9 +148,9 @@ class Validation
      * Validate language tag using `I18n` configuration.
      *
      * @param string $tag Language tag
-     * @return true|string
+     * @return string|true
      */
-    public static function languageTag($tag)
+    public static function languageTag(string $tag): bool|string
     {
         $languages = Hash::normalize((array)Configure::read('I18n.languages'));
         if (!empty($languages)) {
@@ -183,9 +184,9 @@ class Validation
      * Also timestamp as integer are accepted.
      *
      * @param mixed $value Date or datetime value
-     * @return true|string
+     * @return string|true
      */
-    public static function dateTime($value)
+    public static function dateTime(mixed $value): bool|string
     {
         if ($value instanceof DateTimeInterface) {
             return true;

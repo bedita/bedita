@@ -73,7 +73,7 @@ class SetupAdminUserTask extends Shell /* @phpstan-ignore-line */
      *
      * @return void
      */
-    public function main()
+    public function main(): void
     {
         $this->Users = $this->fetchTable('Users');
 

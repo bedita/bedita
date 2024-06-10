@@ -15,6 +15,7 @@ declare(strict_types=1);
 
 namespace BEdita\Core\Filesystem\Thumbnail;
 
+use BEdita\Core\Filesystem\GeneratorInterface;
 use BEdita\Core\Filesystem\Thumbnail;
 use BEdita\Core\Filesystem\ThumbnailGenerator;
 use BEdita\Core\Model\Entity\Stream;
@@ -41,7 +42,7 @@ class AsyncGenerator extends ThumbnailGenerator
      *
      * @return \BEdita\Core\Filesystem\GeneratorInterface
      */
-    protected function getBaseGenerator()
+    protected function getBaseGenerator(): GeneratorInterface
     {
         return Thumbnail::getGenerator($this->getConfig('baseGenerator'));
     }

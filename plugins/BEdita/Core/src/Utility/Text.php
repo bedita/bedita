@@ -16,6 +16,7 @@ declare(strict_types=1);
 namespace BEdita\Core\Utility;
 
 use Cake\Utility\Text as CakeText;
+use LogicException;
 
 /**
  * Text handling utilities.
@@ -69,11 +70,11 @@ class Text extends CakeText
      * @return string
      * @copyright Matt Farina MIT License https://github.com/lootils/uuid/blob/master/LICENSE
      */
-    protected static function uuidToBin($uuid)
+    protected static function uuidToBin(string $uuid): string
     {
         static $pattern = '/^\{?[0-9a-f]{8}\-?[0-9a-f]{4}\-?[0-9a-f]{4}\-?[0-9a-f]{4}\-?[0-9a-f]{12}\}?$/i';
         if (preg_match($pattern, $uuid) !== 1) {
-            throw new \LogicException(__d('bedita', 'The UUID provided for the namespace is not valid.'));
+            throw new LogicException(__d('bedita', 'The UUID provided for the namespace is not valid.'));
         }
 
         // Get hexadecimal components of namespace
@@ -98,7 +99,7 @@ class Text extends CakeText
      * @see https://www.ietf.org/rfc/rfc4122.txt
      * @copyright Matt Farina MIT License https://github.com/lootils/uuid/blob/master/LICENSE
      */
-    public static function uuid5($name, $namespace = self::UUID_NIL)
+    public static function uuid5(string $name, string $namespace = self::UUID_NIL): string
     {
         $bin = static::uuidToBin($namespace);
 

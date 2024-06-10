@@ -18,6 +18,7 @@ namespace BEdita\Core\Test\TestCase\State;
 use BEdita\Core\State\CurrentApplication;
 use Cake\Cache\Cache;
 use Cake\Core\Configure;
+use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
@@ -178,7 +179,7 @@ class CurrentApplicationTest extends TestCase
      */
     public function testSetFromApiKeyFailure()
     {
-        $this->expectException(\Cake\Datasource\Exception\RecordNotFoundException::class);
+        $this->expectException(RecordNotFoundException::class);
         CurrentApplication::setFromApiKey('INVALID_API_KEY');
     }
 }

@@ -76,7 +76,7 @@ class InitSchemaTask extends Shell /* @phpstan-ignore-line */
      * @return void
      * @codeCoverageIgnore
      */
-    public function main()
+    public function main(): void
     {
         $connection = ConnectionManager::get($this->param('connection'));
 
@@ -94,7 +94,7 @@ class InitSchemaTask extends Shell /* @phpstan-ignore-line */
      * @return void
      * @codeCoverageIgnore
      */
-    protected function cleanup(ConnectionInterface $connection)
+    protected function cleanup(ConnectionInterface $connection): void
     {
         if (!($connection instanceof Connection) || count($connection->getSchemaCollection()->listTables()) === 0) {
             return;
@@ -114,7 +114,7 @@ class InitSchemaTask extends Shell /* @phpstan-ignore-line */
 
         $this->out('Dropping all tables in database...');
         $connection
-            ->transactional(function (Connection $connection) {
+            ->transactional(function (Connection $connection): void {
                 $tables = $connection->getSchemaCollection()->listTables();
 
                 foreach ($tables as $table) {
@@ -147,11 +147,11 @@ class InitSchemaTask extends Shell /* @phpstan-ignore-line */
      * @return void
      * @codeCoverageIgnore
      */
-    protected function migrate(ConnectionInterface $connection)
+    protected function migrate(ConnectionInterface $connection): void
     {
         $this->out('Running migrations... ', 0);
 
-        $connection->transactional(function (Connection $connection) {
+        $connection->transactional(function (Connection $connection): void {
             $migrations = new Migrations([
                 'connection' => $connection->configName(),
                 'plugin' => 'BEdita/Core',
@@ -173,7 +173,7 @@ class InitSchemaTask extends Shell /* @phpstan-ignore-line */
      * @return void
      * @codeCoverageIgnore
      */
-    protected function seed(ConnectionInterface $connection)
+    protected function seed(ConnectionInterface $connection): void
     {
         if ($this->param('no-seed')) {
             $this->params['seed'] = false;
@@ -186,7 +186,7 @@ class InitSchemaTask extends Shell /* @phpstan-ignore-line */
         }
 
         $this->out('Seeding data... ', 0);
-        $connection->transactional(function (Connection $connection) {
+        $connection->transactional(function (Connection $connection): void {
             $migrations = new Migrations([
                 'connection' => $connection->configName(),
                 'plugin' => 'BEdita/Core',

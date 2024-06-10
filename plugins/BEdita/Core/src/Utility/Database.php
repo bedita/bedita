@@ -17,6 +17,7 @@ namespace BEdita\Core\Utility;
 
 use Cake\Database\Connection;
 use Cake\Datasource\ConnectionManager;
+use Exception;
 
 /**
  * Database utilities class
@@ -34,7 +35,7 @@ class Database
      * @return array containing complete schema information, table names as keys
      *     and details on columns, indexes and constraints for every table
      */
-    public static function currentSchema($dbConfig = 'default')
+    public static function currentSchema(string $dbConfig = 'default'): array
     {
         $schema = [];
         $connection = ConnectionManager::get($dbConfig);
@@ -75,7 +76,7 @@ class Database
      * @param array $current Current db schema from DbUtils::currentSchema()
      * @return array containing information on differences found
      */
-    public static function schemaCompare(array $expected, array $current)
+    public static function schemaCompare(array $expected, array $current): array
     {
         $diff = [];
         foreach ($expected as $table => $tableMeta) {
@@ -116,10 +117,9 @@ class Database
      * @param array $expItems Expected items data
      * @param array $currItems Current items data
      * @param array $diff Difference array
-     *
      * @return void
      */
-    protected static function compareSchemaItems($table, $itemType, array $expItems, array $currItems, array &$diff)
+    protected static function compareSchemaItems(string $table, string $itemType, array $expItems, array $currItems, array &$diff): void
     {
         foreach ($expItems as $key => $data) {
             if (empty($currItems[$key])) {
@@ -145,7 +145,7 @@ class Database
      * @return array containing requested configuration
      *          + 'vendor' key (mysql, sqlite, postgres,...)
      */
-    public static function basicInfo($dbConfig = 'default', $version = true)
+    public static function basicInfo(string $dbConfig = 'default', bool $version = true): array
     {
         $connection = ConnectionManager::get($dbConfig);
         $config = $connection->config();
@@ -166,7 +166,7 @@ class Database
      * @return bool True on match success, false otherwise
      * @deprecated Will be dropped in a future release, not to be used anymore
      */
-    public static function supportedVersion($options)
+    public static function supportedVersion(array $options): bool
     {
         $info = static::basicInfo();
         if ($options['vendor'] !== $info['vendor']) {
@@ -185,13 +185,13 @@ class Database
      * @param string $dbConfig input database configuration ('default' as default)
      * @return array containing keys: 'success' (boolean), 'error' (string with error message)
      */
-    public static function connectionTest($dbConfig = 'default')
+    public static function connectionTest(string $dbConfig = 'default'): array
     {
         $res = ['success' => false, 'error' => ''];
         try {
             $connection = ConnectionManager::get($dbConfig);
             $res['success'] = $connection->getDriver()->connect();
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $res['error'] = $e->getMessage();
         }
 
@@ -204,7 +204,7 @@ class Database
      * @param string $sql SQL to be split.
      * @return array
      */
-    protected static function splitSqlQueries($sql)
+    protected static function splitSqlQueries(string $sql): array
     {
         $lines = explode(PHP_EOL, $sql);
         $queries = [];
@@ -228,14 +228,14 @@ class Database
      * Executes SQL query using transactions.
      * Returns an array providing information on SQL query results
      *
-     * @param string|string[] $sql      SQL query to execute.
+     * @param array<string>|string $sql SQL query to execute.
      * @param string $dbConfig Database config to use ('default' as default)
      * @return array containing keys: 'success' (boolean), 'error' (string with error message),
      *      'rowCount' (number of affected rows), 'queryCount' (number of queries executed)
      * @throws \Cake\Datasource\Exception\MissingDatasourceConfigException Throws an exception
      *      if the requested `$dbConfig` does not exist.
      */
-    public static function executeTransaction($sql, $dbConfig = 'default')
+    public static function executeTransaction(string|array $sql, string $dbConfig = 'default'): array
     {
         $res = [];
         try {
@@ -277,7 +277,7 @@ class Database
                     'success' => true,
                 ];
             });
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $res['error'] = $e->getMessage();
         }
 

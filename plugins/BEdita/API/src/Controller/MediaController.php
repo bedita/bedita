@@ -31,9 +31,9 @@ class MediaController extends ObjectsController
     /**
      * Get and validate IDs in request URL.
      *
-     * @return int[]
+     * @return array<int>
      */
-    protected function getIds()
+    protected function getIds(): array
     {
         $id = $this->request->getParam('id');
         $ids = $this->request->getQuery('ids');
@@ -94,7 +94,7 @@ class MediaController extends ObjectsController
      *
      * @return void
      */
-    public function thumbs()
+    public function thumbs(): void
     {
         $this->request->allowMethod(['get']);
 

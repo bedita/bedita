@@ -25,6 +25,7 @@ use Cake\Http\Exception\ForbiddenException;
 use Cake\Http\Exception\UnauthorizedException;
 use Cake\ORM\Locator\LocatorAwareTrait;
 use Cake\Utility\Hash;
+use Exception;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
@@ -43,7 +44,7 @@ class ApplicationMiddleware implements MiddlewareInterface
      *
      * @var array
      */
-    protected $_defaultConfig = [
+    protected array $_defaultConfig = [
         'apiKey' => [
             'header' => 'X-Api-Key',
             'query' => 'api_key',
@@ -102,7 +103,7 @@ class ApplicationMiddleware implements MiddlewareInterface
         $provider = new JwtAuthenticator(new JwtSubjectIdentifier());
         try {
             return $provider->getPayload($request);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return null;
         }
     }

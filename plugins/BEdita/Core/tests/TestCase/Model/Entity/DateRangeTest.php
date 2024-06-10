@@ -19,6 +19,8 @@ use BEdita\Core\Model\Entity\DateRange;
 use Cake\I18n\DateTime;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
+use Exception;
+use LogicException;
 
 /**
  * @coversDefaultClass \BEdita\Core\Model\Entity\DateRange
@@ -662,21 +664,21 @@ class DateRangeTest extends TestCase
     {
         return [
             'not a date range' => [
-                new \LogicException('Invalid Date Range entity class: expected "BEdita\Core\Model\Entity\DateRange", got "resource"'),
+                new LogicException('Invalid Date Range entity class: expected "BEdita\Core\Model\Entity\DateRange", got "resource"'),
                 [
                     fopen(__FILE__, 'r'),
                 ],
                 false,
             ],
             'not a date range /2' => [
-                new \LogicException('Invalid Date Range entity class: expected "BEdita\Core\Model\Entity\DateRange", got "Cake\ORM\TableRegistry"'),
+                new LogicException('Invalid Date Range entity class: expected "BEdita\Core\Model\Entity\DateRange", got "Cake\ORM\TableRegistry"'),
                 [
                     new TableRegistry(),
                 ],
                 false,
             ],
             'invalid start date' => [
-                new \LogicException('Invalid "start_date": expected "DateTimeInterface", got "NULL"'),
+                new LogicException('Invalid "start_date": expected "DateTimeInterface", got "NULL"'),
                 [
                     [
                         'start_date' => null,
@@ -685,7 +687,7 @@ class DateRangeTest extends TestCase
                 ],
             ],
             'invalid end date' => [
-                new \LogicException('Invalid "end_date": expected "DateTimeInterface", got "string"'),
+                new LogicException('Invalid "end_date": expected "DateTimeInterface", got "string"'),
                 [
                     new DateRange([
                         'start_date' => new DateTime(),
@@ -718,7 +720,7 @@ class DateRangeTest extends TestCase
      */
     public function testCheckWellFormed($expected, array $dateRanges, $marshal = true)
     {
-        if ($expected instanceof \Exception) {
+        if ($expected instanceof Exception) {
             $this->expectException(get_class($expected));
             $this->expectExceptionMessage($expected->getMessage());
         }

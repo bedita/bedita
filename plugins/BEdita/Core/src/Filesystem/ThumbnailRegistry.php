@@ -15,8 +15,10 @@ declare(strict_types=1);
 
 namespace BEdita\Core\Filesystem;
 
+use BadMethodCallException;
 use Cake\Core\App;
 use Cake\Core\ObjectRegistry;
+use RuntimeException;
 
 /**
  * Registry for thumbnail generators.
@@ -44,15 +46,15 @@ class ThumbnailRegistry extends ObjectRegistry
      */
     protected function _throwMissingClassError(string $class, ?string $plugin): void
     {
-        throw new \BadMethodCallException(sprintf('Thumbnail generator %s is not available.', $class));
+        throw new BadMethodCallException(sprintf('Thumbnail generator %s is not available.', $class));
     }
 
     /**
      * {@inheritDoc}
      *
-     * @param string|object $class The class to build.
+     * @param object|string $class The class to build.
      */
-    protected function _create($class, $alias, $config)
+    protected function _create(object|string $class, string $alias, array $config): object
     {
         $instance = null;
         if (is_object($class)) {
@@ -65,13 +67,13 @@ class ThumbnailRegistry extends ObjectRegistry
         }
 
         if (!($instance instanceof ThumbnailGenerator)) {
-            throw new \RuntimeException(
+            throw new RuntimeException(
                 sprintf('Thumbnail generators must use %s as a base class.', ThumbnailGenerator::class)
             );
         }
 
         if (!$instance->initialize($config)) {
-            throw new \RuntimeException(
+            throw new RuntimeException(
                 sprintf('Thumbnail generator %s is not properly configured.', get_class($instance))
             );
         }

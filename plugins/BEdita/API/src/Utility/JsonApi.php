@@ -23,6 +23,7 @@ use Cake\Http\Exception\NotFoundException;
 use Cake\ORM\Query;
 use Cake\Routing\Router;
 use Cake\Utility\Hash;
+use InvalidArgumentException;
 
 /**
  * JSON API formatter API.
@@ -38,7 +39,7 @@ class JsonApi
      * - `beforeFormatData` dispatched before the formatting of `$items`
      * - `afterFormatData` dispatched after the formatting of `$items`
      *
-     * @param \BEdita\Core\Utility\JsonApiSerializable|\BEdita\Core\Utility\JsonApiSerializable[]|null $items Items to be formatted.
+     * @param \BEdita\Core\Utility\JsonApiSerializable|array<\BEdita\Core\Utility\JsonApiSerializable>|null $items Items to be formatted.
      * @param int $options Serializer options.
      * @param array $fields Selected fields to view in `attributes` and `meta`, if empty (default) all fields are serialized
      * @param array $included Array to be populated with included resources.
@@ -46,7 +47,7 @@ class JsonApi
      * @throws \InvalidArgumentException Throws an exception if `$item` could not be converted to array, or
      *      if required key `id` is unset or empty.
      */
-    public static function formatData($items, $options = 0, array $fields = [], array &$included = [])
+    public static function formatData(JsonApiSerializable|array|null $items, int $options = 0, array $fields = [], array &$included = []): array
     {
         if ($items instanceof Query) {
             $items = $items->all()->toList();
@@ -74,7 +75,7 @@ class JsonApi
         $data = $types = [];
         foreach ($items as $item) {
             if (!$item instanceof JsonApiSerializable) {
-                throw new \InvalidArgumentException(sprintf(
+                throw new InvalidArgumentException(sprintf(
                     'Objects must implement "%s", got "%s" instead',
                     JsonApiSerializable::class,
                     is_object($item) ? get_class($item) : gettype($item)
@@ -117,7 +118,7 @@ class JsonApi
      * @param array $data Data dispatched with the event
      * @return mixed
      */
-    protected static function dispatchEvent(string $eventName, array $data)
+    protected static function dispatchEvent(string $eventName, array $data): mixed
     {
         $event = new Event($eventName, null, compact('data'));
         EventManager::instance()->dispatch($event);
@@ -134,7 +135,7 @@ class JsonApi
      * @param array $types Type names array
      * @return array
      */
-    protected static function metaSchema($types)
+    protected static function metaSchema(array $types): array
     {
         $schema = [];
         foreach ($types as $type) {
@@ -153,7 +154,7 @@ class JsonApi
      * @param string $type Type name
      * @return array|null Schema info array or null if no suitable schema is found
      */
-    public static function schemaInfo($type)
+    public static function schemaInfo(string $type): ?array
     {
         try {
             $revision = JsonSchema::schemaRevision($type);
@@ -180,7 +181,7 @@ class JsonApi
      * @return array
      * @throws \InvalidArgumentException Throws an exception if one of required keys `id` and `type` is unset or empty.
      */
-    public static function parseData(array $data)
+    public static function parseData(array $data): array
     {
         if (empty($data)) {
             return [];
@@ -205,10 +206,10 @@ class JsonApi
      * @return array
      * @throws \InvalidArgumentException Throws an exception if one of required keys `id` and `type` is unset or empty.
      */
-    protected static function parseItem(array $item)
+    protected static function parseItem(array $item): array
     {
         if (empty($item['type'])) {
-            throw new \InvalidArgumentException('Key `type` is mandatory');
+            throw new InvalidArgumentException('Key `type` is mandatory');
         }
 
         $data = [

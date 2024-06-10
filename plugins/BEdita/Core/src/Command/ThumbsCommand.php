@@ -23,6 +23,8 @@ use Cake\Console\ConsoleOptionParser;
 use Cake\Core\Configure;
 use Cake\Database\Expression\QueryExpression;
 use Cake\I18n\DateTime;
+use Exception;
+use Generator;
 
 /**
  * Command to update/create thumbnails for all images.
@@ -85,7 +87,7 @@ class ThumbsCommand extends Command
                 $handler->updateThumbs($image, $stream, $presets);
                 $io->verbose('<success>DONE</success>');
                 $success++;
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 $io->verbose('<error>FAIL</error>');
                 $failed++;
             }
@@ -102,7 +104,7 @@ class ThumbsCommand extends Command
     /**
      * Retrieve thumbnail presets without 'async' generators
      *
-     * @return string[]
+     * @return array<string>
      */
     protected static function availablePresets(): array
     {
@@ -112,11 +114,11 @@ class ThumbsCommand extends Command
     /**
      * Iterate through all images.
      *
-     * @param string[] $ids IDs to filter by.
+     * @param array<string> $ids IDs to filter by.
      * @param int|null $startAt ID to start with, for resuming an interrupted operation.
      * @return \Generator<\BEdita\Core\Model\Entity\Media>
      */
-    protected function imagesIterator(array $ids, ?int $startAt): \Generator
+    protected function imagesIterator(array $ids, ?int $startAt): Generator
     {
         $table = $this->fetchTable('Images');
         $id = $startAt ?? 0;

@@ -27,6 +27,7 @@ use BEdita\Core\Model\Action\SetRelatedObjectsAction;
 use BEdita\Core\Model\Entity\ObjectType;
 use BEdita\Core\Model\Table\ObjectsTable;
 use BEdita\Core\Model\Table\RolesTable;
+use Cake\Collection\CollectionInterface;
 use Cake\Datasource\EntityInterface;
 use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\Event\EventInterface;
@@ -59,9 +60,9 @@ class ObjectsController extends ResourcesController
     /**
      * The referred object type entity filled when `object_type` request param is set and valid
      *
-     * @var \BEdita\Core\Model\Entity\ObjectType
+     * @var \BEdita\Core\Model\Entity\ObjectType|null
      */
-    protected $objectType = null;
+    protected ?ObjectType $objectType = null;
 
     /**
      * @inheritDoc
@@ -124,7 +125,7 @@ class ObjectsController extends ResourcesController
      * @return void
      * @throws \Cake\Routing\Exception\MissingRouteException If `object_type` param is not valid
      */
-    protected function initObjectModel()
+    protected function initObjectModel(): void
     {
         $type = $this->request->getParam('object_type', Inflector::underscore((string)$this->request->getParam('controller')));
         try {
@@ -491,7 +492,7 @@ class ObjectsController extends ResourcesController
      * @param string $relationship relation name
      * @return string|null
      */
-    protected function getAvailableUrl($relationship)
+    protected function getAvailableUrl(string $relationship): ?string
     {
         $available = parent::getAvailableUrl($relationship);
         if ($available !== null) {
@@ -521,7 +522,7 @@ class ObjectsController extends ResourcesController
      * @param string $relationship relation name
      * @return array List of available types
      */
-    protected function getAvailableTypes($relationship)
+    protected function getAvailableTypes(string $relationship): array
     {
         foreach ($this->objectType->getRelations('right') as $relation) {
             if ($relation->inverse_name !== $relationship) {
@@ -544,10 +545,10 @@ class ObjectsController extends ResourcesController
     /**
      * Add count data to the entities when query string `count` is present.
      *
-     * @param array|\Cake\Collection\CollectionInterface $entities List of entities
+     * @param \Cake\Collection\CollectionInterface|array $entities List of entities
      * @return void
      */
-    protected function addCount($entities): void
+    protected function addCount(array|CollectionInterface $entities): void
     {
         $count = $this->request->getQuery('count');
         if (empty($count)) {

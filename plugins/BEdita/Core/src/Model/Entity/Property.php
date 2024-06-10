@@ -24,6 +24,7 @@ use Cake\ORM\Entity;
 use Cake\ORM\TableRegistry;
 use Cake\Utility\Hash;
 use Cake\Utility\Inflector;
+use stdClass;
 
 /**
  * Property Entity.
@@ -93,7 +94,7 @@ class Property extends Entity implements JsonApiSerializable
      *
      * @return \BEdita\Core\Model\Entity\PropertyType|null
      */
-    protected function _getPropertyType()
+    protected function _getPropertyType(): ?PropertyType
     {
         if (array_key_exists('property_type', $this->_fields)) {
             return $this->_fields['property_type'];
@@ -116,7 +117,7 @@ class Property extends Entity implements JsonApiSerializable
      *
      * @return string
      */
-    protected function _getPropertyTypeName()
+    protected function _getPropertyTypeName(): string
     {
         if (!$this->property_type) {
             return null;
@@ -131,9 +132,9 @@ class Property extends Entity implements JsonApiSerializable
      * @param string $propertyType Property type name.
      * @return string
      */
-    protected function _setPropertyTypeName($propertyType)
+    protected function _setPropertyTypeName(string $propertyType): string
     {
-        /** @var \BEdita\Core\Model\Entity\PropertyType[] $propertyTypes */
+        /** @var array<\BEdita\Core\Model\Entity\PropertyType> $propertyTypes */
         $propertyTypes = Cache::remember(
             'property_types',
             function () {
@@ -164,7 +165,7 @@ class Property extends Entity implements JsonApiSerializable
      *
      * @return bool
      */
-    protected function _getRequired()
+    protected function _getRequired(): bool
     {
         return !$this->is_nullable;
     }
@@ -199,7 +200,7 @@ class Property extends Entity implements JsonApiSerializable
      * @param string|null $accessMode Access mode (either `"readOnly"` or `"writeOnly"`, or `null` for read-write access).
      * @return mixed
      */
-    public function getSchema($accessMode = null)
+    public function getSchema(?string $accessMode = null): mixed
     {
         if (!$this->property_type) {
             // Missing property type. Validation party: anything is allowed.
@@ -219,7 +220,7 @@ class Property extends Entity implements JsonApiSerializable
                     [
                         'type' => 'null',
                     ],
-                    empty($schema) ? new \stdClass() : $schema,
+                    empty($schema) ? new stdClass() : $schema,
                 ],
             ];
         }

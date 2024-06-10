@@ -16,6 +16,7 @@ namespace BEdita\API\Controller;
 
 use BEdita\Core\Utility\System;
 use Cake\Core\Configure;
+use Cake\Http\Response;
 
 /**
  * Controller for `/status` endpoint.
@@ -46,7 +47,7 @@ class StatusController extends AppController
      *
      * @return \Cake\Http\Response|null
      */
-    public function index()
+    public function index(): ?Response
     {
         $this->request->allowMethod(['get', 'head']);
 

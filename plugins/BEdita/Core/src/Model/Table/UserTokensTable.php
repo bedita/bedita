@@ -18,7 +18,7 @@ namespace BEdita\Core\Model\Table;
 use Cake\Core\Configure;
 use Cake\Database\Expression\QueryExpression;
 use Cake\I18n\DateTime;
-use Cake\ORM\Query;
+use Cake\ORM\Query\SelectQuery;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
@@ -135,7 +135,7 @@ class UserTokensTable extends Table
      *
      * @return array
      */
-    public function getTokenTypes()
+    public function getTokenTypes(): array
     {
         $confTypes = (array)Configure::read('UserTokens.types');
 
@@ -145,10 +145,10 @@ class UserTokensTable extends Table
     /**
      * Finder for valid tokens: tokens not expired and not used
      *
-     * @param \Cake\ORM\Query $query Query object instance.
-     * @return \Cake\ORM\Query
+     * @param \Cake\ORM\Query\SelectQuery $query Query object instance.
+     * @return \Cake\ORM\Query\SelectQuery
      */
-    protected function findValid(Query $query)
+    protected function findValid(SelectQuery $query): SelectQuery
     {
         $now = DateTime::now();
 

@@ -65,7 +65,7 @@ class TreeBehavior extends CakeTreeBehavior
      * @param \Cake\Datasource\EntityInterface $node Node to get position for.
      * @return int
      */
-    public function getCurrentPosition(EntityInterface $node)
+    public function getCurrentPosition(EntityInterface $node): int
     {
         return $this->_scope($this->table()->find())
             ->where(function (QueryExpression $exp) use ($node) {
@@ -88,11 +88,11 @@ class TreeBehavior extends CakeTreeBehavior
      * Move a node at a specific position without changing the parent.
      *
      * @param \Cake\Datasource\EntityInterface $node Node to be moved.
-     * @param int|string $position New position. Can be either an integer, or a string (`'first'` or `'last'`).
+     * @param string|int $position New position. Can be either an integer, or a string (`'first'` or `'last'`).
      *      Negative integers are interpreted as number of positions from the end of the list. 0 (zero) is not allowed.
      * @return \Cake\Datasource\EntityInterface|false
      */
-    public function moveAt(EntityInterface $node, $position)
+    public function moveAt(EntityInterface $node, int|string $position): EntityInterface|false
     {
         return $this->table()->getConnection()->transactional(function () use ($node, $position) {
             $position = static::validatePosition($position);
@@ -145,10 +145,10 @@ class TreeBehavior extends CakeTreeBehavior
     /**
      * Validate a position.
      *
-     * @param int|string $position Position to be validated.
+     * @param string|int $position Position to be validated.
      * @return int|false
      */
-    protected static function validatePosition($position)
+    protected static function validatePosition(int|string $position): int|false
     {
         if ($position === 'first') {
             return 1;
@@ -180,7 +180,7 @@ class TreeBehavior extends CakeTreeBehavior
     /**
      * Run queries to check tree integrity.
      *
-     * @return string[]
+     * @return array<string>
      */
     public function checkIntegrity(): array
     {

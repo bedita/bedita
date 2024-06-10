@@ -17,6 +17,7 @@ namespace BEdita\Core\Model\Behavior;
 
 use BEdita\Core\Exception\BadFilterException;
 use BEdita\Core\Model\Entity\ObjectEntity;
+use BEdita\Core\Model\Entity\ObjectType;
 use BEdita\Core\Model\Validation\Validation;
 use Cake\Collection\CollectionInterface;
 use Cake\Database\Driver\Mysql;
@@ -59,9 +60,9 @@ class CustomPropertiesBehavior extends Behavior
      * The custom properties available.
      * It is an array with properties name as key and Property entity as value
      *
-     * @var array
+     * @var array|null
      */
-    protected $available = null;
+    protected ?array $available = null;
 
     /**
      * @inheritDoc
@@ -82,7 +83,7 @@ class CustomPropertiesBehavior extends Behavior
      * @param array $args Method arguments.
      * @return \BEdita\Core\Model\Entity\ObjectType
      */
-    protected function objectType(...$args)
+    protected function objectType(array ...$args): ObjectType
     {
         return $this->table()->behaviors()->call('objectType', $args);
     }
@@ -90,9 +91,9 @@ class CustomPropertiesBehavior extends Behavior
     /**
      * Get available properties for object type
      *
-     * @return \BEdita\Core\Model\Entity\Property[]
+     * @return array<\BEdita\Core\Model\Entity\Property>
      */
-    public function getAvailable()
+    public function getAvailable(): array
     {
         if ($this->available !== null) {
             return $this->available;
@@ -119,7 +120,7 @@ class CustomPropertiesBehavior extends Behavior
      *
      * @return array
      */
-    public function getDefaultValues()
+    public function getDefaultValues(): array
     {
         return array_fill_keys(array_keys($this->getAvailable()), null);
     }
@@ -150,7 +151,7 @@ class CustomPropertiesBehavior extends Behavior
      * @param \Cake\Datasource\EntityInterface $entity Entity.
      * @return false|void
      */
-    public function beforeSave(EventInterface $event, EntityInterface $entity)
+    public function beforeSave(EventInterface $event, EntityInterface $entity): ?false
     {
         $this->demoteProperties($entity);
         if ($entity->hasErrors()) {
@@ -165,7 +166,7 @@ class CustomPropertiesBehavior extends Behavior
      * @param \Cake\Datasource\EntityInterface|array $entity The entity or the array to work on
      * @return \Cake\Datasource\EntityInterface|array
      */
-    protected function promoteProperties($entity)
+    protected function promoteProperties(EntityInterface|array $entity): EntityInterface|array
     {
         $field = $this->getConfig('field');
         if ((!is_array($entity) && !($entity instanceof EntityInterface)) || !$this->isFieldSet($entity, $field)) {
@@ -194,7 +195,7 @@ class CustomPropertiesBehavior extends Behavior
      * @param array $customProps Custom properties array
      * @return \Cake\Datasource\EntityInterface|array
      */
-    protected function setupCustomProps($entity, array $customProps)
+    protected function setupCustomProps(EntityInterface|array $entity, array $customProps): EntityInterface|array
     {
         if (is_array($entity)) {
             return array_merge($entity, $customProps);
@@ -255,7 +256,7 @@ class CustomPropertiesBehavior extends Behavior
      * @param array $schema Property JSON Schema
      * @return mixed
      */
-    protected function formatValue($value, array $schema)
+    protected function formatValue(mixed $value, array $schema): mixed
     {
         if ($value === null) {
             return null;
@@ -290,7 +291,7 @@ class CustomPropertiesBehavior extends Behavior
      * @param string $field The field being looked for.
      * @return bool
      */
-    protected function isFieldSet($entity, $field): bool
+    protected function isFieldSet(EntityInterface|array $entity, string $field): bool
     {
         if ($entity instanceof ObjectEntity) {
             return $entity->hasProperty($field);

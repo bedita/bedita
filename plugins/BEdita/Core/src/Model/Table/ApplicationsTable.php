@@ -15,13 +15,14 @@ declare(strict_types=1);
 
 namespace BEdita\Core\Model\Table;
 
+use BadMethodCallException;
 use BEdita\Core\Exception\ImmutableResourceException;
 use BEdita\Core\Search\SimpleSearchTrait;
 use BEdita\Core\State\CurrentApplication;
 use Cake\Database\Expression\QueryExpression;
 use Cake\Datasource\EntityInterface;
 use Cake\Event\EventInterface;
-use Cake\ORM\Query;
+use Cake\ORM\Query\SelectQuery;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Utility\Hash;
@@ -127,7 +128,7 @@ class ApplicationsTable extends Table
      * @return void
      * @throws \BEdita\Core\Exception\ImmutableResourceException if entity is not disableable
      */
-    public function beforeSave(EventInterface $event, EntityInterface $entity)
+    public function beforeSave(EventInterface $event, EntityInterface $entity): void
     {
         if (
             !$entity->isNew() && $entity->get('enabled') == false &&
@@ -146,7 +147,7 @@ class ApplicationsTable extends Table
      *
      * @return string
      */
-    public static function generateApiKey()
+    public static function generateApiKey(): string
     {
         return Security::hash(Text::uuid(), 'sha1');
     }
@@ -154,14 +155,14 @@ class ApplicationsTable extends Table
     /**
      * Find an active application by its API key.
      *
-     * @param \Cake\ORM\Query $query Query object instance.
+     * @param \Cake\ORM\Query\SelectQuery $query Query object instance.
      * @param array $options Options array. It requires an `apiKey` key.
-     * @return \Cake\ORM\Query
+     * @return \Cake\ORM\Query\SelectQuery
      */
-    protected function findApiKey(Query $query, array $options): Query
+    protected function findApiKey(SelectQuery $query, array $options): SelectQuery
     {
         if (empty($options['apiKey']) || !is_string($options['apiKey'])) {
-            throw new \BadMethodCallException('Required option "apiKey" must be a not empty string');
+            throw new BadMethodCallException('Required option "apiKey" must be a not empty string');
         }
 
         $query = $query->where([
@@ -175,14 +176,14 @@ class ApplicationsTable extends Table
     /**
      * Find an active application by client_id and client_secret.
      *
-     * @param \Cake\ORM\Query $query Query object instance.
+     * @param \Cake\ORM\Query\SelectQuery $query Query object instance.
      * @param array $options Options array. It requires an `apiKey` key.
-     * @return \Cake\ORM\Query
+     * @return \Cake\ORM\Query\SelectQuery
      */
-    protected function findCredentials(Query $query, array $options): Query
+    protected function findCredentials(SelectQuery $query, array $options): SelectQuery
     {
         if (empty($options['client_id'])) {
-            throw new \BadMethodCallException('Required option "client_id" must be a not empty string');
+            throw new BadMethodCallException('Required option "client_id" must be a not empty string');
         }
 
         return $query->where(function (QueryExpression $exp) use ($options) {
@@ -201,10 +202,10 @@ class ApplicationsTable extends Table
     /**
      * Finder to find all enabled applications
      *
-     * @param \Cake\ORM\Query $query Query object.
-     * @return \Cake\ORM\Query
+     * @param \Cake\ORM\Query\SelectQuery $query Query object.
+     * @return \Cake\ORM\Query\SelectQuery
      */
-    protected function findEnabled(Query $query): Query
+    protected function findEnabled(SelectQuery $query): SelectQuery
     {
         return $query->where([
             $this->aliasField('enabled') => true,
@@ -219,7 +220,7 @@ class ApplicationsTable extends Table
      * @return void
      * @throws \BEdita\Core\Exception\ImmutableResourceException if entity is not deletable
      */
-    public function beforeDelete(EventInterface $event, EntityInterface $entity)
+    public function beforeDelete(EventInterface $event, EntityInterface $entity): void
     {
         if (in_array($entity->id, [static::DEFAULT_APPLICATION, CurrentApplication::getApplicationId()])) {
             throw new ImmutableResourceException(__d('bedita', 'Could not delete "Application" {0}', $entity->id));

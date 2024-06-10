@@ -15,14 +15,17 @@ declare(strict_types=1);
 
 namespace BEdita\Core\Filesystem;
 
+use BadMethodCallException;
 use BEdita\Core\Filesystem\Adapter\LocalAdapter;
 use BEdita\Core\SingletonTrait;
 use Cake\Core\App;
 use Cake\Core\ObjectRegistry;
 use Cake\Core\StaticConfigTrait;
+use InvalidArgumentException;
 use League\Flysystem\Filesystem;
 use League\Flysystem\MountManager;
 use League\Flysystem\UnableToMountFilesystem;
+use RuntimeException;
 
 /**
  * Registry for filesystem adapters.
@@ -39,14 +42,14 @@ class FilesystemRegistry extends ObjectRegistry
      *
      * @var \League\Flysystem\MountManager
      */
-    protected $mountManager;
+    protected MountManager $mountManager;
 
     /**
      * An array mapping url schemes to fully qualified Log engine class names
      *
      * @var array
      */
-    protected static $_dsnClassMap = [
+    protected static array $_dsnClassMap = [
         'local' => LocalAdapter::class,
     ];
 
@@ -67,15 +70,15 @@ class FilesystemRegistry extends ObjectRegistry
      */
     protected function _throwMissingClassError(string $class, ?string $plugin): void
     {
-        throw new \BadMethodCallException(sprintf('Filesystem adapter %s is not available.', $class));
+        throw new BadMethodCallException(sprintf('Filesystem adapter %s is not available.', $class));
     }
 
     /**
      * {@inheritDoc}
      *
-     * @param string|object $class The class to build.
+     * @param object|string $class The class to build.
      */
-    protected function _create($class, $alias, $config)
+    protected function _create(object|string $class, string $alias, array $config): object
     {
         if (is_object($class)) {
             $instance = $class;
@@ -87,13 +90,13 @@ class FilesystemRegistry extends ObjectRegistry
         }
 
         if (!($instance instanceof FilesystemAdapter)) {
-            throw new \RuntimeException(
+            throw new RuntimeException(
                 sprintf('Filesystem adapters must use %s as a base class.', FilesystemAdapter::class)
             );
         }
 
         if (!$instance->initialize($config)) {
-            throw new \RuntimeException(
+            throw new RuntimeException(
                 sprintf('Filesystem adapter %s is not properly configured.', get_class($instance))
             );
         }
@@ -166,7 +169,7 @@ class FilesystemRegistry extends ObjectRegistry
      * @throws \League\Flysystem\UnableToMountFilesystem Throws an exception if a filesystem with such prefix
      *      could not be found.
      */
-    public static function getPublicUrl($path): string
+    public static function getPublicUrl(string $path): string
     {
         [$prefix, $path] = static::getPrefixAndPath($path);
 
@@ -183,13 +186,13 @@ class FilesystemRegistry extends ObjectRegistry
      *
      * @see \League\Flysystem\MountManager::getPrefixAndPath()
      * @param string $path Original path.
-     * @return string[]
+     * @return array<string>
      * @throws \InvalidArgumentException Throws an exception if path could not be parsed.
      */
-    protected static function getPrefixAndPath($path): array
+    protected static function getPrefixAndPath(string $path): array
     {
         if (!is_string($path) || strpos($path, '://') < 1) {
-            throw new \InvalidArgumentException(sprintf('No prefix detected in path: %s', $path));
+            throw new InvalidArgumentException(sprintf('No prefix detected in path: %s', $path));
         }
 
         return explode('://', $path, 2);

@@ -23,6 +23,7 @@ use Cake\Http\Exception\ConflictException;
 use Cake\Http\Exception\ForbiddenException;
 use Cake\Routing\Router;
 use Cake\Utility\Hash;
+use InvalidArgumentException;
 
 /**
  * Handles JSON API data format in input and in output
@@ -114,7 +115,7 @@ class JsonApiComponent extends Component
             }
 
             return JsonApi::parseData((array)$data['data']);
-        } catch (\InvalidArgumentException $e) {
+        } catch (InvalidArgumentException $e) {
             throw new BadRequestException(
                 __d('bedita', 'Bad JSON API input'),
                 400,
@@ -133,7 +134,7 @@ class JsonApiComponent extends Component
      * @param array|null $meta Additional metadata about error.
      * @return void
      */
-    public function error($status, $title, $detail = null, $code = null, ?array $meta = null)
+    public function error(int $status, string $title, ?string $detail = null, ?string $code = null, ?array $meta = null): void
     {
         $controller = $this->getController();
 
@@ -151,7 +152,7 @@ class JsonApiComponent extends Component
      *
      * @return array
      */
-    public function getLinks()
+    public function getLinks(): array
     {
         $request = $this->getController()->getRequest()->withParam('pass', []);
         $links = [
@@ -191,7 +192,7 @@ class JsonApiComponent extends Component
      *
      * @return array
      */
-    public function getMeta()
+    public function getMeta(): array
     {
         $meta = [];
 
@@ -226,7 +227,7 @@ class JsonApiComponent extends Component
      * @return void
      * @throws \Cake\Http\Exception\ConflictException Throws an exception if a resource has a non-supported `type`.
      */
-    protected function allowedResourceTypes($types, ?array $data = null)
+    protected function allowedResourceTypes(mixed $types, ?array $data = null): void
     {
         $data = $data ?? $this->getController()->getRequest()->getData();
         if (!$data || !$types || !$this->getConfig('parseJson')) {
@@ -261,7 +262,7 @@ class JsonApiComponent extends Component
      * @throws \Cake\Http\Exception\ForbiddenException Throws an exception if a resource has a client-generated
      *      ID, but this feature is not supported.
      */
-    protected function allowClientGeneratedIds($allow = true, ?array $data = null)
+    protected function allowClientGeneratedIds(bool $allow = true, ?array $data = null): void
     {
         $data = $data ?? $this->getController()->getRequest()->getData();
         if (!$data || $allow) {
@@ -297,7 +298,7 @@ class JsonApiComponent extends Component
      * @throws \Cake\Http\Exception\ForbiddenException Throws an exception if a resource in the payload includes a
      *      client-generated ID, but the feature is not supported.
      */
-    public function startup()
+    public function startup(): void
     {
         $controller = $this->getController();
 
@@ -326,7 +327,7 @@ class JsonApiComponent extends Component
      *
      * @return void
      */
-    public function beforeRender()
+    public function beforeRender(): void
     {
         $controller = $this->getController();
 

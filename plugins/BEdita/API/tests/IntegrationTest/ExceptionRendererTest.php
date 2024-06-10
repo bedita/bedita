@@ -21,6 +21,7 @@ use Cake\Datasource\ConnectionManager;
 use Cake\Event\Event;
 use Cake\Event\EventManager;
 use Cake\Http\Exception\HttpException;
+use Exception;
 
 /**
  * @coversNothing
@@ -144,7 +145,7 @@ class ExceptionRendererTest extends IntegrationTestCase
      * @return void
      * @dataProvider contentTypeErrorProvider
      */
-    public function testContentTypeError($expectedCode, $expectedContentType, $accept, \Exception $error, $event)
+    public function testContentTypeError($expectedCode, $expectedContentType, $accept, Exception $error, $event)
     {
         $eventManager = EventManager::instance();
 

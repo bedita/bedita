@@ -15,6 +15,7 @@ declare(strict_types=1);
 
 namespace BEdita\Core\Test\TestCase\Command;
 
+use AllowDynamicProperties;
 use BEdita\Core\Command\TreeCheckCommand;
 use Cake\Console\TestSuite\ConsoleIntegrationTestTrait;
 use Cake\Database\Driver\Mysql;
@@ -27,7 +28,7 @@ use Cake\TestSuite\TestCase;
  * @property \BEdita\Core\Model\Table\TreesTable $Trees
  * @covers \BEdita\Core\Command\TreeCheckCommand
  */
-#[\AllowDynamicProperties]
+#[AllowDynamicProperties]
 class TreeCheckCommandTest extends TestCase
 {
     use ConsoleIntegrationTestTrait;

@@ -61,7 +61,7 @@ abstract class BaseApplication extends CakeBaseApplication implements Authentica
      *
      * @var array
      */
-    protected $pluginDefaults = [
+    protected array $pluginDefaults = [
         'debugOnly' => false,
         'autoload' => false,
         'bootstrap' => true,

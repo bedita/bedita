@@ -42,7 +42,7 @@ class MailService implements JobService
      * @param array $options Options for running this job.
      * @return array
      */
-    public function run(array $payload, array $options = [])
+    public function run(array $payload, array $options = []): array
     {
         $transport = Hash::get($options, 'transport', 'default');
 

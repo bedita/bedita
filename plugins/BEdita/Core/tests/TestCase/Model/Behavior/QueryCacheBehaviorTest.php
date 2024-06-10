@@ -15,6 +15,7 @@ declare(strict_types=1);
 
 namespace BEdita\Core\Test\TestCase\Model\Behavior;
 
+use AllowDynamicProperties;
 use Cake\Cache\Cache;
 use Cake\ORM\Locator\LocatorAwareTrait;
 use Cake\TestSuite\TestCase;
@@ -25,7 +26,7 @@ use Cake\TestSuite\TestCase;
  * @property \BEdita\Core\Model\Table\ConfigTable $Config
  * @coversDefaultClass \BEdita\Core\Model\Behavior\QueryCacheBehavior
  */
-#[\AllowDynamicProperties]
+#[AllowDynamicProperties]
 class QueryCacheBehaviorTest extends TestCase
 {
     use LocatorAwareTrait;

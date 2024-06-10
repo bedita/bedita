@@ -52,7 +52,7 @@ class UploadableBehavior extends Behavior
      * @param mixed $contents File contents.
      * @return void
      */
-    protected function write(MountManager $manager, string $path, $contents): void
+    protected function write(MountManager $manager, string $path, mixed $contents): void
     {
         if ($contents instanceof StreamInterface) {
             $contents = $contents->detach();
@@ -130,7 +130,7 @@ class UploadableBehavior extends Behavior
      * @param string $pathField Name of field in which path is stored.
      * @return bool
      */
-    protected function processDelete(Entity $entity, $pathField): bool
+    protected function processDelete(Entity $entity, string $pathField): bool
     {
         $manager = FilesystemRegistry::getMountManager();
         $path = $entity->get($pathField);

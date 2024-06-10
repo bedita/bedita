@@ -15,6 +15,7 @@ declare(strict_types=1);
 
 namespace BEdita\Core\Model\Table;
 
+use ArrayObject;
 use BEdita\Core\Exception\BadFilterException;
 use BEdita\Core\Exception\ImmutableResourceException;
 use BEdita\Core\Model\Table\ObjectsBaseTable as Table;
@@ -30,7 +31,7 @@ use Cake\Event\EventManager;
 use Cake\Http\Exception\BadRequestException;
 use Cake\Http\ServerRequest;
 use Cake\ORM\Locator\LocatorAwareTrait;
-use Cake\ORM\Query;
+use Cake\ORM\Query\SelectQuery;
 use Cake\ORM\RulesChecker;
 use Cake\Utility\Hash;
 use Cake\Validation\Validator;
@@ -124,7 +125,7 @@ class UsersTable extends Table
      * @return \Cake\Validation\Validator
      * @codeCoverageIgnore
      */
-    public function validationSignup(Validator $validator)
+    public function validationSignup(Validator $validator): Validator
     {
         $validator = $this->validationDefault($validator);
 
@@ -151,7 +152,7 @@ class UsersTable extends Table
      * @return \Cake\Validation\Validator
      * @codeCoverageIgnore
      */
-    public function validationSignupExternal(Validator $validator)
+    public function validationSignupExternal(Validator $validator): Validator
     {
         $validator = $this->validationDefault($validator);
 
@@ -207,7 +208,7 @@ class UsersTable extends Table
      * @param \Cake\Event\EventInterface $event Dispatched event.
      * @return void
      */
-    public function login(EventInterface $event)
+    public function login(EventInterface $event): void
     {
         /** @var \Authentication\IdentityInterface|null $identity */
         $identity = Hash::get((array)$event->getData(), 'identity');
@@ -263,7 +264,7 @@ class UsersTable extends Table
      * @param int $userId Existing user entity id, if null a new user is created.
      * @return \Cake\Datasource\EntityInterface|bool
      */
-    public function externalAuthLogin(EventInterface $event, EntityInterface $authProvider, $providerUsername, $userId = null)
+    public function externalAuthLogin(EventInterface $event, EntityInterface $authProvider, string $providerUsername, ?int $userId = null): EntityInterface|bool
     {
         $params = $event->getData('params');
         $externalAuth = $this->ExternalAuth->newEntity([
@@ -281,15 +282,15 @@ class UsersTable extends Table
     /**
      * Find users by their external auth providers.
      *
-     * @param \Cake\ORM\Query $query Query object instance.
+     * @param \Cake\ORM\Query\SelectQuery $query Query object instance.
      * @param array $options Additional options.
-     * @return \Cake\ORM\Query
+     * @return \Cake\ORM\Query\SelectQuery
      */
-    protected function findExternalAuth(Query $query, array $options = [])
+    protected function findExternalAuth(SelectQuery $query, array $options = []): SelectQuery
     {
         $query = $query->find('loginRoles');
 
-        return $query->innerJoinWith('ExternalAuth', function (Query $query) use ($options) {
+        return $query->innerJoinWith('ExternalAuth', function (SelectQuery $query) use ($options) {
             $query = $query->find('authProvider', $options);
             if (!empty($options['username'])) {
                 $query = $query->where([
@@ -304,17 +305,17 @@ class UsersTable extends Table
     /**
      * Find users by role name or id.
      *
-     * @param \Cake\ORM\Query $query Query object instance.
+     * @param \Cake\ORM\Query\SelectQuery $query Query object instance.
      * @param array $options Array with role names or ids also as comma separated elements
-     * @return \Cake\ORM\Query
+     * @return \Cake\ORM\Query\SelectQuery
      */
-    protected function findRoles(Query $query, array $options)
+    protected function findRoles(SelectQuery $query, array $options): SelectQuery
     {
         if (empty($options)) {
             throw new BadFilterException(__d('bedita', 'Missing required parameter "{0}"', 'roles'));
         }
 
-        return $query->innerJoinWith('Roles', function (Query $query) use ($options) {
+        return $query->innerJoinWith('Roles', function (SelectQuery $query) use ($options) {
             $items = $this->rolesNamesIds($options);
 
             return $query->where(function (QueryExpression $exp) use ($items) {
@@ -358,10 +359,10 @@ class UsersTable extends Table
     /**
      * Finder for my users. This only returns the currently logged in user.
      *
-     * @param \Cake\ORM\Query $query Query object instance.
-     * @return \Cake\ORM\Query
+     * @param \Cake\ORM\Query\SelectQuery $query Query object instance.
+     * @return \Cake\ORM\Query\SelectQuery
      */
-    protected function findMine(Query $query)
+    protected function findMine(SelectQuery $query): SelectQuery
     {
         return $query->where(function (QueryExpression $exp) {
             return $exp->eq($this->aliasField((string)$this->getPrimaryKey()), LoggedUser::id());
@@ -372,11 +373,11 @@ class UsersTable extends Table
      * Finder for valid login users
      * Valid attributes for `blocked`, `deleted` and `status` are checked
      *
-     * @param \Cake\ORM\Query $query Query object instance.
-     * @return \Cake\ORM\Query
+     * @param \Cake\ORM\Query\SelectQuery $query Query object instance.
+     * @return \Cake\ORM\Query\SelectQuery
      * @throws \Cake\Http\Exception\BadRequestException if `username` is missing
      */
-    protected function findLogin(Query $query)
+    protected function findLogin(SelectQuery $query): SelectQuery
     {
         $status = ['on'];
         if ((bool)Configure::read('Login.draft') === true) {
@@ -395,10 +396,10 @@ class UsersTable extends Table
     /**
      * Finder for valid login users + associated roles via `contain`
      *
-     * @param \Cake\ORM\Query $query Query object instance.
-     * @return \Cake\ORM\Query
+     * @param \Cake\ORM\Query\SelectQuery $query Query object instance.
+     * @return \Cake\ORM\Query\SelectQuery
      */
-    protected function findLoginRoles(Query $query)
+    protected function findLoginRoles(SelectQuery $query): SelectQuery
     {
         $query = $query->find('login');
 
@@ -413,7 +414,7 @@ class UsersTable extends Table
      * @return void
      * @throws \BEdita\Core\Exception\ImmutableResourceException if entity is not deletable
      */
-    public function beforeDelete(EventInterface $event, EntityInterface $entity)
+    public function beforeDelete(EventInterface $event, EntityInterface $entity): void
     {
         if ($entity->id === static::ADMIN_USER) {
             throw new ImmutableResourceException(__d('bedita', 'Could not delete "User" {0}', $entity->id));
@@ -426,7 +427,7 @@ class UsersTable extends Table
      * @param \Cake\Datasource\EntityInterface $entity the entity to anonimize
      * @return \Cake\Datasource\EntityInterface|bool
      */
-    protected function anonymizeUser(EntityInterface $entity)
+    protected function anonymizeUser(EntityInterface $entity): EntityInterface|bool
     {
         $notNull = $this->notNullableColumns($this);
         foreach ($this->inheritedTables() as $table) {
@@ -446,7 +447,7 @@ class UsersTable extends Table
         $this->loadInto($entity, ['ExternalAuth']);
         array_walk(
             $entity->external_auth,
-            function ($item) {
+            function ($item): void {
                 $this->ExternalAuth->deleteOrFail($item);
             }
         );
@@ -460,7 +461,7 @@ class UsersTable extends Table
      * @param \Cake\ORM\Table $table Table class
      * @return array
      */
-    protected function notNullableColumns($table)
+    protected function notNullableColumns(Table $table): array
     {
         $res = [];
         $schema = $table->getSchema();
@@ -506,7 +507,7 @@ class UsersTable extends Table
      * @return void
      * @throws \BEdita\Core\Exception\ImmutableResourceException if entity is not deletable and deletion is the update type
      */
-    public function beforeSave(EventInterface $event, EntityInterface $entity)
+    public function beforeSave(EventInterface $event, EntityInterface $entity): void
     {
         if ($entity->deleted === true && $entity->id === static::ADMIN_USER) {
             throw new ImmutableResourceException(__d('bedita', 'Could not delete "User" {0}', $entity->id));
@@ -534,7 +535,7 @@ class UsersTable extends Table
      * @return void
      * @throws \Cake\Http\Exception\BadRequestException if password is not valid
      */
-    public function beforeMarshal(EventInterface $event, \ArrayObject $data)
+    public function beforeMarshal(EventInterface $event, ArrayObject $data): void
     {
         if (isset($data['password'])) {
             $passwdRule = Configure::read('Auth.passwordPolicy.rule');

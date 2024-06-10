@@ -21,6 +21,7 @@ use Cake\Cache\Cache;
 use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
+use Exception;
 
 /**
  * @coversDefaultClass \BEdita\Core\Model\Table\RelationsTable
@@ -192,7 +193,7 @@ class RelationsTableTest extends TestCase
      */
     public function testFindByName($expected, array $options)
     {
-        if ($expected instanceof \Exception) {
+        if ($expected instanceof Exception) {
             $this->expectException(get_class($expected));
             $this->expectExceptionMessage($expected->getMessage());
         }
@@ -345,7 +346,7 @@ class RelationsTableTest extends TestCase
      */
     public function testGet($expected, $search)
     {
-        if ($expected instanceof \Exception) {
+        if ($expected instanceof Exception) {
             $this->expectException(get_class($expected));
             $this->expectExceptionMessage($expected->getMessage());
         }

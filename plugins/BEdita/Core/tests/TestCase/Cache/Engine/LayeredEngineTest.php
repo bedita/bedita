@@ -18,6 +18,7 @@ namespace BEdita\Core\Test\TestCase\Cache\Engine;
 use Cake\Cache\Cache;
 use Exception;
 use PHPUnit\Framework\TestCase;
+use stdClass;
 
 /**
  * {@see \BEdita\Core\Cache\Engine\LayeredEngine} Test Case
@@ -170,7 +171,7 @@ class LayeredEngineTest extends TestCase
     {
         static::expectException(Exception::class);
         static::expectExceptionMessage("Cache engine alias 'test-layered-persistent-wrong' is not an implementation of CacheEngine");
-        Cache::getRegistry()->set('test-layered-persistent-wrong', new \stdClass());
+        Cache::getRegistry()->set('test-layered-persistent-wrong', new stdClass());
         Cache::setConfig('test-layered-wrong-object', array_merge(
             $this->defaultConfig,
             ['persistent' => 'test-layered-persistent-wrong']

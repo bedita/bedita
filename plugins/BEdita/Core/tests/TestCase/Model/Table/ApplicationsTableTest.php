@@ -15,12 +15,15 @@ declare(strict_types=1);
 
 namespace BEdita\Core\Test\TestCase\Model\Table;
 
+use BadMethodCallException;
+use BEdita\Core\Exception\ImmutableResourceException;
 use BEdita\Core\Model\Table\ApplicationsTable;
 use BEdita\Core\State\CurrentApplication;
 use Cake\Cache\Cache;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Hash;
+use Exception;
 
 /**
  * {@see \BEdita\Core\Model\Table\ApplicationsTable} Test Case
@@ -277,7 +280,7 @@ class ApplicationsTableTest extends TestCase
                 'invalid',
             ],
             'badMethodException' => [
-                new \BadMethodCallException('Required option "apiKey" must be a not empty string'),
+                new BadMethodCallException('Required option "apiKey" must be a not empty string'),
                 ['this', 'is', 'not', 'a', 'string'],
             ],
         ];
@@ -294,7 +297,7 @@ class ApplicationsTableTest extends TestCase
      */
     public function testFindApiKey($expected, $apiKey)
     {
-        if ($expected instanceof \Exception) {
+        if ($expected instanceof Exception) {
             $this->expectException(get_class($expected));
             $this->expectExceptionMessage($expected->getMessage());
         }
@@ -326,7 +329,7 @@ class ApplicationsTableTest extends TestCase
                 ],
             ],
             'badMethodException' => [
-                new \BadMethodCallException('Required option "client_id" must be a not empty string'),
+                new BadMethodCallException('Required option "client_id" must be a not empty string'),
                 [],
             ],
         ];
@@ -347,7 +350,7 @@ class ApplicationsTableTest extends TestCase
         $app->set('enabled', true);
         $this->Applications->saveOrFail($app);
 
-        if ($expected instanceof \Exception) {
+        if ($expected instanceof Exception) {
             $this->expectException(get_class($expected));
             $this->expectExceptionMessage($expected->getMessage());
         }
@@ -410,7 +413,7 @@ class ApplicationsTableTest extends TestCase
      */
     public function testDeleteDefaultApplication()
     {
-        $this->expectException(\BEdita\Core\Exception\ImmutableResourceException::class);
+        $this->expectException(ImmutableResourceException::class);
         $this->expectExceptionCode('403');
         $this->expectExceptionMessage('Could not delete "Application" 1');
         $application = $this->Applications->get(ApplicationsTable::DEFAULT_APPLICATION);
@@ -425,7 +428,7 @@ class ApplicationsTableTest extends TestCase
      */
     public function testDeleteCurrentApplication()
     {
-        $this->expectException(\BEdita\Core\Exception\ImmutableResourceException::class);
+        $this->expectException(ImmutableResourceException::class);
         $this->expectExceptionCode('403');
         $this->expectExceptionMessage('Could not delete "Application" 2');
         $application = $this->Applications->get(2);
@@ -441,7 +444,7 @@ class ApplicationsTableTest extends TestCase
      */
     public function testDisableDefaultApplication()
     {
-        $this->expectException(\BEdita\Core\Exception\ImmutableResourceException::class);
+        $this->expectException(ImmutableResourceException::class);
         $this->expectExceptionCode('403');
         $this->expectExceptionMessage('Could not disable "Application" 1');
         $application = $this->Applications->get(ApplicationsTable::DEFAULT_APPLICATION);
@@ -457,7 +460,7 @@ class ApplicationsTableTest extends TestCase
      */
     public function testDisableCurrentApplication()
     {
-        $this->expectException(\BEdita\Core\Exception\ImmutableResourceException::class);
+        $this->expectException(ImmutableResourceException::class);
         $this->expectExceptionCode('403');
         $this->expectExceptionMessage('Could not disable "Application" 2');
         $application = $this->Applications->get(2);

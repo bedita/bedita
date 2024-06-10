@@ -73,7 +73,7 @@ class Profile extends ObjectEntity
      * @param mixed $website Website URL.
      * @return mixed
      */
-    protected function _setWebsite($website)
+    protected function _setWebsite(mixed $website): mixed
     {
         if (is_string($website) && Validation::url($website, false) && !Validation::url($website, true)) {
             return sprintf('http://%s', $website);

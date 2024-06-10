@@ -19,6 +19,8 @@ use BEdita\Core\Model\Entity\Property;
 use BEdita\Core\Model\Entity\PropertyType;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
+use InvalidArgumentException;
+use stdClass;
 
 /**
  * {@see \BEdita\Core\Model\Entity\Property} Test Case
@@ -95,7 +97,7 @@ class PropertyTest extends TestCase
         ];
         $property = $this->Properties->patchEntity($property, $data);
         if (!($property instanceof Property)) {
-            throw new \InvalidArgumentException();
+            throw new InvalidArgumentException();
         }
 
         static::assertEquals(1, $property->id);
@@ -277,7 +279,7 @@ class PropertyTest extends TestCase
                         [
                             'type' => 'null',
                         ],
-                        new \stdClass(),
+                        new stdClass(),
                     ],
                 ],
                 'json',

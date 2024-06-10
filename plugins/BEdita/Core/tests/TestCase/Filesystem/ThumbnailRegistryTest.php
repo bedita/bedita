@@ -15,10 +15,13 @@ declare(strict_types=1);
 
 namespace BEdita\Core\Test\TestCase\Filesystem;
 
+use BadMethodCallException;
 use BEdita\Core\Filesystem\ThumbnailGenerator;
 use BEdita\Core\Filesystem\ThumbnailRegistry;
 use BEdita\Core\Test\TestCase\Filesystem\Thumbnail\TestGenerator;
 use Cake\TestSuite\TestCase;
+use RuntimeException;
+use stdClass;
 
 /**
  * @coversDefaultClass \BEdita\Core\Filesystem\ThumbnailRegistry
@@ -57,9 +60,9 @@ class ThumbnailRegistryTest extends TestCase
      */
     public function testLoadNotAGenerator()
     {
-        $this->expectException(\RuntimeException::class);
+        $this->expectException(RuntimeException::class);
         $this->expectExceptionMessageMatches('/^Thumbnail generators must use .+ as a base class\.$/');
-        $object = new \stdClass();
+        $object = new stdClass();
 
         $registry = new ThumbnailRegistry();
 
@@ -75,7 +78,7 @@ class ThumbnailRegistryTest extends TestCase
      */
     public function testLoadNotInitialized()
     {
-        $this->expectException(\RuntimeException::class);
+        $this->expectException(RuntimeException::class);
         $this->expectExceptionMessageMatches('/^Thumbnail generator .+ is not properly configured\.$/');
         $config = [
             'my' => 'config',
@@ -101,7 +104,7 @@ class ThumbnailRegistryTest extends TestCase
      */
     public function testLoadMissingClass()
     {
-        $this->expectException(\BadMethodCallException::class);
+        $this->expectException(BadMethodCallException::class);
         $this->expectExceptionMessageMatches('/^Thumbnail generator .+ is not available\.$/');
         $registry = new ThumbnailRegistry();
 

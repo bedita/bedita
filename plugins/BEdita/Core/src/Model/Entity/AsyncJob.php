@@ -14,6 +14,7 @@ declare(strict_types=1);
  */
 namespace BEdita\Core\Model\Entity;
 
+use BadMethodCallException;
 use BEdita\Core\Job\ServiceRegistry;
 use BEdita\Core\Utility\JsonApiSerializable;
 use Cake\I18n\DateTime;
@@ -67,7 +68,7 @@ class AsyncJob extends Entity implements JsonApiSerializable
      *
      * @return string
      */
-    protected function _getStatus()
+    protected function _getStatus(): string
     {
         if ($this->completed !== null) {
             return 'completed';
@@ -94,10 +95,10 @@ class AsyncJob extends Entity implements JsonApiSerializable
      * @return bool
      * @throws \BadMethodCallException Throws an exception if job hasn't been locked.
      */
-    public function run(array $options = [])
+    public function run(array $options = []): bool
     {
         if ($this->status !== 'locked') {
-            throw new \BadMethodCallException('Only locked jobs can be run');
+            throw new BadMethodCallException('Only locked jobs can be run');
         }
 
         $service = ServiceRegistry::get($this->service);

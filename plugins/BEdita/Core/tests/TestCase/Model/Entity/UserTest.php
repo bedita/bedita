@@ -22,6 +22,7 @@ use Cake\I18n\DateTime;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Hash;
+use InvalidArgumentException;
 
 /**
  * {@see \BEdita\Core\Model\Entity\User} Test Case
@@ -94,7 +95,7 @@ class UserTest extends TestCase
         ];
         $user = $this->Users->patchEntity($user, $data);
         if (!($user instanceof User)) {
-            throw new \InvalidArgumentException();
+            throw new InvalidArgumentException();
         }
 
         static::assertEquals(1, $user->id);
@@ -112,7 +113,7 @@ class UserTest extends TestCase
     {
         $user = $this->Users->get(1);
         if (!($user instanceof User)) {
-            throw new \InvalidArgumentException();
+            throw new InvalidArgumentException();
         }
 
         static::assertNotEmpty($user->password_hash);
@@ -134,7 +135,7 @@ class UserTest extends TestCase
         ];
         $user = $this->Users->patchEntity($user, $data);
         if (!($user instanceof User)) {
-            throw new \InvalidArgumentException();
+            throw new InvalidArgumentException();
         }
 
         static::assertNull($user->password);
@@ -158,7 +159,7 @@ class UserTest extends TestCase
         ];
         $user = $this->Users->patchEntity($user, $data);
         if (!($user instanceof User)) {
-            throw new \InvalidArgumentException();
+            throw new InvalidArgumentException();
         }
 
         static::assertNotEquals('myPassword', $user->password_hash);

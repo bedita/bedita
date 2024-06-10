@@ -48,7 +48,7 @@ class SchemaController extends JsonBaseController
      * @param string $typeName Name of an object type or of a resource type.
      * @return \Cake\Http\Response
      */
-    public function jsonSchema($typeName): Response
+    public function jsonSchema(string $typeName): Response
     {
         $this->request->allowMethod(['get']);
 

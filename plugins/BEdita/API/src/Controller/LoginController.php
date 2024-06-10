@@ -179,7 +179,7 @@ class LoginController extends AppController
      * @param array $userInput Complete user data
      * @return array Reduced user data (can be empty in case of client credentials)
      */
-    protected function reducedUserData(array $userInput)
+    protected function reducedUserData(array $userInput): array
     {
         $user = array_intersect_key($userInput, array_flip(['id', 'username']));
         $user['roles'] = array_map(
@@ -201,7 +201,7 @@ class LoginController extends AppController
      * @param array $user Minimal user data to encode in JWT
      * @return array JWT tokens requested
      */
-    protected function jwtTokens(array $user)
+    protected function jwtTokens(array $user): array
     {
         return JWTHandler::tokens($user, Router::reverse($this->request, true));
     }
@@ -211,7 +211,7 @@ class LoginController extends AppController
      *
      * @return void
      */
-    public function whoami()
+    public function whoami(): void
     {
         $this->request->allowMethod('get');
 
@@ -228,7 +228,7 @@ class LoginController extends AppController
      * @return void
      * @throws \Cake\Http\Exception\BadRequestException On invalid input data
      */
-    public function update()
+    public function update(): void
     {
         $this->request->allowMethod('patch');
 
@@ -259,7 +259,7 @@ class LoginController extends AppController
      * @throws \Cake\Http\Exception\BadRequestException Throws an exception if current password is not correct.
      * @return void
      */
-    protected function checkPassword(User $entity, array $data)
+    protected function checkPassword(User $entity, array $data): void
     {
         if (empty($data['password'])) {
             return;
@@ -281,7 +281,7 @@ class LoginController extends AppController
      * @return \BEdita\Core\Model\Entity\User Logged user entity
      * @throws \Cake\Http\Exception\UnauthorizedException Throws an exception if user not logged or blocked/removed
      */
-    protected function userEntity()
+    protected function userEntity(): User
     {
         $userId = $this->Authentication->getIdentityData('id');
         $contain = $this->prepareInclude($this->request->getQuery('include'));
@@ -320,7 +320,7 @@ class LoginController extends AppController
      *
      * @return \Cake\Http\Response|null
      */
-    public function change()
+    public function change(): ?Response
     {
         $this->request->allowMethod(['patch', 'post']);
 

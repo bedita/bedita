@@ -14,6 +14,7 @@ declare(strict_types=1);
  */
 namespace BEdita\Core\Test\TestCase\Shell;
 
+use AllowDynamicProperties;
 use BEdita\Core\Test\Utility\TestFilesystemTrait;
 use Cake\Command\Command;
 use Cake\Console\TestSuite\ConsoleIntegrationTestTrait;
@@ -26,7 +27,7 @@ use Cake\TestSuite\TestCase;
  * @property \BEdita\Core\Model\Table\StreamsTable $Streams
  * @coversDefaultClass \BEdita\Core\Shell\StreamsShell
  */
-#[\AllowDynamicProperties]
+#[AllowDynamicProperties]
 class StreamsShellTest extends TestCase
 {
     use ConsoleIntegrationTestTrait;

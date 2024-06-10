@@ -19,6 +19,7 @@ use Cake\Database\Connection;
 use Cake\Database\DriverInterface;
 use Cake\Database\Schema\Collection;
 use Cake\Datasource\ConnectionManager;
+use Cake\Datasource\Exception\MissingDatasourceConfigException;
 use Cake\TestSuite\TestCase;
 
 /**
@@ -74,7 +75,7 @@ class DatabaseTest extends TestCase
      */
     public function testMissingDatasourceConfigException()
     {
-        $this->expectException(\Cake\Datasource\Exception\MissingDatasourceConfigException::class);
+        $this->expectException(MissingDatasourceConfigException::class);
         Database::currentSchema('zzzzzzzz');
     }
 

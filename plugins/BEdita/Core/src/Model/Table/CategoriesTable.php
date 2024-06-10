@@ -24,7 +24,7 @@ use Cake\Database\Expression\QueryExpression;
 use Cake\Database\Schema\TableSchemaInterface;
 use Cake\Datasource\EntityInterface;
 use Cake\Event\EventInterface;
-use Cake\ORM\Query;
+use Cake\ORM\Query\SelectQuery;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Utility\Hash;
@@ -162,12 +162,12 @@ class CategoriesTable extends Table
      * Hide read-only fields when fetched as an association.
      *
      * @param \Cake\Event\EventInterface $event Fired event.
-     * @param \Cake\ORM\Query $query Query object instance.
+     * @param \Cake\ORM\Query\SelectQuery $query Query object instance.
      * @param \ArrayObject $options Options array.
      * @param bool $primary Primary flag.
      * @return void
      */
-    public function beforeFind(EventInterface $event, Query $query, ArrayObject $options, bool $primary)
+    public function beforeFind(EventInterface $event, SelectQuery $query, ArrayObject $options, bool $primary): void
     {
         if ($primary) {
             return;
@@ -198,10 +198,10 @@ class CategoriesTable extends Table
     /**
      * Filter only enabled categories.
      *
-     * @param \Cake\ORM\Query $query Query object
-     * @return \Cake\ORM\Query
+     * @param \Cake\ORM\Query\SelectQuery $query Query object
+     * @return \Cake\ORM\Query\SelectQuery
      */
-    protected function findEnabled(Query $query): Query
+    protected function findEnabled(SelectQuery $query): SelectQuery
     {
         return $query->where([
             $this->aliasField('enabled') => true,
@@ -211,18 +211,18 @@ class CategoriesTable extends Table
     /**
      * Find categories by object type name
      *
-     * @param \Cake\ORM\Query $query Query object instance.
+     * @param \Cake\ORM\Query\SelectQuery $query Query object instance.
      * @param array $options Options array.
-     * @return \Cake\ORM\Query
+     * @return \Cake\ORM\Query\SelectQuery
      * @throws \BEdita\Core\Exception\BadFilterException
      */
-    protected function findType(Query $query, array $options): Query
+    protected function findType(SelectQuery $query, array $options): SelectQuery
     {
         if (empty($options[0])) {
             throw new BadFilterException(__d('bedita', 'Missing required parameter "{0}"', 'type'));
         }
 
-        return $query->innerJoinWith('ObjectTypes', function (Query $query) use ($options) {
+        return $query->innerJoinWith('ObjectTypes', function (SelectQuery $query) use ($options) {
             return $query->where([$this->ObjectTypes->aliasField('name') => $options[0]]);
         });
     }
@@ -230,11 +230,11 @@ class CategoriesTable extends Table
     /**
      * Find categories IDs by their name.
      *
-     * @param \Cake\ORM\Query $query Query object.
+     * @param \Cake\ORM\Query\SelectQuery $query Query object.
      * @param array $options Array containing key `names` as a list of strings, and `typeId` as an integer.
-     * @return \Cake\ORM\Query
+     * @return \Cake\ORM\Query\SelectQuery
      */
-    protected function findIds(Query $query, array $options)
+    protected function findIds(SelectQuery $query, array $options): SelectQuery
     {
         if (empty($options['names']) || !is_array($options['names'])) {
             throw new BadFilterException(__d('bedita', 'Missing or wrong required parameter "{0}"', 'names'));
@@ -257,12 +257,12 @@ class CategoriesTable extends Table
      * Find category resource by name and object type.
      * Options array argument MUST contain 'name' and 'object_type_name' keys.
      *
-     * @param \Cake\ORM\Query $query Query object instance.
+     * @param \Cake\ORM\Query\SelectQuery $query Query object instance.
      * @param array $options Options array.
-     * @return \Cake\ORM\Query
+     * @return \Cake\ORM\Query\SelectQuery
      * @throws \BEdita\Core\Exception\BadFilterException
      */
-    protected function findResource(Query $query, array $options): Query
+    protected function findResource(SelectQuery $query, array $options): SelectQuery
     {
         if (empty($options['name'])) {
             throw new BadFilterException(__d('bedita', 'Missing required parameter "{0}"', 'name'));

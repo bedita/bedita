@@ -39,14 +39,14 @@ class CheckSchemaTask extends Shell /* @phpstan-ignore-line */
      *
      * @var array
      */
-    protected $messages = [];
+    protected array $messages = [];
 
     /**
      * List of SQL reserved words.
      *
      * @var array
      */
-    protected $reservedWords = [];
+    protected array $reservedWords = [];
 
     /**
      * {@inheritDoc}
@@ -81,7 +81,7 @@ class CheckSchemaTask extends Shell /* @phpstan-ignore-line */
      *
      * @return bool
      */
-    public function main()
+    public function main(): bool
     {
         if (!Plugin::isLoaded('Migrations')) {
             $this->abort('Plugin "Migrations" must be loaded in order to perform schema checks');
@@ -115,7 +115,7 @@ class CheckSchemaTask extends Shell /* @phpstan-ignore-line */
      * @param \Cake\Database\Connection $connection Connection instance.
      * @return void
      */
-    protected function checkMigrationsStatus(Connection $connection)
+    protected function checkMigrationsStatus(Connection $connection): void
     {
         $migrations = new Migrations([
             'connection' => $connection->configName(),
@@ -145,7 +145,7 @@ class CheckSchemaTask extends Shell /* @phpstan-ignore-line */
      * @return array
      * @internal
      */
-    protected function filterPhinxlogTables(array $tables)
+    protected function filterPhinxlogTables(array $tables): array
     {
         return array_filter($tables, function ($table) {
             return $table !== 'phinxlog' && substr($table, -strlen('_phinxlog')) !== '_phinxlog';
@@ -160,7 +160,7 @@ class CheckSchemaTask extends Shell /* @phpstan-ignore-line */
      * @return array
      * @internal
      */
-    protected function checkSymbol($symbol, array $context = [])
+    protected function checkSymbol(string $symbol, array $context = []): array
     {
         $validator = new SqlConventionsValidator();
         foreach ($context as $key => $value) {
@@ -181,7 +181,7 @@ class CheckSchemaTask extends Shell /* @phpstan-ignore-line */
      * @param \Cake\Database\Connection $connection Connection instance.
      * @return void
      */
-    protected function checkConventions(Connection $connection)
+    protected function checkConventions(Connection $connection): void
     {
         $this->verbose('=====> Checking SQL conventions:');
         $allColumns = [];
@@ -286,7 +286,7 @@ class CheckSchemaTask extends Shell /* @phpstan-ignore-line */
      *
      * @return bool
      */
-    protected function formatMessages()
+    protected function formatMessages(): bool
     {
         if (!empty($this->messages['phinxlog'])) {
             $this->quiet('=====> <warning>Migration history is not in sync with migration files.</warning>');

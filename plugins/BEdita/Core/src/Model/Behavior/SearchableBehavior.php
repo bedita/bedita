@@ -22,7 +22,8 @@ use Cake\Core\Configure;
 use Cake\Datasource\EntityInterface;
 use Cake\Event\EventInterface;
 use Cake\ORM\Behavior;
-use Cake\ORM\Query;
+use Cake\ORM\Query\SelectQuery;
+use UnexpectedValueException;
 
 /**
  * Behavior to add text-based search to model.
@@ -55,9 +56,9 @@ class SearchableBehavior extends Behavior
     /**
      * The Search adapters registry instance.
      *
-     * @var \BEdita\Core\Search\SearchRegistry
+     * @var \BEdita\Core\Search\SearchRegistry|null
      */
-    protected $searchRegistry = null;
+    protected ?SearchRegistry $searchRegistry = null;
 
     /**
      * Get operation name for the entity being saved or deleted.
@@ -76,7 +77,7 @@ class SearchableBehavior extends Behavior
         }
 
         if ($operationName !== null && !is_string($operationName)) {
-            throw new \UnexpectedValueException(
+            throw new UnexpectedValueException(
                 sprintf('Operation name must be string or null, got %s', gettype($operationName))
             );
         }
@@ -182,11 +183,11 @@ class SearchableBehavior extends Behavior
     /**
      * Finder for query search.
      *
-     * @param \Cake\ORM\Query $query Query object instance.
+     * @param \Cake\ORM\Query\SelectQuery $query Query object instance.
      * @param array $options Options.
-     * @return \Cake\ORM\Query
+     * @return \Cake\ORM\Query\SelectQuery
      */
-    public function findQuery(Query $query, array $options)
+    public function findQuery(SelectQuery $query, array $options): SelectQuery
     {
         $options += [
             'exact' => false,

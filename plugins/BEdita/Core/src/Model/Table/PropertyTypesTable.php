@@ -16,6 +16,7 @@ declare(strict_types=1);
 namespace BEdita\Core\Model\Table;
 
 use BEdita\Core\Exception\ImmutableResourceException;
+use BEdita\Core\Model\Entity\PropertyType;
 use BEdita\Core\Model\Validation\Validation;
 use BEdita\Core\Search\SimpleSearchTrait;
 use Cake\Cache\Cache;
@@ -129,7 +130,7 @@ class PropertyTypesTable extends Table
      * @return void
      * @throws \BEdita\Core\Exception\ImmutableResourceException
      */
-    public function beforeSave(EventInterface $event, EntityInterface $entity)
+    public function beforeSave(EventInterface $event, EntityInterface $entity): void
     {
         if (!$entity->isNew() && $entity->isDirty() && $entity->get('core_type')) {
             throw new ImmutableResourceException(__d('bedita', 'Could not modify core property'));
@@ -141,7 +142,7 @@ class PropertyTypesTable extends Table
      *
      * @return void
      */
-    public function afterSave()
+    public function afterSave(): void
     {
         Cache::clear(ObjectTypesTable::CACHE_CONFIG);
     }
@@ -155,7 +156,7 @@ class PropertyTypesTable extends Table
      * @throws \Cake\Http\Exception\ForbiddenException Throws an exception if one or more properties exist
      *      with the property type being deleted.
      */
-    public function beforeDelete(EventInterface $event, EntityInterface $entity)
+    public function beforeDelete(EventInterface $event, EntityInterface $entity): void
     {
         if ($this->Properties->exists([$this->Properties->getForeignKey() => $entity->get($this->Properties->getBindingKey())])) {
             throw new ForbiddenException(__d('bedita', 'Property type with existing properties'));
@@ -167,7 +168,7 @@ class PropertyTypesTable extends Table
      *
      * @return void
      */
-    public function afterDelete()
+    public function afterDelete(): void
     {
         Cache::clear(ObjectTypesTable::CACHE_CONFIG);
     }
@@ -179,9 +180,9 @@ class PropertyTypesTable extends Table
      * @param \Cake\ORM\Table $table Table object.
      * @return \BEdita\Core\Model\Entity\PropertyType
      */
-    public function detect($name, Table $table)
+    public function detect(string $name, Table $table): PropertyType
     {
-        /** @var \BEdita\Core\Model\Entity\PropertyType[] $propertyTypes */
+        /** @var array<\BEdita\Core\Model\Entity\PropertyType> $propertyTypes */
         $propertyTypes = Cache::remember(
             'property_types',
             function () {

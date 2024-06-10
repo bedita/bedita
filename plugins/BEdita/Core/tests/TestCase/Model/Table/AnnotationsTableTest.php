@@ -20,6 +20,7 @@ use Cake\ORM\Association\BelongsTo;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Hash;
+use Exception;
 
 /**
  * {@see \BEdita\Core\Model\Table\AnnotationsTable} Test Case
@@ -180,7 +181,7 @@ class AnnotationsTableTest extends TestCase
     public function testBeforeSave($expected, array $data, $id = null)
     {
         LoggedUser::setUser(['id' => 5]);
-        if ($expected instanceof \Exception) {
+        if ($expected instanceof Exception) {
             $this->expectException(get_class($expected));
             $this->expectExceptionMessage($expected->getMessage());
         }
@@ -216,7 +217,7 @@ class AnnotationsTableTest extends TestCase
      */
     public function testBeforeDeleteFailure()
     {
-        $this->expectException(\Cake\Http\Exception\ForbiddenException::class);
+        $this->expectException(ForbiddenException::class);
         $this->expectExceptionMessage('Could not delete annotation "1" of user "1"');
         LoggedUser::setUser(['id' => 5]);
         $annotation = $this->Annotations->get(1);

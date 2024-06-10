@@ -32,7 +32,7 @@ abstract class ResourcesBase
      *
      * @var array
      */
-    protected static $allowed = [];
+    protected static array $allowed = [];
 
     /**
      * Get resource table, removing type from registry to force new options.

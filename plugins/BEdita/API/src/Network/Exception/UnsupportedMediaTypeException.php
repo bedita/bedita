@@ -27,7 +27,7 @@ class UnsupportedMediaTypeException extends HttpException
      * @param string|null $message If no message is given 'Unsupported Media Type' will be the message
      * @param int $code Status code, defaults to 415
      */
-    public function __construct($message = null, $code = 415)
+    public function __construct(?string $message = null, int $code = 415)
     {
         if (empty($message)) {
             $message = 'Unsupported Media Type';

@@ -30,6 +30,7 @@ use Cake\Mailer\TransportFactory;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Hash;
+use Exception;
 
 /**
  * @covers \BEdita\Core\Model\Action\SignupUserAction
@@ -206,7 +207,7 @@ class SignupUserActionTest extends TestCase
             static::assertTrue(is_string($arguments[3]));
         });
 
-        if ($expected instanceof \Exception) {
+        if ($expected instanceof Exception) {
             $this->expectException(get_class($expected));
         }
 
@@ -323,7 +324,7 @@ class SignupUserActionTest extends TestCase
      */
     public function testExecuteExtAuth($expected, array $data, array $oauthResponse)
     {
-        if ($expected instanceof \Exception) {
+        if ($expected instanceof Exception) {
             $this->expectException(get_class($expected));
             $this->expectExceptionMessage($expected->getMessage());
         }
@@ -475,7 +476,7 @@ class SignupUserActionTest extends TestCase
      */
     public function testExceptionSendMail()
     {
-        $this->expectException(\Cake\Http\Exception\InternalErrorException::class);
+        $this->expectException(InternalErrorException::class);
         $data = [
             'data' => [
                 'username' => 'testsignup',
@@ -734,7 +735,7 @@ class SignupUserActionTest extends TestCase
     public function testRoles($expected, array $data, array $config = [])
     {
         Configure::write('Signup', $config);
-        if ($expected instanceof \Exception) {
+        if ($expected instanceof Exception) {
             $this->expectException(get_class($expected));
             $this->expectExceptionCode($expected->getCode());
         }

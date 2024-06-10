@@ -18,6 +18,7 @@ namespace BEdita\Core\Test\TestCase\Model\Entity;
 use BEdita\Core\Model\Entity\ExternalAuth;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
+use InvalidArgumentException;
 
 /**
  * {@see \BEdita\Core\Model\Entity\ExternalAuth} Test Case
@@ -83,7 +84,7 @@ class ExternalAuthTest extends TestCase
         ];
         $externalAuth = $this->ExternalAuth->patchEntity($externalAuth, $data);
         if (!($externalAuth instanceof ExternalAuth)) {
-            throw new \InvalidArgumentException();
+            throw new InvalidArgumentException();
         }
 
         $this->assertEquals(1, $externalAuth->id);

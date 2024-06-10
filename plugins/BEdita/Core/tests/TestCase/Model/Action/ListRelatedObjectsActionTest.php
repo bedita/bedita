@@ -21,6 +21,7 @@ use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Inflector;
+use Exception;
 
 /**
  * @covers \BEdita\Core\Model\Action\ListRelatedObjectsAction
@@ -266,7 +267,7 @@ class ListRelatedObjectsActionTest extends TestCase
      */
     public function testInvocation($expected, $objectType, $relation, $id, $list = true, ?array $only = null, $statusLevel = null)
     {
-        if ($expected instanceof \Exception) {
+        if ($expected instanceof Exception) {
             $this->expectException(get_class($expected));
             $this->expectExceptionMessage($expected->getMessage());
         }

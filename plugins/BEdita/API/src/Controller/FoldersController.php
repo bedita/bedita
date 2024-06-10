@@ -127,7 +127,7 @@ class FoldersController extends ObjectsController
      *
      * @return array
      */
-    protected function getDataSortedByPosition()
+    protected function getDataSortedByPosition(): array
     {
         $data = $this->request->getData();
 
@@ -166,7 +166,7 @@ class FoldersController extends ObjectsController
      * @param string $position The position to parse as integer.
      * @return int
      */
-    protected function positionToInt($position)
+    protected function positionToInt(string $position): int
     {
         if ($position === 'first') {
             return 1;

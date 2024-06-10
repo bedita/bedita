@@ -22,6 +22,8 @@ use BEdita\Core\Model\Entity\Role;
 use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
+use Exception;
+use InvalidArgumentException;
 
 /**
  * {@see \BEdita\Core\Model\Entity\EndpointPermission} Test Case
@@ -86,7 +88,7 @@ class EndpointPermissionTest extends TestCase
         ];
         $endpointPermission = $this->EndpointPermissions->patchEntity($endpointPermission, $data);
         if (!($endpointPermission instanceof EndpointPermission)) {
-            throw new \InvalidArgumentException();
+            throw new InvalidArgumentException();
         }
 
         $this->assertEquals(1, $endpointPermission->id);
@@ -396,7 +398,7 @@ class EndpointPermissionTest extends TestCase
      */
     public function testSetEndpointName($expected, ?string $name): void
     {
-        if ($expected instanceof \Exception) {
+        if ($expected instanceof Exception) {
             $this->expectException(RecordNotFoundException::class);
             $this->expectExceptionMessage($expected->getMessage());
         }
@@ -450,7 +452,7 @@ class EndpointPermissionTest extends TestCase
      */
     public function testSetRoleName($expected, ?string $name): void
     {
-        if ($expected instanceof \Exception) {
+        if ($expected instanceof Exception) {
             $this->expectException(RecordNotFoundException::class);
             $this->expectExceptionMessage($expected->getMessage());
         }
@@ -504,7 +506,7 @@ class EndpointPermissionTest extends TestCase
      */
     public function testSetApplicationName($expected, ?string $name): void
     {
-        if ($expected instanceof \Exception) {
+        if ($expected instanceof Exception) {
             $this->expectException(RecordNotFoundException::class);
             $this->expectExceptionMessage($expected->getMessage());
         }

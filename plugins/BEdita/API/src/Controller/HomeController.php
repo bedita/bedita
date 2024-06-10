@@ -39,7 +39,7 @@ class HomeController extends AppController
      *
      * @var array
      */
-    protected $defaultEndpoints = [
+    protected array $defaultEndpoints = [
         '/auth' => [
             'methods' => ['GET', 'POST'],
             'multiple_types' => false,
@@ -134,7 +134,7 @@ class HomeController extends AppController
      * @param array $options Endpoint options - methods and multiple types flag
      * @return array Array of features
      */
-    protected function endpointFeatures($endpoint, $options): array
+    protected function endpointFeatures(string $endpoint, array $options): array
     {
         $methods = $options['methods'];
         if ($methods === 'ALL') {
@@ -197,7 +197,7 @@ class HomeController extends AppController
      * @param string $method HTTP method
      * @return bool True on granted authorization, false otherwise
      */
-    protected function checkAuthorization($endpoint, $method): bool
+    protected function checkAuthorization(string $endpoint, string $method): bool
     {
         if (empty(LoggedUser::getUser()) && !$this->unloggedAuthorized($endpoint, $method)) {
             return false;
@@ -228,7 +228,7 @@ class HomeController extends AppController
      * @param string $method HTTP method
      * @return bool True on granted authorization, false otherwise
      */
-    protected function unloggedAuthorized($endpoint, $method): bool
+    protected function unloggedAuthorized(string $endpoint, string $method): bool
     {
         $defaultAllow = Hash::get(static::DEFAULT_ALLOW_UNLOGGED, $endpoint, static::DEFAULT_ALLOW_UNLOGGED['/*']);
 

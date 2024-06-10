@@ -41,7 +41,7 @@ class ExceptionRenderer extends WebExceptionRenderer
      *
      * @var array
      */
-    protected $additionalHttpCodes = [
+    protected array $additionalHttpCodes = [
         BadFilterException::class => 400,
         LockedResourceException::class => 403,
         ImmutableResourceException::class => 403,
@@ -122,7 +122,7 @@ class ExceptionRenderer extends WebExceptionRenderer
      * @param \Throwable $error Exception.
      * @return string Error message
      */
-    protected function errorDetail(Throwable $error)
+    protected function errorDetail(Throwable $error): string
     {
         if (!$error instanceof CakeException) {
             return '';

@@ -15,12 +15,14 @@ declare(strict_types=1);
 
 namespace BEdita\Core\Test\TestCase\Shell;
 
+use BadMethodCallException;
 use BEdita\Core\Job\JobService;
 use BEdita\Core\Job\ServiceRegistry;
 use Cake\Command\Command;
 use Cake\Console\TestSuite\ConsoleIntegrationTestTrait;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Text;
+use Exception;
 
 /**
  * {@see \BEdita\Core\Shell\JobsShell} Test Case
@@ -63,7 +65,7 @@ class JobsShellTest extends TestCase
 
         $method = $service->method('run');
         $method->will(static::returnValue($return));
-        if ($return instanceof \Exception) {
+        if ($return instanceof Exception) {
             $method->willThrowException($return);
         }
 
@@ -114,7 +116,7 @@ class JobsShellTest extends TestCase
      */
     public function testRunFailException()
     {
-        $exception = new \BadMethodCallException('example');
+        $exception = new BadMethodCallException('example');
         $uuid = 'd6bb8c84-6b29-432e-bb84-c3c4b2c1b99c';
         ServiceRegistry::set('example', $this->getMockService($exception));
 

@@ -22,8 +22,9 @@ use Cake\Core\Configure;
 use Cake\Datasource\EntityInterface;
 use Cake\Event\Event;
 use Cake\Event\EventManager;
-use Cake\ORM\Query;
+use Cake\ORM\Query\SelectQuery;
 use Cake\TestSuite\TestCase;
+use Exception;
 
 /**
  * {@see \BEdita\Core\Model\Behavior\SearchableBehavior} Test Case
@@ -112,7 +113,7 @@ class SearchableBehaviorTest extends TestCase
      */
     public function testFindQuery($expected, $query)
     {
-        if ($expected instanceof \Exception) {
+        if ($expected instanceof Exception) {
             $this->expectException(get_class($expected));
             $this->expectExceptionCode($expected->getCode());
             $this->expectExceptionMessage($expected->getMessage());
@@ -185,7 +186,7 @@ class SearchableBehaviorTest extends TestCase
             public $afterDeleteCount = 0;
             public $afterSaveCount = 0;
 
-            public function search(Query $query, string $text, array $options = []): Query
+            public function search(SelectQuery $query, string $text, array $options = []): SelectQuery
             {
                 return $query;
             }

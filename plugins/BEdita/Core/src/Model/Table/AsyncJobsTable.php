@@ -23,7 +23,7 @@ use Cake\Database\Schema\TableSchemaInterface;
 use Cake\Datasource\ConnectionManager;
 use Cake\Event\EventInterface;
 use Cake\I18n\DateTime;
-use Cake\ORM\Query;
+use Cake\ORM\Query\SelectQuery;
 use Cake\ORM\Table;
 use Cake\Queue\QueueManager;
 use Cake\Validation\Validator;
@@ -161,7 +161,7 @@ class AsyncJobsTable extends Table
      * @param mixed $duration Duration. By default, jobs are locked for 5 minutes.
      * @return \BEdita\Core\Model\Entity\AsyncJob
      */
-    public function lock($uuid, $duration = '+5 minutes')
+    public function lock(string $uuid, mixed $duration = '+5 minutes'): AsyncJob
     {
         return $this->getConnection()->transactional(function () use ($uuid, $duration) {
             $entity = $this->get($uuid, finder: 'pending');
@@ -182,9 +182,9 @@ class AsyncJobsTable extends Table
      * @param mixed $success Job run success. If strictly equal to `false`, job is considered failed.
      * @return void
      */
-    public function unlock($uuid, $success)
+    public function unlock(string $uuid, mixed $success): void
     {
-        $this->getConnection()->transactional(function () use ($uuid, $success) {
+        $this->getConnection()->transactional(function () use ($uuid, $success): void {
             $entity = $this->get($uuid);
             $entity->locked_until = null;
 
@@ -204,10 +204,10 @@ class AsyncJobsTable extends Table
      * This finder returns a query object that filters asynchronous jobs that are
      * still valid (not completed, not yet expired, not locked, and have some attempts left).
      *
-     * @param \Cake\ORM\Query $query Query object instance.
-     * @return \Cake\ORM\Query
+     * @param \Cake\ORM\Query\SelectQuery $query Query object instance.
+     * @return \Cake\ORM\Query\SelectQuery
      */
-    protected function findPending(Query $query)
+    protected function findPending(SelectQuery $query): SelectQuery
     {
         $now = DateTime::now();
 
@@ -239,10 +239,10 @@ class AsyncJobsTable extends Table
      * This finder returns a query object that filters asynchronous jobs that are either expired or
      * that have failed too many times.
      *
-     * @param \Cake\ORM\Query $query Query object instance.
-     * @return \Cake\ORM\Query
+     * @param \Cake\ORM\Query\SelectQuery $query Query object instance.
+     * @return \Cake\ORM\Query\SelectQuery
      */
-    protected function findFailed(Query $query)
+    protected function findFailed(SelectQuery $query): SelectQuery
     {
         $now = DateTime::now();
 
@@ -267,10 +267,10 @@ class AsyncJobsTable extends Table
      *
      * This finder returns a query object that filters asynchronous jobs that have been completed successfully.
      *
-     * @param \Cake\ORM\Query $query Query object instance.
-     * @return \Cake\ORM\Query
+     * @param \Cake\ORM\Query\SelectQuery $query Query object instance.
+     * @return \Cake\ORM\Query\SelectQuery
      */
-    protected function findCompleted(Query $query)
+    protected function findCompleted(SelectQuery $query): SelectQuery
     {
         return $query->where(
             fn (QueryExpression $exp): QueryExpression => $exp->isNotNull($this->aliasField('completed')),
@@ -282,10 +282,10 @@ class AsyncJobsTable extends Table
      *
      * This finder returns a query object that filters asynchronous jobs that haven't been completed yet.
      *
-     * @param \Cake\ORM\Query $query Query object instance.
-     * @return \Cake\ORM\Query
+     * @param \Cake\ORM\Query\SelectQuery $query Query object instance.
+     * @return \Cake\ORM\Query\SelectQuery
      */
-    protected function findIncomplete(Query $query)
+    protected function findIncomplete(SelectQuery $query): SelectQuery
     {
         return $query->where(
             fn (QueryExpression $exp): QueryExpression => $exp->isNull($this->aliasField('completed')),
@@ -295,11 +295,11 @@ class AsyncJobsTable extends Table
     /**
      * Find pending asynchronous jobs sorted by descending priority, and optionally filtered by service and priority.
      *
-     * @param \Cake\ORM\Query $query Query object instance.
+     * @param \Cake\ORM\Query\SelectQuery $query Query object instance.
      * @param array $options Additional options.
-     * @return \Cake\ORM\Query
+     * @return \Cake\ORM\Query\SelectQuery
      */
-    protected function findPriority(Query $query, array $options)
+    protected function findPriority(SelectQuery $query, array $options): SelectQuery
     {
         $options = array_filter(array_intersect_key($options, array_flip(['priority', 'service'])));
         if (!empty($options)) {
@@ -330,7 +330,7 @@ class AsyncJobsTable extends Table
      */
     public function updateResults(AsyncJob $entity, bool $success, array $messages = []): void
     {
-        $this->getConnection()->transactional(function () use ($entity, $success, $messages) {
+        $this->getConnection()->transactional(function () use ($entity, $success, $messages): void {
             $results = (array)$entity->get('results');
             $attempt = count($results) + 1;
             $data = compact('messages');

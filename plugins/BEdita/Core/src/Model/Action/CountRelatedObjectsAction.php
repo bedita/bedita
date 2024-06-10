@@ -16,6 +16,8 @@ declare(strict_types=1);
 namespace BEdita\Core\Model\Action;
 
 use BEdita\Core\Model\Entity\ObjectEntity;
+use BEdita\Core\Model\Table\ObjectRelationsTable;
+use BEdita\Core\Model\Table\RelationsTable;
 use Cake\Datasource\EntityInterface;
 use Cake\ORM\Locator\LocatorAwareTrait;
 use Cake\ORM\Query;
@@ -44,7 +46,7 @@ class CountRelatedObjectsAction extends BaseAction
      *
      * @var array
      */
-    protected $_defaultConfig = [
+    protected array $_defaultConfig = [
         'hydrate' => true,
     ];
 
@@ -53,14 +55,14 @@ class CountRelatedObjectsAction extends BaseAction
      *
      * @var \BEdita\Core\Model\Table\RelationsTable
      */
-    protected $Relations = null;
+    protected RelationsTable $Relations;
 
     /**
      * The ObjectRelationTable instance
      *
      * @var \BEdita\Core\Model\Table\ObjectRelationsTable
      */
-    protected $ObjectRelations = null;
+    protected ObjectRelationsTable $ObjectRelations;
 
     /**
      * The relations list described as
@@ -71,9 +73,9 @@ class CountRelatedObjectsAction extends BaseAction
      * ]
      * ```
      *
-     * @var array
+     * @var array|null
      */
-    protected $relationsList = null;
+    protected ?array $relationsList = null;
 
     /**
      * {@inheritDoc}
@@ -122,7 +124,7 @@ class CountRelatedObjectsAction extends BaseAction
     {
         [$directCount, $inverseCount] = $this->filterCount(Hash::get($data, 'count'));
         $count = array_merge($directCount, $inverseCount);
-        /** @var \BEdita\Core\Model\Entity\ObjectEntity[] $entities*/
+        /** @var array<\BEdita\Core\Model\Entity\ObjectEntity> $entities*/
         $entities = (array)Hash::get($data, 'entities');
         if (empty($entities) || empty($count)) {
             return [];
@@ -208,7 +210,7 @@ class CountRelatedObjectsAction extends BaseAction
      * @param array|string $count The count
      * @return array
      */
-    protected function filterCount($count): array
+    protected function filterCount(array|string $count): array
     {
         if (empty($count)) {
             return [[], []];
@@ -278,7 +280,7 @@ class CountRelatedObjectsAction extends BaseAction
     /**
      * Hydrate count result into entities.
      *
-     * @param \BEdita\Core\Model\Entity\ObjectEntity[] $entities The collection of entities
+     * @param array<\BEdita\Core\Model\Entity\ObjectEntity> $entities The collection of entities
      * @param array $countData The count data
      * @param array $properties A list of properties on which search
      * @return void
@@ -369,11 +371,11 @@ class CountRelatedObjectsAction extends BaseAction
      * Return all entities with searched id.
      *
      * @param int $id The entity id to look for
-     * @param \Cake\Datasource\EntityInterface[] $entities The enitites on which search
+     * @param array<\Cake\Datasource\EntityInterface> $entities The enitites on which search
      * @param array $properties A list of properties
      * @return array
      */
-    protected function searchEntitiesById($id, $entities, array $properties): array
+    protected function searchEntitiesById(int $id, array $entities, array $properties): array
     {
         $entitiesFound = [];
         foreach ($entities as $entity) {
@@ -398,7 +400,7 @@ class CountRelatedObjectsAction extends BaseAction
      * @param array $properties A list of properties to look in
      * @return array
      */
-    protected function searchEntitiesInProperties($id, EntityInterface $entity, array $properties): array
+    protected function searchEntitiesInProperties(int $id, EntityInterface $entity, array $properties): array
     {
         return collection(array_filter($entity->extract($properties)))
             ->unfold()

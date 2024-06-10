@@ -37,7 +37,7 @@ class CategoriesBehavior extends Behavior
      * @param \Cake\Datasource\EntityInterface $entity Entity.
      * @return void
      */
-    public function beforeSave(EventInterface $event, EntityInterface $entity)
+    public function beforeSave(EventInterface $event, EntityInterface $entity): void
     {
         if ($entity->get('tags')) {
             $this->prepareData('tags', $entity);

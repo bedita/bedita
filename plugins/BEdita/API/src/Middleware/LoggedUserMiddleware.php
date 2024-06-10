@@ -14,6 +14,7 @@ declare(strict_types=1);
  */
 namespace BEdita\API\Middleware;
 
+use ArrayObject;
 use Authentication\AuthenticationServiceInterface;
 use Authentication\Authenticator\AuthenticatorInterface;
 use Authentication\Authenticator\JwtAuthenticator;
@@ -81,7 +82,7 @@ class LoggedUserMiddleware implements MiddlewareInterface
     {
         $result = $service->getIdentity()->getOriginalData();
         if (
-            (is_array($result) || $result instanceof \ArrayObject) &&
+            (is_array($result) || $result instanceof ArrayObject) &&
             !empty($result['username']) && !empty($result['id'])
         ) {
             LoggedUser::setUser($result);

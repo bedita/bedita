@@ -53,7 +53,7 @@ class Marshaller extends CakeMarshaller
      * @param array $data The data that has to be marshalled
      * @return array
      */
-    protected function buildTablePropertyMap(CakeTable $table, array $data)
+    protected function buildTablePropertyMap(CakeTable $table, array $data): array
     {
         $map = [];
         $schema = $table->getSchema();

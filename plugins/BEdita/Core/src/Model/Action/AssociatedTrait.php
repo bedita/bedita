@@ -34,10 +34,10 @@ trait AssociatedTrait
      * Find entity among list of entities.
      *
      * @param \Cake\Datasource\EntityInterface $needle Entity being searched.
-     * @param \Cake\Datasource\EntityInterface[] $haystack List of entities.
+     * @param array<\Cake\Datasource\EntityInterface> $haystack List of entities.
      * @return \Cake\Datasource\EntityInterface|null
      */
-    protected function findMatchingEntity(EntityInterface $needle, array $haystack)
+    protected function findMatchingEntity(EntityInterface $needle, array $haystack): ?EntityInterface
     {
         $bindingKey = (array)$this->Association->getBindingKey();
         foreach ($haystack as $candidate) {
@@ -60,10 +60,10 @@ trait AssociatedTrait
     /**
      * Compute set-theory intersection between multiple sets of entities.
      *
-     * @param \Cake\Datasource\EntityInterface[] ...$entities Lists of entities.
-     * @return \Cake\Datasource\EntityInterface[]
+     * @param array<\Cake\Datasource\EntityInterface> ...$entities Lists of entities.
+     * @return array<\Cake\Datasource\EntityInterface>
      */
-    protected function intersection(array ...$entities)
+    protected function intersection(array ...$entities): array
     {
         $setA = array_shift($entities);
         foreach ($entities as $setB) {
@@ -81,10 +81,10 @@ trait AssociatedTrait
     /**
      * Compute set-theory difference between multiple sets of entities.
      *
-     * @param \Cake\Datasource\EntityInterface[] ...$entities Lists of entities.
-     * @return \Cake\Datasource\EntityInterface[]
+     * @param array<\Cake\Datasource\EntityInterface> ...$entities Lists of entities.
+     * @return array<\Cake\Datasource\EntityInterface>
      */
-    protected function difference(array ...$entities)
+    protected function difference(array ...$entities): array
     {
         $setA = array_shift($entities);
         foreach ($entities as $setB) {
@@ -102,11 +102,11 @@ trait AssociatedTrait
     /**
      * Sort an array by copying order from an array that holds analogous elements.
      *
-     * @param \Cake\Datasource\EntityInterface[] $array Array to sort.
-     * @param \Cake\Datasource\EntityInterface[] $original Array to copy original order from.
-     * @return \Cake\Datasource\EntityInterface[]
+     * @param array<\Cake\Datasource\EntityInterface> $array Array to sort.
+     * @param array<\Cake\Datasource\EntityInterface> $original Array to copy original order from.
+     * @return array<\Cake\Datasource\EntityInterface>
      */
-    protected function sortByOriginalOrder(array $array, array $original)
+    protected function sortByOriginalOrder(array $array, array $original): array
     {
         $original = array_values($original);
         usort(
@@ -129,9 +129,9 @@ trait AssociatedTrait
      * Find existing associations.
      *
      * @param \Cake\Datasource\EntityInterface $source Source entity.
-     * @return \Cake\Datasource\EntityInterface|\Cake\Datasource\EntityInterface[]|null
+     * @return \Cake\Datasource\EntityInterface|array<\Cake\Datasource\EntityInterface>|null
      */
-    protected function existing(EntityInterface $source)
+    protected function existing(EntityInterface $source): EntityInterface|array|null
     {
         if (!$source->has($this->Association->getProperty())) {
             $this->Association->getSource()->loadInto($source, [$this->Association->getName()]);
@@ -147,7 +147,7 @@ trait AssociatedTrait
      * @param \Cake\Datasource\EntityInterface $target Target entity.
      * @return array
      */
-    protected function getJunctionExtraFields(EntityInterface $source, EntityInterface $target)
+    protected function getJunctionExtraFields(EntityInterface $source, EntityInterface $target): array
     {
         $conditions = $this->Association->getConditions();
         $prefix = sprintf('%s.', $this->Association->junction()->getAlias());
@@ -180,7 +180,7 @@ trait AssociatedTrait
      * @param \Cake\Datasource\EntityInterface $target Target entity.
      * @return \Cake\Datasource\EntityInterface
      */
-    protected function hydrateLink(EntityInterface $source, EntityInterface $target)
+    protected function hydrateLink(EntityInterface $source, EntityInterface $target): EntityInterface
     {
         if (!($this->Association instanceof BelongsToMany)) {
             return $target;
@@ -223,7 +223,7 @@ trait AssociatedTrait
      * @param \Cake\Datasource\EntityInterface $new New link data.
      * @return \Cake\Datasource\EntityInterface|false
      */
-    protected function patchLink(EntityInterface $source, EntityInterface $existing, EntityInterface $new)
+    protected function patchLink(EntityInterface $source, EntityInterface $existing, EntityInterface $new): EntityInterface|false
     {
         if (!($this->Association instanceof BelongsToMany)) {
             return false;
@@ -266,12 +266,12 @@ trait AssociatedTrait
      * Compute difference for the current operation.
      *
      * @param \Cake\Datasource\EntityInterface $source Source entity.
-     * @param \Cake\Datasource\EntityInterface[] $targetEntities Target entities.
+     * @param array<\Cake\Datasource\EntityInterface> $targetEntities Target entities.
      * @param bool $replace Is this a full-replacement operation?
-     * @param \Cake\Datasource\EntityInterface[] $affected Entities affected by this operation.
-     * @return \Cake\Datasource\EntityInterface[]
+     * @param array<\Cake\Datasource\EntityInterface> $affected Entities affected by this operation.
+     * @return array<\Cake\Datasource\EntityInterface>
      */
-    protected function diff(EntityInterface $source, array $targetEntities, $replace, &$affected = [])
+    protected function diff(EntityInterface $source, array $targetEntities, bool $replace, array &$affected = []): array
     {
         $existing = (array)$this->existing($source);
         $kept = $this->intersection($existing, $targetEntities);

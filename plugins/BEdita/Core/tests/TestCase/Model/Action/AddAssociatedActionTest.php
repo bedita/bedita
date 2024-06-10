@@ -15,6 +15,7 @@ declare(strict_types=1);
 
 namespace BEdita\Core\Test\TestCase\Model\Action;
 
+use ArrayObject;
 use BEdita\Core\Exception\InvalidDataException;
 use BEdita\Core\Model\Action\AddAssociatedAction;
 use Cake\Core\Exception\CakeException as Exception;
@@ -23,6 +24,7 @@ use Cake\ORM\Query;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Inflector;
+use RuntimeException;
 
 /**
  * @covers \BEdita\Core\Model\Action\AddAssociatedAction
@@ -103,7 +105,7 @@ class AddAssociatedActionTest extends TestCase
                 [1, 2],
             ],
             'belongsTo' => [
-                new \RuntimeException(
+                new RuntimeException(
                     'Unable to add additional links with association of type "Cake\ORM\Association\BelongsTo"'
                 ),
                 'FakeArticles',
@@ -154,7 +156,7 @@ class AddAssociatedActionTest extends TestCase
             static::assertSame('add', $event->getData('action'));
             static::assertSame($association, $event->getData('association'));
             static::assertSame($entity, $event->getData('entity'));
-            static::assertInstanceOf(\ArrayObject::class, $event->getData('relatedEntities'));
+            static::assertInstanceOf(ArrayObject::class, $event->getData('relatedEntities'));
             $rel = is_object($relatedEntities) ? [$relatedEntities] : (array)$relatedEntities;
             static::assertSameSize($rel, $event->getData('relatedEntities'));
             $n = count($rel);
@@ -275,9 +277,11 @@ class AddAssociatedActionTest extends TestCase
         $result = $action(compact('entity', 'relatedEntities'));
 
         $actual = $association->junction()
-            ->find('list',
-            keyField: $association->getTargetForeignKey(),
-            valueField: 'fake_params')
+            ->find(
+                'list',
+                keyField: $association->getTargetForeignKey(),
+                valueField: 'fake_params'
+            )
             ->toArray();
 
         static::assertEquals(count($expected), $result);

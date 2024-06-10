@@ -23,6 +23,7 @@ use Cake\Datasource\ConnectionManager;
 use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
+use Exception;
 
 /**
  * {@see \BEdita\Core\Model\Behavior\CustomPropertiesBehavior} Test Case
@@ -568,7 +569,7 @@ class CustomPropertiesBehaviorTest extends TestCase
         if (!$connection->getDriver() instanceof Mysql) {
             $this->expectException(BadFilterException::class);
             $this->expectExceptionMessage('customProp finder isn\'t supported for datasource');
-        } elseif ($expected instanceof \Exception) {
+        } elseif ($expected instanceof Exception) {
             $this->expectException(get_class($expected));
             $this->expectExceptionMessage($expected->getMessage());
         }
@@ -577,7 +578,7 @@ class CustomPropertiesBehaviorTest extends TestCase
             ->get($tableName)
             ->find('customProp', $options)
             ->find('list')
-            ->orderAsc('id')
+            ->orderByAsc('id')
             ->toArray();
 
         sort($expected);

@@ -71,7 +71,7 @@ class UsersValidator extends ProfilesValidator
      * @param mixed $value The value to check
      * @return bool
      */
-    public static function validUsername($value): bool
+    public static function validUsername(mixed $value): bool
     {
         if (!is_string($value)) {
             return false;

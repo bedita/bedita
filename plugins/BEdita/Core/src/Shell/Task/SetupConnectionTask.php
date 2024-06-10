@@ -93,7 +93,7 @@ class SetupConnectionTask extends Shell /* @phpstan-ignore-line */
      *
      * @return void
      */
-    public function main()
+    public function main(): void
     {
         $connectionName = $this->param('connection');
         $connection = ConnectionManager::get($connectionName);
@@ -133,7 +133,7 @@ class SetupConnectionTask extends Shell /* @phpstan-ignore-line */
      * @param \Cake\Database\Connection $connection Connection instance.
      * @return bool
      */
-    protected function isConnectionConfigured(Connection $connection)
+    protected function isConnectionConfigured(Connection $connection): bool
     {
         static $original = [
             'host' => '__BE4_DB_HOST__',
@@ -159,7 +159,7 @@ class SetupConnectionTask extends Shell /* @phpstan-ignore-line */
      * @param \Cake\Database\Connection $connection Connection instance.
      * @return void
      */
-    protected function checkCanConnect(Connection $connection)
+    protected function checkCanConnect(Connection $connection): void
     {
         $this->verbose('=====> Checking ability to connect... ', 0);
         try {
@@ -179,7 +179,7 @@ class SetupConnectionTask extends Shell /* @phpstan-ignore-line */
      * @param \Cake\Database\Connection $connection Connection instance.
      * @return \Cake\Database\Connection
      */
-    protected function readConnectionParams(Connection $connection)
+    protected function readConnectionParams(Connection $connection): Connection
     {
         $config = array_fill_keys(['host', 'port', 'database', 'username', 'password'], '');
         $config += $connection->config();
@@ -243,7 +243,7 @@ class SetupConnectionTask extends Shell /* @phpstan-ignore-line */
      * @param \Cake\Database\Connection $connection Connection instance.
      * @return void
      */
-    protected function saveConnectionConfig(Connection $connection)
+    protected function saveConnectionConfig(Connection $connection): void
     {
         $file = new File($this->param('config-file')); /* @phpstan-ignore-line */
         if (!$file->exists() || !$file->readable() || !$file->writable()) {

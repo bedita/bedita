@@ -24,6 +24,7 @@ use Cake\Database\Driver\Postgres;
 use Cake\Database\Expression\IdentifierExpression;
 use Cake\Database\Expression\QueryExpression;
 use Cake\ORM\Query;
+use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
 use Generator;
 
@@ -46,14 +47,14 @@ class FixHistoryCommand extends Command
      *
      * @var \Cake\ORM\Table
      */
-    public $History;
+    public Table $History;
 
     /**
      * Application ID
      *
      * @var int
      */
-    public $appId;
+    public int $appId;
 
     /**
      * Increment to use in object ID scan
@@ -67,14 +68,14 @@ class FixHistoryCommand extends Command
      *
      * @var int
      */
-    protected $minId;
+    protected int $minId;
 
     /**
      * Max object ID to scan
      *
      * @var int
      */
-    protected $maxId;
+    protected int $maxId;
 
     /**
      * @inheritDoc

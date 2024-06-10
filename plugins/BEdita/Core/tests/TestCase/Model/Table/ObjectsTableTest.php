@@ -25,6 +25,7 @@ use Cake\ORM\Exception\PersistenceFailedException;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Hash;
+use Exception;
 
 /**
  * {@see \BEdita\Core\Model\Table\ObjectsTable} Test Case
@@ -298,7 +299,7 @@ class ObjectsTableTest extends TestCase
      */
     public function testFindType($expected, array $types)
     {
-        if ($expected instanceof \Exception) {
+        if ($expected instanceof Exception) {
             $this->expectException(get_class($expected));
             $this->expectExceptionCode($expected->getCode());
             $this->expectExceptionMessage($expected->getMessage());
@@ -627,7 +628,7 @@ class ObjectsTableTest extends TestCase
      */
     public function testCheckLocked($expected, array $data): void
     {
-        if ($expected instanceof \Exception) {
+        if ($expected instanceof Exception) {
             $this->expectException(get_class($expected));
             $this->expectExceptionMessage($expected->getMessage());
         }

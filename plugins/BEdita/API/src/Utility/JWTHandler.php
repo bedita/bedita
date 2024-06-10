@@ -21,6 +21,7 @@ use Cake\Utility\Hash;
 use Cake\Utility\Security;
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
+use InvalidArgumentException;
 
 /**
  * Encode/decode JWT token.
@@ -64,7 +65,7 @@ class JWTHandler
         $keyMaterial = Hash::get($options, 'key', Security::getSalt());
         $algorithm = Hash::get($options, 'algorithm', Configure::read('Security.jwt.algorithm', 'HS256'));
         if (!is_string($algorithm)) {
-            throw new \InvalidArgumentException(__d('bedita', 'Algorithm must be a string'));
+            throw new InvalidArgumentException(__d('bedita', 'Algorithm must be a string'));
         }
 
         return (array)JWT::decode($token, new Key($keyMaterial, $algorithm));

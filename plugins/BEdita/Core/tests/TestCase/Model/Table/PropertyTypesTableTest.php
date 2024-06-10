@@ -15,8 +15,10 @@ declare(strict_types=1);
 
 namespace BEdita\Core\Test\TestCase\Model\Table;
 
+use BEdita\Core\Exception\ImmutableResourceException;
 use BEdita\Core\Model\Table\ObjectTypesTable;
 use Cake\Cache\Cache;
+use Cake\Http\Exception\ForbiddenException;
 use Cake\ORM\Association\HasMany;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
@@ -193,7 +195,7 @@ class PropertyTypesTableTest extends TestCase
      */
     public function testBeforeDeleteInUse()
     {
-        $this->expectException(\Cake\Http\Exception\ForbiddenException::class);
+        $this->expectException(ForbiddenException::class);
         $this->expectExceptionCode('403');
         $this->expectExceptionMessage('Property type with existing properties');
         $propertyType = $this->PropertyTypes->get(1);
@@ -309,7 +311,7 @@ class PropertyTypesTableTest extends TestCase
      */
     public function testBeforeSaveForbidden()
     {
-        $this->expectException(\BEdita\Core\Exception\ImmutableResourceException::class);
+        $this->expectException(ImmutableResourceException::class);
         $this->expectExceptionCode('403');
         $this->expectExceptionMessage('Could not modify core property');
         $propertyType = $this->PropertyTypes->get(1);

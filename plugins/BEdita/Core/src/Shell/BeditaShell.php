@@ -93,7 +93,7 @@ class BeditaShell extends Shell /* @phpstan-ignore-line */
      * @return void
      * @codeCoverageIgnore
      */
-    public function setup()
+    public function setup(): void
     {
         $this->out('=====> Checking connection');
         $this->SetupConnection->params = $this->params;
@@ -144,7 +144,7 @@ class BeditaShell extends Shell /* @phpstan-ignore-line */
      * @return void
      * @codeCoverageIgnore
      */
-    public function check()
+    public function check(): void
     {
         $this->out('=====> Checking schema');
         $this->CheckSchema->params = $this->params;

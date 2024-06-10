@@ -30,7 +30,7 @@ class DateTimeType extends CakeDateTimeType
     public function marshal($value): ?DateTimeInterface
     {
         $value = static::marshalDateTime($value, $this->getDateTimeClassName());
-        if ($value instanceof \DateTimeInterface) {
+        if ($value instanceof DateTimeInterface) {
             return $value;
         }
 
@@ -52,11 +52,11 @@ class DateTimeType extends CakeDateTimeType
      *
      * @param mixed $value DateTime input
      * @param string $dateTimeClassName DateTime class name to use to parse string
-     * @return \DateTimeInterface|null|mixed
+     * @return \DateTimeInterface|mixed|null
      */
-    public static function marshalDateTime($value, $dateTimeClassName)
+    public static function marshalDateTime(mixed $value, string $dateTimeClassName): mixed
     {
-        if ($value instanceof \DateTimeInterface) {
+        if ($value instanceof DateTimeInterface) {
             return $value;
         }
 

@@ -18,6 +18,7 @@ namespace BEdita\Core\Test\TestCase\Model\Entity;
 use BEdita\Core\Model\Entity\Role;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
+use InvalidArgumentException;
 
 /**
  * {@see \BEdita\Core\Model\Entity\Role} Test Case
@@ -79,7 +80,7 @@ class RoleTest extends TestCase
         ];
         $role = $this->Roles->patchEntity($role, $data);
         if (!($role instanceof Role)) {
-            throw new \InvalidArgumentException();
+            throw new InvalidArgumentException();
         }
 
         $this->assertEquals(1, $role->id);

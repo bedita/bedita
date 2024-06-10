@@ -22,6 +22,8 @@ use Cake\Log\LogTrait;
 use Cake\ORM\Entity;
 use Cake\Utility\Hash;
 use Cake\Utility\Text;
+use ErrorException;
+use InvalidArgumentException;
 use Laminas\Diactoros\Stream as LaminasStream;
 use League\Flysystem\UnableToReadFile;
 use Psr\Http\Message\StreamInterface;
@@ -118,7 +120,7 @@ class Stream extends Entity implements JsonApiSerializable
      * @param int $subLevels Number of sub-levels to organize files.
      * @return string
      */
-    public function filesystemPath($filesystem = 'default', $subLevels = 0)
+    public function filesystemPath(string $filesystem = 'default', int $subLevels = 0): string
     {
         if (!$this->has('uuid')) {
             // Generate random UUID. This is needed for path, otherwise we'd let Cake take care of it.
@@ -161,7 +163,7 @@ class Stream extends Entity implements JsonApiSerializable
      *
      * @return \Psr\Http\Message\StreamInterface|null
      */
-    protected function _getContents()
+    protected function _getContents(): ?StreamInterface
     {
         if (!empty($this->_fields['contents'])) {
             // Downloaded already.
@@ -196,7 +198,7 @@ class Stream extends Entity implements JsonApiSerializable
      * @return \Laminas\Diactoros\Stream
      * @throws \InvalidArgumentException Throws an exception if the parameter is not a resource.
      */
-    protected function createStream($source)
+    protected function createStream($source): \Laminas\Diactoros\Stream
     {
         $info = stream_get_meta_data($source);
         if ($info['seekable'] === true) {
@@ -246,7 +248,7 @@ class Stream extends Entity implements JsonApiSerializable
      * @return \Psr\Http\Message\StreamInterface
      * @throws \InvalidArgumentException Throws an exception if contents could not be converted to a PSR-7 stream.
      */
-    protected function _setContents($contents)
+    protected function _setContents(mixed $contents): StreamInterface
     {
         if ($contents instanceof StreamInterface) {
             // Already a PSR-7 stream.
@@ -264,7 +266,7 @@ class Stream extends Entity implements JsonApiSerializable
             return $this->createStream($resource);
         }
 
-        throw new \InvalidArgumentException(
+        throw new InvalidArgumentException(
             'Invalid contents provided, must be a PSR-7 stream, a resource or a value that can be converted to string'
         );
     }
@@ -274,7 +276,7 @@ class Stream extends Entity implements JsonApiSerializable
      *
      * @return string|null
      */
-    protected function _getUrl()
+    protected function _getUrl(): ?string
     {
         if (!empty($this->_fields['url'])) {
             // Already computed the public URL. Let's avoid requesting it again.
@@ -329,13 +331,13 @@ class Stream extends Entity implements JsonApiSerializable
         // exif_read_data() is one such function, evading usual try-catch blocks.
         set_error_handler(
             function (int $code, string $message, string $filename, int $lineNumber): void {
-                throw new \ErrorException($message, $code, LOG_ERR, $filename, $lineNumber);
+                throw new ErrorException($message, $code, LOG_ERR, $filename, $lineNumber);
             }
         );
 
         try {
             $exif = exif_read_data($resource, '', true);
-        } catch (\ErrorException $e) {
+        } catch (ErrorException $e) {
             // Log a warning if reading EXIF throws an error, but keep going
             // so that other metadata is eventually updated
             $this->log(sprintf('Error reading EXIF headers for stream %s (object ID: %d)', $this->uuid, $this->object_id), 'warning');

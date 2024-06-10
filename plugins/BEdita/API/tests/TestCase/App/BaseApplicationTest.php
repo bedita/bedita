@@ -26,6 +26,7 @@ use Cake\Http\ServerRequest;
 use Cake\Queue\QueueManager;
 use Cake\Routing\Middleware\RoutingMiddleware;
 use Cake\TestSuite\TestCase;
+use Exception;
 
 /**
  * {@see BEdita\API\App\Application} Test Case
@@ -304,7 +305,7 @@ class BaseApplicationTest extends TestCase
      */
     public function testLoadAuthProviders($expected, string $authProvider): void
     {
-        if ($expected instanceof \Exception) {
+        if ($expected instanceof Exception) {
             $this->expectException(get_class($expected));
             $this->expectExceptionMessage($expected->getMessage());
         }

@@ -66,7 +66,7 @@ class PriorityBehavior extends Behavior
      * @param \Cake\Datasource\EntityInterface $entity Entity instance.
      * @return void
      */
-    public function beforeSave(EventInterface $event, EntityInterface $entity)
+    public function beforeSave(EventInterface $event, EntityInterface $entity): void
     {
         $fields = $this->getConfig('fields');
         foreach ($fields as $field => $config) {
@@ -81,7 +81,7 @@ class PriorityBehavior extends Behavior
      * @param \Cake\Datasource\EntityInterface $entity Entity instance.
      * @return void
      */
-    public function beforeDelete(EventInterface $event, EntityInterface $entity)
+    public function beforeDelete(EventInterface $event, EntityInterface $entity): void
     {
         $fields = $this->getConfig('fields');
         foreach ($fields as $field => $config) {
@@ -153,7 +153,7 @@ class PriorityBehavior extends Behavior
      * Get scope conditions from entity.
      *
      * @param \Cake\Datasource\EntityInterface $entity Entity instance.
-     * @param string[] $scope A list of scope fields.
+     * @param array<string> $scope A list of scope fields.
      * @return array A list of conditions.
      */
     protected function _getConditions(EntityInterface $entity, array $scope): array

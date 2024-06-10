@@ -22,7 +22,7 @@ use BEdita\Core\Utility\LoggedUser;
 use Cake\Database\Expression\QueryExpression;
 use Cake\Datasource\EntityInterface;
 use Cake\Event\EventInterface;
-use Cake\ORM\Query;
+use Cake\ORM\Query\SelectQuery;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
@@ -121,10 +121,10 @@ class RolesTable extends Table
     /**
      * Finder for my roles (i.e.: roles of currently logged users).
      *
-     * @param \Cake\ORM\Query $query Query object instance.
-     * @return \Cake\ORM\Query
+     * @param \Cake\ORM\Query\SelectQuery $query Query object instance.
+     * @return \Cake\ORM\Query\SelectQuery
      */
-    protected function findMine(Query $query)
+    protected function findMine(SelectQuery $query): SelectQuery
     {
         return $query
             ->where(function (QueryExpression $exp) {
@@ -147,7 +147,7 @@ class RolesTable extends Table
      * @return void
      * @throws \BEdita\Core\Exception\ImmutableResourceException if entity is not deletable
      */
-    public function beforeDelete(EventInterface $event, EntityInterface $entity)
+    public function beforeDelete(EventInterface $event, EntityInterface $entity): void
     {
         if ($entity->id === static::ADMIN_ROLE) {
             throw new ImmutableResourceException(__d('bedita', 'Could not delete "Role" {0}', $entity->id));

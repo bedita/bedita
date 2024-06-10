@@ -19,6 +19,7 @@ use BEdita\Core\Utility\JsonApiSerializable;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Hash;
+use InvalidArgumentException;
 
 /**
  * @coversDefaultClass \BEdita\Core\Model\Entity\JsonApiTrait
@@ -363,7 +364,7 @@ class JsonApiTraitTest extends TestCase
      */
     public function testGetRelationshipsIncludedNotSerializable()
     {
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Objects must implement "BEdita\Core\Utility\JsonApiSerializable", got "string" instead');
         $role = $this->Roles->get(2);
         $role->users = 'Gustavo';

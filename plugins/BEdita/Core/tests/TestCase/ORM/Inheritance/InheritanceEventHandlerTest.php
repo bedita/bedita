@@ -15,6 +15,7 @@ declare(strict_types=1);
 
 namespace BEdita\Core\Test\TestCase\ORM\Inheritance;
 
+use ArrayObject;
 use BEdita\Core\ORM\Inheritance\InheritanceEventHandler;
 use Cake\Datasource\EntityInterface;
 use Cake\Event\Event;
@@ -398,7 +399,7 @@ class InheritanceEventHandlerTest extends TestCase
         // Main table
         $this->fakeFelines->getEventManager()->on(
             'Model.beforeSave',
-            function (Event $event, EntityInterface $entity, \ArrayObject $options) use (&$eventDispatchedFelines) {
+            function (Event $event, EntityInterface $entity, ArrayObject $options) use (&$eventDispatchedFelines) {
                 $eventDispatchedFelines++;
                 static::assertArrayNotHasKey('_inherited', $options);
                 static::assertTrue($options['atomic']);
@@ -408,7 +409,7 @@ class InheritanceEventHandlerTest extends TestCase
         // Inherited table
         $this->fakeMammals->getEventManager()->on(
             'Model.beforeSave',
-            function (Event $event, EntityInterface $entity, \ArrayObject $options) use (&$eventDispatchedMammals) {
+            function (Event $event, EntityInterface $entity, ArrayObject $options) use (&$eventDispatchedMammals) {
                 $eventDispatchedMammals++;
                 static::assertArrayHasKey('_inherited', $options);
                 static::assertTrue($options['_inherited']);
@@ -419,7 +420,7 @@ class InheritanceEventHandlerTest extends TestCase
         // Inherited table
         $this->fakeAnimals->getEventManager()->on(
             'Model.beforeSave',
-            function (Event $event, EntityInterface $entity, \ArrayObject $options) use (&$eventDispatchedAnimals) {
+            function (Event $event, EntityInterface $entity, ArrayObject $options) use (&$eventDispatchedAnimals) {
                 $eventDispatchedAnimals++;
                 static::assertArrayHasKey('_inherited', $options);
                 static::assertTrue($options['_inherited']);

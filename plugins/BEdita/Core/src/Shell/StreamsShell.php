@@ -20,6 +20,8 @@ use Cake\Console\Shell;
 use Cake\Database\Expression\QueryExpression;
 use Cake\I18n\DateTime;
 use Cake\ORM\Query;
+use Generator;
+use Throwable;
 
 /**
  * Stream shell commands: removeOrphans
@@ -82,7 +84,7 @@ class StreamsShell extends Shell /* @phpstan-ignore-line */
      *
      * @return void
      */
-    public function removeOrphans()
+    public function removeOrphans(): void
     {
         $days = (int)$this->param('days');
         $query = $this->Streams->find()
@@ -104,7 +106,7 @@ class StreamsShell extends Shell /* @phpstan-ignore-line */
      *
      * @return void
      */
-    public function refreshMetadata()
+    public function refreshMetadata(): void
     {
         $query = $this->Streams->find('all');
         if ((bool)$this->param('force') === false) {
@@ -151,7 +153,7 @@ class StreamsShell extends Shell /* @phpstan-ignore-line */
             // ...and write it back, triggering Stream model's methods to read metadata from file
             $stream->contents = $content;
             $this->Streams->saveOrFail($stream);
-        } catch (\Throwable $t) {
+        } catch (Throwable $t) {
             $this->err(sprintf('  error updating stream %s (object %d): %s', $stream->uuid, $stream->object_id, $t->getMessage()));
 
             return false;
@@ -165,9 +167,9 @@ class StreamsShell extends Shell /* @phpstan-ignore-line */
      *
      * @param \Cake\ORM\Query $query Query to retrieve concerned streams
      * @param int $limit Limit amount of objects retrieved with each internal iteration
-     * @return \Generator|\BEdita\Core\Model\Entity\Stream[]
+     * @return \Generator|array<\BEdita\Core\Model\Entity\Stream>
      */
-    protected function streamsGenerator(Query $query, int $limit = 100): \Generator
+    protected function streamsGenerator(Query $query, int $limit = 100): Generator
     {
         // Although `uuid` is not a monotonically increasing field, we will at most skip the streams that are created
         // AFTER we launch the script, and whose UUID is lexicographically less than the one we are currently

@@ -15,6 +15,7 @@ declare(strict_types=1);
 
 namespace BEdita\Core\Model\Behavior;
 
+use ArrayObject;
 use Cake\Core\Configure;
 use Cake\Event\EventInterface;
 use Cake\ORM\Behavior;
@@ -52,7 +53,7 @@ class DataCleanupBehavior extends Behavior
      * @param \ArrayObject $data The input data to save
      * @return void
      */
-    public function beforeMarshal(EventInterface $event, \ArrayObject $data)
+    public function beforeMarshal(EventInterface $event, ArrayObject $data): void
     {
         // fill defaults only on new objects
         if (!empty($data['id'])) {

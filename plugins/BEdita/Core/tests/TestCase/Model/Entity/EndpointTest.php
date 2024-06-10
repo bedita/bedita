@@ -20,6 +20,8 @@ use BEdita\Core\Model\Entity\ObjectType;
 use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
+use Exception;
+use InvalidArgumentException;
 
 /**
  * {@see \BEdita\Core\Model\Entity\Endpoint} Test Case
@@ -89,7 +91,7 @@ class EndpointTest extends TestCase
         ];
         $endpoint = $this->Endpoints->patchEntity($endpoint, $data);
         if (!($endpoint instanceof Endpoint)) {
-            throw new \InvalidArgumentException();
+            throw new InvalidArgumentException();
         }
 
         $this->assertEquals(1, $endpoint->id);
@@ -135,7 +137,7 @@ class EndpointTest extends TestCase
      */
     public function testSetObjectTypeName($expected, ?string $name): void
     {
-        if ($expected instanceof \Exception) {
+        if ($expected instanceof Exception) {
             $this->expectException(RecordNotFoundException::class);
             $this->expectExceptionMessage($expected->getMessage());
         }

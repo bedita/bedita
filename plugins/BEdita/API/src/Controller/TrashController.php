@@ -19,6 +19,8 @@ use BEdita\Core\Model\Action\GetObjectAction;
 use BEdita\Core\Model\Action\ListObjectsAction;
 use BEdita\Core\Model\Action\SaveEntityAction;
 use Cake\Http\Exception\ConflictException;
+use Cake\Http\Response;
+use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
 
 /**
@@ -39,7 +41,7 @@ class TrashController extends AppController
      *
      * @var \Cake\ORM\Table
      */
-    protected $Table;
+    protected Table $Table;
 
     /**
      * @inheritDoc
@@ -63,7 +65,7 @@ class TrashController extends AppController
      *
      * @return void
      */
-    public function index()
+    public function index(): void
     {
         $filter = (array)$this->request->getQuery('filter') + array_filter(['query' => $this->request->getQuery('q')]);
         $filter['locked'] = false;
@@ -82,7 +84,7 @@ class TrashController extends AppController
      * @param int $id Object ID.
      * @return void
      */
-    public function view($id)
+    public function view(int $id): void
     {
         $action = new GetObjectAction(['table' => $this->Table]);
         $trash = $action(['primaryKey' => $id, 'deleted' => true, 'locked' => false]);
@@ -100,7 +102,7 @@ class TrashController extends AppController
      *      the object ID in the URL.
      * @throws \Cake\Http\Exception\InternalErrorException Throws an exception if an error occurs during restore.
      */
-    public function restore($id)
+    public function restore(int $id): Response
     {
         $this->request->allowMethod('patch');
 
@@ -126,7 +128,7 @@ class TrashController extends AppController
      * @return \Cake\Http\Response
      * @throws \Cake\ORM\Exception\PersistenceFailedException Throws an exception if an error occurs during deletion.
      */
-    public function delete($id)
+    public function delete(int $id): Response
     {
         $this->request->allowMethod('delete');
 

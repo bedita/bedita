@@ -19,6 +19,7 @@ use BEdita\Core\Model\Entity\Folder;
 use BEdita\Core\Utility\LoggedUser;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
+use RuntimeException;
 
 /**
  * {@see \BEdita\Core\Model\Entity\Folder} Test Case
@@ -266,7 +267,7 @@ class FolderTest extends TestCase
      */
     public function testGetPathOrphanFolder()
     {
-        $this->expectException(\RuntimeException::class);
+        $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('Folder "12" is not on the tree.');
         TableRegistry::getTableLocator()->get('Trees')->deleteAll(['object_id' => 12]);
         TableRegistry::getTableLocator()->get('Trees')->recover();

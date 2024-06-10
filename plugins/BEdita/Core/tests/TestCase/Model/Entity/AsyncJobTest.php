@@ -15,6 +15,7 @@ declare(strict_types=1);
 
 namespace BEdita\Core\Test\TestCase\Model\Entity;
 
+use BadMethodCallException;
 use BEdita\Core\Job\JobService;
 use BEdita\Core\Job\ServiceRegistry;
 use Cake\Datasource\ConnectionManager;
@@ -145,7 +146,7 @@ class AsyncJobTest extends TestCase
      */
     public function testRunNotLocked()
     {
-        $this->expectException(\BadMethodCallException::class);
+        $this->expectException(BadMethodCallException::class);
         $this->expectExceptionMessage('Only locked jobs can be run');
         $this->AsyncJobs->get('1e2d1c66-c0bb-47d7-be5a-5bc92202333e')->run();
     }

@@ -15,6 +15,7 @@ declare(strict_types=1);
 
 namespace BEdita\Core\Test\TestCase\Model\Action;
 
+use ArrayObject;
 use BEdita\Core\Model\Action\SetRelatedObjectsAction;
 use BEdita\Core\ORM\Association\RelatedTo;
 use BEdita\Core\Utility\LoggedUser;
@@ -24,6 +25,7 @@ use Cake\Event\Event;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Inflector;
+use Exception;
 
 /**
  * @covers \BEdita\Core\Model\Action\SetRelatedObjectsAction
@@ -180,7 +182,7 @@ class SetRelatedObjectsActionTest extends TestCase
      */
     public function testInvocation($expected, $objectType, $relation, $id, array $related)
     {
-        if ($expected instanceof \Exception) {
+        if ($expected instanceof Exception) {
             $this->expectException(get_class($expected));
             $this->expectExceptionMessage($expected->getMessage());
         }
@@ -215,7 +217,7 @@ class SetRelatedObjectsActionTest extends TestCase
             static::assertSame('set', $event->getData('action'));
             static::assertSame($association, $event->getData('association'));
             static::assertSame($entity, $event->getData('entity'));
-            static::assertInstanceOf(\ArrayObject::class, $event->getData('relatedEntities'));
+            static::assertInstanceOf(ArrayObject::class, $event->getData('relatedEntities'));
             $rel = is_object($relatedEntities) ? [$relatedEntities] : (array)$relatedEntities;
             static::assertSameSize($rel, $event->getData('relatedEntities'));
             $n = count($rel);

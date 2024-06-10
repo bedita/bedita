@@ -24,7 +24,7 @@ use Cake\Database\Expression\QueryExpression;
 use Cake\Database\Schema\TableSchemaInterface;
 use Cake\Datasource\EntityInterface;
 use Cake\Event\EventInterface;
-use Cake\ORM\Query;
+use Cake\ORM\Query\SelectQuery;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
@@ -188,11 +188,11 @@ class RelationsTable extends Table
     /**
      * Find a relation by its name or inverse name.
      *
-     * @param \Cake\ORM\Query $query Query object.
+     * @param \Cake\ORM\Query\SelectQuery $query Query object.
      * @param array $options Additional options. The `name` key is required.
-     * @return \Cake\ORM\Query
+     * @return \Cake\ORM\Query\SelectQuery
      */
-    protected function findByName(Query $query, array $options = [])
+    protected function findByName(SelectQuery $query, array $options = []): SelectQuery
     {
         if (empty($options['name'])) {
             throw new BadFilterException(__d('bedita', 'Missing required parameter "{0}"', 'name'));
@@ -231,7 +231,7 @@ class RelationsTable extends Table
      *
      * @return void
      */
-    public function afterSave()
+    public function afterSave(): void
     {
         Cache::clear(ObjectTypesTable::CACHE_CONFIG);
     }
@@ -241,7 +241,7 @@ class RelationsTable extends Table
      *
      * @return void
      */
-    public function afterDelete()
+    public function afterDelete(): void
     {
         Cache::clear(ObjectTypesTable::CACHE_CONFIG);
     }

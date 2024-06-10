@@ -21,6 +21,7 @@ use Cake\Queue\Job\Message;
 use Cake\TestSuite\TestCase;
 use Enqueue\Null\NullConnectionFactory;
 use Enqueue\Null\NullMessage;
+use Exception;
 use Interop\Queue\Processor;
 use RuntimeException;
 
@@ -69,7 +70,7 @@ class QueueJobTest extends TestCase
 
         $method = $service->method('run');
         $method->will(static::returnValue($return));
-        if ($return instanceof \Exception) {
+        if ($return instanceof Exception) {
             $method->willThrowException($return);
         }
 
