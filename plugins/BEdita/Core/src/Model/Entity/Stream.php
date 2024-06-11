@@ -198,7 +198,7 @@ class Stream extends Entity implements JsonApiSerializable
      * @return \Laminas\Diactoros\Stream
      * @throws \InvalidArgumentException Throws an exception if the parameter is not a resource.
      */
-    protected function createStream($source): \Laminas\Diactoros\Stream
+    protected function createStream($source): LaminasStream
     {
         $info = stream_get_meta_data($source);
         if ($info['seekable'] === true) {

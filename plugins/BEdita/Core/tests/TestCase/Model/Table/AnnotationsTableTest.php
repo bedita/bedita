@@ -221,6 +221,6 @@ class AnnotationsTableTest extends TestCase
         $this->expectExceptionMessage('Could not delete annotation "1" of user "1"');
         LoggedUser::setUser(['id' => 5]);
         $annotation = $this->Annotations->get(1);
-        $success = $this->Annotations->delete($annotation);
+        $this->Annotations->delete($annotation);
     }
 }

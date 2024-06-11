@@ -18,7 +18,6 @@ namespace BEdita\Core\ORM\Association;
 use BEdita\Core\Model\Entity\ObjectType;
 use BEdita\Core\ORM\Inheritance\Table as InheritanceTable;
 use Cake\ORM\Association\BelongsToMany;
-use Cake\ORM\Query;
 use Cake\ORM\Query\SelectQuery;
 use Cake\ORM\Table;
 

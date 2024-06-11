@@ -48,7 +48,7 @@ class PriorityBehavior extends Behavior
 
         $fields = Hash::normalize($this->getConfig('fields'));
         unset($fields['_all']);
-        foreach ($fields as $field => &$config) {
+        foreach ($fields as &$config) {
             $config = (array)$config + $defaultConfig;
         }
         unset($config);

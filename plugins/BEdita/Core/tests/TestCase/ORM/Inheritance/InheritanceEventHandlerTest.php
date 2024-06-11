@@ -434,7 +434,7 @@ class InheritanceEventHandlerTest extends TestCase
             'subclass' => 'Lucky pets',
             'family' => 'Cats',
         ]);
-        $result = $this->fakeFelines->save($feline);
+        $this->fakeFelines->save($feline);
 
         static::assertSame(1, $eventDispatchedFelines);
         static::assertSame(1, $eventDispatchedMammals);

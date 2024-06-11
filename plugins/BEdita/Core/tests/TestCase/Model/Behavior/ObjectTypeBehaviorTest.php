@@ -77,7 +77,6 @@ class ObjectTypeBehaviorTest extends TestCase
         if (!$table->hasBehavior('ObjectType')) {
             $table->addBehavior('BEdita/Core.ObjectType');
         }
-        $behavior = $table->behaviors()->get('ObjectType');
 
         static::assertTrue($table->behaviors()->hasMethod('objectType'));
 

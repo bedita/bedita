@@ -64,7 +64,7 @@ class ImageThumbsHandlerTest extends TestCase
      */
     public static function afterSaveAssociatedProvider(): array
     {
-        $image = $this->getMockBuilder(ObjectEntity::class)
+        $image = static::getMockBuilder(ObjectEntity::class)
             ->onlyMethods(['get'])
             ->getMock();
         $image->method('get')->willReturn('images');
@@ -78,14 +78,14 @@ class ImageThumbsHandlerTest extends TestCase
             ],
             'noImages' => [
                 [
-                    'entity' => $this->getMockBuilder('BEdita\Core\Model\Entity\Stream')->getMock(),
+                    'entity' => static::getMockBuilder('BEdita\Core\Model\Entity\Stream')->getMock(),
                     'relatedEntities' => [],
                 ],
                 false,
             ],
             'stream and images' => [
                 [
-                    'entity' => $this->getMockBuilder('BEdita\Core\Model\Entity\Stream')->getMock(),
+                    'entity' => static::getMockBuilder('BEdita\Core\Model\Entity\Stream')->getMock(),
                     'relatedEntities' => [
                         $image,
                     ],

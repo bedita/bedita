@@ -187,7 +187,6 @@ class AssociationCollectionTest extends TestCase
      */
     public function testRemove()
     {
-        $association = $this->fakeMammals->getAssociation('FakeFelines');
         $collection = new AssociationCollection($this->fakeMammals);
         $collection->remove('FakeFelines');
 

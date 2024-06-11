@@ -372,7 +372,7 @@ class ResourcesControllerTest extends IntegrationTestCase
 
         $this->configRequestHeaders('POST', $this->getUserAuthHeader());
         $this->post('/roles', json_encode(compact('data')));
-        $result = json_decode((string)$this->_response->getBody(), true);
+        json_decode((string)$this->_response->getBody(), true);
         $this->assertResponseCode(201);
     }
 

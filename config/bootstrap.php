@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -41,7 +43,6 @@ use Cake\Mailer\Mailer;
 use Cake\Mailer\TransportFactory;
 use Cake\Routing\Router;
 use Cake\Utility\Security;
-use Exception;
 
 /*
  * See https://github.com/josegonzalez/php-dotenv for API details.
@@ -76,14 +77,14 @@ use Exception;
 try {
     Configure::config('default', new PhpConfig());
     Configure::load('app', 'default', false);
-} catch (Exception $e) {
+} catch (\Exception $e) {
     exit($e->getMessage() . "\n");
 }
 
 try {
     Configure::config('json', new JsonConfig());
     Configure::load('app', 'json');
-} catch (Exception $e) {
+} catch (\Exception $e) {
     // Do not halt if `app.json` is missing.
 }
 

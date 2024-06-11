@@ -418,7 +418,7 @@ class SignupUserActionTest extends TestCase
             'access_token' => 'incredibly-long-string',
         ];
         $action = new SignupUserAction();
-        $result = $action(compact('data'));
+        $action(compact('data'));
     }
 
     /**

@@ -18,12 +18,13 @@ namespace BEdita\Core\Test\TestCase\Model\Action;
 use ArrayObject;
 use BEdita\Core\Exception\InvalidDataException;
 use BEdita\Core\Model\Action\AddAssociatedAction;
-use Cake\Core\Exception\CakeException as Exception;
+use Cake\Core\Exception\CakeException as CakeException;
 use Cake\Event\Event;
-use Cake\ORM\Query;
+use Cake\ORM\Query\SelectQuery;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Inflector;
+use Exception;
 use RuntimeException;
 
 /**
@@ -129,7 +130,7 @@ class AddAssociatedActionTest extends TestCase
      */
     public function testInvocation($expected, $table, $association, $entity, $related)
     {
-        if ($expected instanceof \Exception) {
+        if ($expected instanceof Exception) {
             $this->expectException(get_class($expected));
             $this->expectExceptionMessage($expected->getMessage());
         }
@@ -185,7 +186,7 @@ class AddAssociatedActionTest extends TestCase
                 ])
                 ->matching(
                     Inflector::camelize($association->getSource()->getTable()),
-                    function (Query $query) use ($association, $entity) {
+                    function (SelectQuery $query) use ($association, $entity) {
                         return $query->where([
                             $association->getSource()->aliasField($association->getSource()->getPrimaryKey()) => $entity->id,
                         ]);
@@ -229,7 +230,7 @@ class AddAssociatedActionTest extends TestCase
 
             $action = new AddAssociatedAction(compact('association'));
             $action(compact('entity', 'relatedEntities'));
-        } catch (Exception $e) {
+        } catch (CakeException $e) {
             $expected = [
                 'detail' => [
                     'gustavo' => [
