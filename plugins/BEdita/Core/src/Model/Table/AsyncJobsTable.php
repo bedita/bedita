@@ -124,13 +124,12 @@ class AsyncJobsTable extends Table
      *
      * @codeCoverageIgnore
      */
-    protected function _initializeSchema(TableSchemaInterface $schema): TableSchemaInterface
+    public function getSchema(): TableSchemaInterface
     {
-        $schema->setColumnType('payload', 'json')
+        return parent::getSchema()
+            ->setColumnType('payload', 'json')
             ->setColumnType('uuid', 'uuid')
             ->setColumnType('results', 'json');
-
-        return $schema;
     }
 
     /**

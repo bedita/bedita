@@ -114,7 +114,7 @@ class CheckSchemaTaskTest extends TestCase
                 'columns' => ['foo_bar'],
             ]);
         foreach ($table->createSql($connection) as $statement) {
-            $connection->query($statement);
+            $connection->execute($statement);
         }
 
         $this->exec(CheckSchemaTask::class);

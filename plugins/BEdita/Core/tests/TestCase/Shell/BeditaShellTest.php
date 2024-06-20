@@ -78,13 +78,13 @@ class BeditaShellTest extends TestCase
                 foreach ($tables as $table) {
                     $sql = $connection->getSchemaCollection()->describe($table)->dropConstraintSql($connection);
                     foreach ($sql as $query) {
-                        $connection->query($query);
+                        $connection->updateQuery($query);
                     }
                 }
                 foreach ($tables as $table) {
                     $sql = $connection->getSchemaCollection()->describe($table)->dropSql($connection);
                     foreach ($sql as $query) {
-                        $connection->query($query);
+                        $connection->updateQuery($query);
                     }
                 }
             });

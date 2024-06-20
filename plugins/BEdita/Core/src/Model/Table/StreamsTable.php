@@ -155,9 +155,9 @@ class StreamsTable extends Table
      *
      * @codeCoverageIgnore
      */
-    protected function _initializeSchema(TableSchemaInterface $schema): TableSchemaInterface
+    public function getSchema(): TableSchemaInterface
     {
-        return $schema->setColumnType('uuid', 'uuid');
+        return parent::getSchema()->setColumnType('uuid', 'uuid');
     }
 
     /**

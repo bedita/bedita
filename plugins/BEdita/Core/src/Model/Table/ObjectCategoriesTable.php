@@ -91,10 +91,9 @@ class ObjectCategoriesTable extends Table
      *
      * @codeCoverageIgnore
      */
-    protected function _initializeSchema(TableSchemaInterface $schema): TableSchemaInterface
+    public function getSchema(): TableSchemaInterface
     {
-        return $schema
-            ->setColumnType('params', 'json');
+        return parent::getSchema()->setColumnType('params', 'json');
     }
 
     /**

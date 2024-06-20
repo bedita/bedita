@@ -231,12 +231,11 @@ class ObjectsTable extends Table
      *
      * @codeCoverageIgnore
      */
-    protected function _initializeSchema(TableSchemaInterface $schema): TableSchemaInterface
+    public function getSchema(): TableSchemaInterface
     {
-        $schema->setColumnType('custom_props', 'json');
-        $schema->setColumnType('extra', 'json');
-
-        return $schema;
+        return parent::getSchema()
+            ->setColumnType('custom_props', 'json')
+            ->setColumnType('extra', 'json');
     }
 
     /**

@@ -173,13 +173,12 @@ class ObjectTypesTable extends Table
      *
      * @codeCoverageIgnore
      */
-    protected function _initializeSchema(TableSchemaInterface $schema): TableSchemaInterface
+    public function getSchema(): TableSchemaInterface
     {
-        $schema->setColumnType('associations', 'json');
-        $schema->setColumnType('hidden', 'json');
-        $schema->setColumnType('translation_rules', 'json');
-
-        return $schema;
+        return parent::getSchema()
+            ->setColumnType('associations', 'json')
+            ->setColumnType('hidden', 'json')
+            ->setColumnType('translation_rules', 'json');
     }
 
     /**

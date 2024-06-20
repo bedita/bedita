@@ -91,10 +91,8 @@ class HistoryTable extends Table
      *
      * @codeCoverageIgnore
      */
-    protected function _initializeSchema(TableSchemaInterface $schema): TableSchemaInterface
+    public function getSchema(): TableSchemaInterface
     {
-        $schema->setColumnType('changed', 'json');
-
-        return $schema;
+        return parent::getSchema()->setColumnType('changed', 'json');
     }
 }

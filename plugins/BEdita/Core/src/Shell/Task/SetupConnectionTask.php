@@ -163,7 +163,7 @@ class SetupConnectionTask extends Shell /* @phpstan-ignore-line */
     {
         $this->verbose('=====> Checking ability to connect... ', 0);
         try {
-            $connection->connect();
+            $connection->getDriver()->connect();
 
             $this->verbose('<info>DONE</info>');
         } catch (MissingConnectionException $e) {

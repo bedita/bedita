@@ -120,7 +120,7 @@ class TranslationsTable extends Table
             ->notEmptyString('status');
 
         $validator
-            ->isArray('translated_fields')
+            ->array('translated_fields')
             ->allowEmptyArray('translated_fields');
 
         return $validator;
@@ -146,11 +146,9 @@ class TranslationsTable extends Table
      *
      * @codeCoverageIgnore
      */
-    protected function _initializeSchema(TableSchemaInterface $schema): TableSchemaInterface
+    public function getSchema(): TableSchemaInterface
     {
-        $schema->setColumnType('translated_fields', 'json');
-
-        return $schema;
+        return parent::getSchema()->setColumnType('translated_fields', 'json');
     }
 
     /**

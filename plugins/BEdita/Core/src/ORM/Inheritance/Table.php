@@ -12,10 +12,13 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\ORM\Inheritance;
 
 use BadMethodCallException;
+use BEdita\Core\ORM\Inheritance\Query\DeleteQuery;
+use BEdita\Core\ORM\Inheritance\Query\InsertQuery;
+use BEdita\Core\ORM\Inheritance\Query\SelectQuery;
+use BEdita\Core\ORM\Inheritance\Query\UpdateQuery;
 use Cake\ORM\Marshaller as CakeMarshaller;
 use Cake\ORM\Query as CakeQuery;
 use Cake\ORM\Table as CakeTable;
@@ -66,6 +69,38 @@ class Table extends CakeTable
     public function query(): CakeQuery
     {
         return new Query($this->getConnection(), $this);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function deleteQuery(): DeleteQuery
+    {
+        return new DeleteQuery($this->getConnection(), $this);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function insertQuery(): InsertQuery
+    {
+        return new InsertQuery($this->getConnection(), $this);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function selectQuery(): SelectQuery
+    {
+        return new SelectQuery($this->getConnection(), $this);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function updateQuery(): UpdateQuery
+    {
+        return new UpdateQuery($this->getConnection(), $this);
     }
 
     /**
