@@ -61,7 +61,7 @@ class MediaFixture extends TestFixture
             'provider_thumbnail' => null,
         ],
         [
-            'id' => 18,
+            'id' => 17,
             'name' => 'Modern art',
             'width' => null,
             'height' => null,
@@ -72,7 +72,7 @@ class MediaFixture extends TestFixture
             'provider_thumbnail' => null,
         ],
         [
-            'id' => 20,
+            'id' => 18,
             'name' => 'Contemporary art',
             'width' => null,
             'height' => null,

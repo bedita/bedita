@@ -365,16 +365,20 @@ class MediaControllerTest extends IntegrationTestCase
             ],
             'meta' => [
                 'pagination' => [
-                    'count' => 3,
+                    'count' => 5,
                     'page' => 1,
                     'page_count' => 1,
-                    'page_items' => 3,
+                    'page_items' => 5,
                     'page_size' => 20,
                 ],
                 'schema' => [
                     'files' => [
                         '$id' => 'http://api.example.com/model/schema/files',
                         'revision' => TestConstants::SCHEMA_REVISIONS['files'],
+                    ],
+                    'images' => [
+                        '$id' => 'http://api.example.com/model/schema/images',
+                        'revision' => TestConstants::SCHEMA_REVISIONS['images'],
                     ],
                 ],
             ],
@@ -577,6 +581,138 @@ class MediaControllerTest extends IntegrationTestCase
                         ],
                     ],
                 ],
+                [
+                    'id' => '17',
+                    'type' => 'images',
+                    'attributes' => [
+                        'name' => 'Modern art',
+                        'provider' => null,
+                        'provider_uid' => null,
+                        'provider_url' => null,
+                        'provider_thumbnail' => null,
+                        'provider_extra' => null,
+                        'status' => 'on',
+                        'uname' => 'media-modern-art',
+                        'title' => 'Modern art',
+                        'description' => 'an art piece',
+                        'body' => null,
+                        'extra' => null,
+                        'lang' => 'en',
+                        'publish_start' => null,
+                        'publish_end' => null,
+                        'media_property' => false,
+                    ],
+                    'meta' => [
+                        'locked' => false,
+                        'created' => '2024-06-25T10:11:18+00:00',
+                        'modified' => '2024-06-25T10:11:18+00:00',
+                        'published' => null,
+                        'created_by' => 1,
+                        'modified_by' => 1,
+                        'media_url' => 'https://static.example.org/files/eadc9cd3-b0ae-4e43-9251-9f44bd026793-snow-on-white.jpg',
+                    ],
+                    'links' => [
+                        'self' => 'http://api.example.com/images/17',
+                    ],
+                    'relationships' => [
+                        'inverse_test_abstract' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/images/17/inverse_test_abstract',
+                                'self' => 'http://api.example.com/images/17/relationships/inverse_test_abstract',
+                            ],
+                        ],
+                        'streams' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/images/17/streams',
+                                'self' => 'http://api.example.com/images/17/relationships/streams',
+                            ],
+                            'data' => [
+                                0 => [
+                                    'id' => 'eadc9cd3-b0ae-4e43-9251-9f44bd026793',
+                                    'type' => 'streams',
+                                ],
+                            ],
+                        ],
+                        'parents' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/images/17/parents',
+                                'self' => 'http://api.example.com/images/17/relationships/parents',
+                            ],
+                        ],
+                        'translations' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/images/17/translations',
+                                'self' => 'http://api.example.com/images/17/relationships/translations',
+                            ],
+                        ],
+                    ],
+                ],
+                [
+                    'id' => '18',
+                    'type' => 'images',
+                    'attributes' => [
+                        'name' => 'Contemporary art',
+                        'provider' => null,
+                        'provider_uid' => null,
+                        'provider_url' => null,
+                        'provider_thumbnail' => null,
+                        'provider_extra' => null,
+                        'status' => 'on',
+                        'uname' => 'media-contemporary-art',
+                        'title' => 'Contemporary art',
+                        'description' => 'an art piece',
+                        'body' => null,
+                        'extra' => null,
+                        'lang' => 'en',
+                        'publish_start' => null,
+                        'publish_end' => null,
+                        'media_property' => false,
+                    ],
+                    'meta' => [
+                        'locked' => false,
+                        'created' => '2024-06-25T10:11:18+00:00',
+                        'modified' => '2024-06-25T10:11:18+00:00',
+                        'published' => null,
+                        'created_by' => 1,
+                        'modified_by' => 1,
+                        'media_url' => 'https://static.example.org/files/7ffcb45e-4cc1-492e-9775-74ee6999503f-snow-on-white.jpg',
+                    ],
+                    'links' => [
+                        'self' => 'http://api.example.com/images/18',
+                    ],
+                    'relationships' => [
+                        'inverse_test_abstract' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/images/18/inverse_test_abstract',
+                                'self' => 'http://api.example.com/images/18/relationships/inverse_test_abstract',
+                            ],
+                        ],
+                        'streams' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/images/18/streams',
+                                'self' => 'http://api.example.com/images/18/relationships/streams',
+                            ],
+                            'data' => [
+                                0 => [
+                                    'id' => '7ffcb45e-4cc1-492e-9775-74ee6999503f',
+                                    'type' => 'streams',
+                                ],
+                            ],
+                        ],
+                        'parents' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/images/18/parents',
+                                'self' => 'http://api.example.com/images/18/relationships/parents',
+                            ],
+                        ],
+                        'translations' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/images/18/translations',
+                                'self' => 'http://api.example.com/images/18/relationships/translations',
+                            ],
+                        ],
+                    ],
+                ],
             ],
             'included' => [
                 [
@@ -624,8 +760,8 @@ class MediaControllerTest extends IntegrationTestCase
                         'file_size' => 927,
                         'hash_md5' => 'a714dbb31ca89d5b1257245dfa5c5153',
                         'hash_sha1' => '444b2b42b48b0b815d70f6648f8a7a23d5faf54b',
-                        'width' => null,
-                        'height' => null,
+                        'width' => 118,
+                        'height' => 52,
                         'duration' => null,
                         'created' => '2018-03-22T15:58:47+00:00',
                         'modified' => '2018-03-22T15:58:47+00:00',
@@ -674,6 +810,72 @@ class MediaControllerTest extends IntegrationTestCase
                             'links' => [
                                 'related' => 'http://api.example.com/streams/9b06b2cf-fce7-47e8-b367-a3e5b464ca85/object',
                                 'self' => 'http://api.example.com/streams/9b06b2cf-fce7-47e8-b367-a3e5b464ca85/relationships/object',
+                            ],
+                        ],
+                    ],
+                ],
+                [
+                    'id' => 'eadc9cd3-b0ae-4e43-9251-9f44bd026793',
+                    'type' => 'streams',
+                    'attributes' => [
+                        'file_name' => 'snow-on-white.jpg',
+                        'mime_type' => 'image/jpeg',
+                    ],
+                    'meta' => [
+                        'version' => 1,
+                        'file_size' => 140910,
+                        'hash_md5' => '04fd3cc862a142c114c6f7822996207a',
+                        'hash_sha1' => 'e3d5556baf1c257d10a146c0ebf84a2ab99c7437',
+                        'width' => 8000,
+                        'height' => 4500,
+                        'duration' => null,
+                        'created' => '2024-06-25T10:11:18+00:00',
+                        'modified' => '2024-06-25T10:11:18+00:00',
+                        'url' => 'https://static.example.org/files/eadc9cd3-b0ae-4e43-9251-9f44bd026793-snow-on-white.jpg',
+                        'file_metadata' => null,
+                        'private_url' => false,
+                    ],
+                    'links' => [
+                        'self' => 'http://api.example.com/streams/eadc9cd3-b0ae-4e43-9251-9f44bd026793',
+                    ],
+                    'relationships' => [
+                        'object' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/streams/eadc9cd3-b0ae-4e43-9251-9f44bd026793/object',
+                                'self' => 'http://api.example.com/streams/eadc9cd3-b0ae-4e43-9251-9f44bd026793/relationships/object',
+                            ],
+                        ],
+                    ],
+                ],
+                [
+                    'id' => '7ffcb45e-4cc1-492e-9775-74ee6999503f',
+                    'type' => 'streams',
+                    'attributes' => [
+                        'file_name' => 'snow-on-white.jpg',
+                        'mime_type' => 'image/jpeg',
+                    ],
+                    'meta' => [
+                        'version' => 1,
+                        'file_size' => 140910,
+                        'hash_md5' => '04fd3cc862a142c114c6f7822996207a',
+                        'hash_sha1' => 'e3d5556baf1c257d10a146c0ebf84a2ab99c7437',
+                        'width' => null,
+                        'height' => null,
+                        'duration' => null,
+                        'created' => '2024-06-25T10:11:18+00:00',
+                        'modified' => '2024-06-25T10:11:18+00:00',
+                        'url' => 'https://static.example.org/files/7ffcb45e-4cc1-492e-9775-74ee6999503f-snow-on-white.jpg',
+                        'file_metadata' => null,
+                        'private_url' => false,
+                    ],
+                    'links' => [
+                        'self' => 'http://api.example.com/streams/7ffcb45e-4cc1-492e-9775-74ee6999503f',
+                    ],
+                    'relationships' => [
+                        'object' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/streams/7ffcb45e-4cc1-492e-9775-74ee6999503f/object',
+                                'self' => 'http://api.example.com/streams/7ffcb45e-4cc1-492e-9775-74ee6999503f/relationships/object',
                             ],
                         ],
                     ],
@@ -788,8 +990,8 @@ class MediaControllerTest extends IntegrationTestCase
                         'file_size' => 927,
                         'hash_md5' => 'a714dbb31ca89d5b1257245dfa5c5153',
                         'hash_sha1' => '444b2b42b48b0b815d70f6648f8a7a23d5faf54b',
-                        'width' => null,
-                        'height' => null,
+                        'width' => 118,
+                        'height' => 52,
                         'duration' => null,
                         'created' => '2018-03-22T15:58:47+00:00',
                         'modified' => '2018-03-22T15:58:47+00:00',

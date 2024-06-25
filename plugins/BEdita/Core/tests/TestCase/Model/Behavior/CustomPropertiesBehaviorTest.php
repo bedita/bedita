@@ -296,9 +296,9 @@ class CustomPropertiesBehaviorTest extends TestCase
     public function testBeforeFindFormatterPrepended()
     {
         $expected = [
-            'files_property' => ['media-one' => null, 'media-two' => null, 'media-svg' => null],
-            'media_property' => ['media-one' => true, 'media-two' => false, 'media-svg' => false],
-            'count' => 3,
+            'files_property' => ['media-one' => null, 'media-two' => null, 'media-svg' => null, 'media-modern-art' => null, 'media-contemporary-art' => null],
+            'media_property' => ['media-one' => true, 'media-two' => false, 'media-svg' => false, 'media-modern-art' => false, 'media-contemporary-art' => false],
+            'count' => 5,
         ];
 
         $result = $this->getTableLocator()->get('Files')->find()
@@ -535,17 +535,17 @@ class CustomPropertiesBehaviorTest extends TestCase
                 ['media_property' => '1'],
             ],
             'filter bool false' => [
-                [14, 16],
+                [14, 16, 17, 18],
                 'Files',
                 ['media_property' => false],
             ],
             'filter bool 0 as false' => [
-                [14, 16],
+                [14, 16, 17, 18],
                 'Files',
                 ['media_property' => 0],
             ],
             'filter bool "0" as false' => [
-                [14, 16],
+                [14, 16, 17, 18],
                 'Files',
                 ['media_property' => '0'],
             ],

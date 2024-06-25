@@ -86,7 +86,7 @@ class StreamsFixture extends TestFixture
         [
             'uuid' => 'eadc9cd3-b0ae-4e43-9251-9f44bd026793',
             'version' => 1,
-            'object_id' => 18,
+            'object_id' => 17,
             'uri' => 'default://eadc9cd3-b0ae-4e43-9251-9f44bd026793-snow-on-white.jpg',
             'file_name' => 'snow-on-white.jpg',
             'mime_type' => 'image/jpeg',
@@ -101,7 +101,7 @@ class StreamsFixture extends TestFixture
         [
             'uuid' => '7ffcb45e-4cc1-492e-9775-74ee6999503f',
             'version' => 1,
-            'object_id' => 20,
+            'object_id' => 18,
             'uri' => 'default://7ffcb45e-4cc1-492e-9775-74ee6999503f-snow-on-white.jpg',
             'file_name' => 'snow-on-white.jpg',
             'mime_type' => 'image/jpeg',
