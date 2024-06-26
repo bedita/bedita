@@ -23,6 +23,7 @@ use Cake\Event\EventInterface;
 /**
  * Media Model
  *
+ * @property \BEdita\Core\Model\Table\StreamsTable|\Cake\ORM\Association\HasMany $Streams
  * @method \BEdita\Core\Model\Entity\Media get($primaryKey, $options = [])
  * @method \BEdita\Core\Model\Entity\Media newEntity($data = null, array $options = [])
  * @method \BEdita\Core\Model\Entity\Media[] newEntities(array $data, array $options = [])
@@ -109,10 +110,7 @@ class MediaTable extends Table
      */
     public function afterDelete(EventInterface $event, Media $entity): void
     {
-        $streams = $entity->get('streams');
-        if (empty($streams)) {
-            return;
-        }
+        $streams = (array)$entity->get('streams');
         foreach ($streams as $stream) {
             $this->Streams->delete($stream);
         }
