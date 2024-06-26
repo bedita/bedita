@@ -281,6 +281,8 @@ class ProjectModelTest extends TestCase
                 'property' => 'date',
                 'object' => 'profiles',
                 'read_only' => true,
+                'default_value' => null,
+                'options' => null,
             ],
             [
                 'name' => 'another_description',
@@ -289,6 +291,8 @@ class ProjectModelTest extends TestCase
                 'property' => 'string',
                 'object' => 'documents',
                 'read_only' => false,
+                'default_value' => null,
+                'options' => null,
             ],
             [
                 'name' => 'another_email',
@@ -297,6 +301,8 @@ class ProjectModelTest extends TestCase
                 'property' => 'email',
                 'object' => 'users',
                 'read_only' => false,
+                'default_value' => null,
+                'options' => null,
             ],
             [
                 'name' => 'another_surname',
@@ -305,6 +311,8 @@ class ProjectModelTest extends TestCase
                 'property' => 'string',
                 'object' => 'profiles',
                 'read_only' => false,
+                'default_value' => null,
+                'options' => null,
             ],
             [
                 'name' => 'another_title',
@@ -313,6 +321,8 @@ class ProjectModelTest extends TestCase
                 'property' => 'string',
                 'object' => 'documents',
                 'read_only' => false,
+                'default_value' => null,
+                'options' => null,
             ],
             [
                 'name' => 'another_username',
@@ -321,6 +331,8 @@ class ProjectModelTest extends TestCase
                 'property' => 'string',
                 'object' => 'users',
                 'read_only' => false,
+                'default_value' => null,
+                'options' => null,
             ],
             [
                 'name' => 'children_order',
@@ -329,6 +341,8 @@ class ProjectModelTest extends TestCase
                 'property' => 'children_order',
                 'object' => 'folders',
                 'read_only' => false,
+                'default_value' => null,
+                'options' => null,
             ],
             [
                 'name' => 'disabled_property',
@@ -337,6 +351,8 @@ class ProjectModelTest extends TestCase
                 'property' => 'string',
                 'object' => 'files',
                 'read_only' => false,
+                'default_value' => null,
+                'options' => null,
             ],
             [
                 'name' => 'files_property',
@@ -345,6 +361,8 @@ class ProjectModelTest extends TestCase
                 'property' => 'json',
                 'object' => 'files',
                 'read_only' => false,
+                'default_value' => null,
+                'options' => null,
             ],
             [
                 'name' => 'media_property',
@@ -353,6 +371,8 @@ class ProjectModelTest extends TestCase
                 'property' => 'boolean',
                 'object' => 'media',
                 'read_only' => false,
+                'default_value' => null,
+                'options' => null,
             ],
             [
                 'name' => 'number_of_friends',
@@ -361,6 +381,8 @@ class ProjectModelTest extends TestCase
                 'property' => 'integer',
                 'object' => 'profiles',
                 'read_only' => false,
+                'default_value' => null,
+                'options' => null,
             ],
             [
                 'name' => 'street_address',
@@ -369,6 +391,8 @@ class ProjectModelTest extends TestCase
                 'property' => 'string',
                 'object' => 'profiles',
                 'read_only' => false,
+                'default_value' => null,
+                'options' => null,
             ],
         ],
         'categories' => [

@@ -397,6 +397,8 @@ class PropertiesControllerTest extends IntegrationTestCase
                     'is_nullable' => true,
                     'is_static' => false,
                     'read_only' => false,
+                    'default_value' => null,
+                    'options' => null,
                 ],
                 'meta' => [
                     'created' => '2016-12-31T23:09:23+00:00',
@@ -536,6 +538,8 @@ class PropertiesControllerTest extends IntegrationTestCase
             'object_type_name' => 'documents',
             'is_static' => false,
             'read_only' => false,
+            'default_value' => null,
+            'options' => null,
         ];
         static::assertEquals($data, $result['data']);
 

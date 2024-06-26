@@ -140,6 +140,8 @@ class Properties extends ResourcesBase
         foreach ($properties as $p) {
             static::validate($p);
             $objectType = $ObjectTypes->get(Inflector::camelize($p['object']));
+            $options = Hash::get($p, 'options', null);
+            $options = is_array($options) ? json_encode($options) : $options;
 
             /** @var \Cake\Datasource\EntityInterface $property */
             $property = $Properties->find()
@@ -153,7 +155,7 @@ class Properties extends ResourcesBase
             $property->set('is_nullable', (bool)Hash::get($p, 'is_nullable', true));
             $property->set('read_only', (bool)Hash::get($p, 'read_only', false));
             $property->set('default_value', Hash::get($p, 'default_value', null));
-            $property->set('options', Hash::get($p, 'options', null));
+            $property->set('options', $options);
 
             $updated[] = $Properties->saveOrFail($property, static::$defaults['update']);
         }

@@ -267,6 +267,8 @@ class ProjectControllerTest extends IntegrationTestCase
                     'property' => 'date',
                     'object' => 'profiles',
                     'read_only' => true,
+                    'default_value' => null,
+                    'options' => null,
                 ],
                 [
                     'name' => 'another_description',
@@ -275,6 +277,8 @@ class ProjectControllerTest extends IntegrationTestCase
                     'property' => 'string',
                     'object' => 'documents',
                     'read_only' => false,
+                    'default_value' => null,
+                    'options' => null,
                 ],
                 [
                     'name' => 'another_email',
@@ -283,6 +287,8 @@ class ProjectControllerTest extends IntegrationTestCase
                     'property' => 'email',
                     'object' => 'users',
                     'read_only' => false,
+                    'default_value' => null,
+                    'options' => null,
                 ],
                 [
                     'name' => 'another_surname',
@@ -291,6 +297,8 @@ class ProjectControllerTest extends IntegrationTestCase
                     'property' => 'string',
                     'object' => 'profiles',
                     'read_only' => false,
+                    'default_value' => null,
+                    'options' => null,
                 ],
                 [
                     'name' => 'another_title',
@@ -299,6 +307,8 @@ class ProjectControllerTest extends IntegrationTestCase
                     'property' => 'string',
                     'object' => 'documents',
                     'read_only' => false,
+                    'default_value' => null,
+                    'options' => null,
                 ],
                 [
                     'name' => 'another_username',
@@ -307,6 +317,8 @@ class ProjectControllerTest extends IntegrationTestCase
                     'property' => 'string',
                     'object' => 'users',
                     'read_only' => false,
+                    'default_value' => null,
+                    'options' => null,
                 ],
                 [
                     'name' => 'children_order',
@@ -315,6 +327,8 @@ class ProjectControllerTest extends IntegrationTestCase
                     'property' => 'children_order',
                     'object' => 'folders',
                     'read_only' => false,
+                    'default_value' => null,
+                    'options' => null,
                 ],
                 [
                     'name' => 'disabled_property',
@@ -323,6 +337,8 @@ class ProjectControllerTest extends IntegrationTestCase
                     'property' => 'string',
                     'object' => 'files',
                     'read_only' => false,
+                    'default_value' => null,
+                    'options' => null,
                 ],
                 [
                     'name' => 'files_property',
@@ -331,6 +347,8 @@ class ProjectControllerTest extends IntegrationTestCase
                     'property' => 'json',
                     'object' => 'files',
                     'read_only' => false,
+                    'default_value' => null,
+                    'options' => null,
                 ],
                 [
                     'name' => 'media_property',
@@ -339,6 +357,8 @@ class ProjectControllerTest extends IntegrationTestCase
                     'property' => 'boolean',
                     'object' => 'media',
                     'read_only' => false,
+                    'default_value' => null,
+                    'options' => null,
                 ],
                 [
                     'name' => 'number_of_friends',
@@ -347,6 +367,8 @@ class ProjectControllerTest extends IntegrationTestCase
                     'property' => 'integer',
                     'object' => 'profiles',
                     'read_only' => false,
+                    'default_value' => null,
+                    'options' => null,
                 ],
                 [
                     'name' => 'street_address',
@@ -355,6 +377,8 @@ class ProjectControllerTest extends IntegrationTestCase
                     'property' => 'string',
                     'object' => 'profiles',
                     'read_only' => false,
+                    'default_value' => null,
+                    'options' => null,
                 ],
             ],
             'categories' => [
