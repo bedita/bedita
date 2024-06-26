@@ -17,6 +17,8 @@ namespace BEdita\Core\Model\Table;
 use BEdita\Core\Model\Table\ObjectsBaseTable as Table;
 use BEdita\Core\Model\Validation\MediaValidator;
 use Cake\Database\Schema\TableSchemaInterface;
+use Cake\Datasource\EntityInterface;
+use Cake\ORM\TableRegistry;
 
 /**
  * Media Model
@@ -81,5 +83,32 @@ class MediaTable extends Table
     public function getSchema(): TableSchemaInterface
     {
         return parent::getSchema()->setColumnType('provider_extra', 'json');
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function beforeDelete(EventInterface $event, EntityInterface $entity): void
+    {
+        if (!empty($entity->get('Streams'))) {
+            return;
+        }
+        $this->loadInto($entity, ['Streams']);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function afterDelete(EventInterface $event, EntityInterface $entity): void
+    {
+        $streams = $entity->get('Streams');
+        if (empty($streams)) {
+            return;
+        }
+        /** @var \BEdita\Core\Model\Table\StreamsTable $table */
+        $table = TableRegistry::getTableLocator()->get('Streams');
+        foreach ($streams as $stream) {
+            $table->delete($stream);
+        }
     }
 }
