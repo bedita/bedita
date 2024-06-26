@@ -112,7 +112,7 @@ class MediaTable extends Table
     {
         $streams = (array)$entity->get('streams');
         foreach ($streams as $stream) {
-            $this->Streams->delete($stream);
+            $this->Streams->deleteOrFail($stream);
         }
     }
 }
