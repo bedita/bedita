@@ -87,7 +87,7 @@ class Properties extends ResourcesBase
                 'is_nullable' => (bool)Hash::get($p, 'is_nullable', true),
                 'read_only' => (bool)Hash::get($p, 'read_only', false),
                 'default_value' => Hash::get($p, 'default_value', null),
-                'options' => $options,
+                'property_options' => $options,
             ]);
 
             $created[] = $Properties->saveOrFail($property, static::$defaults['save']);
@@ -155,7 +155,7 @@ class Properties extends ResourcesBase
             $property->set('is_nullable', (bool)Hash::get($p, 'is_nullable', true));
             $property->set('read_only', (bool)Hash::get($p, 'read_only', false));
             $property->set('default_value', Hash::get($p, 'default_value', null));
-            $property->set('options', $options);
+            $property->set('property_options', $options);
 
             $updated[] = $Properties->saveOrFail($property, static::$defaults['update']);
         }
