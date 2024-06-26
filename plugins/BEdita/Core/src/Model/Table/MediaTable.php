@@ -14,10 +14,10 @@ declare(strict_types=1);
  */
 namespace BEdita\Core\Model\Table;
 
+use BEdita\Core\Model\Entity\Media;
 use BEdita\Core\Model\Table\ObjectsBaseTable as Table;
 use BEdita\Core\Model\Validation\MediaValidator;
 use Cake\Database\Schema\TableSchemaInterface;
-use Cake\Datasource\EntityInterface;
 
 /**
  * Media Model
@@ -87,7 +87,7 @@ class MediaTable extends Table
     /**
      * {@inheritDoc}
      */
-    public function beforeDelete(EventInterface $event, EntityInterface $entity): void
+    public function beforeDelete(EventInterface $event, Media $entity): void
     {
         if (!empty($entity->get('streams'))) {
             return;
@@ -98,7 +98,7 @@ class MediaTable extends Table
     /**
      * {@inheritDoc}
      */
-    public function afterDelete(EventInterface $event, EntityInterface $entity): void
+    public function afterDelete(EventInterface $event, Media $entity): void
     {
         $streams = $entity->get('streams');
         if (empty($streams)) {
