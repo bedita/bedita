@@ -477,6 +477,8 @@ return [
                 'className' => 'BEdita/Core.Glide',
                 // 'cache' => 'thumbnails',
                 'url' => env('THUMBNAILS_DEFAULT_URL', null),
+                'maxThumbSize' => 2048 * 2048, // max total pixels of thumbnails
+                'maxImageSize' => 7680 * 4320, // do not generate thumbnails for images above this pixel count
             ],
             'async' => [
                 'className' => 'BEdita/Core.Async',

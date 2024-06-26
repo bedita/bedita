@@ -69,7 +69,10 @@ class GlideGeneratorTest extends TestCase
         $this->Streams = TableRegistry::getTableLocator()->get('Streams');
 
         $this->generator = new GlideGenerator();
-        $this->generator->initialize([]);
+        $this->generator->initialize([
+            'maxThumbSize' => 1 << 22, // 2048 * 2048 === 2^11 * 2^11 === 2^22
+            'maxImageSize' => 7680 * 4320, // 8K
+        ]);
     }
 
     /**
@@ -218,6 +221,16 @@ class GlideGeneratorTest extends TestCase
                 '9b06b2cf-fce7-47e8-b367-a3e5b464ca85',
                 ['w' => 200],
             ],
+            'jpg too big' => [
+                new InvalidStreamException('Image exceeds the maximum resolution of 33.2 Megapixels for thumbnail generation'),
+                'eadc9cd3-b0ae-4e43-9251-9f44bd026793',
+                ['w' => 200],
+            ],
+            'jpg no resolution' => [
+                new InvalidStreamException('Unable to obtain resolution for stream 7ffcb45e-4cc1-492e-9775-74ee6999503f'),
+                '7ffcb45e-4cc1-492e-9775-74ee6999503f',
+                ['w' => 200],
+            ],
         ];
     }
 
@@ -233,6 +246,7 @@ class GlideGeneratorTest extends TestCase
      * @covers ::getFilename()
      * @covers ::getGlideApi()
      * @covers ::makeThumbnail()
+     * @covers ::checkImageResolution()
      * @covers ::isSvg()
      */
     public function testGenerate($expected, $uuid, array $options = [])

@@ -157,7 +157,8 @@ class StreamsTable extends Table
      */
     public function getSchema(): TableSchemaInterface
     {
-        return parent::getSchema()->setColumnType('uuid', 'uuid');
+        return parent::getSchema()->setColumnType('uuid', 'uuid')
+            ->setColumnType('file_metadata', 'json');
     }
 
     /**

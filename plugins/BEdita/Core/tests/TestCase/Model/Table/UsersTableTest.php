@@ -384,7 +384,7 @@ class UsersTableTest extends TestCase
         static::assertInstanceOf($this->Users->ExternalAuth->getEntityClass(), $externalAuth);
         static::assertFalse($externalAuth->isNew());
         static::assertNotNull($externalAuth->id);
-        static::assertEquals(17, $externalAuth->user_id);
+        static::assertEquals(19, $externalAuth->user_id);
 
         // 2. Add external auth to current user
         $authProvider = TableRegistry::getTableLocator()->get('AuthProviders')->get(1);
@@ -820,7 +820,7 @@ class UsersTableTest extends TestCase
         $user->email = 'gustavo.supporto@channelweb.it';
         $result = $this->Users->save($user);
         static::assertNotEmpty($result);
-        static::assertEquals(17, $result->get('id'));
+        static::assertEquals(19, $result->get('id'));
     }
 
     /**

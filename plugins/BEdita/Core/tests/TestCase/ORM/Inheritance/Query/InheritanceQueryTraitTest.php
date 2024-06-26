@@ -12,9 +12,10 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-namespace BEdita\Core\Test\TestCase\ORM\Inheritance;
+namespace BEdita\Core\Test\TestCase\ORM\Inheritance\Query;
 
-use BEdita\Core\ORM\Inheritance\Query;
+use BEdita\Core\ORM\Inheritance\Query\SelectQuery;
+use BEdita\Core\Test\TestCase\ORM\Inheritance\FakeAnimalsTrait;
 use Cake\Database\ValueBinder;
 use Cake\ORM\Query as CakeQuery;
 use Cake\TestSuite\TestCase;
@@ -50,7 +51,7 @@ class InheritanceQueryTraitTest extends TestCase
     public function testAddDefaultTypes()
     {
         $this->fakeAnimals->getSchema()->setColumnType('name', 'json');
-        $query = new Query($this->fakeFelines->getConnection(), $this->fakeFelines);
+        $query = new SelectQuery($this->fakeFelines->getConnection(), $this->fakeFelines);
 
         $defaults = $query->getTypeMap()->getDefaults();
         static::assertArrayHasKey('name', $defaults);
@@ -100,7 +101,7 @@ class InheritanceQueryTraitTest extends TestCase
      * @covers ::_addDefaultFields()
      * @dataProvider addDefaultFieldsProvider()
      */
-    public function testAddDefaultFields(array $expected, array $select, $autoFields)
+    public function testAddDefaultFields(array $expected, array $select, bool $autoFields)
     {
         $query = $this->fakeFelines->find()
             ->select($select)

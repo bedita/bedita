@@ -13,7 +13,7 @@ declare(strict_types=1);
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
 
-namespace BEdita\API\Test\TestCase\Event;
+namespace BEdita\Core\Test\TestCase\Event;
 
 use BEdita\Core\Event\ImageThumbsHandler;
 use BEdita\Core\Filesystem\Thumbnail;
@@ -147,7 +147,7 @@ class ImageThumbsHandlerTest extends TestCase
         LoggedUser::setUserAdmin();
         $handler->updateThumbs($image, $stream, ['gustavo' => ['generator' => 'test']]);
 
-        $image = $this->fetchTable('Images')->get(17);
+        $image = $this->fetchTable('Images')->get(19);
         $extra = (array)$image->get('extra');
         static::assertNotEmpty($extra);
         static::assertNotEmpty($extra['thumbs']['gustavo']);

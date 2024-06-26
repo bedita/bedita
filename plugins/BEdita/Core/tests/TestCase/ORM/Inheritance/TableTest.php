@@ -68,7 +68,7 @@ class TableTest extends TestCase
      */
     public function testQuery()
     {
-        static::assertInstanceOf(Query::class, $this->fakeFelines->query());
+        static::assertInstanceOf(Query::class, $this->fakeFelines->query()); // @phpstan-ignore-line
     }
 
     /**

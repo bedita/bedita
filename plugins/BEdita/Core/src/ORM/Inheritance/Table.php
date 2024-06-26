@@ -68,7 +68,7 @@ class Table extends CakeTable
      */
     public function query(): CakeQuery
     {
-        return new Query($this->getConnection(), $this);
+        return new Query($this->getConnection(), $this); // @phpstan-ignore-line
     }
 
     /**
