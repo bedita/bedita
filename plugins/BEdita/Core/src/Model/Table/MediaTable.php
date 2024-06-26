@@ -18,6 +18,7 @@ use BEdita\Core\Model\Entity\Media;
 use BEdita\Core\Model\Table\ObjectsBaseTable as Table;
 use BEdita\Core\Model\Validation\MediaValidator;
 use Cake\Database\Schema\TableSchemaInterface;
+use Cake\Event\EventInterface;
 
 /**
  * Media Model
@@ -86,6 +87,10 @@ class MediaTable extends Table
 
     /**
      * {@inheritDoc}
+     *
+     * @param \Cake\Event\EventInterface $event Dispatched event.
+     * @param \BEdita\Core\Model\Entity\Media $entity Entity.
+     * @return void
      */
     public function beforeDelete(EventInterface $event, Media $entity): void
     {
@@ -97,6 +102,10 @@ class MediaTable extends Table
 
     /**
      * {@inheritDoc}
+     *
+     * @param \Cake\Event\EventInterface $event Dispatched event.
+     * @param \BEdita\Core\Model\Entity\Media $entity Entity.
+     * @return void
      */
     public function afterDelete(EventInterface $event, Media $entity): void
     {
