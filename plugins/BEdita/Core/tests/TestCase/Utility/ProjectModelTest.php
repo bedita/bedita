@@ -501,6 +501,8 @@ class ProjectModelTest extends TestCase
                     'property' => 'date',
                     'object' => 'profiles',
                     'read_only' => true,
+                    'default_value' => null,
+                    'options' => null,
                 ],
             ],
             'relations' => [
