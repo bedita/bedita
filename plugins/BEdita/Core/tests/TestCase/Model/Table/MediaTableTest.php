@@ -14,6 +14,8 @@ declare(strict_types=1);
  */
 namespace BEdita\Core\Test\TestCase\Model\Table;
 
+use BEdita\Core\Model\Action\SaveEntityAction;
+use BEdita\Core\Test\Utility\TestFilesystemTrait;
 use BEdita\Core\Utility\LoggedUser;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
@@ -23,6 +25,8 @@ use Cake\TestSuite\TestCase;
  */
 class MediaTableTest extends TestCase
 {
+    use TestFilesystemTrait;
+
     /**
      * Test subject
      *
@@ -60,6 +64,7 @@ class MediaTableTest extends TestCase
 
         $this->Media = TableRegistry::getTableLocator()->get('Media');
         LoggedUser::setUserAdmin();
+        $this->filesystemSetup(true, true);
     }
 
     /**
@@ -69,6 +74,7 @@ class MediaTableTest extends TestCase
      */
     public function tearDown(): void
     {
+        $this->filesystemRestore();
         unset($this->Media);
         LoggedUser::resetUser();
 
@@ -136,6 +142,64 @@ class MediaTableTest extends TestCase
             $this->assertNotEquals($data['uname'], $entity->uname);
         } elseif (isset($data['uname'])) {
             $this->assertEquals($data['uname'], $entity->uname);
+        }
+    }
+
+    /**
+     * Test delete of a media with stream(s).
+     *
+     * @return void
+     * @covers ::beforeDelete()
+     * @covers ::afterDelete()
+     */
+    public function testDeleteMediaAndStream(): void
+    {
+        // create media
+        $media = $this->Media->newEntity([
+            'name' => 'A media file',
+            'width' => null,
+            'height' => null,
+            'duration' => null,
+            'provider' => null,
+            'provider_uid' => null,
+            'provider_url' => null,
+            'provider_thumbnail' => null,
+            'media_property' => false,
+            'uname' => 'a-media-file',
+        ]);
+        $media->object_type_id = 9;
+        $this->Media->save($media);
+        $id = $media->id;
+
+        // create stream and attach it to the media
+        $streamsTable = $this->fetchTable('Streams');
+        $entity = $streamsTable->newEmptyEntity();
+        $action = new SaveEntityAction(['table' => $streamsTable]);
+        $data = [
+            'file_name' => 'sample-to-delete.txt',
+            'mime_type' => 'text/plain',
+            'contents' => 'This is a sample file to delete.',
+        ];
+        $entity->set('object_id', $id);
+        $entity->set('private_url', false);
+        $testStream = $action(compact('entity', 'data'));
+
+        // remove streams from media entity and dispatch beforeDelete event to load streams into media
+        unset($media->streams);
+        $this->Media->dispatchEvent('Model.beforeDelete', [$media]);
+        $this->assertNotEmpty($media->get('streams'));
+        $streams = (array)$media->get('streams');
+
+        // delete media
+        $this->Media->delete($media);
+
+        // check that media and streams are deleted
+        $result = $this->Media->find()->where(['id' => $id])->first();
+        $this->assertNull($result);
+        foreach ($streams as $stream) {
+            $this->assertSame($stream->uuid, $testStream->uuid);
+            $result = $streamsTable->find()->where(['uuid' => $stream->uuid])->first();
+            $this->assertNull($result);
         }
     }
 }
