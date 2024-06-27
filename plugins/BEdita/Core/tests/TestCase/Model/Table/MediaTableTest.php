@@ -182,7 +182,7 @@ class MediaTableTest extends TestCase
         ];
         $entity->set('object_id', $id);
         $entity->set('private_url', false);
-        $data = $action(compact('entity', 'data'));
+        $testStream = $action(compact('entity', 'data'));
 
         // load streams into media entity
         $this->Media->loadInto($media, ['Streams']);
@@ -196,6 +196,7 @@ class MediaTableTest extends TestCase
         $result = $this->Media->find()->where(['id' => $id])->first();
         $this->assertNull($result);
         foreach ($streams as $stream) {
+            $this->assertSame($stream->uuid, $testStream->uuid);
             $result = $streamsTable->find()->where(['uuid' => $stream->uuid])->first();
             $this->assertNull($result);
         }
