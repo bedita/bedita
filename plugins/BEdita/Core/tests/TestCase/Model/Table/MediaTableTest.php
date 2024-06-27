@@ -189,6 +189,7 @@ class MediaTableTest extends TestCase
         $streams = (array)$media->get('streams');
 
         // delete media
+        unset($media->streams);
         $this->Media->delete($media);
 
         // check that media and streams are deleted
