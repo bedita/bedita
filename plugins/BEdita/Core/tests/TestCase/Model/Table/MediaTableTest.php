@@ -184,12 +184,13 @@ class MediaTableTest extends TestCase
         $entity->set('private_url', false);
         $testStream = $action(compact('entity', 'data'));
 
-        // load streams into media entity
-        $this->Media->loadInto($media, ['Streams']);
+        // remove streams from media entity and dispatch beforeDelete event to load streams into media
+        unset($media->streams);
+        $this->Media->dispatchEvent('Model.beforeDelete', [$media]);
+        $this->assertNotEmpty($media->get('streams'));
         $streams = (array)$media->get('streams');
 
         // delete media
-        unset($media->streams);
         $this->Media->delete($media);
 
         // check that media and streams are deleted
