@@ -17,7 +17,7 @@ class UpdateProperties extends AbstractMigration
                 'length' => null,
                 'null' => true,
             ])
-            ->addColumn('property_options', 'text', [
+            ->addColumn('property_options', 'json', [
                 'after' => 'default_value',
                 'comment' => 'Options',
                 'length' => null,
