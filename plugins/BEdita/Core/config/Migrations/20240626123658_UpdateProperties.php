@@ -17,12 +17,6 @@ class UpdateProperties extends AbstractMigration
                 'length' => null,
                 'null' => true,
             ])
-            ->addColumn('property_options', 'json', [
-                'after' => 'default_value',
-                'comment' => 'Options',
-                'length' => null,
-                'null' => true,
-            ])
             ->update();
     }
 
@@ -33,7 +27,6 @@ class UpdateProperties extends AbstractMigration
     {
         $this->table('properties')
             ->removeColumn('default_value')
-            ->removeColumn('property_options')
             ->update();
     }
 }

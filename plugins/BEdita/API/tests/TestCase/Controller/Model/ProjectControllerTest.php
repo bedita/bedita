@@ -268,7 +268,6 @@ class ProjectControllerTest extends IntegrationTestCase
                     'object' => 'profiles',
                     'read_only' => true,
                     'default_value' => null,
-                    'property_options' => null,
                 ],
                 [
                     'name' => 'another_description',
@@ -278,7 +277,6 @@ class ProjectControllerTest extends IntegrationTestCase
                     'object' => 'documents',
                     'read_only' => false,
                     'default_value' => null,
-                    'property_options' => null,
                 ],
                 [
                     'name' => 'another_email',
@@ -288,7 +286,6 @@ class ProjectControllerTest extends IntegrationTestCase
                     'object' => 'users',
                     'read_only' => false,
                     'default_value' => null,
-                    'property_options' => null,
                 ],
                 [
                     'name' => 'another_surname',
@@ -298,7 +295,6 @@ class ProjectControllerTest extends IntegrationTestCase
                     'object' => 'profiles',
                     'read_only' => false,
                     'default_value' => null,
-                    'property_options' => null,
                 ],
                 [
                     'name' => 'another_title',
@@ -308,7 +304,6 @@ class ProjectControllerTest extends IntegrationTestCase
                     'object' => 'documents',
                     'read_only' => false,
                     'default_value' => null,
-                    'property_options' => null,
                 ],
                 [
                     'name' => 'another_username',
@@ -318,7 +313,6 @@ class ProjectControllerTest extends IntegrationTestCase
                     'object' => 'users',
                     'read_only' => false,
                     'default_value' => null,
-                    'property_options' => null,
                 ],
                 [
                     'name' => 'children_order',
@@ -328,7 +322,6 @@ class ProjectControllerTest extends IntegrationTestCase
                     'object' => 'folders',
                     'read_only' => false,
                     'default_value' => null,
-                    'property_options' => null,
                 ],
                 [
                     'name' => 'disabled_property',
@@ -338,7 +331,6 @@ class ProjectControllerTest extends IntegrationTestCase
                     'object' => 'files',
                     'read_only' => false,
                     'default_value' => null,
-                    'property_options' => null,
                 ],
                 [
                     'name' => 'files_property',
@@ -348,7 +340,6 @@ class ProjectControllerTest extends IntegrationTestCase
                     'object' => 'files',
                     'read_only' => false,
                     'default_value' => null,
-                    'property_options' => null,
                 ],
                 [
                     'name' => 'media_property',
@@ -358,7 +349,6 @@ class ProjectControllerTest extends IntegrationTestCase
                     'object' => 'media',
                     'read_only' => false,
                     'default_value' => null,
-                    'property_options' => null,
                 ],
                 [
                     'name' => 'number_of_friends',
@@ -368,7 +358,6 @@ class ProjectControllerTest extends IntegrationTestCase
                     'object' => 'profiles',
                     'read_only' => false,
                     'default_value' => null,
-                    'property_options' => null,
                 ],
                 [
                     'name' => 'street_address',
@@ -378,7 +367,6 @@ class ProjectControllerTest extends IntegrationTestCase
                     'object' => 'profiles',
                     'read_only' => false,
                     'default_value' => null,
-                    'property_options' => null,
                 ],
             ],
             'categories' => [

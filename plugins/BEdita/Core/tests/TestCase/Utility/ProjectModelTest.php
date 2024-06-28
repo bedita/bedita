@@ -282,7 +282,6 @@ class ProjectModelTest extends TestCase
                 'object' => 'profiles',
                 'read_only' => true,
                 'default_value' => null,
-                'property_options' => null,
             ],
             [
                 'name' => 'another_description',
@@ -292,7 +291,6 @@ class ProjectModelTest extends TestCase
                 'object' => 'documents',
                 'read_only' => false,
                 'default_value' => null,
-                'property_options' => null,
             ],
             [
                 'name' => 'another_email',
@@ -302,7 +300,6 @@ class ProjectModelTest extends TestCase
                 'object' => 'users',
                 'read_only' => false,
                 'default_value' => null,
-                'property_options' => null,
             ],
             [
                 'name' => 'another_surname',
@@ -312,7 +309,6 @@ class ProjectModelTest extends TestCase
                 'object' => 'profiles',
                 'read_only' => false,
                 'default_value' => null,
-                'property_options' => null,
             ],
             [
                 'name' => 'another_title',
@@ -322,7 +318,6 @@ class ProjectModelTest extends TestCase
                 'object' => 'documents',
                 'read_only' => false,
                 'default_value' => null,
-                'property_options' => null,
             ],
             [
                 'name' => 'another_username',
@@ -332,7 +327,6 @@ class ProjectModelTest extends TestCase
                 'object' => 'users',
                 'read_only' => false,
                 'default_value' => null,
-                'property_options' => null,
             ],
             [
                 'name' => 'children_order',
@@ -342,7 +336,6 @@ class ProjectModelTest extends TestCase
                 'object' => 'folders',
                 'read_only' => false,
                 'default_value' => null,
-                'property_options' => null,
             ],
             [
                 'name' => 'disabled_property',
@@ -352,7 +345,6 @@ class ProjectModelTest extends TestCase
                 'object' => 'files',
                 'read_only' => false,
                 'default_value' => null,
-                'property_options' => null,
             ],
             [
                 'name' => 'files_property',
@@ -362,7 +354,6 @@ class ProjectModelTest extends TestCase
                 'object' => 'files',
                 'read_only' => false,
                 'default_value' => null,
-                'property_options' => null,
             ],
             [
                 'name' => 'media_property',
@@ -372,7 +363,6 @@ class ProjectModelTest extends TestCase
                 'object' => 'media',
                 'read_only' => false,
                 'default_value' => null,
-                'property_options' => null,
             ],
             [
                 'name' => 'number_of_friends',
@@ -382,7 +372,6 @@ class ProjectModelTest extends TestCase
                 'object' => 'profiles',
                 'read_only' => false,
                 'default_value' => null,
-                'property_options' => null,
             ],
             [
                 'name' => 'street_address',
@@ -392,7 +381,6 @@ class ProjectModelTest extends TestCase
                 'object' => 'profiles',
                 'read_only' => false,
                 'default_value' => null,
-                'property_options' => null,
             ],
         ],
         'categories' => [
@@ -502,7 +490,6 @@ class ProjectModelTest extends TestCase
                     'object' => 'profiles',
                     'read_only' => true,
                     'default_value' => null,
-                    'property_options' => null,
                 ],
             ],
             'relations' => [
