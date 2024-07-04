@@ -335,8 +335,8 @@ class PropertiesControllerTest extends IntegrationTestCase
                     'type' => 'properties',
                     'attributes' => [
                         'name' => 'default_val_property',
-                        'description' => null,
-                        'property_type_name' => 'default_val_property',
+                        'description' => 'Default val property example',
+                        'property_type_name' => 'string',
                         'object_type_name' => 'files',
                         'label' => null,
                         'is_nullable' => true,
@@ -345,8 +345,8 @@ class PropertiesControllerTest extends IntegrationTestCase
                         'default_value' => 'my default value',
                     ],
                     'meta' => [
-                        'created' => '2022-12-01T15:26:00+00:00',
-                        'modified' => '2022-12-01T15:26:00+00:00',
+                        'created' => '2024-07-04T11:25:58+00:00',
+                        'modified' => '2024-07-04T11:25:58+00:00',
                     ],
                     'links' => [
                         'self' => 'http://api.example.com/model/properties/13',
