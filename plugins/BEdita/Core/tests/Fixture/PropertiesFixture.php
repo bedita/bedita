@@ -183,5 +183,19 @@ class PropertiesFixture extends TestFixture
             'is_static' => false,
             'read_only' => false,
         ],
+        [
+            'name' => 'default_val_property',
+            'property_type_id' => 1, // string
+            'object_type_id' => 9, // documents
+            'created' => '2024-07-04 11:25:58',
+            'modified' => '2024-07-04 11:25:58',
+            'description' => 'Default val property example',
+            'enabled' => true,
+            'label' => null,
+            'is_nullable' => true,
+            'is_static' => false,
+            'read_only' => false,
+            'default_value' => 'my default value',
+        ],
     ];
 }
