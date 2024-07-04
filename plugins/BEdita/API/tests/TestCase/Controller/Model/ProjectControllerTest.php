@@ -324,6 +324,15 @@ class ProjectControllerTest extends IntegrationTestCase
                     'default_value' => null,
                 ],
                 [
+                    'name' => 'default_val_property',
+                    'description' => 'Default val property example',
+                    'is_nullable' => true,
+                    'property' => 'string',
+                    'object' => 'files',
+                    'read_only' => false,
+                    'default_value' => 'my default value',
+                ],
+                [
                     'name' => 'disabled_property',
                     'description' => 'Disabled property example',
                     'is_nullable' => true,

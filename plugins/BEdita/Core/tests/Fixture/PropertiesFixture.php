@@ -186,7 +186,7 @@ class PropertiesFixture extends TestFixture
         [
             'name' => 'default_val_property',
             'property_type_id' => 1, // string
-            'object_type_id' => 9, // documents
+            'object_type_id' => 9, // files
             'created' => '2024-07-04 11:25:58',
             'modified' => '2024-07-04 11:25:58',
             'description' => 'Default val property example',

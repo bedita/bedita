@@ -169,6 +169,7 @@ class PropertiesTableTest extends TestCase
             ],
             'files' => [
                 [
+                    'default_val_property',
                     'disabled_property',
                     'media_property',
                     'files_property',
@@ -276,6 +277,7 @@ class PropertiesTableTest extends TestCase
             'media_property',
         ];
         $filesCustom = [ // Files custom properties.
+            'default_val_property',
             'files_property',
         ];
 

@@ -733,6 +733,7 @@ class ObjectTypeTest extends TestCase
                             '$id' => '/properties/provider_extra',
                             'title' => 'Provider Extra',
                         ],
+                        'default_val_property' => [],
                     ],
                     'required' => [
                         'media_property',

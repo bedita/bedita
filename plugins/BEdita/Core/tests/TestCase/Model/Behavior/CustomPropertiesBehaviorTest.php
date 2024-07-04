@@ -124,6 +124,7 @@ class CustomPropertiesBehaviorTest extends TestCase
             ],
             'files' => [
                 [
+                    'default_val_property',
                     'media_property',
                     'files_property',
                 ],
@@ -223,6 +224,7 @@ class CustomPropertiesBehaviorTest extends TestCase
         $expected = [
             'media_property' => null,
             'files_property' => null,
+            'default_val_property' => null,
         ];
         $user = TableRegistry::getTableLocator()->get('Files');
         $result = $user->behaviors()->get('CustomProperties')->getDefaultValues();
@@ -344,6 +346,7 @@ class CustomPropertiesBehaviorTest extends TestCase
         return [
             'simple' => [
                 [
+                    'default_val_property' => null,
                     'media_property' => false,
                     'files_property' => null,
                 ],
@@ -355,6 +358,7 @@ class CustomPropertiesBehaviorTest extends TestCase
             ],
             'overwrite' => [
                 [
+                    'default_val_property' => null,
                     'media_property' => true,
                     'files_property' => ['gustavo' => 'supporto'],
                 ],
@@ -377,6 +381,7 @@ class CustomPropertiesBehaviorTest extends TestCase
             ],
             'disabledProperty' => [
                 [
+                    'default_val_property' => null,
                     'media_property' => false,
                     'files_property' => null,
                 ],
