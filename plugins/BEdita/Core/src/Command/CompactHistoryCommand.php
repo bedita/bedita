@@ -163,8 +163,7 @@ class CompactHistoryCommand extends Command
                 $prev = $current;
                 continue;
             }
-            switch (count($stack))
-            {
+            switch (count($stack)) {
                 case 0:
                 case 1:
                     $stack = [$prev, $current];
