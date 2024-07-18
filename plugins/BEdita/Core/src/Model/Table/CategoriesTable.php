@@ -46,6 +46,7 @@ use Cake\Validation\Validator;
  * @method \BEdita\Core\Model\Entity\Category patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
  * @method \BEdita\Core\Model\Entity\Category[] patchEntities($entities, array $data, array $options = [])
  * @method \BEdita\Core\Model\Entity\Category findOrCreate($search, callable $callback = null, $options = [])
+ * @mixin \BEdita\Core\Model\Behavior\TreeBehavior
  * @mixin \Cake\ORM\Behavior\TimestampBehavior
  */
 class CategoriesTable extends Table
@@ -69,7 +70,7 @@ class CategoriesTable extends Table
 
         $this->addBehavior('Timestamp');
         $this->addBehavior('BEdita/Core.Searchable');
-        $this->addBehavior('Tree', [
+        $this->addBehavior('BEdita/Core.Tree', [
             'left' => 'tree_left',
             'right' => 'tree_right',
         ]);
