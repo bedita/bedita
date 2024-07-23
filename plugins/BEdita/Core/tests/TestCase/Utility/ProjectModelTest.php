@@ -272,6 +272,52 @@ class ProjectModelTest extends TestCase
                 'right' => ['media'],
                 'left' => ['events'],
             ],
+            [
+                'name' => 'test_defaults',
+                'label' => 'Test relation involving default parameters',
+                'inverse_name' => 'inverse_test_defaults',
+                'inverse_label' => 'Inverse test relation involving default parameters',
+                'description' => 'Sample description.',
+                'params' => [
+                    'type' => 'object',
+                    'properties' => [
+                        'size' => [
+                            'type' => 'integer',
+                            'default' => 5,
+                        ],
+                        'street' => [
+                            'type' => 'string',
+                            'default' => 'fighter',
+                        ],
+                        'color' => [
+                            'type' => 'string',
+                        ],
+                    ],
+                ],
+                'right' => ['documents', 'profiles'],
+                'left' => ['documents'],
+            ],
+            [
+                'name' => 'test_simple',
+                'label' => 'Test relation involving simple parameters',
+                'inverse_name' => 'inverse_test_simple',
+                'inverse_label' => 'Inverse test relation involving simple parameters',
+                'description' => 'Sample description.',
+                'params' => [
+                    'type' => 'object',
+                    'properties' => [
+                        'name' => [
+                            'type' => 'string',
+                        ],
+                        'age' => [
+                            'type' => 'integer',
+                            'minimum' => 0,
+                        ],
+                    ],
+                ],
+                'right' => ['documents', 'profiles'],
+                'left' => ['documents'],
+            ],
         ],
         'properties' => [
             [

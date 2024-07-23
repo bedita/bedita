@@ -137,7 +137,11 @@ class RelationsBehaviorTest extends TestCase
     {
         $expected = [
             'test',
+            'test_simple',
+            'test_defaults',
             'inverse_test',
+            'inverse_test_simple',
+            'inverse_test_defaults',
         ];
 
         $Documents = TableRegistry::getTableLocator()->get('Documents');

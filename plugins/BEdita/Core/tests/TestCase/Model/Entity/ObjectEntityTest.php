@@ -406,8 +406,12 @@ class ObjectEntityTest extends TestCase
         ObjectEntity::setExtraInlineAssociations(['translations'], false);
         $expected = [
             'inverse_test',
+            'inverse_test_defaults',
+            'inverse_test_simple',
             'parents',
             'test',
+            'test_defaults',
+            'test_simple',
         ];
 
         $entity = TableRegistry::getTableLocator()
@@ -437,8 +441,12 @@ class ObjectEntityTest extends TestCase
     {
         $expected = [
             'inverse_test',
+            'inverse_test_defaults',
+            'inverse_test_simple',
             'parents',
             'test',
+            'test_defaults',
+            'test_simple',
             'translations',
         ];
 
@@ -509,6 +517,8 @@ class ObjectEntityTest extends TestCase
     {
         $expected = [
             'inverse_test',
+            'inverse_test_defaults',
+            'inverse_test_simple',
             'parents',
             'translations',
         ];
