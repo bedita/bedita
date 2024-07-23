@@ -276,4 +276,16 @@ class CategoriesTable extends Table
         return $query->find('type', [$object])
             ->where([$this->aliasField('name') => $options['name']]);
     }
+
+    /**
+     * Finder for roots categories.
+     *
+     * @param \Cake\ORM\Query $query The query.
+     * @return \Cake\ORM\Query
+     */
+    protected function findRoots(Query $query): Query
+    {
+        return $query->where(fn (QueryExpression $exp): QueryExpression =>
+            $exp->isNull($this->aliasField('parent_id')));
+    }
 }

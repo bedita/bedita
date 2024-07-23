@@ -249,4 +249,16 @@ class CategoriesTableTest extends TestCase
 
         $this->Categories->find('ids', ['names' => ['unnamed']])->toArray();
     }
+
+    /**
+     * Test `findRoots` method.
+     *
+     * @return void
+     * @covers ::findRoots()
+     */
+    public function testFindRoots()
+    {
+        $roots = $this->Categories->find('roots')->toArray();
+        static::assertEquals([1, 2, 3], Hash::extract($roots, '{n}.id'));
+    }
 }
