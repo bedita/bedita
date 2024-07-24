@@ -20,6 +20,7 @@ use BEdita\Core\Filesystem\Exception\InvalidStreamException;
 use BEdita\Core\Filesystem\FilesystemRegistry;
 use BEdita\Core\Filesystem\ThumbnailGenerator;
 use BEdita\Core\Model\Entity\Stream;
+use Cake\Log\Log;
 use Cake\Utility\Hash;
 use Intervention\Image\Exception\NotReadableException;
 use Intervention\Image\ImageManager;
@@ -124,7 +125,9 @@ class GlideGenerator extends ThumbnailGenerator
 
         $maxImageSize = $this->getConfig('maxImageSize', 7680 * 4320); // 8K
         if (empty($stream->width) || empty($stream->height)) {
-            throw new InvalidStreamException(__d('bedita', 'Unable to obtain resolution for stream {0}', $stream->uuid));
+            Log::notice(sprintf('Unable to obtain resolution for stream %s', $stream->uuid));
+
+            return;
         }
 
         if ($stream->width * $stream->height <= $maxImageSize) {
