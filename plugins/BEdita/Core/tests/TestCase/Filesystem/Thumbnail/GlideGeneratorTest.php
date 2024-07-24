@@ -227,7 +227,7 @@ class GlideGeneratorTest extends TestCase
                 ['w' => 200],
             ],
             'jpg no resolution' => [
-                new InvalidStreamException('Unable to obtain resolution for stream 7ffcb45e-4cc1-492e-9775-74ee6999503f'),
+                true,
                 '7ffcb45e-4cc1-492e-9775-74ee6999503f',
                 ['w' => 200],
             ],
