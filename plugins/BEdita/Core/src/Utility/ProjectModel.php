@@ -231,6 +231,14 @@ class ProjectModel
                 $update[$key] = array_values(static::itemsToUpdate($current, $new));
             }
         }
+        if (!empty($update['categories'])) {
+            $names = Hash::extract($update['categories'], '{n}.name');
+            $found = TableRegistry::getTableLocator()->get('Categories')->find()->where(['name IN' => $names])->toArray();
+            $found = (array)Hash::extract($found, '{n}.name');
+            $update['categories'] = array_filter($update['categories'], function ($category) use ($found) {
+                return !in_array($category['name'], $found);
+            });
+        }
 
         return array_filter(
             array_map('array_filter', compact('create', 'update', 'remove'))
