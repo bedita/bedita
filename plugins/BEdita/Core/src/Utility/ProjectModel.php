@@ -231,18 +231,30 @@ class ProjectModel
                 $update[$key] = array_values(static::itemsToUpdate($current, $new));
             }
         }
-        if (Hash::check($update, 'categories.{n}.name')) {
-            $names = (array)Hash::extract($update['categories'], '{n}.name');
-            $found = TableRegistry::getTableLocator()->get('Categories')->find()->where(['name IN' => $names])->toArray();
-            $found = (array)Hash::extract($found, '{n}.name');
-            $update['categories'] = array_filter($update['categories'], function ($category) use ($found) {
-                return !in_array($category['name'], $found);
-            });
-        }
+        self::categoriesToUpdate($update);
 
         return array_filter(
             array_map('array_filter', compact('create', 'update', 'remove'))
         );
+    }
+
+    /**
+     * Check if there are categories to update.
+     *
+     * @param array $update Update array
+     * @return void
+     */
+    public static function categoriesToUpdate(array &$update): void
+    {
+        if (!Hash::check($update, 'categories.{n}.name')) {
+            return;
+        }
+        $names = (array)Hash::extract($update['categories'], '{n}.name');
+        $found = TableRegistry::getTableLocator()->get('Categories')->find()->where(['name IN' => $names])->toArray();
+        $found = (array)Hash::extract($found, '{n}.name');
+        $update['categories'] = array_values(array_filter($update['categories'], function ($category) use ($found) {
+            return !in_array($category['name'], $found);
+        }));
     }
 
     /**

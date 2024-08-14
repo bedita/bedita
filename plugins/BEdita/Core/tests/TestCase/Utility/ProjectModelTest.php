@@ -530,4 +530,45 @@ class ProjectModelTest extends TestCase
         ];
         static::assertEquals(compact('update'), $result);
     }
+
+    /**
+     * Data provider for `testCategoriesToUpdate` test case.
+     *
+     * @return array
+     */
+    public function categoriesToUpdateProvider(): array
+    {
+        return [
+            'empty' => [
+                [],
+                [],
+            ],
+            'categories in db' => [
+                [
+                    'categories' => [
+                        ['name' => 'first-cat', 'label' => 'test'], // in fixture db
+                        ['name' => 'my-cat', 'label' => 'My category'],
+                    ],
+                ],
+                [
+                    'categories' => [
+                        ['name' => 'my-cat', 'label' => 'My category'],
+                    ],
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * Test `categoriesToUpdate` method
+     *
+     * @return void
+     * @covers ::categoriesToUpdate()
+     * @dataProvider categoriesToUpdateProvider()
+     */
+    public function testCategoriesToUpdate(array $update, array $expected): void
+    {
+        ProjectModel::categoriesToUpdate($update);
+        static::assertEquals($expected, $update);
+    }
 }
