@@ -546,13 +546,15 @@ class ProjectModelTest extends TestCase
             'categories in db' => [
                 [
                     'categories' => [
-                        ['name' => 'first-cat', 'label' => 'test'], // in fixture db
-                        ['name' => 'my-cat', 'label' => 'My category'],
+                        ['name' => 'first-cat', 'object' => 'documents', 'label' => 'test'], // in fixture db
+                        ['name' => 'second-cat', 'object' => 'events', 'label' => 'test'], // not in fixture db: object type is not document
+                        ['name' => 'my-cat', 'object' => 'documents', 'label' => 'My category'],
                     ],
                 ],
                 [
                     'categories' => [
-                        ['name' => 'my-cat', 'label' => 'My category'],
+                        ['name' => 'second-cat', 'object' => 'events', 'label' => 'test'],
+                        ['name' => 'my-cat', 'object' => 'documents', 'label' => 'My category'],
                     ],
                 ],
             ],

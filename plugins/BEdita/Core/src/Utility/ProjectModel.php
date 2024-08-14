@@ -249,12 +249,24 @@ class ProjectModel
         if (!Hash::check($update, 'categories.{n}.name')) {
             return;
         }
-        $names = (array)Hash::extract($update['categories'], '{n}.name');
-        $found = TableRegistry::getTableLocator()->get('Categories')->find()->where(['name IN' => $names])->toArray();
-        $found = (array)Hash::extract($found, '{n}.name');
-        $update['categories'] = array_values(array_filter($update['categories'], function ($category) use ($found) {
-            return !in_array($category['name'], $found);
-        }));
+        $table = TableRegistry::getTableLocator()->get('Categories');
+        $categories = (array)Hash::combine($update['categories'], '{n}.name', '{n}.label', '{n}.object');
+        $types = array_keys($categories);
+        foreach ($types as $objectType) {
+            $names = array_keys((array)Hash::get($categories, $objectType));
+            $found = $table->find('type', [$objectType])->where([$table->aliasField('name') . ' IN' => $names])->toArray();
+            $found = (array)Hash::extract($found, '{n}.name');
+            if (empty($found)) {
+                continue;
+            }
+            foreach ($update['categories'] as $key => $category) {
+                if ($objectType !== $category['object'] || !in_array($category['name'], $found)) {
+                    continue;
+                }
+                unset($update['categories'][$key]);
+            }
+        }
+        $update['categories'] = array_values($update['categories']);
     }
 
     /**
