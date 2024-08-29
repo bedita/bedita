@@ -31,6 +31,7 @@ class RestClientModel extends BEAppModel {
 	public $client;
 	public $useCurl = false;
 	public $callHeaders = array();
+	public $lastStatusCode = null;
 
 	/**
 	 * options used when a request (get/post) is done
@@ -150,6 +151,7 @@ class RestClientModel extends BEAppModel {
 			$queryParms = (empty($httpQuery)) ? "" : "?" . $httpQuery;
 			curl_setopt($this->client, CURLOPT_URL, $uri . $queryParms);
 			$out = curl_exec($this->client);
+			$this->lastStatusCode = curl_getinfo($this->client, CURLINFO_HTTP_CODE);
 			if(curl_errno($this->client)) {
 				exit;
 				$err = curl_error($this->client);
@@ -214,6 +216,7 @@ class RestClientModel extends BEAppModel {
 				curl_setopt($this->client, CURLINFO_HEADER_OUT, true);
 			}
 			$out = curl_exec($this->client);
+			$this->lastStatusCode = curl_getinfo($this->client, CURLINFO_HTTP_CODE);
 			if(curl_errno($this->client)) {
 				$err = curl_error($this->client);
 				$this->log("Error: " . $err);
@@ -280,6 +283,7 @@ class RestClientModel extends BEAppModel {
 			curl_setopt($this->client, CURLOPT_CUSTOMREQUEST, $method);
 			curl_setopt($this->client, CURLOPT_URL, $uri . $queryParms);
 			$out = curl_exec($this->client);
+			$this->lastStatusCode = curl_getinfo($this->client, CURLINFO_HTTP_CODE);
 			if(curl_errno($this->client)) {
 				$err = curl_error($this->client);
 				$this->log("Error: " . $err);
