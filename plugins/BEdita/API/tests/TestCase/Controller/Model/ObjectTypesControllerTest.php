@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 /**
  * BEdita, API-first content management framework
  * Copyright 2017 ChannelWeb Srl, Chialab Srl
@@ -56,10 +58,10 @@ class ObjectTypesControllerTest extends IntegrationTestCase
             ],
             'meta' => [
                 'pagination' => [
-                    'count' => 10,
+                    'count' => 11,
                     'page' => 1,
                     'page_count' => 1,
-                    'page_items' => 10,
+                    'page_items' => 11,
                     'page_size' => 20,
                 ],
             ],
@@ -551,6 +553,55 @@ class ObjectTypesControllerTest extends IntegrationTestCase
                         ],
                     ],
                 ],
+                [
+                    'id' => '11',
+                    'type' => 'object_types',
+                    'attributes' => [
+                        'singular' => 'image',
+                        'name' => 'images',
+                        'description' => null,
+                        'table' => 'BEdita/Core.Media',
+                        'associations' => ['Streams'],
+                        'hidden' => null,
+                        'is_abstract' => false,
+                        'parent_name' => 'media',
+                        'enabled' => true,
+                        'translation_rules' => null,
+                        'is_translatable' => true,
+                    ],
+                    'meta' => [
+                        'alias' => 'Images',
+                        'relations' => [
+                            'inverse_test_abstract',
+                        ],
+                        'created' => '2024-03-08T11:21:51+00:00',
+                        'modified' => '2024-03-08T11:21:51+00:00',
+                        'core_type' => false,
+                    ],
+                    'links' => [
+                        'self' => 'http://api.example.com/model/object_types/11',
+                    ],
+                    'relationships' => [
+                        'left_relations' => [
+                            'links' => [
+                                'self' => 'http://api.example.com/model/object_types/11/relationships/left_relations',
+                                'related' => 'http://api.example.com/model/object_types/11/left_relations',
+                            ],
+                        ],
+                        'right_relations' => [
+                            'links' => [
+                                'self' => 'http://api.example.com/model/object_types/11/relationships/right_relations',
+                                'related' => 'http://api.example.com/model/object_types/11/right_relations',
+                            ],
+                        ],
+                        'parent' => [
+                            'links' => [
+                                'self' => 'http://api.example.com/model/object_types/11/relationships/parent',
+                                'related' => 'http://api.example.com/model/object_types/11/parent',
+                            ],
+                        ],
+                    ],
+                ],
             ],
         ];
 
@@ -762,7 +813,7 @@ class ObjectTypesControllerTest extends IntegrationTestCase
 
         $this->assertResponseCode(201);
         $this->assertContentType('application/vnd.api+json');
-        $this->assertHeader('Location', 'http://api.example.com/model/object_types/11');
+        $this->assertHeader('Location', 'http://api.example.com/model/object_types/12');
         $this->assertTrue(TableRegistry::getTableLocator()->get('ObjectTypes')->exists(['singular' => 'my_object_type']));
     }
 

@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 /**
  * BEdita, API-first content management framework
  * Copyright 2018 ChannelWeb Srl, Chialab Srl
@@ -13,6 +15,7 @@
 
 namespace BEdita\Core\Model\Table;
 
+use BEdita\Core\Search\SimpleSearchTrait;
 use BEdita\Core\Utility\LoggedUser;
 use Cake\Database\Schema\TableSchemaInterface;
 use Cake\Datasource\EntityInterface;
@@ -39,6 +42,8 @@ use Cake\Validation\Validator;
  */
 class AnnotationsTable extends Table
 {
+    use SimpleSearchTrait;
+
     /**
      * @inheritDoc
      */
@@ -58,11 +63,7 @@ class AnnotationsTable extends Table
                 ],
             ],
         ]);
-        $this->addBehavior('BEdita/Core.Searchable', [
-            'fields' => [
-                'description' => 10,
-            ],
-        ]);
+        $this->addBehavior('BEdita/Core.Searchable');
 
         $this->belongsTo('Objects', [
             'foreignKey' => 'object_id',
@@ -74,6 +75,8 @@ class AnnotationsTable extends Table
             'joinType' => 'INNER',
             'className' => 'BEdita/Core.Users',
         ]);
+
+        $this->setupSimpleSearch(['fields' => ['description']]);
     }
 
     /**
@@ -119,11 +122,9 @@ class AnnotationsTable extends Table
      *
      * @codeCoverageIgnore
      */
-    protected function _initializeSchema(TableSchemaInterface $schema): TableSchemaInterface
+    public function getSchema(): TableSchemaInterface
     {
-        $schema->setColumnType('params', 'json');
-
-        return $schema;
+        return parent::getSchema()->setColumnType('params', 'json');
     }
 
     /**

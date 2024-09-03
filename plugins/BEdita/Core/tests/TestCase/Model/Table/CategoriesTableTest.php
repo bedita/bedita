@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 /**
  * BEdita, API-first content management framework
  * Copyright 2020 ChannelWeb Srl, Chialab Srl
@@ -78,12 +80,13 @@ class CategoriesTableTest extends TestCase
         $expected = [
             'id' => 1,
             'name' => 'first-cat',
-            'label' => 'First category',
+            'labels' => ['default' => 'First category'],
             'parent_id' => null,
             'tree_left' => 1,
             'tree_right' => 2,
             'enabled' => true,
             'object_type_name' => 'documents',
+            'label' => 'First category',
         ];
         unset($category['created'], $category['modified']);
         static::assertEquals($expected, $category);
@@ -103,13 +106,15 @@ class CategoriesTableTest extends TestCase
         $expected = [
             [
                 'name' => 'first-cat',
-                'label' => 'First category',
+                'labels' => ['default' => 'First category'],
                 'params' => '100',
+                'label' => 'First category',
             ],
             [
                 'name' => 'second-cat',
-                'label' => 'Second category',
+                'labels' => ['default' => 'Second category'],
                 'params' => null,
+                'label' => 'Second category',
             ],
         ];
         static::assertEquals($expected, $document['categories']);
@@ -124,7 +129,7 @@ class CategoriesTableTest extends TestCase
     public function testFindEnabledCategories()
     {
         $categories = $this->Categories->find('enabled')->toArray();
-        static::assertEquals([1, 2], Hash::extract($categories, '{n}.id'));
+        static::assertEquals([1, 2, 4], Hash::extract($categories, '{n}.id'));
     }
 
     /**
@@ -139,7 +144,7 @@ class CategoriesTableTest extends TestCase
             $this->Categories->aliasField('id') => 'ASC',
         ];
         $categories = $this->Categories->find('type', ['documents'])->order($order)->toArray();
-        static::assertEquals([1, 2, 3], Hash::extract($categories, '{n}.id'));
+        static::assertEquals([1, 2, 3, 4], Hash::extract($categories, '{n}.id'));
 
         $categories = $this->Categories->find('type', ['news'])->order($order)->toArray();
         static::assertEquals([], $categories);
@@ -243,5 +248,17 @@ class CategoriesTableTest extends TestCase
         $this->expectExceptionMessage('Missing required parameter "typeId"');
 
         $this->Categories->find('ids', ['names' => ['unnamed']])->toArray();
+    }
+
+    /**
+     * Test `findRoots` method.
+     *
+     * @return void
+     * @covers ::findRoots()
+     */
+    public function testFindRoots()
+    {
+        $roots = $this->Categories->find('roots')->toArray();
+        static::assertEquals([1, 2, 3], Hash::extract($roots, '{n}.id'));
     }
 }

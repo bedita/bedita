@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 /**
  * BEdita, API-first content management framework
  * Copyright 2018 ChannelWeb Srl, Chialab Srl
@@ -18,6 +20,7 @@ use BEdita\Core\Filesystem\Exception\InvalidStreamException;
 use BEdita\Core\Filesystem\FilesystemRegistry;
 use BEdita\Core\Filesystem\ThumbnailGenerator;
 use BEdita\Core\Model\Entity\Stream;
+use Cake\Log\Log;
 use Cake\Utility\Hash;
 use Intervention\Image\Exception\NotReadableException;
 use Intervention\Image\ImageManager;
@@ -36,18 +39,13 @@ use League\Glide\Manipulators\Size as SizeManipulator;
 class GlideGenerator extends ThumbnailGenerator
 {
     /**
-     * Enforced maximum image size.
-     *
-     * @var int
-     */
-    public const MAX_IMAGE_SIZE = 1 << 22; // 2048 * 2048 === 2^11 * 2^11 === 2^22
-
-    /**
      * @inheritDoc
      */
     protected $_defaultConfig = [
         'cache' => 'thumbnails',
         'driver' => 'gd',
+        'maxThumbSize' => 1 << 22, // 2048 * 2048 === 2^11 * 2^11 === 2^22
+        'maxImageSize' => 7680 * 4320, // 8K
     ];
 
     /**
@@ -81,21 +79,20 @@ class GlideGenerator extends ThumbnailGenerator
      *
      * @return \League\Glide\Api\Api
      */
-    protected function getGlideApi()
+    protected function getGlideApi(): GlideApi
     {
         $driver = $this->getConfig('driver', 'gd');
-        $api = new GlideApi(
+
+        return new GlideApi(
             new ImageManager(compact('driver')),
             [
                 new OrientationManipulator(),
                 new CropManipulator(),
-                new SizeManipulator(static::MAX_IMAGE_SIZE),
+                new SizeManipulator($this->getConfig('maxThumbSize', 1 << 22)), // 2048 * 2048 === 2^11 * 2^11 === 2^22
                 new BlurManipulator(),
                 new EncodeManipulator(),
             ]
         );
-
-        return $api;
     }
 
     /**
@@ -109,10 +106,35 @@ class GlideGenerator extends ThumbnailGenerator
     {
         $source = (string)$stream->contents;
 
-        $thumbnail = $this->getGlideApi()
+        return $this->getGlideApi()
             ->run($source, $options);
+    }
 
-        return $thumbnail;
+    /**
+     * Check that image resolution is within configured boundaries.
+     *
+     * @param \BEdita\Core\Model\Entity\Stream $stream Stream entity instance.
+     * @return void
+     * @throws \BEdita\Core\Filesystem\Exception\InvalidStreamException
+     */
+    protected function checkImageResolution(Stream $stream): void
+    {
+        if (!preg_match('/image\/(?!svg)/', (string)$stream->mime_type)) {
+            return;
+        }
+
+        $maxImageSize = $this->getConfig('maxImageSize', 7680 * 4320); // 8K
+        if (empty($stream->width) || empty($stream->height)) {
+            Log::notice(sprintf('Unable to obtain resolution for stream %s', $stream->uuid));
+
+            return;
+        }
+
+        if ($stream->width * $stream->height <= $maxImageSize) {
+            return;
+        }
+
+        throw new InvalidStreamException(__d('bedita', 'Image exceeds the maximum resolution of {0} Megapixels for thumbnail generation', round($maxImageSize / 10 ** 6, 1)));
     }
 
     /**
@@ -120,6 +142,10 @@ class GlideGenerator extends ThumbnailGenerator
      */
     public function getUrl(Stream $stream, array $options = []): string
     {
+        if ($this->isSvg($stream)) {
+            return $stream->get('url');
+        }
+
         $path = $this->getFilename($stream, $options);
 
         return FilesystemRegistry::getPublicUrl($path);
@@ -130,7 +156,12 @@ class GlideGenerator extends ThumbnailGenerator
      */
     public function generate(Stream $stream, array $options = []): bool
     {
+        if ($this->isSvg($stream)) {
+            return true;
+        }
+
         $path = $this->getFilename($stream, $options);
+        $this->checkImageResolution($stream);
 
         try {
             $thumbnail = $this->makeThumbnail($stream, $options);
@@ -148,6 +179,10 @@ class GlideGenerator extends ThumbnailGenerator
      */
     public function exists(Stream $stream, array $options = []): bool
     {
+        if ($this->isSvg($stream)) {
+            return true;
+        }
+
         $path = $this->getFilename($stream, $options);
 
         return FilesystemRegistry::getMountManager()->fileExists($path);
@@ -162,5 +197,16 @@ class GlideGenerator extends ThumbnailGenerator
         $base = $stream->filesystemPath($filesystem);
 
         FilesystemRegistry::getMountManager()->deleteDirectory($base);
+    }
+
+    /**
+     * Check if the stream is an SVG image.
+     *
+     * @param \BEdita\Core\Model\Entity\Stream $stream Stream entity instance.
+     * @return bool
+     */
+    protected function isSvg(Stream $stream): bool
+    {
+        return $stream->mime_type === 'image/svg+xml';
     }
 }

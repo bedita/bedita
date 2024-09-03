@@ -1,7 +1,9 @@
 <?php
+declare(strict_types=1);
+
 /**
  * BEdita, API-first content management framework
- * Copyright 2016 ChannelWeb Srl, Chialab Srl
+ * Copyright 2024 ChannelWeb Srl, Chialab Srl
  *
  * This file is part of BEdita: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published
@@ -10,20 +12,20 @@
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
+namespace BEdita\Core\Test\TestCase\ORM\Inheritance\Query;
 
-namespace BEdita\Core\Test\TestCase\ORM\Inheritance;
-
-use BEdita\Core\ORM\Inheritance\Query;
+use BEdita\Core\ORM\Inheritance\Query\SelectQuery;
+use BEdita\Core\Test\TestCase\ORM\Inheritance\FakeAnimalsTrait;
 use Cake\Database\ValueBinder;
 use Cake\ORM\Query as CakeQuery;
 use Cake\TestSuite\TestCase;
 
 /**
- * {@see \BEdita\Core\ORM\Inheritance\Query} Test Case
+ * {@see \BEdita\Core\ORM\Inheritance\Query\InheritanceQueryTrait} Test Case
  *
- * @coversDefaultClass \BEdita\Core\ORM\Inheritance\Query
+ * @coversDefaultClass \BEdita\Core\ORM\Inheritance\Query\InheritanceQueryTrait
  */
-class QueryTest extends TestCase
+class InheritanceQueryTraitTest extends TestCase
 {
     use FakeAnimalsTrait;
 
@@ -49,7 +51,7 @@ class QueryTest extends TestCase
     public function testAddDefaultTypes()
     {
         $this->fakeAnimals->getSchema()->setColumnType('name', 'json');
-        $query = new Query($this->fakeFelines->getConnection(), $this->fakeFelines);
+        $query = new SelectQuery($this->fakeFelines->getConnection(), $this->fakeFelines);
 
         $defaults = $query->getTypeMap()->getDefaults();
         static::assertArrayHasKey('name', $defaults);
@@ -99,7 +101,7 @@ class QueryTest extends TestCase
      * @covers ::_addDefaultFields()
      * @dataProvider addDefaultFieldsProvider()
      */
-    public function testAddDefaultFields(array $expected, array $select, $autoFields)
+    public function testAddDefaultFields(array $expected, array $select, bool $autoFields)
     {
         $query = $this->fakeFelines->find()
             ->select($select)

@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 /**
  * BEdita, API-first content management framework
  * Copyright 2017 ChannelWeb Srl, Chialab Srl
@@ -137,12 +139,16 @@ class RolesUsersTable extends Table
         if (empty($ids)) {
             return false;
         }
-        $query = $this->Roles->find('list', ['valueField' => 'min_value'])
-            ->where(['id IN' => $ids]);
-        $priorityUser = $query->select([
-                'min_value' => $query->func()->min($this->Roles->aliasField('priority')),
-            ])
+
+        $query = $this->Roles->find();
+        $priorityUser = $query
+            ->select(['min_value' => $query->func()->min($this->Roles->aliasField('priority'))])
+            ->where(['id IN' => $ids])
+            ->disableHydration()
+            ->all()
+            ->map(fn (array $row): int => (int)Hash::get($row, 'min_value'))
             ->first();
+
         $priorityRole = $this->Roles->get($roleId)->get('priority');
 
         return $priorityUser <= $priorityRole;

@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 /**
  * BEdita, API-first content management framework
  * Copyright 2019 ChannelWeb Srl, Chialab Srl
@@ -16,6 +18,7 @@ namespace BEdita\Core\Model\Entity;
 use BEdita\Core\Utility\JsonApiSerializable;
 use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\ORM\Entity;
+use Cake\Utility\Hash;
 
 /**
  * Category Entity
@@ -23,7 +26,7 @@ use Cake\ORM\Entity;
  * @property int $id
  * @property int|null $object_type_id
  * @property string $name
- * @property string|null $label
+ * @property array|null $labels
  * @property int|null $parent_id
  * @property int|null $tree_left
  * @property int|null $tree_right
@@ -65,6 +68,7 @@ class Category extends Entity implements JsonApiSerializable
      * @inheritDoc
      */
     protected $_virtual = [
+        'label',
         'object_type_name',
         'object',
         'parent',
@@ -143,5 +147,28 @@ class Category extends Entity implements JsonApiSerializable
         }
 
         return $this->parent_category->name;
+    }
+
+    /**
+     * Getter for `label` virtual property.
+     *
+     * @return string|null
+     */
+    protected function _getLabel(): ?string
+    {
+        $label = (string)Hash::get((array)$this->labels, 'default');
+
+        return empty($label) ? null : $label;
+    }
+
+    /**
+     * Setter for `label` virtual property.
+     *
+     * @param string $label Label to set.
+     * @return void
+     */
+    protected function _setLabel(string $label): void
+    {
+        $this->labels = array_merge((array)$this->labels, ['default' => $label]);
     }
 }

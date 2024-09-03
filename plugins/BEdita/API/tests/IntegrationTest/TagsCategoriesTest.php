@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 /**
  * BEdita, API-first content management framework
  * Copyright 2019 ChannelWeb Srl, Chialab Srl
@@ -33,6 +35,7 @@ class TagsCategoriesTest extends IntegrationTestCase
                     'tags' => [
                         [
                             'name' => 'first-tag',
+                            'labels' => ['default' => 'First tag'],
                             'label' => 'First tag',
                         ],
                     ],
@@ -60,8 +63,9 @@ class TagsCategoriesTest extends IntegrationTestCase
                     'categories' => [
                         [
                             'name' => 'second-cat',
-                            'label' => 'Second category',
+                            'labels' => ['default' => 'Second category'],
                             'params' => null,
+                            'label' => 'Second category',
                         ],
                     ],
                 ],
@@ -141,6 +145,7 @@ class TagsCategoriesTest extends IntegrationTestCase
                     'tags' => [
                         [
                             'name' => 'first-tag',
+                            'labels' => ['default' => 'First tag'],
                             'label' => 'First tag',
                         ],
                     ],
@@ -159,13 +164,15 @@ class TagsCategoriesTest extends IntegrationTestCase
                     'categories' => [
                         [
                             'name' => 'first-cat',
-                            'label' => 'First category',
+                            'labels' => ['default' => 'First category'],
                             'params' => '100',
+                            'label' => 'First category',
                         ],
                         [
                             'name' => 'second-cat',
-                            'label' => 'Second category',
+                            'labels' => ['default' => 'Second category'],
                             'params' => null,
+                            'label' => 'Second category',
                         ],
                     ],
                 ],
@@ -183,8 +190,9 @@ class TagsCategoriesTest extends IntegrationTestCase
                     'categories' => [
                         [
                             'name' => 'first-cat',
-                            'label' => 'First category',
+                            'labels' => ['default' => 'First category'],
                             'params' => '100',
+                            'label' => 'First category',
                         ],
                     ],
                 ],
@@ -263,7 +271,7 @@ class TagsCategoriesTest extends IntegrationTestCase
     {
         return [
             'categories' => [
-                [1, 2, 3],
+                [1, 2, 3, 4],
                 '/model/categories',
             ],
             'tags' => [
@@ -336,12 +344,13 @@ class TagsCategoriesTest extends IntegrationTestCase
                 'type' => 'categories',
                 'attributes' => [
                     'name' => 'first-cat',
-                    'label' => 'First category',
+                    'labels' => ['default' => 'First category'],
                     'parent_id' => null,
                     'tree_left' => 1,
                     'tree_right' => 2,
                     'enabled' => true,
                     'object_type_name' => 'documents',
+                    'label' => 'First category',
                 ],
             ],
             [
@@ -349,12 +358,13 @@ class TagsCategoriesTest extends IntegrationTestCase
                 'type' => 'categories',
                 'attributes' => [
                     'name' => 'second-cat',
-                    'label' => 'Second category',
+                    'labels' => ['default' => 'Second category'],
                     'parent_id' => null,
                     'tree_left' => 3,
-                    'tree_right' => 4,
+                    'tree_right' => 6,
                     'enabled' => true,
                     'object_type_name' => 'documents',
+                    'label' => 'Second category',
                 ],
             ],
             [
@@ -362,12 +372,27 @@ class TagsCategoriesTest extends IntegrationTestCase
                 'type' => 'categories',
                 'attributes' => [
                     'name' => 'disabled-cat',
-                    'label' => 'Disabled category',
+                    'labels' => ['default' => 'Disabled category'],
                     'parent_id' => null,
-                    'tree_left' => 5,
-                    'tree_right' => 6,
+                    'tree_left' => 7,
+                    'tree_right' => 8,
                     'enabled' => false,
                     'object_type_name' => 'documents',
+                    'label' => 'Disabled category',
+                ],
+            ],
+            [
+                'id' => '4',
+                'type' => 'categories',
+                'attributes' => [
+                    'name' => 'child-cat-1',
+                    'labels' => ['default' => 'Child category'],
+                    'parent_id' => 2,
+                    'tree_left' => 4,
+                    'tree_right' => 5,
+                    'enabled' => true,
+                    'object_type_name' => 'documents',
+                    'label' => 'Child category',
                 ],
             ],
         ];

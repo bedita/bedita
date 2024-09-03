@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 /**
  * BEdita, API-first content management framework
  * Copyright 2023 ChannelWeb Srl, Chialab Srl
@@ -327,6 +329,69 @@ class ObjectsFixture extends TestFixture
             'modified_by' => 1,
             'publish_start' => null,
             'publish_end' => null,
+        ],
+        // 16
+        [
+            'object_type_id' => 9,
+            'status' => 'on',
+            'uname' => 'media-svg',
+            'locked' => 0,
+            'deleted' => 0,
+            'created' => '2024-03-25 16:11:18',
+            'modified' => '2024-03-25 16:11:18',
+            'published' => null,
+            'title' => 'svg media',
+            'description' => 'an svg image',
+            'body' => null,
+            'extra' => null,
+            'lang' => 'en',
+            'created_by' => 1,
+            'modified_by' => 1,
+            'publish_start' => null,
+            'publish_end' => null,
+            'custom_props' => ['media_property' => false],
+        ],
+        // 17
+        [
+            'object_type_id' => 11,
+            'status' => 'on',
+            'uname' => 'media-modern-art',
+            'locked' => 0,
+            'deleted' => 0,
+            'created' => '2024-06-25 10:11:18',
+            'modified' => '2024-06-25 10:11:18',
+            'published' => null,
+            'title' => 'Modern art',
+            'description' => 'an art piece',
+            'body' => null,
+            'extra' => null,
+            'lang' => 'en',
+            'created_by' => 1,
+            'modified_by' => 1,
+            'publish_start' => null,
+            'publish_end' => null,
+            'custom_props' => ['media_property' => false],
+        ],
+        // 18
+        [
+            'object_type_id' => 11,
+            'status' => 'on',
+            'uname' => 'media-contemporary-art',
+            'locked' => 0,
+            'deleted' => 0,
+            'created' => '2024-06-25 10:11:18',
+            'modified' => '2024-06-25 10:11:18',
+            'published' => null,
+            'title' => 'Contemporary art',
+            'description' => 'an art piece',
+            'body' => null,
+            'extra' => null,
+            'lang' => 'en',
+            'created_by' => 1,
+            'modified_by' => 1,
+            'publish_start' => null,
+            'publish_end' => null,
+            'custom_props' => ['media_property' => false],
         ],
     ];
 

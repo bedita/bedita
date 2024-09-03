@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 /**
  * BEdita, API-first content management framework
  * Copyright 2016 ChannelWeb Srl, Chialab Srl
@@ -112,7 +114,7 @@ class CheckSchemaTaskTest extends TestCase
                 'columns' => ['foo_bar'],
             ]);
         foreach ($table->createSql($connection) as $statement) {
-            $connection->query($statement);
+            $connection->execute($statement);
         }
 
         $this->exec(CheckSchemaTask::class);

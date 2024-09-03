@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 /**
  * BEdita, API-first content management framework
  * Copyright 2018 ChannelWeb Srl, Chialab Srl
@@ -14,6 +16,8 @@
 namespace BEdita\Core\Model\Table;
 
 use BEdita\Core\Exception\BadFilterException;
+use BEdita\Core\Search\SimpleSearchTrait;
+use Cake\Core\Configure;
 use Cake\Database\Expression\QueryExpression;
 use Cake\Database\Schema\TableSchemaInterface;
 use Cake\Datasource\Exception\RecordNotFoundException;
@@ -42,6 +46,8 @@ use Cake\Validation\Validator;
  */
 class TranslationsTable extends Table
 {
+    use SimpleSearchTrait;
+
     /**
      * {@inheritDoc}
      *
@@ -57,15 +63,7 @@ class TranslationsTable extends Table
 
         $this->addBehavior('Timestamp');
         $this->addBehavior('BEdita/Core.UserModified');
-        $this->addBehavior('BEdita/Core.Searchable', [
-            'fields' => [
-                'translated_fields' => 10,
-            ],
-            'columnTypes' => [
-                'json',
-                'text',
-            ],
-        ]);
+        $this->addBehavior('BEdita/Core.Searchable');
         $this->addBehavior('BEdita/Core.Status');
 
         $this->belongsTo('Objects', [
@@ -82,6 +80,14 @@ class TranslationsTable extends Table
             'className' => 'Users',
             'foreignKey' => 'modified_by',
             'joinType' => 'INNER',
+        ]);
+
+        $this->setupSimpleSearch([
+            'fields' => ['translated_fields'],
+            'columnTypes' => [
+                'json',
+                'text',
+            ],
         ]);
     }
 
@@ -114,7 +120,7 @@ class TranslationsTable extends Table
             ->notEmptyString('status');
 
         $validator
-            ->isArray('translated_fields')
+            ->array('translated_fields')
             ->allowEmptyArray('translated_fields');
 
         return $validator;
@@ -140,11 +146,9 @@ class TranslationsTable extends Table
      *
      * @codeCoverageIgnore
      */
-    protected function _initializeSchema(TableSchemaInterface $schema): TableSchemaInterface
+    public function getSchema(): TableSchemaInterface
     {
-        $schema->setColumnType('translated_fields', 'json');
-
-        return $schema;
+        return parent::getSchema()->setColumnType('translated_fields', 'json');
     }
 
     /**
@@ -186,5 +190,16 @@ class TranslationsTable extends Table
         }
 
         return $objectType->id;
+    }
+
+    /**
+     * Finder for available objects based on the status level.
+     *
+     * @param \Cake\ORM\Query $query Query object instance.
+     * @return \Cake\ORM\Query
+     */
+    protected function findAvailable(Query $query): Query
+    {
+        return $query->find('statusLevel', [Configure::read('Status.level', 'all')]);
     }
 }

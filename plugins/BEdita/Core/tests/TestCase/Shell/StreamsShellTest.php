@@ -1,4 +1,17 @@
 <?php
+declare(strict_types=1);
+
+/**
+ * BEdita, API-first content management framework
+ * Copyright 2024 ChannelWeb Srl, Chialab Srl
+ *
+ * This file is part of BEdita: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
+ */
 namespace BEdita\Core\Test\TestCase\Shell;
 
 use BEdita\Core\Test\Utility\TestFilesystemTrait;
@@ -86,8 +99,7 @@ class StreamsShellTest extends TestCase
 
         foreach ($data as $entry) {
             $entry['original_width'] = $entry['width'];
-
-            if (preg_match('/image\//', $entry['mime_type'])) {
+            if (preg_match('/image\//', $entry['mime_type']) && $entry['mime_type'] != 'image/svg+xml') {
                 $this->assertNotNull($entry['width']);
             }
         }
@@ -100,7 +112,7 @@ class StreamsShellTest extends TestCase
         $lastData = $results->toList();
 
         foreach ($lastData as $entry) {
-            if (preg_match('/image\//', $entry['mime_type'])) {
+            if (preg_match('/image\//', $entry['mime_type']) && $entry['mime_type'] != 'image/svg+xml') {
                 $originalEntry = current(array_filter($data, function ($e) use ($entry) {
                     return $e['uuid'] === $entry['uuid'];
                 }));

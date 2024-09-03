@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 /**
  * BEdita, API-first content management framework
  * Copyright 2019 ChannelWeb Srl, Chialab Srl
@@ -66,10 +68,10 @@ class ObjectsControllerTest extends IntegrationTestCase
             ],
             'meta' => [
                 'pagination' => [
-                    'count' => 12,
+                    'count' => 15,
                     'page' => 1,
                     'page_count' => 1,
-                    'page_items' => 12,
+                    'page_items' => 15,
                     'page_size' => 20,
                 ],
                 'schema' => [
@@ -100,6 +102,10 @@ class ObjectsControllerTest extends IntegrationTestCase
                     'folders' => [
                         '$id' => 'http://api.example.com/model/schema/folders',
                         'revision' => TestConstants::SCHEMA_REVISIONS['folders'],
+                    ],
+                    'images' => [
+                        '$id' => 'http://api.example.com/model/schema/images',
+                        'revision' => TestConstants::SCHEMA_REVISIONS['images'],
                     ],
                 ],
             ],
@@ -699,6 +705,165 @@ class ObjectsControllerTest extends IntegrationTestCase
                         ],
                     ],
                 ],
+                [
+                    'id' => '16',
+                    'type' => 'files',
+                    'attributes' => [
+                        'status' => 'on',
+                        'uname' => 'media-svg',
+                        'title' => 'svg media',
+                        'description' => 'an svg image',
+                        'body' => null,
+                        'extra' => null,
+                        'lang' => 'en',
+                        'publish_start' => null,
+                        'publish_end' => null,
+                        'media_property' => false,
+                    ],
+                    'meta' => [
+                        'locked' => false,
+                        'created' => '2024-03-25T16:11:18+00:00',
+                        'modified' => '2024-03-25T16:11:18+00:00',
+                        'published' => null,
+                        'created_by' => 1,
+                        'modified_by' => 1,
+                    ],
+                    'links' => [
+                        'self' => 'http://api.example.com/files/16',
+                    ],
+                    'relationships' => [
+                        'streams' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/files/16/streams',
+                                'self' => 'http://api.example.com/files/16/relationships/streams',
+                            ],
+                        ],
+                        'parents' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/files/16/parents',
+                                'self' => 'http://api.example.com/files/16/relationships/parents',
+                            ],
+                        ],
+                        'translations' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/files/16/translations',
+                                'self' => 'http://api.example.com/files/16/relationships/translations',
+                            ],
+                        ],
+                        'inverse_test_abstract' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/files/16/inverse_test_abstract',
+                                'self' => 'http://api.example.com/files/16/relationships/inverse_test_abstract',
+                            ],
+                        ],
+                    ],
+                ],
+                [
+                    'id' => '17',
+                    'type' => 'images',
+                    'attributes' => [
+                        'status' => 'on',
+                        'uname' => 'media-modern-art',
+                        'title' => 'Modern art',
+                        'description' => 'an art piece',
+                        'body' => null,
+                        'extra' => null,
+                        'lang' => 'en',
+                        'publish_start' => null,
+                        'publish_end' => null,
+                        'media_property' => false,
+                    ],
+                    'meta' => [
+                        'locked' => false,
+                        'created' => '2024-06-25T10:11:18+00:00',
+                        'modified' => '2024-06-25T10:11:18+00:00',
+                        'published' => null,
+                        'created_by' => 1,
+                        'modified_by' => 1,
+                    ],
+                    'links' => [
+                        'self' => 'http://api.example.com/images/17',
+                    ],
+                    'relationships' => [
+                        'streams' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/images/17/streams',
+                                'self' => 'http://api.example.com/images/17/relationships/streams',
+                            ],
+                        ],
+                        'parents' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/images/17/parents',
+                                'self' => 'http://api.example.com/images/17/relationships/parents',
+                            ],
+                        ],
+                        'translations' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/images/17/translations',
+                                'self' => 'http://api.example.com/images/17/relationships/translations',
+                            ],
+                        ],
+                        'inverse_test_abstract' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/images/17/inverse_test_abstract',
+                                'self' => 'http://api.example.com/images/17/relationships/inverse_test_abstract',
+                            ],
+                        ],
+                    ],
+                ],
+                [
+                    'id' => '18',
+                    'type' => 'images',
+                    'attributes' => [
+                        'status' => 'on',
+                        'uname' => 'media-contemporary-art',
+                        'title' => 'Contemporary art',
+                        'description' => 'an art piece',
+                        'body' => null,
+                        'extra' => null,
+                        'lang' => 'en',
+                        'publish_start' => null,
+                        'publish_end' => null,
+                        'media_property' => false,
+                    ],
+                    'meta' => [
+                        'locked' => false,
+                        'created' => '2024-06-25T10:11:18+00:00',
+                        'modified' => '2024-06-25T10:11:18+00:00',
+                        'published' => null,
+                        'created_by' => 1,
+                        'modified_by' => 1,
+                    ],
+                    'links' => [
+                        'self' => 'http://api.example.com/images/18',
+                    ],
+                    'relationships' => [
+                        'streams' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/images/18/streams',
+                                'self' => 'http://api.example.com/images/18/relationships/streams',
+                            ],
+                        ],
+                        'parents' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/images/18/parents',
+                                'self' => 'http://api.example.com/images/18/relationships/parents',
+                            ],
+                        ],
+                        'translations' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/images/18/translations',
+                                'self' => 'http://api.example.com/images/18/relationships/translations',
+                            ],
+                        ],
+                        'inverse_test_abstract' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/images/18/inverse_test_abstract',
+                                'self' => 'http://api.example.com/images/18/relationships/inverse_test_abstract',
+                            ],
+                        ],
+                    ],
+                ],
             ],
         ];
 
@@ -791,13 +956,15 @@ class ObjectsControllerTest extends IntegrationTestCase
                     'categories' => [
                         [
                             'name' => 'first-cat',
-                            'label' => 'First category',
+                            'labels' => ['default' => 'First category'],
                             'params' => '100',
+                            'label' => 'First category',
                         ],
                         [
                             'name' => 'second-cat',
-                            'label' => 'Second category',
+                            'labels' => ['default' => 'Second category'],
                             'params' => null,
+                            'label' => 'Second category',
                         ],
                     ],
                     'lang' => 'en',
@@ -1514,13 +1681,15 @@ class ObjectsControllerTest extends IntegrationTestCase
                         'categories' => [
                             [
                                 'name' => 'first-cat',
-                                'label' => 'First category',
+                                'labels' => ['default' => 'First category'],
                                 'params' => '100',
+                                'label' => 'First category',
                             ],
                             [
                                 'name' => 'second-cat',
-                                'label' => 'Second category',
+                                'labels' => ['default' => 'Second category'],
                                 'params' => null,
+                                'label' => 'Second category',
                             ],
                         ],
                         'lang' => 'en',
@@ -2432,13 +2601,15 @@ class ObjectsControllerTest extends IntegrationTestCase
                     'categories' => [
                         [
                             'name' => 'first-cat',
-                            'label' => 'First category',
+                            'labels' => ['default' => 'First category'],
                             'params' => '100',
+                            'label' => 'First category',
                         ],
                         [
                             'name' => 'second-cat',
-                            'label' => 'Second category',
+                            'labels' => ['default' => 'Second category'],
                             'params' => null,
+                            'label' => 'Second category',
                         ],
                     ],
                     'lang' => 'en',

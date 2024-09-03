@@ -1,4 +1,17 @@
 <?php
+declare(strict_types=1);
+
+/**
+ * BEdita, API-first content management framework
+ * Copyright 2024 ChannelWeb Srl, Chialab Srl
+ *
+ * This file is part of BEdita: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
+ */
 namespace BEdita\Core\Model\Table;
 
 use BEdita\Core\Job\QueueJob;
@@ -76,45 +89,34 @@ class AsyncJobsTable extends Table
      */
     public function validationDefault(Validator $validator): Validator
     {
-        $validator
+        return $validator
             ->uuid('uuid')
-            ->allowEmptyString('uuid', null, 'create');
+            ->allowEmptyString('uuid', null, 'create')
 
-        $validator
             ->requirePresence('service', 'create')
-            ->notEmptyString('service');
+            ->notEmptyString('service')
 
-        $validator
             ->naturalNumber('priority')
-            ->allowEmptyString('priority');
+            ->allowEmptyString('priority')
 
-        $validator
-            ->allowEmptyString('payload');
+            ->allowEmptyString('payload')
 
-        $validator
             ->add('scheduled_from', 'dateTime', ['rule' => [Validation::class, 'dateTime']])
-            ->allowEmptyDateTime('scheduled_from');
+            ->allowEmptyDateTime('scheduled_from')
 
-        $validator
             ->add('expires', 'dateTime', ['rule' => [Validation::class, 'dateTime']])
-            ->allowEmptyDateTime('expires');
+            ->allowEmptyDateTime('expires')
 
-        $validator
             ->naturalNumber('max_attempts')
-            ->notEmptyString('max_attempts');
+            ->notEmptyString('max_attempts')
 
-        $validator
             ->add('locked_until', 'dateTime', ['rule' => [Validation::class, 'dateTime']])
-            ->allowEmptyDateTime('locked_until');
+            ->allowEmptyDateTime('locked_until')
 
-        $validator
             ->add('completed', 'dateTime', ['rule' => [Validation::class, 'dateTime']])
-            ->allowEmptyDateTime('completed');
+            ->allowEmptyDateTime('completed')
 
-        $validator
             ->allowEmptyString('results');
-
-        return $validator;
     }
 
     /**
@@ -122,13 +124,12 @@ class AsyncJobsTable extends Table
      *
      * @codeCoverageIgnore
      */
-    protected function _initializeSchema(TableSchemaInterface $schema): TableSchemaInterface
+    public function getSchema(): TableSchemaInterface
     {
-        $schema->setColumnType('payload', 'json')
+        return parent::getSchema()
+            ->setColumnType('payload', 'json')
             ->setColumnType('uuid', 'uuid')
             ->setColumnType('results', 'json');
-
-        return $schema;
     }
 
     /**
@@ -210,37 +211,26 @@ class AsyncJobsTable extends Table
     {
         $now = FrozenTime::now();
 
-        return $query
-            ->where(function (QueryExpression $exp) use ($now) {
-                return $exp->and([
-                    $exp->or(function (QueryExpression $exp) use ($now) {
-                        $field = $this->aliasField('scheduled_from');
-
-                        return $exp
-                            ->isNull($field)
-                            ->lte($field, $now);
-                    }),
-                    $exp->or(function (QueryExpression $exp) use ($now) {
-                        $field = $this->aliasField('expires');
-
-                        return $exp
-                            ->isNull($field)
-                            ->gte($field, $now);
-                    }),
-                    $exp->or(function (QueryExpression $exp) use ($now) {
-                        $field = $this->aliasField('locked_until');
-
-                        return $exp
-                            ->isNull($field)
-                            ->lt($field, $now);
-                    }),
-                    function (QueryExpression $exp) {
-                        return $exp
-                            ->gt($this->aliasField('max_attempts'), 0)
-                            ->isNull($this->aliasField('completed'));
-                    },
-                ]);
-            });
+        return $query->where(fn (QueryExpression $exp): QueryExpression => $exp->and([
+            $exp->or(
+                fn (QueryExpression $exp): QueryExpression => $exp
+                    ->isNull($this->aliasField('scheduled_from'))
+                    ->lte($this->aliasField('scheduled_from'), $now),
+            ),
+            $exp->or(
+                fn (QueryExpression $exp): QueryExpression => $exp
+                    ->isNull($this->aliasField('expires'))
+                    ->gte($this->aliasField('expires'), $now),
+            ),
+            $exp->or(
+                fn (QueryExpression $exp): QueryExpression => $exp
+                    ->isNull($this->aliasField('locked_until'))
+                    ->lt($this->aliasField('locked_until'), $now),
+            ),
+            fn (QueryExpression $exp): QueryExpression => $exp
+                ->gt($this->aliasField('max_attempts'), 0)
+                ->isNull($this->aliasField('completed')),
+        ]));
     }
 
     /**
@@ -256,30 +246,20 @@ class AsyncJobsTable extends Table
     {
         $now = FrozenTime::now();
 
-        return $query->where(function (QueryExpression $exp) use ($now) {
-            return $exp->and([
-                function (QueryExpression $exp) {
-                    return $exp->isNull($this->aliasField('completed'));
-                },
-                $exp->or([
-                    function (QueryExpression $exp) use ($now) {
-                        return $exp->lt($this->aliasField('expires'), $now);
-                    },
-                    $exp->and([
-                        function (QueryExpression $exp) {
-                            return $exp->eq($this->aliasField('max_attempts'), 0);
-                        },
-                        $exp->or(function (QueryExpression $exp) use ($now) {
-                            $field = $this->aliasField('locked_until');
-
-                            return $exp
-                                ->isNull($field)
-                                ->lt($field, $now);
-                        }),
-                    ]),
+        return $query->where(fn (QueryExpression $exp): QueryExpression => $exp->and([
+            fn (QueryExpression $exp): QueryExpression => $exp->isNull($this->aliasField('completed')),
+            $exp->or([
+                fn (QueryExpression $exp): QueryExpression => $exp->lt($this->aliasField('expires'), $now),
+                $exp->and([
+                    fn (QueryExpression $exp): QueryExpression => $exp->eq($this->aliasField('max_attempts'), 0),
+                    $exp->or(
+                        fn (QueryExpression $exp): QueryExpression => $exp
+                            ->isNull($this->aliasField('locked_until'))
+                            ->lt($this->aliasField('locked_until'), $now),
+                    ),
                 ]),
-            ]);
-        });
+            ]),
+        ]));
     }
 
     /**
@@ -292,9 +272,9 @@ class AsyncJobsTable extends Table
      */
     protected function findCompleted(Query $query)
     {
-        return $query->where(function (QueryExpression $exp) {
-            return $exp->isNotNull($this->aliasField('completed'));
-        });
+        return $query->where(
+            fn (QueryExpression $exp): QueryExpression => $exp->isNotNull($this->aliasField('completed')),
+        );
     }
 
     /**
@@ -307,9 +287,9 @@ class AsyncJobsTable extends Table
      */
     protected function findIncomplete(Query $query)
     {
-        return $query->where(function (QueryExpression $exp) {
-            return $exp->isNull($this->aliasField('completed'));
-        });
+        return $query->where(
+            fn (QueryExpression $exp): QueryExpression => $exp->isNull($this->aliasField('completed')),
+        );
     }
 
     /**

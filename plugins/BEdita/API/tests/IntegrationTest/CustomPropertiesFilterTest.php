@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 /**
  * BEdita, API-first content management framework
  * Copyright 2021 ChannelWeb Srl, Chialab Srl
@@ -70,11 +72,11 @@ class CustomPropertiesFilterTest extends IntegrationTestCase
                 '/files?filter[media_property]=1',
             ],
             'bool false' => [
-                ['14'],
+                ['14', '16'],
                 '/files?filter[media_property]=false',
             ],
             'bool 0' => [
-                ['14'],
+                ['14', '16'],
                 '/files?filter[media_property]=0',
             ],
             'string' => [

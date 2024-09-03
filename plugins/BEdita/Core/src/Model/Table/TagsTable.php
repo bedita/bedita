@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 /**
  * BEdita, API-first content management framework
  * Copyright 2020 ChannelWeb Srl, Chialab Srl
@@ -16,8 +18,10 @@ namespace BEdita\Core\Model\Table;
 use ArrayObject;
 use BEdita\Core\Exception\BadFilterException;
 use BEdita\Core\Model\Validation\Validation;
+use BEdita\Core\Search\SimpleSearchTrait;
 use Cake\Collection\CollectionInterface;
 use Cake\Database\Expression\QueryExpression;
+use Cake\Database\Schema\TableSchemaInterface;
 use Cake\Datasource\EntityInterface;
 use Cake\Event\EventInterface;
 use Cake\ORM\Query;
@@ -41,6 +45,8 @@ use Cake\Validation\Validator;
  */
 class TagsTable extends Table
 {
+    use SimpleSearchTrait;
+
     /**
      * Initialize method
      *
@@ -57,12 +63,7 @@ class TagsTable extends Table
         $this->setPrimaryKey('id');
 
         $this->addBehavior('Timestamp');
-        $this->addBehavior('BEdita/Core.Searchable', [
-            'fields' => [
-                'label' => 10,
-                'name' => 8,
-            ],
-        ]);
+        $this->addBehavior('BEdita/Core.Searchable');
 
         $this->hasMany('ObjectTags', [
             'foreignKey' => 'tag_id',
@@ -74,6 +75,8 @@ class TagsTable extends Table
             'targetForeignKey' => 'object_id',
             'through' => 'BEdita/Core.ObjectTags',
         ]);
+
+        $this->setupSimpleSearch(['fields' => ['labels', 'name']]);
     }
 
     /**
@@ -95,12 +98,20 @@ class TagsTable extends Table
             ->notEmptyString('name')
             ->regex('name', Validation::CATEGORY_NAME_REGEX)
 
-            ->scalar('label')
-            ->maxLength('label', 255)
-            ->allowEmptyString('label')
+            ->allowEmptyArray('labels')
 
             ->boolean('enabled')
             ->notEmptyString('enabled');
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @codeCoverageIgnore
+     */
+    public function getSchema(): TableSchemaInterface
+    {
+        return parent::getSchema()->setColumnType('labels', 'json');
     }
 
     /**

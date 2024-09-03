@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 /**
  * BEdita, API-first content management framework
  * Copyright 2016 ChannelWeb Srl, Chialab Srl
@@ -13,7 +15,11 @@
 
 namespace BEdita\API\Test\TestCase\Controller;
 
+use Authentication\AuthenticationService;
+use BEdita\API\Controller\ResourcesController;
 use BEdita\API\TestSuite\IntegrationTestCase;
+use BEdita\Core\Model\Table\UsersTable;
+use Cake\Http\ServerRequest;
 use DMS\PHPUnitExtensions\ArraySubset\ArraySubsetAsserts;
 
 /**
@@ -22,6 +28,38 @@ use DMS\PHPUnitExtensions\ArraySubset\ArraySubsetAsserts;
 class ResourcesControllerTest extends IntegrationTestCase
 {
     use ArraySubsetAsserts;
+
+    /**
+     * Test modelClass property copied to defaultTable.
+     *
+     * @return void
+     * @covers ::initialize()
+     */
+    public function testModelClassProp()
+    {
+        $serviceMock = $this->getMockBuilder(AuthenticationService::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $request = (new ServerRequest())->withAttribute('authentication', $serviceMock);
+
+        $controller = new class ($request) extends ResourcesController {
+            protected $modelClass = 'Users';
+
+            public function getDefaultTable()
+            {
+                return $this->defaultTable;
+            }
+
+            public function getTable()
+            {
+                return $this->Table;
+            }
+        };
+
+        static::assertEquals('Users', $controller->getDefaultTable());
+        static::assertInstanceOf(UsersTable::class, $controller->getTable());
+    }
 
     /**
      * Test relationships method to list existing relationships.

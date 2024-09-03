@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 /**
  * BEdita, API-first content management framework
  * Copyright 2017 ChannelWeb Srl, Chialab Srl
@@ -76,13 +78,13 @@ class BeditaShellTest extends TestCase
                 foreach ($tables as $table) {
                     $sql = $connection->getSchemaCollection()->describe($table)->dropConstraintSql($connection);
                     foreach ($sql as $query) {
-                        $connection->query($query);
+                        $connection->updateQuery($query);
                     }
                 }
                 foreach ($tables as $table) {
                     $sql = $connection->getSchemaCollection()->describe($table)->dropSql($connection);
                     foreach ($sql as $query) {
-                        $connection->query($query);
+                        $connection->updateQuery($query);
                     }
                 }
             });

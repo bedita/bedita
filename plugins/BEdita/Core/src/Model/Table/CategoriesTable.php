@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 /**
  * BEdita, API-first content management framework
  * Copyright 2020 ChannelWeb Srl, Chialab Srl
@@ -16,8 +18,10 @@ namespace BEdita\Core\Model\Table;
 use ArrayObject;
 use BEdita\Core\Exception\BadFilterException;
 use BEdita\Core\Model\Validation\Validation;
+use BEdita\Core\Search\SimpleSearchTrait;
 use Cake\Collection\CollectionInterface;
 use Cake\Database\Expression\QueryExpression;
+use Cake\Database\Schema\TableSchemaInterface;
 use Cake\Datasource\EntityInterface;
 use Cake\Event\EventInterface;
 use Cake\ORM\Query;
@@ -42,10 +46,13 @@ use Cake\Validation\Validator;
  * @method \BEdita\Core\Model\Entity\Category patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
  * @method \BEdita\Core\Model\Entity\Category[] patchEntities($entities, array $data, array $options = [])
  * @method \BEdita\Core\Model\Entity\Category findOrCreate($search, callable $callback = null, $options = [])
+ * @mixin \BEdita\Core\Model\Behavior\TreeBehavior
  * @mixin \Cake\ORM\Behavior\TimestampBehavior
  */
 class CategoriesTable extends Table
 {
+    use SimpleSearchTrait;
+
     /**
      * Initialize method
      *
@@ -62,13 +69,8 @@ class CategoriesTable extends Table
         $this->setPrimaryKey('id');
 
         $this->addBehavior('Timestamp');
-        $this->addBehavior('BEdita/Core.Searchable', [
-            'fields' => [
-                'label' => 10,
-                'name' => 8,
-            ],
-        ]);
-        $this->addBehavior('Tree', [
+        $this->addBehavior('BEdita/Core.Searchable');
+        $this->addBehavior('BEdita/Core.Tree', [
             'left' => 'tree_left',
             'right' => 'tree_right',
         ]);
@@ -95,6 +97,8 @@ class CategoriesTable extends Table
             'targetForeignKey' => 'object_id',
             'through' => 'BEdita/Core.ObjectCategories',
         ]);
+
+        $this->setupSimpleSearch(['fields' => ['labels', 'name']]);
     }
 
     /**
@@ -116,12 +120,20 @@ class CategoriesTable extends Table
             ->notEmptyString('name')
             ->regex('name', Validation::CATEGORY_NAME_REGEX)
 
-            ->scalar('label')
-            ->maxLength('label', 255)
-            ->allowEmptyString('label')
+            ->allowEmptyArray('labels')
 
             ->boolean('enabled')
             ->notEmptyString('enabled');
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @codeCoverageIgnore
+     */
+    public function getSchema(): TableSchemaInterface
+    {
+        return parent::getSchema()->setColumnType('labels', 'json');
     }
 
     /**
@@ -263,5 +275,17 @@ class CategoriesTable extends Table
 
         return $query->find('type', [$object])
             ->where([$this->aliasField('name') => $options['name']]);
+    }
+
+    /**
+     * Finder for roots categories.
+     *
+     * @param \Cake\ORM\Query $query The query.
+     * @return \Cake\ORM\Query
+     */
+    protected function findRoots(Query $query): Query
+    {
+        return $query->where(fn (QueryExpression $exp): QueryExpression =>
+            $exp->isNull($this->aliasField('parent_id')));
     }
 }

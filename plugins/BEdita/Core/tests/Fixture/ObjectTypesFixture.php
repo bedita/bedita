@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 /**
  * BEdita, API-first content management framework
  * Copyright 2016 ChannelWeb Srl, Chialab Srl
@@ -32,7 +34,7 @@ class ObjectTypesFixture extends TestFixture
             'is_abstract' => true,
             'parent_id' => null,
             'tree_left' => 1,
-            'tree_right' => 20,
+            'tree_right' => 22,
             'description' => null,
             'plugin' => 'BEdita/Core',
             'model' => 'Objects',
@@ -162,7 +164,7 @@ class ObjectTypesFixture extends TestFixture
             'is_abstract' => true,
             'parent_id' => 1,
             'tree_left' => 14,
-            'tree_right' => 17,
+            'tree_right' => 19,
             'description' => null,
             'plugin' => 'BEdita/Core',
             'model' => 'Media',
@@ -201,8 +203,8 @@ class ObjectTypesFixture extends TestFixture
             'name' => 'folders',
             'is_abstract' => false,
             'parent_id' => 1,
-            'tree_left' => 18,
-            'tree_right' => 19,
+            'tree_left' => 20,
+            'tree_right' => 21,
             'description' => null,
             'plugin' => 'BEdita/Core',
             'model' => 'Objects',
@@ -210,6 +212,25 @@ class ObjectTypesFixture extends TestFixture
             'modified' => '2018-01-29 08:47:29',
             'enabled' => true,
             'core_type' => true,
+            'translation_rules' => null,
+            'is_translatable' => true,
+        ],
+        // 11
+        [
+            'singular' => 'image',
+            'name' => 'images',
+            'is_abstract' => false,
+            'parent_id' => 8,
+            'tree_left' => 17,
+            'tree_right' => 18,
+            'description' => null,
+            'plugin' => 'BEdita/Core',
+            'model' => 'Media',
+            'associations' => ['Streams'],
+            'created' => '2024-03-08 11:21:51',
+            'modified' => '2024-03-08 11:21:51',
+            'enabled' => true,
+            'core_type' => false,
             'translation_rules' => null,
             'is_translatable' => true,
         ],

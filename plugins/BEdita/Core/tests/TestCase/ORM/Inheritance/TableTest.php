@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 /**
  * BEdita, API-first content management framework
  * Copyright 2016 ChannelWeb Srl, Chialab Srl
@@ -16,6 +18,10 @@ namespace BEdita\Core\Test\TestCase\ORM\Inheritance;
 use BEdita\Core\ORM\Inheritance\AssociationCollection;
 use BEdita\Core\ORM\Inheritance\Marshaller;
 use BEdita\Core\ORM\Inheritance\Query;
+use BEdita\Core\ORM\Inheritance\Query\DeleteQuery;
+use BEdita\Core\ORM\Inheritance\Query\InsertQuery;
+use BEdita\Core\ORM\Inheritance\Query\SelectQuery;
+use BEdita\Core\ORM\Inheritance\Query\UpdateQuery;
 use Cake\Datasource\EntityInterface;
 use Cake\I18n\FrozenTime;
 use Cake\ORM\Table;
@@ -62,7 +68,51 @@ class TableTest extends TestCase
      */
     public function testQuery()
     {
-        static::assertInstanceOf(Query::class, $this->fakeFelines->query());
+        static::assertInstanceOf(Query::class, $this->fakeFelines->query()); // @phpstan-ignore-line
+    }
+
+    /**
+     * Test selectQuery
+     *
+     * @return void
+     * @covers ::selectQuery()
+     */
+    public function testSelectQuery()
+    {
+        static::assertInstanceOf(SelectQuery::class, $this->fakeFelines->selectQuery());
+    }
+
+    /**
+     * Test insertQuery
+     *
+     * @return void
+     * @covers ::insertQuery()
+     */
+    public function testInsertQuery()
+    {
+        static::assertInstanceOf(InsertQuery::class, $this->fakeFelines->insertQuery());
+    }
+
+    /**
+     * Test updateQuery
+     *
+     * @return void
+     * @covers ::updateQuery()
+     */
+    public function testUpdateQuery()
+    {
+        static::assertInstanceOf(UpdateQuery::class, $this->fakeFelines->updateQuery());
+    }
+
+    /**
+     * Test deleteQuery
+     *
+     * @return void
+     * @covers ::deleteQuery()
+     */
+    public function testDeleteQuery()
+    {
+        static::assertInstanceOf(DeleteQuery::class, $this->fakeFelines->deleteQuery());
     }
 
     /**
@@ -534,9 +584,9 @@ class TableTest extends TestCase
             static::assertSame($animalsAlias, $this->fakeAnimals->getAlias());
         };
 
-        static::assertInstanceOf(Query::class, $this->fakeMammals->find('children', ['for' => 1, 'direct' => true]));
+        static::assertInstanceOf(SelectQuery::class, $this->fakeMammals->find('children', ['for' => 1, 'direct' => true]));
         $checkAliases();
-        static::assertInstanceOf(Query::class, $this->fakeFelines->find('children', ['for' => 1, 'direct' => true]));
+        static::assertInstanceOf(SelectQuery::class, $this->fakeFelines->find('children', ['for' => 1, 'direct' => true]));
         $checkAliases();
 
         static::assertTextNotContains('FakeAnimals', $this->fakeMammals->find('children', ['for' => 1, 'direct' => true])->sql());

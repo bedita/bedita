@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 /**
  * BEdita, API-first content management framework
  * Copyright 2017 ChannelWeb Srl, Chialab Srl
@@ -348,6 +350,23 @@ class HomeControllerTest extends IntegrationTestCase
                                 'label' => 'AsyncJobs',
                             ],
                             'object_type' => false,
+                            'multiple_types' => false,
+                        ],
+                    ],
+                    '/images' => [
+                        'href' => 'http://api.example.com/images',
+                        'hints' => [
+                            'allow' => [
+                                'GET', 'POST', 'PATCH', 'DELETE',
+                            ],
+                            'formats' => [
+                                'application/json',
+                                'application/vnd.api+json',
+                            ],
+                            'display' => [
+                                'label' => 'Images',
+                            ],
+                            'object_type' => true,
                             'multiple_types' => false,
                         ],
                     ],

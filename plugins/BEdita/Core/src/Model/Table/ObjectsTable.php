@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 /**
  * BEdita, API-first content management framework
  * Copyright 2018 ChannelWeb Srl, Chialab Srl
@@ -16,6 +18,7 @@ namespace BEdita\Core\Model\Table;
 use BEdita\Core\Exception\LockedResourceException;
 use BEdita\Core\Model\Entity\ObjectEntity;
 use BEdita\Core\Model\Validation\ObjectsValidator;
+use BEdita\Core\Search\SimpleSearchTrait;
 use BEdita\Core\Utility\LoggedUser;
 use Cake\Core\Configure;
 use Cake\Database\Expression\QueryExpression;
@@ -56,6 +59,8 @@ use Cake\Utility\Hash;
  */
 class ObjectsTable extends Table
 {
+    use SimpleSearchTrait;
+
     /**
      * @inheritDoc
      */
@@ -146,6 +151,7 @@ class ObjectsTable extends Table
         $this->hasMany('Translations', [
             'className' => 'Translations',
             'foreignKey' => 'object_id',
+            'finder' => 'available',
         ]);
         $this->hasMany('Permissions', [
             'className' => 'ObjectPermissions',
@@ -225,12 +231,11 @@ class ObjectsTable extends Table
      *
      * @codeCoverageIgnore
      */
-    protected function _initializeSchema(TableSchemaInterface $schema): TableSchemaInterface
+    public function getSchema(): TableSchemaInterface
     {
-        $schema->setColumnType('custom_props', 'json');
-        $schema->setColumnType('extra', 'json');
-
-        return $schema;
+        return parent::getSchema()
+            ->setColumnType('custom_props', 'json')
+            ->setColumnType('extra', 'json');
     }
 
     /**

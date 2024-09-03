@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 /**
  * BEdita, API-first content management framework
  * Copyright 2016 ChannelWeb Srl, Chialab Srl
@@ -188,7 +190,7 @@ class Database
         $res = ['success' => false, 'error' => ''];
         try {
             $connection = ConnectionManager::get($dbConfig);
-            $res['success'] = $connection->connect();
+            $res['success'] = $connection->getDriver()->connect();
         } catch (\Exception $e) {
             $res['error'] = $e->getMessage();
         }
@@ -253,7 +255,7 @@ class Database
                         continue;
                     }
 
-                    $statmnt = $conn->prepare($query);
+                    $statmnt = $conn->getDriver()->prepare($query);
                     $success = $statmnt->execute() && (!$statmnt->errorCode() || $statmnt->errorCode() === '00000');
                     $rowCount += $statmnt->rowCount();
                     $queryCount++;

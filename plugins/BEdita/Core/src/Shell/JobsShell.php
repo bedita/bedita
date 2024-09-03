@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 /**
  * BEdita, API-first content management framework
  * Copyright 2017 ChannelWeb Srl, Chialab Srl
@@ -150,8 +152,7 @@ class JobsShell extends Shell /* @phpstan-ignore-line */
             ->find('priority', [
                 'priority' => $this->param('min-priority'),
                 'service' => $this->param('service'),
-            ])
-            ->enableBufferedResults(false);
+            ]);
         if ($this->param('limit') !== null) {
             $query = $query->limit($this->param('limit'));
         }

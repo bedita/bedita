@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 /**
  * BEdita, API-first content management framework
  * Copyright 2017 ChannelWeb Srl, Chialab Srl
@@ -213,7 +215,7 @@ class RelatedTo extends BelongsToMany
     {
         $targetTable = $this->getTarget();
         if ($targetTable instanceof InheritanceTable) {
-            $options['table'] = $targetTable->query()->getInheritanceSubQuery();
+            $options['table'] = $targetTable->selectQuery()->getInheritanceSubQuery();
         }
 
         parent::attachTo($query, $options);

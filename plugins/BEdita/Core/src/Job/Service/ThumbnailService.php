@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 /**
  * BEdita, API-first content management framework
  * Copyright 2018 ChannelWeb Srl, Chialab Srl
@@ -48,7 +50,7 @@ class ThumbnailService implements JobService
             return true;
         } catch (\Exception $e) {
             // Another error occurred. Log the error, and mark job as failed.
-            Log::error($e);
+            Log::error($e->getMessage());
 
             return false;
         }

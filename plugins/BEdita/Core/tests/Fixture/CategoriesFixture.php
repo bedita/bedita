@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 /**
  * BEdita, API-first content management framework
  * Copyright 2019 ChannelWeb Srl, Chialab Srl
@@ -29,7 +31,7 @@ class CategoriesFixture extends TestFixture
         [
             'object_type_id' => 2,
             'name' => 'first-cat',
-            'label' => 'First category',
+            'labels' => ['default' => 'First category'],
             'parent_id' => null,
             'tree_left' => 1,
             'tree_right' => 2,
@@ -41,10 +43,10 @@ class CategoriesFixture extends TestFixture
         [
             'object_type_id' => 2,
             'name' => 'second-cat',
-            'label' => 'Second category',
+            'labels' => ['default' => 'Second category'],
             'parent_id' => null,
             'tree_left' => 3,
-            'tree_right' => 4,
+            'tree_right' => 6,
             'enabled' => 1,
             'created' => '2019-11-25 17:35:58',
             'modified' => '2019-11-25 17:35:58',
@@ -53,13 +55,25 @@ class CategoriesFixture extends TestFixture
         [
             'object_type_id' => 2,
             'name' => 'disabled-cat',
-            'label' => 'Disabled category',
+            'labels' => ['default' => 'Disabled category'],
             'parent_id' => null,
-            'tree_left' => 5,
-            'tree_right' => 6,
+            'tree_left' => 7,
+            'tree_right' => 8,
             'enabled' => 0,
             'created' => '2019-11-26 12:15:51',
             'modified' => '2019-11-26 12:15:51',
+        ],
+        // 4
+        [
+            'object_type_id' => 2,
+            'name' => 'child-cat-1',
+            'labels' => ['default' => 'Child category'],
+            'parent_id' => 2,
+            'tree_left' => 4,
+            'tree_right' => 5,
+            'enabled' => 1,
+            'created' => '2024-07-12 12:15:51',
+            'modified' => '2024-07-12 12:15:51',
         ],
     ];
 }

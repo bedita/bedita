@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 /**
  * BEdita, API-first content management framework
  * Copyright 2022 Channelweb Srl, Chialab Srl
@@ -19,12 +21,14 @@ use Cake\Console\TestSuite\ConsoleIntegrationTestTrait;
 use Cake\Database\Expression\ComparisonExpression;
 use Cake\Datasource\EntityInterface;
 use Cake\ORM\Locator\LocatorAwareTrait;
+use Cake\ORM\Table;
 use Cake\TestSuite\TestCase;
 
 /**
  * {@see \BEdita\Core\Command\TreeRecoverCommand} Test Case
  *
  * @property \BEdita\Core\Model\Table\TreesTable $Trees
+ * @property \BEdita\Core\Model\Table\CategoriesTable $Categories
  * @covers \BEdita\Core\Command\TreeRecoverCommand
  */
 #[\AllowDynamicProperties]
@@ -42,6 +46,7 @@ class TreeRecoverCommandTest extends TestCase
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.Objects',
         'plugin.BEdita/Core.Trees',
+        'plugin.BEdita/Core.Categories',
     ];
 
     /**
@@ -53,8 +58,43 @@ class TreeRecoverCommandTest extends TestCase
     {
         parent::setUp();
 
+        $this->cleanupConsoleTrait();
         $this->useCommandRunner();
         $this->Trees = $this->fetchTable('Trees');
+        $this->Categories = $this->fetchTable('Categories');
+    }
+
+    /**
+     * Helper function to get a "snapshot" describing tree state.
+     *
+     * @param \Cake\ORM\Table $table
+     * @return array
+     */
+    protected function getTreeState(Table $table): array
+    {
+        return $table->find()
+            ->all()
+            ->combine('id', function (EntityInterface $node) {
+                return sprintf('%d / %d', $node['tree_left'], $node['tree_right']);
+            })
+            ->toArray();
+    }
+
+    /**
+     * Corrupt tree: `UPDATE * FROM trees SET tree_left = id * 2, tree_right = id * 2 + 1`.
+     *
+     * @param \Cake\ORM\Table $table
+     * @return void
+     */
+    protected function corruptTree(Table $table): void
+    {
+        $table->updateAll(
+            [
+                'tree_left' => new ComparisonExpression('id', 2, 'integer', '*'),
+                'tree_right' => new ComparisonExpression(new ComparisonExpression('id', 2, 'integer', '*'), 1, 'integer', '+'),
+            ],
+            []
+        );
     }
 
     /**
@@ -62,36 +102,14 @@ class TreeRecoverCommandTest extends TestCase
      *
      * @return void
      */
-    public function testExecute()
+    public function testExecute(): void
     {
-        /**
-         * Helper function to get a "snapshot" describing tree state.
-         *
-         * @return array
-         */
-        $getTreeState = function () {
-            return $this->Trees->find()
-                ->all()
-                ->combine('id', function (EntityInterface $node) {
-                    return sprintf('%d / %d', $node['tree_left'], $node['tree_right']);
-                })
-                ->toArray();
-        };
-
         // Get current snapshot. This assumes fixtures cause tree to be in a valid state.
-        $expected = $getTreeState();
-
-        // Corrupt tree: `UPDATE * FROM trees SET tree_left = id * 2, tree_right = id * 2 + 1`.
-        $this->Trees->updateAll(
-            [
-                'tree_left' => new ComparisonExpression('id', 2, 'integer', '*'),
-                'tree_right' => new ComparisonExpression(new ComparisonExpression('id', 2, 'integer', '*'), 1, 'integer', '+'),
-            ],
-            []
-        );
+        $expected = $this->getTreeState($this->Trees);
+        $this->corruptTree($this->Trees);
 
         // Check that some corruption actually happened.
-        $corrupt = $getTreeState();
+        $corrupt = $this->getTreeState($this->Trees);
         static::assertNotEquals($expected, $corrupt, 'Tree hasn\'t been corrupted prior to testing');
 
         // Recover.
@@ -101,7 +119,33 @@ class TreeRecoverCommandTest extends TestCase
         $this->assertOutputContains('Tree recovery completed');
 
         // Assert that tree returned to a valid state.
-        $actual = $getTreeState();
+        $actual = $this->getTreeState($this->Trees);
+        static::assertEquals($expected, $actual);
+    }
+
+    /**
+     * Test execution with `--categories` flag.
+     *
+     * @return void
+     */
+    public function testExecuteCategories(): void
+    {
+        // Get current snapshot. This assumes fixtures cause tree to be in a valid state.
+        $expected = $this->getTreeState($this->Categories);
+        $this->corruptTree($this->Categories);
+
+        // Check that some corruption actually happened.
+        $corrupt = $this->getTreeState($this->Categories);
+        static::assertNotEquals($expected, $corrupt, 'Categories tree hasn\'t been corrupted prior to testing');
+
+        // Recover.
+        $this->exec(sprintf('%s --categories', TreeRecoverCommand::defaultName()));
+
+        $this->assertExitCode(Command::CODE_SUCCESS);
+        $this->assertOutputContains('Categories tree recovery completed');
+
+        // Assert that tree returned to a valid state.
+        $actual = $this->getTreeState($this->Categories);
         static::assertEquals($expected, $actual);
     }
 }

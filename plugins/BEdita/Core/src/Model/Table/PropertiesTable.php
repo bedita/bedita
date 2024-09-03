@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 /**
  * BEdita, API-first content management framework
  * Copyright 2017 ChannelWeb Srl, Chialab Srl
@@ -17,6 +19,7 @@ use BEdita\Core\Exception\BadFilterException;
 use BEdita\Core\Model\Entity\Property;
 use BEdita\Core\Model\Entity\StaticProperty;
 use BEdita\Core\Model\Validation\Validation;
+use BEdita\Core\Search\SimpleSearchTrait;
 use Cake\Database\Expression\QueryExpression;
 use Cake\Database\Query as DatabaseQuery;
 use Cake\Database\Schema\TableSchemaInterface;
@@ -46,6 +49,8 @@ use Cake\Validation\Validator;
  */
 class PropertiesTable extends Table
 {
+    use SimpleSearchTrait;
+
     /**
      * {@inheritDoc}
      *
@@ -71,12 +76,9 @@ class PropertiesTable extends Table
             'className' => 'BEdita/Core.ObjectTypes',
         ]);
 
-        $this->addBehavior('BEdita/Core.Searchable', [
-            'fields' => [
-                'name' => 10,
-                'description' => 5,
-            ],
-        ]);
+        $this->addBehavior('BEdita/Core.Searchable');
+
+        $this->setupSimpleSearch(['fields' => ['name', 'description']]);
     }
 
     /**
@@ -124,10 +126,9 @@ class PropertiesTable extends Table
      *
      * @codeCoverageIgnore
      */
-    protected function _initializeSchema(TableSchemaInterface $schema): TableSchemaInterface
+    public function getSchema(): TableSchemaInterface
     {
-        return parent::_initializeSchema($schema)
-            ->setColumnType('id', 'string');
+        return parent::getSchema()->setColumnType('id', 'string');
     }
 
     /**

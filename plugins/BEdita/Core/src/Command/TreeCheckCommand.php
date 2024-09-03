@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 /**
  * BEdita, API-first content management framework
  * Copyright 2022 Atlas Srl, Chialab Srl
@@ -55,7 +57,12 @@ class TreeCheckCommand extends Command
     public function buildOptionParser(ConsoleOptionParser $parser): ConsoleOptionParser
     {
         return parent::buildOptionParser($parser)
-            ->setDescription('Objects-aware sanity checks on tree.');
+            ->setDescription('Objects-aware sanity checks on tree.')
+            ->addOption('categories', [
+                'short' => 'c',
+                'help' => 'Check categories tree instead of objects tree.',
+                'boolean' => true,
+            ]);
     }
 
     /**
@@ -68,6 +75,24 @@ class TreeCheckCommand extends Command
     public function execute(Arguments $args, ConsoleIo $io): int
     {
         $code = static::CODE_SUCCESS;
+
+        if ($args->getOption('categories')) {
+            /** @var \BEdita\Core\Model\Table\CategoriesTable $Categories */
+            $Categories = $this->fetchTable('Categories');
+            $messages = $Categories->checkIntegrity();
+            if (!empty($messages)) {
+                $io->out('=====> <error>Categories tree is corrupt!</error>');
+                foreach ($messages as $msg) {
+                    $io->verbose(sprintf('=====>   - %s', $msg));
+                }
+
+                $code = static::CODE_ERROR;
+            } else {
+                $io->verbose('=====> <success>Categories tree integrity check passed.</success>');
+            }
+
+            return $code;
+        }
 
         // Run tree integrity checks.
         $messages = $this->Objects->TreeNodes->checkIntegrity();

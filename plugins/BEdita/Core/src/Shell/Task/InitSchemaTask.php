@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 /**
  * BEdita, API-first content management framework
  * Copyright 2016 ChannelWeb Srl, Chialab Srl
@@ -120,7 +122,7 @@ class InitSchemaTask extends Shell /* @phpstan-ignore-line */
 
                     $sql = $connection->getSchemaCollection()->describe($table)->dropConstraintSql($connection);
                     foreach ($sql as $query) {
-                        $connection->query($query);
+                        $connection->updateQuery($query);
                     }
 
                     $this->verbose('<info>DONE</info>');
@@ -130,7 +132,7 @@ class InitSchemaTask extends Shell /* @phpstan-ignore-line */
 
                     $sql = $connection->getSchemaCollection()->describe($table)->dropSql($connection);
                     foreach ($sql as $query) {
-                        $connection->query($query);
+                        $connection->updateQuery($query);
                     }
 
                     $this->verbose('<info>DONE</info>');

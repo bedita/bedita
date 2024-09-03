@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 /**
  * BEdita, API-first content management framework
  * Copyright 2022 Atlas Srl, Chialab Srl
@@ -49,7 +51,12 @@ class TreeRecoverCommand extends Command
     public function buildOptionParser(ConsoleOptionParser $parser): ConsoleOptionParser
     {
         return parent::buildOptionParser($parser)
-            ->setDescription('Recover objects\' tree from corruption.');
+            ->setDescription('Recover objects\' tree from corruption.')
+            ->addOption('categories', [
+                'short' => 'c',
+                'help' => 'Recover categories tree instead of objects tree.',
+                'boolean' => true,
+            ]);
     }
 
     /**
@@ -61,6 +68,20 @@ class TreeRecoverCommand extends Command
      */
     public function execute(Arguments $args, ConsoleIo $io): int
     {
+        if ($args->getOption('categories')) {
+            $io->out('=====> <info>Beginning categories tree recovery...</info>');
+
+            $start = microtime(true);
+            /** @var \BEdita\Core\Model\Table\CategoriesTable $Categories */
+            $Categories = $this->fetchTable('Categories');
+            $Categories->recover();
+            $end = microtime(true);
+
+            $io->out(sprintf('=====> <success>Categories tree recovery completed</success> (took <info>%f</info> seconds)', $end - $start));
+
+            return static::CODE_SUCCESS;
+        }
+
         $io->out('=====> <info>Beginning tree recovery...</info>');
 
         $start = microtime(true);

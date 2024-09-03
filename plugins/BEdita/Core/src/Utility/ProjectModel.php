@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 /**
  * BEdita, API-first content management framework
@@ -230,10 +231,42 @@ class ProjectModel
                 $update[$key] = array_values(static::itemsToUpdate($current, $new));
             }
         }
+        self::categoriesToUpdate($update);
 
         return array_filter(
             array_map('array_filter', compact('create', 'update', 'remove'))
         );
+    }
+
+    /**
+     * Check if there are categories to update.
+     *
+     * @param array $update Update array
+     * @return void
+     */
+    public static function categoriesToUpdate(array &$update): void
+    {
+        if (!Hash::check($update, 'categories.{n}.name')) {
+            return;
+        }
+        $table = TableRegistry::getTableLocator()->get('Categories');
+        $categories = (array)Hash::combine($update['categories'], '{n}.name', '{n}.label', '{n}.object');
+        $types = array_keys($categories);
+        foreach ($types as $objectType) {
+            $names = array_keys((array)Hash::get($categories, $objectType));
+            $found = $table->find('type', [$objectType])->where([$table->aliasField('name') . ' IN' => $names])->toArray();
+            $found = (array)Hash::extract($found, '{n}.name');
+            if (empty($found)) {
+                continue;
+            }
+            foreach ($update['categories'] as $key => $category) {
+                if ($objectType !== $category['object'] || !in_array($category['name'], $found)) {
+                    continue;
+                }
+                unset($update['categories'][$key]);
+            }
+        }
+        $update['categories'] = array_values($update['categories']);
     }
 
     /**

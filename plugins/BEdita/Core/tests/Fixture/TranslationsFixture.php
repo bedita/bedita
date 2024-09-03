@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 /**
  * BEdita, API-first content management framework
  * Copyright 2018 ChannelWeb Srl, Chialab Srl
@@ -71,6 +73,21 @@ class TranslationsFixture extends TestFixture
                     'description' => 'descripción aquí',
                     'extra' => [
                         'list' => ['uno', 'dos', 'tres'],
+                    ],
+                ],
+            ],
+            [
+                'object_id' => 2,
+                'lang' => 'no',
+                'status' => 'off',
+                'created' => '2018-01-01 00:00:00',
+                'modified' => '2018-01-01 00:00:00',
+                'created_by' => 1,
+                'modified_by' => 1,
+                'translated_fields' => [
+                    'description' => 'beskrivelse her',
+                    'extra' => [
+                        'list' => ['én', 'to', 'tre'],
                     ],
                 ],
             ],

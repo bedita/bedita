@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 /**
  * BEdita, API-first content management framework
  * Copyright 2023 ChannelWeb Srl, Chialab Srl
@@ -39,6 +41,39 @@ class MediaFixture extends TestFixture
         [
             'id' => 14,
             'name' => 'My other media name',
+            'width' => null,
+            'height' => null,
+            'duration' => null,
+            'provider' => null,
+            'provider_uid' => null,
+            'provider_url' => null,
+            'provider_thumbnail' => null,
+        ],
+        [
+            'id' => 16,
+            'name' => 'An svg media',
+            'width' => null,
+            'height' => null,
+            'duration' => null,
+            'provider' => null,
+            'provider_uid' => null,
+            'provider_url' => null,
+            'provider_thumbnail' => null,
+        ],
+        [
+            'id' => 17,
+            'name' => 'Modern art',
+            'width' => null,
+            'height' => null,
+            'duration' => null,
+            'provider' => null,
+            'provider_uid' => null,
+            'provider_url' => null,
+            'provider_thumbnail' => null,
+        ],
+        [
+            'id' => 18,
+            'name' => 'Contemporary art',
             'width' => null,
             'height' => null,
             'duration' => null,

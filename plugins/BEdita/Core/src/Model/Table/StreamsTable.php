@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 /**
  * BEdita, API-first content management framework
  * Copyright 2017 ChannelWeb Srl, Chialab Srl
@@ -153,9 +155,10 @@ class StreamsTable extends Table
      *
      * @codeCoverageIgnore
      */
-    protected function _initializeSchema(TableSchemaInterface $schema): TableSchemaInterface
+    public function getSchema(): TableSchemaInterface
     {
-        return $schema->setColumnType('uuid', 'uuid');
+        return parent::getSchema()->setColumnType('uuid', 'uuid')
+            ->setColumnType('file_metadata', 'json');
     }
 
     /**

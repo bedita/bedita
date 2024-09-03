@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 /**
  * BEdita, API-first content management framework
  * Copyright 2019 ChannelWeb Srl, Chialab Srl
@@ -89,10 +91,9 @@ class ObjectCategoriesTable extends Table
      *
      * @codeCoverageIgnore
      */
-    protected function _initializeSchema(TableSchemaInterface $schema): TableSchemaInterface
+    public function getSchema(): TableSchemaInterface
     {
-        return $schema
-            ->setColumnType('params', 'json');
+        return parent::getSchema()->setColumnType('params', 'json');
     }
 
     /**

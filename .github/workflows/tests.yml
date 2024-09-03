@@ -1,4 +1,4 @@
-name: 'Run tests'
+name: Run tests
 
 on:
   pull_request:
@@ -12,6 +12,10 @@ on:
       - '.github/workflows/*'
       - '**/composer.json'
 
+concurrency:
+  group: '${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}'
+  cancel-in-progress: true
+
 jobs:
   cs:
     name: 'Check coding style'
@@ -19,10 +23,10 @@ jobs:
 
     steps:
       - name: 'Checkout current revision'
-        uses: 'actions/checkout@v3'
+        uses: actions/checkout@v4
 
       - name: 'Setup PHP'
-        uses: 'shivammathur/setup-php@v2'
+        uses: shivammathur/setup-php@v2
         with:
           php-version: '7.4'
           tools: 'composer'
@@ -34,7 +38,7 @@ jobs:
         run: echo "path=$(composer global config cache-dir)" >> $GITHUB_OUTPUT
 
       - name: 'Share Composer cache across runs'
-        uses: 'actions/cache@v3'
+        uses: actions/cache@v4
         with:
           path: '${{ steps.cachedir.outputs.path }}'
           key: "composer-${{ github.job }}-${{ hashFiles('**/composer.json') }}"
@@ -58,7 +62,7 @@ jobs:
 
     steps:
       - name: 'Checkout current revision'
-        uses: 'actions/checkout@v3'
+        uses: actions/checkout@v4
 
       - name: 'Setup PHP'
         uses: 'shivammathur/setup-php@v2'
@@ -73,7 +77,7 @@ jobs:
         run: echo "path=$(composer global config cache-dir)" >> $GITHUB_OUTPUT
 
       - name: 'Share Composer cache across runs'
-        uses: 'actions/cache@v3'
+        uses: actions/cache@v4
         with:
           path: '${{ steps.cachedir.outputs.path }}'
           key: "composer-${{ github.job }}-${{ hashFiles('**/composer.json') }}"
@@ -116,6 +120,10 @@ jobs:
             db: '{"vendor": "SQLite", "pdo": "sqlite", "dsn": "sqlite://tmp/test.sql", "image": "nginx:alpine", "options": "--health-cmd \"/bin/true\" --health-interval 1s --health-timeout 2s --health-retries 5"}'
           - php: '8.2'
             db: '{"vendor": "MySQL 8.0", "pdo": "mysql", "dsn": "mysql://bedita:bedita@127.0.0.1:3306/bedita", "image": "mysql:8.0", "options": "--health-cmd \"mysqladmin ping -h localhost\" --health-interval 10s --health-timeout 5s --health-retries 5"}'
+          - php: '8.3'
+            db: '{"vendor": "SQLite", "pdo": "sqlite", "dsn": "sqlite://tmp/test.sql", "image": "nginx:alpine", "options": "--health-cmd \"/bin/true\" --health-interval 1s --health-timeout 2s --health-retries 5"}'
+          - php: '8.3'
+            db: '{"vendor": "MySQL 8.0", "pdo": "mysql", "dsn": "mysql://bedita:bedita@127.0.0.1:3306/bedita", "image": "mysql:8.0", "options": "--health-cmd \"mysqladmin ping -h localhost\" --health-interval 10s --health-timeout 5s --health-retries 5"}'
     env:
       PHP_VERSION: '${{ matrix.php }}'
       DB_VENDOR: '${{ fromJson(matrix.db).vendor }}'
@@ -140,10 +148,10 @@ jobs:
 
     steps:
       - name: 'Checkout current revision'
-        uses: 'actions/checkout@v3'
+        uses: actions/checkout@v4
 
       - name: 'Setup PHP'
-        uses: 'shivammathur/setup-php@v2'
+        uses: shivammathur/setup-php@v2
         with:
           php-version: '${{ matrix.php }}'
           tools: 'composer'
@@ -156,7 +164,7 @@ jobs:
         run: echo "path=$(composer global config cache-dir)" >> $GITHUB_OUTPUT
 
       - name: 'Share Composer cache across runs'
-        uses: 'actions/cache@v3'
+        uses: actions/cache@v4
         with:
           path: '${{ steps.cachedir.outputs.path }}'
           key: "composer-${{ matrix.php }}-${{ hashFiles('**/composer.json') }}"
@@ -171,13 +179,14 @@ jobs:
         run: 'vendor/bin/phpunit --coverage-clover=clover.xml'
 
       - name: 'Export coverage results'
-        uses: 'codecov/codecov-action@v3'
+        uses: 'codecov/codecov-action@v4'
         with:
+          token: ${{ secrets.CODECOV_TOKEN }} # required
           files: './clover.xml'
           env_vars: PHP_VERSION,DB_VENDOR
 
       - name: 'Archive code coverage results'
-        uses: 'actions/upload-artifact@v3'
+        uses: 'actions/upload-artifact@v4'
         with:
           name: 'PHP ${{ matrix.php }} with ${{ fromJson(matrix.db).vendor }}'
           path: 'clover.xml'
@@ -192,10 +201,10 @@ jobs:
 
     steps:
       - name: 'Checkout current revision'
-        uses: 'actions/checkout@v3'
+        uses: actions/checkout@v4
 
       - name: 'Setup PHP'
-        uses: 'shivammathur/setup-php@v2'
+        uses: shivammathur/setup-php@v2
         with:
           php-version: '7.4'
           tools: 'composer'
@@ -206,7 +215,7 @@ jobs:
         run: echo "path=$(composer global config cache-dir)" >> $GITHUB_OUTPUT
 
       - name: 'Share Composer cache across runs'
-        uses: 'actions/cache@v3'
+        uses: actions/cache@v4
         with:
           path: '${{ steps.cachedir.outputs.path }}'
           key: "composer-lowest-${{ hashFiles('**/composer.json') }}"
