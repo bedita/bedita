@@ -129,7 +129,7 @@ class CategoriesTableTest extends TestCase
     public function testFindEnabledCategories()
     {
         $categories = $this->Categories->find('enabled')->toArray();
-        static::assertEquals([1, 2], Hash::extract($categories, '{n}.id'));
+        static::assertEquals([1, 2, 4], Hash::extract($categories, '{n}.id'));
     }
 
     /**
@@ -144,7 +144,7 @@ class CategoriesTableTest extends TestCase
             $this->Categories->aliasField('id') => 'ASC',
         ];
         $categories = $this->Categories->find('type', ['documents'])->order($order)->toArray();
-        static::assertEquals([1, 2, 3], Hash::extract($categories, '{n}.id'));
+        static::assertEquals([1, 2, 3, 4], Hash::extract($categories, '{n}.id'));
 
         $categories = $this->Categories->find('type', ['news'])->order($order)->toArray();
         static::assertEquals([], $categories);
@@ -248,5 +248,17 @@ class CategoriesTableTest extends TestCase
         $this->expectExceptionMessage('Missing required parameter "typeId"');
 
         $this->Categories->find('ids', ['names' => ['unnamed']])->toArray();
+    }
+
+    /**
+     * Test `findRoots` method.
+     *
+     * @return void
+     * @covers ::findRoots()
+     */
+    public function testFindRoots()
+    {
+        $roots = $this->Categories->find('roots')->toArray();
+        static::assertEquals([1, 2, 3], Hash::extract($roots, '{n}.id'));
     }
 }

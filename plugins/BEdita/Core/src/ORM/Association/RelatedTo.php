@@ -215,7 +215,7 @@ class RelatedTo extends BelongsToMany
     {
         $targetTable = $this->getTarget();
         if ($targetTable instanceof InheritanceTable) {
-            $options['table'] = $targetTable->query()->getInheritanceSubQuery();
+            $options['table'] = $targetTable->selectQuery()->getInheritanceSubQuery();
         }
 
         parent::attachTo($query, $options);
