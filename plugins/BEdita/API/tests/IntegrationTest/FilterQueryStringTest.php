@@ -851,7 +851,7 @@ class FilterQueryStringTest extends IntegrationTestCase
         $this->assertResponseCode(200);
         $this->assertContentType('application/vnd.api+json');
         static::assertArrayHasKey('data', $result);
-        static::assertEquals(3, count($result['data']));
+        static::assertEquals(4, count($result['data']));
 
         $this->configRequestHeaders();
         $this->get('/model/categories?filter[type]=locations');

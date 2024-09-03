@@ -375,6 +375,14 @@ class ProjectControllerTest extends IntegrationTestCase
                     'label' => 'Second category',
                 ],
                 [
+                    'name' => 'child-cat-1',
+                    'labels' => ['default' => 'Child category'],
+                    'parent' => 'second-cat',
+                    'enabled' => true,
+                    'object' => 'documents',
+                    'label' => 'Child category',
+                ],
+                [
                     'name' => 'disabled-cat',
                     'labels' => ['default' => 'Disabled category'],
                     'parent' => null,

@@ -389,6 +389,14 @@ class ProjectModelTest extends TestCase
                 'label' => 'Second category',
             ],
             [
+                'name' => 'child-cat-1',
+                'labels' => ['default' => 'Child category'],
+                'parent' => 'second-cat',
+                'enabled' => true,
+                'object' => 'documents',
+                'label' => 'Child category',
+            ],
+            [
                 'name' => 'disabled-cat',
                 'labels' => ['default' => 'Disabled category'],
                 'parent' => null,
@@ -521,5 +529,48 @@ class ProjectModelTest extends TestCase
             'relations' => [$rel],
         ];
         static::assertEquals(compact('update'), $result);
+    }
+
+    /**
+     * Data provider for `testCategoriesToUpdate` test case.
+     *
+     * @return array
+     */
+    public function categoriesToUpdateProvider(): array
+    {
+        return [
+            'empty' => [
+                [],
+                [],
+            ],
+            'categories in db' => [
+                [
+                    'categories' => [
+                        ['name' => 'first-cat', 'object' => 'documents', 'label' => 'test'], // in fixture db
+                        ['name' => 'second-cat', 'object' => 'events', 'label' => 'test'], // not in fixture db: object type is not document
+                        ['name' => 'my-cat', 'object' => 'documents', 'label' => 'My category'],
+                    ],
+                ],
+                [
+                    'categories' => [
+                        ['name' => 'second-cat', 'object' => 'events', 'label' => 'test'],
+                        ['name' => 'my-cat', 'object' => 'documents', 'label' => 'My category'],
+                    ],
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * Test `categoriesToUpdate` method
+     *
+     * @return void
+     * @covers ::categoriesToUpdate()
+     * @dataProvider categoriesToUpdateProvider()
+     */
+    public function testCategoriesToUpdate(array $update, array $expected): void
+    {
+        ProjectModel::categoriesToUpdate($update);
+        static::assertEquals($expected, $update);
     }
 }
