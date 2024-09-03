@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 /**
  * BEdita, API-first content management framework
  * Copyright 2019 ChannelWeb Srl, Chialab Srl
@@ -91,24 +93,24 @@ class UsersTable extends Table
             'prefix' => 'user-',
         ]);
 
-        $this->getBehavior('Searchable')->setConfig([
-            'fields' => [
-                'username' => 10,
-                'title' => 10,
-                'name' => 10,
-                'surname' => 10,
-                'email' => 7,
-                'description' => 7,
-                'body' => 5,
-            ],
-        ]);
-
         $this->hasMany('ExternalAuth', [
             'foreignKey' => 'user_id',
         ]);
 
         $this->belongsToMany('Roles', [
             'through' => 'RolesUsers',
+        ]);
+
+        $this->setupSimpleSearch([
+            'fields' => [
+                'username',
+                'title',
+                'name',
+                'surname',
+                'email',
+                'description',
+                'body',
+            ],
         ]);
 
         EventManager::instance()->on('Authentication.afterIdentify', [$this, 'login']);
@@ -179,10 +181,9 @@ class UsersTable extends Table
      *
      * @codeCoverageIgnore
      */
-    protected function _initializeSchema(TableSchemaInterface $schema): TableSchemaInterface
+    public function getSchema(): TableSchemaInterface
     {
-        return $schema
-            ->setColumnType('user_preferences', 'json');
+        return parent::getSchema()->setColumnType('user_preferences', 'json');
     }
 
     /**
@@ -341,7 +342,7 @@ class UsersTable extends Table
     {
         $names = $ids = [];
         foreach ($options as $opt) {
-            $items = (array)explode(',', $opt);
+            $items = (array)explode(',', (string)$opt);
             foreach ($items as $item) {
                 if (is_numeric($item)) {
                     $ids[] = $item;

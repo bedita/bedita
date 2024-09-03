@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 /**
  * BEdita, API-first content management framework
  * Copyright 2018 ChannelWeb Srl, Chialab Srl
@@ -14,6 +16,7 @@
 namespace BEdita\Core\Test\TestCase\Model\Table;
 
 use BEdita\Core\Exception\BadFilterException;
+use Cake\Core\Configure;
 use Cake\ORM\Association\BelongsTo;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
@@ -103,7 +106,7 @@ class TranslationsTableTest extends TestCase
                     'object_id.integer',
                     'lang.scalar',
                     'status.inList',
-                    'translated_fields.isArray',
+                    'translated_fields.array',
                 ],
                 [
                     'object_id' => 'definitely not a number',
@@ -154,11 +157,11 @@ class TranslationsTableTest extends TestCase
     {
         return [
             'documents' => [
-                [1, 2, 3],
+                [1, 2, 3, 4],
                 ['documents'],
             ],
             'multiple' => [
-                [1, 2, 3],
+                [1, 2, 3, 4],
                 ['document', 'profiles'],
             ],
             'bad type' => [
@@ -170,7 +173,7 @@ class TranslationsTableTest extends TestCase
                 [],
             ],
             'by id' => [
-                [1, 2, 3],
+                [1, 2, 3, 4],
                 [2],
             ],
         ];
@@ -199,5 +202,46 @@ class TranslationsTableTest extends TestCase
         sort($result);
 
         $this->assertEquals($expected, $result);
+    }
+
+    /**
+     * Data provider for `testFindAvailable`.
+     *
+     * @return array
+     */
+    public function findAvailableProvider(): array
+    {
+        return [
+            'no status' => [
+                4,
+            ],
+            'status on' => [
+                2,
+                'on',
+            ],
+            'status draft' => [
+                3,
+                'draft',
+            ],
+        ];
+    }
+
+    /**
+     * Test `findAvailable()`.
+     *
+     * @param int $expected Expected results.
+     * @param string $statusLevel Configuration to write.
+     * @return void
+     * @dataProvider findAvailableProvider()
+     * @covers ::findAvailable()
+     */
+    public function testFindAvailable(int $expected, ?string $statusLevel = null): void
+    {
+        if (!empty($statusLevel)) {
+            Configure::write('Status.level', $statusLevel);
+        }
+
+        $count = $this->Translations->find('available')->count();
+        static::assertSame($expected, $count);
     }
 }

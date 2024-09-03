@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 /**
  * BEdita, API-first content management framework
  * Copyright 2019 ChannelWeb Srl, Chialab Srl
@@ -60,6 +62,7 @@ class CategoriesBehaviorTest extends TestCase
                             'name' => 'second-cat',
                             'id' => 2,
                             'object_type_name' => null,
+                            'label' => null,
                         ],
                     ],
                 ],
@@ -78,6 +81,7 @@ class CategoriesBehaviorTest extends TestCase
                         [
                             'name' => 'first-tag',
                             'id' => 1,
+                            'label' => null,
                         ],
                     ],
                 ],
@@ -142,10 +146,12 @@ class CategoriesBehaviorTest extends TestCase
                         [
                             'name' => 'some-tag',
                             'id' => 2,
+                            'label' => null,
                         ],
                         [
                             'name' => 'other-tag',
                             'id' => 3,
+                            'label' => null,
                         ],
                     ],
                 ],
@@ -265,7 +271,10 @@ class CategoriesBehaviorTest extends TestCase
         $names = Hash::extract($tags, '{n}.name');
         sort($names);
         static::assertEquals(['first-tag', 'second', 'third'], $names);
-        $labels = Hash::extract($tags, '{n}.label');
+        $labels = [];
+        foreach ($tags as $tag) {
+            $labels[] = $tag->get('label');
+        }
         sort($labels);
         static::assertEquals(['First tag', 'Second', 'Third'], $labels);
     }

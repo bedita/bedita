@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 /**
  * BEdita, API-first content management framework
  * Copyright 2017 ChannelWeb Srl, Chialab Srl
@@ -63,8 +65,53 @@ class StreamsFixture extends TestFixture
             'file_size' => 927,
             'hash_md5' => 'a714dbb31ca89d5b1257245dfa5c5153',
             'hash_sha1' => '444b2b42b48b0b815d70f6648f8a7a23d5faf54b',
+            'width' => 118,
+            'height' => 52,
             'created' => '2018-03-22 15:58:47',
             'modified' => '2018-03-22 15:58:47',
+        ],
+        [
+            'uuid' => '9b06b2cf-fce7-47e8-b367-a3e5b464ca85',
+            'version' => 1,
+            'object_id' => 16,
+            'uri' => 'default://9b06b2cf-fce7-47e8-b367-a3e5b464ca85-sample.svg',
+            'file_name' => 'sample.svg',
+            'mime_type' => 'image/svg+xml',
+            'file_size' => 461,
+            'hash_md5' => '',
+            'hash_sha1' => '',
+            'created' => '2024-03-25 16:11:18',
+            'modified' => '2024-03-25 16:11:18',
+        ],
+        [
+            'uuid' => 'eadc9cd3-b0ae-4e43-9251-9f44bd026793',
+            'version' => 1,
+            'object_id' => 17,
+            'uri' => 'default://eadc9cd3-b0ae-4e43-9251-9f44bd026793-snow-on-white.jpg',
+            'file_name' => 'snow-on-white.jpg',
+            'mime_type' => 'image/jpeg',
+            'file_size' => 140910,
+            'hash_md5' => '04fd3cc862a142c114c6f7822996207a',
+            'hash_sha1' => 'e3d5556baf1c257d10a146c0ebf84a2ab99c7437',
+            'width' => 8000,
+            'height' => 4500,
+            'created' => '2024-06-25 10:11:18',
+            'modified' => '2024-06-25 10:11:18',
+        ],
+        [
+            'uuid' => '7ffcb45e-4cc1-492e-9775-74ee6999503f',
+            'version' => 1,
+            'object_id' => 18,
+            'uri' => 'default://7ffcb45e-4cc1-492e-9775-74ee6999503f-snow-on-white.jpg',
+            'file_name' => 'snow-on-white.jpg',
+            'mime_type' => 'image/jpeg',
+            'file_size' => 140910,
+            'hash_md5' => '04fd3cc862a142c114c6f7822996207a',
+            'hash_sha1' => 'e3d5556baf1c257d10a146c0ebf84a2ab99c7437',
+            'width' => null,
+            'height' => null,
+            'created' => '2024-06-25 10:11:18',
+            'modified' => '2024-06-25 10:11:18',
         ],
     ];
 }

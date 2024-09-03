@@ -42,14 +42,22 @@ class OAuth2Identifier extends AbstractIdentifier
         /** @var \BEdita\Core\Model\Entity\AuthProvider $authProvider */
         $authProvider = $this->getConfig('authProvider');
         $options = (array)Hash::get((array)$authProvider->get('params'), 'options');
-        $providerResponse = $this->getOAuth2Response(
-            $authProvider->get('url'),
-            $credentials['access_token'],
-            $options
-        );
 
-        if (!$authProvider->checkAuthorization($providerResponse, $credentials['provider_username'])) {
-            return null;
+        $credentialsCallback = Hash::get($options, 'credentials_callback');
+        if ($credentialsCallback && is_callable($credentialsCallback)) {
+            if (!$credentialsCallback($credentials)) {
+                return null;
+            }
+        } else {
+            $providerResponse = $this->getOAuth2Response(
+                $authProvider->get('url'),
+                $credentials['access_token'],
+                $options
+            );
+
+            if (!$authProvider->checkAuthorization($providerResponse, $credentials['provider_username'])) {
+                return null;
+            }
         }
 
         $externalAuth = [

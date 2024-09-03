@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 /**
  * BEdita, API-first content management framework
  * Copyright 2017 ChannelWeb Srl, Chialab Srl
@@ -350,6 +352,82 @@ class SignupUserActionTest extends TestCase
         static::assertSame('on', $result->status);
         static::assertNotEmpty($result->verified);
         static::assertSame(1, $eventDispatched, 'Event not dispatched');
+    }
+
+    /**
+     * Test action execution with external auth callback
+     *
+     * @return void
+     */
+    public function testExecuteExtAuthCallback(): void
+    {
+        $authProvider = $this->fetchTable('AuthProviders')->get(1);
+        $authProvider->params = [
+            'options' => [
+                'credentials_callback' => [static::class, 'dummyCallback'],
+            ],
+        ];
+        $this->fetchTable('AuthProviders')->saveOrFail($authProvider);
+        $data = [
+            'username' => 'testsignup',
+            'email' => 'testsignup@example.com',
+            'auth_provider' => 'example',
+            'provider_username' => 'not-found',
+            'provider_userdata' => [],
+            'access_token' => 'incredibly-long-string',
+        ];
+        $action = new SignupUserAction();
+        $result = $action(compact('data'));
+        static::assertTrue((bool)$result);
+    }
+
+    /**
+     * Dummy test callback method
+     *
+     * @return bool
+     */
+    public static function dummyCallback(): bool
+    {
+        return true;
+    }
+
+    /**
+     * Test action failure with external auth callback
+     *
+     * @return void
+     */
+    public function testExecuteExtAuthCallbackFail(): void
+    {
+        $this->expectException(UnauthorizedException::class);
+        $this->expectExceptionMessage('External auth failed');
+
+        $authProvider = $this->fetchTable('AuthProviders')->get(1);
+        $authProvider->params = [
+            'options' => [
+                'credentials_callback' => [static::class, 'dummyCallbackFalse'],
+            ],
+        ];
+        $this->fetchTable('AuthProviders')->saveOrFail($authProvider);
+        $data = [
+            'username' => 'testsignup',
+            'email' => 'testsignup@example.com',
+            'auth_provider' => 'example',
+            'provider_username' => 'not-found',
+            'provider_userdata' => [],
+            'access_token' => 'incredibly-long-string',
+        ];
+        $action = new SignupUserAction();
+        $result = $action(compact('data'));
+    }
+
+    /**
+     * Another dummy test callback method
+     *
+     * @return bool
+     */
+    public static function dummyCallbackFalse(): bool
+    {
+        return false;
     }
 
     /**

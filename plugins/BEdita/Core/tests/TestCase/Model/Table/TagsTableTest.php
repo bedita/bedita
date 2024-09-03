@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 /**
  * BEdita, API-first content management framework
  * Copyright 2019 ChannelWeb Srl, Chialab Srl
@@ -79,8 +81,9 @@ class TagsTableTest extends TestCase
         $expected = [
             'id' => 1,
             'name' => 'first-tag',
-            'label' => 'First tag',
+            'labels' => ['default' => 'First tag'],
             'enabled' => true,
+            'label' => 'First tag',
         ];
         unset($tag['created'], $tag['modified']);
         static::assertEquals($expected, $tag);
@@ -100,6 +103,7 @@ class TagsTableTest extends TestCase
         $expected = [
             [
                 'name' => 'first-tag',
+                'labels' => ['default' => 'First tag'],
                 'label' => 'First tag',
             ],
         ];

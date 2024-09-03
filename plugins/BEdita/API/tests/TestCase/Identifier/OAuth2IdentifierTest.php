@@ -1,5 +1,4 @@
 <?php
-
 declare(strict_types=1);
 
 /**
@@ -152,5 +151,42 @@ class OAuth2IdentifierTest extends TestCase
             $result = array_intersect_key($result->toArray(), $expected);
         }
         static::assertSame($expected, $result);
+    }
+
+    /**
+     * Test `identify` method with callback.
+     *
+     * @return void
+     * @covers ::identify()
+     */
+    public function testIdentifyWithCallback(): void
+    {
+        $authProvider = $this->fetchTable('AuthProviders')->get(1);
+        $authProvider->set('params', [
+            'options' => [
+                'credentials_callback' => function (array $credentials): bool {
+                    return $credentials['provider_username'] === 'first_user';
+                },
+            ],
+        ]);
+
+        $identifier = new OAuth2Identifier();
+        $identifier->setConfig(compact('authProvider'));
+
+        $result = $identifier->identify([
+            'auth_provider' => 'example',
+            'provider_username' => 'first_user',
+            'access_token' => 'very-log-string',
+        ]);
+
+        static::assertNotEmpty($result);
+
+        $result = $identifier->identify([
+            'auth_provider' => 'example',
+            'provider_username' => 'another_user',
+            'access_token' => 'very-log-string',
+        ]);
+
+        static::assertNull($result);
     }
 }

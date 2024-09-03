@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 /**
  * BEdita, API-first content management framework
  * Copyright 2018 ChannelWeb Srl, Chialab Srl
@@ -29,6 +31,7 @@ class TestConstants
         'events' => '2652801567',
         'files' => '3993182105',
         'folders' => '3048758948',
+        'images' => '2267757429',
         'locations' => '3886336330',
         'profiles' => '3201393399',
         'roles' => '122746925',

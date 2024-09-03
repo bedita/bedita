@@ -477,11 +477,28 @@ return [
                 'className' => 'BEdita/Core.Glide',
                 // 'cache' => 'thumbnails',
                 'url' => env('THUMBNAILS_DEFAULT_URL', null),
+                'maxThumbSize' => 2048 * 2048, // max total pixels of thumbnails
+                'maxImageSize' => 7680 * 4320, // do not generate thumbnails for images above this pixel count
             ],
             'async' => [
                 'className' => 'BEdita/Core.Async',
                 // 'baseGenerator' => 'default',
                 'url' => env('THUMBNAILS_ASYNC_URL', null),
+            ],
+        ],
+    ],
+
+    /**
+     * Search configuration.
+     *
+     * - `use`: the search adapter to use in the search
+     * - `adapters`: configured search adapters
+     */
+    'Search' => [
+        'use' => 'default',
+        'adapters' => [
+            'default' => [
+                'className' => 'BEdita/Core.Simple',
             ],
         ],
     ],

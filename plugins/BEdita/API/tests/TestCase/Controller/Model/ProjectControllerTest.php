@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 /**
  * BEdita, API-first content management framework
  * Copyright 2021 ChannelWeb Srl, Chialab Srl
@@ -120,6 +122,19 @@ class ProjectControllerTest extends IntegrationTestCase
                     'enabled' => true,
                     'table' => 'BEdita/Core.Objects',
                     'parent_name' => 'objects',
+                    'translation_rules' => null,
+                    'is_translatable' => true,
+                ],
+                [
+                    'name' => 'images',
+                    'is_abstract' => false,
+                    'singular' => 'image',
+                    'description' => null,
+                    'associations' => ['Streams'],
+                    'hidden' => null,
+                    'enabled' => true,
+                    'table' => 'BEdita/Core.Media',
+                    'parent_name' => 'media',
                     'translation_rules' => null,
                     'is_translatable' => true,
                 ],
@@ -345,24 +360,35 @@ class ProjectControllerTest extends IntegrationTestCase
             'categories' => [
                 [
                     'name' => 'first-cat',
-                    'label' => 'First category',
+                    'labels' => ['default' => 'First category'],
                     'parent' => null,
                     'enabled' => true,
                     'object' => 'documents',
+                    'label' => 'First category',
                 ],
                 [
                     'name' => 'second-cat',
-                    'label' => 'Second category',
+                    'labels' => ['default' => 'Second category'],
                     'parent' => null,
                     'enabled' => true,
                     'object' => 'documents',
+                    'label' => 'Second category',
+                ],
+                [
+                    'name' => 'child-cat-1',
+                    'labels' => ['default' => 'Child category'],
+                    'parent' => 'second-cat',
+                    'enabled' => true,
+                    'object' => 'documents',
+                    'label' => 'Child category',
                 ],
                 [
                     'name' => 'disabled-cat',
-                    'label' => 'Disabled category',
+                    'labels' => ['default' => 'Disabled category'],
                     'parent' => null,
                     'enabled' => false,
                     'object' => 'documents',
+                    'label' => 'Disabled category',
                 ],
             ],
         ];

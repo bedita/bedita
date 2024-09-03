@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 /**
  * BEdita, API-first content management framework
  * Copyright 2020 ChannelWeb Srl, Chialab Srl
@@ -14,6 +16,7 @@ namespace BEdita\Core\Model\Table;
 
 use BEdita\Core\Exception\LockedResourceException;
 use BEdita\Core\Model\Entity\Tree;
+use Cake\Database\Driver\Mysql;
 use Cake\Database\Expression\QueryExpression;
 use Cake\Event\EventInterface;
 use Cake\Http\Exception\BadRequestException;
@@ -293,20 +296,29 @@ class TreesTable extends Table
             throw new BadRequestException(__d('bedita', 'Missing required parameter "{0}"', 'object id'));
         }
 
+        $lft = $this->aliasField('tree_left');
+        $rgt = $this->aliasField('tree_right');
         $node = $this->find()
-            ->select([
-                $this->aliasField('tree_left'),
-                $this->aliasField('tree_right'),
-            ])
+            ->select([$lft, $rgt])
             ->where(['object_id' => $options[0]])
+            ->disableHydration()
             ->firstOrFail();
 
-        $query = $query->where(function (QueryExpression $exp) use ($node) {
-            return $exp
-                ->lte($this->aliasField('tree_left'), $node->get('tree_left'))
-                ->gte($this->aliasField('tree_right'), $node->get('tree_right'));
-        });
+        $index = 'trees_nsm_idx';
+        if ($query->getConnection()->getDriver() instanceof Mysql && in_array($index, $this->getSchema()->indexes())) {
+            $query = $query->modifier([sprintf(
+                '/*+ INDEX(%s %s) */',
+                $this->getAlias(),
+                $index,
+            )]);
+        }
 
-        return $query->order([$this->aliasField('tree_left') => 'ASC']);
+        return $query
+            ->where(
+                fn (QueryExpression $exp): QueryExpression => $exp
+                    ->lte($lft, $node['tree_left'])
+                    ->gte($rgt, $node['tree_right'])
+            )
+            ->orderAsc($lft);
     }
 }

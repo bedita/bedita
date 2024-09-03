@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 /**
  * BEdita, API-first content management framework
  * Copyright 2016 ChannelWeb Srl, Chialab Srl
@@ -14,6 +16,7 @@
 namespace BEdita\Core\Model\Table;
 
 use BEdita\Core\Exception\ImmutableResourceException;
+use BEdita\Core\Search\SimpleSearchTrait;
 use BEdita\Core\State\CurrentApplication;
 use Cake\Database\Expression\QueryExpression;
 use Cake\Datasource\EntityInterface;
@@ -43,6 +46,8 @@ use Cake\Validation\Validator;
  */
 class ApplicationsTable extends Table
 {
+    use SimpleSearchTrait;
+
     /**
      * Default application id
      *
@@ -61,18 +66,15 @@ class ApplicationsTable extends Table
 
         $this->setDisplayField('name');
         $this->addBehavior('Timestamp');
-        $this->addBehavior('BEdita/Core.Searchable', [
-            'fields' => [
-                'name' => 10,
-                'description' => 5,
-            ],
-        ]);
+        $this->addBehavior('BEdita/Core.Searchable');
         $this->addBehavior('BEdita/Core.QueryCache');
         $this->addBehavior('BEdita/Core.ResourceName');
 
         $this->hasMany('EndpointPermissions', [
             'dependent' => true,
         ]);
+
+        $this->setupSimpleSearch(['fields' => ['name', 'description']]);
     }
 
     /**

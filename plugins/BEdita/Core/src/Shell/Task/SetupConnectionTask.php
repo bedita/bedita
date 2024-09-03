@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 /**
  * BEdita, API-first content management framework
  * Copyright 2017 ChannelWeb Srl, Chialab Srl
@@ -161,7 +163,7 @@ class SetupConnectionTask extends Shell /* @phpstan-ignore-line */
     {
         $this->verbose('=====> Checking ability to connect... ', 0);
         try {
-            $connection->connect();
+            $connection->getDriver()->connect();
 
             $this->verbose('<info>DONE</info>');
         } catch (MissingConnectionException $e) {

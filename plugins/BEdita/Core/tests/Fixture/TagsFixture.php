@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 /**
  * BEdita, API-first content management framework
  * Copyright 2022 ChannelWeb Srl, Chialab Srl
@@ -28,7 +30,7 @@ class TagsFixture extends TestFixture
         // 1
         [
             'name' => 'first-tag',
-            'label' => 'First tag',
+            'labels' => ['default' => 'First tag'],
             'enabled' => 1,
             'created' => '2019-11-26 12:15:51',
             'modified' => '2019-11-26 12:15:51',

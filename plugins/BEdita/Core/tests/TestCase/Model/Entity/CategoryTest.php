@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 /**
  * BEdita, API-first content management framework
  * Copyright 2023 ChannelWeb Srl, Chialab Srl
@@ -139,5 +141,31 @@ class CategoryTest extends TestCase
         $entity->object_type_id = 2;
         $entity->set('parent', $parent);
         static::assertSame($expected, $entity->parent_id);
+    }
+
+    /**
+     * Test `_getLabel` methods.
+     *
+     * @return void
+     * @covers ::_getLabel()
+     */
+    public function testGetLabel(): void
+    {
+        $category = $this->fetchTable('Categories')->get(1);
+        static::assertEquals('First category', $category->get('label'));
+    }
+
+    /**
+     * Test `_setLabel` methods.
+     *
+     * @return void
+     * @covers ::_getLabel()
+     * @covers ::_setLabel()
+     */
+    public function testSetLabel(): void
+    {
+        $category = $this->fetchTable('Categories')->newEmptyEntity();
+        $category->set('label', 'New label');
+        static::assertEquals('New label', $category->get('label'));
     }
 }

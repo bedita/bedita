@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 /**
  * BEdita, API-first content management framework
  * Copyright 2016 ChannelWeb Srl, Chialab Srl
@@ -16,6 +18,7 @@ namespace BEdita\Core\Model\Table;
 use BEdita\Core\Exception\BadFilterException;
 use BEdita\Core\Model\Validation\ObjectTypesValidator;
 use BEdita\Core\ORM\Rule\IsUniqueAmongst;
+use BEdita\Core\Search\SimpleSearchTrait;
 use Cake\Cache\Cache;
 use Cake\Core\App;
 use Cake\Database\Expression\ComparisonExpression;
@@ -50,6 +53,8 @@ use Cake\Utility\Inflector;
  */
 class ObjectTypesTable extends Table
 {
+    use SimpleSearchTrait;
+
     /**
      * Cache config name for object types.
      *
@@ -138,13 +143,9 @@ class ObjectTypesTable extends Table
             'left' => 'tree_left',
             'right' => 'tree_right',
         ]);
-        $this->addBehavior('BEdita/Core.Searchable', [
-            'fields' => [
-                'name' => 10,
-                'singular' => 10,
-                'description' => 5,
-            ],
-        ]);
+        $this->addBehavior('BEdita/Core.Searchable');
+
+        $this->setupSimpleSearch(['fields' => ['name', 'singular', 'description']]);
     }
 
     /**
@@ -172,13 +173,12 @@ class ObjectTypesTable extends Table
      *
      * @codeCoverageIgnore
      */
-    protected function _initializeSchema(TableSchemaInterface $schema): TableSchemaInterface
+    public function getSchema(): TableSchemaInterface
     {
-        $schema->setColumnType('associations', 'json');
-        $schema->setColumnType('hidden', 'json');
-        $schema->setColumnType('translation_rules', 'json');
-
-        return $schema;
+        return parent::getSchema()
+            ->setColumnType('associations', 'json')
+            ->setColumnType('hidden', 'json')
+            ->setColumnType('translation_rules', 'json');
     }
 
     /**

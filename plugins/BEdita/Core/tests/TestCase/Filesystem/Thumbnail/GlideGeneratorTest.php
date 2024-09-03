@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 /**
  * BEdita, API-first content management framework
  * Copyright 2018 ChannelWeb Srl, Chialab Srl
@@ -67,7 +69,10 @@ class GlideGeneratorTest extends TestCase
         $this->Streams = TableRegistry::getTableLocator()->get('Streams');
 
         $this->generator = new GlideGenerator();
-        $this->generator->initialize([]);
+        $this->generator->initialize([
+            'maxThumbSize' => 1 << 22, // 2048 * 2048 === 2^11 * 2^11 === 2^22
+            'maxImageSize' => 7680 * 4320, // 8K
+        ]);
     }
 
     /**
@@ -104,6 +109,10 @@ class GlideGeneratorTest extends TestCase
                 '6aceb0eb-bd30-4f60-ac74-273083b921b6',
                 ['w' => 200],
             ],
+            'svg file' => [
+                'https://static.example.org/files/9b06b2cf-fce7-47e8-b367-a3e5b464ca85-sample.svg',
+                '9b06b2cf-fce7-47e8-b367-a3e5b464ca85',
+            ],
         ];
     }
 
@@ -117,6 +126,7 @@ class GlideGeneratorTest extends TestCase
      * @dataProvider getUrlProvider()
      * @covers ::getUrl()
      * @covers ::getFilename()
+     * @covers ::isSvg()
      */
     public function testGetUrl($expected, $uuid, array $options = [])
     {
@@ -206,6 +216,21 @@ class GlideGeneratorTest extends TestCase
                 '6aceb0eb-bd30-4f60-ac74-273083b921b6',
                 ['w' => 200],
             ],
+            'svg file returns itself' => [
+                true,
+                '9b06b2cf-fce7-47e8-b367-a3e5b464ca85',
+                ['w' => 200],
+            ],
+            'jpg too big' => [
+                new InvalidStreamException('Image exceeds the maximum resolution of 33.2 Megapixels for thumbnail generation'),
+                'eadc9cd3-b0ae-4e43-9251-9f44bd026793',
+                ['w' => 200],
+            ],
+            'jpg no resolution' => [
+                true,
+                '7ffcb45e-4cc1-492e-9775-74ee6999503f',
+                ['w' => 200],
+            ],
         ];
     }
 
@@ -221,6 +246,8 @@ class GlideGeneratorTest extends TestCase
      * @covers ::getFilename()
      * @covers ::getGlideApi()
      * @covers ::makeThumbnail()
+     * @covers ::checkImageResolution()
+     * @covers ::isSvg()
      */
     public function testGenerate($expected, $uuid, array $options = [])
     {
@@ -254,6 +281,10 @@ class GlideGeneratorTest extends TestCase
                 'e5afe167-7341-458d-a1e6-042e8791b0fe',
                 ['w' => 200, 'fm' => 'png'],
             ],
+            'svg always exists' => [
+                true,
+                '9b06b2cf-fce7-47e8-b367-a3e5b464ca85',
+            ],
         ];
     }
 
@@ -267,6 +298,7 @@ class GlideGeneratorTest extends TestCase
      * @dataProvider existsProvider()
      * @covers ::exists()
      * @covers ::getFilename()
+     * @covers ::isSvg()
      */
     public function testExists($expected, $uuid, array $options = [])
     {

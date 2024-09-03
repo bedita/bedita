@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 /**
  * BEdita, API-first content management framework
  * Copyright 2018 ChannelWeb Srl, Chialab Srl
@@ -57,7 +59,7 @@ class ListObjectsActionTest extends TestCase
         $result = $action();
 
         static::assertInstanceOf(Query::class, $result);
-        static::assertSame(12, $result->count());
+        static::assertSame(15, $result->count());
     }
 
     /**
@@ -108,7 +110,7 @@ class ListObjectsActionTest extends TestCase
         ]);
 
         static::assertInstanceOf(Query::class, $result);
-        static::assertSame(10, $result->count());
+        static::assertSame(13, $result->count());
     }
 
     /**
@@ -126,7 +128,7 @@ class ListObjectsActionTest extends TestCase
         $result = $action();
 
         static::assertInstanceOf(Query::class, $result);
-        static::assertSame(11, $result->count());
+        static::assertSame(14, $result->count());
     }
 
     /**

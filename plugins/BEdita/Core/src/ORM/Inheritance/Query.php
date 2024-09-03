@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 /**
  * BEdita, API-first content management framework
  * Copyright 2016 ChannelWeb Srl, Chialab Srl
@@ -13,147 +15,19 @@
 
 namespace BEdita\Core\ORM\Inheritance;
 
-use Cake\Database\Expression\QueryExpression;
+use BEdita\Core\ORM\Inheritance\Query\InheritanceQueryTrait;
 use Cake\ORM\Query as CakeQuery;
-use Cake\ORM\Table as CakeTable;
 
 /**
  * Extends `\Cake\ORM\Query` to set `FROM` clause and add default types and fields.
  *
+ * It will be removed in 6.x.
+ *
  * @since 4.0.0
  * @property \BEdita\Core\ORM\Inheritance\Table _repository
+ * @deprecated 5.24.0 Will be removed in 6.x
  */
 class Query extends CakeQuery
 {
-    /**
-     * @inheritDoc
-     */
-    public function addDefaultTypes(CakeTable $table)
-    {
-        parent::addDefaultTypes($table);
-
-        if ($table instanceof Table) {
-            // Add types of fields from inherited tables, so that they are cast to the correct type.
-            $alias = $table->getAlias();
-            foreach ($table->inheritedTables() as $table) {
-                $map = $table->getSchema()->typeMap();
-                $fields = [];
-                foreach ($map as $f => $type) {
-                    $fields[$f] = $fields[$alias . '.' . $f] = $fields[$alias . '__' . $f] = $type;
-                }
-                $this->getTypeMap()->addDefaults($fields);
-            }
-        }
-
-        return $this;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    protected function _addDefaultFields(): void
-    {
-        $select = $this->clause('select');
-        $this->_hasFields = true;
-
-        if (!count($select) || $this->_autoFields === true) {
-            // If no fields have explicitly been selected, and autoFields is enabled, select all fields from inheritance chain.
-            $this->_hasFields = false;
-            $columns = $this->_repository->getSchema()->columns();
-            foreach ($this->_repository->inheritedTables() as $inheritedTable) {
-                $columns = array_merge($columns, $inheritedTable->getSchema()->columns());
-            }
-
-            $this->select($columns);
-            $select = $this->clause('select');
-        }
-
-        $aliased = $this->aliasFields($select, $this->_repository->getAlias());
-        $this->select($aliased, true);
-    }
-
-    /**
-     * @inheritDoc
-     */
-    protected function _transformQuery(): void
-    {
-        if ($this->_dirty && $this->_type === 'select' && empty($this->_parts['from']) && $this->_repository->inheritedTable() !== null) {
-            // If no "from" was explicitly set, use CTI sub-query.
-            $this->from([$this->_repository->getAlias() => $this->getInheritanceSubQuery()], true);
-        }
-
-        parent::_transformQuery();
-    }
-
-    /**
-     * Get sub-query that returns inheritance chain as a single expression.
-     *
-     * @return \Cake\ORM\Query
-     */
-    public function getInheritanceSubQuery()
-    {
-        // @codingStandardsIgnoreStart
-        $subQuery = new parent($this->getConnection(), $this->_repository);
-        // @codingStandardsIgnoreEnd
-
-        // Current table.
-        $subQuery
-            ->select(
-                // Select fields from current table.
-                $this->subQueryAliasFields(
-                    $this->_repository->getSchema()->columns(),
-                    $this->_repository
-                )
-            )
-            ->from(
-                // Set "from" of the sub-query.
-                [$this->_repository->getTable() => $this->_repository->getTable()]
-            );
-
-        // Inherited tables.
-        foreach ($this->_repository->inheritedTables() as $table) {
-            $subQuery
-                ->select(
-                    // Add fields from inherited table to "select" clause.
-                    $this->subQueryAliasFields(
-                        array_diff($table->getSchema()->columns(), (array)$table->getPrimaryKey()), // Be careful to avoid duplicate columns.
-                        $table
-                    )
-                )
-                ->innerJoin(
-                    // Add joins with inherited tables.
-                    [$table->getTable() => $table->getTable()],
-                    function (QueryExpression $exp) use ($table) {
-                        return $exp->equalFields(
-                            sprintf('%s.%s', $table->getTable(), (string)$table->getPrimaryKey()),
-                            sprintf('%s.%s', $this->_repository->getTable(), (string)$this->_repository->getPrimaryKey())
-                        );
-                    }
-                );
-        }
-
-        return $subQuery;
-    }
-
-    /**
-     * Alias fields for use in `from` sub-query.
-     *
-     * Fields **MUST NOT** have CakePHP's default aliases, but should rather have their "cleaned" name version.
-     *
-     * For instance, a field named `foo` in the table `bars` would be aliased by Cake as `Bars__foo`, but we
-     * want it to be _exactly_ `foo` so that the main query can use the correct name.
-     *
-     * @param string[] $fields Fields to be aliased.
-     * @param \Cake\ORM\Table $table Table instance.
-     * @return array
-     */
-    protected function subQueryAliasFields(array $fields, CakeTable $table)
-    {
-        $result = [];
-        foreach ($fields as $field) {
-            $result[$field] = sprintf('%s.%s', $table->getTable(), $field);
-        }
-
-        return $result;
-    }
+    use InheritanceQueryTrait;
 }

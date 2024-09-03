@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 /**
  * BEdita, API-first content management framework
  * Copyright 2017 ChannelWeb Srl, Chialab Srl
@@ -13,6 +15,8 @@
 namespace BEdita\API\Test\IntegrationTest;
 
 use BEdita\API\TestSuite\IntegrationTestCase;
+use Cake\Database\Driver\Postgres;
+use Cake\Datasource\ConnectionManager;
 use Cake\ORM\TableRegistry;
 use Cake\Utility\Hash;
 
@@ -242,7 +246,7 @@ class FilterQueryStringTest extends IntegrationTestCase
         $this->assertContentType('application/vnd.api+json');
 
         static::assertArrayHasKey('data', $result);
-        static::assertCount(1, $result['data']);
+        static::assertCount(2, $result['data']);
     }
 
     /**
@@ -268,6 +272,7 @@ class FilterQueryStringTest extends IntegrationTestCase
                 [
                     '8',
                 ],
+                true,
             ],
             'users' => [
                 '/users?filter[query]=second',
@@ -373,11 +378,16 @@ class FilterQueryStringTest extends IntegrationTestCase
      * @return void
      * @param string $url Url string.
      * @param array $expected Expected result.
+     * @param bool $caseInsensitive Whether test case relies on case-insensitive comparison.
      * @dataProvider searchFilterProvider
      * @coversNothing
      */
-    public function testSearchFilter($url, $expected)
+    public function testSearchFilter($url, $expected, bool $caseInsensitive = false)
     {
+        if ($caseInsensitive && ConnectionManager::get('default')->getDriver() instanceof Postgres) {
+            static::markTestSkipped('Case-insensitive test cases are skipped on Postgres');
+        }
+
         $this->configRequestHeaders();
         $this->get($url);
         $result = json_decode((string)$this->_response->getBody(), true);
@@ -450,6 +460,9 @@ class FilterQueryStringTest extends IntegrationTestCase
                    '12',
                    '13',
                    '14',
+                   '16',
+                   '17',
+                   '18',
                ],
             ],
             'multi' => [
@@ -838,7 +851,7 @@ class FilterQueryStringTest extends IntegrationTestCase
         $this->assertResponseCode(200);
         $this->assertContentType('application/vnd.api+json');
         static::assertArrayHasKey('data', $result);
-        static::assertEquals(3, count($result['data']));
+        static::assertEquals(4, count($result['data']));
 
         $this->configRequestHeaders();
         $this->get('/model/categories?filter[type]=locations');

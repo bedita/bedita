@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 /**
  * BEdita, API-first content management framework
  * Copyright 2016 ChannelWeb Srl, Chialab Srl
@@ -498,7 +500,7 @@ class ObjectTypesTableTest extends TestCase
                 ['name' => 'inverse_test', 'side' => 'left'],
             ],
             'with descendants' => [
-                ['media', 'files'],
+                ['media', 'files', 'images'],
                 ['name' => 'test_abstract', 'descendants' => true],
             ],
             'relation not found' => [

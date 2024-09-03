@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 /**
  * BEdita, API-first content management framework
  * Copyright 2017 ChannelWeb Srl, Chialab Srl
@@ -64,7 +66,7 @@ class SqlConventionsValidator extends Validator
      *
      * @var string
      */
-    public const ALLOWED_DUPLICATES = 'created,core_type,description,enabled,expires,id,label,modified,name,params,priority,uuid,tree_left,tree_right,lang,status,created_by,modified_by,url';
+    public const ALLOWED_DUPLICATES = 'created,core_type,description,enabled,expires,id,label,modified,name,params,priority,uuid,tree_left,tree_right,lang,status,created_by,modified_by,url,labels';
 
     /**
      * List of reserved words.

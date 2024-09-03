@@ -1,4 +1,17 @@
 <?php
+declare(strict_types=1);
+
+/**
+ * BEdita, API-first content management framework
+ * Copyright 2024 ChannelWeb Srl, Chialab Srl
+ *
+ * This file is part of BEdita: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
+ */
 namespace BEdita\Core\Test\TestCase\Model\Table;
 
 use BEdita\Core\Exception\LockedResourceException;
@@ -233,6 +246,9 @@ class ObjectsTableTest extends TestCase
                     12 => 'Sub Folder',
                     13 => 'Another Root Folder',
                     14 => 'second media',
+                    16 => 'svg media',
+                    17 => 'Modern art',
+                    18 => 'Contemporary art',
                 ],
                 ['ne' => 'documents'],
             ],
@@ -257,6 +273,9 @@ class ObjectsTableTest extends TestCase
                     13 => 'Another Root Folder',
                     14 => 'second media',
                     15 => null,
+                    16 => 'svg media',
+                    17 => 'Modern art',
+                    18 => 'Contemporary art',
                 ],
                 ['objects'],
             ],
@@ -674,11 +693,11 @@ class ObjectsTableTest extends TestCase
     {
         return [
             'no status' => [
-                12,
+                15,
                 ['id > 0'],
             ],
             'status on' => [
-                7,
+                10,
                 ['id > 5'],
                 'on',
             ],
@@ -714,14 +733,14 @@ class ObjectsTableTest extends TestCase
     {
         return [
             'on + publish' => [
-                10,
+                13,
                 [
                     'Status.level' => 'on',
                     'Publish.checkDate' => true,
                 ],
             ],
             'draft' => [
-                15,
+                18,
                 [
                     'Status.level' => 'draft',
                 ],
@@ -757,7 +776,7 @@ class ObjectsTableTest extends TestCase
     public function testFindPublishDateAllowed(): void
     {
         $result = $this->Objects->find('publishDateAllowed')->toArray();
-        static::assertSame(12, count($result));
+        static::assertSame(15, count($result));
     }
 
     /**

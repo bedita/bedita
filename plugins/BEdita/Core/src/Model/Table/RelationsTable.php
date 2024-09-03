@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 /**
  * BEdita, API-first content management framework
  * Copyright 2017 ChannelWeb Srl, Chialab Srl
@@ -16,6 +18,7 @@ namespace BEdita\Core\Model\Table;
 use BEdita\Core\Exception\BadFilterException;
 use BEdita\Core\Model\Validation\Validation;
 use BEdita\Core\ORM\Rule\IsUniqueAmongst;
+use BEdita\Core\Search\SimpleSearchTrait;
 use Cake\Cache\Cache;
 use Cake\Database\Expression\QueryExpression;
 use Cake\Database\Schema\TableSchemaInterface;
@@ -43,6 +46,8 @@ use Cake\Validation\Validator;
  */
 class RelationsTable extends Table
 {
+    use SimpleSearchTrait;
+
     /**
      * {@inheritDoc}
      *
@@ -78,16 +83,18 @@ class RelationsTable extends Table
                 $through->aliasField('side') => 'right',
             ],
         ]);
-        $this->addBehavior('BEdita/Core.Searchable', [
+        $this->addBehavior('BEdita/Core.Searchable');
+        $this->addBehavior('BEdita/Core.ResourceName');
+
+        $this->setupSimpleSearch([
             'fields' => [
-                'name' => 10,
-                'inverse_name' => 10,
-                'description' => 5,
-                'label' => 5,
-                'inverse_label' => 5,
+                'name',
+                'inverse_name',
+                'description',
+                'label',
+                'inverse_label',
             ],
         ]);
-        $this->addBehavior('BEdita/Core.ResourceName');
     }
 
     /**
@@ -155,11 +162,9 @@ class RelationsTable extends Table
      *
      * @codeCoverageIgnore
      */
-    protected function _initializeSchema(TableSchemaInterface $schema): TableSchemaInterface
+    public function getSchema(): TableSchemaInterface
     {
-        $schema->setColumnType('params', 'jsonobject');
-
-        return $schema;
+        return parent::getSchema()->setColumnType('params', 'jsonobject');
     }
 
     /**

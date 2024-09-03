@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 /**
  * BEdita, API-first content management framework
  * Copyright 2020 ChannelWeb Srl, Chialab Srl
@@ -15,13 +17,14 @@ namespace BEdita\Core\Model\Entity;
 
 use BEdita\Core\Utility\JsonApiSerializable;
 use Cake\ORM\Entity;
+use Cake\Utility\Hash;
 
 /**
  * Tag Entity
  *
  * @property int $id
  * @property string $name
- * @property string|null $label
+ * @property array|null $labels
  * @property bool $enabled
  * @property \Cake\I18n\Time $created
  * @property \Cake\I18n\Time $modified
@@ -47,4 +50,34 @@ class Tag extends Entity implements JsonApiSerializable
     protected $_hidden = [
         '_joinData',
     ];
+
+    /**
+     * @inheritDoc
+     */
+    protected $_virtual = [
+        'label',
+    ];
+
+    /**
+     * Getter for `label` virtual property.
+     *
+     * @return string|null
+     */
+    protected function _getLabel(): ?string
+    {
+        $label = (string)Hash::get((array)$this->labels, 'default');
+
+        return empty($label) ? null : $label;
+    }
+
+    /**
+     * Setter for `label` virtual property.
+     *
+     * @param string $label Label to set.
+     * @return void
+     */
+    protected function _setLabel(string $label): void
+    {
+        $this->labels = array_merge((array)$this->labels, ['default' => $label]);
+    }
 }

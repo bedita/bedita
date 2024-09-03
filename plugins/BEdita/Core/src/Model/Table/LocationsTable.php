@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 /**
  * BEdita, API-first content management framework
  * Copyright 2017 ChannelWeb Srl, Chialab Srl
@@ -50,18 +52,18 @@ class LocationsTable extends Table
 
         $this->extensionOf('Objects');
 
-        $this->getBehavior('Searchable')->setConfig([
+        $this->addBehavior('BEdita/Core.Geometry');
+
+        $this->setupSimpleSearch([
             'fields' => [
-                'title' => 10,
-                'description' => 7,
-                'body' => 5,
-                'address' => 1,
-                'locality' => 2,
-                'country_name' => 2,
-                'region' => 2,
+                'title',
+                'description',
+                'body',
+                'address',
+                'locality',
+                'country_name',
+                'region',
             ],
         ]);
-
-        $this->addBehavior('BEdita/Core.Geometry');
     }
 }

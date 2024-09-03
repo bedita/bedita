@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 /**
  * BEdita, API-first content management framework
  * Copyright 2021 ChannelWeb Srl, Chialab Srl
@@ -134,6 +136,19 @@ class ProjectModelTest extends TestCase
                 'enabled' => true,
                 'table' => 'BEdita/Core.Objects',
                 'parent_name' => 'objects',
+                'translation_rules' => null,
+                'is_translatable' => true,
+            ],
+            [
+                'name' => 'images',
+                'is_abstract' => false,
+                'singular' => 'image',
+                'description' => null,
+                'associations' => ['Streams'],
+                'hidden' => null,
+                'enabled' => true,
+                'table' => 'BEdita/Core.Media',
+                'parent_name' => 'media',
                 'translation_rules' => null,
                 'is_translatable' => true,
             ],
@@ -359,24 +374,35 @@ class ProjectModelTest extends TestCase
         'categories' => [
             [
                 'name' => 'first-cat',
-                'label' => 'First category',
+                'labels' => ['default' => 'First category'],
                 'parent' => null,
                 'enabled' => true,
                 'object' => 'documents',
+                'label' => 'First category',
             ],
             [
                 'name' => 'second-cat',
-                'label' => 'Second category',
+                'labels' => ['default' => 'Second category'],
                 'parent' => null,
                 'enabled' => true,
                 'object' => 'documents',
+                'label' => 'Second category',
+            ],
+            [
+                'name' => 'child-cat-1',
+                'labels' => ['default' => 'Child category'],
+                'parent' => 'second-cat',
+                'enabled' => true,
+                'object' => 'documents',
+                'label' => 'Child category',
             ],
             [
                 'name' => 'disabled-cat',
-                'label' => 'Disabled category',
+                'labels' => ['default' => 'Disabled category'],
                 'parent' => null,
                 'enabled' => false,
                 'object' => 'documents',
+                'label' => 'Disabled category',
             ],
         ],
     ];
@@ -503,5 +529,48 @@ class ProjectModelTest extends TestCase
             'relations' => [$rel],
         ];
         static::assertEquals(compact('update'), $result);
+    }
+
+    /**
+     * Data provider for `testCategoriesToUpdate` test case.
+     *
+     * @return array
+     */
+    public function categoriesToUpdateProvider(): array
+    {
+        return [
+            'empty' => [
+                [],
+                [],
+            ],
+            'categories in db' => [
+                [
+                    'categories' => [
+                        ['name' => 'first-cat', 'object' => 'documents', 'label' => 'test'], // in fixture db
+                        ['name' => 'second-cat', 'object' => 'events', 'label' => 'test'], // not in fixture db: object type is not document
+                        ['name' => 'my-cat', 'object' => 'documents', 'label' => 'My category'],
+                    ],
+                ],
+                [
+                    'categories' => [
+                        ['name' => 'second-cat', 'object' => 'events', 'label' => 'test'],
+                        ['name' => 'my-cat', 'object' => 'documents', 'label' => 'My category'],
+                    ],
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * Test `categoriesToUpdate` method
+     *
+     * @return void
+     * @covers ::categoriesToUpdate()
+     * @dataProvider categoriesToUpdateProvider()
+     */
+    public function testCategoriesToUpdate(array $update, array $expected): void
+    {
+        ProjectModel::categoriesToUpdate($update);
+        static::assertEquals($expected, $update);
     }
 }

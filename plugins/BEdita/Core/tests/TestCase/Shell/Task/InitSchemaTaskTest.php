@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 /**
  * BEdita, API-first content management framework
  * Copyright 2016 ChannelWeb Srl, Chialab Srl
@@ -57,13 +59,13 @@ class InitSchemaTaskTest extends TestCase
                 foreach ($tables as $table) {
                     $sql = $connection->getSchemaCollection()->describe($table)->dropConstraintSql($connection);
                     foreach ($sql as $query) {
-                        $connection->query($query);
+                        $connection->updateQuery($query);
                     }
                 }
                 foreach ($tables as $table) {
                     $sql = $connection->getSchemaCollection()->describe($table)->dropSql($connection);
                     foreach ($sql as $query) {
-                        $connection->query($query);
+                        $connection->updateQuery($query);
                     }
                 }
             });
@@ -85,7 +87,7 @@ class InitSchemaTaskTest extends TestCase
 
         $table = new TableSchema('foo_bar', ['foo' => ['type' => 'string', 'length' => 255, 'null' => true, 'default' => null]]);
         foreach ($table->createSql($connection) as $statement) {
-            $connection->query($statement);
+            $connection->updateQuery($statement);
         }
 
         $this->exec(sprintf('%s --no-force --no-seed', InitSchemaTask::class));
@@ -131,7 +133,7 @@ class InitSchemaTaskTest extends TestCase
 
         $table = new TableSchema('foo_bar', ['foo' => ['type' => 'string', 'length' => 255, 'null' => true, 'default' => null]]);
         foreach ($table->createSql($connection) as $statement) {
-            $connection->query($statement);
+            $connection->updateQuery($statement);
         }
 
         $this->exec(sprintf('%s --force --no-seed', InitSchemaTask::class));
@@ -181,7 +183,7 @@ class InitSchemaTaskTest extends TestCase
 
         $table = new TableSchema('foo_bar', ['foo' => ['type' => 'string', 'length' => 255, 'null' => true, 'default' => null]]);
         foreach ($table->createSql($connection) as $statement) {
-            $connection->query($statement);
+            $connection->updateQuery($statement);
         }
 
         $this->exec(InitSchemaTask::class, ['y', 'n']);
