@@ -1,5 +1,6 @@
 <?php
 declare(strict_types=1);
+
 /**
  * BEdita, API-first content management framework
  * Copyright 2024 Atlas Srl, Chialab Srl
@@ -11,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\Command;
 
 use BEdita\Core\Job\JobService;
