@@ -460,7 +460,8 @@ class SignupUserAction extends BaseAction implements EventListenerInterface
         $options = [
             'params' => compact('activationUrl', 'user'),
         ];
-        $this->getMailer('BEdita/Core.User')->send('signup', [$options]);
+        $mailerClass = Configure::read('Mailer.User', 'BEdita/Core.User');
+        $this->getMailer($mailerClass)->send('signup', [$options]);
     }
 
     /**
