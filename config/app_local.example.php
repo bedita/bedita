@@ -166,6 +166,13 @@ return [
     // ],
 
     /**
+     * Uncomment to define custom mailer classes to load
+     */
+    // 'Mailer' => [
+    //     'User' => '\MyPlugin\Mailer\UserMailer',
+    // ],
+
+    /**
      * Signup settings.
      *
      * - `requireActivation` - boolean (default: true) - Are new users required to verify their contact method
