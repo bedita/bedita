@@ -17,6 +17,7 @@ namespace BEdita\API\Controller;
 
 use BEdita\API\Model\Action\UpdateAssociatedAction;
 use BEdita\Core\Model\Action\AddAssociatedAction;
+use BEdita\Core\Model\Action\DeleteEntitiesAction;
 use BEdita\Core\Model\Action\DeleteEntityAction;
 use BEdita\Core\Model\Action\GetEntityAction;
 use BEdita\Core\Model\Action\ListAssociatedAction;
@@ -36,6 +37,7 @@ use Cake\ORM\Association\HasOne;
 use Cake\ORM\Query;
 use Cake\ORM\Table;
 use Cake\Routing\Router;
+use Cake\Utility\Hash;
 use Cake\Utility\Inflector;
 
 /**
@@ -132,9 +134,21 @@ abstract class ResourcesController extends AppController
      */
     public function index()
     {
-        $this->request->allowMethod(['get', 'post']);
+        $this->request->allowMethod(['get', 'post', 'delete']);
 
-        if ($this->request->is('post')) {
+        if ($this->request->is('delete')) {
+            $action = new ListEntitiesAction(['table' => $this->Table]);
+            $data = $this->request->getData();
+            $filter = ['id' => (array)Hash::get($data, 'ids')];
+            $entities = $action(compact('filter'));
+            $action = new DeleteEntitiesAction(['table' => $this->Table]);
+            if (!$action(compact('entities'))) {
+                throw new InternalErrorException(__d('bedita', 'Delete failed'));
+            }
+
+            return $this->response
+                ->withStatus(204);
+        } elseif ($this->request->is('post')) {
             // Add a new entity.
             $entity = $this->Table->newEmptyEntity();
             $action = new SaveEntityAction(['table' => $this->Table]);
