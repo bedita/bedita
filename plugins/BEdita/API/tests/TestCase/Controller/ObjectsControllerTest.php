@@ -18,6 +18,7 @@ use Authentication\AuthenticationService;
 use BEdita\API\Controller\ObjectsController;
 use BEdita\API\Test\TestConstants;
 use BEdita\API\TestSuite\IntegrationTestCase;
+use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\Http\ServerRequest;
 use Cake\ORM\TableRegistry;
 use Cake\Utility\Hash;
@@ -874,6 +875,34 @@ class ObjectsControllerTest extends IntegrationTestCase
         $this->assertResponseCode(200);
         $this->assertContentType('application/vnd.api+json');
         static::assertEquals($expected, $result);
+    }
+
+    /**
+     * Test index method on DELETE.
+     *
+     * @return void
+     * @covers ::index()
+     * @covers ::initialize()
+     * @covers ::addCount()
+     * @covers ::prepareFilter()
+     * @covers ::prepareInclude()
+     */
+    public function testIndexDelete(): void
+    {
+        $authHeader = $this->getUserAuthHeader();
+
+        // success test
+        $this->configRequestHeaders('DELETE', $authHeader);
+        $this->_sendRequest('/objects?filter[ids]=7', 'DELETE');
+        $this->assertResponseCode(204);
+        $this->assertResponseEmpty();
+        $notFound = false;
+        try {
+            $this->fetchTable('Objects')->get(7);
+        } catch (RecordNotFoundException $e) {
+            $notFound = true;
+        }
+        $this->assertTrue($notFound);
     }
 
     /**

@@ -344,6 +344,31 @@ class TrashControllerTest extends IntegrationTestCase
     }
 
     /**
+     * Test delete many method.
+     *
+     * @return void
+     * @covers ::index()
+     * @covers ::initialize()
+     */
+    public function testDeleteMany(): void
+    {
+        $authHeader = $this->getUserAuthHeader();
+
+        // success test
+        $this->configRequestHeaders('DELETE', $authHeader);
+        $this->_sendRequest('/trash?filter[ids]=7', 'DELETE');
+        $this->assertResponseCode(204);
+        $this->assertResponseEmpty();
+        $notFound = false;
+        try {
+            $this->Objects->get(7);
+        } catch (RecordNotFoundException $e) {
+            $notFound = true;
+        }
+        $this->assertTrue($notFound);
+    }
+
+    /**
      * Test view method.
      *
      * @return void

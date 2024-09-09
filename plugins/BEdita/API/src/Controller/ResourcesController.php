@@ -129,6 +129,7 @@ abstract class ResourcesController extends AppController
      *
      * This action represents a collection of resources.
      * If the request is a `POST` request, this action creates a new resource.
+     * If the request is a `DELETE` request, this action deletes existing resources.
      *
      * @return void
      */
@@ -138,8 +139,8 @@ abstract class ResourcesController extends AppController
 
         if ($this->request->is('delete')) {
             $action = new ListEntitiesAction(['table' => $this->Table]);
-            $data = $this->request->getData();
-            $filter = ['id' => (array)Hash::get($data, 'ids')];
+            $filter = (array)$this->request->getQuery('filter');
+            $filter = ['id' => (array)Hash::get($filter, 'ids')];
             $entities = $action(compact('filter'));
             $action = new DeleteEntitiesAction(['table' => $this->Table]);
             if (!$action(compact('entities'))) {

@@ -57,8 +57,8 @@ class TrashController extends AppController
             $objectType = TableRegistry::getTableLocator()->get('ObjectTypes')->find('objectId', compact('id'))
                 ->firstOrFail();
             $this->defaultTable = $objectType->alias;
-            $this->Table = $this->fetchTable();
         }
+        $this->Table = $this->fetchTable();
     }
 
     /**
@@ -71,8 +71,8 @@ class TrashController extends AppController
         $this->request->allowMethod(['get', 'delete']);
         if ($this->request->is('delete')) {
             $action = new ListEntitiesAction(['table' => $this->Table]);
-            $data = $this->request->getData();
-            $filter = ['id' => (array)Hash::get($data, 'ids')];
+            $filter = (array)$this->request->getQuery('filter');
+            $filter = ['id' => (array)Hash::get($filter, 'ids')];
             $entities = $action(compact('filter'));
             $action = new DeleteObjectsAction(['table' => $this->Table]);
             $action(compact('entities') + ['hard' => true]);

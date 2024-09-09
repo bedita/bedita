@@ -17,8 +17,10 @@ namespace BEdita\API\Controller;
 use BEdita\API\Model\Action\UpdateRelatedAction;
 use BEdita\Core\Model\Action\ActionTrait;
 use BEdita\Core\Model\Action\AddRelatedObjectsAction;
+use BEdita\Core\Model\Action\DeleteEntitiesAction;
 use BEdita\Core\Model\Action\DeleteObjectAction;
 use BEdita\Core\Model\Action\GetObjectAction;
+use BEdita\Core\Model\Action\ListEntitiesAction;
 use BEdita\Core\Model\Action\ListObjectsAction;
 use BEdita\Core\Model\Action\ListRelatedObjectsAction;
 use BEdita\Core\Model\Action\RemoveRelatedObjectsAction;
@@ -197,9 +199,21 @@ class ObjectsController extends ResourcesController
      */
     public function index()
     {
-        $this->request->allowMethod(['get', 'post']);
+        $this->request->allowMethod(['get', 'post', 'delete']);
 
-        if ($this->request->is('post')) {
+        if ($this->request->is('delete')) {
+            $action = new ListEntitiesAction(['table' => $this->Table]);
+            $filter = (array)$this->request->getQuery('filter');
+            $filter = ['id' => (array)Hash::get($filter, 'ids')];
+            $entities = $action(compact('filter'));
+            $action = new DeleteEntitiesAction(['table' => $this->Table]);
+            if (!$action(compact('entities'))) {
+                throw new InternalErrorException(__d('bedita', 'Delete failed'));
+            }
+
+            return $this->response
+                ->withStatus(204);
+        } elseif ($this->request->is('post')) {
             // Add a new entity.
             if ($this->objectType->is_abstract) {
                 // Refuse to save an abstract object type.
