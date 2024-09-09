@@ -494,7 +494,7 @@ class UpdateAssociatedActionTest extends TestCase
             ],
             'add relation with defaults, body without params' => [
                 [3],
-                ['size' => 5, 'street' => 'fighter'],
+                ['size' => 5, 'street' => 'fighter', 'color' => null],
                 'TestDefaults',
                 2,
                 [
@@ -581,7 +581,7 @@ class UpdateAssociatedActionTest extends TestCase
             ],
             'update relation with defaults, body without params' => [
                 [4],
-                ['size' => 5, 'street' => 'fighter'],
+                ['size' => 5, 'street' => 'fighter', 'color' => null],
                 'TestDefaults',
                 2,
                 [

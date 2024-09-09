@@ -97,7 +97,7 @@ class RelationsFixture extends TestFixture
                 'type' => 'object',
                 'properties' => [
                     'size' => [
-                        'type' => 'integer',
+                        'type' => ['integer', 'null'],
                         'default' => 5,
                     ],
                     'street' => [
@@ -105,7 +105,8 @@ class RelationsFixture extends TestFixture
                         'default' => 'fighter',
                     ],
                     'color' => [
-                        'type' => 'string',
+                        'type' => ['string', 'null'],
+                        'default' => null,
                     ],
                 ],
             ],

@@ -211,7 +211,8 @@ class UpdateAssociatedAction extends BaseAction
         }
 
         foreach ($defaultParams as $name => $data) {
-            if (empty($meta['params'][$name])) {
+            $isNullable = in_array('null', (array)Hash::get($data, 'type', Hash::extract($data, 'anyOf.{*}.type')));
+            if (!array_key_exists($name, $meta['params']) || (!$isNullable && !isset($meta['params'][$name]))) {
                 $meta['params'][$name] = $data['default'];
             }
         }
