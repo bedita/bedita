@@ -282,7 +282,7 @@ class ProjectModelTest extends TestCase
                     'type' => 'object',
                     'properties' => [
                         'size' => [
-                            'type' => 'integer',
+                            'type' => ['integer', 'null'],
                             'default' => 5,
                         ],
                         'street' => [
@@ -290,7 +290,8 @@ class ProjectModelTest extends TestCase
                             'default' => 'fighter',
                         ],
                         'color' => [
-                            'type' => 'string',
+                            'type' => ['string', 'null'],
+                            'default' => null,
                         ],
                     ],
                 ],

@@ -996,7 +996,7 @@ class ObjectTypeTest extends TestCase
                                 'type' => 'object',
                                 'properties' => (object)[
                                     'size' => (object)[
-                                        'type' => 'integer',
+                                        'type' => ['integer', 'null'],
                                         'default' => 5,
                                     ],
                                     'street' => (object)[
@@ -1004,7 +1004,8 @@ class ObjectTypeTest extends TestCase
                                         'default' => 'fighter',
                                     ],
                                     'color' => (object)[
-                                        'type' => 'string',
+                                        'type' => ['string', 'null'],
+                                        'default' => null,
                                     ],
                                 ],
                             ],
@@ -1032,7 +1033,7 @@ class ObjectTypeTest extends TestCase
                                 'type' => 'object',
                                 'properties' => (object)[
                                     'size' => (object)[
-                                        'type' => 'integer',
+                                        'type' => ['integer', 'null'],
                                         'default' => 5,
                                     ],
                                     'street' => (object)[
@@ -1040,7 +1041,8 @@ class ObjectTypeTest extends TestCase
                                         'default' => 'fighter',
                                     ],
                                     'color' => (object)[
-                                        'type' => 'string',
+                                        'type' => ['string', 'null'],
+                                        'default' => null,
                                     ],
                                 ],
                             ],

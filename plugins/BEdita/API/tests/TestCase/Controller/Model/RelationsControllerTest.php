@@ -208,7 +208,7 @@ class RelationsControllerTest extends IntegrationTestCase
                             'type' => 'object',
                             'properties' => [
                                 'size' => [
-                                    'type' => 'integer',
+                                    'type' => ['integer', 'null'],
                                     'default' => 5,
                                 ],
                                 'street' => [
@@ -216,7 +216,8 @@ class RelationsControllerTest extends IntegrationTestCase
                                     'default' => 'fighter',
                                 ],
                                 'color' => [
-                                    'type' => 'string',
+                                    'type' => ['string', 'null'],
+                                    'default' => null,
                                 ],
                             ],
                         ],
