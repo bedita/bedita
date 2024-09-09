@@ -377,6 +377,30 @@ class ResourcesControllerTest extends IntegrationTestCase
     }
 
     /**
+     * Test delete method
+     *
+     * @return void
+     * @covers ::index()
+     */
+    public function testDeleteMulti(): void
+    {
+        // add new role to delete
+        $data = [
+            'type' => 'roles',
+            'attributes' => [
+                'name' => 'a-new-role-to-delete',
+            ],
+        ];
+        $this->configRequestHeaders('POST', $this->getUserAuthHeader());
+        $this->post('/roles', json_encode(compact('data')));
+        $result = json_decode((string)$this->_response->getBody(), true);
+
+        $this->configRequestHeaders('DELETE', $this->getUserAuthHeader());
+        $this->delete('/roles?filter[ids]=' . $result['data']['id']);
+        $this->assertResponseCode(204);
+    }
+
+    /**
      * Test relationships method to replace existing relationships.
      *
      * @return void
