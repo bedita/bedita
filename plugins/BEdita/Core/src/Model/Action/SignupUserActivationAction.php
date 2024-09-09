@@ -16,6 +16,7 @@ declare(strict_types=1);
 namespace BEdita\Core\Model\Action;
 
 use BEdita\Core\Model\Entity\User;
+use Cake\Core\Configure;
 use Cake\Event\EventDispatcherTrait;
 use Cake\Event\EventInterface;
 use Cake\Event\EventListenerInterface;
@@ -112,7 +113,8 @@ class SignupUserActivationAction extends BaseAction implements EventListenerInte
         $options = [
             'params' => compact('user'),
         ];
-        $this->getMailer('BEdita/Core.User')->send('welcome', [$options]);
+        $mailerClass = Configure::read('Mailer.User', 'BEdita/Core.User');
+        $this->getMailer($mailerClass)->send('welcome', [$options]);
     }
 
     /**
