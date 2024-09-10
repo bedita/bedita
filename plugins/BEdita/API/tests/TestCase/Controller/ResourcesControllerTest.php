@@ -388,7 +388,7 @@ class ResourcesControllerTest extends IntegrationTestCase
         $data = [
             'type' => 'roles',
             'attributes' => [
-                'name' => 'a-new-role-to-delete',
+                'name' => 'todelete',
             ],
         ];
         $this->configRequestHeaders('POST', $this->getUserAuthHeader());
