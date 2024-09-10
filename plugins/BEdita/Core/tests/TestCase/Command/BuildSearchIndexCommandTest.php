@@ -36,6 +36,7 @@ class BuildSearchIndexCommandTest extends TestCase
     protected $fixtures = [
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.Objects',
+        'plugin.BEdita/Core.Trees',
     ];
 
     /**
@@ -62,6 +63,7 @@ class BuildSearchIndexCommandTest extends TestCase
         $this->assertOutputContains('Reindex only objects from one or more specific types');
         $this->assertOutputContains('Reindex only one or more specific objects by ID');
         $this->assertOutputContains('Reindex only one or more specific objects by uname');
+        $this->assertOutputContains('Reindex only objects with a specific ancestor folder.');
         $this->assertOutputContains('Reindex only using one or more specific adapters');
     }
 
@@ -289,6 +291,64 @@ class BuildSearchIndexCommandTest extends TestCase
         $this->exec('build_search_index --uname abcdefghi');
         $this->assertExitCode(Command::CODE_SUCCESS);
         $this->assertOutputContains('0 objects indexed.');
+    }
+
+    /**
+     * Test `execute` method with --ancestor option
+     *
+     * @return void
+     * @covers ::execute()
+     * @covers ::objectsIterator()
+     * @covers ::doIndexResource()
+     */
+    public function testExecuteByAncestor(): void
+    {
+        $adapter1 = new class extends SimpleAdapter
+        {
+            public $afterSaveCount = 0;
+            public function indexResource(EntityInterface $entity, string $operation): void
+            {
+                if ($operation === 'edit') {
+                    $this->afterSaveCount++;
+                }
+            }
+        };
+        $adapter2 = new class extends SimpleAdapter
+        {
+            public $afterSaveCount = 0;
+            public function indexResource(EntityInterface $entity, string $operation): void
+            {
+                if ($operation === 'edit') {
+                    $this->afterSaveCount--;
+                }
+            }
+        };
+        Configure::write('Search.adapters.default', [
+            'className' => $adapter1,
+        ]);
+        Configure::write('Search.adapters.dummy', [
+            'className' => $adapter2,
+        ]);
+        $this->exec('build_search_index --ancestor sub-folder');
+        static::assertSame(1, $adapter1->afterSaveCount);
+        static::assertSame(-1, $adapter2->afterSaveCount);
+        static::assertSame(0, $adapter1->afterSaveCount + $adapter2->afterSaveCount);
+        $this->assertExitCode(Command::CODE_SUCCESS);
+    }
+
+    /**
+     * Test `execute` method on wrong ancestor
+     *
+     * @return void
+     * @covers ::execute()
+     * @covers ::objectsIterator()
+     * @covers ::doIndexResource()
+     */
+    public function testExecuteWrongAncestor(): void
+    {
+        $this->exec('build_search_index --ancestor abcdefghi');
+        $this->assertErrorContains('Record not found in table "objects"');
+        $this->assertExitCode(Command::CODE_ERROR);
     }
 
     /**
