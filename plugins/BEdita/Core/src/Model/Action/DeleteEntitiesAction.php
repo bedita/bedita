@@ -46,14 +46,15 @@ class DeleteEntitiesAction extends BaseAction
      */
     public function execute(array $data = [])
     {
+        $result = false;
         try {
-            $this->Table->deleteManyOrFail($data['entities']);
+            $result = $this->Table->deleteManyOrFail($data['entities']);
         } catch (\Throwable $e) {
             $this->log(sprintf('Delete many failed - data: %s', json_encode($data['data'])), 'error');
 
-            return false;
+            return $result;
         }
 
-        return true;
+        return $result;
     }
 }
