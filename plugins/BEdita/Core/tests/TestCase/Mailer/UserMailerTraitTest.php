@@ -39,7 +39,8 @@ class UserMailerTraitTest extends TestCase
      */
     public function testGetUserMailerFailure(): void
     {
-        $mailer = new class extends Mailer {};
+        $mailer = new class extends Mailer {
+        };
         $class = get_class($mailer);
         Configure::write('Mailer.User', $class);
         $this->expectException(LogicException::class);

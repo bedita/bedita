@@ -1,5 +1,4 @@
 <?php
-
 declare(strict_types=1);
 
 /**
@@ -33,8 +32,6 @@ trait UserMailerTrait
     /**
      * Returns a mailer instance.
      *
-     * @param string $name Mailer's name.
-     * @param array<string, mixed>|string|null $config Array of configs, or profile name string.
      * @return \Cake\Mailer\Mailer
      * @throws \LogicException if mailer class doesn't implement interface.
      */
