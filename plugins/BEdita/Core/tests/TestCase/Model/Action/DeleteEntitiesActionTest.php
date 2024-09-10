@@ -42,7 +42,7 @@ class DeleteEntitiesActionTest extends TestCase
      * @covers ::initialize()
      * @covers ::execute()
      */
-    public function testExecute()
+    public function testExecute(): void
     {
         $table = TableRegistry::getTableLocator()->get('FakeAnimals');
         $action = new DeleteEntitiesAction(compact('table'));
@@ -51,5 +51,21 @@ class DeleteEntitiesActionTest extends TestCase
         static::assertIsArray($actual);
         static::assertCount(1, $actual);
         static::assertFalse($table->exists(['id' => 1]));
+    }
+
+    /**
+     * Test command execution failure.
+     *
+     * @return void
+     * @covers ::execute()
+     */
+    public function testExecuteFail(): void
+    {
+        $table = TableRegistry::getTableLocator()->get('FakeAnimals');
+        $action = new DeleteEntitiesAction(compact('table'));
+        $data = ['wrongdata'];
+        $entities = ['wrongdata'];
+        $actual = $action(compact('data', 'entities'));
+        static::assertFalse($actual);
     }
 }
