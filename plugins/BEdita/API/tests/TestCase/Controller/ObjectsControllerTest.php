@@ -882,10 +882,6 @@ class ObjectsControllerTest extends IntegrationTestCase
      *
      * @return void
      * @covers ::index()
-     * @covers ::initialize()
-     * @covers ::addCount()
-     * @covers ::prepareFilter()
-     * @covers ::prepareInclude()
      */
     public function testIndexDelete(): void
     {
@@ -903,6 +899,24 @@ class ObjectsControllerTest extends IntegrationTestCase
             $notFound = true;
         }
         $this->assertTrue($notFound);
+    }
+
+    /**
+     * Test index method on DELETE with internal error.
+     *
+     * @return void
+     * @covers ::index()
+     */
+    public function testIndexDeleteInternalErrorException(): void
+    {
+        $authHeader = $this->getUserAuthHeader();
+
+        // failure test
+        $this->configRequestHeaders('DELETE', $authHeader);
+        $this->_sendRequest('/objects?filter[ids]=abc', 'DELETE');
+        $this->assertResponseCode(500);
+        $this->assertContentType('application/vnd.api+json');
+        $this->assertResponseContains('Delete failed');
     }
 
     /**

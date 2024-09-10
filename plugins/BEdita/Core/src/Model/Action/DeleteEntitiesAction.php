@@ -15,6 +15,8 @@ declare(strict_types=1);
 
 namespace BEdita\Core\Model\Action;
 
+use Cake\Log\LogTrait;
+
 /**
  * Command to delete entities.
  *
@@ -22,6 +24,8 @@ namespace BEdita\Core\Model\Action;
  */
 class DeleteEntitiesAction extends BaseAction
 {
+    use LogTrait;
+
     /**
      * Table.
      *
@@ -42,6 +46,13 @@ class DeleteEntitiesAction extends BaseAction
      */
     public function execute(array $data = [])
     {
-        return $this->Table->deleteManyOrFail($data['entities']);
+        try {
+            $this->Table->deleteManyOrFail($data['entities']);
+        } catch (\Throwable $e) {
+            $this->log(sprintf('Delete many failed - data: %s', json_encode($data['data'])), 'error');
+
+            return false;
+        }
+        return true;
     }
 }
