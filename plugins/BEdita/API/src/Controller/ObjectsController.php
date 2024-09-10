@@ -203,12 +203,12 @@ class ObjectsController extends ResourcesController
         $this->request->allowMethod(['get', 'post', 'delete']);
 
         if ($this->request->is('delete')) {
-            $action = new ListEntitiesAction(['table' => $this->Table]);
             $ids = (string)$this->request->getQuery('ids');
             if (empty($ids)) {
                 throw new BadFilterException(__d('bedita', 'Missing required parameter "{0}"', 'ids'));
             }
             $filter = ['id' => explode(',', $ids)];
+            $action = new ListEntitiesAction(['table' => $this->Table]);
             $entities = $action(compact('filter'));
             $action = new DeleteEntitiesAction();
             if (!$action(compact('entities'))) {
