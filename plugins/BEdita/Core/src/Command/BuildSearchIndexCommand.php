@@ -20,7 +20,6 @@ use Cake\Console\ConsoleIo;
 use Cake\Console\ConsoleOptionParser;
 use Cake\Database\Expression\QueryExpression;
 use Cake\Datasource\EntityInterface;
-use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\Utility\Hash;
 
 /**
@@ -101,20 +100,15 @@ class BuildSearchIndexCommand extends Command
             $counter = 0;
             try {
                 foreach ($this->objectsIterator($args, $type) as $entity) {
-                    try {
-                        $indexed = $this->doIndexResource($entity, $adapters, $io);
-                        $counter = $counter + $indexed;
-                    } catch (\Exception $e) {
-                        $io->error($e->getMessage());
-
-                        return Command::CODE_ERROR;
-                    }
+                    $indexed = $this->doIndexResource($entity, $adapters, $io);
+                    $counter = $counter + $indexed;
                 }
-            } catch (RecordNotFoundException $e) {
+            } catch (\Exception $e) {
                 $io->error($e->getMessage());
 
                 return Command::CODE_ERROR;
             }
+
             $io->verbose(sprintf('> %s: %d', $type, $counter));
             if ($counter > 0) {
                 $summary[] = sprintf('> %s: %d', $type, $counter);
