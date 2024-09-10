@@ -396,7 +396,7 @@ class ResourcesControllerTest extends IntegrationTestCase
         $result = json_decode((string)$this->_response->getBody(), true);
 
         $this->configRequestHeaders('DELETE', $this->getUserAuthHeader());
-        $this->delete('/roles?filter[ids]=' . $result['data']['id']);
+        $this->delete('/roles?ids=' . $result['data']['id']);
         $this->assertResponseCode(204);
     }
 
@@ -406,13 +406,16 @@ class ResourcesControllerTest extends IntegrationTestCase
      * @return void
      * @covers ::index()
      */
-    public function testIndexDeleteInternalErrorException(): void
+    public function testIndexDeleteException(): void
     {
         $authHeader = $this->getUserAuthHeader();
-
-        // failure test
         $this->configRequestHeaders('DELETE', $authHeader);
-        $this->_sendRequest('/roles?filter[ids]=abc', 'DELETE');
+        $this->_sendRequest('/roles?ids=', 'DELETE');
+        $this->assertResponseCode(400);
+        $this->assertContentType('application/vnd.api+json');
+        $this->assertResponseContains('Missing required parameter');
+        $this->configRequestHeaders('DELETE', $authHeader);
+        $this->_sendRequest('/roles?ids=abc', 'DELETE');
         $this->assertResponseCode(500);
         $this->assertContentType('application/vnd.api+json');
         $this->assertResponseContains('Delete failed');

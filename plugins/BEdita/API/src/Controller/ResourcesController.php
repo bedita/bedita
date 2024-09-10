@@ -16,6 +16,7 @@ declare(strict_types=1);
 namespace BEdita\API\Controller;
 
 use BEdita\API\Model\Action\UpdateAssociatedAction;
+use BEdita\Core\Exception\BadFilterException;
 use BEdita\Core\Model\Action\AddAssociatedAction;
 use BEdita\Core\Model\Action\DeleteEntitiesAction;
 use BEdita\Core\Model\Action\DeleteEntityAction;
@@ -139,8 +140,11 @@ abstract class ResourcesController extends AppController
 
         if ($this->request->is('delete')) {
             $action = new ListEntitiesAction(['table' => $this->Table]);
-            $filter = (array)$this->request->getQuery('filter');
-            $filter = ['id' => (array)Hash::get($filter, 'ids')];
+            $ids = (string)$this->request->getQuery('ids');
+            if (empty($ids)) {
+                throw new BadFilterException(__d('bedita', 'Missing required parameter "{0}"', 'ids'));
+            }
+            $filter = ['id' => explode(',', $ids)];
             $entities = $action(compact('filter'));
             $action = new DeleteEntitiesAction(['table' => $this->Table]);
             if (!$action(compact('entities'))) {

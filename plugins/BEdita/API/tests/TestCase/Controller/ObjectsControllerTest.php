@@ -889,7 +889,7 @@ class ObjectsControllerTest extends IntegrationTestCase
 
         // success test
         $this->configRequestHeaders('DELETE', $authHeader);
-        $this->_sendRequest('/objects?filter[ids]=7', 'DELETE');
+        $this->_sendRequest('/objects?ids=7', 'DELETE');
         $this->assertResponseCode(204);
         $this->assertResponseEmpty();
         $notFound = false;
@@ -907,13 +907,16 @@ class ObjectsControllerTest extends IntegrationTestCase
      * @return void
      * @covers ::index()
      */
-    public function testIndexDeleteInternalErrorException(): void
+    public function testIndexDeleteException(): void
     {
         $authHeader = $this->getUserAuthHeader();
-
-        // failure test
         $this->configRequestHeaders('DELETE', $authHeader);
-        $this->_sendRequest('/objects?filter[ids]=abc', 'DELETE');
+        $this->_sendRequest('/objects?ids=', 'DELETE');
+        $this->assertResponseCode(400);
+        $this->assertContentType('application/vnd.api+json');
+        $this->assertResponseContains('Missing required parameter');
+        $this->configRequestHeaders('DELETE', $authHeader);
+        $this->_sendRequest('/objects?ids=abc', 'DELETE');
         $this->assertResponseCode(500);
         $this->assertContentType('application/vnd.api+json');
         $this->assertResponseContains('Delete failed');
