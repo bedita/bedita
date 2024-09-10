@@ -20,6 +20,7 @@ use Cake\Console\ConsoleIo;
 use Cake\Console\ConsoleOptionParser;
 use Cake\Database\Expression\QueryExpression;
 use Cake\Datasource\EntityInterface;
+use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\Utility\Hash;
 
 /**
@@ -65,6 +66,10 @@ class BuildSearchIndexCommand extends Command
             'help' => 'Reindex only one or more specific objects by uname.',
             'required' => false,
         ]);
+        $parser->addOption('ancestor', [
+            'help' => 'Reindex only objects with a specific ancestor folder.',
+            'required' => false,
+        ]);
         $parser->addOption('adapter', [
             'help' => 'Reindex only using one or more specific adapters.',
             'required' => false,
@@ -94,15 +99,21 @@ class BuildSearchIndexCommand extends Command
         foreach ($types as $type) {
             $io->verbose("\n" . sprintf('Indexing %s', $type) . "\n");
             $counter = 0;
-            foreach ($this->objectsIterator($args, $type) as $entity) {
-                try {
-                    $indexed = $this->doIndexResource($entity, $adapters, $io);
-                    $counter = $counter + $indexed;
-                } catch (\Exception $e) {
-                    $io->error($e->getMessage());
+            try {
+                foreach ($this->objectsIterator($args, $type) as $entity) {
+                    try {
+                        $indexed = $this->doIndexResource($entity, $adapters, $io);
+                        $counter = $counter + $indexed;
+                    } catch (\Exception $e) {
+                        $io->error($e->getMessage());
 
-                    return Command::CODE_ERROR;
+                        return Command::CODE_ERROR;
+                    }
                 }
+            } catch (RecordNotFoundException $e) {
+                $io->error($e->getMessage());
+
+                return Command::CODE_ERROR;
             }
             $io->verbose(sprintf('> %s: %d', $type, $counter));
             if ($counter > 0) {
@@ -173,6 +184,10 @@ class BuildSearchIndexCommand extends Command
         $uname = array_filter(explode(',', (string)$args->getOption('uname')));
         if (!empty($uname)) {
             $query = $query->where([$table->aliasField('uname') . ' IN' => $uname]);
+        }
+        $ancestor = (string)$args->getOption('ancestor');
+        if (!empty($ancestor)) {
+            $query = $query->find('ancestor', [$ancestor]);
         }
         $lastId = 0;
         while (true) {
