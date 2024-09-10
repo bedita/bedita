@@ -23,13 +23,6 @@ use Cake\TestSuite\TestCase;
 use LogicException;
 
 /**
- * Test Mailer class.
- */
-class TestMailer extends Mailer
-{
-}
-
-/**
  * {@see \BEdita\Core\Mailer\UserMailerTrait} Test Case.
  *
  * @coversDefaultClass \BEdita\Core\Mailer\UserMailerTrait
@@ -46,9 +39,9 @@ class UserMailerTraitTest extends TestCase
      */
     public function testGetUserMailerFailure(): void
     {
-        Configure::write('Mailer.User', TestMailer::class);
+        Configure::write('Mailer.User', Mailer::class);
         $this->expectException(LogicException::class);
-        $msg = sprintf('Mailer class "%s" must implement UserMailerInterface', TestMailer::class);
+        $msg = sprintf('Mailer class "%s" must implement UserMailerInterface', Mailer::class);
         $this->expectExceptionMessage($msg);
         $this->getUserMailer();
         Configure::delete('Mailer.User');
