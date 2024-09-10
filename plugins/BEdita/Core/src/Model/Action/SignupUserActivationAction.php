@@ -15,15 +15,14 @@ declare(strict_types=1);
 
 namespace BEdita\Core\Model\Action;
 
+use BEdita\Core\Mailer\UserMailerTrait;
 use BEdita\Core\Model\Entity\User;
-use Cake\Core\Configure;
 use Cake\Event\EventDispatcherTrait;
 use Cake\Event\EventInterface;
 use Cake\Event\EventListenerInterface;
 use Cake\Http\Exception\BadRequestException;
 use Cake\Http\Exception\ConflictException;
 use Cake\I18n\FrozenTime;
-use Cake\Mailer\MailerAwareTrait;
 use Cake\ORM\TableRegistry;
 
 /**
@@ -34,7 +33,7 @@ use Cake\ORM\TableRegistry;
 class SignupUserActivationAction extends BaseAction implements EventListenerInterface
 {
     use EventDispatcherTrait;
-    use MailerAwareTrait;
+    use UserMailerTrait;
 
     /**
      * The UsersTable table
@@ -113,8 +112,7 @@ class SignupUserActivationAction extends BaseAction implements EventListenerInte
         $options = [
             'params' => compact('user'),
         ];
-        $mailerClass = Configure::read('Mailer.User', 'BEdita/Core.User');
-        $this->getMailer($mailerClass)->send('welcome', [$options]);
+        $this->getUserMailer()->send('welcome', [$options]);
     }
 
     /**

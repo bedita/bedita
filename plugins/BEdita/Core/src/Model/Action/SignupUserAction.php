@@ -17,6 +17,7 @@ namespace BEdita\Core\Model\Action;
 
 use BEdita\Core\Exception\InvalidDataException;
 use BEdita\Core\Exception\UserExistsException;
+use BEdita\Core\Mailer\UserMailerTrait;
 use BEdita\Core\Model\Entity\AsyncJob;
 use BEdita\Core\Model\Entity\User;
 use BEdita\Core\Model\Table\RolesTable;
@@ -43,7 +44,7 @@ use Cake\Validation\Validator;
 class SignupUserAction extends BaseAction implements EventListenerInterface
 {
     use EventDispatcherTrait;
-    use MailerAwareTrait;
+    use UserMailerTrait;
 
     /**
      * 400 Username already registered
@@ -460,8 +461,7 @@ class SignupUserAction extends BaseAction implements EventListenerInterface
         $options = [
             'params' => compact('activationUrl', 'user'),
         ];
-        $mailerClass = Configure::read('Mailer.User', 'BEdita/Core.User');
-        $this->getMailer($mailerClass)->send('signup', [$options]);
+        $this->getUserMailer()->send('signup', [$options]);
     }
 
     /**
@@ -477,8 +477,7 @@ class SignupUserAction extends BaseAction implements EventListenerInterface
         $options = [
             'params' => compact('user'),
         ];
-        $mailerClass = Configure::read('Mailer.User', 'BEdita/Core.User');
-        $this->getMailer($mailerClass)->send('welcome', [$options]);
+        $this->getUserMailer()->send('welcome', [$options]);
     }
 
     /**
