@@ -15,6 +15,8 @@ declare(strict_types=1);
 
 namespace BEdita\Core\Model\Action;
 
+use Cake\ORM\Locator\LocatorAwareTrait;
+
 /**
  * Command to delete objects.
  *
@@ -22,37 +24,21 @@ namespace BEdita\Core\Model\Action;
  */
 class DeleteObjectsAction extends BaseAction
 {
-    /**
-     * Table.
-     *
-     * @var \Cake\ORM\Table
-     */
-    protected $Table;
-
-    /**
-     * @inheritDoc
-     */
-    protected function initialize(array $data)
-    {
-        $this->Table = $this->getConfig('table');
-    }
+    use LocatorAwareTrait;
 
     /**
      * @inheritDoc
      */
     public function execute(array $data = [])
     {
-        $entities = $data['entities'];
-
-        if (!empty($data['hard'])) {
-            $action = new DeleteEntitiesAction(['table' => $this->Table]);
-
-            return $action(compact('entities'));
-        }
         $result = true;
-        foreach ($entities as $entity) {
-            $entity->set('deleted', true);
-            $result = $result && (bool)$this->Table->save($entity);
+        $payload = $data;
+        unset($payload['entities']);
+        foreach ($data['entities'] as $entity) {
+            $payload['entity'] = $entity;
+            $table = $this->fetchTable($entity->get('type') ?: $entity->getSource());
+            $action = new DeleteObjectAction(compact('table'));
+            $result = $result && $action($payload);
         }
 
         return $result;

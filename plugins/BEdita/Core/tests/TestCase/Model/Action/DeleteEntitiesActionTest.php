@@ -45,11 +45,10 @@ class DeleteEntitiesActionTest extends TestCase
     public function testExecute(): void
     {
         $table = TableRegistry::getTableLocator()->get('FakeAnimals');
-        $action = new DeleteEntitiesAction(compact('table'));
+        $action = new DeleteEntitiesAction();
         $entities = [$table->get(1)];
         $actual = $action(compact('entities'));
-        static::assertIsArray($actual);
-        static::assertCount(1, $actual);
+        static::assertTrue($actual);
         static::assertFalse($table->exists(['id' => 1]));
     }
 
@@ -61,11 +60,10 @@ class DeleteEntitiesActionTest extends TestCase
      */
     public function testExecuteFail(): void
     {
-        $table = TableRegistry::getTableLocator()->get('FakeAnimals');
-        $action = new DeleteEntitiesAction(compact('table'));
-        $data = ['wrongdata'];
-        $entities = ['wrongdata'];
-        $actual = $action(compact('data', 'entities'));
+        $action = new DeleteEntitiesAction();
+        $entity = TableRegistry::getTableLocator()->get('FakeAnimals')->newEmptyEntity();
+        $entities = [$entity];
+        $actual = $action(compact('entities'));
         static::assertFalse($actual);
     }
 }

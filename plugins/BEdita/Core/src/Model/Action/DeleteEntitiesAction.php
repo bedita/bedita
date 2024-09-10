@@ -16,6 +16,7 @@ declare(strict_types=1);
 namespace BEdita\Core\Model\Action;
 
 use Cake\Log\LogTrait;
+use Cake\ORM\Locator\LocatorAwareTrait;
 
 /**
  * Command to delete entities.
@@ -24,35 +25,27 @@ use Cake\Log\LogTrait;
  */
 class DeleteEntitiesAction extends BaseAction
 {
+    use LocatorAwareTrait;
     use LogTrait;
-
-    /**
-     * Table.
-     *
-     * @var \Cake\ORM\Table
-     */
-    protected $Table;
-
-    /**
-     * @inheritDoc
-     */
-    protected function initialize(array $data)
-    {
-        $this->Table = $this->getConfig('table');
-    }
 
     /**
      * @inheritDoc
      */
     public function execute(array $data = [])
     {
-        $result = false;
+        $result = true;
+        $payload = $data;
+        unset($payload['entities']);
         try {
-            $result = $this->Table->deleteManyOrFail($data['entities']);
-        } catch (\Throwable $e) {
-            $this->log(sprintf('Delete many failed - data: %s', json_encode($data['data'])), 'error');
-
-            return $result;
+            foreach ($data['entities'] as $entity) {
+                $payload['entity'] = $entity;
+                $table = $this->fetchTable($entity->get('type') ?: $entity->getSource());
+                $action = new DeleteEntityAction(compact('table'));
+                $result = $result && $action($payload);
+            }
+        } catch (\Exception $e) {
+            $this->log($e->getMessage(), 'error');
+            $result = false;
         }
 
         return $result;

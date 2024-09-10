@@ -74,7 +74,7 @@ class TrashController extends AppController
             $filter = (array)$this->request->getQuery('filter');
             $filter = ['id' => (array)Hash::get($filter, 'ids')];
             $entities = $action(compact('filter'));
-            $action = new DeleteObjectsAction(['table' => $this->Table]);
+            $action = new DeleteObjectsAction();
             $action(compact('entities') + ['hard' => true]);
 
             return $this->response

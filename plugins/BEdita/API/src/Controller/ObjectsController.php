@@ -210,7 +210,7 @@ class ObjectsController extends ResourcesController
             }
             $filter = ['id' => explode(',', $ids)];
             $entities = $action(compact('filter'));
-            $action = new DeleteEntitiesAction(['table' => $this->Table]);
+            $action = new DeleteEntitiesAction();
             if (!$action(compact('entities'))) {
                 throw new InternalErrorException(__d('bedita', 'Delete failed'));
             }

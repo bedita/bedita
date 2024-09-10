@@ -75,7 +75,7 @@ class DeleteObjectsActionTest extends TestCase
     public function testExecute()
     {
         $table = TableRegistry::getTableLocator()->get('Documents');
-        $action = new DeleteObjectsAction(compact('table'));
+        $action = new DeleteObjectsAction();
         $entities = [$table->get(3)];
         $actual = $action(compact('entities'));
         static::assertTrue($actual);
@@ -91,11 +91,10 @@ class DeleteObjectsActionTest extends TestCase
     public function testExecuteHardDelete()
     {
         $table = TableRegistry::getTableLocator()->get('Documents');
-        $action = new DeleteObjectsAction(compact('table'));
+        $action = new DeleteObjectsAction();
         $entities = [$table->get(3)];
         $actual = $action(compact('entities') + ['hard' => true]);
-        static::assertIsArray($actual);
-        static::assertCount(1, $actual);
+        static::assertTrue($actual);
         static::assertFalse($table->exists(['id' => 3]));
     }
 }
