@@ -53,6 +53,7 @@ class DeleteEntitiesAction extends BaseAction
 
             return false;
         }
+
         return true;
     }
 }
