@@ -889,7 +889,8 @@ class ObjectsControllerTest extends IntegrationTestCase
 
         // success test
         $this->configRequestHeaders('DELETE', $authHeader);
-        $this->_sendRequest('/objects?ids=7', 'DELETE');
+        // delete object 7 (document) and 13 (folder)
+        $this->_sendRequest('/objects?ids=7,13', 'DELETE');
         $this->assertResponseCode(204);
         $this->assertResponseEmpty();
         $notFound = false;
@@ -899,6 +900,24 @@ class ObjectsControllerTest extends IntegrationTestCase
             $notFound = true;
         }
         $this->assertTrue($notFound);
+        $notFound = false;
+        try {
+            $this->fetchTable('Objects')->get(13);
+        } catch (RecordNotFoundException $e) {
+            $notFound = true;
+        }
+        $this->assertTrue($notFound);
+        // restore folder 13
+        $this->configRequestHeaders('PATCH', $authHeader);
+        $this->patch(
+            sprintf('/trash/%s', 13),
+            json_encode([
+                'data' => [
+                    'id' => 13,
+                    'type' => 'folders',
+                ],
+            ])
+        );
     }
 
     /**
