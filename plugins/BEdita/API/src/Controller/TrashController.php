@@ -71,9 +71,8 @@ class TrashController extends AppController
         if ($this->request->is('delete')) {
             $ids = (string)$this->request->getQuery('ids');
             $action = new ListEntitiesAction(['table' => $this->Table]);
-            $deleted = true;
-            $filter = ['id' => explode(',', $ids)];
-            $entities = $action(compact('filter', 'deleted'));
+            $filter = ['id' => explode(',', $ids), 'deleted' => true];
+            $entities = $action(compact('filter'));
             $action = new DeleteObjectsAction();
             $action(compact('entities') + ['hard' => true]);
 
