@@ -60,10 +60,10 @@ class DeleteEntitiesActionTest extends TestCase
      */
     public function testExecuteFail(): void
     {
+        $this->expectException(\Cake\ORM\Exception\PersistenceFailedException::class);
         $action = new DeleteEntitiesAction();
         $entity = TableRegistry::getTableLocator()->get('FakeAnimals')->newEmptyEntity();
         $entities = [$entity];
-        $actual = $action(compact('entities'));
-        static::assertFalse($actual);
+        $action(compact('entities'));
     }
 }

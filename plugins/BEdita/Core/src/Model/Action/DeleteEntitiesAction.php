@@ -36,16 +36,11 @@ class DeleteEntitiesAction extends BaseAction
         $result = true;
         $payload = $data;
         unset($payload['entities']);
-        try {
-            foreach ($data['entities'] as $entity) {
-                $payload['entity'] = $entity;
-                $table = $this->fetchTable($entity->get('type') ?: $entity->getSource());
-                $action = new DeleteEntityAction(compact('table'));
-                $result = $result && $action($payload);
-            }
-        } catch (\Exception $e) {
-            $this->log($e->getMessage(), 'error');
-            $result = false;
+        foreach ($data['entities'] as $entity) {
+            $payload['entity'] = $entity;
+            $table = $this->fetchTable($entity->get('type') ?: $entity->getSource());
+            $action = new DeleteEntityAction(compact('table'));
+            $result = $result && $action($payload);
         }
 
         return $result;
