@@ -21,7 +21,7 @@ use Cake\ORM\Locator\LocatorAwareTrait;
 /**
  * Command to delete entities.
  *
- * @since 5.27.0
+ * @since 5.28.0
  */
 class DeleteEntitiesAction extends BaseAction
 {

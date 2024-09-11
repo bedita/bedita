@@ -20,7 +20,7 @@ use Cake\ORM\Locator\LocatorAwareTrait;
 /**
  * Command to delete objects.
  *
- * @since 5.27.0
+ * @since 5.28.0
  */
 class DeleteObjectsAction extends BaseAction
 {
