@@ -15,7 +15,9 @@ declare(strict_types=1);
 namespace BEdita\API\Controller;
 
 use BEdita\Core\Model\Action\DeleteObjectAction;
+use BEdita\Core\Model\Action\DeleteObjectsAction;
 use BEdita\Core\Model\Action\GetObjectAction;
+use BEdita\Core\Model\Action\ListEntitiesAction;
 use BEdita\Core\Model\Action\ListObjectsAction;
 use BEdita\Core\Model\Action\SaveEntityAction;
 use Cake\Http\Exception\ConflictException;
@@ -54,8 +56,8 @@ class TrashController extends AppController
             $objectType = TableRegistry::getTableLocator()->get('ObjectTypes')->find('objectId', compact('id'))
                 ->firstOrFail();
             $this->defaultTable = $objectType->alias;
-            $this->Table = $this->fetchTable();
         }
+        $this->Table = $this->fetchTable();
     }
 
     /**
@@ -65,6 +67,18 @@ class TrashController extends AppController
      */
     public function index()
     {
+        $this->request->allowMethod(['get', 'delete']);
+        if ($this->request->is('delete')) {
+            $ids = (string)$this->request->getQuery('ids');
+            $action = new ListEntitiesAction(['table' => $this->Table]);
+            $filter = ['id' => explode(',', $ids), 'deleted' => true];
+            $entities = $action(compact('filter'));
+            $action = new DeleteObjectsAction();
+            $action(compact('entities') + ['hard' => true]);
+
+            return $this->response
+                ->withStatus(204);
+        }
         $filter = (array)$this->request->getQuery('filter') + array_filter(['query' => $this->request->getQuery('q')]);
         $filter['locked'] = false;
         $action = new ListObjectsAction(['table' => $this->Objects]);
