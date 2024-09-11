@@ -14,7 +14,6 @@ declare(strict_types=1);
  */
 namespace BEdita\API\Controller;
 
-use BEdita\Core\Exception\BadFilterException;
 use BEdita\Core\Model\Action\DeleteObjectAction;
 use BEdita\Core\Model\Action\DeleteObjectsAction;
 use BEdita\Core\Model\Action\GetObjectAction;
@@ -23,7 +22,6 @@ use BEdita\Core\Model\Action\ListObjectsAction;
 use BEdita\Core\Model\Action\SaveEntityAction;
 use Cake\Http\Exception\ConflictException;
 use Cake\ORM\TableRegistry;
-use Cake\Utility\Hash;
 
 /**
  * Controller for `/trash` endpoint.
