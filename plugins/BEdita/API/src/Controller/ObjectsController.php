@@ -213,7 +213,7 @@ class ObjectsController extends ResourcesController
             $action = new DeleteEntitiesAction();
             try {
                 $action(compact('entities'));
-            } catch (InternalErrorException $e) {
+            } catch (\Exception $e) {
                 throw new InternalErrorException(__d('bedita', 'Delete failed'));
             }
 

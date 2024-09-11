@@ -938,6 +938,7 @@ class ObjectsControllerTest extends IntegrationTestCase
         $this->_sendRequest('/objects?ids=abc', 'DELETE');
         $this->assertResponseCode(500);
         $this->assertContentType('application/vnd.api+json');
+        $this->assertResponseContains('Delete failed');
     }
 
     /**
