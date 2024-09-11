@@ -211,12 +211,13 @@ class ObjectsController extends ResourcesController
             $action = new ListEntitiesAction(['table' => $this->Table]);
             $entities = $action(compact('filter'));
             $action = new DeleteEntitiesAction();
-            if (!$action(compact('entities'))) {
+            try {
+                $action(compact('entities'));
+            } catch (InternalErrorException $e) {
                 throw new InternalErrorException(__d('bedita', 'Delete failed'));
             }
 
-            return $this->response
-                ->withStatus(204);
+            return $this->response->withStatus(204);
         } elseif ($this->request->is('post')) {
             // Add a new entity.
             if ($this->objectType->is_abstract) {

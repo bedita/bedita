@@ -146,7 +146,9 @@ abstract class ResourcesController extends AppController
             $action = new ListEntitiesAction(['table' => $this->Table]);
             $entities = $action(compact('filter'));
             $action = new DeleteEntitiesAction();
-            if (!$action(compact('entities'))) {
+            try {
+                $action(compact('entities'));
+            } catch (InternalErrorException $e) {
                 throw new InternalErrorException(__d('bedita', 'Delete failed'));
             }
 
