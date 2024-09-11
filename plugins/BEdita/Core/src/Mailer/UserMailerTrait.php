@@ -40,7 +40,7 @@ trait UserMailerTrait
         $mailerClass = Configure::read('Mailer.User', 'BEdita/Core.User');
         $mailer = $this->getMailer($mailerClass);
         if (!$mailer instanceof UserMailerInterface) {
-            throw new LogicException(sprintf('Mailer class "%s" must implement UserMailerInterface', $mailerClass));
+            throw new LogicException(sprintf('Mailer class "%s" must implement UserMailerInterface', get_class($mailer)));
         }
 
         return $mailer;
