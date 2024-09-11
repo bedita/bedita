@@ -356,7 +356,7 @@ class TrashControllerTest extends IntegrationTestCase
 
         // success test
         $this->configRequestHeaders('DELETE', $authHeader);
-        $this->_sendRequest('/trash?filter[ids]=7', 'DELETE');
+        $this->_sendRequest('/trash?ids=7', 'DELETE');
         $this->assertResponseCode(204);
         $this->assertResponseEmpty();
         $notFound = false;

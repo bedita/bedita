@@ -14,6 +14,7 @@ declare(strict_types=1);
  */
 namespace BEdita\API\Controller;
 
+use BEdita\Core\Exception\BadFilterException;
 use BEdita\Core\Model\Action\DeleteObjectAction;
 use BEdita\Core\Model\Action\DeleteObjectsAction;
 use BEdita\Core\Model\Action\GetObjectAction;
@@ -70,9 +71,9 @@ class TrashController extends AppController
     {
         $this->request->allowMethod(['get', 'delete']);
         if ($this->request->is('delete')) {
+            $ids = (string)$this->request->getQuery('ids');
             $action = new ListEntitiesAction(['table' => $this->Table]);
-            $filter = (array)$this->request->getQuery('filter');
-            $filter = ['id' => (array)Hash::get($filter, 'ids')];
+            $filter = ['id' => explode(',', $ids)];
             $entities = $action(compact('filter'));
             $action = new DeleteObjectsAction();
             $action(compact('entities') + ['hard' => true]);
