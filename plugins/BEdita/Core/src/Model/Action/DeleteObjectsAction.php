@@ -35,8 +35,8 @@ class DeleteObjectsAction extends BaseAction
         $payload = $data;
         unset($payload['entities']);
         foreach ($data['entities'] as $entity) {
-            $payload['entity'] = $entity;
             $table = $this->fetchTable($entity->get('type') ?: $entity->getSource());
+            $payload['entity'] = $table->get($entity->get('id'));
             $action = new DeleteObjectAction(compact('table'));
             $result = $result && $action($payload);
         }

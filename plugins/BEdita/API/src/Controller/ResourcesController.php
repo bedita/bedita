@@ -146,14 +146,9 @@ abstract class ResourcesController extends AppController
             $action = new ListEntitiesAction(['table' => $this->Table]);
             $entities = $action(compact('filter'));
             $action = new DeleteEntitiesAction();
-            try {
-                $action(compact('entities'));
-            } catch (\Exception $e) {
-                throw new InternalErrorException(__d('bedita', 'Delete failed'));
-            }
+            $action(compact('entities'));
 
-            return $this->response
-                ->withStatus(204);
+            return $this->response->withStatus(204);
         } elseif ($this->request->is('post')) {
             // Add a new entity.
             $entity = $this->Table->newEmptyEntity();

@@ -19,6 +19,7 @@ use Authentication\AuthenticationService;
 use BEdita\API\Controller\ResourcesController;
 use BEdita\API\TestSuite\IntegrationTestCase;
 use BEdita\Core\Model\Table\UsersTable;
+use Cake\Event\EventManager;
 use Cake\Http\ServerRequest;
 use DMS\PHPUnitExtensions\ArraySubset\ArraySubsetAsserts;
 
@@ -415,10 +416,15 @@ class ResourcesControllerTest extends IntegrationTestCase
         $this->assertContentType('application/vnd.api+json');
         $this->assertResponseContains('Missing required parameter');
         $this->configRequestHeaders('DELETE', $authHeader);
-        $this->_sendRequest('/roles?ids=abc', 'DELETE');
+        $handler = function () {
+            return false;
+        };
+        EventManager::instance()->on('Model.beforeDelete', $handler);
+        $this->_sendRequest('/roles?ids=1', 'DELETE');
         $this->assertResponseCode(500);
         $this->assertContentType('application/vnd.api+json');
-        $this->assertResponseContains('Delete failed');
+        $this->assertResponseContains('Entity delete failure');
+        EventManager::instance()->off('Model.beforeDelete', $handler);
     }
 
     /**

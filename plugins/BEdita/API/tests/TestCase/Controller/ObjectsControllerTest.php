@@ -18,7 +18,7 @@ use Authentication\AuthenticationService;
 use BEdita\API\Controller\ObjectsController;
 use BEdita\API\Test\TestConstants;
 use BEdita\API\TestSuite\IntegrationTestCase;
-use Cake\Datasource\Exception\RecordNotFoundException;
+use Cake\Event\EventManager;
 use Cake\Http\ServerRequest;
 use Cake\ORM\TableRegistry;
 use Cake\Utility\Hash;
@@ -889,24 +889,14 @@ class ObjectsControllerTest extends IntegrationTestCase
 
         // success test
         $this->configRequestHeaders('DELETE', $authHeader);
-        // delete object 7 (document) and 13 (folder)
+        // delete object 7 (document already deleted) and 13 (folder)
         $this->_sendRequest('/objects?ids=7,13', 'DELETE');
         $this->assertResponseCode(204);
         $this->assertResponseEmpty();
-        $notFound = false;
-        try {
-            $this->fetchTable('Objects')->get(7);
-        } catch (RecordNotFoundException $e) {
-            $notFound = true;
-        }
-        $this->assertTrue($notFound);
-        $notFound = false;
-        try {
-            $this->fetchTable('Objects')->get(13);
-        } catch (RecordNotFoundException $e) {
-            $notFound = true;
-        }
-        $this->assertTrue($notFound);
+        $o1 = $this->fetchTable('Objects')->get(7);
+        $this->assertTrue($o1->get('deleted'));
+        $o2 = $this->fetchTable('Objects')->get(13);
+        $this->assertTrue($o2->get('deleted'));
         // restore folder 13
         $this->configRequestHeaders('PATCH', $authHeader);
         $this->patch(
@@ -935,10 +925,15 @@ class ObjectsControllerTest extends IntegrationTestCase
         $this->assertContentType('application/vnd.api+json');
         $this->assertResponseContains('Missing required parameter');
         $this->configRequestHeaders('DELETE', $authHeader);
-        $this->_sendRequest('/objects?ids=abc', 'DELETE');
+        $handler = function () {
+            return false;
+        };
+        EventManager::instance()->on('Model.beforeSave', $handler);
+        $this->_sendRequest('/objects?ids=13', 'DELETE');
         $this->assertResponseCode(500);
         $this->assertContentType('application/vnd.api+json');
         $this->assertResponseContains('Delete failed');
+        EventManager::instance()->off('Model.beforeSave', $handler);
     }
 
     /**

@@ -18,8 +18,8 @@ use BEdita\API\Model\Action\UpdateRelatedAction;
 use BEdita\Core\Exception\BadFilterException;
 use BEdita\Core\Model\Action\ActionTrait;
 use BEdita\Core\Model\Action\AddRelatedObjectsAction;
-use BEdita\Core\Model\Action\DeleteEntitiesAction;
 use BEdita\Core\Model\Action\DeleteObjectAction;
+use BEdita\Core\Model\Action\DeleteObjectsAction;
 use BEdita\Core\Model\Action\GetObjectAction;
 use BEdita\Core\Model\Action\ListEntitiesAction;
 use BEdita\Core\Model\Action\ListObjectsAction;
@@ -207,13 +207,11 @@ class ObjectsController extends ResourcesController
             if (empty($ids)) {
                 throw new BadFilterException(__d('bedita', 'Missing required parameter "{0}"', 'ids'));
             }
-            $filter = ['id' => explode(',', $ids)];
+            $filter = ['id' => explode(',', $ids), 'deleted' => false];
             $action = new ListEntitiesAction(['table' => $this->Table]);
             $entities = $action(compact('filter'));
-            $action = new DeleteEntitiesAction();
-            try {
-                $action(compact('entities'));
-            } catch (\Exception $e) {
+            $action = new DeleteObjectsAction();
+            if (!$action(compact('entities'))) {
                 throw new InternalErrorException(__d('bedita', 'Delete failed'));
             }
 
