@@ -6,7 +6,7 @@ on:
 
 jobs:
   release_job:
-    uses: bedita/github-workflows/.github/workflows/release.yml@v1
+    uses: bedita/github-workflows/.github/workflows/release.yml@v2
     with:
       main_branch: '5-salix'
       dist_branches: '["5-salix","4-cactus"]'
