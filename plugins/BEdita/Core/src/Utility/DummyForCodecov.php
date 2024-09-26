@@ -17,7 +17,12 @@ namespace BEdita\Core\Utility;
 
 class DummyForCodecov
 {
-    public function dummyMethod()
+    /**
+     * Dummy method.
+     *
+     * @return bool
+     */
+    public function dummyMethod(): bool
     {
         return true;
     }

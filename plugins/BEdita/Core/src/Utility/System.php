@@ -143,8 +143,6 @@ class System
      */
     protected static function loadRequirements()
     {
-        if (!Configure::read('Requirements')) {
-            Configure::load('BEdita/Core.requirements');
-        }
+        if (!Configure::read('Requirements')) { Configure::load('BEdita/Core.requirements'); }
     }
 }
