@@ -48,10 +48,10 @@ class RelationsControllerTest extends IntegrationTestCase
             ],
             'meta' => [
                 'pagination' => [
-                    'count' => 3,
+                    'count' => 5,
                     'page' => 1,
                     'page_count' => 1,
-                    'page_items' => 3,
+                    'page_items' => 5,
                     'page_size' => 20,
                 ],
             ],
@@ -151,6 +151,91 @@ class RelationsControllerTest extends IntegrationTestCase
                             'links' => [
                                 'self' => 'http://api.example.com/model/relations/3/relationships/right_object_types',
                                 'related' => 'http://api.example.com/model/relations/3/right_object_types',
+                            ],
+                        ],
+                    ],
+                ],
+                [
+                    'id' => '4',
+                    'type' => 'relations',
+                    'attributes' => [
+                        'name' => 'test_simple',
+                        'label' => 'Test relation involving simple parameters',
+                        'inverse_name' => 'inverse_test_simple',
+                        'inverse_label' => 'Inverse test relation involving simple parameters',
+                        'description' => 'Sample description.',
+                        'params' => [
+                            'type' => 'object',
+                            'properties' => [
+                                'name' => [
+                                    'type' => 'string',
+                                ],
+                                'age' => [
+                                    'type' => 'integer',
+                                    'minimum' => 0,
+                                ],
+                            ],
+                        ],
+                    ],
+                    'links' => [
+                        'self' => 'http://api.example.com/model/relations/4',
+                    ],
+                    'relationships' => [
+                        'left_object_types' => [
+                            'links' => [
+                                'self' => 'http://api.example.com/model/relations/4/relationships/left_object_types',
+                                'related' => 'http://api.example.com/model/relations/4/left_object_types',
+                            ],
+                        ],
+                        'right_object_types' => [
+                            'links' => [
+                                'self' => 'http://api.example.com/model/relations/4/relationships/right_object_types',
+                                'related' => 'http://api.example.com/model/relations/4/right_object_types',
+                            ],
+                        ],
+                    ],
+                ],
+                [
+                    'id' => '5',
+                    'type' => 'relations',
+                    'attributes' => [
+                        'name' => 'test_defaults',
+                        'label' => 'Test relation involving default parameters',
+                        'inverse_name' => 'inverse_test_defaults',
+                        'inverse_label' => 'Inverse test relation involving default parameters',
+                        'description' => 'Sample description.',
+                        'params' => [
+                            'type' => 'object',
+                            'properties' => [
+                                'size' => [
+                                    'type' => ['integer', 'null'],
+                                    'default' => 5,
+                                ],
+                                'street' => [
+                                    'type' => 'string',
+                                    'default' => 'fighter',
+                                ],
+                                'color' => [
+                                    'type' => ['string', 'null'],
+                                    'default' => null,
+                                ],
+                            ],
+                        ],
+                    ],
+                    'links' => [
+                        'self' => 'http://api.example.com/model/relations/5',
+                    ],
+                    'relationships' => [
+                        'left_object_types' => [
+                            'links' => [
+                                'self' => 'http://api.example.com/model/relations/5/relationships/left_object_types',
+                                'related' => 'http://api.example.com/model/relations/5/left_object_types',
+                            ],
+                        ],
+                        'right_object_types' => [
+                            'links' => [
+                                'self' => 'http://api.example.com/model/relations/5/relationships/right_object_types',
+                                'related' => 'http://api.example.com/model/relations/5/right_object_types',
                             ],
                         ],
                     ],
@@ -510,7 +595,11 @@ class RelationsControllerTest extends IntegrationTestCase
                         'alias' => 'Documents',
                         'relations' => [
                             'test',
+                            'test_simple',
+                            'test_defaults',
                             'inverse_test',
+                            'inverse_test_simple',
+                            'inverse_test_defaults',
                         ],
                         'created' => '2017-11-10T09:27:23+00:00',
                         'modified' => '2017-11-10T09:27:23+00:00',
