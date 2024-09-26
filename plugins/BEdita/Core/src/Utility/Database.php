@@ -285,14 +285,4 @@ class Database
 
         return $res;
     }
-
-    /**
-     * Dummy method to be used for code coverage testing
-     *
-     * @return bool
-     */
-    public function dummyMethod(): bool
-    {
-        return true;
-    }
 }
