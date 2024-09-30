@@ -14,9 +14,11 @@ declare(strict_types=1);
  */
 namespace BEdita\Core\Shell;
 
+use Cake\Console\ConsoleIo;
 use Cake\Console\ConsoleOptionParser;
 use Cake\Console\Shell;
 use Cake\Datasource\Exception\RecordNotFoundException;
+use Cake\ORM\Locator\LocatorInterface;
 use Cake\Utility\Hash;
 
 /**
@@ -24,7 +26,7 @@ use Cake\Utility\Hash;
  *
  * @since 4.0.0
  * @property \BEdita\Core\Model\Table\AsyncJobsTable $AsyncJobs
- * @deprecated version 5.18.0 Use `BEdita/Core.Command/JobsCommand` instead
+ * @deprecated version 5.29.0 Use `BEdita/Core.Command/JobsCommand` instead
  */
 class JobsShell extends Shell /* @phpstan-ignore-line */
 {
@@ -32,6 +34,15 @@ class JobsShell extends Shell /* @phpstan-ignore-line */
      * @inheritDoc
      */
     public $modelClass = 'AsyncJobs';
+
+    /**
+     * @inheritDoc
+     */
+    public function __construct(?ConsoleIo $io = null, ?LocatorInterface $locator = null)
+    {
+        deprecationWarning('"JobsShell" should not be used. Use `BEdita\Core\Command\JobsCommand` instead.');
+        parent::__construct($io, $locator);
+    }
 
     /**
      * {@inheritDoc}
