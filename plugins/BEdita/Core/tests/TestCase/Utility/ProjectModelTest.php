@@ -328,6 +328,7 @@ class ProjectModelTest extends TestCase
                 'property' => 'date',
                 'object' => 'profiles',
                 'read_only' => true,
+                'default_value' => null,
             ],
             [
                 'name' => 'another_description',
@@ -336,6 +337,7 @@ class ProjectModelTest extends TestCase
                 'property' => 'string',
                 'object' => 'documents',
                 'read_only' => false,
+                'default_value' => null,
             ],
             [
                 'name' => 'another_email',
@@ -344,6 +346,7 @@ class ProjectModelTest extends TestCase
                 'property' => 'email',
                 'object' => 'users',
                 'read_only' => false,
+                'default_value' => null,
             ],
             [
                 'name' => 'another_surname',
@@ -352,6 +355,7 @@ class ProjectModelTest extends TestCase
                 'property' => 'string',
                 'object' => 'profiles',
                 'read_only' => false,
+                'default_value' => null,
             ],
             [
                 'name' => 'another_title',
@@ -360,6 +364,7 @@ class ProjectModelTest extends TestCase
                 'property' => 'string',
                 'object' => 'documents',
                 'read_only' => false,
+                'default_value' => null,
             ],
             [
                 'name' => 'another_username',
@@ -368,6 +373,7 @@ class ProjectModelTest extends TestCase
                 'property' => 'string',
                 'object' => 'users',
                 'read_only' => false,
+                'default_value' => null,
             ],
             [
                 'name' => 'children_order',
@@ -376,6 +382,16 @@ class ProjectModelTest extends TestCase
                 'property' => 'children_order',
                 'object' => 'folders',
                 'read_only' => false,
+                'default_value' => null,
+            ],
+            [
+                'name' => 'default_val_property',
+                'description' => 'Default val property example',
+                'is_nullable' => true,
+                'property' => 'string',
+                'object' => 'files',
+                'read_only' => false,
+                'default_value' => 'my default value',
             ],
             [
                 'name' => 'disabled_property',
@@ -384,6 +400,7 @@ class ProjectModelTest extends TestCase
                 'property' => 'string',
                 'object' => 'files',
                 'read_only' => false,
+                'default_value' => null,
             ],
             [
                 'name' => 'files_property',
@@ -392,6 +409,7 @@ class ProjectModelTest extends TestCase
                 'property' => 'json',
                 'object' => 'files',
                 'read_only' => false,
+                'default_value' => null,
             ],
             [
                 'name' => 'media_property',
@@ -400,6 +418,7 @@ class ProjectModelTest extends TestCase
                 'property' => 'boolean',
                 'object' => 'media',
                 'read_only' => false,
+                'default_value' => null,
             ],
             [
                 'name' => 'number_of_friends',
@@ -408,6 +427,7 @@ class ProjectModelTest extends TestCase
                 'property' => 'integer',
                 'object' => 'profiles',
                 'read_only' => false,
+                'default_value' => null,
             ],
             [
                 'name' => 'street_address',
@@ -416,6 +436,7 @@ class ProjectModelTest extends TestCase
                 'property' => 'string',
                 'object' => 'profiles',
                 'read_only' => false,
+                'default_value' => null,
             ],
         ],
         'categories' => [
@@ -532,6 +553,7 @@ class ProjectModelTest extends TestCase
                     'property' => 'date',
                     'object' => 'profiles',
                     'read_only' => true,
+                    'default_value' => null,
                 ],
             ],
             'relations' => [
