@@ -16,8 +16,11 @@ namespace BEdita\Core\Model\Table;
 
 use BEdita\Core\Exception\LockedResourceException;
 use BEdita\Core\Model\Entity\Tree;
+use BEdita\Core\Model\Validation\Validation;
+use Cake\Core\Configure;
 use Cake\Database\Driver\Mysql;
 use Cake\Database\Expression\QueryExpression;
+use Cake\Database\Schema\TableSchemaInterface;
 use Cake\Event\EventInterface;
 use Cake\Http\Exception\BadRequestException;
 use Cake\ORM\Query;
@@ -125,7 +128,39 @@ class TreesTable extends Table
         $validator
             ->boolean('canonical');
 
+        $validator
+            ->allowEmptyArray('params', null, static::jsonSchema(null) === true)
+            ->requirePresence('params', function ($context) {
+                return $context['newRecord'] && static::jsonSchema(null) !== true;
+            })
+            ->add('params', 'valid', [
+                'rule' => 'jsonSchema',
+                'provider' => 'table',
+            ]);
+
         return $validator;
+    }
+
+    /**
+     * Validate children parameters using JSON Schema.
+     *
+     * @param mixed $value Value being validated.
+     * @return true|string
+     */
+    public static function jsonSchema($value)
+    {
+        $schema = Configure::read('Folder.params_schema');
+        if (empty($schema)) {
+            return true;
+        }
+
+        $success = Validation::jsonSchema($value, $schema);
+        if ($success !== true && $value === null && Validation::jsonSchema(new \stdClass(), $schema) === true) {
+            // For the sake of validation, `null` is equivalent to empty object.
+            $success = true;
+        }
+
+        return $success;
     }
 
     /**
@@ -281,6 +316,15 @@ class TreesTable extends Table
             $this->Objects->aliasField('object_type_id') => $foldersType,
             $this->Objects->aliasField('id') . ' IS' => $id,
         ]);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getSchema(): TableSchemaInterface
+    {
+        return parent::getSchema()
+            ->setColumnType('params', 'json');
     }
 
     /**
