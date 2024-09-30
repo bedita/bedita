@@ -37,6 +37,7 @@ class JobsShell extends Shell /* @phpstan-ignore-line */
 
     /**
      * {@inheritDoc}
+     *
      * @codeCoverageIgnore
      */
     public function __construct(?ConsoleIo $io = null, ?LocatorInterface $locator = null)
