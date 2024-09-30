@@ -205,7 +205,7 @@ return function (RouteBuilder $routes) {
         // Trash.
         $routes->connect(
             '/trash',
-            ['controller' => 'Trash', 'action' => 'index', '_method' => 'GET'],
+            ['controller' => 'Trash', 'action' => 'index', '_method' => ['GET', 'DELETE']],
             ['_name' => 'trash:index']
         );
         $routes->connect(

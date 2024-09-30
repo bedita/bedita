@@ -62,5 +62,35 @@ class RelationTypesFixture extends TestFixture
             'object_type_id' => 8, // media
             'side' => 'right',
         ],
+        [
+            'relation_id' => 4, // test_simple / inverse_test_simple
+            'object_type_id' => 2, // documents
+            'side' => 'left',
+        ],
+        [
+            'relation_id' => 4, // test_simple / inverse_test_simple
+            'object_type_id' => 2, // documents
+            'side' => 'right',
+        ],
+        [
+            'relation_id' => 4, // test_simple / inverse_test_simple
+            'object_type_id' => 3, // profiles
+            'side' => 'right',
+        ],
+        [
+            'relation_id' => 5, // test_defaults / inverse_test_defaults
+            'object_type_id' => 2, // documents
+            'side' => 'left',
+        ],
+        [
+            'relation_id' => 5, // test_defaults / inverse_test_defaults
+            'object_type_id' => 2, // documents
+            'side' => 'right',
+        ],
+        [
+            'relation_id' => 5, // test_defaults / inverse_test_defaults
+            'object_type_id' => 3, // profiles
+            'side' => 'right',
+        ],
     ];
 }

@@ -24,7 +24,7 @@ use Cake\Mailer\Mailer;
  *
  * @since 4.0.0
  */
-class UserMailer extends Mailer
+class UserMailer extends Mailer implements UserMailerInterface
 {
     /**
      * Welcome message.
@@ -36,7 +36,7 @@ class UserMailer extends Mailer
      * @return \Cake\Mailer\Mailer
      * @throws \LogicException When missing some required parameter
      */
-    public function welcome($options)
+    public function welcome($options): Mailer
     {
         if (empty($options['params']['user'])) {
             throw new \LogicException(__d('bedita', 'Parameter "{0}" missing', ['params.user']));
@@ -73,7 +73,7 @@ class UserMailer extends Mailer
      * @return \Cake\Mailer\Mailer
      * @throws \LogicException When missing some required parameter
      */
-    public function signup(array $options)
+    public function signup(array $options): Mailer
     {
         if (empty($options['params']['activationUrl'])) {
             throw new \LogicException(__d('bedita', 'Parameter "{0}" missing', ['params.activationUrl']));
@@ -115,7 +115,7 @@ class UserMailer extends Mailer
      * @return \Cake\Mailer\Mailer
      * @throws \LogicException When missing some required parameter
      */
-    public function changeRequest(array $options)
+    public function changeRequest(array $options): Mailer
     {
         if (empty($options['params']['changeUrl'])) {
             throw new \LogicException(__d('bedita', 'Parameter "{0}" missing', ['params.changeUrl']));

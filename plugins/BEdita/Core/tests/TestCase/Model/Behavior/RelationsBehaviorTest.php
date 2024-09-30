@@ -69,10 +69,39 @@ class RelationsBehaviorTest extends TestCase
         static::assertSame('BEdita/Core.Objects', $Documents->getAssociation('Test')->getClassName());
         static::assertInstanceOf(BelongsToMany::class, $Documents->getAssociation('InverseTest'));
         static::assertSame('BEdita/Core.Objects', $Documents->getAssociation('InverseTest')->getClassName());
+        $testRelation = $Documents->getAssociation('Test')->getRelation();
+        static::assertNotNull($testRelation);
+        static::assertInstanceOf(Relation::class, $testRelation);
+        static::assertSame('Test relation', $testRelation->label);
+        static::assertNull($testRelation->params);
+
         static::assertInstanceOf(BelongsToMany::class, $Profiles->getAssociation('InverseTest'));
         static::assertSame('BEdita/Core.Objects', $Profiles->getAssociation('InverseTest')->getClassName());
+        $inverseTestRelation = $Profiles->getAssociation('InverseTest')->getRelation();
+        static::assertNotNull($inverseTestRelation);
+        static::assertInstanceOf(Relation::class, $inverseTestRelation);
+        static::assertSame('Test relation', $inverseTestRelation->label);
+        static::assertNull($inverseTestRelation->params);
+
         static::assertInstanceOf(BelongsToMany::class, $Locations->getAssociation('InverseAnotherTest'));
         static::assertSame('BEdita/Core.Users', $Locations->getAssociation('InverseAnotherTest')->getClassName());
+        $inverseAnotherTestRelation = $Locations->getAssociation('InverseAnotherTest')->getRelation();
+        static::assertNotNull($inverseAnotherTestRelation);
+        static::assertInstanceOf(Relation::class, $inverseAnotherTestRelation);
+        static::assertSame('Another test relation', $inverseAnotherTestRelation->label);
+        static::assertEquals((object)[
+            'type' => 'object',
+            'properties' => (object)[
+                'name' => (object)[
+                    'type' => 'string',
+                ],
+                'age' => (object)[
+                    'type' => 'integer',
+                    'minimum' => 0,
+                ],
+            ],
+            'required' => ['name'],
+        ], $inverseAnotherTestRelation->params);
 
         $before = count($Profiles->associations()->keys());
         $Profiles->setupRelations('profiles');
@@ -108,7 +137,11 @@ class RelationsBehaviorTest extends TestCase
     {
         $expected = [
             'test',
+            'test_simple',
+            'test_defaults',
             'inverse_test',
+            'inverse_test_simple',
+            'inverse_test_defaults',
         ];
 
         $Documents = TableRegistry::getTableLocator()->get('Documents');

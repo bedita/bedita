@@ -19,7 +19,9 @@ use Authorization\Identity;
 use Authorization\Policy\Exception\MissingPolicyException;
 use BEdita\API\Model\Action\UpdateAssociatedAction;
 use BEdita\Core\Exception\InvalidDataException;
+use BEdita\Core\Model\Action\AddRelatedObjectsAction;
 use BEdita\Core\Model\Action\SetAssociatedAction;
+use Cake\Database\Expression\QueryExpression;
 use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\Http\Exception\ForbiddenException;
 use Cake\Http\ServerRequest;
@@ -27,6 +29,7 @@ use Cake\ORM\Association\HasMany;
 use Cake\ORM\Query;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
+use Cake\Utility\Hash;
 use Cake\Utility\Inflector;
 
 /**
@@ -44,6 +47,11 @@ class UpdateAssociatedActionTest extends TestCase
         'plugin.BEdita/Core.FakeArticles',
         'plugin.BEdita/Core.FakeTags',
         'plugin.BEdita/Core.FakeArticlesTags',
+        'plugin.BEdita/Core.ObjectTypes',
+        'plugin.BEdita/Core.Objects',
+        'plugin.BEdita/Core.Relations',
+        'plugin.BEdita/Core.RelationTypes',
+        'plugin.BEdita/Core.ObjectRelations',
     ];
 
     /**
@@ -206,7 +214,7 @@ class UpdateAssociatedActionTest extends TestCase
     /**
      * Test invocation of command.
      *
-     * @param bool|\Exception Expected result.
+     * @param bool|\Exception $expected Expected result.
      * @param string $table Table to use.
      * @param string $association Association to use.
      * @param int $id Entity ID to update relations for.
@@ -416,5 +424,230 @@ class UpdateAssociatedActionTest extends TestCase
 
         $result = $action(['primaryKey' => 1]);
         static::assertEquals(1, $result);
+    }
+
+    /**
+     * Data provider for {@see UpdateAssociatedActionTest::testPrepareMeta()} test case.
+     *
+     * @return array[]
+     */
+    public function prepareMetaProvider(): array
+    {
+        return [
+            'add relation without params, body without params' => [
+                [6],
+                null,
+                'Test',
+                2,
+                [
+                    [
+                        'id' => 6,
+                        'type' => 'documents',
+                    ],
+                ],
+            ],
+            'add relation without params, body wih params' => [
+                [3],
+                ['this' => 'has no schema'],
+                'Test',
+                2,
+                [
+                    [
+                        'id' => 3,
+                        'type' => 'documents',
+                        '_meta' => [
+                            'relation' => [
+                                'params' => ['this' => 'has no schema'],
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+            'add relation with params, body without params' => [
+                [3],
+                null,
+                'TestSimple',
+                2,
+                [
+                    [
+                        'id' => 3,
+                        'type' => 'documents',
+                    ],
+                ],
+            ],
+            'add relation with params, body with params' => [
+                [3],
+                ['name' => 'Andrew', 'age' => 26],
+                'TestSimple',
+                2,
+                [
+                    [
+                        'id' => 3,
+                        'type' => 'documents',
+                        '_meta' => [
+                            'relation' => [
+                                'params' => ['name' => 'Andrew', 'age' => 26],
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+            'add relation with defaults, body without params' => [
+                [3],
+                ['size' => 5, 'street' => 'fighter', 'color' => null],
+                'TestDefaults',
+                2,
+                [
+                    [
+                        'id' => 3,
+                        'type' => 'documents',
+                    ],
+                ],
+            ],
+            'add relation with defaults, body with params' => [
+                [3],
+                ['size' => 8, 'color' => 'green', 'street' => 'fighter'],
+                'TestDefaults',
+                2,
+                [
+                    [
+                        'id' => 3,
+                        'type' => 'documents',
+                        '_meta' => [
+                            'relation' => [
+                                'params' => ['size' => 8, 'color' => 'green'],
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+            'update relation without params, body without params' => [
+                [], // already related, request has no changes
+                null,
+                'Test',
+                2,
+                [
+                    [
+                        'id' => 4,
+                        'type' => 'profiles',
+                    ],
+                ],
+            ],
+            'update relation without params, body wih params' => [
+                [4], // already related, request has changes
+                ['this' => 'has no schema'],
+                'Test',
+                2,
+                [
+                    [
+                        'id' => 4,
+                        'type' => 'profiles',
+                        '_meta' => [
+                            'relation' => [
+                                'params' => ['this' => 'has no schema'],
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+            'update relation with params, body without params' => [
+                [], // already related, request has no changes
+                ['name' => 'John'],
+                'TestSimple',
+                2,
+                [
+                    [
+                        'id' => 4,
+                        'type' => 'profiles',
+                    ],
+                ],
+            ],
+            'update relation with params, body with params' => [
+                [4], // already related, request has changes
+                ['name' => 'Andrew', 'age' => 26],
+                'TestSimple',
+                2,
+                [
+                    [
+                        'id' => 4,
+                        'type' => 'profiles',
+                        '_meta' => [
+                            'relation' => [
+                                'params' => ['name' => 'Andrew', 'age' => 26],
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+            'update relation with defaults, body without params' => [
+                [4],
+                ['size' => 5, 'street' => 'fighter', 'color' => null],
+                'TestDefaults',
+                2,
+                [
+                    [
+                        'id' => 4,
+                        'type' => 'profiles',
+                    ],
+                ],
+            ],
+            'update relation with defaults, body with params' => [
+                [4],
+                ['size' => 8, 'color' => 'green', 'street' => 'fighter'],
+                'TestDefaults',
+                2,
+                [
+                    [
+                        'id' => 4,
+                        'type' => 'profiles',
+                        '_meta' => [
+                            'relation' => [
+                                'params' => ['size' => 8, 'color' => 'green'],
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * Test case for {@see UpdateAssociatedActionTest::prepareMetaProvider()} when adding relation.
+     *
+     * @param int[] $expectedResult Expected action result.
+     * @param array $expectedParams Expected relation parameters.
+     * @param string $associationName Name of association.
+     * @param int $primaryKey Left entity ID.
+     * @param array $body Request body.
+     * @return void
+     * @dataProvider prepareMetaProvider()
+     */
+    public function testPrepareMeta($expectedResult, $expectedParams, $associationName, $primaryKey, $body): void
+    {
+        $Documents = TableRegistry::getTableLocator()->get('Documents');
+        $association = $Documents->getAssociation($associationName);
+        $identityMock = $this->getMockBuilder(Identity::class)
+            ->disableOriginalConstructor()
+            ->onlyMethods(['can'])
+            ->getMock();
+        $identityMock->method('can')->willReturn(true);
+        $request = (new ServerRequest())->withParsedBody($body)
+            ->withAttribute('identity', $identityMock);
+        $parentAction = new AddRelatedObjectsAction(compact('association'));
+        $action = new UpdateAssociatedAction(['action' => $parentAction, 'request' => $request]);
+        $result = $action(compact('primaryKey'));
+        static::assertEquals($expectedResult, $result);
+
+        // $entity = $Documents->get($primaryKey, ['contain' => [$associationName]]);
+        $entity = $Documents->find()
+            ->where(fn (QueryExpression $exp): QueryExpression => $exp
+                ->eq('id', $primaryKey))
+            ->contain([$associationName => fn (Query $q): Query => $q->where(['right_id' => $body[0]['id']])])
+            ->first();
+        $actualParams = Hash::get(
+            (array)$entity->get(Inflector::underscore($associationName)),
+            '0._joinData.params',
+        );
+        static::assertSame($expectedParams, $actualParams);
     }
 }

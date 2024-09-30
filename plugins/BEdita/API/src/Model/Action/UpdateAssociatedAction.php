@@ -17,6 +17,7 @@ namespace BEdita\API\Model\Action;
 
 use Authorization\Policy\Exception\MissingPolicyException;
 use BEdita\Core\Model\Action\BaseAction;
+use BEdita\Core\ORM\Association\RelatedTo;
 use Cake\Database\Expression\QueryExpression;
 use Cake\Datasource\EntityInterface;
 use Cake\Datasource\Exception\RecordNotFoundException;
@@ -165,12 +166,57 @@ class UpdateAssociatedAction extends BaseAction
                 throw new RecordNotFoundException(__('Record not found in table "{0}"', $type ?: $target->getTable()));
             }
 
-            $meta = Hash::get($datum, '_meta.relation');
-            if (!$this->request->is('delete') && $association instanceof BelongsToMany && $meta !== null) {
-                $targetEntities[$id]->_joinData = $meta;
+            if (!$this->request->is('delete') && $association instanceof BelongsToMany) {
+                $meta = $this->prepareMeta($association, Hash::get($datum, '_meta.relation'));
+                if ($meta !== null) {
+                    $targetEntities[$id]->_joinData = $meta;
+                }
             }
         }
 
         return $targetEntities;
+    }
+
+    /**
+     * Prepare relation metadata.
+     *
+     * @param \Cake\ORM\Association&\Cake\ORM\Association\BelongsToMany $association The association.
+     * @param array|null $meta Relation metadata.
+     * @return array|null
+     */
+    protected function prepareMeta($association, $meta)
+    {
+        if (!$association instanceof RelatedTo) {
+            return $meta;
+        }
+
+        $relation = $association->getRelation();
+        if ($relation === null || empty($relation->params)) {
+            return $meta;
+        }
+
+        // Cast stdClass to array recursively
+        $params = json_decode(json_encode($relation->params), true);
+        $defaultParams = array_filter(
+            Hash::get($params, 'properties', []),
+            function (array $prop): bool {
+                return array_key_exists('default', $prop);
+            },
+        );
+        if (count($defaultParams) === 0) {
+            return $meta;
+        }
+        if ($meta === null) {
+            $meta = ['params' => []];
+        }
+
+        foreach ($defaultParams as $name => $data) {
+            $isNullable = in_array('null', (array)Hash::get($data, 'type', Hash::extract($data, 'anyOf.{*}.type')));
+            if (!array_key_exists($name, $meta['params']) || (!$isNullable && !isset($meta['params'][$name]))) {
+                $meta['params'][$name] = $data['default'];
+            }
+        }
+
+        return $meta;
     }
 }

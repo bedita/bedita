@@ -19,6 +19,7 @@ use Authentication\AuthenticationService;
 use BEdita\API\Controller\ResourcesController;
 use BEdita\API\TestSuite\IntegrationTestCase;
 use BEdita\Core\Model\Table\UsersTable;
+use Cake\Event\EventManager;
 use Cake\Http\ServerRequest;
 use DMS\PHPUnitExtensions\ArraySubset\ArraySubsetAsserts;
 
@@ -374,6 +375,56 @@ class ResourcesControllerTest extends IntegrationTestCase
         $this->post('/roles', json_encode(compact('data')));
         $result = json_decode((string)$this->_response->getBody(), true);
         $this->assertResponseCode(201);
+    }
+
+    /**
+     * Test delete method
+     *
+     * @return void
+     * @covers ::index()
+     */
+    public function testDeleteMulti(): void
+    {
+        // add new role to delete
+        $data = [
+            'type' => 'roles',
+            'attributes' => [
+                'name' => 'todelete',
+            ],
+        ];
+        $this->configRequestHeaders('POST', $this->getUserAuthHeader());
+        $this->post('/roles', json_encode(compact('data')));
+        $result = json_decode((string)$this->_response->getBody(), true);
+
+        $this->configRequestHeaders('DELETE', $this->getUserAuthHeader());
+        $this->delete('/roles?ids=' . $result['data']['id']);
+        $this->assertResponseCode(204);
+    }
+
+    /**
+     * Test index method on DELETE with internal error.
+     *
+     * @return void
+     * @covers ::index()
+     */
+    public function testIndexDeleteException(): void
+    {
+        $authHeader = $this->getUserAuthHeader();
+        $this->configRequestHeaders('DELETE', $authHeader);
+        $this->_sendRequest('/roles?ids=', 'DELETE');
+        $this->assertResponseCode(400);
+        $this->assertContentType('application/vnd.api+json');
+        $this->assertResponseContains('Missing required parameter');
+        $this->configRequestHeaders('DELETE', $authHeader);
+        $handler = function () {
+            return false;
+        };
+        EventManager::instance()->on('Model.beforeDelete', $handler);
+        $this->_sendRequest('/roles?ids=1', 'DELETE');
+        $this->assertResponseCode(500);
+        $this->assertContentType('application/vnd.api+json');
+        $this->assertResponseContains('Entity delete failure');
+        EventManager::instance()->off('Model.beforeDelete', $handler);
     }
 
     /**

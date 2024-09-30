@@ -27,6 +27,7 @@ class RelationsFixture extends TestFixture
      * @var array
      */
     public $records = [
+        // 1
         [
             'name' => 'test',
             'label' => 'Test relation',
@@ -35,6 +36,7 @@ class RelationsFixture extends TestFixture
             'description' => 'Sample description.',
             'params' => null,
         ],
+        // 2
         [
             'name' => 'another_test',
             'label' => 'Another test relation',
@@ -55,6 +57,7 @@ class RelationsFixture extends TestFixture
                 'required' => ['name'],
             ],
         ],
+        // 3
         [
             'name' => 'test_abstract',
             'label' => 'Test relation involving abstract types',
@@ -62,6 +65,51 @@ class RelationsFixture extends TestFixture
             'inverse_label' => 'Inverse test relation involving abstract types',
             'description' => 'Sample description.',
             'params' => null,
+        ],
+        // 4
+        [
+            'name' => 'test_simple',
+            'label' => 'Test relation involving simple parameters',
+            'inverse_name' => 'inverse_test_simple',
+            'inverse_label' => 'Inverse test relation involving simple parameters',
+            'description' => 'Sample description.',
+            'params' => [
+                'type' => 'object',
+                'properties' => [
+                    'name' => [
+                        'type' => 'string',
+                    ],
+                    'age' => [
+                        'type' => 'integer',
+                        'minimum' => 0,
+                    ],
+                ],
+            ],
+        ],
+        // 5
+        [
+            'name' => 'test_defaults',
+            'label' => 'Test relation involving default parameters',
+            'inverse_name' => 'inverse_test_defaults',
+            'inverse_label' => 'Inverse test relation involving default parameters',
+            'description' => 'Sample description.',
+            'params' => [
+                'type' => 'object',
+                'properties' => [
+                    'size' => [
+                        'type' => ['integer', 'null'],
+                        'default' => 5,
+                    ],
+                    'street' => [
+                        'type' => 'string',
+                        'default' => 'fighter',
+                    ],
+                    'color' => [
+                        'type' => ['string', 'null'],
+                        'default' => null,
+                    ],
+                ],
+            ],
         ],
     ];
 }
