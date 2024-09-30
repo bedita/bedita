@@ -36,7 +36,8 @@ class JobsShell extends Shell /* @phpstan-ignore-line */
     public $modelClass = 'AsyncJobs';
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
+     * @codeCoverageIgnore
      */
     public function __construct(?ConsoleIo $io = null, ?LocatorInterface $locator = null)
     {
