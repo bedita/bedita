@@ -63,7 +63,7 @@ class AnnotationsTable extends Table
                 ],
             ],
         ]);
-        $this->addBehavior('BEdita/Core.Searchable');
+        $this->addBehavior('BEdita/Core.Searchable', ['scopes' => (array)$this->getTable()]);
 
         $this->belongsTo('Objects', [
             'foreignKey' => 'object_id',

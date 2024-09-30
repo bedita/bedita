@@ -48,6 +48,7 @@ class SearchableBehavior extends Behavior
             'Model.afterSave' => 'edit',
             'Model.afterDelete' => 'delete',
         ],
+        'scopes' => [],
         'implementedFinders' => [
             'query' => 'findQuery',
         ],
@@ -142,7 +143,12 @@ class SearchableBehavior extends Behavior
      */
     public function getSearchAdapters(): iterable
     {
-        foreach (array_keys((array)Configure::read('Search.adapters')) as $name) {
+        $scopes = (array)$this->getConfig('scopes');
+        foreach ((array)Configure::read('Search.adapters') as $name => $config) {
+            if (!empty($scopes) && !empty($config['scopes']) && !array_intersect($scopes, $config['scopes'])) {
+                continue;
+            }
+
             yield (string)$name => $this->getAdapter((string)$name);
         }
     }
