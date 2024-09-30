@@ -934,6 +934,7 @@ class MediaControllerTest extends IntegrationTestCase
                     'provider_url' => null,
                     'provider_thumbnail' => null,
                     'provider_extra' => null,
+                    'default_val_property' => null,
                 ],
                 'meta' => [
                     'locked' => false,

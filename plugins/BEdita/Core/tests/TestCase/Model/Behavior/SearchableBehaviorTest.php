@@ -228,6 +228,12 @@ class SearchableBehaviorTest extends TestCase
 
         static::assertEquals(0, $default->afterDeleteCount);
         static::assertEquals(0, $foo->afterDeleteCount);
+        $entity->setDirty('name');
+        $table->saveOrFail($entity, ['_primary' => false]);
+        static::assertEquals(1, $default->afterSaveCount);
+        static::assertEquals(1, $foo->initializedCount);
+
+        static::assertEquals(0, $foo->afterDeleteCount);
         $table->deleteOrFail($entity);
         static::assertEquals(1, $default->afterDeleteCount);
         static::assertEquals(1, $foo->afterDeleteCount);

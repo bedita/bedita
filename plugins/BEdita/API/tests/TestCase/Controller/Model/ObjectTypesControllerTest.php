@@ -133,7 +133,11 @@ class ObjectTypesControllerTest extends IntegrationTestCase
                         'alias' => 'Documents',
                         'relations' => [
                             'test',
+                            'test_simple',
+                            'test_defaults',
                             'inverse_test',
+                            'inverse_test_simple',
+                            'inverse_test_defaults',
                         ],
                         'created' => '2017-11-10T09:27:23+00:00',
                         'modified' => '2017-11-10T09:27:23+00:00',
@@ -183,6 +187,8 @@ class ObjectTypesControllerTest extends IntegrationTestCase
                         'alias' => 'Profiles',
                         'relations' => [
                             'inverse_test',
+                            'inverse_test_simple',
+                            'inverse_test_defaults',
                         ],
                         'created' => '2017-11-10T09:27:23+00:00',
                         'modified' => '2017-11-10T09:27:23+00:00',
@@ -706,7 +712,11 @@ class ObjectTypesControllerTest extends IntegrationTestCase
                     'alias' => 'Documents',
                     'relations' => [
                         'test',
+                        'test_simple',
+                        'test_defaults',
                         'inverse_test',
+                        'inverse_test_simple',
+                        'inverse_test_defaults',
                     ],
                     'created' => '2017-11-10T09:27:23+00:00',
                     'modified' => '2017-11-10T09:27:23+00:00',

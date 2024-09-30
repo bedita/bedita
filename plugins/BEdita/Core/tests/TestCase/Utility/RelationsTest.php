@@ -68,8 +68,8 @@ class RelationsTest extends TestCase
         Relations::create($this->relations);
 
         $allRelations = TableRegistry::getTableLocator()->get('Relations')->find()->toArray();
-        static::assertEquals(4, count($allRelations));
-        static::assertEquals('poster', $allRelations[3]['name']);
+        static::assertEquals(6, count($allRelations));
+        static::assertEquals('poster', $allRelations[5]['name']);
     }
 
     /**
@@ -84,7 +84,7 @@ class RelationsTest extends TestCase
 
         Relations::remove($this->relations);
         $allRelations = TableRegistry::getTableLocator()->get('Relations')->find()->toArray();
-        static::assertEquals(3, count($allRelations));
+        static::assertEquals(5, count($allRelations));
     }
 
     /**
@@ -100,7 +100,7 @@ class RelationsTest extends TestCase
         $leftTypes = TableRegistry::getTableLocator()
             ->get('RelationTypes')
             ->find()
-            ->where(['relation_id' => 4, 'side' => 'left'])
+            ->where(['relation_id' => 6, 'side' => 'left'])
             ->toArray();
         static::assertEquals(3, count($leftTypes));
     }

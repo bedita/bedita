@@ -384,6 +384,30 @@ class TranslationsControllerTest extends IntegrationTestCase
                             'related' => 'http://api.example.com/documents/2/translations',
                         ],
                     ],
+                    'test_simple' => [
+                        'links' => [
+                            'self' => 'http://api.example.com/documents/2/relationships/test_simple',
+                            'related' => 'http://api.example.com/documents/2/test_simple',
+                        ],
+                    ],
+                    'test_defaults' => [
+                        'links' => [
+                            'self' => 'http://api.example.com/documents/2/relationships/test_defaults',
+                            'related' => 'http://api.example.com/documents/2/test_defaults',
+                        ],
+                    ],
+                    'inverse_test_simple' => [
+                        'links' => [
+                            'self' => 'http://api.example.com/documents/2/relationships/inverse_test_simple',
+                            'related' => 'http://api.example.com/documents/2/inverse_test_simple',
+                        ],
+                    ],
+                    'inverse_test_defaults' => [
+                        'links' => [
+                            'self' => 'http://api.example.com/documents/2/relationships/inverse_test_defaults',
+                            'related' => 'http://api.example.com/documents/2/inverse_test_defaults',
+                        ],
+                    ],
                 ],
             ],
             'meta' => [
@@ -445,6 +469,30 @@ class TranslationsControllerTest extends IntegrationTestCase
                         'links' => [
                             'related' => 'http://api.example.com/documents/2/translations',
                             'self' => 'http://api.example.com/documents/2/relationships/translations',
+                        ],
+                    ],
+                    'test_simple' => [
+                        'links' => [
+                            'self' => 'http://api.example.com/documents/2/relationships/test_simple',
+                            'related' => 'http://api.example.com/documents/2/test_simple',
+                        ],
+                    ],
+                    'test_defaults' => [
+                        'links' => [
+                            'self' => 'http://api.example.com/documents/2/relationships/test_defaults',
+                            'related' => 'http://api.example.com/documents/2/test_defaults',
+                        ],
+                    ],
+                    'inverse_test_simple' => [
+                        'links' => [
+                            'self' => 'http://api.example.com/documents/2/relationships/inverse_test_simple',
+                            'related' => 'http://api.example.com/documents/2/inverse_test_simple',
+                        ],
+                    ],
+                    'inverse_test_defaults' => [
+                        'links' => [
+                            'self' => 'http://api.example.com/documents/2/relationships/inverse_test_defaults',
+                            'related' => 'http://api.example.com/documents/2/inverse_test_defaults',
                         ],
                     ],
                 ],

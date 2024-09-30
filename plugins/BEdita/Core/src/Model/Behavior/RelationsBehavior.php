@@ -135,6 +135,7 @@ class RelationsBehavior extends Behavior
                     $through->aliasField('priority') => 'asc',
                 ],
                 'objectType' => $targetObjectType,
+                'relation' => $relation,
             ]);
         }
 
@@ -167,6 +168,7 @@ class RelationsBehavior extends Behavior
                     $through->aliasField('inv_priority') => 'asc',
                 ],
                 'objectType' => $targetObjectType,
+                'relation' => $relation,
             ]);
         }
     }
