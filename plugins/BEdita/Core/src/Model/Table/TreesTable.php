@@ -147,7 +147,7 @@ class TreesTable extends Table
      */
     public static function jsonSchema($value)
     {
-        $schema = Configure::read('Folders.params_schema');
+        $schema = Configure::read('ChildrenParams');
         if (empty($schema)) {
             return true;
         }

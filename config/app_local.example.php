@@ -221,19 +221,16 @@ return [
     // ],
 
     /**
-     * Configuration for folders:
-     * - `params_schema` is the optional JSON schema for the `params` attribute of the children relation
+     * Optional schema for the `params` attribute of the children relationship.
      */
-    // 'Folders' => [
-    //     'params_schema' => [
-    //         'type' => 'object',
-    //         'required' => ['name'],
-    //         'properties' => [
-    //             'name' => ['type' => 'string'],
-    //             'hobby' => [
-    //                 'type' => 'string',
-    //                 'enum' => ['fishing', 'knitting', 'gaming'],
-    //             ],
+    // 'ChildrenParams' => [
+    //     'type' => 'object',
+    //     'required' => ['name'],
+    //     'properties' => [
+    //         'name' => ['type' => 'string'],
+    //         'hobby' => [
+    //             'type' => 'string',
+    //             'enum' => ['fishing', 'knitting', 'gaming'],
     //         ],
     //     ],
     // ],
