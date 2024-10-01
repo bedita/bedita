@@ -130,9 +130,7 @@ class TreesTable extends Table
 
         $validator
             ->allowEmptyArray('params', null, static::jsonSchema(null) === true)
-            ->requirePresence('params', function ($context) {
-                return $context['newRecord'] && static::jsonSchema(null) !== true;
-            })
+            ->requirePresence('params', fn ($context) => $context['newRecord'] && static::jsonSchema(null) !== true)
             ->add('params', 'valid', [
                 'rule' => 'jsonSchema',
                 'provider' => 'table',
@@ -149,7 +147,7 @@ class TreesTable extends Table
      */
     public static function jsonSchema($value)
     {
-        $schema = Configure::read('Folder.params_schema');
+        $schema = Configure::read('Folders.params_schema');
         if (empty($schema)) {
             return true;
         }
