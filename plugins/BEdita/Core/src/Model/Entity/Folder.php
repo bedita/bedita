@@ -77,6 +77,7 @@ class Folder extends ObjectEntity
         $Trees = TableRegistry::getTableLocator()->get('Trees');
         /** @var \BEdita\Core\Model\Entity\Tree $node */
         $node = $Trees->find()->where(['object_id' => $this->id])->first();
+        $permission = [];
 
         if ($node !== null) {
             $permission = $this->getTable()->Permissions
