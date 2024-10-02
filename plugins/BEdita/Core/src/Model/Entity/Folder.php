@@ -74,6 +74,9 @@ class Folder extends ObjectEntity
      */
     protected function getInheritedRolesPermissions(): array
     {
+        if (empty($this->id)) {
+            return [];
+        }
         $Trees = TableRegistry::getTableLocator()->get('Trees');
         /** @var \BEdita\Core\Model\Entity\Tree $node */
         $node = $Trees->find()->where(['object_id' => $this->id])->first();
