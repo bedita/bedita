@@ -86,10 +86,35 @@ class CompactHistoryCommandTest extends TestCase
      */
     public function testExecuteDryrun(): void
     {
-        $this->exec('compact_history --from 1 --to 3 --dryrun 1');
+        $q = $this->fetchTable('Objects')->find();
+        $max = $q->select(['max_id' => $q->func()->max('id')])
+            ->first()
+            ->get('max_id');
+        $this->exec('compact_history --dryrun 1');
         $this->assertExitSuccess();
         $this->assertOutputContains('Dry run mode: yes');
-        $this->assertOutputContains('Min ID: 1 - Max ID: 3');
+        $this->assertOutputContains('Min ID: 1');
+        $this->assertOutputContains('Max ID: ' . $max);
+    }
+
+    /**
+     * Test execute on missing Ids
+     *
+     * @return void
+     * @covers ::execute()
+     * @covers ::initialize()
+     * @covers ::compactHistory()
+     * @covers ::objectsGenerator()
+     */
+    public function testExecuteMissingIds(): void
+    {
+        $this->exec('compact_history --from 1234567 --to 1234568 --verbose');
+        $this->assertExitSuccess();
+        $this->assertOutputContains('Dry run mode: no');
+        $this->assertOutputContains('Min ID: 1234567');
+        $this->assertOutputContains('Max ID: 1234568');
+        $this->assertOutputContains('ID 1234567 not found. Skip');
+        $this->assertOutputContains('ID 1234568 not found. Skip');
     }
 
     /**
