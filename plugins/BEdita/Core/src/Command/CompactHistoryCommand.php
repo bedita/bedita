@@ -183,7 +183,8 @@ class CompactHistoryCommand extends Command
                 )
             );
             foreach ($stack as $i => $h) {
-                $io->verbose(sprintf(':: History ID %d: %s', $h->id, $this->serialize($h)));
+                $s = $h->user_action . '-' . json_encode($h->changed);
+                $io->verbose(sprintf(':: History ID %d: %s', $h->id, $s));
                 if ($i === 0) {
                     continue;
                 }
@@ -234,35 +235,10 @@ class CompactHistoryCommand extends Command
      */
     protected function compare($history1, $history2)
     {
-        return $this->serialize($history1) === $this->serialize($history2);
-    }
+        $h1 = $history1->user_action . '-' . json_encode($history1->changed);
+        $h2 = $history2->user_action . '-' . json_encode($history2->changed);
 
-    /**
-     * Serialize history entity
-     *
-     * @param \BEdita\Core\Model\Entity\History $history History entity
-     * @return string
-     */
-    protected function serialize($history): string
-    {
-        return $history->user_action . '-' . json_encode($history->changed);
-    }
-
-    /**
-     * History entity
-     *
-     * @param \BEdita\Core\Model\Entity\ObjectEntity $object Object entity
-     * @return \BEdita\Core\Model\Entity\History
-     */
-    protected function historyEntity(ObjectEntity $object): History
-    {
-        /** @var \BEdita\Core\Model\Entity\History $history */
-        $history = $this->History->newEntity([]);
-        $history->resource_id = $object->get('id');
-        $history->resource_type = 'objects';
-        $history->application_id = $this->appId;
-
-        return $history;
+        return $h1 === $h2;
     }
 
     /**
@@ -275,7 +251,6 @@ class CompactHistoryCommand extends Command
     {
         $pageSize = self::PAGE_SIZE;
         $pages = ceil($query->count() / $pageSize);
-
         for ($page = 1; $page <= $pages; $page++) {
             yield from $query
                 ->page($page, $pageSize)
