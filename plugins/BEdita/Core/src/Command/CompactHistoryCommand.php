@@ -161,45 +161,8 @@ class CompactHistoryCommand extends Command
                 $prev = $current;
                 continue;
             }
-            switch (count($stack)) {
-                case 0:
-                case 1:
-                    $stack = [$prev, $current];
-                    break;
-                case 2:
-                    $stack = [$stack[1], $prev, $current];
-                    break;
-                default:
-                    $stack = [$stack[1], $stack[2], $current];
-                    break;
-            }
-            $io->verbose(
-                sprintf(
-                    ':[%d] Resource ID %d',
-                    $processed,
-                    $objectId
-                )
-            );
-            foreach ($stack as $i => $h) {
-                $s = $h->user_action . '-' . json_encode($h->changed);
-                $io->verbose(sprintf(':: History ID %d: %s', $h->id, $s));
-                if ($i === 0) {
-                    continue;
-                }
-                if ($i === 1) {
-                    if ($this->compare($h, $stack[$i - 1])) {
-                        $duplicated[] = $stack[$i - 1];
-                    }
-                    continue;
-                }
-                // $i === 2
-                if ($this->compare($h, $stack[$i - 1])) {
-                    $duplicated[] = $stack[$i - 1];
-                }
-                if ($this->compare($h, $stack[$i - 2])) {
-                    $duplicated[] = $stack[$i - 2];
-                }
-            }
+            $io->verbose(sprintf(':[%d] Resource ID %d', $processed, $objectId));
+            $this->processHistory($prev, $current, $duplicated, $stack, $io);
             $io->verbose(sprintf(':[%d] Resource ID %d, history ID %d: duplicated %d', $processed, $objectId, $current->id, count($duplicated)));
             $prev = $current;
         }
@@ -253,6 +216,51 @@ class CompactHistoryCommand extends Command
             yield from $query
                 ->page($page, $pageSize)
                 ->toArray();
+        }
+    }
+
+    /**
+     * Process history records
+     *
+     * @param \BEdita\Core\Model\Entity\History $prev Previous history record
+     * @param \BEdita\Core\Model\Entity\History $current Current history record
+     * @param array $duplicated Duplicated history records
+     * @param array $stack History records stack
+     * @param \Cake\Console\ConsoleIo $io Console IO
+     * @return void
+     */
+    protected function processHistory($prev, $current, $duplicated, $stack, $io): void
+    {
+        switch (count($stack)) {
+            case 0:
+            case 1:
+                $stack = [$prev, $current];
+                break;
+            case 2:
+                $stack = [$stack[1], $prev, $current];
+                break;
+            default:
+                $stack = [$stack[1], $stack[2], $current];
+                break;
+        }
+        foreach ($stack as $i => $h) {
+            $io->verbose(sprintf(':: History ID %d: %s', $h->id, $h->user_action . '-' . json_encode($h->changed)));
+            if ($i === 0) {
+                continue;
+            }
+            if ($i === 1) {
+                if ($this->compare($h, $stack[$i - 1])) {
+                    $duplicated[] = $stack[$i - 1];
+                }
+                continue;
+            }
+            // $i === 2
+            if ($this->compare($h, $stack[$i - 1])) {
+                $duplicated[] = $stack[$i - 1];
+            }
+            if ($this->compare($h, $stack[$i - 2])) {
+                $duplicated[] = $stack[$i - 2];
+            }
         }
     }
 }
