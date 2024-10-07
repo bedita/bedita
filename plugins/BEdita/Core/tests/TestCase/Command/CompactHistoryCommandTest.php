@@ -212,6 +212,24 @@ class CompactHistoryCommandTest extends TestCase
             'resource_id' => 1,
             'application_id' => 1,
             'event' => 'create',
+            'data' => json_encode(['foo2' => 'bar2']),
+        ]));
+        $table->save(new History([
+            'resource_id' => 1,
+            'application_id' => 1,
+            'event' => 'create',
+            'data' => json_encode(['foo' => 'bar']),
+        ]));
+        $table->save(new History([
+            'resource_id' => 1,
+            'application_id' => 1,
+            'event' => 'create',
+            'data' => json_encode(['foo2' => 'bar2']),
+        ]));
+        $table->save(new History([
+            'resource_id' => 1,
+            'application_id' => 1,
+            'event' => 'create',
             'data' => json_encode(['foo' => 'bar']),
         ]));
         $this->exec('compact_history --from 1 --to 1');
