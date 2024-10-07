@@ -77,27 +77,30 @@ class Folder extends ObjectEntity
         $Trees = TableRegistry::getTableLocator()->get('Trees');
         /** @var \BEdita\Core\Model\Entity\Tree $node */
         $node = $Trees->find()->where(['object_id' => $this->id])->first();
+        $permission = [];
 
-        $permission = $this->getTable()->Permissions
-            ->find()
-            ->disableHydration()
-            ->select(['tree_left' => 'Trees.tree_left', 'name' => 'Roles.name'])
-            ->contain('Roles')
-            ->innerJoin(
-                ['Trees' => 'trees'],
-                [
-                    'Trees.object_id = Permissions.object_id',
-                    'Trees.tree_left <' => $node->tree_left,
-                    'Trees.tree_right >' => $node->tree_right,
-                ],
-                [
-                    'Trees.object_id' => 'integer',
-                    'Trees.tree_left' => 'integer',
-                    'Trees.tree_right' => 'integer',
-                ]
-            )
-            ->order(['Trees.tree_left' => 'DESC'])
-            ->toArray();
+        if ($node !== null) {
+            $permission = $this->getTable()->Permissions
+                ->find()
+                ->disableHydration()
+                ->select(['tree_left' => 'Trees.tree_left', 'name' => 'Roles.name'])
+                ->contain('Roles')
+                ->innerJoin(
+                    ['Trees' => 'trees'],
+                    [
+                        'Trees.object_id = Permissions.object_id',
+                        'Trees.tree_left <' => $node->tree_left,
+                        'Trees.tree_right >' => $node->tree_right,
+                    ],
+                    [
+                        'Trees.object_id' => 'integer',
+                        'Trees.tree_left' => 'integer',
+                        'Trees.tree_right' => 'integer',
+                    ]
+                )
+                ->order(['Trees.tree_left' => 'DESC'])
+                ->toArray();
+        }
 
         if (empty($permission)) {
             return [];

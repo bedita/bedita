@@ -143,7 +143,7 @@ class ObjectTypesTable extends Table
             'left' => 'tree_left',
             'right' => 'tree_right',
         ]);
-        $this->addBehavior('BEdita/Core.Searchable');
+        $this->addBehavior('BEdita/Core.Searchable', ['scopes' => (array)$this->getTable()]);
 
         $this->setupSimpleSearch(['fields' => ['name', 'singular', 'description']]);
     }

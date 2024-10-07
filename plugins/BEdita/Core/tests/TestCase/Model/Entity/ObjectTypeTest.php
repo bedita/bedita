@@ -109,7 +109,11 @@ class ObjectTypeTest extends TestCase
             'table' => 'BEdita/Core.Objects',
             'relations' => [
                 'test',
+                'test_simple',
+                'test_defaults',
                 'inverse_test',
+                'inverse_test_simple',
+                'inverse_test_defaults',
             ],
             'parent_name' => 'objects',
         ];
@@ -229,17 +233,17 @@ class ObjectTypeTest extends TestCase
                 'objects',
             ],
             'both' => [
-                ['test', 'inverse_test'],
+                ['test', 'test_simple', 'test_defaults', 'inverse_test', 'inverse_test_simple', 'inverse_test_defaults'],
                 'documents',
                 'both',
             ],
             'left' => [
-                ['test'],
+                ['test', 'test_simple', 'test_defaults'],
                 'documents',
                 'left',
             ],
             'right' => [
-                ['inverse_test'],
+                ['inverse_test', 'inverse_test_simple', 'inverse_test_defaults'],
                 'documents',
                 'right',
             ],
@@ -280,6 +284,8 @@ class ObjectTypeTest extends TestCase
     {
         $expected = [
             'inverse_test',
+            'inverse_test_simple',
+            'inverse_test_defaults',
         ];
         $objectType = $this->ObjectTypes->get(3);
 
@@ -733,6 +739,18 @@ class ObjectTypeTest extends TestCase
                             '$id' => '/properties/provider_extra',
                             'title' => 'Provider Extra',
                         ],
+                        'default_val_property' => [
+                            'oneOf' => [
+                                [
+                                    'type' => 'null',
+                                ],
+                                [
+                                    'type' => 'string',
+                                ],
+                            ],
+                            '$id' => '/properties/default_val_property',
+                            'title' => 'Default Val Property',
+                        ],
                     ],
                     'required' => [
                         'media_property',
@@ -966,6 +984,80 @@ class ObjectTypeTest extends TestCase
                         'test' => [
                             'label' => 'Test relation',
                             'params' => null,
+                            'types' => ['documents', 'profiles'],
+                        ],
+                        'inverse_test_simple' => [
+                            'label' => 'Inverse test relation involving simple parameters',
+                            'params' => (object)[
+                                'type' => 'object',
+                                'properties' => (object)[
+                                    'name' => (object)[
+                                        'type' => 'string',
+                                    ],
+                                    'age' => (object)[
+                                        'type' => 'integer',
+                                        'minimum' => 0,
+                                    ],
+                                ],
+                            ],
+                            'types' => ['documents'],
+                        ],
+                        'inverse_test_defaults' => [
+                            'label' => 'Inverse test relation involving default parameters',
+                            'params' => (object)[
+                                'type' => 'object',
+                                'properties' => (object)[
+                                    'size' => (object)[
+                                        'type' => ['integer', 'null'],
+                                        'default' => 5,
+                                    ],
+                                    'street' => (object)[
+                                        'type' => 'string',
+                                        'default' => 'fighter',
+                                    ],
+                                    'color' => (object)[
+                                        'type' => ['string', 'null'],
+                                        'default' => null,
+                                    ],
+                                ],
+                            ],
+                            'types' => ['documents'],
+                        ],
+                        'test_simple' => [
+                            'label' => 'Test relation involving simple parameters',
+                            'params' => (object)[
+                                'type' => 'object',
+                                'properties' => (object)[
+                                    'name' => (object)[
+                                        'type' => 'string',
+                                    ],
+                                    'age' => (object)[
+                                        'type' => 'integer',
+                                        'minimum' => 0,
+                                    ],
+                                ],
+                            ],
+                            'types' => ['documents', 'profiles'],
+                        ],
+                        'test_defaults' => [
+                            'label' => 'Test relation involving default parameters',
+                            'params' => (object)[
+                                'type' => 'object',
+                                'properties' => (object)[
+                                    'size' => (object)[
+                                        'type' => ['integer', 'null'],
+                                        'default' => 5,
+                                    ],
+                                    'street' => (object)[
+                                        'type' => 'string',
+                                        'default' => 'fighter',
+                                    ],
+                                    'color' => (object)[
+                                        'type' => ['string', 'null'],
+                                        'default' => null,
+                                    ],
+                                ],
+                            ],
                             'types' => ['documents', 'profiles'],
                         ],
                     ],

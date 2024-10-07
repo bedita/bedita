@@ -14,6 +14,7 @@ declare(strict_types=1);
  */
 namespace BEdita\Core\Model\Behavior;
 
+use ArrayObject;
 use BEdita\Core\Exception\BadFilterException;
 use BEdita\Core\Search\Adapter\SimpleAdapter;
 use BEdita\Core\Search\BaseAdapter;
@@ -47,6 +48,7 @@ class SearchableBehavior extends Behavior
             'Model.afterSave' => 'edit',
             'Model.afterDelete' => 'delete',
         ],
+        'scopes' => [],
         'implementedFinders' => [
             'query' => 'findQuery',
         ],
@@ -108,10 +110,16 @@ class SearchableBehavior extends Behavior
      *
      * @param \Cake\Event\EventInterface $event The event
      * @param \Cake\Datasource\EntityInterface $entity The resource entity
+     * @param \ArrayObject $options Save options.
      * @return void
      */
-    public function afterSave(EventInterface $event, EntityInterface $entity): void
+    public function afterSave(EventInterface $event, EntityInterface $entity, ArrayObject $options): void
     {
+        if (empty($options['_primary'])) {
+            // Do not reindex non-primary saved entities, as they will probably be incomplete.
+            return;
+        }
+
         $this->indexEntity($event, $entity);
     }
 
@@ -135,7 +143,12 @@ class SearchableBehavior extends Behavior
      */
     public function getSearchAdapters(): iterable
     {
-        foreach (array_keys((array)Configure::read('Search.adapters')) as $name) {
+        $scopes = (array)$this->getConfig('scopes');
+        foreach ((array)Configure::read('Search.adapters') as $name => $config) {
+            if (!empty($scopes) && !empty($config['scopes']) && !array_intersect($scopes, $config['scopes'])) {
+                continue;
+            }
+
             yield (string)$name => $this->getAdapter((string)$name);
         }
     }

@@ -16,7 +16,9 @@ declare(strict_types=1);
 namespace BEdita\API\Controller;
 
 use BEdita\API\Model\Action\UpdateAssociatedAction;
+use BEdita\Core\Exception\BadFilterException;
 use BEdita\Core\Model\Action\AddAssociatedAction;
+use BEdita\Core\Model\Action\DeleteEntitiesAction;
 use BEdita\Core\Model\Action\DeleteEntityAction;
 use BEdita\Core\Model\Action\GetEntityAction;
 use BEdita\Core\Model\Action\ListAssociatedAction;
@@ -127,14 +129,27 @@ abstract class ResourcesController extends AppController
      *
      * This action represents a collection of resources.
      * If the request is a `POST` request, this action creates a new resource.
+     * If the request is a `DELETE` request, this action deletes existing resources.
      *
      * @return void
      */
     public function index()
     {
-        $this->request->allowMethod(['get', 'post']);
+        $this->request->allowMethod(['get', 'post', 'delete']);
 
-        if ($this->request->is('post')) {
+        if ($this->request->is('delete')) {
+            $ids = (string)$this->request->getQuery('ids');
+            if (empty($ids)) {
+                throw new BadFilterException(__d('bedita', 'Missing required parameter "{0}"', 'ids'));
+            }
+            $filter = ['id' => explode(',', $ids)];
+            $action = new ListEntitiesAction(['table' => $this->Table]);
+            $entities = $action(compact('filter'));
+            $action = new DeleteEntitiesAction();
+            $action(compact('entities'));
+
+            return $this->response->withStatus(204);
+        } elseif ($this->request->is('post')) {
             // Add a new entity.
             $entity = $this->Table->newEmptyEntity();
             $action = new SaveEntityAction(['table' => $this->Table]);

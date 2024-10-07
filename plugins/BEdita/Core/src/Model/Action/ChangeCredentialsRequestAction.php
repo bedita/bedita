@@ -16,6 +16,7 @@ declare(strict_types=1);
 namespace BEdita\Core\Model\Action;
 
 use BEdita\Core\Exception\InvalidDataException;
+use BEdita\Core\Mailer\UserMailerTrait;
 use BEdita\Core\Model\Entity\AsyncJob;
 use BEdita\Core\Model\Entity\User;
 use BEdita\Core\Model\Validation\Validation;
@@ -24,7 +25,6 @@ use Cake\Event\EventDispatcherTrait;
 use Cake\Event\EventInterface;
 use Cake\Event\EventListenerInterface;
 use Cake\I18n\FrozenTime;
-use Cake\Mailer\MailerAwareTrait;
 use Cake\ORM\TableRegistry;
 use Cake\Validation\Validator;
 
@@ -42,7 +42,7 @@ use Cake\Validation\Validator;
 class ChangeCredentialsRequestAction extends BaseAction implements EventListenerInterface
 {
     use EventDispatcherTrait;
-    use MailerAwareTrait;
+    use UserMailerTrait;
 
     /**
      * The UsersTable table
@@ -175,7 +175,7 @@ class ChangeCredentialsRequestAction extends BaseAction implements EventListener
         $options = [
             'params' => compact('user', 'changeUrl'),
         ];
-        $this->getMailer('BEdita/Core.User')->send('changeRequest', [$options]);
+        $this->getUserMailer()->send('changeRequest', [$options]);
     }
 
     /**
