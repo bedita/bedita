@@ -42,6 +42,13 @@ class CompactHistoryCommand extends Command
     public $History;
 
     /**
+     * Dry run mode flag
+     *
+     * @var bool
+     */
+    protected bool $dryrun = false;
+
+    /**
      * Application ID
      *
      * @var int
@@ -83,6 +90,11 @@ class CompactHistoryCommand extends Command
                 'help' => 'Max ID to check',
                 'short' => 't',
                 'required' => false,
+            ])
+            ->addOption('dryrun', [
+                'help' => 'dry run mode',
+                'required' => false,
+                'short' => 'd',
             ]);
     }
 
@@ -103,6 +115,10 @@ class CompactHistoryCommand extends Command
      */
     public function execute(Arguments $args, ConsoleIo $io): ?int
     {
+        if ($args->getOption('dryrun')) {
+            $this->dryrun = true;
+        }
+        $io->out(sprintf('Dry run mode: %s', $this->dryrun === true ? 'yes' : 'no'));
         $this->minId = intval($args->getOption('from'));
         if ($this->minId === 0) {
             $this->minId = 1;
@@ -170,6 +186,11 @@ class CompactHistoryCommand extends Command
             $io->verbose(':: No duplicates found');
 
             return false;
+        }
+        if ($this->dryrun === true) {
+            $io->verbose(':: Dry run mode: do not delete duplicated history records');
+
+            return true;
         }
         // can be a lot... do not delete all at once
         foreach ($duplicated as $duplicate) {

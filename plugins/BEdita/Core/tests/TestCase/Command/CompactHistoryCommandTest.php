@@ -69,6 +69,7 @@ class CompactHistoryCommandTest extends TestCase
         $this->exec('compact_history --help');
         $this->assertOutputContains('Min ID to check');
         $this->assertOutputContains('Max ID to check');
+        $this->assertOutputContains('dry run mode');
     }
 
     /**
