@@ -124,7 +124,7 @@ class CompactHistoryCommand extends Command
 
                 continue;
             }
-            if ($this->fixHistoryCompact($current, $io)) {
+            if ($this->compactHistory($current, $io)) {
                 $count++;
             }
             $processed++;
@@ -143,7 +143,7 @@ class CompactHistoryCommand extends Command
      * @param int $objectId The object ID
      * @return bool
      */
-    protected function fixHistoryCompact(int $objectId, ConsoleIo $io): bool
+    protected function compactHistory(int $objectId, ConsoleIo $io): bool
     {
         $query = $this->History
             ->find()
@@ -229,7 +229,7 @@ class CompactHistoryCommand extends Command
      * @param \Cake\Console\ConsoleIo $io Console IO
      * @return void
      */
-    protected function processHistory($prev, $current, $duplicated, $stack, $io): void
+    protected function processHistory($prev, $current, &$duplicated, &$stack, $io): void
     {
         switch (count($stack)) {
             case 0:

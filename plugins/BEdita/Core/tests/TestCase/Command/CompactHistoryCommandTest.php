@@ -64,10 +64,29 @@ class CompactHistoryCommandTest extends TestCase
      * @return void
      * @covers ::buildOptionParser()
      */
-    public function testBuildOptionParser()
+    public function testBuildOptionParser(): void
     {
         $this->exec('compact_history --help');
         $this->assertOutputContains('Min ID to check');
         $this->assertOutputContains('Max ID to check');
+    }
+
+    /**
+     * Test execute method
+     *
+     * @return void
+     * @covers ::execute()
+     * @covers ::initialize()
+     * @covers ::compactHistory()
+     * @covers ::objectsGenerator()
+     * @covers ::processHistory()
+     * @covers ::compare()
+     */
+    public function testExecute(): void
+    {
+        $this->exec('compact_history --from 1 --to 3');
+        $this->assertExitSuccess();
+        $this->assertOutputContains('Min ID: 1 - Max ID: 3');
+        $this->assertOutputContains('Processed 3, removed duplicates for 0 object(s)');
     }
 }
