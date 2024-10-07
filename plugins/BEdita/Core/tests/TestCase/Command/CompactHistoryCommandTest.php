@@ -74,7 +74,7 @@ class CompactHistoryCommandTest extends TestCase
     }
 
     /**
-     * Test execute method on dryrun mode
+     * Test execute method, min and max not set
      *
      * @return void
      * @covers ::execute()
@@ -84,7 +84,7 @@ class CompactHistoryCommandTest extends TestCase
      * @covers ::processHistory()
      * @covers ::compare()
      */
-    public function testExecuteDryrun(): void
+    public function testExecuteMinMaxDryrun(): void
     {
         $q = $this->fetchTable('Objects')->find();
         $max = $q->select(['max_id' => $q->func()->max('id')])
@@ -95,6 +95,26 @@ class CompactHistoryCommandTest extends TestCase
         $this->assertOutputContains('Dry run mode: yes');
         $this->assertOutputContains('Min ID: 1');
         $this->assertOutputContains('Max ID: ' . $max);
+    }
+
+    /**
+     * Test execute method with ID 1, no duplicates
+     *
+     * @return void
+     * @covers ::execute()
+     * @covers ::initialize()
+     * @covers ::compactHistory()
+     * @covers ::objectsGenerator()
+     * @covers ::processHistory()
+     * @covers ::compare()
+     */
+    public function testNoDuplicates(): void
+    {
+        $this->exec('compact_history --from 1 --to 1 --verbose');
+        $this->assertExitSuccess();
+        $this->assertOutputContains('Dry run mode: no');
+        $this->assertOutputContains('Min ID: 1 - Max ID: 1');
+        $this->assertOutputContains('No duplicates found');
     }
 
     /**
@@ -115,6 +135,49 @@ class CompactHistoryCommandTest extends TestCase
         $this->assertOutputContains('Max ID: 1234568');
         $this->assertOutputContains('ID 1234567 not found. Skip');
         $this->assertOutputContains('ID 1234568 not found. Skip');
+    }
+
+    /**
+     * Test execute method with dryrun mode
+     *
+     * @return void
+     * @covers ::execute()
+     * @covers ::initialize()
+     * @covers ::compactHistory()
+     * @covers ::objectsGenerator()
+     * @covers ::processHistory()
+     * @covers ::compare()
+     */
+    public function testExecuteDryrun(): void
+    {
+        // insert duplicated history records
+        $table = $this->fetchTable('History');
+        $countBefore = $table->find()->where(['resource_id' => 1])->count();
+        $table->save(new History([
+            'resource_id' => 1,
+            'application_id' => 1,
+            'event' => 'create',
+            'data' => json_encode(['foo' => 'bar']),
+        ]));
+        $table->save(new History([
+            'resource_id' => 1,
+            'application_id' => 1,
+            'event' => 'create',
+            'data' => json_encode(['foo2' => 'bar2']),
+        ]));
+        $table->save(new History([
+            'resource_id' => 1,
+            'application_id' => 1,
+            'event' => 'create',
+            'data' => json_encode(['foo' => 'bar']),
+        ]));
+        $this->exec('compact_history --from 1 --to 1 --dryrun 1 --verbose');
+        $this->assertExitSuccess();
+        $this->assertOutputContains('Dry run mode: yes');
+        $this->assertOutputContains('Min ID: 1 - Max ID: 1');
+        $this->assertOutputContains('Dry run mode: do not delete duplicated history records');
+        $countActual = $table->find()->where(['resource_id' => 1])->count();
+        static::assertEquals($countBefore + 3, $countActual);
     }
 
     /**
@@ -153,6 +216,7 @@ class CompactHistoryCommandTest extends TestCase
         ]));
         $this->exec('compact_history --from 1 --to 1');
         $this->assertExitSuccess();
+        $this->assertOutputContains('Dry run mode: no');
         $this->assertOutputContains('Min ID: 1 - Max ID: 1');
         $this->assertOutputContains('Processed 1, removed duplicates for 1 object(s)');
         $countActual = $table->find()->where(['resource_id' => 1])->count();
