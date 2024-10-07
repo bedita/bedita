@@ -85,7 +85,7 @@ class CompactHistoryCommandTest extends TestCase
      */
     public function testExecute(): void
     {
-        $this->exec('compact_history --from 1 --to 3 --dryrun');
+        $this->exec('compact_history --from 1 --to 3 --dryrun 1');
         $this->assertExitSuccess();
         $this->assertOutputContains('Dry run mode: yes');
         $this->assertOutputContains('Min ID: 1 - Max ID: 3');
