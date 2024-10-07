@@ -14,6 +14,7 @@ declare(strict_types=1);
  */
 namespace BEdita\Core\Test\TestCase\Command;
 
+use BEdita\Core\Model\Entity\History;
 use Cake\Console\TestSuite\ConsoleIntegrationTestTrait;
 use Cake\TestSuite\TestCase;
 
@@ -73,6 +74,25 @@ class CompactHistoryCommandTest extends TestCase
     }
 
     /**
+     * Test execute method on dryrun mode
+     *
+     * @return void
+     * @covers ::execute()
+     * @covers ::initialize()
+     * @covers ::compactHistory()
+     * @covers ::objectsGenerator()
+     * @covers ::processHistory()
+     * @covers ::compare()
+     */
+    public function testExecuteDryrun(): void
+    {
+        $this->exec('compact_history --from 1 --to 3 --dryrun 1');
+        $this->assertExitSuccess();
+        $this->assertOutputContains('Dry run mode: yes');
+        $this->assertOutputContains('Min ID: 1 - Max ID: 3');
+    }
+
+    /**
      * Test execute method
      *
      * @return void
@@ -85,15 +105,32 @@ class CompactHistoryCommandTest extends TestCase
      */
     public function testExecute(): void
     {
-        $this->exec('compact_history --from 1 --to 3 --dryrun 1');
+        // insert duplicated history records
+        $table = $this->fetchTable('History');
+        $countBefore = $table->find()->where(['resource_id' => 1])->count();
+        $table->save(new History([
+            'resource_id' => 1,
+            'application_id' => 1,
+            'event' => 'create',
+            'data' => json_encode(['foo' => 'bar']),
+        ]));
+        $table->save(new History([
+            'resource_id' => 1,
+            'application_id' => 1,
+            'event' => 'create',
+            'data' => json_encode(['foo2' => 'bar2']),
+        ]));
+        $table->save(new History([
+            'resource_id' => 1,
+            'application_id' => 1,
+            'event' => 'create',
+            'data' => json_encode(['foo' => 'bar']),
+        ]));
+        $this->exec('compact_history --from 1 --to 1');
         $this->assertExitSuccess();
-        $this->assertOutputContains('Dry run mode: yes');
-        $this->assertOutputContains('Min ID: 1 - Max ID: 3');
-        $this->assertOutputContains(':: Dry run mode: do not delete duplicated history records');
-
-        $this->exec('compact_history --from 1 --to 3');
-        $this->assertExitSuccess();
-        $this->assertOutputContains('Min ID: 1 - Max ID: 3');
-        $this->assertOutputContains('Processed 3, removed duplicates for 0 object(s)');
+        $this->assertOutputContains('Min ID: 1 - Max ID: 1');
+        $this->assertOutputContains('Processed 1, removed duplicates for 1 object(s)');
+        $countActual = $table->find()->where(['resource_id' => 1])->count();
+        static::assertEquals($countBefore + 1, $countActual);
     }
 }
