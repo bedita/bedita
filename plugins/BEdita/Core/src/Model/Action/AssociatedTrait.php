@@ -203,7 +203,7 @@ trait AssociatedTrait
         }
 
         if (!empty($data)) {
-            $this->Association->junction()->patchEntity($joinData, $data);
+            $this->Association->junction()->patchEntity($joinData, $data, ['_skipSearchIndex' => true]);
         }
         $errors = $joinData->getErrors();
         if (!empty($errors)) {
@@ -253,7 +253,7 @@ trait AssociatedTrait
         }
 
         $existingJoin->set($this->getJunctionExtraFields($source, $new), ['guard' => false]);
-        $existingJoin = $this->Association->junction()->patchEntity($existingJoin, $data);
+        $existingJoin = $this->Association->junction()->patchEntity($existingJoin, $data, ['_skipSearchIndex' => true]);
         $errors = $existingJoin->getErrors();
         if (!empty($errors)) {
             throw new InvalidDataException(__d('bedita', 'Invalid data'), $errors);

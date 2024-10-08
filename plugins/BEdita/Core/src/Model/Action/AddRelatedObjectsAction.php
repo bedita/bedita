@@ -47,7 +47,7 @@ class AddRelatedObjectsAction extends UpdateRelatedObjectsAction
             $this->dispatchEvent('Associated.beforeSave', compact('entity', 'relatedEntities') + ['action' => 'add', 'association' => $this->Association]);
 
             $relatedEntities = $this->diff($entity, $relatedEntities->getArrayCopy(), false);
-            if (!$this->Association->link($entity, $relatedEntities)) {
+            if (!$this->Association->link($entity, $relatedEntities, ['_skipSearchIndex' => true])) {
                 return false;
             }
             $this->dispatchEvent('Associated.afterSave', compact('entity', 'relatedEntities') + ['action' => 'add', 'association' => $this->Association]);
