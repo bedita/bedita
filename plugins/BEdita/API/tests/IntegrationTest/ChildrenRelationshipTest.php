@@ -15,6 +15,7 @@ declare(strict_types=1);
 namespace BEdita\API\Test\IntegrationTest;
 
 use BEdita\API\TestSuite\IntegrationTestCase;
+use Cake\Core\Configure;
 use Cake\ORM\TableRegistry;
 use Cake\Utility\Hash;
 
@@ -182,7 +183,124 @@ class ChildrenRelationshipTest extends IntegrationTestCase
             'depth_level' => 2,
             'menu' => true,
             'canonical' => true,
+            'params' => null,
         ];
         static::assertEquals($expected, Hash::get($result, 'data.0.meta.relation'));
+    }
+
+    /**
+     * Test params of the trees table.
+     *
+     * @return void
+     */
+    public function testTreeParams()
+    {
+        $schema = [
+            'type' => 'object',
+            'properties' => [
+                'item' => ['type' => 'string'],
+                'class' => [
+                    'type' => 'string',
+                    'enum' => ['safe', 'euclid', 'keter'],
+                ],
+                'contained' => ['type' => 'boolean'],
+                'location' => ['type' => 'string'],
+                'description' => ['anyOf' => [['type' => 'null'], ['type' => 'string']]],
+            ],
+        ];
+        Configure::write('ChildrenParams', $schema);
+        $authHeader = $this->getUserAuthHeader();
+        $folderId = 13;
+        $relationshipsEndpoint = sprintf('/folders/%s/relationships/children', $folderId);
+        $objects = [
+            [
+                'type' => 'documents',
+                'attributes' => [
+                    'title' => 'Doc one here',
+                    'description' => 'Document one',
+                ],
+            ],
+            [
+                'type' => 'documents',
+                'attributes' => [
+                    'title' => 'Doc two here',
+                    'description' => 'Document two',
+                ],
+            ],
+        ];
+        $params = [
+            'item' => 'SCP-4147',
+            'class' => 'safe',
+            'contained' => true,
+            'location' => 'Site 28',
+            'description' => 'SCP-4147 is a series of encyclopedias divided into several volumes each.',
+        ];
+        $childrenData = [];
+
+        // create documents
+        foreach ($objects as &$data) {
+            $this->configRequestHeaders('POST', $authHeader);
+            $this->post('/documents', json_encode(compact('data')));
+            $this->assertResponseCode(201);
+            $this->assertContentType('application/vnd.api+json');
+            $data['id'] = $this->lastObjectId();
+
+            $childrenData[] = [
+                'type' => $data['type'],
+                'id' => $data['id'],
+            ];
+        }
+        unset($data);
+
+        // add first children without params
+        $this->configRequestHeaders('POST', $authHeader);
+        $this->post($relationshipsEndpoint, json_encode(['data' => [$childrenData[0]]]));
+        $this->assertResponseCode(200);
+        $this->assertContentType('application/vnd.api+json');
+
+        // check first children empty params
+        $this->configRequestHeaders('GET', $authHeader);
+        $this->get(sprintf('/folders/%d/children', $folderId));
+        $this->assertResponseCode(200);
+        $result = json_decode((string)$this->_response->getBody(), true);
+        static::assertEquals(1, count($result['data']));
+        static::assertNull(Hash::get($result, 'data.0.meta.relation.params'));
+
+        // update first children with params
+        $this->configRequestHeaders('PATCH', $authHeader);
+        $this->post($relationshipsEndpoint, json_encode(['data' => [$childrenData[0] + ['meta' => ['relation' => compact('params')]]]]));
+        $this->assertResponseCode(200);
+        $this->assertContentType('application/vnd.api+json');
+
+        // check first children updated params
+        $this->configRequestHeaders('GET', $authHeader);
+        $this->get(sprintf('/folders/%d/children', $folderId));
+        $this->assertResponseCode(200);
+        $result = json_decode((string)$this->_response->getBody(), true);
+        static::assertEquals(1, count($result['data']));
+        static::assertEquals($params, Hash::get($result, 'data.0.meta.relation.params'));
+
+        // add second children with params
+        $this->configRequestHeaders('POST', $authHeader);
+        $this->post($relationshipsEndpoint, json_encode(['data' => [$childrenData[1] + ['meta' => ['relation' => compact('params')]]]]));
+        $this->assertResponseCode(200);
+        $this->assertContentType('application/vnd.api+json');
+
+        // check second children params
+        $this->configRequestHeaders('GET', $authHeader);
+        $this->get(sprintf('/folders/%d/children', $folderId));
+        $this->assertResponseCode(200);
+        $result = json_decode((string)$this->_response->getBody(), true);
+        static::assertEquals(2, count($result['data']));
+        static::assertEquals($params, Hash::get($result, 'data.1.meta.relation.params'));
+
+        // update second children with invalid params
+        $this->configRequestHeaders('PATCH', $authHeader);
+        $this->post($relationshipsEndpoint, json_encode(['data' => [$childrenData[1] + ['meta' => ['relation' => ['params' => ['item' => 4147]]]]]]));
+        $this->assertResponseCode(400);
+        $this->assertContentType('application/vnd.api+json');
+        $result = json_decode((string)$this->_response->getBody(), true);
+        static::assertEquals('Invalid data', Hash::get($result, 'error.title'));
+        static::assertStringContainsString('String expected, 4147 received', Hash::get($result, 'error.detail'));
     }
 }

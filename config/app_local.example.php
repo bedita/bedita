@@ -221,6 +221,21 @@ return [
     // ],
 
     /**
+     * Optional schema for the `params` attribute of the children relationship.
+     */
+    // 'ChildrenParams' => [
+    //     'type' => 'object',
+    //     'required' => ['name'],
+    //     'properties' => [
+    //         'name' => ['type' => 'string'],
+    //         'hobby' => [
+    //             'type' => 'string',
+    //             'enum' => ['fishing', 'knitting', 'gaming'],
+    //         ],
+    //     ],
+    // ],
+
+    /**
      * I18n settings.
      * Language tags follow IETF RFC5646 https://tools.ietf.org/html/rfc5646
      * See also https://en.wikipedia.org/wiki/IETF_language_tag

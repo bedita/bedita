@@ -31,6 +31,7 @@ use Cake\ORM\TableRegistry;
  * @property int $depth_level
  * @property bool $menu
  * @property bool $canonical
+ * @property array|null $params
  * @property int|string $position
  *
  * @property \BEdita\Core\Model\Entity\ObjectEntity $object
@@ -52,6 +53,7 @@ class Tree extends Entity
         'menu' => true,
         'position' => true,
         'canonical' => true,
+        'params' => true,
     ];
 
     /**
