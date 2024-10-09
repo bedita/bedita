@@ -16,7 +16,7 @@ class TreesAddParams extends AbstractMigration
         $type = in_array('json', $columnTypes) ? 'json' : 'text';
         $this->table('trees')
             ->addColumn('params', $type, [
-                'comment' => 'Folder parameters (JSON)',
+                'comment' => 'Parameters for the position on tree (JSON)',
                 'default' => null,
                 'limit' => null,
                 'null' => true,
