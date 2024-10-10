@@ -46,7 +46,7 @@ class SetRelatedObjectsAction extends UpdateRelatedObjectsAction
         $this->dispatchEvent('Associated.beforeSave', compact('entity', 'relatedEntities') + ['action' => 'set', 'association' => $this->Association]);
 
         $relatedEntities = $this->diff($entity, $relatedEntities->getArrayCopy(), true, $affectedEntities);
-        if (!$this->Association->replaceLinks($entity, $relatedEntities)) {
+        if (!$this->Association->replaceLinks($entity, $relatedEntities, ['_skipSearchIndex' => true])) {
             return false;
         }
         $this->dispatchEvent('Associated.afterSave', compact('entity', 'relatedEntities') + ['action' => 'set', 'association' => $this->Association]);

@@ -53,7 +53,7 @@ class AddAssociatedAction extends UpdateAssociatedAction
                 $this->dispatchEvent('Associated.beforeSave', compact('entity', 'relatedEntities') + ['action' => 'add', 'association' => $this->Association]);
 
                 $relatedEntities = $this->diff($entity, $relatedEntities->getArrayCopy(), false);
-                if (!$this->Association->link($entity, $relatedEntities, ['atomic' => false])) {
+                if (!$this->Association->link($entity, $relatedEntities, ['atomic' => false, '_skipSearchIndex' => true])) {
                     return false;
                 }
                 foreach ($relatedEntities as $relatedEntity) {

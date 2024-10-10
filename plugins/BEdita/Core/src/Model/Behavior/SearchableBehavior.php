@@ -115,8 +115,9 @@ class SearchableBehavior extends Behavior
      */
     public function afterSave(EventInterface $event, EntityInterface $entity, ArrayObject $options): void
     {
-        if (empty($options['_primary'])) {
-            // Do not reindex non-primary saved entities, as they will probably be incomplete.
+        if (empty($options['_primary']) || !empty($options['_skipSearchIndex'])) {
+            // Do not reindex non-primary saved entities, as they will probably be incomplete, nor entities for which
+            // skipping reindex is explicitly requested.
             return;
         }
 
