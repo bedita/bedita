@@ -65,16 +65,6 @@ class SortRelatedObjectsAction extends BaseAction
                 return $direction === 'asc' ? $val1 <=> $val2 : $val2 <=> $val1;
             }
         );
-        $priority = 1;
-        $count = count($relatedEntities);
-        foreach ($relatedEntities as &$related) {
-            $join = (array)$related->get('_joinData');
-            $priorities = [
-                'inv_priority' => $count--,
-                'priority' => $priority++,
-            ];
-            $related->set('_joinData', array_filter(array_merge($join, $priorities)));
-        }
         $action = new SetRelatedObjectsAction(compact('association'));
         $action(compact('entity', 'relatedEntities'));
 
