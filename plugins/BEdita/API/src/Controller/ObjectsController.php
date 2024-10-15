@@ -118,6 +118,9 @@ class ObjectsController extends ResourcesController
         if (isset($this->JsonApi) && $this->request->getParam('action') !== 'relationships') {
             $this->JsonApi->setConfig('resourceTypes', [$this->objectType->name], false);
         }
+        if (isset($this->JsonApi) && $this->request->getParam('action') === 'relationshipsSort') {
+            $this->JsonApi->setConfig('parseJson', false);
+        }
     }
 
     /**

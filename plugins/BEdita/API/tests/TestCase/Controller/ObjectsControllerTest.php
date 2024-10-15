@@ -3606,37 +3606,30 @@ class ObjectsControllerTest extends IntegrationTestCase
      */
     public function testRelationshipsSort(): void
     {
-        $this->configRequestHeaders('PATCH', $this->getUserAuthHeader());
+        $headers = $this->getUserAuthHeader() + ['Content-Type' => 'application/json'];
+        $this->configRequestHeaders('PATCH', $headers);
         $this->patch('/documents/2/relationships/test/sort', json_encode([
-            'data' => [
-                'id' => 2,
-                'type' => 'documents',
-            ],
             'meta' => [
                 'field' => 'title',
                 'direction' => 'desc',
             ],
         ]));
         $this->assertResponseCode(200);
-        $this->configRequestHeaders('GET', $this->getUserAuthHeader());
+        $this->configRequestHeaders('GET', $headers);
         $this->get('/documents/2/relationships/test');
         $result = json_decode((string)$this->_response->getBody(), true);
         static::assertSame('3', Hash::get($result, 'data.0.id'));
         static::assertSame('documents', Hash::get($result, 'data.0.type'));
         static::assertSame('4', Hash::get($result, 'data.1.id'));
         static::assertSame('profiles', Hash::get($result, 'data.1.type'));
-        $this->configRequestHeaders('PATCH', $this->getUserAuthHeader());
+        $this->configRequestHeaders('PATCH', $headers);
         $this->patch('/documents/2/relationships/test/sort', json_encode([
-            'data' => [
-                'id' => 2,
-                'type' => 'documents',
-            ],
             'meta' => [
                 'field' => 'title',
                 'direction' => 'asc',
             ],
         ]));
-        $this->configRequestHeaders('GET', $this->getUserAuthHeader());
+        $this->configRequestHeaders('GET', $headers);
         $this->get('/documents/2/relationships/test');
         $result = json_decode((string)$this->_response->getBody(), true);
         static::assertSame('4', Hash::get($result, 'data.0.id'));
@@ -3665,10 +3658,6 @@ class ObjectsControllerTest extends IntegrationTestCase
         // reorder empty relationships
         $this->configRequestHeaders('PATCH', $this->getUserAuthHeader());
         $this->patch('/documents/2/relationships/test/sort', json_encode([
-            'data' => [
-                'id' => 2,
-                'type' => 'documents',
-            ],
             'meta' => [
                 'field' => 'title',
                 'direction' => 'desc',
@@ -3701,12 +3690,7 @@ class ObjectsControllerTest extends IntegrationTestCase
     public function testRelationshipsSortFalse(): void
     {
         $this->configRequestHeaders('PATCH', $this->getUserAuthHeader());
-        $this->patch('/documents/2/relationships/test/sort', json_encode([
-            'data' => [
-                'id' => 2,
-                'type' => 'documents',
-            ],
-        ]));
+        $this->patch('/documents/2/relationships/test/sort', json_encode([]));
         $this->assertResponseCode(500);
     }
 }
