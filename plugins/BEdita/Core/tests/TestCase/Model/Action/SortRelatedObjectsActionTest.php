@@ -87,4 +87,21 @@ class SortRelatedObjectsActionTest extends TestCase
         static::assertEquals($relatedEntities[0]->get('id'), $relatedEntitiesDesc[0]->get('id'));
         static::assertEquals($relatedEntities[1]->get('id'), $relatedEntitiesDesc[1]->get('id'));
     }
+
+    /**
+     * Test `execute` with missing required field.
+     *
+     * @return void
+     */
+    public function testExecuteMissingRequiredField(): void
+    {
+        $id = 2;
+        $Documents = $this->fetchTable('documents');
+        $entity = $Documents->get($id);
+        $relatedEntities = $Documents->get($id, ['contain' => ['Test']])->get('test');
+        $association = $Documents->getAssociation('Test');
+        $action = new SortRelatedObjectsAction(compact('association'));
+        $actual = $action(['entity' => $entity, 'field' => 'title']);
+        static::assertFalse($actual);
+    }
 }
