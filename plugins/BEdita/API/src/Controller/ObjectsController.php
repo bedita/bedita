@@ -517,10 +517,6 @@ class ObjectsController extends ResourcesController
      * ```
      * PATCH /{object_type}/{id}/relationships/{relationship}/sort
      * {
-     *     "data": {
-     *         "id": "{{ id }}",
-     *         "type": "{{ object_type}}"
-     *     },
      *     "meta": {
      *         "field": "{{ field }}",
      *         "direction": "{{ direction }}"
