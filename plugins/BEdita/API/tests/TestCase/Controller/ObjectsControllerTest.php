@@ -3603,6 +3603,7 @@ class ObjectsControllerTest extends IntegrationTestCase
      *
      * @return void
      * @covers ::relationshipsSort()
+     * @covers ::initialize()
      */
     public function testRelationshipsSort(): void
     {
@@ -3643,6 +3644,7 @@ class ObjectsControllerTest extends IntegrationTestCase
      *
      * @return void
      * @covers ::relationshipsSort()
+     * @covers ::initialize()
      */
     public function testRelationshipsSortEmpty(): void
     {
@@ -3686,6 +3688,7 @@ class ObjectsControllerTest extends IntegrationTestCase
      *
      * @return void
      * @covers ::relationshipsSort()
+     * @covers ::initialize()
      */
     public function testRelationshipsSortFalse(): void
     {
