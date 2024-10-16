@@ -3697,5 +3697,6 @@ class ObjectsControllerTest extends IntegrationTestCase
         $this->assertResponseCode(500);
         $this->assertContentType('application/vnd.api+json');
         $this->assertResponseContains('Could not sort and update relationship');
+        $this->assertResponseContains('Missing required key');
     }
 }

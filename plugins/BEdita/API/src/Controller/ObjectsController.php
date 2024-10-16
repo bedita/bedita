@@ -541,9 +541,9 @@ class ObjectsController extends ResourcesController
             $entity = $action(['primaryKey' => $id]);
             $action = new SortRelatedObjectsAction(compact('association'));
             $count = $action(['entity' => $entity, 'field' => $field, 'direction' => $direction]);
-        } catch (\Exception) {
+        } catch (\Exception $e) {
             throw new InternalErrorException(
-                __d('bedita', 'Could not sort and update relationship "{0}"', $relationship)
+                __d('bedita', 'Could not sort and update relationship "{0}": {1}', $relationship, $e->getMessage())
             );
         }
         if ($count === 0) {
