@@ -15,6 +15,7 @@ declare(strict_types=1);
 
 namespace BEdita\Core\Test\TestCase\Model\Action;
 
+use BEdita\Core\Exception\InvalidDataException;
 use BEdita\Core\Model\Action\SortRelatedObjectsAction;
 use BEdita\Core\Utility\LoggedUser;
 use Cake\TestSuite\TestCase;
@@ -99,13 +100,14 @@ class SortRelatedObjectsActionTest extends TestCase
      */
     public function testExecuteMissingRequiredField(): void
     {
+        $expectedException = new InvalidDataException('Missing required key "direction"');
+        $this->expectExceptionObject($expectedException);
         $id = 2;
         $Documents = $this->fetchTable('documents');
         $entity = $Documents->get($id);
         $relatedEntities = $Documents->get($id, ['contain' => ['Test']])->get('test');
         $association = $Documents->getAssociation('Test');
         $action = new SortRelatedObjectsAction(compact('association'));
-        $actual = $action(['entity' => $entity, 'field' => 'title']);
-        static::assertFalse($actual);
+        $action(['entity' => $entity, 'field' => 'title']);
     }
 }

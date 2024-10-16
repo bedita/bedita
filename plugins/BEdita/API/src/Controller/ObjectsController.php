@@ -529,19 +529,22 @@ class ObjectsController extends ResourcesController
     public function relationshipsSort(): ?Response
     {
         $this->request->allowMethod(['patch']);
-        $id = $this->request->getParam('id');
-        $relationship = $this->request->getParam('relationship');
-        $payload = json_decode((string)$this->request->getBody(), true);
-        $field = (string)Hash::get($payload, 'meta.field');
-        $direction = (string)Hash::get($payload, 'meta.direction');
-        $association = $this->findAssociation($relationship);
-        $this->setRelationshipsAllowedMethods($association);
-        $action = new GetObjectAction(['table' => $this->Table, 'objectType' => $this->objectType]);
-        $entity = $action(['primaryKey' => $id]);
-        $action = new SortRelatedObjectsAction(compact('association'));
-        $count = $action(['entity' => $entity, 'field' => $field, 'direction' => $direction]);
-        if ($count === false) {
-            throw new InternalErrorException(__d('bedita', 'Could not sort and update relationship "{0}"', $relationship));
+        try {
+            $id = $this->request->getParam('id');
+            $relationship = $this->request->getParam('relationship');
+            $payload = json_decode((string)$this->request->getBody(), true);
+            $field = (string)Hash::get($payload, 'meta.field');
+            $direction = (string)Hash::get($payload, 'meta.direction');
+            $association = $this->findAssociation($relationship);
+            $this->setRelationshipsAllowedMethods($association);
+            $action = new GetObjectAction(['table' => $this->Table, 'objectType' => $this->objectType]);
+            $entity = $action(['primaryKey' => $id]);
+            $action = new SortRelatedObjectsAction(compact('association'));
+            $count = $action(['entity' => $entity, 'field' => $field, 'direction' => $direction]);
+        } catch (\Exception) {
+            throw new InternalErrorException(
+                __d('bedita', 'Could not sort and update relationship "{0}"', $relationship)
+            );
         }
         if ($count === 0) {
             return $this->response->withStatus(204);

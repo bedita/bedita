@@ -15,17 +15,20 @@ declare(strict_types=1);
 
 namespace BEdita\Core\Model\Action;
 
+use BEdita\Core\Exception\InvalidDataException;
 use BEdita\Core\Model\Entity\ObjectEntity;
 use Cake\Log\LogTrait;
+use Cake\ORM\Locator\LocatorAwareTrait;
 use Cake\Utility\Hash;
 
 /**
  * Replace related objects with the same objects ordered by a specific field, with a direction.
  *
- * @since 4.0.0
+ * @since 5.31.0
  */
 class SortRelatedObjectsAction extends BaseAction
 {
+    use LocatorAwareTrait;
     use LogTrait;
 
     /**
@@ -36,17 +39,18 @@ class SortRelatedObjectsAction extends BaseAction
      * - `entity` (ObjectEntity) the entity of the main object
      * - `field` (string) the field to sort by
      * - `direction` (string) the direction of the sort
+     *
+     * @throws \BEdita\Core\Exception\InvalidDataException if required data is missing
      */
     public function execute(array $data = [])
     {
         $required = ['entity', 'field', 'direction'];
         foreach ($required as $key) {
             if (!array_key_exists($key, $data) || empty($data[$key])) {
-                $this->log(sprintf('Missing required key "%s"', $key), 'error');
-
-                return false;
+                throw new InvalidDataException(sprintf('Missing required key "%s"', $key));
             }
         }
+
         /** @var \BEdita\Core\Model\Entity\ObjectEntity $entity */
         $entity = Hash::get($data, 'entity');
         $primaryKey = $entity->get('id');
@@ -75,8 +79,10 @@ class SortRelatedObjectsAction extends BaseAction
             ];
             $related->set('_joinData', array_filter(array_merge($join, $priorities)));
         }
+        $association->junction()->getBehavior('Priority')->setConfig('disabled', true);
         $action = new SetRelatedObjectsAction(compact('association'));
         $action(compact('entity', 'relatedEntities'));
+        $association->junction()->getBehavior('Priority')->setConfig('disabled', false);
 
         return count($relatedEntities);
     }

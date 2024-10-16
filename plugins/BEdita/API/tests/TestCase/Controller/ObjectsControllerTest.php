@@ -3690,10 +3690,12 @@ class ObjectsControllerTest extends IntegrationTestCase
      * @covers ::relationshipsSort()
      * @covers ::initialize()
      */
-    public function testRelationshipsSortFalse(): void
+    public function testRelationshipsSortException(): void
     {
         $this->configRequestHeaders('PATCH', $this->getUserAuthHeader());
         $this->patch('/documents/2/relationships/test/sort', json_encode([]));
         $this->assertResponseCode(500);
+        $this->assertContentType('application/vnd.api+json');
+        $this->assertResponseContains('Could not sort and update relationship');
     }
 }
