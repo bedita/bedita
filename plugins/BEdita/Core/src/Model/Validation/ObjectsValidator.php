@@ -47,6 +47,7 @@ class ObjectsValidator extends Validator
             ->notEmptyString('status')
 
             ->ascii('uname')
+            ->notNumeric('uname')
             ->allowEmptyString('uname')
 
             ->boolean('locked')
@@ -77,5 +78,24 @@ class ObjectsValidator extends Validator
 
             ->add('publish_end', 'dateTime', ['rule' => [Validation::class, 'dateTime']])
             ->allowEmptyDateTime('publish_end');
+    }
+
+    /**
+     * Add a **not** numeric value validation rule to a field.
+     *
+     * @param string $field The field you want to apply the rule to.
+     * @param string|null $message The error message when the rule fails.
+     * @param callable|string|null $when Either 'create' or 'update' or a callable that returns
+     *   true when the validation rule should be applied.
+     * @see \BEdita\Core\Model\Validation\Validation::notNumeric()
+     * @return $this
+     */
+    public function notNumeric(string $field, ?string $message = null, $when = null)
+    {
+        $extra = array_filter(['on' => $when, 'message' => $message]);
+
+        return $this->add($field, 'notNumeric', $extra + [
+            'rule' => [Validation::class, 'notNumeric'],
+        ]);
     }
 }
