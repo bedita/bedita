@@ -184,6 +184,13 @@ class ObjectsTableTest extends TestCase
                     'status' => null,
                 ],
             ],
+            'numericUname' => [
+                false,
+                [
+                    'title' => 'title four',
+                    'uname' => '123',
+                ],
+            ],
         ];
     }
 
