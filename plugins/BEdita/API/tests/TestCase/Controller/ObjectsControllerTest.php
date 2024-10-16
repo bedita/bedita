@@ -3694,9 +3694,8 @@ class ObjectsControllerTest extends IntegrationTestCase
     {
         $this->configRequestHeaders('PATCH', $this->getUserAuthHeader());
         $this->patch('/documents/2/relationships/test/sort', json_encode([]));
-        $this->assertResponseCode(500);
+        $this->assertResponseCode(400);
         $this->assertContentType('application/vnd.api+json');
-        $this->assertResponseContains('Could not sort and update relationship');
         $this->assertResponseContains('Missing required key');
     }
 }
