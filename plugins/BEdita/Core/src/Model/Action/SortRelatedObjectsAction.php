@@ -17,6 +17,7 @@ namespace BEdita\Core\Model\Action;
 
 use BEdita\Core\Exception\InvalidDataException;
 use BEdita\Core\Model\Entity\ObjectEntity;
+use BEdita\Core\ORM\Association\RelatedTo;
 use Cake\Log\LogTrait;
 use Cake\ORM\Locator\LocatorAwareTrait;
 use Cake\Utility\Hash;
@@ -44,6 +45,10 @@ class SortRelatedObjectsAction extends BaseAction
      */
     public function execute(array $data = [])
     {
+        $association = $this->getConfig('association');
+        if (!$association instanceof RelatedTo) {
+            throw new InvalidDataException(sprintf('Invalid association: %s', $association->getName()));
+        }
         $required = ['entity', 'field', 'direction'];
         foreach ($required as $key) {
             if (!array_key_exists($key, $data) || empty($data[$key])) {
@@ -56,7 +61,6 @@ class SortRelatedObjectsAction extends BaseAction
         $primaryKey = $entity->get('id');
         $field = (string)Hash::get($data, 'field');
         $direction = (string)Hash::get($data, 'direction');
-        $association = $this->getConfig('association');
         $action = new ListRelatedObjectsAction(compact('association'));
         $relatedEntities = $action(compact('primaryKey'));
         $relatedEntities = $relatedEntities->toArray();

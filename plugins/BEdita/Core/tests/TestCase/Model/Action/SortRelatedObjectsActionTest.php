@@ -18,6 +18,7 @@ namespace BEdita\Core\Test\TestCase\Model\Action;
 use BEdita\Core\Exception\InvalidDataException;
 use BEdita\Core\Model\Action\SortRelatedObjectsAction;
 use BEdita\Core\Utility\LoggedUser;
+use Cake\ORM\Association\BelongsToMany;
 use Cake\TestSuite\TestCase;
 
 /**
@@ -91,6 +92,20 @@ class SortRelatedObjectsActionTest extends TestCase
         static::assertEquals($relatedEntities[1]->get('id'), $relatedEntitiesDesc[1]->get('id'));
         static::assertEquals(1, $relatedEntitiesDesc[0]->get('_joinData')['priority']);
         static::assertEquals(2, $relatedEntitiesDesc[1]->get('_joinData')['priority']);
+    }
+
+    /**
+     * Test `execute` with invalid association.
+     *
+     * @return void
+     */
+    public function testExecuteInvalidAssociation(): void
+    {
+        $expectedException = new InvalidDataException('Invalid association: test');
+        $this->expectExceptionObject($expectedException);
+        $association = new BelongsToMany('test');
+        $action = new SortRelatedObjectsAction(compact('association'));
+        $action(['entity' => null, 'field' => 'title', 'direction' => 'desc']);
     }
 
     /**
