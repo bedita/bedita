@@ -76,22 +76,46 @@ class SortRelatedObjectsActionTest extends TestCase
     {
         $id = 2;
         $Documents = $this->fetchTable('documents');
+        $relationName = 'test';
+        $relationKey = 'Test';
         $entity = $Documents->get($id);
-        $relatedEntities = $Documents->get($id, ['contain' => ['Test']])->get('test');
-        $association = $Documents->getAssociation('Test');
+        $relatedEntities = $Documents->get($id, ['contain' => [$relationKey]])->get($relationName);
+        $association = $Documents->getAssociation($relationKey);
         $action = new SortRelatedObjectsAction(compact('association'));
         $action(['entity' => $entity, 'field' => 'title', 'direction' => 'desc']);
-        $relatedEntitiesDesc = $Documents->get($id, ['contain' => ['Test']])->get('test');
-        static::assertEquals($relatedEntities[0]->get('id'), $relatedEntitiesDesc[1]->get('id'));
-        static::assertEquals($relatedEntities[1]->get('id'), $relatedEntitiesDesc[0]->get('id'));
-        static::assertEquals(1, $relatedEntitiesDesc[0]->get('_joinData')['priority']);
-        static::assertEquals(2, $relatedEntitiesDesc[1]->get('_joinData')['priority']);
+        $relatedEntitiesCompare = $Documents->get($id, ['contain' => [$relationKey]])->get($relationName);
+        static::assertEquals($relatedEntities[0]->get('id'), $relatedEntitiesCompare[1]->get('id'));
+        static::assertEquals($relatedEntities[1]->get('id'), $relatedEntitiesCompare[0]->get('id'));
+        static::assertEquals(1, $relatedEntitiesCompare[0]->get('_joinData')['priority']);
+        static::assertEquals(2, $relatedEntitiesCompare[1]->get('_joinData')['priority']);
         $action(['entity' => $entity, 'field' => 'title', 'direction' => 'asc']);
-        $relatedEntitiesDesc = $Documents->get($id, ['contain' => ['Test']])->get('test');
-        static::assertEquals($relatedEntities[0]->get('id'), $relatedEntitiesDesc[0]->get('id'));
-        static::assertEquals($relatedEntities[1]->get('id'), $relatedEntitiesDesc[1]->get('id'));
-        static::assertEquals(1, $relatedEntitiesDesc[0]->get('_joinData')['priority']);
-        static::assertEquals(2, $relatedEntitiesDesc[1]->get('_joinData')['priority']);
+        $relatedEntitiesCompare = $Documents->get($id, ['contain' => [$relationKey]])->get($relationName);
+        static::assertEquals($relatedEntities[0]->get('id'), $relatedEntitiesCompare[0]->get('id'));
+        static::assertEquals($relatedEntities[1]->get('id'), $relatedEntitiesCompare[1]->get('id'));
+        static::assertEquals(1, $relatedEntitiesCompare[0]->get('_joinData')['priority']);
+        static::assertEquals(2, $relatedEntitiesCompare[1]->get('_joinData')['priority']);
+
+        // test inverse association
+        $id = 4; // gustavo supporto profile
+        $Profiles = $this->fetchTable('profiles');
+        $relationName = 'inverse_test';
+        $relationKey = 'InverseTest';
+        $entity = $Profiles->get($id);
+        $relatedEntities = $Profiles->get($id, ['contain' => [$relationKey]])->get($relationName);
+        $association = $Profiles->getAssociation($relationKey);
+        $action = new SortRelatedObjectsAction(compact('association'));
+        $action(['entity' => $entity, 'field' => 'title', 'direction' => 'asc']);
+        $relatedEntitiesCompare = $Profiles->get($id, ['contain' => [$relationKey]])->get($relationName);
+        static::assertEquals($relatedEntities[0]->get('id'), $relatedEntitiesCompare[1]->get('id'));
+        static::assertEquals($relatedEntities[1]->get('id'), $relatedEntitiesCompare[0]->get('id'));
+        static::assertEquals(1, $relatedEntitiesCompare[0]->get('_joinData')['inv_priority']);
+        static::assertEquals(2, $relatedEntitiesCompare[1]->get('_joinData')['inv_priority']);
+        $action(['entity' => $entity, 'field' => 'title', 'direction' => 'desc']);
+        $relatedEntitiesCompare = $Profiles->get($id, ['contain' => [$relationKey]])->get($relationName);
+        static::assertEquals($relatedEntities[0]->get('id'), $relatedEntitiesCompare[0]->get('id'));
+        static::assertEquals($relatedEntities[1]->get('id'), $relatedEntitiesCompare[1]->get('id'));
+        static::assertEquals(1, $relatedEntitiesCompare[0]->get('_joinData')['inv_priority']);
+        static::assertEquals(2, $relatedEntitiesCompare[1]->get('_joinData')['inv_priority']);
     }
 
     /**
