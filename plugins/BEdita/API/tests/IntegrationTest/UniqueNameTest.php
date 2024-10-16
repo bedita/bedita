@@ -17,6 +17,7 @@ namespace BEdita\API\Test\IntegrationTest;
 
 use BEdita\API\TestSuite\IntegrationTestCase;
 use Cake\ORM\TableRegistry;
+use Cake\Utility\Hash;
 
 /**
  * Test on `uname` field
@@ -125,5 +126,60 @@ class UniqueNameTest extends IntegrationTestCase
         static::assertSame($designatedUname, $body['data']['attributes']['uname']);
 
         static::assertSame($designatedUname, TableRegistry::getTableLocator()->get('Profiles')->get($id)->get('uname'));
+    }
+
+    /**
+     * Test invalid numeric unique name.
+     *
+     * @return void
+     * @coversNothing
+     */
+    public function testInvalidNumericUname(): void
+    {
+        $authHeader = $this->getUserAuthHeader();
+        $this->configRequestHeaders('POST', $authHeader);
+
+        $data = [
+            'type' => 'documents',
+            'attributes' => [
+                'uname' => '123',
+                'title' => 'my document',
+            ],
+        ];
+        $this->post('/documents', json_encode(compact('data')));
+
+        $this->assertResponseCode(400);
+        $this->assertContentType('application/vnd.api+json');
+        $this->assertResponseNotEmpty();
+        $body = json_decode((string)$this->_response->getBody(), true);
+        static::assertIsArray($body);
+        static::assertArrayHasKey('error', $body);
+        static::assertEquals('Invalid data', Hash::get($body, 'error.title'));
+        static::assertEquals('[uname.notNumeric]: The provided value is invalid', Hash::get($body, 'error.detail'));
+    }
+
+    /**
+     * Test invalid numeric unique name updating an object.
+     *
+     * @return void
+     * @coversNothing
+     */
+    public function testUpdateInvalidNumericUname(): void
+    {
+        $authHeader = $this->getUserAuthHeader();
+        $this->configRequestHeaders('PATCH', $authHeader);
+
+        $data = [
+            'type' => 'documents',
+            'id' => '2',
+            'attributes' => [
+                'uname' => '789',
+            ],
+        ];
+        $this->patch('/documents/2', json_encode(compact('data')));
+        $this->assertResponseCode(400);
+        $body = json_decode((string)$this->_response->getBody(), true);
+        static::assertIsArray($body);
+        static::assertEquals('[uname.notNumeric]: The provided value is invalid', Hash::get($body, 'error.detail'));
     }
 }
