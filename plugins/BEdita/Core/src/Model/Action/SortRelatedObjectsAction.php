@@ -67,18 +67,16 @@ class SortRelatedObjectsAction extends BaseAction
         usort(
             $relatedEntities,
             function (ObjectEntity $item1, ObjectEntity $item2) use ($field, $direction) {
-                $val1 = (string)$item1->get($field);
-                $val2 = (string)$item2->get($field);
+                $val1 = strtolower((string)$item1->get($field));
+                $val2 = strtolower((string)$item2->get($field));
 
                 return $direction === 'asc' ? $val1 <=> $val2 : $val2 <=> $val1;
             }
         );
         $priority = 1;
-        $count = count($relatedEntities);
         foreach ($relatedEntities as &$related) {
-            $join = (array)$related->get('_joinData');
+            $join = $related->get('_joinData')->toArray();
             $priorities = [
-                'inv_priority' => $count--,
                 'priority' => $priority++,
             ];
             $related->set('_joinData', array_filter(array_merge($join, $priorities)));
