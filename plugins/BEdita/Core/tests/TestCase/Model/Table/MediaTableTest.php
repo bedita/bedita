@@ -21,7 +21,9 @@ use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
 /**
- * BEdita\Core\Model\Table\MediaTable Test Case
+ * {@see BEdita\Core\Model\Table\MediaTable} Test Case
+ *
+ * @coversDefaultClass \BEdita\Core\Model\Table\MediaTable
  */
 class MediaTableTest extends TestCase
 {

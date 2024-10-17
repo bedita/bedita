@@ -27,6 +27,7 @@ use BEdita\Core\Model\Action\ListRelatedObjectsAction;
 use BEdita\Core\Model\Action\RemoveRelatedObjectsAction;
 use BEdita\Core\Model\Action\SaveEntityAction;
 use BEdita\Core\Model\Action\SetRelatedObjectsAction;
+use BEdita\Core\Model\Action\SortRelatedObjectsAction;
 use BEdita\Core\Model\Entity\ObjectType;
 use BEdita\Core\Model\Table\ObjectsTable;
 use BEdita\Core\Model\Table\RolesTable;
@@ -36,6 +37,7 @@ use Cake\Event\EventInterface;
 use Cake\Http\Exception\ConflictException;
 use Cake\Http\Exception\ForbiddenException;
 use Cake\Http\Exception\InternalErrorException;
+use Cake\Http\Response;
 use Cake\ORM\Association;
 use Cake\ORM\Query;
 use Cake\ORM\Table;
@@ -115,6 +117,9 @@ class ObjectsController extends ResourcesController
 
         if (isset($this->JsonApi) && $this->request->getParam('action') !== 'relationships') {
             $this->JsonApi->setConfig('resourceTypes', [$this->objectType->name], false);
+        }
+        if (isset($this->JsonApi) && $this->request->getParam('action') === 'relationshipsSort') {
+            $this->JsonApi->setConfig('parseJson', false);
         }
     }
 
@@ -498,6 +503,47 @@ class ObjectsController extends ResourcesController
             $serialize = ['data'];
         }
         $this->setSerialize($serialize);
+
+        return null;
+    }
+
+    /**
+     * Sort relationships data for an object.
+     * This action replaces the related data with a sorted set of data.
+     * Data is sort by a field in ascending or descending order.
+     * The field and the direction are passed in the request meta data.
+     *
+     * Example:
+     * ```
+     * PATCH /{object_type}/{id}/relationships/{relationship}/sort
+     * {
+     *     "meta": {
+     *         "field": "{{ field }}",
+     *         "direction": "{{ direction }}"
+     *     }
+     * }
+     * ```
+     *
+     * @return \Cake\Http\Response|null
+     */
+    public function relationshipsSort(): ?Response
+    {
+        $this->request->allowMethod(['patch']);
+        $id = $this->request->getParam('id');
+        $relationship = $this->request->getParam('relationship');
+        $payload = json_decode((string)$this->request->getBody(), true);
+        $field = (string)Hash::get($payload, 'meta.field');
+        $direction = (string)Hash::get($payload, 'meta.direction');
+        $association = $this->findAssociation($relationship);
+        $this->setRelationshipsAllowedMethods($association);
+        $action = new GetObjectAction(['table' => $this->Table, 'objectType' => $this->objectType]);
+        $entity = $action(['primaryKey' => $id]);
+        $action = new SortRelatedObjectsAction(compact('association'));
+        $count = $action(['entity' => $entity, 'field' => $field, 'direction' => $direction]);
+        if ($count === 0) {
+            return $this->response->withStatus(204);
+        }
+        $this->setSerialize([]);
 
         return null;
     }
