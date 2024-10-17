@@ -79,7 +79,7 @@ class ObjectsHistoryCommandTest extends TestCase
      * @covers ::execute()
      * @covers ::read()
      * @covers ::fetchQuery()
-     * @covers ::objectsIterator()
+     * @covers ::historyIterator()
      */
     public function testExecute(): void
     {
@@ -97,7 +97,7 @@ class ObjectsHistoryCommandTest extends TestCase
      * @covers ::execute()
      * @covers ::read()
      * @covers ::fetchQuery()
-     * @covers ::objectsIterator()
+     * @covers ::historyIterator()
      */
     public function testExecuteByTypes(): void
     {
@@ -115,7 +115,7 @@ class ObjectsHistoryCommandTest extends TestCase
      * @covers ::execute()
      * @covers ::delete()
      * @covers ::fetchQuery()
-     * @covers ::objectsIterator()
+     * @covers ::historyIterator()
      */
     public function testDeleteWithException(): void
     {
@@ -142,7 +142,7 @@ class ObjectsHistoryCommandTest extends TestCase
      * @covers ::execute()
      * @covers ::delete()
      * @covers ::fetchQuery()
-     * @covers ::objectsIterator()
+     * @covers ::historyIterator()
      */
     public function testDeleteWithNoException(): void
     {
