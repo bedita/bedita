@@ -157,6 +157,11 @@ class ObjectsTable extends Table
             'className' => 'ObjectPermissions',
             'foreignKey' => 'object_id',
         ]);
+        $this->hasMany('Captions', [
+            'foreignKey' => 'object_id',
+            'className' => 'BEdita/Core.Captions',
+            'saveStrategy' => 'replace',
+        ]);
     }
 
     /**
