@@ -168,6 +168,23 @@ class SearchableBehaviorTest extends TestCase
     }
 
     /**
+     * Test exception when Search config is wrong.
+     *
+     * @return void
+     * @covers ::getAdapter()
+     */
+    public function testGetAdapterException(): void
+    {
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessage('No search adapter found for current scopes');
+        Configure::write('Search.use', ['test']);
+        Configure::write('Search.adapters.test.scopes', ['foo2_scope']);
+        $table = $this->fetchTable('FakeMammals');
+        $table->addBehavior('BEdita/Core.Searchable', ['scopes' => ['foo_scope']]);
+        $table->find('query', ['string' => 'ala'])->find('list')->toArray();
+    }
+
+    /**
      * Test afterSave() and afterDelete()
      *
      * @return void
