@@ -16,7 +16,6 @@ declare(strict_types=1);
 namespace BEdita\Core\Model\Action;
 
 use BEdita\Core\Exception\InvalidDataException;
-use BEdita\Core\Model\Entity\ObjectEntity;
 use BEdita\Core\ORM\Association\RelatedTo;
 use Cake\Log\LogTrait;
 use Cake\ORM\Locator\LocatorAwareTrait;
