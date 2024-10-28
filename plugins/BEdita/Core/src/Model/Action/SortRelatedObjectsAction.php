@@ -62,17 +62,9 @@ class SortRelatedObjectsAction extends BaseAction
         $field = (string)Hash::get($data, 'field');
         $direction = (string)Hash::get($data, 'direction');
         $action = new ListRelatedObjectsAction(compact('association'));
-        $relatedEntities = $action(compact('primaryKey'));
-        $relatedEntities = $relatedEntities->toArray();
-        usort(
-            $relatedEntities,
-            function (ObjectEntity $item1, ObjectEntity $item2) use ($field, $direction) {
-                $val1 = strtolower((string)$item1->get($field));
-                $val2 = strtolower((string)$item2->get($field));
-
-                return $direction === 'asc' ? $val1 <=> $val2 : $val2 <=> $val1;
-            }
-        );
+        $relatedEntities = $action(compact('primaryKey'))
+            ->sort([$association->aliasField($field) => $direction])
+            ->toArray();
         $priority = 1;
         foreach ($relatedEntities as &$related) {
             $join = $related->get('_joinData')->toArray();
