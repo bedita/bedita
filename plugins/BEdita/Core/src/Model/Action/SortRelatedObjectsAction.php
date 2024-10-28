@@ -54,7 +54,7 @@ class SortRelatedObjectsAction extends BaseAction
                 throw new InvalidDataException(sprintf('Missing required key "%s"', $key));
             }
         }
-        $relatedEntities = [];
+        $count = 0;
         /** @var \BEdita\Core\Model\Entity\ObjectEntity $entity */
         $entity = Hash::get($data, 'entity');
         $field = (string)Hash::get($data, 'field');
@@ -62,7 +62,7 @@ class SortRelatedObjectsAction extends BaseAction
         $primaryKey = $entity->get('id');
         $sort = compact('field', 'direction');
         $params = compact('primaryKey', 'sort');
-        $association->getConnection()->transactional(function () use ($association, $entity, $params, $relatedEntities) {
+        $association->getConnection()->transactional(function () use ($association, $entity, $params, &$count) {
             $action = new ListRelatedObjectsAction(compact('association'));
             $relatedEntities = $action($params)->toArray();
             $priority = 1;
@@ -77,8 +77,9 @@ class SortRelatedObjectsAction extends BaseAction
             $action = new SetRelatedObjectsAction(compact('association'));
             $action(compact('entity', 'relatedEntities'));
             $association->junction()->getBehavior('Priority')->setConfig('disabled', false);
+            $count = count($relatedEntities);
         });
 
-        return count($relatedEntities);
+        return $count;
     }
 }
