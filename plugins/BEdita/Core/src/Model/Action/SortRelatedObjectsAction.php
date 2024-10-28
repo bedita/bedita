@@ -55,15 +55,16 @@ class SortRelatedObjectsAction extends BaseAction
             }
         }
         $relatedEntities = [];
-        $association->getConnection()->transactional(function () use ($association, $data, $relatedEntities) {
-            /** @var \BEdita\Core\Model\Entity\ObjectEntity $entity */
-            $entity = Hash::get($data, 'entity');
-            $primaryKey = $entity->get('id');
-            $field = (string)Hash::get($data, 'field');
-            $direction = (string)Hash::get($data, 'direction');
+        /** @var \BEdita\Core\Model\Entity\ObjectEntity $entity */
+        $entity = Hash::get($data, 'entity');
+        $field = (string)Hash::get($data, 'field');
+        $direction = (string)Hash::get($data, 'direction');
+        $primaryKey = $entity->get('id');
+        $sort = compact('field', 'direction');
+        $params = compact('primaryKey', 'sort');
+        $association->getConnection()->transactional(function () use ($association, $entity, $params, $relatedEntities) {
             $action = new ListRelatedObjectsAction(compact('association'));
-            $sort = compact('field', 'direction');
-            $relatedEntities = $action(compact('primaryKey', 'sort'))->toArray();
+            $relatedEntities = $action($params)->toArray();
             $priority = 1;
             foreach ($relatedEntities as &$related) {
                 $join = $related->get('_joinData')->toArray();
