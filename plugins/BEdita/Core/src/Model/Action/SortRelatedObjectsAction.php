@@ -54,27 +54,29 @@ class SortRelatedObjectsAction extends BaseAction
                 throw new InvalidDataException(sprintf('Missing required key "%s"', $key));
             }
         }
-
-        /** @var \BEdita\Core\Model\Entity\ObjectEntity $entity */
-        $entity = Hash::get($data, 'entity');
-        $primaryKey = $entity->get('id');
-        $field = (string)Hash::get($data, 'field');
-        $direction = (string)Hash::get($data, 'direction');
-        $action = new ListRelatedObjectsAction(compact('association'));
-        $sort = compact('field', 'direction');
-        $relatedEntities = $action(compact('primaryKey', 'sort'))->toArray();
-        $priority = 1;
-        foreach ($relatedEntities as &$related) {
-            $join = $related->get('_joinData')->toArray();
-            $priorities = [
-                'priority' => $priority++,
-            ];
-            $related->set('_joinData', array_filter(array_merge($join, $priorities)));
-        }
-        $association->junction()->getBehavior('Priority')->setConfig('disabled', true);
-        $action = new SetRelatedObjectsAction(compact('association'));
-        $action(compact('entity', 'relatedEntities'));
-        $association->junction()->getBehavior('Priority')->setConfig('disabled', false);
+        $relatedEntities = [];
+        $association->getConnection()->transactional(function () use ($association, $data, $relatedEntities) {
+            /** @var \BEdita\Core\Model\Entity\ObjectEntity $entity */
+            $entity = Hash::get($data, 'entity');
+            $primaryKey = $entity->get('id');
+            $field = (string)Hash::get($data, 'field');
+            $direction = (string)Hash::get($data, 'direction');
+            $action = new ListRelatedObjectsAction(compact('association'));
+            $sort = compact('field', 'direction');
+            $relatedEntities = $action(compact('primaryKey', 'sort'))->toArray();
+            $priority = 1;
+            foreach ($relatedEntities as &$related) {
+                $join = $related->get('_joinData')->toArray();
+                $priorities = [
+                    'priority' => $priority++,
+                ];
+                $related->set('_joinData', array_filter(array_merge($join, $priorities)));
+            }
+            $association->junction()->getBehavior('Priority')->setConfig('disabled', true);
+            $action = new SetRelatedObjectsAction(compact('association'));
+            $action(compact('entity', 'relatedEntities'));
+            $association->junction()->getBehavior('Priority')->setConfig('disabled', false);
+        });
 
         return count($relatedEntities);
     }
