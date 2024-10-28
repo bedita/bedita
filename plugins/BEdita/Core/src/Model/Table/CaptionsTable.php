@@ -18,6 +18,7 @@ use Cake\Database\Schema\TableSchemaInterface;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
+use Phinx\Db\Adapter\MysqlAdapter;
 
 /**
  * Captions Model
@@ -52,7 +53,7 @@ class CaptionsTable extends Table
         parent::initialize($config);
 
         $this->setTable('captions');
-        $this->setDisplayField('id');
+        $this->setDisplayField('label');
         $this->setPrimaryKey('id');
 
         $this->addBehavior('Timestamp');
@@ -73,20 +74,29 @@ class CaptionsTable extends Table
      */
     public function validationDefault(Validator $validator): Validator
     {
-        $validator
-            ->nonNegativeInteger('object_id')
-            ->notEmptyString('object_id');
+        return $validator
+            ->naturalNumber('id')
+            ->allowEmptyString('id', null, 'create')
 
-        $validator
+            ->integer('object_id')
+            ->requirePresence('object_id', 'create')
+            ->notEmptyString('object_id')
+
+            ->inList('status', ['on', 'off', 'draft'])
+            ->notEmptyString('status')
+
+            ->allowEmptyString('label')
+
+            ->allowEmptyString('format')
+
             ->scalar('lang')
-            ->maxLength('lang', 3)
-            ->allowEmptyString('lang');
+            ->maxLength('lang', 64)
+            ->allowEmptyString('lang')
 
-        $validator
-            ->scalar('content')
-            ->allowEmptyString('content');
+            ->allowEmptyString('caption_text')
+            ->maxLengthBytes('caption_text', MysqlAdapter::TEXT_MEDIUM)
 
-        return $validator;
+            ->allowEmptyArray('params');
     }
 
     /**

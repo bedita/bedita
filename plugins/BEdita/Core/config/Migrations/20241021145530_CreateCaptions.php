@@ -52,8 +52,8 @@ class CreateCaptions extends AbstractMigration
                 'values' => ['on', 'off', 'draft'],
                 'null' => false,
             ])
-            ->addColumn('title', 'string', [
-                'comment' => 'caption title',
+            ->addColumn('label', 'string', [
+                'comment' => 'caption label',
                 'default' => null,
                 'limit' => 255,
                 'null' => true,
@@ -70,8 +70,8 @@ class CreateCaptions extends AbstractMigration
                 'limit' => 64,
                 'null' => true,
             ])
-            ->addColumn('body', 'text', [
-                'comment' => 'caption body',
+            ->addColumn('caption_text', 'text', [
+                'comment' => 'caption text',
                 'default' => null,
                 'limit' => $limit,
                 'null' => true,
