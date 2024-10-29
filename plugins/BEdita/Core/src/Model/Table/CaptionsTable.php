@@ -78,10 +78,6 @@ class CaptionsTable extends Table
             ->naturalNumber('id')
             ->allowEmptyString('id', null, 'create')
 
-            ->integer('object_id')
-            ->requirePresence('object_id', 'create')
-            ->notEmptyString('object_id')
-
             ->inList('status', ['on', 'off', 'draft'])
             ->notEmptyString('status')
 
