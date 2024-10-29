@@ -57,6 +57,7 @@ use Cake\Utility\Hash;
  * @property \BEdita\Core\Model\Entity\Tree[] $tree_nodes
  * @property \BEdita\Core\Model\Entity\Translation[] $translations
  * @property \BEdita\Core\Model\Entity\ObjectPermission[] $permissions
+ * @property \BEdita\Core\Model\Entity\Caption[] $captions
  * @since 4.0.0
  */
 class ObjectEntity extends Entity implements JsonApiSerializable
