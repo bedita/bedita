@@ -59,7 +59,7 @@ class CreateCaptions extends AbstractMigration
                 'null' => true,
             ])
             ->addColumn('format', 'string', [
-                'comment' => 'caption format i.e. webvtt, srt, vtt, etc.',
+                'comment' => 'caption format i.e. vtt, srt, etc.',
                 'default' => null,
                 'limit' => 255,
                 'null' => true,
