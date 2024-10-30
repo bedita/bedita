@@ -24,6 +24,7 @@ use Cake\Event\Event;
 use Cake\Event\EventManager;
 use Cake\ORM\Query;
 use Cake\TestSuite\TestCase;
+use Cake\Utility\Hash;
 
 /**
  * {@see \BEdita\Core\Model\Behavior\SearchableBehavior} Test Case
@@ -165,6 +166,95 @@ class SearchableBehaviorTest extends TestCase
             ->toArray();
 
         static::assertCount(0, $result);
+    }
+
+    /**
+     * Data provider for `testGetAdapter` test case.
+     *
+     * @return array
+     */
+    public function getAdapterProvider(): array
+    {
+        $adapterDefault = new class () extends BaseAdapter {
+            public function search(Query $query, string $text, array $options = []): Query
+            {
+                return $query;
+            }
+            public function indexResource(EntityInterface $entity, string $operation): void
+            {
+            }
+        };
+        $adapterMammals = new class () extends BaseAdapter {
+            public function search(Query $query, string $text, array $options = []): Query
+            {
+                return $query->where(['subclass' => 'Eutheria']);
+            }
+            public function indexResource(EntityInterface $entity, string $operation): void
+            {
+            }
+        };
+
+        return [
+            'adapter default, scopes empty' => [
+                ['default', 'mammals'],
+                [
+                    'default' => [
+                        'className' => get_class($adapterDefault),
+                        'scopes' => ['default'],
+                    ],
+                    'mammals' => [
+                        'className' => get_class($adapterMammals),
+                        'scopes' => ['mammals'],
+                    ],
+                ],
+                [],
+                '{n}.subclass',
+                ['Eutheria', 'Marsupial'],
+            ],
+            'adapter mammals, scopes mammals' => [
+                ['default', 'mammals'],
+                [
+                    'default' => [
+                        'className' => get_class($adapterDefault),
+                        'scopes' => ['default'],
+                    ],
+                    'mammals' => [
+                        'className' => get_class($adapterMammals),
+                        'scopes' => ['mammals'],
+                    ],
+                ],
+                ['mammals'],
+                '{n}.subclass',
+                ['Eutheria'],
+            ],
+        ];
+    }
+
+    /**
+     * Test `getAdapter` method.
+     *
+     * @param array $searchUseConfig Search use config.
+     * @param array $searchAdapters Search adapters config.
+     * @param array $scopes Scopes.
+     * @param string $expectedPath Expected path.
+     * @param array $expected Expected result.
+     * @return void
+     * @covers ::getAdapter()
+     * @dataProvider getAdapterProvider()
+     */
+    public function testGetAdapter(array $searchUseConfig, array $searchAdapters, array $scopes, string $expectedPath, array $expected): void
+    {
+        Configure::write('Search.use', $searchUseConfig);
+        Configure::write('Search.adapters', $searchAdapters);
+        $table = $this->fetchTable('FakeMammals');
+        if (!empty($scopes)) {
+            $table->addBehavior('BEdita/Core.Searchable', ['scopes' => $scopes]);
+        } else {
+            $table->addBehavior('BEdita/Core.Searchable');
+        }
+        $result = $table->find('query', ['string' => 'word'])->toArray();
+        $actual = Hash::extract($result, $expectedPath);
+        static::assertEquals($expected, $actual);
     }
 
     /**
