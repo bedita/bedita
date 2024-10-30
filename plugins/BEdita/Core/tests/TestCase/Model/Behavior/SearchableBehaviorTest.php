@@ -18,6 +18,8 @@ namespace BEdita\Core\Test\TestCase\Model\Behavior;
 use BEdita\Core\Exception\BadFilterException;
 use BEdita\Core\ORM\Inheritance\Table;
 use BEdita\Core\Search\BaseAdapter;
+use BEdita\Core\Test\TestCase\Search\Adapter\DefaultAdapter;
+use BEdita\Core\Test\TestCase\Search\Adapter\MammalsAdapter;
 use Cake\Core\Configure;
 use Cake\Datasource\EntityInterface;
 use Cake\Event\Event;
@@ -175,37 +177,16 @@ class SearchableBehaviorTest extends TestCase
      */
     public function getAdapterProvider(): array
     {
-        $adapterDefault = new class () extends BaseAdapter {
-            public function search(Query $query, string $text, array $options = []): Query
-            {
-                return $query;
-            }
-
-            public function indexResource(EntityInterface $entity, string $operation): void
-            {
-            }
-        };
-        $adapterMammals = new class () extends BaseAdapter {
-            public function search(Query $query, string $text, array $options = []): Query
-            {
-                return $query->where(['subclass' => 'Eutheria']);
-            }
-
-            public function indexResource(EntityInterface $entity, string $operation): void
-            {
-            }
-        };
-
         return [
             'adapter default, scopes empty' => [
                 ['default', 'mammals'],
                 [
                     'default' => [
-                        'className' => get_class($adapterDefault),
+                        'className' => DefaultAdapter::class,
                         'scopes' => ['default'],
                     ],
                     'mammals' => [
-                        'className' => get_class($adapterMammals),
+                        'className' => MammalsAdapter::class,
                         'scopes' => ['mammals'],
                     ],
                 ],
@@ -217,11 +198,11 @@ class SearchableBehaviorTest extends TestCase
                 ['default', 'mammals'],
                 [
                     'default' => [
-                        'className' => get_class($adapterDefault),
+                        'className' => DefaultAdapter::class,
                         'scopes' => ['default'],
                     ],
                     'mammals' => [
-                        'className' => get_class($adapterMammals),
+                        'className' => MammalsAdapter::class,
                         'scopes' => ['mammals'],
                     ],
                 ],
