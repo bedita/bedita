@@ -180,6 +180,7 @@ class SearchableBehaviorTest extends TestCase
             {
                 return $query;
             }
+
             public function indexResource(EntityInterface $entity, string $operation): void
             {
             }
@@ -189,6 +190,7 @@ class SearchableBehaviorTest extends TestCase
             {
                 return $query->where(['subclass' => 'Eutheria']);
             }
+
             public function indexResource(EntityInterface $entity, string $operation): void
             {
             }
