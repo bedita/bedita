@@ -147,7 +147,7 @@ class ImageThumbsHandlerTest extends TestCase
         LoggedUser::setUserAdmin();
         $handler->updateThumbs($image, $stream, ['gustavo' => ['generator' => 'test']]);
 
-        $image = $this->fetchTable('Images')->get(19);
+        $image = $this->fetchTable('Images')->get(20);
         $extra = (array)$image->get('extra');
         static::assertNotEmpty($extra);
         static::assertNotEmpty($extra['thumbs']['gustavo']);

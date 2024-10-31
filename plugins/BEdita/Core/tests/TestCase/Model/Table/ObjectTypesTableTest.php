@@ -520,7 +520,7 @@ class ObjectTypesTableTest extends TestCase
                 ['name' => 'inverse_test', 'side' => 'left'],
             ],
             'with descendants' => [
-                ['media', 'files', 'images'],
+                ['media', 'files', 'images', 'videos'],
                 ['name' => 'test_abstract', 'descendants' => true],
             ],
             'relation not found' => [

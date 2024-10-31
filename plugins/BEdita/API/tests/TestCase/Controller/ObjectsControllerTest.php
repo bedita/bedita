@@ -69,10 +69,10 @@ class ObjectsControllerTest extends IntegrationTestCase
             ],
             'meta' => [
                 'pagination' => [
-                    'count' => 15,
+                    'count' => 16,
                     'page' => 1,
                     'page_count' => 1,
-                    'page_items' => 15,
+                    'page_items' => 16,
                     'page_size' => 20,
                 ],
                 'schema' => [
@@ -107,6 +107,10 @@ class ObjectsControllerTest extends IntegrationTestCase
                     'images' => [
                         '$id' => 'http://api.example.com/model/schema/images',
                         'revision' => TestConstants::SCHEMA_REVISIONS['images'],
+                    ],
+                    'videos' => [
+                        '$id' => 'http://api.example.com/model/schema/videos',
+                        'revision' => TestConstants::SCHEMA_REVISIONS['videos'],
                     ],
                 ],
             ],
@@ -921,6 +925,59 @@ class ObjectsControllerTest extends IntegrationTestCase
                             'links' => [
                                 'related' => 'http://api.example.com/images/18/inverse_test_abstract',
                                 'self' => 'http://api.example.com/images/18/relationships/inverse_test_abstract',
+                            ],
+                        ],
+                    ],
+                ],
+                [
+                    'id' => '19',
+                    'type' => 'videos',
+                    'attributes' => [
+                        'status' => 'on',
+                        'uname' => 'media-funny-video-of-gustavo',
+                        'title' => 'Funny video of Gustavo',
+                        'description' => 'Gustavo in action!',
+                        'body' => null,
+                        'extra' => null,
+                        'lang' => 'en',
+                        'publish_start' => null,
+                        'publish_end' => null,
+                        'media_property' => false,
+                    ],
+                    'meta' => [
+                        'locked' => false,
+                        'created' => '2024-10-29T12:01:18+00:00',
+                        'modified' => '2024-10-29T12:01:18+00:00',
+                        'published' => null,
+                        'created_by' => 1,
+                        'modified_by' => 1,
+                    ],
+                    'links' => [
+                        'self' => 'http://api.example.com/videos/19',
+                    ],
+                    'relationships' => [
+                        'streams' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/videos/19/streams',
+                                'self' => 'http://api.example.com/videos/19/relationships/streams',
+                            ],
+                        ],
+                        'parents' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/videos/19/parents',
+                                'self' => 'http://api.example.com/videos/19/relationships/parents',
+                            ],
+                        ],
+                        'translations' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/videos/19/translations',
+                                'self' => 'http://api.example.com/videos/19/relationships/translations',
+                            ],
+                        ],
+                        'inverse_test_abstract' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/videos/19/inverse_test_abstract',
+                                'self' => 'http://api.example.com/videos/19/relationships/inverse_test_abstract',
                             ],
                         ],
                     ],
