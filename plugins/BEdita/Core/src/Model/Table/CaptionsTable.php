@@ -105,7 +105,7 @@ class CaptionsTable extends Table
      */
     public function buildRules(RulesChecker $rules): RulesChecker
     {
-        $rules->add($rules->existsIn('object_id', 'Objects'), ['errorField' => 'object_id']);
+        $rules->add($rules->existsIn(['object_id'], 'Objects'));
 
         return $rules;
     }

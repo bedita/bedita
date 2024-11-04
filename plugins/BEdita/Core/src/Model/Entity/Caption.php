@@ -21,8 +21,12 @@ use Cake\ORM\Entity;
  *
  * @property int $id
  * @property int $object_id
+ * @property string $status
+ * @property string|null $label
+ * @property string|null $format
  * @property string|null $lang
- * @property string|null $content
+ * @property string|null $caption_text
+ * @property array $params
  * @property \Cake\I18n\FrozenTime $created
  * @property \Cake\I18n\FrozenTime $modified
  *
@@ -44,5 +48,7 @@ class Caption extends Entity
     protected $_hidden = [
         'id',
         'object_id',
+        'created',
+        'modified',
     ];
 }
