@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 /**
  * BEdita, API-first content management framework
- * Copyright 2019 ChannelWeb Srl, Chialab Srl
+ * Copyright 2024 ChannelWeb Srl, Chialab Srl
  *
  * This file is part of BEdita: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published
@@ -12,82 +12,81 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-namespace BEdita\Core\Shell;
+namespace BEdita\Core\Command;
 
 use BEdita\Core\Model\Entity\Stream;
+use Cake\Command\Command;
+use Cake\Console\Arguments;
 use Cake\Console\ConsoleIo;
 use Cake\Console\ConsoleOptionParser;
-use Cake\Console\Shell;
 use Cake\Database\Expression\QueryExpression;
-use Cake\ORM\Locator\LocatorInterface;
+use Cake\ORM\Locator\LocatorAwareTrait;
 use Cake\ORM\Query;
 
 /**
- * Stream shell commands: removeOrphans
- *
- * @since 4.0.0
- * @property \BEdita\Core\Model\Table\StreamsTable $Streams
- * @deprecated version 5.33.0 Use `BEdita/Core.Command/StreamsCommand` instead
+ * Streams command.
  */
-class StreamsShell extends Shell /* @phpstan-ignore-line */
+class StreamsCommand extends Command
 {
+    use LocatorAwareTrait;
+
+    /**
+     * Console arguments
+     *
+     * @var \Cake\Console\Arguments
+     */
+    protected $args;
+
+    /**
+     * Console IO
+     *
+     * @var \Cake\Console\ConsoleIo
+     */
+    protected $io;
+
+    /**
+     * Async jobs table
+     *
+     * @var \BEdita\Core\Model\Table\AsyncJobsTable
+     */
+    protected $table;
+
     /**
      * @inheritDoc
      */
-    public $modelClass = 'Streams';
-
-    /**
-     * {@inheritDoc}
-     *
-     * @codeCoverageIgnore
-     */
-    public function __construct(?ConsoleIo $io = null, ?LocatorInterface $locator = null)
+    public function buildOptionParser(ConsoleOptionParser $parser): ConsoleOptionParser
     {
-        deprecationWarning('"StreamsShell" should not be used. Use `BEdita\Core\Command\StreamsCommand` instead.');
-        parent::__construct($io, $locator);
+        return $parser
+            ->addArgument('action', [
+                'required' => true,
+                'help' => 'Action to perform: removeOrphans, refreshMetadata',
+                'choices' => ['removeOrphans', 'refreshMetadata'],
+            ])
+            ->addOption('days', [
+                'help' => 'Days to consider for stream research for orphans (remove data older than specified days)',
+                'required' => false,
+                'default' => 1,
+            ])
+            ->addOption('force', [
+                'help' => 'Force refreshing all streams, not only those with empty metadata',
+                'required' => false,
+                'default' => false,
+                'boolean' => true,
+            ]);
     }
 
     /**
-     * {@inheritDoc}
-     *
-     * @codeCoverageIgnore
+     * @inheritDoc
      */
-    public function getOptionParser(): ConsoleOptionParser
+    public function execute(Arguments $args, ConsoleIo $io): ?int
     {
-        $parser = parent::getOptionParser();
-        $parser->addSubcommand('removeOrphans', [
-            'help' => 'remove obsolete/orphans streams and related files',
-            'parser' => [
-                'description' => [
-                    'Remove orphans streams.',
-                ],
-                'options' => [
-                    'days' => [
-                        'help' => 'Days to consider for stream research for orphans (remove data older than specified days)',
-                        'required' => false,
-                        'default' => 1,
-                    ],
-                ],
-            ],
-        ]);
-        $parser->addSubcommand('refreshMetadata', [
-            'help' => 'read streams metadata from file and update database information',
-            'parser' => [
-                'description' => [
-                    'Refresh streams metadata in database.',
-                ],
-                'options' => [
-                    'force' => [
-                        'help' => 'Force refreshing all streams, not only those with empty metadata',
-                        'required' => false,
-                        'default' => false,
-                        'boolean' => true,
-                    ],
-                ],
-            ],
-        ]);
+        $this->table = $this->fetchTable('Streams');
+        $this->args = $args;
+        $this->io = $io;
+        $action = $this->args->getArgument('action');
+        $this->{$action}();
 
-        return $parser;
+        return self::CODE_SUCCESS;
     }
 
     /**
@@ -97,19 +96,19 @@ class StreamsShell extends Shell /* @phpstan-ignore-line */
      */
     public function removeOrphans()
     {
-        $days = (int)$this->param('days');
-        $query = $this->Streams->find()
+        $days = (int)$this->args->getOption('days');
+        $query = $this->table->find()
             ->where([
                 'object_id IS NULL',
                 'created <' => \Cake\I18n\FrozenTime::now()->subDays($days),
             ]);
         $count = 0;
         foreach ($query as $stream) {
-            $this->verbose(sprintf('Deleting stream %s...', $stream->id));
-            $this->Streams->deleteOrFail($stream);
+            $this->io->verbose(sprintf('Deleting stream %s [file_name %s]', $stream->uuid, $stream->file_name));
+            $this->table->deleteOrFail($stream);
             $count++;
         }
-        $this->out(sprintf('%d stream(s) deleted', $count));
+        $this->io->out(sprintf('%d stream(s) deleted', $count));
     }
 
     /**
@@ -119,29 +118,26 @@ class StreamsShell extends Shell /* @phpstan-ignore-line */
      */
     public function refreshMetadata()
     {
-        $query = $this->Streams->find('all');
-        if ((bool)$this->param('force') === false) {
+        $query = $this->table->find('all');
+        if ((bool)$this->args->getOption('force') === false) {
             $query = $query->where(function (QueryExpression $exp): QueryExpression {
                 return $exp->or(function (QueryExpression $exp): QueryExpression {
                     return $exp
-                        ->eq($this->Streams->aliasField('file_size'), 0)
-                        ->isNull($this->Streams->aliasField('width'))
-                        ->isNull($this->Streams->aliasField('height'));
+                        ->eq($this->table->aliasField('file_size'), 0)
+                        ->isNull($this->table->aliasField('width'))
+                        ->isNull($this->table->aliasField('height'));
                 });
             });
         }
-
         $count = $query->count();
-        $this->info(sprintf('Approximately %d streams to be processed', $count));
+        $this->io->info(sprintf('Approximately %d streams to be processed', $count));
         $success = 0;
-
         foreach ($this->streamsGenerator($query) as $stream) {
             if ($this->updateStreamMetadata($stream)) {
                 $success++;
             }
         }
-
-        $this->info(sprintf('Refresh completed: %d streams updated successfully, %d failed', $success, $count - $success));
+        $this->io->info(sprintf('Refresh completed: %d streams updated successfully, %d failed', $success, $count - $success));
     }
 
     /**
@@ -156,16 +152,15 @@ class StreamsShell extends Shell /* @phpstan-ignore-line */
             // Read current file's content...
             $content = $stream->contents;
             if ($content === null) {
-                $this->warn(sprintf('  stream %s (object %d) is empty or could not be read', $stream->uuid, $stream->object_id));
+                $this->io->warning(sprintf('  stream %s (object %d) is empty or could not be read', $stream->uuid, $stream->object_id));
 
                 return false;
             }
-
             // ...and write it back, triggering Stream model's methods to read metadata from file
             $stream->contents = $content;
-            $this->Streams->saveOrFail($stream);
+            $this->table->saveOrFail($stream);
         } catch (\Throwable $t) {
-            $this->err(sprintf('  error updating stream %s (object %d): %s', $stream->uuid, $stream->object_id, $t->getMessage()));
+            $this->io->error(sprintf('  error updating stream %s (object %d): %s', $stream->uuid, $stream->object_id, $t->getMessage()));
 
             return false;
         }
@@ -185,21 +180,19 @@ class StreamsShell extends Shell /* @phpstan-ignore-line */
         // Although `uuid` is not a monotonically increasing field, we will at most skip the streams that are created
         // AFTER we launch the script, and whose UUID is lexicographically less than the one we are currently
         // checking — but we still cover all streams created before our script starts!
-        $query = $query->orderAsc($this->Streams->aliasField('uuid'));
+        $query = $query->orderAsc($this->table->aliasField('uuid'));
         $q = clone $query;
         do {
             $results = $q->limit($limit)->all();
             if ($results->isEmpty()) {
                 break;
             }
-
             yield from $results;
-
             /** @var \BEdita\Core\Model\Entity\Stream $last */
             $last = $results->last();
             $q = clone $query;
             $q = $q->where(function (QueryExpression $exp) use ($last): QueryExpression {
-                return $exp->gt($this->Streams->aliasField('uuid'), $last->uuid);
+                return $exp->gt($this->table->aliasField('uuid'), $last->uuid);
             });
         } while ($q->count() > 0);
     }
