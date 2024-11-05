@@ -32,7 +32,7 @@ class CaptionsFixture extends TestFixture
             'label' => 'Generic subtitles',
             'lang' => 'en',
             'format' => 'vtt',
-            'caption_text' => 'WEBVTT\n\n00:00:00.500 --> 00:00:02.000\nHi, my name is Gustavo\n\n00:00:02.500 --> 00:00:04.300\nand this is my funny adventures',
+            'caption_text' => 'WEBVTT\n\n00:00:00.500 --> 00:00:02.000\nHi, my name is Gustavo\n\n00:00:02.500 --> 00:00:04.300\nand these are my funny adventures',
             'params' => null,
             'created' => '2024-10-22 07:51:26',
             'modified' => '2024-10-22 07:51:26',

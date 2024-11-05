@@ -51,7 +51,7 @@ class CaptionsTest extends IntegrationTestCase
                 'label' => 'Generic subtitles',
                 'format' => 'vtt',
                 'lang' => 'en',
-                'caption_text' => 'WEBVTT\n\n00:00:00.500 --> 00:00:02.000\nHi, my name is Gustavo\n\n00:00:02.500 --> 00:00:04.300\nand this is my funny adventures',
+                'caption_text' => 'WEBVTT\n\n00:00:00.500 --> 00:00:02.000\nHi, my name is Gustavo\n\n00:00:02.500 --> 00:00:04.300\nand these are my funny adventures',
                 'params' => null,
             ],
         ];
@@ -73,7 +73,7 @@ class CaptionsTest extends IntegrationTestCase
                 'label' => 'Generic subtitles',
                 'format' => 'vtt',
                 'lang' => 'en',
-                'caption_text' => 'WEBVTT\n\n00:00:00.500 --> 00:00:02.000\nHi, my name is Gustavo\n\n00:00:02.500 --> 00:00:04.300\nand this is my funny adventures',
+                'caption_text' => 'WEBVTT\n\n00:00:00.500 --> 00:00:02.000\nHi, my name is Gustavo\n\n00:00:02.500 --> 00:00:04.300\nand these are my funny adventures',
                 'params' => null,
             ],
             [
