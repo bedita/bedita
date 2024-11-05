@@ -45,9 +45,9 @@ class StreamsCommand extends Command
     protected $io;
 
     /**
-     * Async jobs table
+     * Streams table
      *
-     * @var \BEdita\Core\Model\Table\AsyncJobsTable
+     * @var \BEdita\Core\Model\Table\StreamsTable
      */
     protected $table;
 
@@ -94,7 +94,7 @@ class StreamsCommand extends Command
      *
      * @return void
      */
-    public function removeOrphans()
+    public function removeOrphans(): void
     {
         $days = (int)$this->args->getOption('days');
         $query = $this->table->find()
@@ -116,7 +116,7 @@ class StreamsCommand extends Command
      *
      * @return void
      */
-    public function refreshMetadata()
+    public function refreshMetadata(): void
     {
         $query = $this->table->find('all');
         if ((bool)$this->args->getOption('force') === false) {
