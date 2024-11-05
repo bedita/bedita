@@ -15,6 +15,7 @@ declare(strict_types=1);
 namespace BEdita\Core\Test\TestCase\Command;
 
 use BEdita\Core\Command\StreamsCommand;
+use BEdita\Core\Model\Entity\Stream;
 use BEdita\Core\Test\Utility\TestFilesystemTrait;
 use Cake\Command\Command;
 use Cake\Console\TestSuite\ConsoleIntegrationTestTrait;
@@ -222,5 +223,32 @@ class StreamsCommandTest extends TestCase
             $actual = $stream->uuid;
         }
         static::assertSame($expected, $actual);
+    }
+
+    /**
+     * Test `updateStreamMetadata` method on exception
+     *
+     * @return void
+     * @covers ::updateStreamMetadata()
+     */
+    public function testUpdateStreamMetadataException(): void
+    {
+        $command = new class extends StreamsCommand {
+            public function update(Stream $stream): bool
+            {
+                $this->io = new \Cake\Console\ConsoleIo();
+                $this->table = new class {
+                    public function saveOrFail(Stream $stream): Stream
+                    {
+                        throw new \Cake\Datasource\Exception\RecordNotFoundException();
+                    }
+                };
+
+                return $this->updateStreamMetadata($stream);
+            }
+        };
+        $stream = new Stream();
+        $stream->contents = 'test';
+        static::assertFalse($command->update($stream));
     }
 }
