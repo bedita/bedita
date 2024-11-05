@@ -79,6 +79,7 @@ class StreamsCommandTest extends TestCase
      * Test `refreshMetadata` method
      *
      * @return void
+     * @covers ::execute()
      * @covers ::refreshMetadata()
      * @covers ::updateStreamMetadata()
      * @covers ::streamsGenerator()
@@ -106,6 +107,7 @@ class StreamsCommandTest extends TestCase
      * Test `refreshMetadata` method with --force option
      *
      * @return void
+     * @covers ::execute()
      * @covers ::refreshMetadata()
      * @covers ::updateStreamMetadata()
      * @covers ::streamsGenerator()
@@ -170,6 +172,7 @@ class StreamsCommandTest extends TestCase
      * @param int $days The days.
      * @return void
      * @dataProvider removeOrphansProvider()
+     * @covers ::execute()
      * @covers ::removeOrphans()
      */
     public function testRemoveOrphans(int $expected, int $days): void
