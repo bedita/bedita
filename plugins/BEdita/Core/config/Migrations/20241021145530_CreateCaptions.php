@@ -64,7 +64,7 @@ class CreateCaptions extends AbstractMigration
                 'limit' => 255,
                 'null' => true,
             ])
-            ->addColumn('lang', 'char', [
+            ->addColumn('lang', 'string', [
                 'comment' => 'language tag, RFC 5646',
                 'default' => null,
                 'limit' => 64,
@@ -100,6 +100,14 @@ class CreateCaptions extends AbstractMigration
                 ],
                 [
                     'name' => 'captions_objectid_idx',
+                ]
+            )
+            ->addIndex(
+                [
+                    'status',
+                ],
+                [
+                    'name' => 'captions_status_idx',
                 ]
             )
             ->addIndex(
