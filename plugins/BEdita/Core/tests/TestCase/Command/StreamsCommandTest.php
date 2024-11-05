@@ -14,9 +14,11 @@ declare(strict_types=1);
  */
 namespace BEdita\Core\Test\TestCase\Command;
 
+use BEdita\Core\Command\StreamsCommand;
 use BEdita\Core\Test\Utility\TestFilesystemTrait;
 use Cake\Command\Command;
 use Cake\Console\TestSuite\ConsoleIntegrationTestTrait;
+use Cake\ORM\Query;
 use Cake\TestSuite\TestCase;
 
 /**
@@ -187,5 +189,38 @@ class StreamsCommandTest extends TestCase
 
         $count -= $Streams->find()->count();
         static::assertEquals($expected, $count);
+    }
+
+    /**
+     * Test `streamsGenerator` method
+     *
+     * @return void
+     * @covers ::streamsGenerator()
+     */
+    public function testStreamsGenerator(): void
+    {
+        $query = $this->fetchTable('Streams')->find()->where(['uuid' => '00000000-0000-0000-0000-000000000001']);
+        $command = new class extends StreamsCommand {
+            public function getStreams(Query $query, int $limit = 100): \Generator
+            {
+                $this->table = $this->fetchTable('Streams');
+
+                return $this->streamsGenerator($query, $limit);
+            }
+        };
+        $actual = true;
+        foreach ($command->getStreams($query) as $stream) {
+            $actual = $stream;
+        }
+        static::assertTrue($actual);
+
+        $expected = 'e5afe167-7341-458d-a1e6-042e8791b0fe';
+        /** Cake\ORM\Query $query */
+        $query = $this->fetchTable('Streams')->find()->where(['uuid' => $expected]);
+        $actual = null;
+        foreach ($command->getStreams($query) as $stream) {
+            $actual = $stream->uuid;
+        }
+        static::assertSame($expected, $actual);
     }
 }
