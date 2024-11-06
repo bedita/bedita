@@ -42,6 +42,7 @@ use Cake\Utility\Hash;
  * @property \BEdita\Core\Model\Table\TreesTable|\Cake\ORM\Association\HasMany $TreeNodes
  * @property \BEdita\Core\Model\Table\TranslationsTable|\Cake\ORM\Association\HasMany $Translations
  * @property \BEdita\Core\Model\Table\ObjectPermissionsTable|\Cake\ORM\Association\HasMany $Permissions
+ * @property \BEdita\Core\Model\Table\CaptionsTable|\Cake\ORM\Association\HasMany $Captions
  * @method \BEdita\Core\Model\Entity\ObjectEntity get($primaryKey, $options = [])
  * @method \BEdita\Core\Model\Entity\ObjectEntity newEntity($data = null, array $options = [])
  * @method \BEdita\Core\Model\Entity\ObjectEntity[] newEntities(array $data, array $options = [])
@@ -156,6 +157,11 @@ class ObjectsTable extends Table
         $this->hasMany('Permissions', [
             'className' => 'ObjectPermissions',
             'foreignKey' => 'object_id',
+        ]);
+        $this->hasMany('Captions', [
+            'foreignKey' => 'object_id',
+            'className' => 'BEdita/Core.Captions',
+            'saveStrategy' => 'replace',
         ]);
     }
 

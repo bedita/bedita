@@ -216,6 +216,19 @@ class ProjectControllerTest extends IntegrationTestCase
                     'translation_rules' => null,
                     'is_translatable' => true,
                 ],
+                [
+                    'name' => 'videos',
+                    'is_abstract' => false,
+                    'singular' => 'video',
+                    'description' => null,
+                    'associations' => ['Streams', 'Captions'],
+                    'hidden' => null,
+                    'enabled' => true,
+                    'table' => 'BEdita/Core.Media',
+                    'parent_name' => 'media',
+                    'translation_rules' => null,
+                    'is_translatable' => true,
+                ],
             ],
             'relations' => [
                 [
