@@ -93,7 +93,7 @@ class ObjectType extends Entity implements JsonApiSerializable, EventDispatcherI
      *
      * @var array
      */
-    public const ASSOC_PROPERTIES = ['Tags', 'Categories', 'DateRanges'];
+    public const ASSOC_PROPERTIES = ['Tags', 'Categories', 'DateRanges', 'Captions'];
 
     /**
      * @inheritDoc
