@@ -58,10 +58,10 @@ class ObjectTypesControllerTest extends IntegrationTestCase
             ],
             'meta' => [
                 'pagination' => [
-                    'count' => 11,
+                    'count' => 12,
                     'page' => 1,
                     'page_count' => 1,
-                    'page_items' => 11,
+                    'page_items' => 12,
                     'page_size' => 20,
                 ],
             ],
@@ -582,7 +582,7 @@ class ObjectTypesControllerTest extends IntegrationTestCase
                         ],
                         'created' => '2024-03-08T11:21:51+00:00',
                         'modified' => '2024-03-08T11:21:51+00:00',
-                        'core_type' => false,
+                        'core_type' => true,
                     ],
                     'links' => [
                         'self' => 'http://api.example.com/model/object_types/11',
@@ -604,6 +604,55 @@ class ObjectTypesControllerTest extends IntegrationTestCase
                             'links' => [
                                 'self' => 'http://api.example.com/model/object_types/11/relationships/parent',
                                 'related' => 'http://api.example.com/model/object_types/11/parent',
+                            ],
+                        ],
+                    ],
+                ],
+                [
+                    'id' => '12',
+                    'type' => 'object_types',
+                    'attributes' => [
+                        'singular' => 'video',
+                        'name' => 'videos',
+                        'description' => null,
+                        'table' => 'BEdita/Core.Media',
+                        'associations' => ['Streams', 'Captions'],
+                        'hidden' => null,
+                        'is_abstract' => false,
+                        'parent_name' => 'media',
+                        'enabled' => true,
+                        'translation_rules' => null,
+                        'is_translatable' => true,
+                    ],
+                    'meta' => [
+                        'alias' => 'Videos',
+                        'relations' => [
+                            'inverse_test_abstract',
+                        ],
+                        'created' => '2024-10-29T11:40:00+00:00',
+                        'modified' => '2024-10-29T11:40:00+00:00',
+                        'core_type' => true,
+                    ],
+                    'links' => [
+                        'self' => 'http://api.example.com/model/object_types/12',
+                    ],
+                    'relationships' => [
+                        'left_relations' => [
+                            'links' => [
+                                'self' => 'http://api.example.com/model/object_types/12/relationships/left_relations',
+                                'related' => 'http://api.example.com/model/object_types/12/left_relations',
+                            ],
+                        ],
+                        'right_relations' => [
+                            'links' => [
+                                'self' => 'http://api.example.com/model/object_types/12/relationships/right_relations',
+                                'related' => 'http://api.example.com/model/object_types/12/right_relations',
+                            ],
+                        ],
+                        'parent' => [
+                            'links' => [
+                                'self' => 'http://api.example.com/model/object_types/12/relationships/parent',
+                                'related' => 'http://api.example.com/model/object_types/12/parent',
                             ],
                         ],
                     ],
@@ -823,7 +872,7 @@ class ObjectTypesControllerTest extends IntegrationTestCase
 
         $this->assertResponseCode(201);
         $this->assertContentType('application/vnd.api+json');
-        $this->assertHeader('Location', 'http://api.example.com/model/object_types/12');
+        $this->assertHeader('Location', 'http://api.example.com/model/object_types/13');
         $this->assertTrue(TableRegistry::getTableLocator()->get('ObjectTypes')->exists(['singular' => 'my_object_type']));
     }
 

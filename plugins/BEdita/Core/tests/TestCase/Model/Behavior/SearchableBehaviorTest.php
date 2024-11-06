@@ -24,6 +24,7 @@ use Cake\Event\Event;
 use Cake\Event\EventManager;
 use Cake\ORM\Query;
 use Cake\TestSuite\TestCase;
+use Cake\Utility\Hash;
 
 /**
  * {@see \BEdita\Core\Model\Behavior\SearchableBehavior} Test Case
@@ -168,6 +169,182 @@ class SearchableBehaviorTest extends TestCase
     }
 
     /**
+     * Data provider for `testGetAdapter` test case.
+     *
+     * @return array
+     */
+    public function getAdapterProvider(): array
+    {
+        $newFakeAdapter = fn (array $condition = []) => new class ($condition) extends BaseAdapter {
+            protected array $condition;
+
+            public function __construct(array $condition)
+            {
+                $this->condition = $condition;
+            }
+
+            public function search(Query $query, string $text, array $options = []): Query
+            {
+                return empty($this->condition) ? $query : $query->where($this->condition);
+            }
+
+            public function indexResource(EntityInterface $entity, string $operation): void
+            {
+            }
+        };
+
+        return [
+            'searchable with empty scopes => default used' => [
+                [
+                    'use' => ['default', 'eutheria'],
+                    'adapters' => [
+                            'default' => [
+                                'className' => $newFakeAdapter(),
+                                'scopes' => ['scope_1', 'scope_2'],
+                            ],
+                            'eutheria' => [
+                                'className' => $newFakeAdapter(['subclass' => 'Eutheria']),
+                                'scopes' => ['scope_1', 'scope_2'],
+                            ],
+                        ],
+                    ],
+                [],
+                '{n}.subclass',
+                ['Eutheria', 'Marsupial'],
+            ],
+            'searchable with scope_1 => eutheria used' => [
+                [
+                    'use' => ['default', 'eutheria'],
+                    'adapters' => [
+                        'default' => [
+                            'className' => $newFakeAdapter(),
+                            'scopes' => ['scope_2'],
+                        ],
+                        'eutheria' => [
+                            'className' => $newFakeAdapter(['subclass' => 'Eutheria']),
+                            'scopes' => ['scope_1', 'scope_2'],
+                        ],
+                    ],
+                ],
+                ['scope_1'],
+                '{n}.subclass',
+                ['Eutheria'],
+            ],
+            'searchable with empty scopes + use with scopes => default used' => [
+                [
+                    'use' => [
+                        'default' => ['scope_2'],
+                        'eutheria' => ['scope_1'],
+                    ],
+                    'adapters' => [
+                        'default' => [
+                            'className' => $newFakeAdapter(),
+                            'scopes' => ['scope_1', 'scope_2'],
+                        ],
+                        'eutheria' => [
+                            'className' => $newFakeAdapter(['subclass' => 'Eutheria']),
+                            'scopes' => ['scope_1', 'scope_2'],
+                        ],
+                    ],
+                ],
+                [],
+                '{n}.subclass',
+                ['Eutheria', 'Marsupial'],
+            ],
+            'searchable with scope_1 + use with scopes => eutheria used' => [
+                [
+                    'use' => [
+                        'default' => ['scope_2'],
+                        'eutheria' => ['scope_1'],
+                    ],
+                    'adapters' => [
+                        'default' => [
+                            'className' => $newFakeAdapter(),
+                            'scopes' => ['scope_1', 'scope_2'],
+                        ],
+                        'eutheria' => [
+                            'className' => $newFakeAdapter(['subclass' => 'Eutheria']),
+                            'scopes' => ['scope_1', 'scope_2'],
+                        ],
+                    ],
+                ],
+                ['scope_1'],
+                '{n}.subclass',
+                ['Eutheria'],
+            ],
+            'searchable with scope_3 => marsupial used' => [
+                [
+                    'use' => [
+                        'default' => ['scope_2'],
+                        'eutheria' => ['scope_1'],
+                        'marsupial',
+                    ],
+                    'adapters' => [
+                        'default' => [
+                            'className' => $newFakeAdapter(),
+                            'scopes' => ['scope_1', 'scope_2'],
+                        ],
+                        'eutheria' => [
+                            'className' => $newFakeAdapter(['subclass' => 'Eutheria']),
+                            'scopes' => ['scope_1', 'scope_2'],
+                        ],
+                        'marsupial' => [
+                            'className' => $newFakeAdapter(['subclass' => 'Marsupial']),
+                        ],
+                    ],
+                ],
+                ['scope_3'],
+                '{n}.subclass',
+                ['Marsupial'],
+            ],
+        ];
+    }
+
+    /**
+     * Test `getAdapter` method.
+     *
+     * @param array $searchConfig Search config.
+     * @param array $scopes Scopes.
+     * @param string $expectedPath Expected path.
+     * @param array $expected Expected result.
+     * @return void
+     * @covers ::getAdapter()
+     * @dataProvider getAdapterProvider()
+     */
+    public function testGetAdapter(array $searchConfig, array $scopes, string $expectedPath, array $expected): void
+    {
+        $backupConf = Configure::read('Search');
+        Configure::write('Search', $searchConfig);
+        $table = $this->fetchTable('FakeMammals');
+        if (!empty($scopes)) {
+            $table->addBehavior('BEdita/Core.Searchable', ['scopes' => $scopes]);
+        } else {
+            $table->addBehavior('BEdita/Core.Searchable');
+        }
+        $result = $table->find('query', ['string' => 'word'])->toArray();
+        $actual = Hash::extract($result, $expectedPath);
+        static::assertEquals($expected, $actual);
+        Configure::write('Search', $backupConf); // restore original config
+    }
+
+    /**
+     * Test exception when Search config is wrong.
+     *
+     * @return void
+     * @covers ::getAdapter()
+     */
+    public function testGetAdapterException(): void
+    {
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessage('No search adapter found for current scopes');
+        Configure::write('Search.use', ['test']);
+        Configure::write('Search.adapters.test.scopes', ['foo2_scope']);
+        $table = $this->fetchTable('FakeMammals');
+        $table->addBehavior('BEdita/Core.Searchable', ['scopes' => ['foo_scope']]);
+        $table->find('query', ['string' => 'ala'])->find('list')->toArray();
+    }
+
+    /**
      * Test afterSave() and afterDelete()
      *
      * @return void
@@ -230,6 +407,13 @@ class SearchableBehaviorTest extends TestCase
         static::assertEquals(0, $foo->afterDeleteCount);
         $entity->setDirty('name');
         $table->saveOrFail($entity, ['_primary' => false]);
+        static::assertEquals(1, $default->afterSaveCount);
+        static::assertEquals(1, $foo->initializedCount);
+
+        static::assertEquals(0, $default->afterDeleteCount);
+        static::assertEquals(0, $foo->afterDeleteCount);
+        $entity->setDirty('name');
+        $table->saveOrFail($entity, ['_skipSearchIndex' => true]);
         static::assertEquals(1, $default->afterSaveCount);
         static::assertEquals(1, $foo->initializedCount);
 

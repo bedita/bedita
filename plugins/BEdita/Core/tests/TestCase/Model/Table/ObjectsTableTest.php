@@ -184,6 +184,13 @@ class ObjectsTableTest extends TestCase
                     'status' => null,
                 ],
             ],
+            'numericUname' => [
+                false,
+                [
+                    'title' => 'title four',
+                    'uname' => '123',
+                ],
+            ],
         ];
     }
 
@@ -249,6 +256,7 @@ class ObjectsTableTest extends TestCase
                     16 => 'svg media',
                     17 => 'Modern art',
                     18 => 'Contemporary art',
+                    19 => 'Funny video of Gustavo',
                 ],
                 ['ne' => 'documents'],
             ],
@@ -276,6 +284,7 @@ class ObjectsTableTest extends TestCase
                     16 => 'svg media',
                     17 => 'Modern art',
                     18 => 'Contemporary art',
+                    19 => 'Funny video of Gustavo',
                 ],
                 ['objects'],
             ],
@@ -693,11 +702,11 @@ class ObjectsTableTest extends TestCase
     {
         return [
             'no status' => [
-                15,
+                16,
                 ['id > 0'],
             ],
             'status on' => [
-                10,
+                11,
                 ['id > 5'],
                 'on',
             ],
@@ -733,14 +742,14 @@ class ObjectsTableTest extends TestCase
     {
         return [
             'on + publish' => [
-                13,
+                14,
                 [
                     'Status.level' => 'on',
                     'Publish.checkDate' => true,
                 ],
             ],
             'draft' => [
-                18,
+                19,
                 [
                     'Status.level' => 'draft',
                 ],
@@ -776,7 +785,7 @@ class ObjectsTableTest extends TestCase
     public function testFindPublishDateAllowed(): void
     {
         $result = $this->Objects->find('publishDateAllowed')->toArray();
-        static::assertSame(15, count($result));
+        static::assertSame(16, count($result));
     }
 
     /**

@@ -16,7 +16,9 @@ declare(strict_types=1);
 namespace BEdita\Core\Test\TestCase\Model\Table;
 
 use BEdita\Core\Exception\LockedResourceException;
+use BEdita\Core\Model\Table\TreesTable;
 use BEdita\Core\Utility\LoggedUser;
+use Cake\Core\Configure;
 use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\Http\Exception\BadRequestException;
 use Cake\ORM\Association\BelongsTo;
@@ -66,6 +68,7 @@ class TreesTableTest extends TestCase
     {
         parent::setUp();
 
+        Configure::write('ChildrenParams', []);
         $this->Trees = TableRegistry::getTableLocator()->get('Trees');
     }
 
@@ -77,6 +80,7 @@ class TreesTableTest extends TestCase
     public function tearDown(): void
     {
         unset($this->Trees);
+        Configure::delete('ChildrenParams');
 
         parent::tearDown();
     }
@@ -493,5 +497,122 @@ class TreesTableTest extends TestCase
             ->toArray();
 
         static::assertSame($expected, array_values($path));
+    }
+
+    /**
+     * Data provider for `testJsonSchema` test case.
+     *
+     * @return array
+     */
+    public function jsonSchemaProvider(): array
+    {
+        $schema = [
+            'type' => 'object',
+            'required' => [
+                'item',
+                'class',
+                'contained',
+                'location',
+            ],
+            'properties' => [
+                'item' => ['type' => 'string'],
+                'class' => [
+                    'type' => 'string',
+                    'enum' => ['safe', 'euclid', 'keter'],
+                ],
+                'contained' => ['type' => 'boolean'],
+                'location' => ['type' => 'string'],
+                'description' => ['anyOf' => [['type' => 'null'], ['type' => 'string']]],
+            ],
+        ];
+
+        return [
+            'valid' => [
+                true,
+                [
+                    'item' => 'SCP-5091',
+                    'class' => 'safe',
+                    'contained' => true,
+                    'location' => 'Site-10',
+                    'description' => 'SCP-5091 is a sapient human skeleton approximately 1.8 meters tall and weighing 2.5 kg when not encompassed by skin and flesh.',
+                ],
+                $schema,
+            ],
+            'empty schema' => [
+                true,
+                [
+                    'item' => 'SCP-3404',
+                    'class' => 'keter',
+                ],
+                null,
+            ],
+            'empty value' => [
+                true,
+                null,
+                ['required' => []] + $schema, // remove required properties
+            ],
+            'missing required' => [
+                'Required property missing: location',
+                [
+                    'item' => 'SCP-3759',
+                    'class' => 'euclid',
+                    'contained' => true,
+                ],
+                $schema,
+            ],
+            'invalid value' => [
+                'Enum failed',
+                [
+                    'item' => 'SCP-7292',
+                    'class' => 'thaumiel',
+                    'contained' => false,
+                    'location' => 'global',
+                ],
+                $schema,
+            ],
+            'nullable property' => [
+                true,
+                [
+                    'item' => 'SCP-239',
+                    'class' => 'keter',
+                    'contained' => true,
+                    'location' => 'Site-17',
+                    'description' => null,
+                ],
+                $schema,
+            ],
+            'wrong type' => [
+                'Boolean expected',
+                [
+                    'item' => 'SCP-6349',
+                    'class' => 'euclid',
+                    'contained' => 'not really',
+                    'location' => 'Venus',
+                ],
+                $schema,
+            ],
+        ];
+    }
+
+    /**
+     * Test JSON schema validator.
+     *
+     * @param true|string $expected Expected result.
+     * @param array|null $value Value being validated.
+     * @param array|null $schema JSON schema.
+     * @return void
+     * @dataProvider jsonSchemaProvider()
+     * @covers ::jsonSchema()
+     */
+    public function testJsonSchema($expected, ?array $value, ?array $schema): void
+    {
+        Configure::write('ChildrenParams', $schema);
+        $result = TreesTable::jsonSchema($value);
+
+        if ($expected === true) {
+            static::assertTrue($result);
+        } else {
+            static::assertStringContainsString($expected, $result);
+        }
     }
 }

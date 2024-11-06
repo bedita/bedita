@@ -522,6 +522,7 @@ class JsonApiTraitTest extends TestCase
             'depth_level' => 2,
             'menu' => true,
             'canonical' => true,
+            'params' => null,
         ];
         static::assertEquals($expected, Hash::get($child, 'meta.relation'));
     }

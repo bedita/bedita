@@ -273,5 +273,10 @@ return function (RouteBuilder $routes) {
             ['controller' => 'Objects', 'action' => 'relationships'],
             ['_name' => 'objects:relationships']
         );
+        $routes->connect(
+            '/{object_type}/{id}/relationships/{relationship}/sort',
+            ['controller' => 'Objects', 'action' => 'relationshipsSort'],
+            ['_name' => 'objects:relationshipsSort']
+        );
     });
 };

@@ -53,7 +53,7 @@ class RemoveAssociatedAction extends UpdateAssociatedAction
 
                 $relatedEntities = $this->intersection((array)$this->existing($entity), $relatedEntities->getArrayCopy());
 
-                $this->Association->unlink($entity, $relatedEntities);
+                $this->Association->unlink($entity, $relatedEntities, ['_skipSearchIndex' => true]);
                 $this->dispatchEvent('Associated.afterSave', compact('entity', 'relatedEntities') + ['action' => 'remove', 'association' => $this->Association]);
 
                 return count($relatedEntities);

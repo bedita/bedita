@@ -201,4 +201,16 @@ class Validation
 
         return __d('bedita', 'Invalid date or datetime "{0}"', print_r($value, true));
     }
+
+    /**
+     * Check if a value is not numeric.
+     *
+     * @param mixed $check Value to check
+     * @return bool
+     * @codeCoverageIgnore
+     */
+    public static function notNumeric($check): bool
+    {
+        return !is_numeric($check);
+    }
 }

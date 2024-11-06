@@ -264,4 +264,23 @@ class ListAssociatedActionTest extends TestCase
         $result = json_decode(json_encode($result->toArray()), true);
         static::assertEquals(2, count($result));
     }
+
+    /**
+     * Test `buildQuery` method with sort param
+     *
+     * @return void
+     * @covers ::buildQuery()
+     */
+    public function testBuildQueryWithSortParam(): void
+    {
+        // association Children
+        $association = TableRegistry::getTableLocator()->get('Folders')->getAssociation('Children');
+        $action = new ListAssociatedAction(compact('association'));
+        $primaryKey = 11;
+        $sort = ['field' => 'title', 'direction' => 'asc'];
+        $result = $action(compact('primaryKey', 'sort'));
+        $result = json_decode(json_encode($result->toArray()), true);
+        static::assertEquals('Sub Folder', $result[0]['title']);
+        static::assertEquals('title one', $result[1]['title']);
+    }
 }

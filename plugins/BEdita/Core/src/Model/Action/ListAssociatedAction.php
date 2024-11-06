@@ -222,7 +222,9 @@ class ListAssociatedAction extends BaseAction
         if ($this->Association instanceof BelongsToMany && $joinData) {
             $query = $query->select($this->Association->junction());
         }
-        if ($this->Association instanceof BelongsToMany || $this->Association instanceof HasMany) {
+        if (!empty($data['sort'])) {
+            $query = $query->order([$table->aliasField($data['sort']['field']) => $data['sort']['direction']]);
+        } elseif ($this->Association instanceof BelongsToMany || $this->Association instanceof HasMany) {
             $sort = $this->sort($this->Association, $primaryKey);
             $query = $query->order($sort);
         }
