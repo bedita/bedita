@@ -393,6 +393,27 @@ class ObjectsFixture extends TestFixture
             'publish_end' => null,
             'custom_props' => ['media_property' => false],
         ],
+        // 19
+        [
+            'object_type_id' => 12, // videos
+            'status' => 'on',
+            'uname' => 'media-funny-video-of-gustavo',
+            'locked' => 0,
+            'deleted' => 0,
+            'created' => '2024-10-29 12:01:18',
+            'modified' => '2024-10-29 12:01:18',
+            'published' => null,
+            'title' => 'Funny video of Gustavo',
+            'description' => 'Gustavo in action!',
+            'body' => null,
+            'extra' => null,
+            'lang' => 'en',
+            'created_by' => 1,
+            'modified_by' => 1,
+            'publish_start' => null,
+            'publish_end' => null,
+            'custom_props' => ['media_property' => false],
+        ],
     ];
 
     /**
