@@ -27,7 +27,7 @@ use Cake\ORM\Query;
  *
  * @since 4.0.0
  * @property \BEdita\Core\Model\Table\StreamsTable $Streams
- * @deprecated version 5.33.0 Use `BEdita/Core.Command/StreamsCommand` instead
+ * @deprecated version 5.34.0 Use `BEdita/Core.Command/StreamsCommand` instead
  */
 class StreamsShell extends Shell /* @phpstan-ignore-line */
 {
