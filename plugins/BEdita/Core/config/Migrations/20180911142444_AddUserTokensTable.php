@@ -7,12 +7,12 @@ use Migrations\AbstractMigration;
 class AddUserTokensTable extends AbstractMigration
 {
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
-    public $autoId = false;
+    public bool $autoId = false;
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function up()
     {

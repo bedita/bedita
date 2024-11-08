@@ -1,4 +1,5 @@
 <?php
+
 use Migrations\AbstractMigration;
 
 /**
@@ -6,14 +7,13 @@ use Migrations\AbstractMigration;
  */
 class RemovePluralized extends AbstractMigration
 {
-
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
-    public $autoId = false;
+    public bool $autoId = false;
 
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
     public function up()
     {

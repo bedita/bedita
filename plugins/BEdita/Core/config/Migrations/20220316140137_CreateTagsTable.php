@@ -12,10 +12,10 @@ class CreateTagsTable extends AbstractMigration
     /**
      * @inheritDoc
      */
-    public $autoId = false;
+    public bool $autoId = false;
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function up()
     {

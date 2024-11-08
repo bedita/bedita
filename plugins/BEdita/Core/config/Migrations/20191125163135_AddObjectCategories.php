@@ -1,12 +1,13 @@
 <?php
+
 use Migrations\AbstractMigration;
 
 class AddObjectCategories extends AbstractMigration
 {
-    public $autoId = false;
+    public bool $autoId = false;
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function up()
     {

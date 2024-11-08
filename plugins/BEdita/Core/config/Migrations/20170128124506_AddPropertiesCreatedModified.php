@@ -31,7 +31,7 @@ class AddPropertiesCreatedModified extends AbstractMigration
             ->removeColumn('modified')
             ->update();
 
-        $this->dropTable('b_edita_core_phinxlog');
+        $this->table('b_edita_core_phinxlog')->drop()->save();
     }
 }
 
