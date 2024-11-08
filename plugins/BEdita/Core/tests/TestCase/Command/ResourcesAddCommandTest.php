@@ -39,6 +39,7 @@ class ResourcesAddCommandTest extends TestCase
         'plugin.BEdita/Core.Endpoints',
         'plugin.BEdita/Core.Applications',
         'plugin.BEdita/Core.EndpointPermissions',
+        'plugin.BEdita/Core.Roles',
     ];
 
     /**
@@ -64,6 +65,7 @@ class ResourcesAddCommandTest extends TestCase
      *
      * @return void
      * @covers ::buildOptionParser()
+     * @covers ::getDescription()
      */
     public function testBuildOptionParser()
     {
@@ -160,5 +162,31 @@ class ResourcesAddCommandTest extends TestCase
         foreach ($expectedResource as $field => $value) {
             $this->assertEquals($value, $resource->get($field));
         }
+    }
+
+    /**
+     * Test add resource with missing type required options
+     *
+     * @return void
+     * @covers ::execute()
+     */
+    public function testExecuteEmptyType(): void
+    {
+        $this->exec('resources_add "First app"', ['A sample description']);
+        $this->assertExitCode(Command::CODE_ERROR);
+        $this->assertErrorContains('Missing required option. The `type` option is required and has no default value');
+    }
+
+    /**
+     * Test add resource with wrong type
+     *
+     * @return void
+     * @covers ::execute()
+     */
+    public function testExecuteWrongType(): void
+    {
+        $this->exec('resources_add "First app" --type wrong', ['A sample description']);
+        $this->assertExitCode(Command::CODE_ERROR);
+        $this->assertErrorContains('"wrong" is not a valid value for --type. Please use one of "applications, roles, endpoints, endpoint_permissions"');
     }
 }

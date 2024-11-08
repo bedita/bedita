@@ -83,7 +83,7 @@ class ResourcesModifyCommand extends Command
                 'help' => 'Entity type',
                 'required' => true,
                 'short' => 't',
-                'choices' => ['applications', 'roles', 'endpoints', 'endpoint_permissions'],
+                'choices' => ['applications', 'roles', 'endpoints'],
             ])
             ->addOption('field', [
                 'help' => 'Field name',
