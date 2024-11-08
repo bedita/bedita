@@ -15,7 +15,7 @@ declare(strict_types=1);
 
 namespace BEdita\Core\Database\Type;
 
-use Cake\Database\DriverInterface;
+use Cake\Database\Driver;
 use Cake\Database\Type\JsonType;
 
 /**
@@ -28,7 +28,7 @@ class JsonObjectType extends JsonType
     /**
      * @inheritDoc
      */
-    public function toPHP($value, DriverInterface $driver)
+    public function toPHP(mixed $value, Driver $driver): mixed
     {
         return json_decode((string)$value, false);
     }

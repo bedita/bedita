@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\Model\Behavior;
 
 use BEdita\Core\Exception\BadFilterException;
@@ -26,6 +25,7 @@ use Cake\ORM\Query\SelectQuery;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Hash;
 use Exception;
+use RuntimeException;
 
 /**
  * {@see \BEdita\Core\Model\Behavior\SearchableBehavior} Test Case
@@ -184,7 +184,7 @@ class SearchableBehaviorTest extends TestCase
                 $this->condition = $condition;
             }
 
-            public function search(Query $query, string $text, array $options = []): Query
+            public function search(SelectQuery $query, string $text, array $options = []): SelectQuery
             {
                 return empty($this->condition) ? $query : $query->where($this->condition);
             }
@@ -336,7 +336,7 @@ class SearchableBehaviorTest extends TestCase
      */
     public function testGetAdapterException(): void
     {
-        $this->expectException(\RuntimeException::class);
+        $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('No search adapter found for current scopes');
         Configure::write('Search.use', ['test']);
         Configure::write('Search.adapters.test.scopes', ['foo2_scope']);

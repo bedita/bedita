@@ -40,9 +40,9 @@ class FilesystemRegistry extends ObjectRegistry
     /**
      * Mount manager.
      *
-     * @var \League\Flysystem\MountManager
+     * @var \League\Flysystem\MountManager|null
      */
-    protected MountManager $mountManager;
+    protected ?MountManager $mountManager;
 
     /**
      * An array mapping url schemes to fully qualified Log engine class names
@@ -109,7 +109,7 @@ class FilesystemRegistry extends ObjectRegistry
      *
      * @return \BEdita\Core\Filesystem\FilesystemAdapter|null
      */
-    public function get($name)
+    public function get(string $name): object
     {
         if (!in_array($name, static::configured())) {
             return null;
