@@ -115,6 +115,6 @@ class ResourcesCommand extends Command
             }
         }
 
-        return $this->executeCommand($this->subcommands[$subcommand]['class'], $subcommandArguments);
+        return $this->executeCommand($this->subcommands[$subcommand]['class'], $subcommandArguments, $io);
     }
 }
