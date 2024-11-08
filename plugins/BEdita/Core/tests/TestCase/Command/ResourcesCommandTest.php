@@ -63,10 +63,33 @@ class ResourcesCommandTest extends TestCase
      *
      * @return void
      * @covers ::buildOptionParser()
+     * @covers ::getDescription()
      */
     public function testBuildOptionParser()
     {
         $this->exec('resources --help');
+        $this->assertOutputContains('Resources management command. Available subcommands: add, edit, ls, rm');
+        $this->assertOutputContains('cake resources [-f api_key|description|enabled|name|unchangeable] [-q] [-h] [-q] [-t] [-v] [<add|edit|ls|rm>] [<name|id>]');
+        $this->assertOutputContains('Field name');
+        $this->assertOutputContains('api_key|description|enabled|name|unchangeable)');
+        $this->assertOutputContains('List entities filtered by comma separated key=value pairs');
+        $this->assertOutputContains('Entity type');
+        $this->assertOutputContains('Subcommand to perform');
+        $this->assertOutputContains('(choices: add|edit|ls|rm)');
+        $this->assertOutputContains('Resource\'s name or id');
+    }
+
+    /**
+     * Test execute on `resources --help`
+     *
+     * @return void
+     * @covers ::buildOptionParser()
+     * @covers ::execute()
+     * @covers ::getDescription()
+     */
+    public function testHelp()
+    {
+        $this->exec('resources add --help');
         $this->assertOutputContains('Resources management command. Available subcommands: add, edit, ls, rm');
         $this->assertOutputContains('cake resources [-f api_key|description|enabled|name|unchangeable] [-q] [-h] [-q] [-t] [-v] [<add|edit|ls|rm>] [<name|id>]');
         $this->assertOutputContains('Field name');
