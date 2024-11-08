@@ -50,7 +50,7 @@ class TreeBehavior extends CakeTreeBehavior
     /**
      * @inheritDoc
      */
-    public function beforeDelete(EventInterface $event, EntityInterface $entity)
+    public function beforeDelete(EventInterface $event, EntityInterface $entity): void
     {
         // ensure to use actual left and right fields
         unset($entity[$this->getConfig('left')], $entity[$this->getConfig('right')]);
