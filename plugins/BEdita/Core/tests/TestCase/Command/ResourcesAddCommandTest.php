@@ -189,4 +189,18 @@ class ResourcesAddCommandTest extends TestCase
         $this->assertExitCode(Command::CODE_ERROR);
         $this->assertErrorContains('"wrong" is not a valid value for --type. Please use one of "applications, roles, endpoints, endpoint_permissions"');
     }
+
+    /**
+     * Test add resource with missing name
+     *
+     * @return void
+     * @covers ::execute()
+     * @covers ::setupDefaultEntity()
+     */
+    public function testResourceNameEmpty(): void
+    {
+        $this->exec('resources_add --type applications', ['']);
+        $this->assertExitCode(Command::CODE_ERROR);
+        $this->assertErrorContains('Resource name cannot be empty');
+    }
 }

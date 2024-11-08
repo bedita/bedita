@@ -179,4 +179,17 @@ class ResourcesCommandTest extends TestCase
         $actual = $table->find()->count();
         $this->assertEquals($expected, $actual);
     }
+
+    /**
+     * Test error on missing subcommand
+     *
+     * @return void
+     * @covers ::execute()
+     */
+    public function testNoSubcommand(): void
+    {
+        $this->exec('resources');
+        $this->assertExitCode(Command::CODE_SUCCESS);
+        $this->assertOutputContains('Resources management command. Available subcommands: add, edit, ls, rm');
+    }
 }

@@ -100,7 +100,7 @@ class ResourcesCommand extends Command
     {
         $subcommand = $args->getArgument('subcommand');
         if (empty($subcommand) || !in_array($subcommand, array_keys($this->subcommands))) {
-            return $this->executeCommand($this, ['--help']);
+            return $this->executeCommand($this, ['--help'], $io);
         }
         $subcommandArguments = [];
         $allowedArguments = $this->subcommands[$subcommand]['arguments'];

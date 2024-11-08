@@ -144,8 +144,6 @@ class ResourcesModifyCommandTest extends TestCase
      * @param array $expectedResource Expected resource data.
      * @return void
      * @covers ::execute()
-     * @covers ::setupDefaultEntity()
-     * @covers ::setupEndpointPermissionEntity()
      * @dataProvider executeProvider()
      */
     public function testExecute(string $resourceId, string $resourceType, string $resourceField, array $input, array $expectedResource): void

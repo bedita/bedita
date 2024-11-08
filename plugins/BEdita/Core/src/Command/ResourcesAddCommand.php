@@ -90,11 +90,6 @@ class ResourcesAddCommand extends Command
     public function execute(Arguments $args, ConsoleIo $io): int
     {
         $type = $args->getOption('type');
-        if (empty($type)) {
-            $this->displayHelp($this->getOptionParser(), $args, $io);
-
-            return static::CODE_ERROR;
-        }
         $this->args = $args;
         $this->io = $io;
         $this->table = $this->fetchTable(Inflector::camelize($type));

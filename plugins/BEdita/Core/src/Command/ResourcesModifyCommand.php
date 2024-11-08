@@ -108,11 +108,6 @@ class ResourcesModifyCommand extends Command
     {
         $type = $args->getOption('type');
         $field = $args->getOption('field');
-        if (empty($type) || empty($field)) {
-            $this->displayHelp($this->getOptionParser(), $args, $io);
-
-            return static::CODE_ERROR;
-        }
         $this->args = $args;
         $this->io = $io;
         $this->table = $this->fetchTable(Inflector::camelize($type));
