@@ -20,7 +20,6 @@ use Cake\Console\Arguments;
 use Cake\Console\ConsoleIo;
 use Cake\Console\ConsoleOptionParser;
 use Cake\Datasource\EntityInterface;
-use Cake\Datasource\Locator\LocatorInterface;
 use Cake\ORM\Locator\LocatorAwareTrait;
 use Cake\Utility\Inflector;
 
@@ -57,10 +56,10 @@ class ResourcesAddCommand extends Command
      *
      * @codeCoverageIgnore
      */
-    public function __construct(?ConsoleIo $io = null, ?LocatorInterface $locator = null)
+    public function __construct()
     {
         $this->setName('cake resources_add');
-        parent::__construct($io, $locator);
+        parent::__construct();
     }
 
     /**
