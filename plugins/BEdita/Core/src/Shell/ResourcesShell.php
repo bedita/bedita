@@ -29,6 +29,7 @@ use Cake\Utility\Inflector;
  * Resource shell commands: list, create, remove, enable and disable common entities
  *
  * @since 4.0.0
+ * @deprecated version 5.34.0 Use `BEdita/Core.Command/ResourcesCommand` instead
  */
 class ResourcesShell extends Shell /* @phpstan-ignore-line */
 {
