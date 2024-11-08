@@ -57,6 +57,7 @@ use Cake\Utility\Hash;
  * @property \BEdita\Core\Model\Entity\Tree[] $tree_nodes
  * @property \BEdita\Core\Model\Entity\Translation[] $translations
  * @property \BEdita\Core\Model\Entity\ObjectPermission[] $permissions
+ * @property \BEdita\Core\Model\Entity\Caption[] $captions
  * @since 4.0.0
  */
 class ObjectEntity extends Entity implements JsonApiSerializable
@@ -218,7 +219,7 @@ class ObjectEntity extends Entity implements JsonApiSerializable
     protected static function listAssociations(Table $Table, array $hidden = [])
     {
         $associations = static::jsonApiListAssociations($Table, $hidden);
-        $associations = array_diff($associations, ['date_ranges', 'categories', 'tags'], static::$extraInlineAssociations);
+        $associations = array_diff($associations, ['date_ranges', 'categories', 'tags', 'captions'], static::$extraInlineAssociations);
 
         return $associations;
     }

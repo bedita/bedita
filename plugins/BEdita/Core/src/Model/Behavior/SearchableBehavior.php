@@ -14,6 +14,7 @@ declare(strict_types=1);
  */
 namespace BEdita\Core\Model\Behavior;
 
+use ArrayObject;
 use BEdita\Core\Exception\BadFilterException;
 use BEdita\Core\Search\Adapter\SimpleAdapter;
 use BEdita\Core\Search\BaseAdapter;
@@ -23,6 +24,8 @@ use Cake\Datasource\EntityInterface;
 use Cake\Event\EventInterface;
 use Cake\ORM\Behavior;
 use Cake\ORM\Query\SelectQuery;
+use Cake\Utility\Hash;
+use RuntimeException;
 use UnexpectedValueException;
 
 /**
@@ -48,6 +51,7 @@ class SearchableBehavior extends Behavior
             'Model.afterSave' => 'edit',
             'Model.afterDelete' => 'delete',
         ],
+        'scopes' => [],
         'implementedFinders' => [
             'query' => 'findQuery',
         ],
@@ -109,10 +113,17 @@ class SearchableBehavior extends Behavior
      *
      * @param \Cake\Event\EventInterface $event The event
      * @param \Cake\Datasource\EntityInterface $entity The resource entity
+     * @param \ArrayObject $options Save options.
      * @return void
      */
-    public function afterSave(EventInterface $event, EntityInterface $entity): void
+    public function afterSave(EventInterface $event, EntityInterface $entity, ArrayObject $options): void
     {
+        if (empty($options['_primary']) || !empty($options['_skipSearchIndex'])) {
+            // Do not reindex non-primary saved entities, as they will probably be incomplete, nor entities for which
+            // skipping reindex is explicitly requested.
+            return;
+        }
+
         $this->indexEntity($event, $entity);
     }
 
@@ -136,7 +147,12 @@ class SearchableBehavior extends Behavior
      */
     public function getSearchAdapters(): iterable
     {
-        foreach (array_keys((array)Configure::read('Search.adapters')) as $name) {
+        $scopes = (array)$this->getConfig('scopes');
+        foreach ((array)Configure::read('Search.adapters') as $name => $config) {
+            if (!empty($scopes) && !empty($config['scopes']) && !array_intersect($scopes, $config['scopes'])) {
+                continue;
+            }
+
             yield (string)$name => $this->getAdapter((string)$name);
         }
     }
@@ -163,7 +179,25 @@ class SearchableBehavior extends Behavior
      */
     protected function getAdapter(?string $name = null): BaseAdapter
     {
-        $name ??= (string)Configure::read('Search.use', 'default');
+        if ($name === null) {
+            $defaultAdapter = Hash::normalize((array)Configure::read('Search.use', 'default'));
+            $scopes = (array)$this->getConfig('scopes'); // Current scopes
+            foreach ($defaultAdapter as $adapterName => $adapterScopes) {
+                // Use scopes from `use` configuration if present, or adapter's default scopes.
+                $adapterScopes ??= Configure::read(sprintf('Search.adapters.%s.scopes', $adapterName));
+                if (empty($scopes) || empty($adapterScopes) || array_intersect($scopes, (array)$adapterScopes)) {
+                    // Adapter scopes match our scopes.
+                    $name = $adapterName;
+
+                    break;
+                }
+            }
+
+            if ($name === null) {
+                throw new RuntimeException('No search adapter found for current scopes');
+            }
+        }
+
         $searchRegistry = $this->getSearchRegistry();
         if ($searchRegistry->has($name)) {
             return $searchRegistry->get($name);

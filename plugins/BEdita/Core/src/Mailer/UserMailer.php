@@ -25,7 +25,7 @@ use LogicException;
  *
  * @since 4.0.0
  */
-class UserMailer extends Mailer
+class UserMailer extends Mailer implements UserMailerInterface
 {
     /**
      * Welcome message.

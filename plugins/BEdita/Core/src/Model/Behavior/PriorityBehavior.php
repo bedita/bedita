@@ -31,6 +31,7 @@ class PriorityBehavior extends Behavior
      * @inheritDoc
      */
     protected array $_defaultConfig = [
+        'disabled' => false,
         'fields' => [],
     ];
 
@@ -68,9 +69,11 @@ class PriorityBehavior extends Behavior
      */
     public function beforeSave(EventInterface $event, EntityInterface $entity): void
     {
-        $fields = $this->getConfig('fields');
-        foreach ($fields as $field => $config) {
-            $this->updateEntityPriorities($entity, $field, $config);
+        if ($this->getConfig('disabled') !== true) {
+            $fields = $this->getConfig('fields');
+            foreach ($fields as $field => $config) {
+                $this->updateEntityPriorities($entity, $field, $config);
+            }
         }
     }
 
@@ -83,9 +86,11 @@ class PriorityBehavior extends Behavior
      */
     public function beforeDelete(EventInterface $event, EntityInterface $entity): void
     {
-        $fields = $this->getConfig('fields');
-        foreach ($fields as $field => $config) {
-            $this->compactEntityField($entity, $field, $config);
+        if ($this->getConfig('disabled') !== true) {
+            $fields = $this->getConfig('fields');
+            foreach ($fields as $field => $config) {
+                $this->compactEntityField($entity, $field, $config);
+            }
         }
     }
 

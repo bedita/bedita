@@ -125,6 +125,7 @@ class CustomPropertiesBehaviorTest extends TestCase
             ],
             'files' => [
                 [
+                    'default_val_property',
                     'media_property',
                     'files_property',
                 ],
@@ -224,6 +225,7 @@ class CustomPropertiesBehaviorTest extends TestCase
         $expected = [
             'media_property' => null,
             'files_property' => null,
+            'default_val_property' => null,
         ];
         $user = TableRegistry::getTableLocator()->get('Files');
         $result = $user->behaviors()->get('CustomProperties')->getDefaultValues();
@@ -297,9 +299,23 @@ class CustomPropertiesBehaviorTest extends TestCase
     public function testBeforeFindFormatterPrepended()
     {
         $expected = [
-            'files_property' => ['media-one' => null, 'media-two' => null, 'media-svg' => null],
-            'media_property' => ['media-one' => true, 'media-two' => false, 'media-svg' => false],
-            'count' => 3,
+            'files_property' => [
+                'media-one' => null,
+                'media-two' => null,
+                'media-svg' => null,
+                'media-modern-art' => null,
+                'media-contemporary-art' => null,
+                'media-funny-video-of-gustavo' => null,
+            ],
+            'media_property' => [
+                'media-one' => true,
+                'media-two' => false,
+                'media-svg' => false,
+                'media-modern-art' => false,
+                'media-contemporary-art' => false,
+                'media-funny-video-of-gustavo' => false,
+            ],
+            'count' => 6,
         ];
 
         $result = $this->getTableLocator()->get('Files')->find()
@@ -345,6 +361,7 @@ class CustomPropertiesBehaviorTest extends TestCase
         return [
             'simple' => [
                 [
+                    'default_val_property' => null,
                     'media_property' => false,
                     'files_property' => null,
                 ],
@@ -356,6 +373,7 @@ class CustomPropertiesBehaviorTest extends TestCase
             ],
             'overwrite' => [
                 [
+                    'default_val_property' => null,
                     'media_property' => true,
                     'files_property' => ['gustavo' => 'supporto'],
                 ],
@@ -378,6 +396,7 @@ class CustomPropertiesBehaviorTest extends TestCase
             ],
             'disabledProperty' => [
                 [
+                    'default_val_property' => null,
                     'media_property' => false,
                     'files_property' => null,
                 ],
@@ -536,17 +555,17 @@ class CustomPropertiesBehaviorTest extends TestCase
                 ['media_property' => '1'],
             ],
             'filter bool false' => [
-                [14, 16],
+                [14, 16, 17, 18, 19],
                 'Files',
                 ['media_property' => false],
             ],
             'filter bool 0 as false' => [
-                [14, 16],
+                [14, 16, 17, 18, 19],
                 'Files',
                 ['media_property' => 0],
             ],
             'filter bool "0" as false' => [
-                [14, 16],
+                [14, 16, 17, 18, 19],
                 'Files',
                 ['media_property' => '0'],
             ],

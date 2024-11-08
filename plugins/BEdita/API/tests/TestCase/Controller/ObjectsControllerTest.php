@@ -18,6 +18,7 @@ use Authentication\AuthenticationService;
 use BEdita\API\Controller\ObjectsController;
 use BEdita\API\Test\TestConstants;
 use BEdita\API\TestSuite\IntegrationTestCase;
+use Cake\Event\EventManager;
 use Cake\Http\ServerRequest;
 use Cake\ORM\TableRegistry;
 use Cake\Utility\Hash;
@@ -68,10 +69,10 @@ class ObjectsControllerTest extends IntegrationTestCase
             ],
             'meta' => [
                 'pagination' => [
-                    'count' => 13,
+                    'count' => 16,
                     'page' => 1,
                     'page_count' => 1,
-                    'page_items' => 13,
+                    'page_items' => 16,
                     'page_size' => 20,
                 ],
                 'schema' => [
@@ -102,6 +103,14 @@ class ObjectsControllerTest extends IntegrationTestCase
                     'folders' => [
                         '$id' => 'http://api.example.com/model/schema/folders',
                         'revision' => TestConstants::SCHEMA_REVISIONS['folders'],
+                    ],
+                    'images' => [
+                        '$id' => 'http://api.example.com/model/schema/images',
+                        'revision' => TestConstants::SCHEMA_REVISIONS['images'],
+                    ],
+                    'videos' => [
+                        '$id' => 'http://api.example.com/model/schema/videos',
+                        'revision' => TestConstants::SCHEMA_REVISIONS['videos'],
                     ],
                 ],
             ],
@@ -211,6 +220,30 @@ class ObjectsControllerTest extends IntegrationTestCase
                                 'self' => 'http://api.example.com/documents/2/relationships/translations',
                             ],
                         ],
+                        'test_simple' => [
+                            'links' => [
+                                'self' => 'http://api.example.com/documents/2/relationships/test_simple',
+                                'related' => 'http://api.example.com/documents/2/test_simple',
+                            ],
+                        ],
+                        'test_defaults' => [
+                            'links' => [
+                                'self' => 'http://api.example.com/documents/2/relationships/test_defaults',
+                                'related' => 'http://api.example.com/documents/2/test_defaults',
+                            ],
+                        ],
+                        'inverse_test_simple' => [
+                            'links' => [
+                                'self' => 'http://api.example.com/documents/2/relationships/inverse_test_simple',
+                                'related' => 'http://api.example.com/documents/2/inverse_test_simple',
+                            ],
+                        ],
+                        'inverse_test_defaults' => [
+                            'links' => [
+                                'self' => 'http://api.example.com/documents/2/relationships/inverse_test_defaults',
+                                'related' => 'http://api.example.com/documents/2/inverse_test_defaults',
+                            ],
+                        ],
                     ],
                 ],
                 [
@@ -263,6 +296,30 @@ class ObjectsControllerTest extends IntegrationTestCase
                                 'self' => 'http://api.example.com/documents/3/relationships/translations',
                             ],
                         ],
+                        'test_simple' => [
+                            'links' => [
+                                'self' => 'http://api.example.com/documents/3/relationships/test_simple',
+                                'related' => 'http://api.example.com/documents/3/test_simple',
+                            ],
+                        ],
+                        'test_defaults' => [
+                            'links' => [
+                                'self' => 'http://api.example.com/documents/3/relationships/test_defaults',
+                                'related' => 'http://api.example.com/documents/3/test_defaults',
+                            ],
+                        ],
+                        'inverse_test_simple' => [
+                            'links' => [
+                                'self' => 'http://api.example.com/documents/3/relationships/inverse_test_simple',
+                                'related' => 'http://api.example.com/documents/3/inverse_test_simple',
+                            ],
+                        ],
+                        'inverse_test_defaults' => [
+                            'links' => [
+                                'self' => 'http://api.example.com/documents/3/relationships/inverse_test_defaults',
+                                'related' => 'http://api.example.com/documents/3/inverse_test_defaults',
+                            ],
+                        ],
                     ],
                 ],
                 [
@@ -307,6 +364,18 @@ class ObjectsControllerTest extends IntegrationTestCase
                             'links' => [
                                 'related' => 'http://api.example.com/profiles/4/translations',
                                 'self' => 'http://api.example.com/profiles/4/relationships/translations',
+                            ],
+                        ],
+                        'inverse_test_simple' => [
+                            'links' => [
+                                'self' => 'http://api.example.com/profiles/4/relationships/inverse_test_simple',
+                                'related' => 'http://api.example.com/profiles/4/inverse_test_simple',
+                            ],
+                        ],
+                        'inverse_test_defaults' => [
+                            'links' => [
+                                'self' => 'http://api.example.com/profiles/4/relationships/inverse_test_defaults',
+                                'related' => 'http://api.example.com/profiles/4/inverse_test_defaults',
                             ],
                         ],
                     ],
@@ -754,6 +823,165 @@ class ObjectsControllerTest extends IntegrationTestCase
                         ],
                     ],
                 ],
+                [
+                    'id' => '17',
+                    'type' => 'images',
+                    'attributes' => [
+                        'status' => 'on',
+                        'uname' => 'media-modern-art',
+                        'title' => 'Modern art',
+                        'description' => 'an art piece',
+                        'body' => null,
+                        'extra' => null,
+                        'lang' => 'en',
+                        'publish_start' => null,
+                        'publish_end' => null,
+                        'media_property' => false,
+                    ],
+                    'meta' => [
+                        'locked' => false,
+                        'created' => '2024-06-25T10:11:18+00:00',
+                        'modified' => '2024-06-25T10:11:18+00:00',
+                        'published' => null,
+                        'created_by' => 1,
+                        'modified_by' => 1,
+                    ],
+                    'links' => [
+                        'self' => 'http://api.example.com/images/17',
+                    ],
+                    'relationships' => [
+                        'streams' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/images/17/streams',
+                                'self' => 'http://api.example.com/images/17/relationships/streams',
+                            ],
+                        ],
+                        'parents' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/images/17/parents',
+                                'self' => 'http://api.example.com/images/17/relationships/parents',
+                            ],
+                        ],
+                        'translations' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/images/17/translations',
+                                'self' => 'http://api.example.com/images/17/relationships/translations',
+                            ],
+                        ],
+                        'inverse_test_abstract' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/images/17/inverse_test_abstract',
+                                'self' => 'http://api.example.com/images/17/relationships/inverse_test_abstract',
+                            ],
+                        ],
+                    ],
+                ],
+                [
+                    'id' => '18',
+                    'type' => 'images',
+                    'attributes' => [
+                        'status' => 'on',
+                        'uname' => 'media-contemporary-art',
+                        'title' => 'Contemporary art',
+                        'description' => 'an art piece',
+                        'body' => null,
+                        'extra' => null,
+                        'lang' => 'en',
+                        'publish_start' => null,
+                        'publish_end' => null,
+                        'media_property' => false,
+                    ],
+                    'meta' => [
+                        'locked' => false,
+                        'created' => '2024-06-25T10:11:18+00:00',
+                        'modified' => '2024-06-25T10:11:18+00:00',
+                        'published' => null,
+                        'created_by' => 1,
+                        'modified_by' => 1,
+                    ],
+                    'links' => [
+                        'self' => 'http://api.example.com/images/18',
+                    ],
+                    'relationships' => [
+                        'streams' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/images/18/streams',
+                                'self' => 'http://api.example.com/images/18/relationships/streams',
+                            ],
+                        ],
+                        'parents' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/images/18/parents',
+                                'self' => 'http://api.example.com/images/18/relationships/parents',
+                            ],
+                        ],
+                        'translations' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/images/18/translations',
+                                'self' => 'http://api.example.com/images/18/relationships/translations',
+                            ],
+                        ],
+                        'inverse_test_abstract' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/images/18/inverse_test_abstract',
+                                'self' => 'http://api.example.com/images/18/relationships/inverse_test_abstract',
+                            ],
+                        ],
+                    ],
+                ],
+                [
+                    'id' => '19',
+                    'type' => 'videos',
+                    'attributes' => [
+                        'status' => 'on',
+                        'uname' => 'media-funny-video-of-gustavo',
+                        'title' => 'Funny video of Gustavo',
+                        'description' => 'Gustavo in action!',
+                        'body' => null,
+                        'extra' => null,
+                        'lang' => 'en',
+                        'publish_start' => null,
+                        'publish_end' => null,
+                        'media_property' => false,
+                    ],
+                    'meta' => [
+                        'locked' => false,
+                        'created' => '2024-10-29T12:01:18+00:00',
+                        'modified' => '2024-10-29T12:01:18+00:00',
+                        'published' => null,
+                        'created_by' => 1,
+                        'modified_by' => 1,
+                    ],
+                    'links' => [
+                        'self' => 'http://api.example.com/videos/19',
+                    ],
+                    'relationships' => [
+                        'streams' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/videos/19/streams',
+                                'self' => 'http://api.example.com/videos/19/relationships/streams',
+                            ],
+                        ],
+                        'parents' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/videos/19/parents',
+                                'self' => 'http://api.example.com/videos/19/relationships/parents',
+                            ],
+                        ],
+                        'translations' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/videos/19/translations',
+                                'self' => 'http://api.example.com/videos/19/relationships/translations',
+                            ],
+                        ],
+                        'inverse_test_abstract' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/videos/19/inverse_test_abstract',
+                                'self' => 'http://api.example.com/videos/19/relationships/inverse_test_abstract',
+                            ],
+                        ],
+                    ],
+                ],
             ],
         ];
 
@@ -764,6 +992,65 @@ class ObjectsControllerTest extends IntegrationTestCase
         $this->assertResponseCode(200);
         $this->assertContentType('application/vnd.api+json');
         static::assertEquals($expected, $result);
+    }
+
+    /**
+     * Test index method on DELETE.
+     *
+     * @return void
+     * @covers ::index()
+     */
+    public function testIndexDelete(): void
+    {
+        $authHeader = $this->getUserAuthHeader();
+
+        // success test
+        $this->configRequestHeaders('DELETE', $authHeader);
+        // delete object 7 (document already deleted) and 13 (folder)
+        $this->_sendRequest('/objects?ids=7,13', 'DELETE');
+        $this->assertResponseCode(204);
+        $this->assertResponseEmpty();
+        $o1 = $this->fetchTable('Objects')->get(7);
+        $this->assertTrue($o1->get('deleted'));
+        $o2 = $this->fetchTable('Objects')->get(13);
+        $this->assertTrue($o2->get('deleted'));
+        // restore folder 13
+        $this->configRequestHeaders('PATCH', $authHeader);
+        $this->patch(
+            sprintf('/trash/%s', 13),
+            json_encode([
+                'data' => [
+                    'id' => 13,
+                    'type' => 'folders',
+                ],
+            ])
+        );
+    }
+
+    /**
+     * Test index method on DELETE with internal error.
+     *
+     * @return void
+     * @covers ::index()
+     */
+    public function testIndexDeleteException(): void
+    {
+        $authHeader = $this->getUserAuthHeader();
+        $this->configRequestHeaders('DELETE', $authHeader);
+        $this->_sendRequest('/objects?ids=', 'DELETE');
+        $this->assertResponseCode(400);
+        $this->assertContentType('application/vnd.api+json');
+        $this->assertResponseContains('Missing required parameter');
+        $this->configRequestHeaders('DELETE', $authHeader);
+        $handler = function () {
+            return false;
+        };
+        EventManager::instance()->on('Model.beforeSave', $handler);
+        $this->_sendRequest('/objects?ids=13', 'DELETE');
+        $this->assertResponseCode(500);
+        $this->assertContentType('application/vnd.api+json');
+        $this->assertResponseContains('Delete failed');
+        EventManager::instance()->off('Model.beforeSave', $handler);
     }
 
     /**
@@ -896,6 +1183,30 @@ class ObjectsControllerTest extends IntegrationTestCase
                             'self' => 'http://api.example.com/documents/2/relationships/translations',
                         ],
                     ],
+                    'test_simple' => [
+                        'links' => [
+                            'self' => 'http://api.example.com/documents/2/relationships/test_simple',
+                            'related' => 'http://api.example.com/documents/2/test_simple',
+                        ],
+                    ],
+                    'test_defaults' => [
+                        'links' => [
+                            'self' => 'http://api.example.com/documents/2/relationships/test_defaults',
+                            'related' => 'http://api.example.com/documents/2/test_defaults',
+                        ],
+                    ],
+                    'inverse_test_simple' => [
+                        'links' => [
+                            'self' => 'http://api.example.com/documents/2/relationships/inverse_test_simple',
+                            'related' => 'http://api.example.com/documents/2/inverse_test_simple',
+                        ],
+                    ],
+                    'inverse_test_defaults' => [
+                        'links' => [
+                            'self' => 'http://api.example.com/documents/2/relationships/inverse_test_defaults',
+                            'related' => 'http://api.example.com/documents/2/inverse_test_defaults',
+                        ],
+                    ],
                 ],
             ],
             'meta' => [
@@ -978,6 +1289,30 @@ class ObjectsControllerTest extends IntegrationTestCase
                         'links' => [
                             'related' => 'http://api.example.com/documents/6/translations',
                             'self' => 'http://api.example.com/documents/6/relationships/translations',
+                        ],
+                    ],
+                    'test_simple' => [
+                        'links' => [
+                            'self' => 'http://api.example.com/documents/6/relationships/test_simple',
+                            'related' => 'http://api.example.com/documents/6/test_simple',
+                        ],
+                    ],
+                    'test_defaults' => [
+                        'links' => [
+                            'self' => 'http://api.example.com/documents/6/relationships/test_defaults',
+                            'related' => 'http://api.example.com/documents/6/test_defaults',
+                        ],
+                    ],
+                    'inverse_test_simple' => [
+                        'links' => [
+                            'self' => 'http://api.example.com/documents/6/relationships/inverse_test_simple',
+                            'related' => 'http://api.example.com/documents/6/inverse_test_simple',
+                        ],
+                    ],
+                    'inverse_test_defaults' => [
+                        'links' => [
+                            'self' => 'http://api.example.com/documents/6/relationships/inverse_test_defaults',
+                            'related' => 'http://api.example.com/documents/6/inverse_test_defaults',
                         ],
                     ],
                 ],
@@ -1616,6 +1951,30 @@ class ObjectsControllerTest extends IntegrationTestCase
                                 'self' => 'http://api.example.com/documents/2/relationships/translations',
                             ],
                         ],
+                        'test_simple' => [
+                            'links' => [
+                                'self' => 'http://api.example.com/documents/2/relationships/test_simple',
+                                'related' => 'http://api.example.com/documents/2/test_simple',
+                            ],
+                        ],
+                        'test_defaults' => [
+                            'links' => [
+                                'self' => 'http://api.example.com/documents/2/relationships/test_defaults',
+                                'related' => 'http://api.example.com/documents/2/test_defaults',
+                            ],
+                        ],
+                        'inverse_test_simple' => [
+                            'links' => [
+                                'self' => 'http://api.example.com/documents/2/relationships/inverse_test_simple',
+                                'related' => 'http://api.example.com/documents/2/inverse_test_simple',
+                            ],
+                        ],
+                        'inverse_test_defaults' => [
+                            'links' => [
+                                'self' => 'http://api.example.com/documents/2/relationships/inverse_test_defaults',
+                                'related' => 'http://api.example.com/documents/2/inverse_test_defaults',
+                            ],
+                        ],
                     ],
                     'meta' => [
                         'locked' => true,
@@ -1710,6 +2069,18 @@ class ObjectsControllerTest extends IntegrationTestCase
                                 'self' => 'http://api.example.com/profiles/4/relationships/translations',
                             ],
                         ],
+                        'inverse_test_simple' => [
+                            'links' => [
+                                'self' => 'http://api.example.com/profiles/4/relationships/inverse_test_simple',
+                                'related' => 'http://api.example.com/profiles/4/inverse_test_simple',
+                            ],
+                        ],
+                        'inverse_test_defaults' => [
+                            'links' => [
+                                'self' => 'http://api.example.com/profiles/4/relationships/inverse_test_defaults',
+                                'related' => 'http://api.example.com/profiles/4/inverse_test_defaults',
+                            ],
+                        ],
                     ],
                     'meta' => [
                         'relation' => [
@@ -1748,6 +2119,30 @@ class ObjectsControllerTest extends IntegrationTestCase
                             'links' => [
                                 'related' => 'http://api.example.com/documents/3/translations',
                                 'self' => 'http://api.example.com/documents/3/relationships/translations',
+                            ],
+                        ],
+                        'test_simple' => [
+                            'links' => [
+                                'self' => 'http://api.example.com/documents/3/relationships/test_simple',
+                                'related' => 'http://api.example.com/documents/3/test_simple',
+                            ],
+                        ],
+                        'test_defaults' => [
+                            'links' => [
+                                'self' => 'http://api.example.com/documents/3/relationships/test_defaults',
+                                'related' => 'http://api.example.com/documents/3/test_defaults',
+                            ],
+                        ],
+                        'inverse_test_simple' => [
+                            'links' => [
+                                'self' => 'http://api.example.com/documents/3/relationships/inverse_test_simple',
+                                'related' => 'http://api.example.com/documents/3/inverse_test_simple',
+                            ],
+                        ],
+                        'inverse_test_defaults' => [
+                            'links' => [
+                                'self' => 'http://api.example.com/documents/3/relationships/inverse_test_defaults',
+                                'related' => 'http://api.example.com/documents/3/inverse_test_defaults',
                             ],
                         ],
                     ],
@@ -1913,6 +2308,18 @@ class ObjectsControllerTest extends IntegrationTestCase
                                 'self' => 'http://api.example.com/profiles/4/relationships/translations',
                             ],
                         ],
+                        'inverse_test_simple' => [
+                            'links' => [
+                                'self' => 'http://api.example.com/profiles/4/relationships/inverse_test_simple',
+                                'related' => 'http://api.example.com/profiles/4/inverse_test_simple',
+                            ],
+                        ],
+                        'inverse_test_defaults' => [
+                            'links' => [
+                                'self' => 'http://api.example.com/profiles/4/relationships/inverse_test_defaults',
+                                'related' => 'http://api.example.com/profiles/4/inverse_test_defaults',
+                            ],
+                        ],
                     ],
                     'meta' => [
                         'relation' => [
@@ -1991,6 +2398,18 @@ class ObjectsControllerTest extends IntegrationTestCase
                             'links' => [
                                 'related' => 'http://api.example.com/profiles/4/translations',
                                 'self' => 'http://api.example.com/profiles/4/relationships/translations',
+                            ],
+                        ],
+                        'inverse_test_simple' => [
+                            'links' => [
+                                'self' => 'http://api.example.com/profiles/4/relationships/inverse_test_simple',
+                                'related' => 'http://api.example.com/profiles/4/inverse_test_simple',
+                            ],
+                        ],
+                        'inverse_test_defaults' => [
+                            'links' => [
+                                'self' => 'http://api.example.com/profiles/4/relationships/inverse_test_defaults',
+                                'related' => 'http://api.example.com/profiles/4/inverse_test_defaults',
                             ],
                         ],
                     ],
@@ -2178,6 +2597,18 @@ class ObjectsControllerTest extends IntegrationTestCase
                             'links' => [
                                 'related' => 'http://api.example.com/profiles/4/translations',
                                 'self' => 'http://api.example.com/profiles/4/relationships/translations',
+                            ],
+                        ],
+                        'inverse_test_simple' => [
+                            'links' => [
+                                'self' => 'http://api.example.com/profiles/4/relationships/inverse_test_simple',
+                                'related' => 'http://api.example.com/profiles/4/inverse_test_simple',
+                            ],
+                        ],
+                        'inverse_test_defaults' => [
+                            'links' => [
+                                'self' => 'http://api.example.com/profiles/4/relationships/inverse_test_defaults',
+                                'related' => 'http://api.example.com/profiles/4/inverse_test_defaults',
                             ],
                         ],
                     ],
@@ -2552,6 +2983,30 @@ class ObjectsControllerTest extends IntegrationTestCase
                             'related' => 'http://api.example.com/documents/2/translations',
                         ],
                     ],
+                    'test_simple' => [
+                        'links' => [
+                            'self' => 'http://api.example.com/documents/2/relationships/test_simple',
+                            'related' => 'http://api.example.com/documents/2/test_simple',
+                        ],
+                    ],
+                    'test_defaults' => [
+                        'links' => [
+                            'self' => 'http://api.example.com/documents/2/relationships/test_defaults',
+                            'related' => 'http://api.example.com/documents/2/test_defaults',
+                        ],
+                    ],
+                    'inverse_test_simple' => [
+                        'links' => [
+                            'self' => 'http://api.example.com/documents/2/relationships/inverse_test_simple',
+                            'related' => 'http://api.example.com/documents/2/inverse_test_simple',
+                        ],
+                    ],
+                    'inverse_test_defaults' => [
+                        'links' => [
+                            'self' => 'http://api.example.com/documents/2/relationships/inverse_test_defaults',
+                            'related' => 'http://api.example.com/documents/2/inverse_test_defaults',
+                        ],
+                    ],
                 ],
             ],
             'included' => [
@@ -2602,6 +3057,18 @@ class ObjectsControllerTest extends IntegrationTestCase
                             'links' => [
                                 'related' => 'http://api.example.com/profiles/4/translations',
                                 'self' => 'http://api.example.com/profiles/4/relationships/translations',
+                            ],
+                        ],
+                        'inverse_test_simple' => [
+                            'links' => [
+                                'self' => 'http://api.example.com/profiles/4/relationships/inverse_test_simple',
+                                'related' => 'http://api.example.com/profiles/4/inverse_test_simple',
+                            ],
+                        ],
+                        'inverse_test_defaults' => [
+                            'links' => [
+                                'self' => 'http://api.example.com/profiles/4/relationships/inverse_test_defaults',
+                                'related' => 'http://api.example.com/profiles/4/inverse_test_defaults',
                             ],
                         ],
                     ],
@@ -2659,6 +3126,30 @@ class ObjectsControllerTest extends IntegrationTestCase
                             'links' => [
                                 'related' => 'http://api.example.com/documents/3/translations',
                                 'self' => 'http://api.example.com/documents/3/relationships/translations',
+                            ],
+                        ],
+                        'test_simple' => [
+                            'links' => [
+                                'self' => 'http://api.example.com/documents/3/relationships/test_simple',
+                                'related' => 'http://api.example.com/documents/3/test_simple',
+                            ],
+                        ],
+                        'test_defaults' => [
+                            'links' => [
+                                'self' => 'http://api.example.com/documents/3/relationships/test_defaults',
+                                'related' => 'http://api.example.com/documents/3/test_defaults',
+                            ],
+                        ],
+                        'inverse_test_simple' => [
+                            'links' => [
+                                'self' => 'http://api.example.com/documents/3/relationships/inverse_test_simple',
+                                'related' => 'http://api.example.com/documents/3/inverse_test_simple',
+                            ],
+                        ],
+                        'inverse_test_defaults' => [
+                            'links' => [
+                                'self' => 'http://api.example.com/documents/3/relationships/inverse_test_defaults',
+                                'related' => 'http://api.example.com/documents/3/inverse_test_defaults',
                             ],
                         ],
                     ],
@@ -3162,5 +3653,106 @@ class ObjectsControllerTest extends IntegrationTestCase
         ];
 
         static::assertEquals($expected, Hash::get($result, 'data.0.meta.perms'));
+    }
+
+    /**
+     * Test reorder related data performed by relationshipsSort.
+     *
+     * @return void
+     * @covers ::relationshipsSort()
+     * @covers ::initialize()
+     */
+    public function testRelationshipsSort(): void
+    {
+        $headers = $this->getUserAuthHeader() + ['Content-Type' => 'application/json'];
+        $this->configRequestHeaders('PATCH', $headers);
+        $this->patch('/documents/2/relationships/test/sort', json_encode([
+            'meta' => [
+                'field' => 'title',
+                'direction' => 'desc',
+            ],
+        ]));
+        $this->assertResponseCode(200);
+        $this->configRequestHeaders('GET', $headers);
+        $this->get('/documents/2/relationships/test');
+        $result = json_decode((string)$this->_response->getBody(), true);
+        static::assertSame('3', Hash::get($result, 'data.0.id'));
+        static::assertSame('documents', Hash::get($result, 'data.0.type'));
+        static::assertSame('4', Hash::get($result, 'data.1.id'));
+        static::assertSame('profiles', Hash::get($result, 'data.1.type'));
+        $this->configRequestHeaders('PATCH', $headers);
+        $this->patch('/documents/2/relationships/test/sort', json_encode([
+            'meta' => [
+                'field' => 'title',
+                'direction' => 'asc',
+            ],
+        ]));
+        $this->configRequestHeaders('GET', $headers);
+        $this->get('/documents/2/relationships/test');
+        $result = json_decode((string)$this->_response->getBody(), true);
+        static::assertSame('4', Hash::get($result, 'data.0.id'));
+        static::assertSame('profiles', Hash::get($result, 'data.0.type'));
+        static::assertSame('3', Hash::get($result, 'data.1.id'));
+        static::assertSame('documents', Hash::get($result, 'data.1.type'));
+    }
+
+    /**
+     * Test reorder related data performed by relationshipsSort with invalid data.
+     *
+     * @return void
+     * @covers ::relationshipsSort()
+     * @covers ::initialize()
+     */
+    public function testRelationshipsSortEmpty(): void
+    {
+        $this->configRequestHeaders('GET', $this->getUserAuthHeader());
+        $this->get('/documents/2/relationships/test');
+        $result = json_decode((string)$this->_response->getBody(), true);
+        // remove all related objects
+        $this->configRequestHeaders('PATCH', $this->getUserAuthHeader());
+        $this->patch('/documents/2/relationships/test', json_encode([
+            'data' => [],
+        ]));
+        $this->assertResponseCode(200);
+        // reorder empty relationships
+        $this->configRequestHeaders('PATCH', $this->getUserAuthHeader());
+        $this->patch('/documents/2/relationships/test/sort', json_encode([
+            'meta' => [
+                'field' => 'title',
+                'direction' => 'desc',
+            ],
+        ]));
+        $this->assertResponseCode(204);
+        // restore data
+        $this->configRequestHeaders('PATCH', $this->getUserAuthHeader());
+        $this->patch('/documents/2/relationships/test', json_encode([
+            'data' => [
+                [
+                    'id' => '4',
+                    'type' => 'profiles',
+                ],
+                [
+                    'id' => '3',
+                    'type' => 'documents',
+                ],
+            ],
+        ]));
+        $this->assertResponseCode(200);
+    }
+
+    /**
+     * Test reorder related data performed by relationshipsSort with invalid data.
+     *
+     * @return void
+     * @covers ::relationshipsSort()
+     * @covers ::initialize()
+     */
+    public function testRelationshipsSortException(): void
+    {
+        $this->configRequestHeaders('PATCH', $this->getUserAuthHeader());
+        $this->patch('/documents/2/relationships/test/sort', json_encode([]));
+        $this->assertResponseCode(400);
+        $this->assertContentType('application/vnd.api+json');
+        $this->assertResponseContains('Missing required key');
     }
 }

@@ -21,7 +21,7 @@ use Cake\Core\Configure;
 use Cake\TestSuite\TestCase;
 
 /**
- * {@see BEdita\Core\Command\ProjectModelCommand} Test Case
+ * {@see \BEdita\Core\Command\ProjectModelCommand} Test Case
  *
  * @coversDefaultClass \BEdita\Core\Command\ProjectModelCommand
  */

@@ -19,9 +19,9 @@ use Cake\Console\TestSuite\ConsoleIntegrationTestTrait;
 use Cake\TestSuite\TestCase;
 
 /**
- * {@see BEdita\Core\Command\AsyncJobsCommand} Test Case
+ * {@see BEdita\Core\Command\AsyncJobsCleanCommand} Test Case
  *
- * @coversDefaultClass \BEdita\Core\Command\AsyncJobsCommand
+ * @coversDefaultClass \BEdita\Core\Command\AsyncJobsCleanCommand
  */
 class AsyncJobsCleanCommandTest extends TestCase
 {

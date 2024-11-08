@@ -46,6 +46,7 @@ use Cake\Validation\Validator;
  * @method \BEdita\Core\Model\Entity\Category patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
  * @method \BEdita\Core\Model\Entity\Category[] patchEntities($entities, array $data, array $options = [])
  * @method \BEdita\Core\Model\Entity\Category findOrCreate($search, callable $callback = null, $options = [])
+ * @mixin \BEdita\Core\Model\Behavior\TreeBehavior
  * @mixin \Cake\ORM\Behavior\TimestampBehavior
  */
 class CategoriesTable extends Table
@@ -68,8 +69,8 @@ class CategoriesTable extends Table
         $this->setPrimaryKey('id');
 
         $this->addBehavior('Timestamp');
-        $this->addBehavior('BEdita/Core.Searchable');
-        $this->addBehavior('Tree', [
+        $this->addBehavior('BEdita/Core.Searchable', ['scopes' => (array)$this->getTable()]);
+        $this->addBehavior('BEdita/Core.Tree', [
             'left' => 'tree_left',
             'right' => 'tree_right',
         ]);
@@ -274,5 +275,17 @@ class CategoriesTable extends Table
 
         return $query->find('type', [$object])
             ->where([$this->aliasField('name') => $options['name']]);
+    }
+
+    /**
+     * Finder for roots categories.
+     *
+     * @param \Cake\ORM\Query $query The query.
+     * @return \Cake\ORM\Query
+     */
+    protected function findRoots(Query $query): Query
+    {
+        return $query->where(fn (QueryExpression $exp): QueryExpression =>
+            $exp->isNull($this->aliasField('parent_id')));
     }
 }

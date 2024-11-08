@@ -45,6 +45,13 @@ class RelatedTo extends BelongsToMany
     private ?ObjectType $objectType = null;
 
     /**
+     * Relation entity of this association.
+     *
+     * @var \BEdita\Core\Model\Entity\Relation|null
+     */
+    private $relation = null;
+
+    /**
      * @inheritDoc
      */
     protected function _options(array $opts): void
@@ -56,6 +63,9 @@ class RelatedTo extends BelongsToMany
         }
         if (!empty($opts['inverseKey'])) {
             $this->setInverseKey($opts['inverseKey']);
+        }
+        if (!empty($opts['relation'])) {
+            $this->setRelation($opts['relation']);
         }
     }
 
@@ -125,6 +135,29 @@ class RelatedTo extends BelongsToMany
     public function getInverseKey(): string|array
     {
         return $this->inverseKey;
+    }
+
+    /**
+     * Set the relation entity of this association.
+     *
+     * @param \BEdita\Core\Model\Entity\Relation $relation The relation entity.
+     * @return $this
+     */
+    public function setRelation($relation)
+    {
+        $this->relation = $relation;
+
+        return $this;
+    }
+
+    /**
+     * Get the relation entity of this association.
+     *
+     * @return \BEdita\Core\Model\Entity\Relation|null
+     */
+    public function getRelation()
+    {
+        return $this->relation;
     }
 
     /**
@@ -215,7 +248,7 @@ class RelatedTo extends BelongsToMany
     {
         $targetTable = $this->getTarget();
         if ($targetTable instanceof InheritanceTable) {
-            $options['table'] = $targetTable->query()->getInheritanceSubQuery();
+            $options['table'] = $targetTable->selectQuery()->getInheritanceSubQuery();
         }
 
         parent::attachTo($query, $options);

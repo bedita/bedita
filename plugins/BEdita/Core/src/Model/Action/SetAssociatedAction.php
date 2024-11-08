@@ -108,7 +108,7 @@ class SetAssociatedAction extends UpdateAssociatedAction
         $count = count($affectedEntities);
 
         if ($this->Association instanceof HasMany) {
-            if ($this->Association->replace($entity, $relatedEntities, ['atomic' => false]) === false) {
+            if ($this->Association->replace($entity, $relatedEntities, ['atomic' => false, '_skipSearchIndex' => true]) === false) {
                 return false;
             }
 
@@ -118,7 +118,7 @@ class SetAssociatedAction extends UpdateAssociatedAction
         }
 
         if ($this->Association instanceof BelongsToMany) {
-            if ($this->Association->replaceLinks($entity, $relatedEntities, ['atomic' => false]) === false) {
+            if ($this->Association->replaceLinks($entity, $relatedEntities, ['atomic' => false, '_skipSearchIndex' => true]) === false) {
                 return false;
             }
 
@@ -217,7 +217,7 @@ class SetAssociatedAction extends UpdateAssociatedAction
             $bindingKeyValue
         ));
 
-        if ($this->Association->getTarget()->save($relatedEntity) === false) {
+        if ($this->Association->getTarget()->save($relatedEntity, ['_skipSearchIndex' => true]) === false) {
             return false;
         }
 

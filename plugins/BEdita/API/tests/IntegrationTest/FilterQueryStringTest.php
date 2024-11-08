@@ -246,7 +246,7 @@ class FilterQueryStringTest extends IntegrationTestCase
         $this->assertContentType('application/vnd.api+json');
 
         static::assertArrayHasKey('data', $result);
-        static::assertCount(2, $result['data']);
+        static::assertCount(3, $result['data']);
     }
 
     /**
@@ -461,6 +461,9 @@ class FilterQueryStringTest extends IntegrationTestCase
                    '13',
                    '14',
                    '16',
+                   '17',
+                   '18',
+                   '19',
                ],
             ],
             'multi' => [
@@ -849,7 +852,7 @@ class FilterQueryStringTest extends IntegrationTestCase
         $this->assertResponseCode(200);
         $this->assertContentType('application/vnd.api+json');
         static::assertArrayHasKey('data', $result);
-        static::assertEquals(3, count($result['data']));
+        static::assertEquals(4, count($result['data']));
 
         $this->configRequestHeaders();
         $this->get('/model/categories?filter[type]=locations');

@@ -456,6 +456,30 @@ class JsonApiTest extends TestCase
                                 'self' => '/documents/2/relationships/translations',
                             ],
                         ],
+                        'test_simple' => [
+                            'links' => [
+                                'self' => '/documents/2/relationships/test_simple',
+                                'related' => '/documents/2/test_simple',
+                            ],
+                        ],
+                        'test_defaults' => [
+                            'links' => [
+                                'self' => '/documents/2/relationships/test_defaults',
+                                'related' => '/documents/2/test_defaults',
+                            ],
+                        ],
+                        'inverse_test_simple' => [
+                            'links' => [
+                                'self' => '/documents/2/relationships/inverse_test_simple',
+                                'related' => '/documents/2/inverse_test_simple',
+                            ],
+                        ],
+                        'inverse_test_defaults' => [
+                            'links' => [
+                                'self' => '/documents/2/relationships/inverse_test_defaults',
+                                'related' => '/documents/2/inverse_test_defaults',
+                            ],
+                        ],
                     ],
                     '_schema' => [
                         'profiles' => [
@@ -684,6 +708,30 @@ class JsonApiTest extends TestCase
                     'links' => [
                         'related' => '/documents/2/translations',
                         'self' => '/documents/2/relationships/translations',
+                    ],
+                ],
+                'test_simple' => [
+                    'links' => [
+                        'self' => '/documents/2/relationships/test_simple',
+                        'related' => '/documents/2/test_simple',
+                    ],
+                ],
+                'test_defaults' => [
+                    'links' => [
+                        'self' => '/documents/2/relationships/test_defaults',
+                        'related' => '/documents/2/test_defaults',
+                    ],
+                ],
+                'inverse_test_simple' => [
+                    'links' => [
+                        'self' => '/documents/2/relationships/inverse_test_simple',
+                        'related' => '/documents/2/inverse_test_simple',
+                    ],
+                ],
+                'inverse_test_defaults' => [
+                    'links' => [
+                        'self' => '/documents/2/relationships/inverse_test_defaults',
+                        'related' => '/documents/2/inverse_test_defaults',
                     ],
                 ],
             ],

@@ -20,7 +20,7 @@ use Cake\TestSuite\TestCase;
 use Cake\Utility\Hash;
 
 /**
- * @coversNothing
+ * @coversDefaultClass \BEdita\Core\Model\Validation\ObjectsValidator
  */
 class ObjectsValidatorTest extends TestCase
 {
@@ -85,6 +85,14 @@ class ObjectsValidatorTest extends TestCase
                     'publish_end' => 'somewhen',
                 ],
             ],
+            'uname numeric not valid' => [
+                [
+                    'uname.notNumeric',
+                ],
+                [
+                    'uname' => '123',
+                ],
+            ],
         ];
     }
 
@@ -96,8 +104,9 @@ class ObjectsValidatorTest extends TestCase
      * @param bool $newRecord Is this a new record?
      * @return void
      * @dataProvider validationProvider()
+     * @coversNothing
      */
-    public function testValidation(array $expected, array $data, $newRecord = true)
+    public function testValidation(array $expected, array $data, $newRecord = true): void
     {
         $validator = new ObjectsValidator();
 
@@ -105,5 +114,32 @@ class ObjectsValidatorTest extends TestCase
         $errors = Hash::flatten($errors);
 
         static::assertEquals($expected, array_keys($errors));
+    }
+
+    /**
+     * Test not numeric validation.
+     *
+     * @return void
+     * @covers ::notNumeric()
+     */
+    public function testNotNumeric(): void
+    {
+        $validator = new ObjectsValidator();
+        $this->assertNotEmpty($validator->validate(['uname' => '22']));
+        $this->assertEmpty($validator->validate(['uname' => 'a']));
+
+        $validator->notNumeric('fake_field', 'The provided value must be NOT numeric', 'create');
+        $errors = $validator->validate(['fake_field' => '22']);
+        $this->assertNotEmpty($errors);
+        $this->assertEquals(
+            [
+                'fake_field' => [
+                    'notNumeric' => 'The provided value must be NOT numeric',
+                ],
+            ],
+            $errors
+        );
+        $errors = $validator->validate(['id' => 1000, 'fake_field' => '22'], false);
+        $this->assertEmpty($errors);
     }
 }

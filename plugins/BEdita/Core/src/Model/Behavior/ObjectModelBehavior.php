@@ -50,6 +50,7 @@ class ObjectModelBehavior extends Behavior
         $table->addBehavior('BEdita/Core.CustomProperties');
         $table->addBehavior('BEdita/Core.UniqueName');
         $table->addBehavior('BEdita/Core.Relations');
+        $objectType = $this->table()->objectType();
         $table->addBehavior('BEdita/Core.Searchable', [
             'operationName' => [
                 'Model.afterSave' => function (EventInterface $event, EntityInterface $entity): string {
@@ -61,6 +62,15 @@ class ObjectModelBehavior extends Behavior
                 },
                 'Model.afterDelete' => 'delete',
             ],
+            'scopes' => collection($objectType !== null ? $objectType->getFullInheritanceChain() : ['objects'])
+                ->extract(
+                    /**
+                     * @param string|\BEdita\Core\Model\Entity\ObjectType $ot Object type.
+                     * @return string
+                     */
+                    fn ($ot): string => is_string($ot) ? $ot : $ot->name
+                )
+                ->toList(),
         ]);
         $table->addBehavior('BEdita/Core.Status');
 

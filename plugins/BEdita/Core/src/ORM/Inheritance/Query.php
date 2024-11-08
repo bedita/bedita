@@ -25,6 +25,7 @@ use Cake\ORM\Query as CakeQuery;
  *
  * @since 4.0.0
  * @property \BEdita\Core\ORM\Inheritance\Table _repository
+ * @deprecated 5.24.0 Will be removed in 6.x
  */
 class Query extends CakeQuery
 {

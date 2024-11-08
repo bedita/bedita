@@ -256,7 +256,11 @@ class ObjectTypesTableTest extends TestCase
                     'hidden' => null,
                     'relations' => [
                         'test',
+                        'test_simple',
+                        'test_defaults',
                         'inverse_test',
+                        'inverse_test_simple',
+                        'inverse_test_defaults',
                     ],
                     'is_abstract' => false,
                     'parent_name' => 'objects',
@@ -281,7 +285,11 @@ class ObjectTypesTableTest extends TestCase
                     'hidden' => null,
                     'relations' => [
                         'test',
+                        'test_simple',
+                        'test_defaults',
                         'inverse_test',
+                        'inverse_test_simple',
+                        'inverse_test_defaults',
                     ],
                     'is_abstract' => false,
                     'parent_name' => 'objects',
@@ -306,7 +314,11 @@ class ObjectTypesTableTest extends TestCase
                     'hidden' => null,
                     'relations' => [
                         'test',
+                        'test_simple',
+                        'test_defaults',
                         'inverse_test',
+                        'inverse_test_simple',
+                        'inverse_test_defaults',
                     ],
                     'is_abstract' => false,
                     'parent_name' => 'objects',
@@ -331,7 +343,11 @@ class ObjectTypesTableTest extends TestCase
                     'hidden' => null,
                     'relations' => [
                         'test',
+                        'test_simple',
+                        'test_defaults',
                         'inverse_test',
+                        'inverse_test_simple',
+                        'inverse_test_defaults',
                     ],
                     'is_abstract' => false,
                     'parent_name' => 'objects',
@@ -356,7 +372,11 @@ class ObjectTypesTableTest extends TestCase
                     'hidden' => null,
                     'relations' => [
                         'test',
+                        'test_simple',
+                        'test_defaults',
                         'inverse_test',
+                        'inverse_test_simple',
+                        'inverse_test_defaults',
                     ],
                     'is_abstract' => false,
                     'parent_name' => 'objects',
@@ -502,7 +522,7 @@ class ObjectTypesTableTest extends TestCase
                 ['name' => 'inverse_test', 'side' => 'left'],
             ],
             'with descendants' => [
-                ['media', 'files', 'images'],
+                ['media', 'files', 'images', 'videos'],
                 ['name' => 'test_abstract', 'descendants' => true],
             ],
             'relation not found' => [

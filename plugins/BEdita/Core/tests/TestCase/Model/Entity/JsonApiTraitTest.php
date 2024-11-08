@@ -274,6 +274,14 @@ class JsonApiTraitTest extends TestCase
                         'id' => '1',
                         'type' => 'relations',
                     ],
+                    [
+                        'id' => '4',
+                        'type' => 'relations',
+                    ],
+                    [
+                        'id' => '5',
+                        'type' => 'relations',
+                    ],
                 ],
                 'links' => [
                     'related' => '/model/object_types/2/left_relations',
@@ -284,6 +292,14 @@ class JsonApiTraitTest extends TestCase
                 'data' => [
                     [
                         'id' => '1',
+                        'type' => 'relations',
+                    ],
+                    [
+                        'id' => '4',
+                        'type' => 'relations',
+                    ],
+                    [
+                        'id' => '5',
                         'type' => 'relations',
                     ],
                 ],
@@ -310,7 +326,7 @@ class JsonApiTraitTest extends TestCase
         $included = $objectType['included'];
 
         static::assertSame($expected, $relationships);
-        static::assertCount(3, $included);
+        static::assertCount(7, $included);
     }
 
     /**
@@ -507,6 +523,7 @@ class JsonApiTraitTest extends TestCase
             'depth_level' => 2,
             'menu' => true,
             'canonical' => true,
+            'params' => null,
         ];
         static::assertEquals($expected, Hash::get($child, 'meta.relation'));
     }

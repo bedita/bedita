@@ -271,7 +271,7 @@ class TagsCategoriesTest extends IntegrationTestCase
     {
         return [
             'categories' => [
-                [1, 2, 3],
+                [1, 2, 3, 4],
                 '/model/categories',
             ],
             'tags' => [
@@ -361,7 +361,7 @@ class TagsCategoriesTest extends IntegrationTestCase
                     'labels' => ['default' => 'Second category'],
                     'parent_id' => null,
                     'tree_left' => 3,
-                    'tree_right' => 4,
+                    'tree_right' => 6,
                     'enabled' => true,
                     'object_type_name' => 'documents',
                     'label' => 'Second category',
@@ -374,11 +374,25 @@ class TagsCategoriesTest extends IntegrationTestCase
                     'name' => 'disabled-cat',
                     'labels' => ['default' => 'Disabled category'],
                     'parent_id' => null,
-                    'tree_left' => 5,
-                    'tree_right' => 6,
+                    'tree_left' => 7,
+                    'tree_right' => 8,
                     'enabled' => false,
                     'object_type_name' => 'documents',
                     'label' => 'Disabled category',
+                ],
+            ],
+            [
+                'id' => '4',
+                'type' => 'categories',
+                'attributes' => [
+                    'name' => 'child-cat-1',
+                    'labels' => ['default' => 'Child category'],
+                    'parent_id' => 2,
+                    'tree_left' => 4,
+                    'tree_right' => 5,
+                    'enabled' => true,
+                    'object_type_name' => 'documents',
+                    'label' => 'Child category',
                 ],
             ],
         ];

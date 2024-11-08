@@ -276,6 +276,23 @@ class RelatedToTest extends TestCase
     }
 
     /**
+     * Test setting and retrieving relation.
+     *
+     * @return void
+     * @covers ::_options()
+     * @covers ::setRelation()
+     * @covers ::getRelation()
+     */
+    public function testSetGetRelation(): void
+    {
+        $relation = $this->getTableLocator()->get('Relations')
+            ->get(1);
+        $relatedTo = new RelatedTo('Alias', compact('relation'));
+
+        static::assertSame($relation, $relatedTo->getRelation());
+    }
+
+    /**
      * Data provider for {@see RelatedToTest::testGetTarget()} test case.
      *
      * @return array[]

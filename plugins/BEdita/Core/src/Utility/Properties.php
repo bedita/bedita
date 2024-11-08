@@ -77,6 +77,8 @@ class Properties extends ResourcesBase
 
         foreach ($properties as $p) {
             static::validate($p);
+            $options = Hash::get($p, 'options', null);
+            $options = is_array($options) ? json_encode($options) : $options;
             $property = $Properties->newEntity([
                 'name' => $p['name'],
                 'property_type_name' => $p['property'],
@@ -84,6 +86,7 @@ class Properties extends ResourcesBase
                 'description' => Hash::get($p, 'description'),
                 'is_nullable' => (bool)Hash::get($p, 'is_nullable', true),
                 'read_only' => (bool)Hash::get($p, 'read_only', false),
+                'default_value' => Hash::get($p, 'default_value', null),
             ]);
 
             $created[] = $Properties->saveOrFail($property, static::$defaults['save']);
@@ -136,6 +139,8 @@ class Properties extends ResourcesBase
         foreach ($properties as $p) {
             static::validate($p);
             $objectType = $ObjectTypes->get(Inflector::camelize($p['object']));
+            $options = Hash::get($p, 'options', null);
+            $options = is_array($options) ? json_encode($options) : $options;
 
             /** @var \Cake\Datasource\EntityInterface $property */
             $property = $Properties->find()
@@ -148,6 +153,7 @@ class Properties extends ResourcesBase
             $property->set('description', Hash::get($p, 'description'));
             $property->set('is_nullable', (bool)Hash::get($p, 'is_nullable', true));
             $property->set('read_only', (bool)Hash::get($p, 'read_only', false));
+            $property->set('default_value', Hash::get($p, 'default_value', null));
 
             $updated[] = $Properties->saveOrFail($property, static::$defaults['update']);
         }

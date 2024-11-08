@@ -205,7 +205,7 @@ return function (RouteBuilder $routes): void {
         // Trash.
         $routes->connect(
             '/trash',
-            ['controller' => 'Trash', 'action' => 'index', '_method' => 'GET'],
+            ['controller' => 'Trash', 'action' => 'index', '_method' => ['GET', 'DELETE']],
             ['_name' => 'trash:index']
         );
         $routes->connect(
@@ -272,6 +272,11 @@ return function (RouteBuilder $routes): void {
             '/{object_type}/{id}/relationships/{relationship}',
             ['controller' => 'Objects', 'action' => 'relationships'],
             ['_name' => 'objects:relationships']
+        );
+        $routes->connect(
+            '/{object_type}/{id}/relationships/{relationship}/sort',
+            ['controller' => 'Objects', 'action' => 'relationshipsSort'],
+            ['_name' => 'objects:relationshipsSort']
         );
     });
 };

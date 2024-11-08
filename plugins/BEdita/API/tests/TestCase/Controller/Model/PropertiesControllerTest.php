@@ -58,10 +58,10 @@ class PropertiesControllerTest extends IntegrationTestCase
             ],
             'meta' => [
                 'pagination' => [
-                    'count' => 12,
+                    'count' => 13,
                     'page' => 1,
                     'page_count' => 1,
-                    'page_items' => 12,
+                    'page_items' => 13,
                     'page_size' => 20,
                 ],
             ],
@@ -78,6 +78,7 @@ class PropertiesControllerTest extends IntegrationTestCase
                         'is_nullable' => true,
                         'is_static' => false,
                         'read_only' => false,
+                        'default_value' => null,
                     ],
                     'meta' => [
                         'created' => '2016-12-31T23:09:23+00:00',
@@ -99,6 +100,7 @@ class PropertiesControllerTest extends IntegrationTestCase
                         'is_nullable' => true,
                         'is_static' => false,
                         'read_only' => false,
+                        'default_value' => null,
                     ],
                     'meta' => [
                         'created' => '2016-12-31T23:09:23+00:00',
@@ -120,6 +122,7 @@ class PropertiesControllerTest extends IntegrationTestCase
                         'is_nullable' => true,
                         'is_static' => false,
                         'read_only' => false,
+                        'default_value' => null,
                     ],
                     'meta' => [
                         'created' => '2016-12-31T23:09:23+00:00',
@@ -141,6 +144,7 @@ class PropertiesControllerTest extends IntegrationTestCase
                         'is_nullable' => true,
                         'is_static' => false,
                         'read_only' => false,
+                        'default_value' => null,
                     ],
                     'meta' => [
                         'created' => '2016-12-31T23:09:23+00:00',
@@ -162,6 +166,7 @@ class PropertiesControllerTest extends IntegrationTestCase
                         'is_nullable' => true,
                         'is_static' => false,
                         'read_only' => true,
+                        'default_value' => null,
                     ],
                     'meta' => [
                         'created' => '2016-12-31T23:09:23+00:00',
@@ -183,6 +188,7 @@ class PropertiesControllerTest extends IntegrationTestCase
                         'is_nullable' => true,
                         'is_static' => false,
                         'read_only' => false,
+                        'default_value' => null,
                     ],
                     'meta' => [
                         'created' => '2016-12-31T23:09:23+00:00',
@@ -204,6 +210,7 @@ class PropertiesControllerTest extends IntegrationTestCase
                         'is_nullable' => true,
                         'is_static' => false,
                         'read_only' => false,
+                        'default_value' => null,
                     ],
                     'meta' => [
                         'created' => '2017-09-05T11:10:00+00:00',
@@ -225,6 +232,7 @@ class PropertiesControllerTest extends IntegrationTestCase
                         'is_nullable' => false,
                         'is_static' => false,
                         'read_only' => false,
+                        'default_value' => null,
                     ],
                     'meta' => [
                         'created' => '2017-11-07T18:32:00+00:00',
@@ -246,6 +254,7 @@ class PropertiesControllerTest extends IntegrationTestCase
                         'is_nullable' => true,
                         'is_static' => false,
                         'read_only' => false,
+                        'default_value' => null,
                     ],
                     'meta' => [
                         'created' => '2017-11-07T18:32:00+00:00',
@@ -267,6 +276,7 @@ class PropertiesControllerTest extends IntegrationTestCase
                         'is_nullable' => true,
                         'is_static' => true,
                         'read_only' => false,
+                        'default_value' => null,
                     ],
                     'meta' => [
                         'created' => '2020-08-07T16:23:00+00:00',
@@ -288,6 +298,7 @@ class PropertiesControllerTest extends IntegrationTestCase
                         'is_nullable' => true,
                         'is_static' => false,
                         'read_only' => false,
+                        'default_value' => null,
                     ],
                     'meta' => [
                         'created' => '2021-07-13T18:30:00+00:00',
@@ -309,6 +320,7 @@ class PropertiesControllerTest extends IntegrationTestCase
                         'is_nullable' => true,
                         'is_static' => false,
                         'read_only' => false,
+                        'default_value' => null,
                     ],
                     'meta' => [
                         'created' => '2022-12-01T15:26:00+00:00',
@@ -316,6 +328,28 @@ class PropertiesControllerTest extends IntegrationTestCase
                     ],
                     'links' => [
                         'self' => 'http://api.example.com/model/properties/12',
+                    ],
+                ],
+                [
+                    'id' => '13',
+                    'type' => 'properties',
+                    'attributes' => [
+                        'name' => 'default_val_property',
+                        'description' => 'Default val property example',
+                        'property_type_name' => 'string',
+                        'object_type_name' => 'files',
+                        'label' => null,
+                        'is_nullable' => true,
+                        'is_static' => false,
+                        'read_only' => false,
+                        'default_value' => 'my default value',
+                    ],
+                    'meta' => [
+                        'created' => '2024-07-04T11:25:58+00:00',
+                        'modified' => '2024-07-04T11:25:58+00:00',
+                    ],
+                    'links' => [
+                        'self' => 'http://api.example.com/model/properties/13',
                     ],
                 ],
             ],
@@ -397,6 +431,7 @@ class PropertiesControllerTest extends IntegrationTestCase
                     'is_nullable' => true,
                     'is_static' => false,
                     'read_only' => false,
+                    'default_value' => null,
                 ],
                 'meta' => [
                     'created' => '2016-12-31T23:09:23+00:00',
@@ -473,7 +508,7 @@ class PropertiesControllerTest extends IntegrationTestCase
 
         $this->assertResponseCode(201);
         $this->assertContentType('application/vnd.api+json');
-        $this->assertHeader('Location', 'http://api.example.com/model/properties/13');
+        $this->assertHeader('Location', 'http://api.example.com/model/properties/14');
         static::assertTrue(TableRegistry::getTableLocator()->get('Properties')->exists(['name' => 'yet_another_body']));
     }
 
@@ -536,6 +571,7 @@ class PropertiesControllerTest extends IntegrationTestCase
             'object_type_name' => 'documents',
             'is_static' => false,
             'read_only' => false,
+            'default_value' => null,
         ];
         static::assertEquals($data, $result['data']);
 

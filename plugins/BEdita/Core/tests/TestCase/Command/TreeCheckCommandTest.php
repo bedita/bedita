@@ -26,6 +26,7 @@ use Cake\TestSuite\TestCase;
  * {@see \BEdita\Core\Command\TreeCheckCommand} Test Case.
  *
  * @property \BEdita\Core\Model\Table\TreesTable $Trees
+ * @property \BEdita\Core\Model\Table\CategoriesTable $Categories
  * @covers \BEdita\Core\Command\TreeCheckCommand
  */
 #[AllowDynamicProperties]
@@ -47,6 +48,7 @@ class TreeCheckCommandTest extends TestCase
         'plugin.BEdita/Core.Properties',
         'plugin.BEdita/Core.Objects',
         'plugin.BEdita/Core.Trees',
+        'plugin.BEdita/Core.Categories',
     ];
 
     /**
@@ -57,7 +59,10 @@ class TreeCheckCommandTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
+
+        $this->cleanupConsoleTrait();
         $this->Trees = $this->fetchTable('Trees');
+        $this->Categories = $this->fetchTable('Categories');
     }
 
     /**
@@ -65,7 +70,7 @@ class TreeCheckCommandTest extends TestCase
      *
      * @return void
      */
-    public function testExecutionOk()
+    public function testExecutionOk(): void
     {
         $this->exec(sprintf('%s --verbose', TreeCheckCommand::defaultName()));
 
@@ -84,7 +89,7 @@ class TreeCheckCommandTest extends TestCase
      *
      * @return void
      */
-    public function testExecutionCorrupt()
+    public function testExecutionCorrupt(): void
     {
         $this->Trees->updateAll(['parent_node_id' => 1], ['parent_id' => 12]);
         $this->exec(sprintf('%s --verbose', TreeCheckCommand::defaultName()));
@@ -106,7 +111,7 @@ class TreeCheckCommandTest extends TestCase
      *
      * @return void
      */
-    public function testExecutionFolderNotInTree()
+    public function testExecutionFolderNotInTree(): void
     {
         $this->Trees->deleteOrFail(
             $this->Trees->find()
@@ -134,7 +139,7 @@ class TreeCheckCommandTest extends TestCase
      *
      * @return void
      */
-    public function testExecutionUbiquitousFolder()
+    public function testExecutionUbiquitousFolder(): void
     {
         $this->Trees->saveOrFail(
             $this->Trees->newEntity([
@@ -163,7 +168,7 @@ class TreeCheckCommandTest extends TestCase
      *
      * @return void
      */
-    public function testExecutionOtherObjectInRoot()
+    public function testExecutionOtherObjectInRoot(): void
     {
         $this->Trees->saveOrFail(
             $this->Trees->newEntity([
@@ -191,7 +196,7 @@ class TreeCheckCommandTest extends TestCase
      *
      * @return void
      */
-    public function testExecutionOtherObjectWithChildren()
+    public function testExecutionOtherObjectWithChildren(): void
     {
         $this->Trees->saveOrFail(
             $this->Trees->newEntity([
@@ -220,7 +225,7 @@ class TreeCheckCommandTest extends TestCase
      *
      * @return void
      */
-    public function testExecutionObjectTwiceInFolder()
+    public function testExecutionObjectTwiceInFolder(): void
     {
         // Worse-than-worst case scenario: drop unique index to simulate a case where the constraint was violated somehow.
         if (!($this->Trees->getConnection()->getDriver() instanceof Mysql)) {
@@ -257,7 +262,7 @@ class TreeCheckCommandTest extends TestCase
      *
      * @return void
      */
-    public function testExecutionInconsistentParentId()
+    public function testExecutionInconsistentParentId(): void
     {
         $this->Trees->updateAll(['parent_id' => 11], ['parent_id' => 12]);
 
@@ -280,7 +285,7 @@ class TreeCheckCommandTest extends TestCase
      *
      * @return void
      */
-    public function testExecutionInconsistentRootId()
+    public function testExecutionInconsistentRootId(): void
     {
         $this->Trees->updateAll(['root_id' => 13], ['parent_id' => 12]);
 
@@ -296,5 +301,33 @@ class TreeCheckCommandTest extends TestCase
         $this->assertOutputContains('There are no tree nodes that reference a different parent than the object of the parent node');
         $this->assertOutputContains('Found 1 tree nodes that reference a different root than the root of the parent node');
         $this->assertOutputContains('profile <info>gustavo-supporto</info> (#<info>4</info>) references a different root_id than the one in the parent node');
+    }
+
+    /**
+     * Test execution when categories tree is already valid.
+     *
+     * @return void
+     */
+    public function testExecutionCategoriesOk(): void
+    {
+        $this->exec(sprintf('%s --categories --verbose', TreeCheckCommand::defaultName()));
+
+        $this->assertExitSuccess();
+        $this->assertOutputContains('Categories tree integrity check passed');
+    }
+
+    /**
+     * Test execution when categories tree NSM is corrupt.
+     *
+     * @return void
+     */
+    public function testExecutionCategoriesCorrupt(): void
+    {
+        $this->Categories->updateAll(['tree_right' => 10], ['parent_id' => 2]);
+        $this->exec(sprintf('%s --categories --verbose', TreeCheckCommand::defaultName()));
+
+        $this->assertExitError();
+        $this->assertOutputContains('Categories tree is corrupt!');
+        $this->assertOutputContains('Found record where parent.tree_right - 1 != MAX(children.tree_right)');
     }
 }

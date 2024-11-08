@@ -166,6 +166,13 @@ return [
     // ],
 
     /**
+     * Uncomment to define custom mailer classes to load
+     */
+    // 'Mailer' => [
+    //     'User' => '\MyPlugin\Mailer\UserMailer',
+    // ],
+
+    /**
      * Signup settings.
      *
      * - `requireActivation` - boolean (default: true) - Are new users required to verify their contact method
@@ -210,6 +217,21 @@ return [
     //     ],
     //     'dogs' => [
     //         'status' => 'on', // GO dogs!
+    //     ],
+    // ],
+
+    /**
+     * Optional schema for the `params` attribute of the children relationship.
+     */
+    // 'ChildrenParams' => [
+    //     'type' => 'object',
+    //     'required' => ['name'],
+    //     'properties' => [
+    //         'name' => ['type' => 'string'],
+    //         'hobby' => [
+    //             'type' => 'string',
+    //             'enum' => ['fishing', 'knitting', 'gaming'],
+    //         ],
     //     ],
     // ],
 

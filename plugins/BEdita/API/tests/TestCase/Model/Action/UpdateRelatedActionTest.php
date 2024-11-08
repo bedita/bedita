@@ -147,7 +147,7 @@ class UpdateRelatedActionTest extends TestCase
     /**
      * Test invocation of command.
      *
-     * @param int[]|\Exception Expected result.
+     * @param int[]|\Exception $expected Expected result.
      * @param string $table Table to use.
      * @param string $association Association to use.
      * @param int $id Entity ID to update relations for.

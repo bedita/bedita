@@ -185,6 +185,13 @@ class ObjectsTableTest extends TestCase
                     'status' => null,
                 ],
             ],
+            'numericUname' => [
+                false,
+                [
+                    'title' => 'title four',
+                    'uname' => '123',
+                ],
+            ],
         ];
     }
 
@@ -248,6 +255,9 @@ class ObjectsTableTest extends TestCase
                     13 => 'Another Root Folder',
                     14 => 'second media',
                     16 => 'svg media',
+                    17 => 'Modern art',
+                    18 => 'Contemporary art',
+                    19 => 'Funny video of Gustavo',
                 ],
                 ['ne' => 'documents'],
             ],
@@ -273,6 +283,9 @@ class ObjectsTableTest extends TestCase
                     14 => 'second media',
                     15 => null,
                     16 => 'svg media',
+                    17 => 'Modern art',
+                    18 => 'Contemporary art',
+                    19 => 'Funny video of Gustavo',
                 ],
                 ['objects'],
             ],
@@ -690,11 +703,11 @@ class ObjectsTableTest extends TestCase
     {
         return [
             'no status' => [
-                13,
+                16,
                 ['id > 0'],
             ],
             'status on' => [
-                8,
+                11,
                 ['id > 5'],
                 'on',
             ],
@@ -730,14 +743,14 @@ class ObjectsTableTest extends TestCase
     {
         return [
             'on + publish' => [
-                11,
+                14,
                 [
                     'Status.level' => 'on',
                     'Publish.checkDate' => true,
                 ],
             ],
             'draft' => [
-                16,
+                19,
                 [
                     'Status.level' => 'draft',
                 ],
@@ -773,7 +786,7 @@ class ObjectsTableTest extends TestCase
     public function testFindPublishDateAllowed(): void
     {
         $result = $this->Objects->find('publishDateAllowed')->toArray();
-        static::assertSame(13, count($result));
+        static::assertSame(16, count($result));
     }
 
     /**

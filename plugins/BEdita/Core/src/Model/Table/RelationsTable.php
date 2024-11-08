@@ -83,7 +83,7 @@ class RelationsTable extends Table
                 $through->aliasField('side') => 'right',
             ],
         ]);
-        $this->addBehavior('BEdita/Core.Searchable');
+        $this->addBehavior('BEdita/Core.Searchable', ['scopes' => (array)$this->getTable()]);
         $this->addBehavior('BEdita/Core.ResourceName');
 
         $this->setupSimpleSearch([
