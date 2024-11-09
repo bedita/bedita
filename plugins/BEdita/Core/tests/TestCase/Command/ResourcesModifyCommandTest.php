@@ -222,14 +222,14 @@ class ResourcesModifyCommandTest extends TestCase
     }
 
     /**
-     * Test modify resource with invalid field
+     * Test modify resource not found
      *
      * @return void
      * @covers ::execute()
      */
     public function testExecuteResourceNotFound(): void
     {
-        $this->exec('resources_modify 999 --type applications --field description', ['A sample description']);
+        $this->exec('resources_modify 999 --type applications --field description');
         $this->assertExitCode(Command::CODE_ERROR);
         $this->assertErrorContains('Resource with id 999 not found');
     }

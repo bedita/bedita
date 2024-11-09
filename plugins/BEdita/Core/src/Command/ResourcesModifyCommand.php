@@ -117,7 +117,7 @@ class ResourcesModifyCommand extends Command
             ->where($condition)
             ->first();
         if (empty($entity)) {
-            $this->io->abort(sprintf('Resource with id %d not found', $id));
+            $this->io->abort(sprintf('Resource with id %s not found', $id));
         }
         if ($field === 'api_key' && $this->table instanceof ApplicationsTable) {
             $entity->set('api_key', ApplicationsTable::generateApiKey());

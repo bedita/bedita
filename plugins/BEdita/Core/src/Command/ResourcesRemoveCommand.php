@@ -94,11 +94,6 @@ class ResourcesRemoveCommand extends Command
     public function execute(Arguments $args, ConsoleIo $io): int
     {
         $type = $args->getOption('type');
-        if (empty($type)) {
-            $this->displayHelp($this->getOptionParser(), $args, $io);
-
-            return static::CODE_ERROR;
-        }
         $this->args = $args;
         $this->io = $io;
         $this->table = $this->fetchTable(Inflector::camelize($type));
@@ -118,11 +113,11 @@ class ResourcesRemoveCommand extends Command
             ->where($condition)
             ->first();
         if (empty($entity)) {
-            $this->io->abort(sprintf('Resource with id %d not found', $id));
+            $this->io->abort(sprintf('Resource with id %s not found', $id));
         }
         $action = new DeleteEntityAction(['table' => $this->table]);
         $action(compact('entity'));
-        $this->io->out(sprintf('Record %d deleted', $id));
+        $this->io->out(sprintf('Record "%s" deleted', $id));
 
         return static::CODE_SUCCESS;
     }
