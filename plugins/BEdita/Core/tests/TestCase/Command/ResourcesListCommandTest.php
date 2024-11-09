@@ -110,7 +110,7 @@ class ResourcesListCommandTest extends TestCase
                 '',
                 '{n} result(s) found',
             ],
-            'roles, no filter' => [
+            'roles, filter' => [
                 'roles',
                 'name="first role"',
                 '1 result(s) found',
