@@ -56,6 +56,13 @@ class SetupConnectionCommand extends Command
     protected $table;
 
     /**
+     * Command parameters.
+     *
+     * @var array
+     */
+    protected $params = [];
+
+    /**
      * {@inheritDoc}
      *
      * @codeCoverageIgnore
@@ -227,7 +234,7 @@ class SetupConnectionCommand extends Command
 
         // Database driver.
         if (!$this->args->getOption('connection-driver')) {
-            $this->params['connection-driver'] = $this->in('Enter database driver:', ['Mysql', 'Postgres', 'Sqlite'], 'Mysql');
+            $this->params['connection-driver'] = $this->io->askChoice('Enter database driver:', ['Mysql', 'Postgres', 'Sqlite'], 'Mysql');
         }
         $driver = $this->args->getOption('connection-driver');
         $config['driver'] = sprintf('Cake\Database\Driver\%s', $driver);
@@ -235,7 +242,7 @@ class SetupConnectionCommand extends Command
         if ($driver === 'Sqlite') {
             // Database path.
             if (!$this->args->getOption('connection-database')) {
-                $this->params['connection-database'] = $this->in('Enter database path:', null, TMP . 'bedita.sqlite');
+                $this->params['connection-database'] = $this->io->askChoice('Enter database path:', null, TMP . 'bedita.sqlite');
             }
             $config['database'] = $this->args->getOption('connection-database');
 
@@ -244,13 +251,13 @@ class SetupConnectionCommand extends Command
 
         // Database host.
         if (!$this->args->getOption('connection-host')) {
-            $this->params['connection-host'] = $this->in('Enter database host:', null, 'localhost');
+            $this->params['connection-host'] = $this->io->askChoice('Enter database host:', null, 'localhost');
         }
         $config['host'] = $this->args->getOption('connection-host');
 
         // Database port.
         if (!$this->args->getOption('connection-port')) {
-            $this->params['connection-port'] = $this->in('Enter database port:', null, $driver === 'Mysql' ? '3306' : '5432');
+            $this->params['connection-port'] = $this->io->askChoice('Enter database port:', null, $driver === 'Mysql' ? '3306' : '5432');
         }
         $config['port'] = $this->args->getOption('connection-port');
 

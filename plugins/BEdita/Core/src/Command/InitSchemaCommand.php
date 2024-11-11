@@ -54,6 +54,13 @@ class InitSchemaCommand extends Command
     protected $table;
 
     /**
+     * Command parameters.
+     *
+     * @var array
+     */
+    protected $params = [];
+
+    /**
      * {@inheritDoc}
      *
      * @codeCoverageIgnore
@@ -141,7 +148,7 @@ class InitSchemaCommand extends Command
         if ($this->args->getOption('no-force')) {
             $this->params['force'] = false;
         } elseif (!$this->args->getOption('force')) {
-            $this->_io->getStyle('blink', ['text' => 'red', 'blink' => true, 'bold' => true]);
+            $this->io->getStyle('blink', ['text' => 'red', 'blink' => true, 'bold' => true]);
             $this->io->quiet('<blink>CAREFUL!</blink> <warning>ALL CURRENT TABLES WILL BE DROPPED!</warning>');
 
             $this->params['force'] = ($this->io->askChoice('Do you really want to proceed?', ['y', 'n'], 'n') === 'y');

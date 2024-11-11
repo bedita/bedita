@@ -62,6 +62,20 @@ class CheckSchemaCommand extends Command
     protected $table;
 
     /**
+     * Registry of all issues found.
+     *
+     * @var array
+     */
+    protected $messages = [];
+
+    /**
+     * List of SQL reserved words.
+     *
+     * @var array
+     */
+    protected $reservedWords = [];
+
+    /**
      * {@inheritDoc}
      *
      * @codeCoverageIgnore

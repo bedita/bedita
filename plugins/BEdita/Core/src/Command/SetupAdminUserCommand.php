@@ -60,6 +60,13 @@ class SetupAdminUserCommand extends Command
     protected $table;
 
     /**
+     * Command parameters.
+     *
+     * @var array
+     */
+    protected $params = [];
+
+    /**
      * {@inheritDoc}
      *
      * @codeCoverageIgnore
