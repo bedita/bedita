@@ -97,7 +97,7 @@ class CheckApiKeyCommand extends Command
         if (empty($application->api_key)) {
             $this->io->out('=====> <warning>Default application has no API key</warning>');
 
-            return static::CODE_SUCCESS;
+            return static::CODE_ERROR;
         }
         $this->io->out(sprintf('=====> Default API key is: <info>%s</info>', $application->api_key));
         $this->io->out('=====> <success>API key is ok. You can now make your requests even more handsome with it!</success>');

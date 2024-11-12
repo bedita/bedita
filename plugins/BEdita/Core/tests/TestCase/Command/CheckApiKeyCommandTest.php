@@ -15,11 +15,9 @@ declare(strict_types=1);
 
 namespace BEdita\Core\Test\TestCase\Command;
 
-use BEdita\Core\Model\Entity\Application;
 use BEdita\Core\Model\Table\ApplicationsTable;
 use Cake\Command\Command;
 use Cake\Console\TestSuite\ConsoleIntegrationTestTrait;
-use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\TestSuite\TestCase;
 
 /**
@@ -30,6 +28,13 @@ use Cake\TestSuite\TestCase;
 class CheckApiKeyCommandTest extends TestCase
 {
     use ConsoleIntegrationTestTrait;
+
+    /**
+     * Applications table.
+     *
+     * @var \BEdita\Core\Model\Table\ApplicationsTable
+     */
+    public $Applications;
 
     /**
      * Fixtures
@@ -47,6 +52,7 @@ class CheckApiKeyCommandTest extends TestCase
     {
         parent::setUp();
         $this->useCommandRunner();
+        $this->Applications = $this->fetchTable('Applications');
     }
 
     /**
@@ -54,6 +60,7 @@ class CheckApiKeyCommandTest extends TestCase
      */
     public function tearDown(): void
     {
+        unset($this->Applications);
         parent::tearDown();
     }
 
@@ -73,61 +80,50 @@ class CheckApiKeyCommandTest extends TestCase
     }
 
     /**
-     * Test check_api_key
+     * Test execution when default application is missing.
      *
      * @return void
      * @covers ::execute()
      */
-    public function testExecute(): void
+    public function testExecuteMissingApplication()
     {
-        $this->exec('check_api_key --verbose');
-        $this->assertExitCode(Command::CODE_SUCCESS);
-        $this->assertOutputContains('=====> Loading default application...');
-        $this->assertOutputContains('<info>DONE</info>');
-        $application = $this->fetchTable('Applications')->get(ApplicationsTable::DEFAULT_APPLICATION);
-        $this->assertOutputContains(sprintf('=====> Default API key is: <info>%s</info>', $application->api_key));
-        $this->assertOutputContains('=====> <success>API key is ok. You can now make your requests even more handsome with it!</success>');
-    }
+        $this->Applications->deleteAll(['id' => ApplicationsTable::DEFAULT_APPLICATION]);
 
-    /**
-     * Test check_api_key with missing default application
-     *
-     * @return void
-     * @covers ::execute()
-     */
-    public function testAbort(): void
-    {
-        // mock table Application so that get() throws RecordNotFoundException
-        $table = $this->getMockBuilder(ApplicationsTable::class)
-            ->onlyMethods(['get'])
-            ->getMock();
-        $table->method('get')
-            ->willThrowException(new RecordNotFoundException());
-        $this->getTableLocator()->set('Applications', $table);
-        $this->exec('check_api_key --verbose');
+        $this->exec('check_api_key');
+
         $this->assertExitCode(Command::CODE_ERROR);
         $this->assertErrorContains('Default application is missing, please check your installation');
     }
 
     /**
-     * Test check_api_key with empty API key
+     * Test execution when default application has empty API key.
      *
      * @return void
      * @covers ::execute()
      */
-    public function testEmptyApiKey(): void
+    public function testExecuteApplicationEmptyApiKey()
     {
-        // mock table Application so that get() throws RecordNotFoundException
-        $application = new Application();
-        $application->api_key = '';
-        $table = $this->getMockBuilder(ApplicationsTable::class)
-            ->onlyMethods(['get'])
-            ->getMock();
-        $table->method('get')
-            ->willReturn($application);
-        $this->getTableLocator()->set('Applications', $table);
+        $this->Applications->updateAll(['api_key' => ''], ['id' => ApplicationsTable::DEFAULT_APPLICATION]);
+
         $this->exec('check_api_key');
+
+        $this->assertExitCode(Command::CODE_ERROR);
+        $this->assertOutputContains('Default application has no API key');
+    }
+
+    /**
+     * Test execution when everything looks OK.
+     *
+     * @return void
+     * @covers ::execute()
+     */
+    public function testExecuteOk()
+    {
+        $apiKey = $this->Applications->get(1)->api_key;
+
+        $this->exec('check_api_key');
+
         $this->assertExitCode(Command::CODE_SUCCESS);
-        $this->assertOutputContains('=====> <warning>Default application has no API key</warning>');
+        $this->assertOutputContains(sprintf('Default API key is: <info>%s</info>', $apiKey));
     }
 }
