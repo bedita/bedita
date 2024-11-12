@@ -165,12 +165,13 @@ class ResourcesRemoveCommandTest extends TestCase
         $expected = $count - $expectedCountDiff;
         $field = is_numeric($resourceId) ? 'id' : 'name';
         $this->exec(sprintf('resources_remove "%s" --type %s', $resourceId, $resourceType), $input);
-        $this->assertExitCode(Command::CODE_SUCCESS);
         $actual = $table->find()->count();
         $this->assertEquals($expected, $actual);
         if ($expectedCountDiff === 1) {
             $this->assertOutputContains(sprintf('Record "%s" deleted', $resourceId));
+            $this->assertExitCode(Command::CODE_SUCCESS);
         } else {
+            $this->assertExitCode(Command::CODE_ERROR);
             $this->assertOutputContains('No action performed');
             $resource = $table->find()->where([$field => $resourceId])->firstOrFail();
             $this->assertNotEmpty($resource);

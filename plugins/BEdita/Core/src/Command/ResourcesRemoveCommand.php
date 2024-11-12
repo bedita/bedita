@@ -106,7 +106,7 @@ class ResourcesRemoveCommand extends Command
         if ($res !== 'y') {
             $this->io->info('No action performed');
 
-            return static::CODE_SUCCESS;
+            return static::CODE_ERROR;
         }
         $condition = is_numeric($id) ? compact('id') : ['name' => $id];
         $entity = $this->table->find()
