@@ -6,6 +6,16 @@ use Migrations\AbstractMigration;
 class ObjectTypeTranslatable extends AbstractMigration
 {
     /**
+     * {@inheritDoc}
+     *
+     * @see https://github.com/cakephp/migrations/issues/741, https://github.com/cakephp/migrations/pull/745
+     */
+    public function useTransactions(): bool
+    {
+        return $this->getAdapter()->getAdapterType() === 'sqlite' ? false : parent::useTransactions();
+    }
+
+    /**
      * @inheritDoc
      */
     public function up()
