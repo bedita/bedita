@@ -457,14 +457,14 @@ class ResourcesCommandTest extends TestCase
      * Test rm method
      *
      * @param bool $expected Expected result.
-     * @param mixed $id Resource ID or name.
+     * @param int|string $id Resource ID or name.
      * @param string $answer Given answer (y/n).
      * @return void
      * @dataProvider removeProvider()
      * @covers ::rm()
      * @covers ::getEntity()
      */
-    public function testRemove(bool $expected, mixed $id, string $answer): void
+    public function testRemove($expected, $id, $answer): void
     {
         $countBefore = $this->fetchTable('Applications')->find()->count();
 
