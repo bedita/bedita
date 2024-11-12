@@ -20,6 +20,7 @@ use Cake\Datasource\ConnectionManager;
 use Cake\I18n\DateTime;
 use Cake\Log\Log;
 use Cake\ORM\TableRegistry;
+use Cake\TestSuite\ConnectionHelper;
 use Cake\TestSuite\Fixture\SchemaLoader;
 use Cake\Utility\Hash;
 use Migrations\TestSuite\Migrator;
@@ -42,12 +43,13 @@ Cache::drop('_bedita_object_types_');
 Cache::setConfig('_bedita_object_types_', ['className' => 'Null']);
 
 if (getenv('DEBUG_LOG_QUERIES')) {
-    ConnectionManager::get('test')->logQueries(true);
+    Log::drop('queries');
     Log::setConfig('queries', [
         'className' => 'Console',
-        'stream' => 'php://stdout',
+        'stream' => 'php://stderr',
         'scopes' => ['queriesLog'],
     ]);
+    ConnectionHelper::enableQueryLogging(['test']);
 }
 
 $now = DateTime::parse('2018-01-01T00:00:00Z');
@@ -111,6 +113,9 @@ if (defined('UNIT_TEST_RUN')) {
     $fakeTables = include $fakeSchemaPath;
     $fakeTables = Hash::extract((array)$fakeTables, '{n}.table');
 
+    // clear table schemas created loading fake schema
+    // since it could contain previous created BE tables schemas that break migrations
+    Cache::clearAll();
     $migrator = new Migrator();
 
     // Run migrations for multiple plugins
