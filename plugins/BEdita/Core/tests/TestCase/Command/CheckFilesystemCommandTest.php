@@ -15,7 +15,6 @@ declare(strict_types=1);
 
 namespace BEdita\Core\Test\TestCase\Command;
 
-use BEdita\Core\Command\CheckFilesystemCommand;
 use Cake\Command\Command;
 use Cake\Console\TestSuite\ConsoleIntegrationTestTrait;
 use Cake\TestSuite\TestCase;
