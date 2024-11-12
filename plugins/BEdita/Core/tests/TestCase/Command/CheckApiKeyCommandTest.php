@@ -17,7 +17,6 @@ namespace BEdita\Core\Test\TestCase\Command;
 
 use BEdita\Core\Job\ServiceRegistry;
 use BEdita\Core\Model\Entity\Application;
-use BEdita\Core\Model\Entity\ObjectEntity;
 use BEdita\Core\Model\Table\ApplicationsTable;
 use Cake\Command\Command;
 use Cake\Console\TestSuite\ConsoleIntegrationTestTrait;
