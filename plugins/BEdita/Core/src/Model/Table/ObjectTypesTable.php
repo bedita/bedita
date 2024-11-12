@@ -34,7 +34,9 @@ use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
 use Cake\Utility\Inflector;
+use Closure;
 use LogicException;
+use Psr\SimpleCache\CacheInterface;
 
 /**
  * ObjectTypes Model
@@ -87,7 +89,7 @@ class ObjectTypesTable extends Table
     /**
      * @inheritDoc
      */
-    protected $_validatorClass = ObjectTypesValidator::class;
+    protected string $_validatorClass = ObjectTypesValidator::class;
 
     /**
      * {@inheritDoc}
@@ -187,8 +189,13 @@ class ObjectTypesTable extends Table
      *
      * @return \BEdita\Core\Model\Entity\ObjectType
      */
-    public function get($primaryKey, array $options = []): EntityInterface
-    {
+    public function get(
+        mixed $primaryKey,
+        array|string $finder = 'all',
+        CacheInterface|string|null $cache = null,
+        Closure|string|null $cacheKey = null,
+        mixed ...$args
+    ): EntityInterface {
         if (is_string($primaryKey) && !is_numeric($primaryKey)) {
             $allTypes = array_flip(
                 $this->find('list')
@@ -212,15 +219,21 @@ class ObjectTypesTable extends Table
             $primaryKey = $allTypes[$primaryKey];
         }
 
-        if (empty($options)) {
-            $options = [
-                'key' => sprintf('id_%d_rel', $primaryKey),
-                'cache' => self::CACHE_CONFIG,
-                'contain' => ['LeftRelations.RightObjectTypes', 'RightRelations.LeftObjectTypes'],
-            ];
+        if ($cacheKey === null) {
+            $cacheKey = sprintf('id_%d_rel', $primaryKey);
         }
 
-        return parent::get($primaryKey, $options);
+        if ($cache === null) {
+            $cache = self::CACHE_CONFIG;
+        }
+
+        if (empty($args['contain'])) {
+            $args['contain'] = ['LeftRelations.RightObjectTypes', 'RightRelations.LeftObjectTypes'];
+        }
+        $args['cache'] = $cache;
+        $args['cacheKey'] = $cacheKey;
+
+        return parent::get($primaryKey, ...$args);
     }
 
     /**

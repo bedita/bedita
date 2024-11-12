@@ -16,6 +16,7 @@ declare(strict_types=1);
 namespace BEdita\Core\Test\TestCase\Model\Action;
 
 use BEdita\Core\Model\Action\DeleteEntitiesAction;
+use Cake\ORM\Exception\PersistenceFailedException;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
@@ -60,7 +61,7 @@ class DeleteEntitiesActionTest extends TestCase
      */
     public function testExecuteFail(): void
     {
-        $this->expectException(\Cake\ORM\Exception\PersistenceFailedException::class);
+        $this->expectException(PersistenceFailedException::class);
         $action = new DeleteEntitiesAction();
         $entity = TableRegistry::getTableLocator()->get('FakeAnimals')->newEmptyEntity();
         $entities = [$entity];

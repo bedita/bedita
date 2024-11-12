@@ -210,7 +210,7 @@ class Validation
      * @return bool
      * @codeCoverageIgnore
      */
-    public static function notNumeric($check): bool
+    public static function notNumeric(mixed $check): bool
     {
         return !is_numeric($check);
     }

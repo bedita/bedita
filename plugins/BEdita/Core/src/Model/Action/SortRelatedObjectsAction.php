@@ -62,7 +62,7 @@ class SortRelatedObjectsAction extends BaseAction
         $primaryKey = $entity->get('id');
         $sort = compact('field', 'direction');
         $params = compact('primaryKey', 'sort');
-        $association->getConnection()->transactional(function () use ($association, $entity, $params, &$count) {
+        $association->getConnection()->transactional(function () use ($association, $entity, $params, &$count): void {
             $action = new ListRelatedObjectsAction(compact('association'));
             $relatedEntities = $action($params)->toArray();
             $priority = 1;

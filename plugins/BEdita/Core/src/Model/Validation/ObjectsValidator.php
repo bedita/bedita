@@ -90,7 +90,7 @@ class ObjectsValidator extends Validator
      * @see \BEdita\Core\Model\Validation\Validation::notNumeric()
      * @return $this
      */
-    public function notNumeric(string $field, ?string $message = null, $when = null)
+    public function notNumeric(string $field, ?string $message = null, callable|string|null $when = null)
     {
         $extra = array_filter(['on' => $when, 'message' => $message]);
 

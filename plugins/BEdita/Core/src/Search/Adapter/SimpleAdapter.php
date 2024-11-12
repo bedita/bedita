@@ -35,7 +35,7 @@ class SimpleAdapter extends BaseAdapter
     /**
      * @inheritDoc
      */
-    protected $_defaultConfig = [
+    protected array $_defaultConfig = [
         'minLength' => 3,
         'maxWords' => 10,
         'columnTypes' => [

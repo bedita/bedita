@@ -24,6 +24,7 @@ use Cake\I18n\FrozenDate;
 use Cake\ORM\Locator\LocatorAwareTrait;
 use Cake\ORM\Query;
 use Cake\Utility\Hash;
+use Exception;
 
 /**
  * ObjectsHistory command.
@@ -100,7 +101,7 @@ class ObjectsHistoryCommand extends Command
             try {
                 $historyTable->deleteOrFail($historyItem);
                 $counter++;
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 $errors++;
                 $io->error('Error deleting history item ' . $historyItem->id . ': ' . $e->getMessage());
             }

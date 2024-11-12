@@ -17,8 +17,8 @@ namespace BEdita\API\Model\Action;
 
 use Authorization\Policy\Exception\MissingPolicyException;
 use BEdita\Core\Model\Action\BaseAction;
-use BEdita\Core\ORM\Association\RelatedTo;
 use BEdita\Core\Model\Action\UpdateAssociatedAction as BEditaCoreUpdateAssociatedAction;
+use BEdita\Core\ORM\Association\RelatedTo;
 use Cake\Database\Expression\QueryExpression;
 use Cake\Datasource\EntityInterface;
 use Cake\Datasource\Exception\RecordNotFoundException;
@@ -187,7 +187,7 @@ class UpdateAssociatedAction extends BaseAction
      * @param array|null $meta Relation metadata.
      * @return array|null
      */
-    protected function prepareMeta($association, $meta)
+    protected function prepareMeta(Association&BelongsToMany $association, ?array $meta): ?array
     {
         if (!$association instanceof RelatedTo) {
             return $meta;

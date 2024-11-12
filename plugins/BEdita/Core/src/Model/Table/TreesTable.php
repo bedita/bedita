@@ -30,6 +30,7 @@ use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
 use Cake\Validation\Validator;
+use stdClass;
 
 /**
  * Trees Model
@@ -144,9 +145,9 @@ class TreesTable extends Table
      * Validate children parameters using JSON Schema.
      *
      * @param mixed $value Value being validated.
-     * @return true|string
+     * @return string|true
      */
-    public static function jsonSchema($value)
+    public static function jsonSchema(mixed $value): string|bool
     {
         $schema = Configure::read('ChildrenParams');
         if (empty($schema)) {
@@ -154,7 +155,7 @@ class TreesTable extends Table
         }
 
         $success = Validation::jsonSchema($value, $schema);
-        if ($success !== true && $value === null && Validation::jsonSchema(new \stdClass(), $schema) === true) {
+        if ($success !== true && $value === null && Validation::jsonSchema(new stdClass(), $schema) === true) {
             // For the sake of validation, `null` is equivalent to empty object.
             $success = true;
         }

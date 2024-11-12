@@ -29,7 +29,7 @@ trait JsonApiModelTrait
      *
      * @codeCoverageIgnore
      */
-    public function routeNamePrefix()
+    public function routeNamePrefix(): string
     {
         return 'api:model:resources';
     }

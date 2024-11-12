@@ -45,7 +45,7 @@ class SearchRegistry extends ObjectRegistry
     /**
      * @inheritDoc
      */
-    protected function _create($class, string $alias, array $config)
+    protected function _create(object|string $class, string $alias, array $config): object
     {
         if (is_object($class)) {
             $instance = $class;

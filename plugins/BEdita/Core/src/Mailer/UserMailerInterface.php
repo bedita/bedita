@@ -34,7 +34,7 @@ interface UserMailerInterface
      * @return \Cake\Mailer\Mailer
      * @throws \LogicException When missing some required parameter
      */
-    public function welcome($options): Mailer;
+    public function welcome(array $options): Mailer;
 
     /**
      * Signup message.
