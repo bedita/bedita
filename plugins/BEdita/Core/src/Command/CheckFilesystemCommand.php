@@ -104,14 +104,14 @@ class CheckFilesystemCommand extends Command
         if (empty($httpdUser)) {
             $this->io->out('=====> <warning>Unable to detect webserver user</warning>');
 
-            return false;
+            return static::CODE_ERROR;
         }
 
         // Check that paths are writable by HTTPD user.
         if (!$this->checkPaths($paths, $httpdUser)) {
             $this->io->out('=====> <warning>Potential issues were found, please check your installation</warning>');
 
-            return false;
+            return static::CODE_ERROR;
         }
 
         $this->io->out('=====> <success>Filesystem permissions look alright. Time to write something in those shiny folders!</success>');

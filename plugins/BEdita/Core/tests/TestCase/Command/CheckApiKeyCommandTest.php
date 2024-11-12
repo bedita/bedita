@@ -15,7 +15,6 @@ declare(strict_types=1);
 
 namespace BEdita\Core\Test\TestCase\Command;
 
-use BEdita\Core\Job\ServiceRegistry;
 use BEdita\Core\Model\Entity\Application;
 use BEdita\Core\Model\Table\ApplicationsTable;
 use Cake\Command\Command;
@@ -56,7 +55,6 @@ class CheckApiKeyCommandTest extends TestCase
     public function tearDown(): void
     {
         parent::tearDown();
-        ServiceRegistry::reset();
     }
 
     /**
@@ -112,7 +110,7 @@ class CheckApiKeyCommandTest extends TestCase
     }
 
     /**
-     * Undocumented function
+     * Test check_api_key with empty API key
      *
      * @return void
      * @covers ::execute()
