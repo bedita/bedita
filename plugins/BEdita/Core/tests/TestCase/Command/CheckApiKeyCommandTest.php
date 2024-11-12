@@ -65,13 +65,12 @@ class CheckApiKeyCommandTest extends TestCase
     }
 
     /**
-     * Test buildOptionParser method
+     * Test help
      *
      * @return void
-     * @covers ::buildOptionParser()
      * @covers ::getDescription()
      */
-    public function testBuildOptionParser(): void
+    public function testHelp(): void
     {
         $this->exec('check_api_key --help');
         $this->assertExitCode(Command::CODE_SUCCESS);

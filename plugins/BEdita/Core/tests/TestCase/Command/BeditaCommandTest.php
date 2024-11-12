@@ -96,8 +96,7 @@ class BeditaCommandTest extends TestCase
                         $connection->updateQuery($query);
                     }
                 }
-            }
-        );
+            });
         if (in_array(static::TEMP_CONNECTION, ConnectionManager::configured())) {
             ConnectionManager::drop(static::TEMP_CONNECTION);
         }

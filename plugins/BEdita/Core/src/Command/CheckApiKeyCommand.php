@@ -19,7 +19,6 @@ use BEdita\Core\Model\Table\ApplicationsTable;
 use Cake\Command\Command;
 use Cake\Console\Arguments;
 use Cake\Console\ConsoleIo;
-use Cake\Console\ConsoleOptionParser;
 use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\ORM\Locator\LocatorAwareTrait;
 
