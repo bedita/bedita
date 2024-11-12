@@ -45,9 +45,9 @@ class CheckApiKeyCommand extends Command
     protected $io;
 
     /**
-     * Async jobs table
+     * Applications table
      *
-     * @var \BEdita\Core\Model\Table\AsyncJobsTable
+     * @var \BEdita\Core\Model\Table\ApplicationsTable
      */
     protected $table;
 
@@ -60,14 +60,6 @@ class CheckApiKeyCommand extends Command
     {
         $this->setName('cake check_api_key');
         parent::__construct();
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function buildOptionParser(ConsoleOptionParser $parser): ConsoleOptionParser
-    {
-        return $parser;
     }
 
     /**

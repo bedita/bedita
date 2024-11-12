@@ -49,20 +49,6 @@ class SetupConnectionCommand extends Command
     protected $io;
 
     /**
-     * Async jobs table
-     *
-     * @var \BEdita\Core\Model\Table\AsyncJobsTable
-     */
-    protected $table;
-
-    /**
-     * Command parameters.
-     *
-     * @var array
-     */
-    protected $params = [];
-
-    /**
      * {@inheritDoc}
      *
      * @codeCoverageIgnore
@@ -233,54 +219,72 @@ class SetupConnectionCommand extends Command
         $config += $connection->config();
 
         // Database driver.
+        $driver = null;
         if (!$this->args->getOption('connection-driver')) {
-            $this->params['connection-driver'] = $this->io->askChoice('Enter database driver:', ['Mysql', 'Postgres', 'Sqlite'], 'Mysql');
+            $driver = $this->io->askChoice('Enter database driver:', ['Mysql', 'Postgres', 'Sqlite'], 'Mysql');
+        } else {
+            $driver = $this->args->getOption('connection-driver');
         }
-        $driver = $this->args->getOption('connection-driver');
         $config['driver'] = sprintf('Cake\Database\Driver\%s', $driver);
 
         if ($driver === 'Sqlite') {
             // Database path.
+            $database = null;
             if (!$this->args->getOption('connection-database')) {
-                $this->params['connection-database'] = $this->io->askChoice('Enter database path:', null, TMP . 'bedita.sqlite');
+                $database = $this->io->ask('Enter database path:', TMP . 'bedita.sqlite');
+            } else {
+                $database = $this->args->getOption('connection-database');
             }
-            $config['database'] = $this->args->getOption('connection-database');
+            $config['database'] = $database;
 
             return new Connection($config);
         }
 
         // Database host.
+        $host = null;
         if (!$this->args->getOption('connection-host')) {
-            $this->params['connection-host'] = $this->io->askChoice('Enter database host:', null, 'localhost');
+            $host = $this->io->askChoice('Enter database host:', null, 'localhost');
+        } else {
+            $host = $this->args->getOption('connection-host');
         }
-        $config['host'] = $this->args->getOption('connection-host');
+        $config['host'] = $host;
 
         // Database port.
+        $port = null;
         if (!$this->args->getOption('connection-port')) {
-            $this->params['connection-port'] = $this->io->askChoice('Enter database port:', null, $driver === 'Mysql' ? '3306' : '5432');
+            $port = $this->io->askChoice('Enter database port:', null, $driver === 'Mysql' ? '3306' : '5432');
+        } else {
+            $port = $this->args->getOption('connection-port');
         }
-        $config['port'] = $this->args->getOption('connection-port');
+        $config['port'] = $port;
 
         // Database name.
+        $databasename = null;
         if (!$this->args->getOption('connection-database')) {
-            $this->params['connection-database'] = $this->io->askChoice('Enter database name:', null, 'bedita');
+            $databasename = $this->io->askChoice('Enter database name:', null, 'bedita');
+        } else {
+            $databasename = $this->args->getOption('connection-database');
         }
-        $config['database'] = $this->args->getOption('connection-database');
+        $config['database'] = $databasename;
 
         // Database username.
+        $databaseusername = null;
         if (!$this->args->getOption('connection-username')) {
-            $this->params['connection-username'] = $this->io->ask('Enter username to connect to database:');
+            $databaseusername = $this->io->ask('Enter username to connect to database:');
+        } else {
+            $databaseusername = $this->args->getOption('connection-username');
         }
-        $config['username'] = $this->args->getOption('connection-username');
+        $config['username'] = $databaseusername;
 
         // Database password.
+        $databasepassword = null;
         if ($this->args->getOption('connection-password-empty')) {
-            $this->params['connection-password'] = '';
+            $databasepassword = '';
         } elseif (!$this->args->getOption('connection-password')) {
             $this->io->quiet('=====> <warning>Typing will NOT be hidden!</warning> Please do not enter really sensitive data here.');
-            $this->params['connection-password'] = $this->io->ask('Enter password to connect to database:');
+            $databasepassword = $this->io->ask('Enter password to connect to database:');
         }
-        $config['password'] = $this->args->getOption('connection-password');
+        $config['password'] = $databasepassword;
 
         return new Connection($config);
     }

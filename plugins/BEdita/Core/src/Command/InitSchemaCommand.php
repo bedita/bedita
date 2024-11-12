@@ -47,20 +47,6 @@ class InitSchemaCommand extends Command
     protected $io;
 
     /**
-     * Async jobs table
-     *
-     * @var \BEdita\Core\Model\Table\AsyncJobsTable
-     */
-    protected $table;
-
-    /**
-     * Command parameters.
-     *
-     * @var array
-     */
-    protected $params = [];
-
-    /**
      * {@inheritDoc}
      *
      * @codeCoverageIgnore
@@ -145,15 +131,18 @@ class InitSchemaCommand extends Command
             return;
         }
 
+        $force = null;
         if ($this->args->getOption('no-force')) {
-            $this->params['force'] = false;
+            $force = false;
         } elseif (!$this->args->getOption('force')) {
             $this->io->getStyle('blink', ['text' => 'red', 'blink' => true, 'bold' => true]);
             $this->io->quiet('<blink>CAREFUL!</blink> <warning>ALL CURRENT TABLES WILL BE DROPPED!</warning>');
 
-            $this->params['force'] = ($this->io->askChoice('Do you really want to proceed?', ['y', 'n'], 'n') === 'y');
+            $force = ($this->io->askChoice('Do you really want to proceed?', ['y', 'n'], 'n') === 'y');
+        } else {
+            $force = $this->args->getOption('force');
         }
-        if (!$this->args->getOption('force')) {
+        if (!$force) {
             $this->io->abort('Database is not empty, no action has been performed');
         }
 
@@ -220,13 +209,16 @@ class InitSchemaCommand extends Command
      */
     protected function seed(ConnectionInterface $connection)
     {
+        $seed = null;
         if ($this->args->getOption('no-seed')) {
-            $this->params['seed'] = false;
+            $seed = false;
         } elseif (!$this->args->getOption('seed')) {
             $question = 'Would you like to populate your database with an optional set of data?';
-            $this->params['seed'] = ($this->io->askChoice($question, ['y', 'n'], 'y') === 'y');
+            $seed = ($this->io->askChoice($question, ['y', 'n'], 'y') === 'y');
+        } else {
+            $seed = $this->args->getOption('seed');
         }
-        if (!$this->args->getOption('seed')) {
+        if (!$seed) {
             return;
         }
 

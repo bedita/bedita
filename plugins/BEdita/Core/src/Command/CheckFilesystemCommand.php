@@ -43,13 +43,6 @@ class CheckFilesystemCommand extends Command
     protected $io;
 
     /**
-     * Async jobs table
-     *
-     * @var \BEdita\Core\Model\Table\AsyncJobsTable
-     */
-    protected $table;
-
-    /**
      * {@inheritDoc}
      *
      * @codeCoverageIgnore

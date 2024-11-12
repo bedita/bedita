@@ -55,13 +55,6 @@ class CheckSchemaCommand extends Command
     protected $io;
 
     /**
-     * Async jobs table
-     *
-     * @var \BEdita\Core\Model\Table\AsyncJobsTable
-     */
-    protected $table;
-
-    /**
      * Registry of all issues found.
      *
      * @var array
@@ -124,7 +117,6 @@ class CheckSchemaCommand extends Command
     {
         $this->args = $args;
         $this->io = $io;
-        $this->io->out('Checking Schema...');
 
         if (!Plugin::isLoaded('Migrations')) {
             $this->io->abort('Plugin "Migrations" must be loaded in order to perform schema checks');

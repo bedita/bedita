@@ -53,18 +53,11 @@ class SetupAdminUserCommand extends Command
     protected $io;
 
     /**
-     * Async jobs table
+     * Users table
      *
-     * @var \BEdita\Core\Model\Table\AsyncJobsTable
+     * @var \BEdita\Core\Model\Table\UsersTable
      */
     protected $table;
-
-    /**
-     * Command parameters.
-     *
-     * @var array
-     */
-    protected $params = [];
 
     /**
      * {@inheritDoc}
@@ -135,28 +128,37 @@ class SetupAdminUserCommand extends Command
         if ($user->username !== static::DEFAULT_USERNAME) {
             $this->io->out(sprintf('=====> Administrator user <comment>%s</comment> has already been configured.', $user->username));
 
+            $adminOverwrite = null;
             if ($this->args->getOption('no-admin-overwrite')) {
-                $this->params['admin-overwrite'] = false;
+                $adminOverwrite = false;
             } elseif (!$this->args->getOption('admin-overwrite')) {
-                $this->params['admin-overwrite'] = ($this->io->askChoice('Do you want to overwrite current admin user?', ['y', 'n'], 'n') === 'y');
+                $adminOverwrite = ($this->io->askChoice('Do you want to overwrite current admin user?', ['y', 'n'], 'n') === 'y');
+            } else {
+                $adminOverwrite = $this->args->getOption('admin-overwrite');
             }
-            if (!$this->args->getOption('admin-overwrite')) {
+            if (!$adminOverwrite) {
                 $this->io->out('=====> <success>Existing administrator user has been preserved. Don\'t panic!</success>');
 
                 return static::CODE_SUCCESS;
             }
         }
 
+        $adminUsername = null;
         if (!$this->args->getOption('admin-username')) {
-            $this->params['admin-username'] = $this->io->ask('Enter new username for default admin user:');
+            $adminUsername = $this->io->ask('Enter new username for default admin user:');
+        } else {
+            $adminUsername = $this->args->getOption('admin-username');
         }
+        $adminPassword = null;
         if (!$this->args->getOption('admin-password')) {
             $this->io->quiet('=====> <warning>Typing will NOT be hidden!</warning> Please do not enter really sensitive data here.');
-            $this->params['admin-password'] = $this->io->ask('Enter new password for default admin user:');
+            $adminPassword = $this->io->ask('Enter new password for default admin user:');
+        } else {
+            $adminPassword = $this->args->getOption('admin-password');
         }
 
-        $user->username = $this->args->getOption('admin-username');
-        $user->password = $this->args->getOption('admin-password');
+        $user->username = $adminUsername;
+        $user->password = $adminPassword;
         $user->blocked = false;
 
         try {

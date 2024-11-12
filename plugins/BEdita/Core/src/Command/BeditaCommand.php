@@ -19,6 +19,7 @@ use Cake\Command\Command;
 use Cake\Console\Arguments;
 use Cake\Console\ConsoleIo;
 use Cake\Console\ConsoleOptionParser;
+use Cake\Datasource\ConnectionManager;
 
 /**
  * Bedita command. Utility that internally calls other commands.
@@ -33,6 +34,20 @@ use Cake\Console\ConsoleOptionParser;
 class BeditaCommand extends Command
 {
     /**
+     * Console arguments
+     *
+     * @var \Cake\Console\Arguments
+     */
+    protected $args;
+
+    /**
+     * Console IO
+     *
+     * @var \Cake\Console\ConsoleIo
+     */
+    protected $io;
+
+    /**
      * Subcommands.
      *
      * @var array
@@ -45,28 +60,57 @@ class BeditaCommand extends Command
         ],
         'check_filesystem' => [
             'class' => CheckFilesystemCommand::class,
-            'arguments' => [],
-            'options' => [],
+            'arguments' => [
+                'paths',
+            ],
+            'options' => [
+                'httpd-user',
+            ],
         ],
         'check_schema' => [
             'class' => CheckSchemaCommand::class,
             'arguments' => [],
-            'options' => [],
+            'options' => [
+                'connection',
+                'ignore-migration-status',
+            ],
         ],
         'init_schema' => [
             'class' => InitSchemaCommand::class,
             'arguments' => [],
-            'options' => [],
+            'options' => [
+                'force',
+                'no-force',
+                'seed',
+                'no-seed',
+                'connection',
+            ],
         ],
         'setup_admin_user' => [
             'class' => SetupAdminUserCommand::class,
             'arguments' => [],
-            'options' => [],
+            'options' => [
+                'connection',
+                'admin-overwrite',
+                'no-admin-overwrite',
+                'admin-username',
+                'admin-password',
+            ],
         ],
         'setup_connection' => [
             'class' => SetupConnectionCommand::class,
             'arguments' => [],
-            'options' => [],
+            'options' => [
+                'connection',
+                'config-file',
+                'connection-driver',
+                'connection-host',
+                'connection-port',
+                'connection-database',
+                'connection-username',
+                'connection-password',
+                'connection-password-empty',
+            ],
         ],
     ];
 
@@ -76,9 +120,41 @@ class BeditaCommand extends Command
     public function buildOptionParser(ConsoleOptionParser $parser): ConsoleOptionParser
     {
         return $parser
-            ->addArgument('subcommand', [
-                'help' => 'Subcommand to perform',
-                'choices' => array_keys($this->subcommands),
+            ->addArguments([
+                'subcommand' => [
+                    'help' => 'Subcommand to perform',
+                    'choices' => array_merge(['check', 'setup'], array_keys($this->subcommands)),
+                ],
+                // check_filesystem
+                'paths' => ['required' => false],
+            ])
+            ->addOptions([
+                // check_schema
+                'connection' => ['required' => false, 'short' => 'c'],
+                'ignore-migration-status' => ['required' => false],
+                // check_filesystem
+                'httpd-user' => ['required' => false],
+                // init_schema
+                'force' => ['required' => false, 'short' => 'f'],
+                'no-force' => ['required' => false],
+                'seed' => ['required' => false, 'short' => 's'],
+                'no-seed' => ['required' => false],
+                //'connection' already declared
+                // setup_admin_user
+                'admin-overwrite' => ['required' => false],
+                'no-admin-overwrite' => ['required' => false],
+                'admin-username' => ['required' => false],
+                'admin-password' => ['required' => false],
+                // setup_connection
+                //'connection' already declared
+                'config-file' => ['required' => false],
+                'connection-driver' => ['required' => false],
+                'connection-host' => ['required' => false],
+                'connection-port' => ['required' => false],
+                'connection-database' => ['required' => false],
+                'connection-username' => ['required' => false],
+                'connection-password' => ['required' => false],
+                'connection-password-empty' => ['required' => false],
             ]);
     }
 
@@ -95,23 +171,104 @@ class BeditaCommand extends Command
      */
     public function execute(Arguments $args, ConsoleIo $io): int
     {
+        $this->args = $args;
+        $this->io = $io;
         $subcommand = $args->getArgument('subcommand');
-        if (empty($subcommand) || !in_array($subcommand, array_keys($this->subcommands))) {
-            return $this->executeCommand($this, ['--help'], $io);
+        if (in_array($subcommand, ['check', 'setup'])) {
+            $this->{$subcommand}();
+
+            return static::CODE_SUCCESS;
         }
+        if (in_array($subcommand, array_keys($this->subcommands))) {
+            return $this->executeSubcommand($subcommand);
+        }
+
+        return $this->executeCommand($this, ['--help'], $io);
+    }
+
+    /**
+     * Check bedita instance.
+     *
+     * @return void
+     * @codeCoverageIgnore
+     */
+    public function check()
+    {
+        $this->io->out('=====> Checking schema');
+        $this->executeSubcommand('check_schema');
+
+        $this->io->hr();
+
+        $this->io->out('=====> Checking filesystem permissions');
+        $this->executeSubcommand('check_filesystem');
+    }
+
+    /**
+     * Initial set up for a BEdita instance.
+     *
+     * @return void
+     * @codeCoverageIgnore
+     */
+    public function setup()
+    {
+        $this->io->out('=====> Checking connection');
+        $this->executeSubcommand('setup_connection');
+
+        $this->io->hr();
+
+        $tables = ConnectionManager::get($this->args->getOption('connection'))->getSchemaCollection()->listTables();
+        if (empty($tables)) {
+            $this->io->out('=====> Initializing schema');
+            $this->executeSubcommand('init_schema');
+        } else {
+            $this->io->out('=====> Checking schema');
+            $this->executeSubcommand('check_schema');
+        }
+
+        $this->io->hr();
+
+        $this->io->out('=====> Checking filesystem permissions');
+        $this->executeSubcommand('check_filesystem');
+
+        $this->io->hr();
+
+        if ($this->args->getOption('connection') !== 'default') {
+            ConnectionManager::alias($this->args->getOption('connection'), 'default');
+        }
+        try {
+            $this->io->out('=====> Configuring default administrator user');
+            $this->executeSubcommand('setup_admin_user');
+
+            $this->io->hr();
+
+            $this->io->out('=====> Checking API key');
+            $this->executeSubcommand('check_api_key');
+        } finally {
+            ConnectionManager::dropAlias('default');
+        }
+    }
+
+    /**
+     * Execute subcommand.
+     *
+     * @param string $subcommand Subcommand to execute.
+     * @return int
+     */
+    protected function executeSubcommand(string $subcommand): int
+    {
         $subcommandArguments = [];
         $allowedArguments = $this->subcommands[$subcommand]['arguments'];
         foreach ($allowedArguments as $argumentName) {
-            $subcommandArguments[] = $args->getArgument($argumentName);
+            $subcommandArguments[] = $this->args->getArgument($argumentName);
         }
         $allowedOptions = $this->subcommands[$subcommand]['options'];
-        foreach ($args->getOptions() as $option => $value) {
+        foreach ($this->args->getOptions() as $option => $value) {
             if (in_array($option, $allowedOptions)) {
                 $subcommandArguments[] = sprintf('--%s', $option);
                 $subcommandArguments[] = $value;
             }
         }
 
-        return $this->executeCommand($this->subcommands[$subcommand]['class'], $subcommandArguments, $io);
+        return $this->executeCommand($this->subcommands[$subcommand]['class'], $subcommandArguments, $this->io);
     }
 }
