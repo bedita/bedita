@@ -67,8 +67,7 @@ class CheckApiKeyCommand extends Command
      */
     public function buildOptionParser(ConsoleOptionParser $parser): ConsoleOptionParser
     {
-        return $parser
-            ->setDescription(['Check API key.']);
+        return $parser;
     }
 
     /**
