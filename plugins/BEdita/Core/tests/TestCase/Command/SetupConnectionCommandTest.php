@@ -21,7 +21,6 @@ use Cake\Database\Connection;
 use Cake\Datasource\ConnectionInterface;
 use Cake\Datasource\ConnectionManager;
 use Cake\TestSuite\TestCase;
-use Cake\Utility\Hash;
 use Cake\Utility\Text;
 use DMS\PHPUnitExtensions\ArraySubset\ArraySubsetAsserts;
 
