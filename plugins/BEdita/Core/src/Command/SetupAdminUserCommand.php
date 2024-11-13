@@ -121,8 +121,6 @@ class SetupAdminUserCommand extends Command
         } catch (RecordNotFoundException $e) {
             $this->io->verbose('<error>FAIL</error>');
             $this->io->abort(sprintf('Missing user %d!', UsersTable::ADMIN_USER));
-
-            return static::CODE_ERROR;
         }
 
         if ($user->username !== static::DEFAULT_USERNAME) {

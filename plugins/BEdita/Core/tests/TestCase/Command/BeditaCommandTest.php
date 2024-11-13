@@ -164,9 +164,23 @@ class BeditaCommandTest extends TestCase
     }
 
     /**
+     * Test subcommand.
+     *
+     * @return void
+     * @covers ::execute()
+     */
+    public function testSubcommand(): void
+    {
+        $this->exec('bedita check_api_key');
+        $this->assertExitCode(Command::CODE_SUCCESS);
+    }
+
+    /**
      * Test full setup on a new instance.
      *
      * @return void
+     * @covers ::execute()
+     * @covers ::executeCommand()
      * @covers ::setup()
      */
     // commented out because it's not working... to be fixed
@@ -232,6 +246,8 @@ class BeditaCommandTest extends TestCase
      * Test full setup on a new instance in a completely non-interactive mode.
      *
      * @return void
+     * @covers ::execute()
+     * @covers ::executeCommand()
      * @covers ::setup()
      */
     // commented out because it's not working... to be fixed
@@ -348,6 +364,8 @@ class BeditaCommandTest extends TestCase
      * Test full setup on an already initialized instance in a completely non-interactive mode.
      *
      * @return void
+     * @covers ::execute()
+     * @covers ::executeCommand()
      * @covers ::setup()
      */
     // commented out because it's not working... to be fixed
@@ -372,6 +390,8 @@ class BeditaCommandTest extends TestCase
      * Test full setup on an already initialized instance in a completely non-interactive mode.
      *
      * @return void
+     * @covers ::execute()
+     * @covers ::executeCommand()
      * @covers ::check()
      */
     public function testCheck(): void

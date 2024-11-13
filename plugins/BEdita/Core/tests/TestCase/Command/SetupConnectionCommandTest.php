@@ -29,7 +29,6 @@ use DMS\PHPUnitExtensions\ArraySubset\ArraySubsetAsserts;
  * {@see BEdita\Core\Command\SetupConnectionCommand} Test Case
  *
  * @coversDefaultClass \BEdita\Core\Command\SetupConnectionCommand
- * @covers \BEdita\Core\Command\SetupConnectionCommand
  */
 class SetupConnectionCommandTest extends TestCase
 {
