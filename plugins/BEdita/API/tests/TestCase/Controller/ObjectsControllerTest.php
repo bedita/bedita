@@ -3708,6 +3708,14 @@ class ObjectsControllerTest extends IntegrationTestCase
         $this->configRequestHeaders('GET', $this->getUserAuthHeader());
         $this->get('/documents/2/relationships/test');
         $result = json_decode((string)$this->_response->getBody(), true);
+        $data = array_map(function (array $item): array {
+            return [
+                'id' => Hash::get($item, 'id'),
+                'type' => Hash::get($item, 'type'),
+                'meta' => Hash::get($item, 'meta'),
+            ];
+        }, (array)Hash::get($result, 'data'));
+
         // remove all related objects
         $this->configRequestHeaders('PATCH', $this->getUserAuthHeader());
         $this->patch('/documents/2/relationships/test', json_encode([
@@ -3725,18 +3733,7 @@ class ObjectsControllerTest extends IntegrationTestCase
         $this->assertResponseCode(204);
         // restore data
         $this->configRequestHeaders('PATCH', $this->getUserAuthHeader());
-        $this->patch('/documents/2/relationships/test', json_encode([
-            'data' => [
-                [
-                    'id' => '4',
-                    'type' => 'profiles',
-                ],
-                [
-                    'id' => '3',
-                    'type' => 'documents',
-                ],
-            ],
-        ]));
+        $this->patch('/documents/2/relationships/test', json_encode(compact('data')));
         $this->assertResponseCode(200);
     }
 
