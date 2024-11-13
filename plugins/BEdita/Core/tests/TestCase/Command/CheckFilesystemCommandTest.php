@@ -29,6 +29,13 @@ class CheckFilesystemCommandTest extends TestCase
     use ConsoleIntegrationTestTrait;
 
     /**
+     * Web server user.
+     *
+     * @var string
+     */
+    protected $wwwUser;
+
+    /**
      * Temporary directory for permissions tests.
      *
      * @string
@@ -42,6 +49,7 @@ class CheckFilesystemCommandTest extends TestCase
     {
         parent::setUp();
         $this->useCommandRunner();
+        $this->wwwUser = exec('ps aux | grep -E "[a]pache|[h]ttpd|[_]www|[w]ww-data|[n]ginx" | grep -v root | head -1 | cut -d\\  -f1');
     }
 
     /**
@@ -55,6 +63,7 @@ class CheckFilesystemCommandTest extends TestCase
             }
             rmdir(static::TEMP_DIR);
         }
+        unset($this->wwwUser);
         parent::tearDown();
     }
 
@@ -105,8 +114,7 @@ class CheckFilesystemCommandTest extends TestCase
      */
     public function testExecuteAutodetectOk()
     {
-        $user = exec('ps aux | grep -E "[a]pache|[h]ttpd|[_]www|[w]ww-data|[n]ginx" | grep -v root | head -1 | cut -d\\  -f1');
-        if (!$user) {
+        if (!$this->wwwUser) {
             static::markTestSkipped('No webserver running');
         }
 
@@ -116,7 +124,7 @@ class CheckFilesystemCommandTest extends TestCase
         $this->exec(sprintf('check_filesystem --verbose %s', static::TEMP_DIR));
 
         $this->assertExitCode(Command::CODE_SUCCESS);
-        $this->assertOutputContains(sprintf('Detected webserver user: <info>%s</info>', $user));
+        $this->assertOutputContains(sprintf('Detected webserver user: <info>%s</info>', $this->wwwUser));
         $this->assertErrorEmpty();
     }
 
@@ -129,8 +137,7 @@ class CheckFilesystemCommandTest extends TestCase
      */
     public function testExecuteAutodetectFail()
     {
-        $user = exec('ps aux | grep -E "[a]pache|[h]ttpd|[_]www|[w]ww-data|[n]ginx" | grep -v root | head -1 | cut -d\\  -f1');
-        if ($user) {
+        if ($this->wwwUser) {
             static::markTestSkipped('Webserver is running');
         }
 
