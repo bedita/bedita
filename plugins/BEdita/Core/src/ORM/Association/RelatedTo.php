@@ -16,6 +16,7 @@ declare(strict_types=1);
 namespace BEdita\Core\ORM\Association;
 
 use BEdita\Core\Model\Entity\ObjectType;
+use BEdita\Core\Model\Entity\Relation;
 use BEdita\Core\ORM\Inheritance\Table as InheritanceTable;
 use Cake\ORM\Association\BelongsToMany;
 use Cake\ORM\Query\SelectQuery;
@@ -49,7 +50,7 @@ class RelatedTo extends BelongsToMany
      *
      * @var \BEdita\Core\Model\Entity\Relation|null
      */
-    private $relation = null;
+    private ?Relation $relation = null;
 
     /**
      * @inheritDoc
@@ -143,7 +144,7 @@ class RelatedTo extends BelongsToMany
      * @param \BEdita\Core\Model\Entity\Relation $relation The relation entity.
      * @return $this
      */
-    public function setRelation($relation)
+    public function setRelation(Relation $relation)
     {
         $this->relation = $relation;
 
@@ -155,7 +156,7 @@ class RelatedTo extends BelongsToMany
      *
      * @return \BEdita\Core\Model\Entity\Relation|null
      */
-    public function getRelation()
+    public function getRelation(): ?Relation
     {
         return $this->relation;
     }

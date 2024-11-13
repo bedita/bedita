@@ -285,7 +285,8 @@ class CategoriesTable extends Table
      */
     protected function findRoots(Query $query): Query
     {
-        return $query->where(fn (QueryExpression $exp): QueryExpression =>
-            $exp->isNull($this->aliasField('parent_id')));
+        return $query->where(
+            fn (QueryExpression $exp): QueryExpression => $exp->isNull($this->aliasField('parent_id'))
+        );
     }
 }
