@@ -394,7 +394,7 @@ class BeditaCommandTest extends TestCase
      * @covers ::executeCommand()
      * @covers ::check()
      */
-    public function testCheck(): void
+    public function testInitSchemaAndCheck(): void
     {
         $this->exec('bedita init_schema --force --seed');
         $this->cleanupConsoleTrait();
@@ -402,6 +402,37 @@ class BeditaCommandTest extends TestCase
         // Invoke task.
         $this->exec('bedita check');
 
+        $this->assertExitCode(Command::CODE_SUCCESS);
+        $this->assertOutputContains('Checking schema');
+        $this->assertOutputContains('Checking filesystem permissions');
+        $this->assertErrorEmpty();
+    }
+
+    /**
+     * Test check.
+     *
+     * @return void
+     * @covers ::execute()
+     * @covers ::executeCommand()
+     * @covers ::check()
+     */
+    public function testInitSchema(): void
+    {
+        $this->exec('bedita init_schema --force --seed');
+        $this->assertExitCode(Command::CODE_SUCCESS);
+    }
+
+    /**
+     * Test check.
+     *
+     * @return void
+     * @covers ::execute()
+     * @covers ::executeCommand()
+     * @covers ::check()
+     */
+    public function testCheck(): void
+    {
+        $this->exec('bedita check');
         $this->assertExitCode(Command::CODE_SUCCESS);
         $this->assertOutputContains('Checking schema');
         $this->assertOutputContains('Checking filesystem permissions');
