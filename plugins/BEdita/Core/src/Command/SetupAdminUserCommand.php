@@ -166,8 +166,6 @@ class SetupAdminUserCommand extends Command
         } catch (PersistenceFailedException $e) {
             $this->io->verbose('<error>FAIL</error>');
             $this->io->abort($e->getMessage());
-
-            return static::CODE_ERROR;
         }
 
         $this->io->out('=====> <success>Administrator user set up. You are now ready to rock BEdita!</success>');
