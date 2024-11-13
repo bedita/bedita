@@ -144,7 +144,6 @@ class SortRelatedObjectsActionTest extends TestCase
         $id = 2;
         $Documents = $this->fetchTable('documents');
         $entity = $Documents->get($id);
-        $relatedEntities = $Documents->get($id, ['contain' => ['Test']])->get('test');
         $association = $Documents->getAssociation('Test');
         $action = new SortRelatedObjectsAction(compact('association'));
         $action(['entity' => $entity, 'field' => 'title']);
