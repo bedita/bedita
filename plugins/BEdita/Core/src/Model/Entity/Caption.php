@@ -37,7 +37,7 @@ class Caption extends Entity
     /**
      * @inheritDoc
      */
-    protected $_accessible = [
+    protected array $_accessible = [
         '*' => true,
         'id' => false,
     ];
@@ -45,7 +45,7 @@ class Caption extends Entity
     /**
      * @inheritDoc
      */
-    protected $_hidden = [
+    protected array $_hidden = [
         'id',
         'object_id',
         'created',

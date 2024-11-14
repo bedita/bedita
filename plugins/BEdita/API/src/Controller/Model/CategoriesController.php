@@ -31,7 +31,7 @@ class CategoriesController extends ModelController
     /**
      * @inheritDoc
      */
-    protected $_defaultConfig = [
+    protected array $_defaultConfig = [
         'allowedAssociations' => [
             'object_type' => ['object_types'],
             'parent_category' => ['categories'],

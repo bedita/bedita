@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Model\Action;
 
 use ArrayObject;
@@ -33,7 +32,7 @@ class SetRelatedObjectsAction extends UpdateRelatedObjectsAction
      *
      * @return array|false
      */
-    protected function update(EntityInterface $entity, $relatedEntities)
+    protected function update(EntityInterface $entity, $relatedEntities): array|false
     {
         if (!($this->Association instanceof RelatedTo)) {
             $action = new SetAssociatedAction($this->getConfig());
@@ -45,6 +44,7 @@ class SetRelatedObjectsAction extends UpdateRelatedObjectsAction
         $relatedEntities = new ArrayObject($relatedEntities);
         $this->dispatchEvent('Associated.beforeSave', compact('entity', 'relatedEntities') + ['action' => 'set', 'association' => $this->Association]);
 
+        $affectedEntities = [];
         $relatedEntities = $this->diff($entity, $relatedEntities->getArrayCopy(), true, $affectedEntities);
         if (!$this->Association->replaceLinks($entity, $relatedEntities, ['_skipSearchIndex' => true])) {
             return false;

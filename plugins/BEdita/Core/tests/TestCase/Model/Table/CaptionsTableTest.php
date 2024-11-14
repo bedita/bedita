@@ -36,7 +36,7 @@ class CaptionsTableTest extends TestCase
      *
      * @var array<string>
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.Objects',
         'plugin.BEdita/Core.Captions',

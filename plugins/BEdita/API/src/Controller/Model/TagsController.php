@@ -31,7 +31,7 @@ class TagsController extends ModelController
     /**
      * @inheritDoc
      */
-    protected $_defaultConfig = [
+    protected array $_defaultConfig = [
         'allowedAssociations' => [
             'object_tags' => ['object_tags'],
         ],

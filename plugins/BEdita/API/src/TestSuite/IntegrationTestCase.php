@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\API\TestSuite;
 
 use BEdita\API\Event\CommonEventHandler;
@@ -97,10 +96,10 @@ abstract class IntegrationTestCase extends TestCase
     /**
      * @inheritDoc
      */
-    public function __construct($name = null, array $data = [], $dataName = '')
+    public function __construct(string $name)
     {
         $this->addAuthFixtures();
-        parent::__construct($name, $data, $dataName);
+        parent::__construct($name);
     }
 
     /**

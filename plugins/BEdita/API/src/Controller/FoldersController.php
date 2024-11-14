@@ -17,6 +17,7 @@ namespace BEdita\API\Controller;
 use BEdita\Core\Model\Action\ListRelatedFoldersAction;
 use BEdita\Core\Model\Table\FoldersTable;
 use Cake\Http\Exception\NotFoundException;
+use Cake\Http\Response;
 use Cake\ORM\Association;
 use Cake\ORM\Table;
 use Cake\Utility\Hash;
@@ -38,7 +39,7 @@ class FoldersController extends ObjectsController
     /**
      * @inheritDoc
      */
-    protected $_defaultConfig = [
+    protected array $_defaultConfig = [
         'allowedAssociations' => [
             'parent' => ['folders'],
             'children' => [],
@@ -68,7 +69,7 @@ class FoldersController extends ObjectsController
     /**
      * @inheritDoc
      */
-    protected function getAvailableTypes($relationship)
+    protected function getAvailableTypes($relationship): array
     {
         if ($relationship === 'parent') {
             return ['folders'];
@@ -85,7 +86,7 @@ class FoldersController extends ObjectsController
      *
      * @return \BEdita\Core\Model\Action\ListRelatedFoldersAction
      */
-    protected function getAssociatedAction(Association $association)
+    protected function getAssociatedAction(Association $association): ListRelatedFoldersAction
     {
         return new ListRelatedFoldersAction(compact('association'));
     }
@@ -95,7 +96,7 @@ class FoldersController extends ObjectsController
      *
      * Folder with Parents association allows GET and PATCH
      */
-    protected function setRelationshipsAllowedMethods(Association $association)
+    protected function setRelationshipsAllowedMethods(Association $association): void
     {
         parent::setRelationshipsAllowedMethods($association);
 
@@ -108,7 +109,7 @@ class FoldersController extends ObjectsController
     /**
      * @inheritDoc
      */
-    public function relationships()
+    public function relationships(): ?Response
     {
         if ($this->request->getParam('relationship') === 'children' && in_array($this->request->getMethod(), ['POST', 'PATCH'])) {
             $this->request = $this->request->withParsedBody($this->getDataSortedByPosition());

@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\Model\Table;
 
 use BEdita\Core\Exception\BadFilterException;
@@ -40,7 +39,7 @@ class CategoriesTableTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.Relations',
         'plugin.BEdita/Core.RelationTypes',
@@ -144,10 +143,10 @@ class CategoriesTableTest extends TestCase
         $order = [
             $this->Categories->aliasField('id') => 'ASC',
         ];
-        $categories = $this->Categories->find('type', ['documents'])->order($order)->toArray();
+        $categories = $this->Categories->find('type', ['documents'])->orderBy($order)->toArray();
         static::assertEquals([1, 2, 3, 4], Hash::extract($categories, '{n}.id'));
 
-        $categories = $this->Categories->find('type', ['news'])->order($order)->toArray();
+        $categories = $this->Categories->find('type', ['news'])->orderBy($order)->toArray();
         static::assertEquals([], $categories);
     }
 

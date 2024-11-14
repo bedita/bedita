@@ -134,7 +134,7 @@ class LayeredEngine extends CacheEngine
     /**
      * @inheritDoc
      */
-    public function increment($key, $offset = 1)
+    public function increment($key, $offset = 1): int|false
     {
         $value = $this->persistent->increment($key, $offset);
         $this->memory->set($key, $value);
@@ -145,7 +145,7 @@ class LayeredEngine extends CacheEngine
     /**
      * @inheritDoc
      */
-    public function decrement($key, $offset = 1)
+    public function decrement($key, $offset = 1): int|false
     {
         $value = $this->persistent->decrement($key, $offset);
         $this->memory->set($key, $value);
@@ -186,7 +186,7 @@ class LayeredEngine extends CacheEngine
     /**
      * @inheritDoc
      */
-    public function get($key, $default = null)
+    public function get($key, $default = null): mixed
     {
         $value = $this->read($key);
         if ($value !== null) {

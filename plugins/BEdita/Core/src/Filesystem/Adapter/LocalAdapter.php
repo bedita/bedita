@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Filesystem\Adapter;
 
 use BEdita\Core\Filesystem\FilesystemAdapter;
@@ -30,7 +29,7 @@ class LocalAdapter extends FilesystemAdapter
     /**
      * @inheritDoc
      */
-    protected $_defaultConfig = [
+    protected array $_defaultConfig = [
         'baseUrl' => null,
         'path' => WWW_ROOT . '_files',
         'writeFlags' => LOCK_EX,
@@ -60,7 +59,7 @@ class LocalAdapter extends FilesystemAdapter
      *
      * @return \League\Flysystem\Local\LocalFilesystemAdapter
      */
-    protected function buildAdapter(array $config)
+    protected function buildAdapter(array $config): LocalFilesystemAdapter
     {
         return new LocalFilesystemAdapter(
             $this->getConfig('path'),

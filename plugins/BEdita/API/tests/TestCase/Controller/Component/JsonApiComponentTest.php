@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\API\Test\TestCase\Controller\Component;
 
 use BEdita\API\Controller\Component\JsonApiComponent;
@@ -91,7 +90,7 @@ class JsonApiComponentTest extends TestCase
      */
     public function testInitialize($expectedMimeType, array $config)
     {
-        $component = new JsonApiComponent(new ComponentRegistry(new Controller()), $config);
+        $component = new JsonApiComponent(new ComponentRegistry(new Controller(new ServerRequest())), $config);
 
         static::assertEquals($expectedMimeType, $component->getController()->getResponse()->getHeaderLine('content-type'));
         static::assertArrayHasKey('jsonapi', $component->RequestHandler->getConfig('viewClassMap'));
@@ -293,7 +292,7 @@ class JsonApiComponentTest extends TestCase
             ],
         ];
 
-        $controller = new Controller();
+        $controller = new Controller(new ServerRequest());
         $component = new JsonApiComponent(new ComponentRegistry($controller), []);
 
         $component->error(500, 'Example error', 'Example description', 'my-code', ['key' => 'Example metadata']);
@@ -353,7 +352,7 @@ class JsonApiComponentTest extends TestCase
             $this->expectExceptionMessage($expected->getMessage());
         }
 
-        $component = new JsonApiComponent(new ComponentRegistry(new Controller()));
+        $component = new JsonApiComponent(new ComponentRegistry(new Controller(new ServerRequest())));
         $component->setConfig($config);
         $request = $component->getController()->getRequest();
         $component->getController()->setRequest(

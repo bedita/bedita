@@ -16,7 +16,7 @@ namespace BEdita\Core\Test\TestCase\Utility;
 
 use BEdita\Core\Utility\Database;
 use Cake\Database\Connection;
-use Cake\Database\DriverInterface;
+use Cake\Database\Driver;
 use Cake\Database\Schema\Collection;
 use Cake\Datasource\ConnectionManager;
 use Cake\Datasource\Exception\MissingDatasourceConfigException;
@@ -50,7 +50,9 @@ class DatabaseTest extends TestCase
      */
     public function testCurrentSchema()
     {
-        $expected = ConnectionManager::get('test')->getSchemaCollection()->listTables();
+        /** @var \Cake\Database\Connection $connection */
+        $connection = ConnectionManager::get('test');
+        $expected = $connection->getSchemaCollection()->listTables();
         $schema = Database::currentSchema();
         $this->assertCount(count($expected), $schema);
         foreach ($expected as $table) {
@@ -92,7 +94,9 @@ class DatabaseTest extends TestCase
         $schemaTables2 = ['applications', 'config', 'object_types', 'async_jobs', 'roles'];
 
         $describeCallback = function ($table) {
-            $schemaCol = ConnectionManager::get('test')->getSchemaCollection();
+            /** @var \Cake\Database\Connection $connection */
+            $connection = ConnectionManager::get('test');
+            $schemaCol = $connection->getSchemaCollection();
 
             return $schemaCol->describe($table);
         };
@@ -287,7 +291,7 @@ class DatabaseTest extends TestCase
                 ->willReturn($value);
         }
 
-        $mockDriver = $this->createMock(DriverInterface::class);
+        $mockDriver = $this->createMock(Driver::class);
 
         $mockConnection = $this->getMockBuilder('\Cake\Database\Connection')
             ->disableOriginalConstructor()

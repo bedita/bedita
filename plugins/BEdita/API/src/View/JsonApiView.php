@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\API\View;
 
 use BEdita\API\Utility\JsonApi;
@@ -66,7 +65,7 @@ class JsonApiView extends JsonView
     /**
      * @inheritDoc
      */
-    protected function _dataToSerialize($serialize = true)
+    protected function _dataToSerialize($serialize = true): mixed
     {
         if (!empty($this->get('_error'))) {
             return $this->serializeError();

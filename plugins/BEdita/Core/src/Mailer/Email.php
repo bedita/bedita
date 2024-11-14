@@ -25,7 +25,7 @@ use Cake\Mailer\Mailer;
  *
  * @since 4.0.0
  */
-class Email extends Mailer /* @phpstan-ignore-line */
+class Email extends Mailer
 {
     /**
      * Send a raw email.
@@ -51,19 +51,8 @@ class Email extends Mailer /* @phpstan-ignore-line */
             throw new BadMethodCallException($msg);
         }
         $contents = $transport->send($this->message);
-        $this->_logDelivery($contents);
+        $this->logDelivery($contents);
 
         return $contents;
     }
-
-    /**
-     * Get boundary used by a mail.
-     *
-     * @param \Cake\Mailer\Email $email Email instance.
-     * @return string|null
-     */
-    // public static function getBoundary(CakeEmail $email)
-    // {
-    //     return $email->getMessage()->getBou;
-    // }
 }

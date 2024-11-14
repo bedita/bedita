@@ -16,6 +16,7 @@ namespace BEdita\Core\Command;
 
 use BEdita\Core\Model\Entity\History;
 use BEdita\Core\Model\Entity\ObjectEntity;
+use BEdita\Core\Model\Table\ObjectsTable;
 use Cake\Command\Command;
 use Cake\Console\Arguments;
 use Cake\Console\ConsoleIo;
@@ -24,6 +25,7 @@ use Cake\Database\Driver\Postgres;
 use Cake\Database\Expression\IdentifierExpression;
 use Cake\Database\Expression\QueryExpression;
 use Cake\ORM\Query;
+use Cake\ORM\Query\SelectQuery;
 use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
 use Generator;
@@ -40,14 +42,21 @@ class FixHistoryCommand extends Command
     /**
      * @inheritDoc
      */
-    public $defaultTable = 'Objects';
+    protected ?string $defaultTable = 'Objects';
+
+    /**
+     * Objects table
+     *
+     * @var \BEdita\Core\Model\Table\ObjectsTable
+     */
+    protected ObjectsTable $Objects;
 
     /**
      * History table
      *
      * @var \Cake\ORM\Table
      */
-    public Table $History;
+    protected Table $History;
 
     /**
      * Application ID
@@ -101,7 +110,10 @@ class FixHistoryCommand extends Command
      */
     public function initialize(): void
     {
-        $this->History = $this->Objects->getBehavior('History')->Table;
+        $this->Objects = $this->fetchTable();
+        /** @var \BEdita\Core\Model\Behavior\HistoryBehavior $behavior*/
+        $behavior = $this->Objects->getBehavior('History');
+        $this->History = $behavior->Table;
         $application = TableRegistry::getTableLocator()->get('Applications')
             ->find()->orderByAsc('id')->firstOrFail();
         $this->appId = $application->get('id');
@@ -245,14 +257,14 @@ class FixHistoryCommand extends Command
      * @param int $to To ID
      * @return \Cake\ORM\Query
      */
-    protected function missingHistoryQuery(bool $created, int $from, int $to): Query
+    protected function missingHistoryQuery(bool $created, int $from, int $to): SelectQuery
     {
         $query = $this->Objects->find();
 
         return $query->leftJoin(
             [$this->History->getAlias() => $this->History->getTable()],
             $this->joinConditions($query, $created)
-        )->where(function (QueryExpression $exp, Query $q) use ($from, $to) {
+        )->where(function (QueryExpression $exp, SelectQuery $q) use ($from, $to) {
             return $exp->and([
                 $q->expr()->between($this->Objects->aliasField('id'), $from, $to),
                 $q->expr()->isNull($this->History->aliasField('resource_id')),
@@ -263,11 +275,11 @@ class FixHistoryCommand extends Command
     /**
      * Join conditions used in `missingHistoryQuery`
      *
-     * @param \Cake\ORM\Query $query Query object
+     * @param \Cake\ORM\SelectQuery $query SelectQuery object
      * @param bool $created Created flag, if true look for `create` action in history
      * @return array
      */
-    protected function joinConditions(Query $query, bool $created): array
+    protected function joinConditions(SelectQuery $query, bool $created): array
     {
         $idField = $this->History->aliasField('resource_id');
         // On Postgres we need an explicit cast to INTEGER to avoid

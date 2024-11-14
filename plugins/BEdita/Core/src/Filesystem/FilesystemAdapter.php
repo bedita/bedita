@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Filesystem;
 
 use Cake\Core\InstanceConfigTrait;
@@ -78,7 +77,7 @@ abstract class FilesystemAdapter
         $adapter = $this->buildAdapter($this->getConfig());
         if (!($adapter instanceof LeagueFilesystemAdapter)) {
             throw new RuntimeException(
-                sprintf('Filesystem adapters must use %s as a base class.', AdapterInterface::class)
+                sprintf('Filesystem adapters must use %s as a base class.', LeagueFilesystemAdapter::class)
             );
         }
 

@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Model\Entity;
 
 use Cake\Database\TypeFactory;
@@ -215,7 +214,7 @@ class StaticProperty extends Property
     /**
      * @inheritDoc
      */
-    public function getSchema($accessMode = null)
+    public function getSchema($accessMode = null): mixed
     {
         $schema = parent::getSchema($accessMode);
         if (!is_array($schema)) {

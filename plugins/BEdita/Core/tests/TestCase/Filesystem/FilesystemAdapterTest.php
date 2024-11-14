@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\Filesystem;
 
 use BEdita\Core\Filesystem\FilesystemAdapter;
@@ -41,8 +40,20 @@ class FilesystemAdapterTest extends TestCase
             'key' => 'value',
         ];
 
-        /** @var \BEdita\Core\Filesystem\FilesystemAdapter $adapter */
-        $adapter = $this->getMockForAbstractClass(FilesystemAdapter::class);
+        $leagueAdapter = $this->getMockBuilder(LeagueFilesystemAdapter::class)->getMock();
+        $adapter = new class ($leagueAdapter) extends FilesystemAdapter {
+            protected LeagueFilesystemAdapter $leagueAdapter;
+
+            public function __construct(LeagueFilesystemAdapter $leagueAdapter)
+            {
+                $this->leagueAdapter = $leagueAdapter;
+            }
+
+            public function buildAdapter(array $config): LeagueFilesystemAdapter
+            {
+                return $this->leagueAdapter;
+            }
+        };
 
         $result = $adapter->initialize($config);
 
@@ -158,8 +169,20 @@ class FilesystemAdapterTest extends TestCase
      */
     public function testGetPublicUrl($expected, $baseUrl, $path)
     {
-        /** @var \BEdita\Core\Filesystem\FilesystemAdapter $adapter */
-        $adapter = $this->getMockForAbstractClass(FilesystemAdapter::class);
+        $leagueAdapter = $this->getMockBuilder(LeagueFilesystemAdapter::class)->getMock();
+        $adapter = new class ($leagueAdapter) extends FilesystemAdapter {
+            protected LeagueFilesystemAdapter $leagueAdapter;
+
+            public function __construct(LeagueFilesystemAdapter $leagueAdapter)
+            {
+                $this->leagueAdapter = $leagueAdapter;
+            }
+
+            public function buildAdapter(array $config): LeagueFilesystemAdapter
+            {
+                return $this->leagueAdapter;
+            }
+        };
 
         $adapter->initialize(compact('baseUrl'));
         $result = $adapter->getPublicUrl($path);
@@ -175,8 +198,20 @@ class FilesystemAdapterTest extends TestCase
      */
     public function testGetVisibility()
     {
-        /** @var \BEdita\Core\Filesystem\FilesystemAdapter $adapter */
-        $adapter = $this->getMockForAbstractClass(FilesystemAdapter::class);
+        $leagueAdapter = $this->getMockBuilder(LeagueFilesystemAdapter::class)->getMock();
+        $adapter = new class ($leagueAdapter) extends FilesystemAdapter {
+            protected LeagueFilesystemAdapter $leagueAdapter;
+
+            public function __construct(LeagueFilesystemAdapter $leagueAdapter)
+            {
+                $this->leagueAdapter = $leagueAdapter;
+            }
+
+            public function buildAdapter(array $config): LeagueFilesystemAdapter
+            {
+                return $this->leagueAdapter;
+            }
+        };
         $visibility = 'private';
 
         $adapter->initialize(compact('visibility'));

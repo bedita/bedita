@@ -31,7 +31,7 @@ abstract class UpdateRelatedObjectsAction extends UpdateAssociatedAction
     /**
      * @inheritDoc
      */
-    public function execute(array $data = [])
+    public function execute(array $data = []): array|int|false
     {
         $data = $this->prepareData($data);
 

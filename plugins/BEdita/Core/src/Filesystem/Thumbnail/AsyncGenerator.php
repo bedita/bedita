@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Filesystem\Thumbnail;
 
 use BEdita\Core\Filesystem\GeneratorInterface;
@@ -31,7 +30,7 @@ class AsyncGenerator extends ThumbnailGenerator
     /**
      * @inheritDoc
      */
-    protected $_defaultConfig = [
+    protected array $_defaultConfig = [
         'baseGenerator' => 'default',
         'service' => 'thumbnail',
         'max_attempts' => 2,

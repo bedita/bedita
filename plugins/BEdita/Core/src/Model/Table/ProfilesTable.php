@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Model\Table;
 
 use BEdita\Core\Model\Table\ObjectsBaseTable as Table;
@@ -38,7 +37,7 @@ class ProfilesTable extends Table
     /**
      * @inheritDoc
      */
-    protected $_validatorClass = ProfilesValidator::class;
+    protected string $_validatorClass = ProfilesValidator::class;
 
     /**
      * {@inheritDoc}

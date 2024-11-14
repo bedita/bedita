@@ -31,7 +31,7 @@ class PropertyTypesController extends ModelController
     /**
      * @inheritDoc
      */
-    protected $_defaultConfig = [
+    protected array $_defaultConfig = [
         'allowedAssociations' => [
             'properties' => ['properties'],
         ],

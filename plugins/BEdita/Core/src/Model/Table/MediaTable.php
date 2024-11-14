@@ -38,7 +38,7 @@ class MediaTable extends Table
     /**
      * @inheritDoc
      */
-    protected $_validatorClass = MediaValidator::class;
+    protected string $_validatorClass = MediaValidator::class;
 
     /**
      * {@inheritDoc}

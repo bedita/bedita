@@ -42,7 +42,7 @@ class DeleteEntityAction extends BaseAction
     /**
      * @inheritDoc
      */
-    public function execute(array $data = [])
+    public function execute(array $data = []): true
     {
         return $this->Table->deleteOrFail($data['entity']);
     }

@@ -265,7 +265,7 @@ class SearchableBehavior extends Behavior
             // `fields` key in SimpleAdapter is changed.
             // It is now a list of fields without unused priority.
             if ($key === 'fields') {
-                deprecationWarning('"fields" must be a list of strings. Unused priorities have been removed.');
+                deprecationWarning('5.14.0', '"fields" must be a list of strings. Unused priorities have been removed.');
                 $conf = array_keys($conf);
             }
 

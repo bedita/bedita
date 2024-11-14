@@ -30,7 +30,7 @@ class RolesController extends ResourcesController
     /**
      * @inheritDoc
      */
-    protected $_defaultConfig = [
+    protected array $_defaultConfig = [
         'allowedAssociations' => [
             'users' => ['users'],
         ],

@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\Model\Entity;
 
 use BEdita\Core\Filesystem\FilesystemRegistry;
@@ -139,6 +138,7 @@ class StreamTest extends TestCase
      */
     public function testFilesystemPath($expected, array $data, $filesystem = 'default', $subLevels = 0)
     {
+        /** @var \BEdita\Core\Model\Entity\Stream $stream */
         $stream = $this->Streams->newEmptyEntity();
         $stream->set($data, ['guard' => false]);
 

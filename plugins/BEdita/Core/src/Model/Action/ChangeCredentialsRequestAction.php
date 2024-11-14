@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Model\Action;
 
 use BEdita\Core\Exception\InvalidDataException;
@@ -63,7 +62,7 @@ class ChangeCredentialsRequestAction extends BaseAction implements EventListener
     /**
      * @inheritDoc
      */
-    protected function initialize(array $config)
+    protected function initialize(array $config): void
     {
         $this->Users = TableRegistry::getTableLocator()->get('Users');
         $this->AsyncJobs = TableRegistry::getTableLocator()->get('AsyncJobs');
@@ -74,7 +73,7 @@ class ChangeCredentialsRequestAction extends BaseAction implements EventListener
     /**
      * @inheritDoc
      */
-    public function execute(array $data = [])
+    public function execute(array $data = []): true
     {
         $errors = $this->validate($data);
         if ($errors !== true) {

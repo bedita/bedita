@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Model\Table;
 
 use BEdita\Core\Exception\BadFilterException;
@@ -30,6 +29,8 @@ use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
 use Cake\Utility\Inflector;
 use Cake\Validation\Validator;
+use Closure;
+use Psr\SimpleCache\CacheInterface;
 
 /**
  * Relations Model
@@ -168,12 +169,15 @@ class RelationsTable extends Table
     }
 
     /**
-     * {@inheritDoc}
-     *
-     * @return \BEdita\Core\Model\Entity\Relation
+     * @inheritDoc
      */
-    public function get($primaryKey, array $options = []): EntityInterface
-    {
+    public function get(
+        mixed $primaryKey,
+        array|string $finder = 'all',
+        CacheInterface|string|null $cache = null,
+        Closure|string|null $cacheKey = null,
+        mixed ...$args
+    ): EntityInterface {
         if (!is_numeric($primaryKey)) {
             $relation = $this->find('byName', name: $primaryKey)
                 ->select('id')
@@ -182,7 +186,7 @@ class RelationsTable extends Table
             $primaryKey = $relation->id;
         }
 
-        return parent::get($primaryKey, $options);
+        return parent::get($primaryKey, $finder, $cache, $cacheKey, ...$args);
     }
 
     /**

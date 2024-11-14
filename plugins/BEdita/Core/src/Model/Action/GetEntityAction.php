@@ -12,9 +12,9 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Model\Action;
 
+use Cake\Datasource\EntityInterface;
 use Cake\ORM\Table;
 
 /**
@@ -42,7 +42,7 @@ class GetEntityAction extends BaseAction
     /**
      * @inheritDoc
      */
-    public function execute(array $data = [])
+    public function execute(array $data = []): EntityInterface
     {
         if (!empty($data['contain'])) {
             return $this->Table->get($data['primaryKey'], contain: $data['contain']);

@@ -17,7 +17,7 @@ namespace BEdita\Core\Model\Entity;
 use BadMethodCallException;
 use BEdita\Core\Job\ServiceRegistry;
 use BEdita\Core\Utility\JsonApiSerializable;
-use Cake\I18n\DateTime;
+use Cake\I18n\Time;
 use Cake\ORM\Entity;
 
 /**
@@ -74,7 +74,7 @@ class AsyncJob extends Entity implements JsonApiSerializable
             return 'completed';
         }
 
-        $now = new DateTime();
+        $now = new Time();
         if ($this->locked_until !== null && $this->locked_until->greaterThanOrEquals($now)) {
             return 'locked';
         }

@@ -33,7 +33,7 @@ class ObjectTypesController extends ModelController
     /**
      * @inheritDoc
      */
-    protected $_defaultConfig = [
+    protected array $_defaultConfig = [
         'allowedAssociations' => [
             'left_relations' => ['relations'],
             'right_relations' => ['relations'],

@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Model\Table;
 
 use BEdita\Core\Model\Entity\ObjectType;
@@ -22,7 +21,7 @@ use Cake\Cache\Cache;
 use Cake\Database\Connection;
 use Cake\Database\Driver\Postgres;
 use Cake\Database\Expression\FunctionExpression;
-use Cake\Database\Query;
+use Cake\Database\Query\SelectQuery;
 use Cake\Database\Schema\TableSchema;
 use Cake\Log\Log;
 use Cake\ORM\Table;
@@ -73,7 +72,7 @@ class StaticPropertiesTable extends Table
             // zero columns, and the ORM will fail to create new entities and persist them.
             // This query must be executed _after_ the temporary table has been created, because the namespace
             // is not present at all until at least one temporary table has been created.
-            $schema = (new Query($this->getConnection()))
+            $schema = (new SelectQuery($this->getConnection()))
                 ->select(['nspname'])
                 ->from(['pg_namespace'])
                 ->where([
@@ -130,7 +129,7 @@ class StaticPropertiesTable extends Table
         }
         foreach ($schema->constraints() as $constraint) {
             $attributes = $schema->getConstraint($constraint);
-            if (empty($attributes['type']) || $attributes['type'] === $schema::CONSTRAINT_FOREIGN) {
+            if (empty($attributes['type']) || $attributes['type'] === TableSchema::CONSTRAINT_FOREIGN) {
                 // Temporary tables can't have foreign key constraints in MySQL.
                 // https://dev.mysql.com/doc/refman/5.7/en/create-table-foreign-keys.html
                 continue;

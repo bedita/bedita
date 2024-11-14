@@ -86,7 +86,7 @@ abstract class BaseAdapter
      * @param \Cake\ORM\Query\SelectQuery $query The query instance
      * @param string $text The text to look for
      * @param array $options Options for search
-     * @return \Cake\ORM\Query
+     * @return \Cake\ORM\Query\SelectQuery
      */
     abstract public function search(SelectQuery $query, string $text, array $options = []): SelectQuery;
 

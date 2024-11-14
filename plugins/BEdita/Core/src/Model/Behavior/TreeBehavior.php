@@ -22,12 +22,13 @@ use Cake\Database\Query;
 use Cake\Datasource\EntityInterface;
 use Cake\Event\EventInterface;
 use Cake\ORM\Behavior\TreeBehavior as CakeTreeBehavior;
+use Cake\ORM\Query\SelectQuery;
 use Cake\ORM\Table;
 
 /**
- * This behavior adds absolute positioning of nodes on top of CakePHP {@see \Cake\ORM\Behavior\TreeBehavior}.
- *
  * {@inheritDoc}
+ *
+ * This behavior adds absolute positioning of nodes on top of CakePHP {@see \Cake\ORM\Behavior\TreeBehavior}.
  */
 class TreeBehavior extends CakeTreeBehavior
 {
@@ -192,8 +193,8 @@ class TreeBehavior extends CakeTreeBehavior
         $childAlias = sprintf('Child%s', $table->getAlias());
         $siblingAlias = sprintf('Sibling%s', $table->getAlias());
 
-        $exists = function (Query $query): bool {
-            return $query->select(['existing' => 1])->limit(1)->execute()->count() > 0;
+        $exists = function (SelectQuery $query): bool {
+            return $query->select(['existing' => 1])->limit(1)->count() > 0;
         };
 
         $errors = [];
@@ -216,7 +217,7 @@ class TreeBehavior extends CakeTreeBehavior
                         ->equalFields($pk, sprintf('%s.%s', $childAlias, $this->getConfigOrFail('parent')));
                 }
             )
-            ->group([$pk, $left])
+            ->groupBy([$pk, $left])
             ->having(function (QueryExpression $exp, Query $query) use ($childAlias, $left): QueryExpression {
                 return $exp->notEq(
                     new ComparisonExpression($left, 1, null, '+'),
@@ -236,7 +237,7 @@ class TreeBehavior extends CakeTreeBehavior
                         ->equalFields($pk, sprintf('%s.%s', $childAlias, $this->getConfigOrFail('parent')));
                 }
             )
-            ->group([$pk, $right])
+            ->groupBy([$pk, $right])
             ->having(function (QueryExpression $exp, Query $query) use ($childAlias, $right): QueryExpression {
                 return $exp->notEq(
                     new ComparisonExpression($right, 1, null, '-'),
@@ -266,7 +267,7 @@ class TreeBehavior extends CakeTreeBehavior
                         ->notEq($pk, new IdentifierExpression(sprintf('%s.%s', $siblingAlias, $table->getPrimaryKey())));
                 }
             )
-            ->group([$pk, $left])
+            ->groupBy([$pk, $left])
             ->having(function (QueryExpression $exp, Query $query) use ($siblingAlias, $left): QueryExpression {
                 return $exp->notEq(
                     new ComparisonExpression($left, 1, null, '-'),

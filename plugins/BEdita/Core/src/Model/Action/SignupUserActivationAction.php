@@ -68,7 +68,7 @@ class SignupUserActivationAction extends BaseAction implements EventListenerInte
      * @throws \Cake\Http\Exception\BadRequestException When missing id or async_jobs row is invalid
      * @throws \Cake\Http\Exception\ConflictException When the user is already active
      */
-    public function execute(array $data = [])
+    public function execute(array $data = []): User
     {
         if (empty($data['uuid'])) {
             throw new BadRequestException(__d('bedita', 'Parameter "{0}" missing', ['uuid']));

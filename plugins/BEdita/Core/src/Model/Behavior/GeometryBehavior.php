@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Model\Behavior;
 
 use BEdita\Core\Exception\BadFilterException;
@@ -174,13 +173,13 @@ class GeometryBehavior extends Behavior
      * $table->find('geo', ['center' => [44.4944183, 11.3464055], 'from' => [11.3464055, 44.4944183]]);
      * ```
      *
-     * @param \Cake\ORM\Query $query Query object instance.
+     * @param \Cake\ORM\Query\SelectQuery $query Query object instance.
      * @param array $options Array of acceptable geo localization conditions.
-     * @return \Cake\ORM\Query
+     * @return \Cake\ORM\Query\SelectQuery
      * @throws \BEdita\Core\Exception\BadFilterException Throws an exception if value could not be parsed into
      *      valid coordinates, or if GIS SQL functions are not available.
      */
-    public function findGeo(SelectQuery $query, array $options): Query
+    public function findGeo(SelectQuery $query, array $options): SelectQuery
     {
         $center = static::parseCoordinates(Hash::get($options, 'center'));
         $distanceCenter = static::parseCoordinates(Hash::get($options, 'from', $center));

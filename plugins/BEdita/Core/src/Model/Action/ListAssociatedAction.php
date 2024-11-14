@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Model\Action;
 
 use Cake\Collection\CollectionInterface;
@@ -25,7 +24,7 @@ use Cake\ORM\Association\BelongsTo;
 use Cake\ORM\Association\BelongsToMany;
 use Cake\ORM\Association\HasMany;
 use Cake\ORM\Association\HasOne;
-use Cake\ORM\Query;
+use Cake\ORM\Query\SelectQuery;
 use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
 use Cake\Utility\Hash;
@@ -194,10 +193,10 @@ class ListAssociatedAction extends BaseAction
      * @param mixed $primaryKey Primary key
      * @param array $data Data.
      * @param \Cake\ORM\Association $inverseAssociation Inverse association.
-     * @return \Cake\ORM\Query
+     * @return \Cake\ORM\Query\SelectQuery
      * @throws \LogicException Throws an exception if the result of the inner invoked action is not a Query object.
      */
-    protected function buildQuery(mixed $primaryKey, array $data, Association $inverseAssociation): Query
+    protected function buildQuery(mixed $primaryKey, array $data, Association $inverseAssociation): SelectQuery
     {
         $joinData = !empty($data['joinData']);
         $list = !empty($data['list']);
@@ -206,10 +205,10 @@ class ListAssociatedAction extends BaseAction
 
         $table = $this->Association->getTarget();
         $query = $this->ListAction->execute($data);
-        if (!($query instanceof Query)) {
+        if (!($query instanceof SelectQuery)) {
             $type = is_object($query) ? get_class($query) : gettype($query);
 
-            throw new LogicException(sprintf('Instance of "%s" expected, got "%s"', Query::class, $type));
+            throw new LogicException(sprintf('Instance of "%s" expected, got "%s"', SelectQuery::class, $type));
         }
 
         if ($list) {
@@ -225,7 +224,7 @@ class ListAssociatedAction extends BaseAction
             $query = $query->select($this->Association->junction());
         }
         if (!empty($data['sort'])) {
-            $query = $query->order([$table->aliasField($data['sort']['field']) => $data['sort']['direction']]);
+            $query = $query->orderBy([$table->aliasField($data['sort']['field']) => $data['sort']['direction']]);
         } elseif ($this->Association instanceof BelongsToMany || $this->Association instanceof HasMany) {
             $sort = $this->sort($this->Association, $primaryKey);
             $query = $query->orderBy($sort);
@@ -236,7 +235,7 @@ class ListAssociatedAction extends BaseAction
         return $query
             ->enableAutoFields(!$list)
             ->find($this->Association->getFinder())
-            ->innerJoinWith($inverseAssociation->getName(), function (Query $query) use ($primaryKeyConditions) {
+            ->innerJoinWith($inverseAssociation->getName(), function (SelectQuery $query) use ($primaryKeyConditions) {
                 return $query->where($primaryKeyConditions);
             })
             ->formatResults(function (CollectionInterface $results) use ($inverseAssociation) {
@@ -273,9 +272,9 @@ class ListAssociatedAction extends BaseAction
     /**
      * {@inheritDoc}
      *
-     * @return \Cake\ORM\Query|\Cake\Datasource\EntityInterface|null
+     * @return \Cake\ORM\Query\SelectQuery|\Cake\Datasource\EntityInterface|null
      */
-    public function execute(array $data = [])
+    public function execute(array $data = []): SelectQuery|EntityInterface|null
     {
         $this->checkEntityExists($data);
         $primaryKey = $data['primaryKey'];

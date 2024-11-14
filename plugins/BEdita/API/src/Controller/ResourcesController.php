@@ -132,9 +132,9 @@ abstract class ResourcesController extends AppController
      * If the request is a `POST` request, this action creates a new resource.
      * If the request is a `DELETE` request, this action deletes existing resources.
      *
-     * @return void
+     * @return \Cake\Http\Response|null
      */
-    public function index(): void
+    public function index(): ?Response
     {
         $this->request->allowMethod(['get', 'post', 'delete']);
 
@@ -182,6 +182,8 @@ abstract class ResourcesController extends AppController
 
         $this->set(compact('data'));
         $this->setSerialize(['data']);
+
+        return null;
     }
 
     /**

@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Model\Action;
 
 use BEdita\Core\Exception\InvalidDataException;
@@ -98,7 +97,7 @@ class SignupUserAction extends BaseAction implements EventListenerInterface
     /**
      * @inheritDoc
      */
-    protected function initialize(array $config)
+    protected function initialize(array $config): void
     {
         $this->Users = TableRegistry::getTableLocator()->get('Users');
         $this->AsyncJobs = TableRegistry::getTableLocator()->get('AsyncJobs');
@@ -115,7 +114,7 @@ class SignupUserAction extends BaseAction implements EventListenerInterface
      * @throws \Cake\Http\Exception\BadRequestException When validation of URL options fails
      * @throws \Cake\Http\Exception\UnauthorizedException Upon external authorization check failure.
      */
-    public function execute(array $data = [])
+    public function execute(array $data = []): User
     {
         $this->setConfig((array)Configure::read('Signup'));
 
@@ -158,6 +157,7 @@ class SignupUserAction extends BaseAction implements EventListenerInterface
         $statusLevel = Configure::read('Status.level');
         Configure::delete('Status.level');
 
+        /** @var \BEdita\Core\Model\Entity\User $user */
         $user = (new GetObjectAction(['table' => $this->Users]))->execute(['primaryKey' => $user->id, 'contain' => 'Roles']);
         Configure::write('Status.level', $statusLevel);
 

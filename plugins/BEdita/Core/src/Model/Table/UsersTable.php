@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Model\Table;
 
 use ArrayObject;
@@ -72,7 +71,7 @@ class UsersTable extends Table
     /**
      * @inheritDoc
      */
-    protected $_validatorClass = UsersValidator::class;
+    protected string $_validatorClass = UsersValidator::class;
 
     /**
      * {@inheritDoc}

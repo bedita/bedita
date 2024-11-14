@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Model\Table;
 
 use BEdita\Core\Exception\LockedResourceException;
@@ -65,7 +64,7 @@ class ObjectsTable extends Table
     /**
      * @inheritDoc
      */
-    protected $_validatorClass = ObjectsValidator::class;
+    protected string $_validatorClass = ObjectsValidator::class;
 
     /**
      * Special sort fields: virtual column names used for custom sort strategies

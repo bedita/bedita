@@ -34,7 +34,7 @@ class TranslationsController extends ResourcesController
     /**
      * @inheritDoc
      */
-    protected $_defaultConfig = [
+    protected array $_defaultConfig = [
         'allowedAssociations' => [
             'object' => [],
         ],
@@ -43,7 +43,7 @@ class TranslationsController extends ResourcesController
     /**
      * @inheritDoc
      */
-    protected function getAvailableUrl($relationship)
+    protected function getAvailableUrl($relationship): string
     {
         return Router::url(
             [
@@ -59,7 +59,7 @@ class TranslationsController extends ResourcesController
      *
      * @return \BEdita\Core\Model\Action\ListRelatedObjectsAction
      */
-    protected function getAssociatedAction(Association $association)
+    protected function getAssociatedAction(Association $association): ListRelatedObjectsAction
     {
         return new ListRelatedObjectsAction(compact('association'));
     }

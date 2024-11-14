@@ -12,15 +12,14 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\Model\Table;
 
 use Authentication\Identity;
+use Authentication\PasswordHasher\LegacyPasswordHasher;
 use BEdita\Core\Exception\BadFilterException;
 use BEdita\Core\Exception\ImmutableResourceException;
 use BEdita\Core\Model\Table\UsersTable;
 use BEdita\Core\Utility\LoggedUser;
-use Cake\Auth\WeakPasswordHasher;
 use Cake\Core\Configure;
 use Cake\Http\Exception\BadRequestException;
 use Cake\Http\ServerRequest;
@@ -48,7 +47,7 @@ class UsersTableTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.Relations',
         'plugin.BEdita/Core.RelationTypes',
@@ -123,7 +122,7 @@ class UsersTableTest extends TestCase
                 false,
                 [
                     'username' => 'globetrotter user',
-                    'password_hash' => (new WeakPasswordHasher(['hashType' => 'md5']))->hash('hunter1'),
+                    'password_hash' => (new LegacyPasswordHasher(['hashType' => 'md5']))->hash('hunter1'),
                     'blocked' => 0,
                     'last_login' => null,
                     'last_login_err' => null,
@@ -135,7 +134,7 @@ class UsersTableTest extends TestCase
                 true,
                 [
                     'username' => 'support user',
-                    'password_hash' => (new WeakPasswordHasher(['hashType' => 'md5']))->hash('hunter2'),
+                    'password_hash' => (new LegacyPasswordHasher(['hashType' => 'md5']))->hash('hunter2'),
                     'blocked' => 0,
                     'last_login' => null,
                     'last_login_err' => null,

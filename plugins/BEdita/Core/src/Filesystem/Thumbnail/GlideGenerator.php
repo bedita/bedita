@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Filesystem\Thumbnail;
 
 use BEdita\Core\Exception\InvalidDataException;
@@ -41,7 +40,7 @@ class GlideGenerator extends ThumbnailGenerator
     /**
      * @inheritDoc
      */
-    protected $_defaultConfig = [
+    protected array $_defaultConfig = [
         'cache' => 'thumbnails',
         'driver' => 'gd',
         'maxThumbSize' => 1 << 22, // 2048 * 2048 === 2^11 * 2^11 === 2^22

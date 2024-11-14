@@ -21,7 +21,7 @@ class UuidAuthenticator extends TokenAuthenticator
     /**
      * @inheritDoc
      */
-    protected $_defaultConfig = [
+    protected array $_defaultConfig = [
         'header' => 'Authorization',
         'tokenPrefix' => 'UUID',
     ];

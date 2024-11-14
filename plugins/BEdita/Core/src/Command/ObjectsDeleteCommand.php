@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Command;
 
 use BEdita\Core\Model\Entity\ObjectEntity;
@@ -113,7 +112,7 @@ class ObjectsDeleteCommand extends Command
         while (true) {
             $q = clone $query;
             $q = $q->where(fn (QueryExpression $exp): QueryExpression => $exp->gt($table->aliasField('id'), $lastId));
-            $results = $q->orderAsc($table->aliasField('id'))->all();
+            $results = $q->orderByAsc($table->aliasField('id'))->all();
             if ($results->isEmpty()) {
                 break;
             }

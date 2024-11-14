@@ -12,12 +12,12 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\Filesystem;
 
 use BadMethodCallException;
 use BEdita\Core\Filesystem\ThumbnailGenerator;
 use BEdita\Core\Filesystem\ThumbnailRegistry;
+use BEdita\Core\Model\Entity\Stream;
 use BEdita\Core\Test\TestCase\Filesystem\Thumbnail\TestGenerator;
 use Cake\TestSuite\TestCase;
 use RuntimeException;
@@ -84,16 +84,35 @@ class ThumbnailRegistryTest extends TestCase
             'my' => 'config',
         ];
 
-        $mock = $this->getMockBuilder(ThumbnailGenerator::class)
-            ->onlyMethods(['initialize'])
-            ->getMockForAbstractClass();
-        $mock->method('initialize')
-            ->with($config)
-            ->willReturn(false);
+        $generator = new class extends ThumbnailGenerator {
+            public function initialize(array $config): bool
+            {
+                return false;
+            }
+
+            public function getUrl(Stream $stream, array $options = []): string
+            {
+                return '';
+            }
+
+            public function generate(Stream $stream, array $options = []): bool
+            {
+                return true;
+            }
+
+            public function exists(Stream $stream, array $options = []): bool
+            {
+                return true;
+            }
+
+            public function delete(Stream $stream): void
+            {
+            }
+        };
 
         $registry = new ThumbnailRegistry();
 
-        $registry->load('test', $config + ['className' => $mock]);
+        $registry->load('test', $config + ['className' => $generator]);
     }
 
     /**

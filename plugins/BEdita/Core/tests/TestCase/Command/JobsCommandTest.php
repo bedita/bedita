@@ -37,18 +37,9 @@ class JobsCommandTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.AsyncJobs',
     ];
-
-    /**
-     * @inheritDoc
-     */
-    protected function setUp(): void
-    {
-        parent::setUp();
-        $this->useCommandRunner();
-    }
 
     /**
      * @inheritDoc
@@ -71,7 +62,7 @@ class JobsCommandTest extends TestCase
             ->getMock();
 
         $method = $service->method('run');
-        $method->will(static::returnValue($return));
+        $method->willReturn($return);
         if ($return instanceof Exception) {
             $method->willThrowException($return);
         }

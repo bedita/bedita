@@ -14,6 +14,7 @@ declare(strict_types=1);
  */
 namespace BEdita\API\Controller;
 
+use BEdita\Core\Model\Action\ListAssociatedAction;
 use BEdita\Core\Model\Action\ListRelatedObjectsAction;
 use Cake\ORM\Association;
 use Cake\Routing\Router;
@@ -34,7 +35,7 @@ class AnnotationsController extends ResourcesController
     /**
      * @inheritDoc
      */
-    protected $_defaultConfig = [
+    protected array $_defaultConfig = [
         'allowedAssociations' => [
             'object' => [],
         ],
@@ -43,7 +44,7 @@ class AnnotationsController extends ResourcesController
     /**
      * @inheritDoc
      */
-    protected function getAvailableUrl($relationship)
+    protected function getAvailableUrl($relationship): string
     {
         return Router::url(
             [
@@ -59,7 +60,7 @@ class AnnotationsController extends ResourcesController
      *
      * @return \BEdita\Core\Model\Action\ListRelatedObjectsAction
      */
-    protected function getAssociatedAction(Association $association)
+    protected function getAssociatedAction(Association $association): ListRelatedObjectsAction
     {
         return new ListRelatedObjectsAction(compact('association'));
     }

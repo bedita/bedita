@@ -15,6 +15,7 @@ declare(strict_types=1);
 
 namespace BEdita\API\Controller;
 
+use Authentication\PasswordHasher\PasswordHasherFactory;
 use BEdita\API\Policy\EndpointPolicy;
 use BEdita\API\Utility\JWTHandler;
 use BEdita\Core\Model\Action\ActionTrait;
@@ -22,7 +23,6 @@ use BEdita\Core\Model\Action\GetObjectAction;
 use BEdita\Core\Model\Action\SaveEntityAction;
 use BEdita\Core\Model\Entity\Application;
 use BEdita\Core\Model\Entity\User;
-use Cake\Auth\PasswordHasherFactory;
 use Cake\Http\Exception\BadRequestException;
 use Cake\Http\Exception\NotFoundException;
 use Cake\Http\Exception\UnauthorizedException;

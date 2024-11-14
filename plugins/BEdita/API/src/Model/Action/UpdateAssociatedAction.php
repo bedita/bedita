@@ -55,7 +55,7 @@ class UpdateAssociatedAction extends BaseAction
     /**
      * @inheritDoc
      */
-    protected function initialize(array $data)
+    protected function initialize(array $data): void
     {
         $this->Action = $this->getConfig('action');
         $this->request = $this->getConfig('request');
@@ -64,7 +64,7 @@ class UpdateAssociatedAction extends BaseAction
     /**
      * @inheritDoc
      */
-    public function execute(array $data = [])
+    public function execute(array $data = []): mixed
     {
         $association = $this->Action->getConfig('association');
         if (!($association instanceof Association)) {

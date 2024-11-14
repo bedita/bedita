@@ -12,13 +12,11 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Model\Table;
 
 use BEdita\Core\State\CurrentApplication;
 use Cake\Database\Expression\QueryExpression;
 use Cake\Http\Exception\BadRequestException;
-use Cake\ORM\Query;
 use Cake\ORM\Query\SelectQuery;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
@@ -144,7 +142,7 @@ class ConfigTable extends Table
             return $query;
         }
 
-        return $query->innerJoinWith('Applications', function (Query $query) use ($options) {
+        return $query->innerJoinWith('Applications', function (SelectQuery $query) use ($options) {
             if (!empty($options['application'])) {
                 $conditions = [$this->Applications->aliasField('name') => $options['application']];
             } else {

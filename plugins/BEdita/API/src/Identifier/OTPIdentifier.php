@@ -38,7 +38,7 @@ class OTPIdentifier extends AbstractIdentifier
     /**
      * @inheritDoc
      */
-    protected $_defaultConfig = [
+    protected array $_defaultConfig = [
         'resolver' => [
             'className' => 'Authentication.Orm',
             'userModel' => 'Users',
@@ -53,7 +53,7 @@ class OTPIdentifier extends AbstractIdentifier
     /**
      * @inheritDoc
      */
-    public function identify(array $credentials)
+    public function identify(array $credentials): ArrayAccess|array|null
     {
         $username = (string)Hash::get($credentials, 'username');
         if (empty($username)) {

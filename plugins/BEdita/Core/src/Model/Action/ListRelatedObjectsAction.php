@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Model\Action;
 
 use BEdita\Core\Model\Entity\ObjectRelation;
@@ -21,6 +20,7 @@ use BEdita\Core\ORM\Association\RelatedTo;
 use BEdita\Core\ORM\Inheritance\Table;
 use Cake\Datasource\EntityInterface;
 use Cake\ORM\Association;
+use Cake\ORM\Query\SelectQuery;
 use Cake\ORM\TableRegistry;
 
 /**
@@ -33,7 +33,7 @@ class ListRelatedObjectsAction extends ListAssociatedAction
     /**
      * @inheritDoc
      */
-    protected function initialize(array $config)
+    protected function initialize(array $config): void
     {
         parent::initialize($config);
 
@@ -61,7 +61,7 @@ class ListRelatedObjectsAction extends ListAssociatedAction
     /**
      * @inheritDoc
      */
-    protected function buildQuery($primaryKey, array $data, Association $inverseAssociation)
+    protected function buildQuery($primaryKey, array $data, Association $inverseAssociation): SelectQuery
     {
         $data += ['joinData' => true];
 

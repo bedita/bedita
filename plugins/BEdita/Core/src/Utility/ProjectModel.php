@@ -57,7 +57,7 @@ class ProjectModel
         return TableRegistry::getTableLocator()->get('Applications')
             ->find()
             ->select(['name', 'description', 'enabled'])
-            ->order(['name' => 'ASC'])
+            ->orderBy(['name' => 'ASC'])
             ->toArray();
     }
 
@@ -71,7 +71,7 @@ class ProjectModel
         return TableRegistry::getTableLocator()->get('Roles')
             ->find()
             ->select(['name', 'description'])
-            ->order(['name' => 'ASC'])
+            ->orderBy(['name' => 'ASC'])
             ->toArray();
     }
 
@@ -86,7 +86,7 @@ class ProjectModel
             ->find()
             ->select(['name', 'params'])
             ->where(['core_type' => 0])
-            ->order(['name' => 'ASC'])
+            ->orderBy(['name' => 'ASC'])
             ->toArray();
     }
 

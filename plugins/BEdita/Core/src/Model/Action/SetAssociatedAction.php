@@ -104,6 +104,7 @@ class SetAssociatedAction extends UpdateAssociatedAction
         $this->dispatchEvent('Associated.beforeSave', compact('entity', 'relatedEntities') + ['action' => 'set', 'association' => $this->Association]);
 
         // This doesn't need to be in a transaction.
+        $affectedEntities = [];
         $relatedEntities = $this->diff($entity, $relatedEntities->getArrayCopy(), true, $affectedEntities);
         $count = count($affectedEntities);
 

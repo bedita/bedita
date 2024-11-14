@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\Mailer;
 
 use BEdita\Core\Mailer\UserMailer;
@@ -346,12 +345,11 @@ class UserMailerTest extends TestCase
         Configure::write('Project.name', $configured);
 
         $mailer = new class extends UserMailer {
-            // make method public in
-            public function getProjectName()
+            public function getPublicProjectName()
             {
                 return parent::getProjectName();
             }
         };
-        static::assertEquals($expected, $mailer->getProjectName());
+        static::assertEquals($expected, $mailer->getPublicProjectName());
     }
 }

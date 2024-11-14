@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Model\Action;
 
 use Cake\Datasource\EntityInterface;
@@ -46,7 +45,7 @@ abstract class UpdateAssociatedAction extends BaseAction
      *
      * @return array|int|false
      */
-    public function execute(array $data = [])
+    public function execute(array $data = []): array|int|false
     {
         return $this->update($data['entity'], $data['relatedEntities']);
     }

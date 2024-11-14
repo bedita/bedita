@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Model\Action;
 
 use BEdita\Core\Model\Entity\ObjectType;
@@ -53,7 +52,7 @@ class GetObjectAction extends BaseAction
     /**
      * @inheritDoc
      */
-    public function execute(array $data = [])
+    public function execute(array $data = []): mixed
     {
         // Prepare conditions and contained associations.
         $conditions = $this->getPrimaryKeyConditions($data);

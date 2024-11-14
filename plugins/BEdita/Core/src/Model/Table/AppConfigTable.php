@@ -12,13 +12,12 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Model\Table;
 
 use BEdita\Core\State\CurrentApplication;
 use Cake\Database\Expression\QueryExpression;
 use Cake\Datasource\EntityInterface;
-use Cake\ORM\Query;
+use Cake\ORM\Query\SelectQuery;
 use Cake\Validation\Validator;
 
 /**
@@ -60,7 +59,7 @@ class AppConfigTable extends ConfigTable
     /**
      * @inheritDoc
      */
-    public function findAll(Query $query, array $options): Query
+    public function findAll(SelectQuery $query): SelectQuery
     {
         return $query->where(function (QueryExpression $exp) {
             return $exp->and([

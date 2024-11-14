@@ -34,7 +34,7 @@ class RelationsController extends ModelController
     /**
      * @inheritDoc
      */
-    protected $_defaultConfig = [
+    protected array $_defaultConfig = [
         'allowedAssociations' => [
             'left_object_types' => ['object_types'],
             'right_object_types' => ['object_types'],

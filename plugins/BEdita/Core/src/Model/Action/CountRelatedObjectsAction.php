@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Model\Action;
 
 use BEdita\Core\Model\Entity\ObjectEntity;
@@ -20,7 +19,7 @@ use BEdita\Core\Model\Table\ObjectRelationsTable;
 use BEdita\Core\Model\Table\RelationsTable;
 use Cake\Datasource\EntityInterface;
 use Cake\ORM\Locator\LocatorAwareTrait;
-use Cake\ORM\Query;
+use Cake\ORM\Query\SelectQuery;
 use Cake\Utility\Hash;
 
 /**
@@ -238,9 +237,9 @@ class CountRelatedObjectsAction extends BaseAction
      * @param array|null $relations The list of direct relations
      * @param array $ids A list of object ids
      * @param bool $inverse If you want to count inverse relation
-     * @return \Cake\ORM\Query
+     * @return \Cake\ORM\Query\SelectQuery
      */
-    protected function countRelations(array $relations, array $ids, bool $inverse = false): Query
+    protected function countRelations(array $relations, array $ids, bool $inverse = false): SelectQuery
     {
         $objectId = 'left_id';
         $relatedObjectId = 'right_id';
@@ -265,16 +264,16 @@ class CountRelatedObjectsAction extends BaseAction
                 'relation_name' => $relationField,
                 'count' => $query->func()->count($this->ObjectRelations->aliasField($relatedObjectId)),
             ])
-            ->innerJoinWith($relatedObjectsTable, function (Query $q) {
+            ->innerJoinWith($relatedObjectsTable, function (SelectQuery $q) {
                 return $q->find('available');
             })
-            ->innerJoinWith('Relations', function (Query $q) use ($relations, $relationField) {
+            ->innerJoinWith('Relations', function (SelectQuery $q) use ($relations, $relationField) {
                 return $q->where([
                     sprintf('%s IN', $relationField) => $relations,
                 ]);
             })
             ->where([sprintf('%s IN', $objectId) => $ids])
-            ->group([$objectId, $relationField]);
+            ->groupBy([$objectId, $relationField]);
     }
 
     /**

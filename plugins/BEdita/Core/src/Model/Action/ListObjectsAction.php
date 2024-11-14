@@ -12,10 +12,10 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Model\Action;
 
 use BEdita\Core\Model\Entity\ObjectType;
+use Cake\ORM\Query\SelectQuery;
 use Cake\ORM\Table;
 use Cake\Utility\Hash;
 
@@ -52,9 +52,9 @@ class ListObjectsAction extends BaseAction
     /**
      * {@inheritDoc}
      *
-     * @return \Cake\ORM\Query
+     * @return \Cake\ORM\Query\SelectQuery
      */
-    public function execute(array $data = [])
+    public function execute(array $data = []): SelectQuery
     {
         $filter = [
             'deleted' => (int)!empty($data['deleted']),

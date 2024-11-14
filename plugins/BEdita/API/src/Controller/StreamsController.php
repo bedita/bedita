@@ -33,7 +33,7 @@ class StreamsController extends ResourcesController
     /**
      * @inheritDoc
      */
-    protected $_defaultConfig = [
+    protected array $_defaultConfig = [
         'allowedAssociations' => [
             'object' => [], // Descendant types of `media` are automatically added in controller initialization.
         ],

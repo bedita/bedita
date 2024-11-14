@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Model\Action;
 
 use BEdita\Core\Exception\BadFilterException;
@@ -85,10 +84,10 @@ class ListEntitiesAction extends BaseAction
      *
      * @param \Cake\ORM\Query $query Query object instance.
      * @param array $filter Filter data.
-     * @return \Cake\ORM\Query
+     * @return \Cake\ORM\Query\SelectQuery
      * @throws \BEdita\Core\Exception\BadFilterException
      */
-    protected function buildFilter(SelectQuery $query, array $filter): Query
+    protected function buildFilter(SelectQuery $query, array $filter): SelectQuery
     {
         $customPropsOptions = [];
         foreach ($filter as $key => $value) {
@@ -120,7 +119,7 @@ class ListEntitiesAction extends BaseAction
                         [$this->Table, 'aliasField'],
                         (array)$this->Table->getPrimaryKey()
                     ))
-                    ->innerJoinWith($camelizedKey, function (Query $query) use ($conditions) {
+                    ->innerJoinWith($camelizedKey, function (SelectQuery $query) use ($conditions) {
                         return $query->where($conditions);
                     });
 
@@ -162,9 +161,9 @@ class ListEntitiesAction extends BaseAction
     /**
      * {@inheritDoc}
      *
-     * @return \Cake\ORM\Query
+     * @return \Cake\ORM\Query\SelectQuery
      */
-    public function execute(array $data = [])
+    public function execute(array $data = []): SelectQuery
     {
         $query = $this->Table->find();
 

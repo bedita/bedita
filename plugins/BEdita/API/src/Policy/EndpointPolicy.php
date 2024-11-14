@@ -16,6 +16,7 @@ namespace BEdita\API\Policy;
 
 use Authorization\IdentityInterface;
 use Authorization\Policy\RequestPolicyInterface;
+use Authorization\Policy\ResultInterface;
 use BEdita\Core\Model\Entity\Application;
 use BEdita\Core\Model\Entity\EndpointPermission;
 use BEdita\Core\Model\Entity\User;

@@ -12,12 +12,11 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\Model\Entity;
 
+use Authentication\PasswordHasher\DefaultPasswordHasher;
 use BEdita\Core\Model\Entity\User;
 use BEdita\Core\Utility\JsonApiSerializable;
-use Cake\Auth\DefaultPasswordHasher;
 use Cake\I18n\DateTime;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;

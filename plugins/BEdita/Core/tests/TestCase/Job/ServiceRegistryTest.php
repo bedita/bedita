@@ -48,7 +48,7 @@ class ServiceRegistryTest extends TestCase
             ->getMock();
 
         $service->method('run')
-            ->will(static::returnValue($return));
+            ->willReturn($return);
 
         return $service;
     }

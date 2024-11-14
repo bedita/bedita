@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\Model\Behavior;
 
 use BEdita\Core\Exception\BadFilterException;
@@ -39,7 +38,7 @@ class CustomPropertiesBehaviorTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.PropertyTypes',
         'plugin.BEdita/Core.Properties',

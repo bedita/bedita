@@ -26,7 +26,7 @@ use Cake\Database\Expression\QueryExpression;
 use Cake\Datasource\EntityInterface;
 use Cake\Event\EventInterface;
 use Cake\ORM\Behavior;
-use Cake\ORM\Query;
+use Cake\ORM\Query\SelectQuery;
 use Cake\ORM\TableRegistry;
 use Cake\Utility\Hash;
 
@@ -40,7 +40,7 @@ class CustomPropertiesBehavior extends Behavior
     /**
      * @inheritDoc
      */
-    protected $_defaultConfig = [
+    protected array $_defaultConfig = [
         'field' => 'custom_props',
         'filter' => [
             'number' => FILTER_VALIDATE_FLOAT,
@@ -129,10 +129,10 @@ class CustomPropertiesBehavior extends Behavior
      * Set custom properties keys as main properties
      *
      * @param \Cake\Event\EventInterface $event Fired event.
-     * @param \Cake\ORM\Query $query Query object instance.
-     * @return \Cake\ORM\Query
+     * @param \Cake\ORM\Query\SelectQuery $query Query object instance.
+     * @return \Cake\ORM\Query\SelectQuery
      */
-    public function beforeFind(EventInterface $event, Query $query): Query
+    public function beforeFind(EventInterface $event, SelectQuery $query): SelectQuery
     {
         return $query->formatResults(
             function (CollectionInterface $results) {
@@ -140,7 +140,7 @@ class CustomPropertiesBehavior extends Behavior
                     return $this->promoteProperties($row);
                 });
             },
-            Query::PREPEND
+            SelectQuery::PREPEND
         );
     }
 
@@ -149,7 +149,7 @@ class CustomPropertiesBehavior extends Behavior
      *
      * @param \Cake\Event\EventInterface $event Fired event.
      * @param \Cake\Datasource\EntityInterface $entity Entity.
-     * @return false|void
+     * @return false|null
      */
     public function beforeSave(EventInterface $event, EntityInterface $entity): ?false
     {
@@ -157,6 +157,8 @@ class CustomPropertiesBehavior extends Behavior
         if ($entity->hasErrors()) {
             return false;
         }
+
+        return null;
     }
 
     /**
@@ -303,12 +305,12 @@ class CustomPropertiesBehavior extends Behavior
     /**
      * Finder for custom property.
      *
-     * @param \Cake\ORM\Query $query Query object instance.
+     * @param \Cake\ORM\Query\SelectQuery $query Query object instance.
      * @param array $options Options.
-     * @return \Cake\ORM\Query
+     * @return \Cake\ORM\Query\SelectQuery
      * @throws \Cake\Http\Exception\BadRequestException When
      */
-    public function findCustomProp(Query $query, array $options): Query
+    public function findCustomProp(SelectQuery $query, array $options): SelectQuery
     {
         // for now we handle just MySQL
         if (!($query->getConnection()->getDriver() instanceof Mysql)) {
@@ -329,7 +331,7 @@ class CustomPropertiesBehavior extends Behavior
         }
         unset($value);
 
-        return $query->where(function (QueryExpression $exp, Query $query) use ($options) {
+        return $query->where(function (QueryExpression $exp, SelectQuery $query) use ($options) {
             $field = $this->table()->aliasField($this->getConfig('field'));
 
             return $exp->and(array_map(

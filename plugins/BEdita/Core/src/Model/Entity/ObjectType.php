@@ -98,7 +98,7 @@ class ObjectType extends Entity implements JsonApiSerializable, EventDispatcherI
     /**
      * @inheritDoc
      */
-    protected $_accessible = [
+    protected array $_accessible = [
         '*' => false,
         'name' => true,
         'singular' => true,
@@ -116,7 +116,7 @@ class ObjectType extends Entity implements JsonApiSerializable, EventDispatcherI
     /**
      * @inheritDoc
      */
-    protected $_virtual = [
+    protected array $_virtual = [
         'alias',
         'table',
         'parent_name',
@@ -126,7 +126,7 @@ class ObjectType extends Entity implements JsonApiSerializable, EventDispatcherI
     /**
      * @inheritDoc
      */
-    protected $_hidden = [
+    protected array $_hidden = [
         'objects',
         'model',
         'plugin',
@@ -469,7 +469,7 @@ class ObjectType extends Entity implements JsonApiSerializable, EventDispatcherI
         // This way we can override default property type of a static property.
         $allProperties = $this->getTableLocator()->get('Properties')
             ->find('objectType', [$this->id])
-            ->order(['is_static' => 'ASC'])
+            ->orderBy(['is_static' => 'ASC'])
             ->toArray();
         /** @var \BEdita\Core\Model\Entity\ObjectEntity $entity */
         $entity = $this->getTableLocator()->get($this->name)->newEmptyEntity();

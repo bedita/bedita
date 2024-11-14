@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Command;
 
 use Cake\Command\Command;
@@ -20,9 +19,11 @@ use Cake\Console\Arguments;
 use Cake\Console\ConsoleIo;
 use Cake\Console\ConsoleOptionParser;
 use Cake\Database\Expression\QueryExpression;
+use Cake\I18n\Date;
 use Cake\I18n\FrozenDate;
 use Cake\ORM\Locator\LocatorAwareTrait;
 use Cake\ORM\Query;
+use Cake\ORM\Query\SelectQuery;
 use Cake\Utility\Hash;
 use Exception;
 
@@ -94,7 +95,9 @@ class ObjectsHistoryCommand extends Command
     {
         $counter = $errors = 0;
         $query = $this->fetchQuery($options);
-        $historyTable = $this->fetchTable('Objects')->getBehavior('History')->Table;
+        /** @var \BEdita\Core\Model\Behavior\HistoryBehavior $behavior */
+        $behavior = $this->fetchTable('Objects')->getBehavior('History');
+        $historyTable = $behavior->Table;
         $aliasId = $historyTable->aliasField('id');
         foreach ($this->historyIterator($query, $aliasId) as $historyItem) {
             $io->verbose('======> Deleting history item ' . $historyItem->id);
@@ -120,7 +123,9 @@ class ObjectsHistoryCommand extends Command
     {
         $counter = 0;
         $query = $this->fetchQuery($options);
-        $historyTable = $this->fetchTable('Objects')->getBehavior('History')->Table;
+        /** @var \BEdita\Core\Model\Behavior\HistoryBehavior $behavior */
+        $behavior = $this->fetchTable('Objects')->getBehavior('History');
+        $historyTable = $behavior->Table;
         $aliasId = $historyTable->aliasField('id');
         foreach ($this->historyIterator($query, $aliasId) as $historyItem) {
             $counter++;
@@ -134,17 +139,19 @@ class ObjectsHistoryCommand extends Command
      * Query to fetch history items.
      *
      * @param array $options The options
-     * @return \Cake\ORM\Query
+     * @return \Cake\ORM\Query\SelectQuery
      */
-    private function fetchQuery(array $options): Query
+    private function fetchQuery(array $options): SelectQuery
     {
         $objectsTable = $this->fetchTable('Objects');
         $objectTypesTable = $this->fetchTable('ObjectTypes');
-        $historyTable = $objectsTable->getBehavior('History')->Table;
+        /** @var \BEdita\Core\Model\Behavior\HistoryBehavior $behavior */
+        $behavior = $this->fetchTable('Objects')->getBehavior('History');
+        $historyTable = $behavior->Table;
         $historyTable->belongsTo('Objects', [
             'foreignKey' => false,
             'joinType' => 'INNER',
-            'conditions' => function (QueryExpression $exp, Query $q) use ($historyTable, $objectsTable) {
+            'conditions' => function (QueryExpression $exp, SelectQuery $q) use ($historyTable, $objectsTable) {
                 return $exp->eq(
                     $historyTable->aliasField('resource_id'),
                     $q->func()->cast($objectsTable->aliasField('id'), 'char')
@@ -155,12 +162,12 @@ class ObjectsHistoryCommand extends Command
         $aliasResourceId = $historyTable->aliasField('resource_id');
         $conditions = [];
         $conditions += !empty($options['id']) ? [$aliasResourceId . ' IN' => $options['id']] : [];
-        $conditions += !empty($options['since']) ? [$aliasCreated . ' >' => new FrozenDate($options['since'])] : [];
+        $conditions += !empty($options['since']) ? [$aliasCreated . ' >' => new Date($options['since'])] : [];
         $query = $historyTable->find()->where($conditions);
         $types = (array)Hash::get($options, 'types', []);
 
         return $query
-            ->innerJoinWith('Objects.ObjectTypes', function (Query $q) use ($objectTypesTable, $types) {
+            ->innerJoinWith('Objects.ObjectTypes', function (SelectQuery $q) use ($objectTypesTable, $types) {
                 if (empty($types)) {
                     return $q;
                 }
@@ -174,16 +181,16 @@ class ObjectsHistoryCommand extends Command
     /**
      * Get history items as iterable.
      *
-     * @param \Cake\ORM\Query $query The query
+     * @param \Cake\ORM\Query\SelectQuery $query The query
      * @return iterable
      */
-    private function historyIterator(Query $query, string $aliasId): iterable
+    private function historyIterator(SelectQuery $query, string $aliasId): iterable
     {
         $lastId = 0;
         while (true) {
             $q = clone $query;
             $q = $q->where(fn (QueryExpression $exp): QueryExpression => $exp->gt($aliasId, $lastId));
-            $results = $q->orderAsc($aliasId)->all();
+            $results = $q->orderByAsc($aliasId)->all();
             if ($results->isEmpty()) {
                 break;
             }

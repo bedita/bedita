@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Model\Table;
 
 use ArrayObject;
@@ -280,10 +279,10 @@ class CategoriesTable extends Table
     /**
      * Finder for roots categories.
      *
-     * @param \Cake\ORM\Query $query The query.
-     * @return \Cake\ORM\Query
+     * @param \Cake\ORM\Query\SelectQuery $query The query.
+     * @return \Cake\ORM\Query\SelectQuery
      */
-    protected function findRoots(Query $query): Query
+    protected function findRoots(SelectQuery $query): SelectQuery
     {
         return $query->where(
             fn (QueryExpression $exp): QueryExpression => $exp->isNull($this->aliasField('parent_id'))

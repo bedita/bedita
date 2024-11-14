@@ -19,7 +19,7 @@ use BEdita\Core\Search\BaseAdapter;
 use BEdita\Core\Search\SimpleSearchTrait;
 use Cake\Datasource\EntityInterface;
 use Cake\Event\Event;
-use Cake\ORM\Query;
+use Cake\ORM\Query\SelectQuery;
 use Cake\ORM\Table;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Hash;
@@ -46,7 +46,21 @@ class SimpleSearchTraitTest extends TestCase
     {
         $table = $this->fetchTable('FakeSearches');
         $adapter = new SimpleAdapter();
-        $subject = $this->getMockForTrait(SimpleSearchTrait::class);
+        $subject = new class extends BaseAdapter {
+            use SimpleSearchTrait;
+
+            protected array $_defaultConfig = [];
+
+            public function indexResource(EntityInterface $entity, string $operation): void
+            {
+            }
+
+            public function search(SelectQuery $query, string $text, array $options = []): SelectQuery
+            {
+                return $query;
+            }
+        };
+
         $conf = [
             'fields' => ['name'],
         ];
@@ -73,7 +87,7 @@ class SimpleSearchTraitTest extends TestCase
     {
         $table = $this->fetchTable('FakeSearches');
         $adapter = new class extends BaseAdapter {
-            protected $_defaultConfig = [
+            protected array $_defaultConfig = [
                 'customConf' => 'complicated configuration',
             ];
 
@@ -81,13 +95,27 @@ class SimpleSearchTraitTest extends TestCase
             {
             }
 
-            public function search(Query $query, string $text, array $options = []): Query
+            public function search(SelectQuery $query, string $text, array $options = []): SelectQuery
             {
                 return $query;
             }
         };
 
-        $subject = $this->getMockForTrait(SimpleSearchTrait::class);
+        $subject = new class extends BaseAdapter {
+            use SimpleSearchTrait;
+
+            protected array $_defaultConfig = [];
+
+            public function indexResource(EntityInterface $entity, string $operation): void
+            {
+            }
+
+            public function search(SelectQuery $query, string $text, array $options = []): SelectQuery
+            {
+                return $query;
+            }
+        };
+
         $conf = [
             'customConf' => 'very simple configuration',
         ];

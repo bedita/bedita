@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Job\Service;
 
 use BEdita\Core\Filesystem\Thumbnail;
@@ -33,7 +32,7 @@ class ThumbnailService implements JobService
     /**
      * @inheritDoc
      */
-    public function run(array $payload, array $options = [])
+    public function run(array $payload, array $options = []): bool
     {
         try {
             /** @var \BEdita\Core\Model\Table\StreamsTable $table */

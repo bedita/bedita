@@ -17,7 +17,7 @@ namespace BEdita\Core\Test\TestCase\ORM\Inheritance\Query;
 use BEdita\Core\ORM\Inheritance\Query\SelectQuery;
 use BEdita\Core\Test\TestCase\ORM\Inheritance\FakeAnimalsTrait;
 use Cake\Database\ValueBinder;
-use Cake\ORM\Query as CakeQuery;
+use Cake\ORM\Query\SelectQuery as CakeSelectQuery;
 use Cake\TestSuite\TestCase;
 
 /**
@@ -51,7 +51,7 @@ class InheritanceQueryTraitTest extends TestCase
     public function testAddDefaultTypes()
     {
         $this->fakeAnimals->getSchema()->setColumnType('name', 'json');
-        $query = new SelectQuery($this->fakeFelines->getConnection(), $this->fakeFelines);
+        $query = new SelectQuery($this->fakeFelines);
 
         $defaults = $query->getTypeMap()->getDefaults();
         static::assertArrayHasKey('name', $defaults);
@@ -144,7 +144,7 @@ class InheritanceQueryTraitTest extends TestCase
         $from = $query->clause('from');
         static::assertCount(1, $from);
         static::assertArrayHasKey('FakeFelines', $from);
-        static::assertInstanceOf(CakeQuery::class, $from['FakeFelines']);
+        static::assertInstanceOf(CakeSelectQuery::class, $from['FakeFelines']);
 
         /** @var \Cake\ORM\Query $subQuery */
         $subQuery = $from['FakeFelines'];

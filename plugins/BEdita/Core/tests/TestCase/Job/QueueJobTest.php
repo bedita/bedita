@@ -69,7 +69,7 @@ class QueueJobTest extends TestCase
             ->getMock();
 
         $method = $service->method('run');
-        $method->will(static::returnValue($return));
+        $method->willReturn($return);
         if ($return instanceof Exception) {
             $method->willThrowException($return);
         }

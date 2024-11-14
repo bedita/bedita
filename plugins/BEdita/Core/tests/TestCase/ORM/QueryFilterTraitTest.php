@@ -12,11 +12,10 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\ORM;
 
 use BEdita\Core\ORM\QueryFilterTrait;
-use Cake\ORM\Query;
+use Cake\ORM\Query\SelectQuery;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
@@ -183,7 +182,7 @@ class QueryFilterTraitTest extends TestCase
      */
     public function testFieldsFilter($options, $numExpected)
     {
-        $query = new Query($this->fakeAnimals->getConnection(), $this->fakeAnimals);
+        $query = new SelectQuery($this->fakeAnimals);
         $query = $this->fieldsFilter($query, $options);
         $found = $query->toArray();
         static::assertEquals(count($found), $numExpected);

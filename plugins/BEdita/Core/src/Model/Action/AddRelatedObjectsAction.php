@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Model\Action;
 
 use ArrayObject;
@@ -33,7 +32,7 @@ class AddRelatedObjectsAction extends UpdateRelatedObjectsAction
      *
      * @return array|false
      */
-    protected function update(EntityInterface $entity, $relatedEntities)
+    protected function update(EntityInterface $entity, $relatedEntities): array|false
     {
         if (!($this->Association instanceof RelatedTo)) {
             $action = new AddAssociatedAction($this->getConfig());

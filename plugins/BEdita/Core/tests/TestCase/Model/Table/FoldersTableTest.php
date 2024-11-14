@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\Model\Table;
 
 use BEdita\Core\Model\Entity\ObjectType;
@@ -43,7 +42,7 @@ class FoldersTableTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.PropertyTypes',
         'plugin.BEdita/Core.Properties',
@@ -328,7 +327,7 @@ class FoldersTableTest extends TestCase
         $root = $this->Folders->get(13);
         $startDeletedInfo = $this->Folders
             ->find('ancestor', [$root->id])
-            ->order([$this->Folders->aliasField('id') => 'ASC'])
+            ->orderBy([$this->Folders->aliasField('id') => 'ASC'])
             ->find('list', [
                 'keyField' => 'id',
                 'valueField' => 'deleted',
@@ -340,7 +339,7 @@ class FoldersTableTest extends TestCase
 
         $children = $this->Folders
             ->find('ancestor', [$root->id])
-            ->order([$this->Folders->aliasField('id') => 'ASC']);
+            ->orderBy([$this->Folders->aliasField('id') => 'ASC']);
         foreach ($children as $child) {
             if ($child->type === 'folders') {
                 // folders should have deleted field set to true
@@ -357,7 +356,7 @@ class FoldersTableTest extends TestCase
 
         $restoredDeletedInfo = $this->Folders
             ->find('ancestor', [$root->id])
-            ->order([$this->Folders->aliasField('id') => 'ASC'])
+            ->orderBy([$this->Folders->aliasField('id') => 'ASC'])
             ->find('list', [
                 'keyField' => 'id',
                 'valueField' => 'deleted',
@@ -393,7 +392,7 @@ class FoldersTableTest extends TestCase
         // get descendants not folders
         $notFoldersIds = $this->Folders
             ->find('ancestor', [$parentFolder->id])
-            ->order([$this->Folders->aliasField('id') => 'ASC'])
+            ->orderBy([$this->Folders->aliasField('id') => 'ASC'])
             ->find('list', [
                 'keyField' => 'id',
                 'valueField' => 'id',
@@ -425,10 +424,10 @@ class FoldersTableTest extends TestCase
             static::assertTrue($Objects->exists(['id' => $id]));
         }
 
-        $currenTree = $Trees->find()->order(['tree_left' => 'ASC'])->toArray();
+        $currenTree = $Trees->find()->orderBy(['tree_left' => 'ASC'])->toArray();
         // check that after recover the tree is the same.
         $Trees->recover();
-        static::assertEquals($currenTree, $Trees->find()->order(['tree_left' => 'ASC'])->toArray());
+        static::assertEquals($currenTree, $Trees->find()->orderBy(['tree_left' => 'ASC'])->toArray());
     }
 
     /**
@@ -489,7 +488,7 @@ class FoldersTableTest extends TestCase
 
         $children = $this->Folders
             ->find('ancestor', [11])
-            ->order([$this->Folders->aliasField('id') => 'ASC'])
+            ->orderBy([$this->Folders->aliasField('id') => 'ASC'])
             ->where(['object_type_id' => $this->Folders->objectType()->id])
             ->toArray();
 

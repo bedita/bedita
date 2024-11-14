@@ -12,10 +12,9 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Model\Entity;
 
-use Cake\Auth\DefaultPasswordHasher;
+use Authentication\PasswordHasher\DefaultPasswordHasher;
 use Cake\I18n\DateTime;
 use Cake\ORM\Locator\LocatorAwareTrait;
 
@@ -64,7 +63,7 @@ class User extends Profile
      *
      * Add `external_auth` info to user meta.
      */
-    protected function getMeta()
+    protected function getMeta(): array
     {
         $meta = parent::getMeta();
         $meta['external_auth'] = $this->getExternalAuthMeta();

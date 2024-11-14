@@ -72,7 +72,7 @@ class ObjectsController extends ResourcesController
     /**
      * @inheritDoc
      */
-    protected $_defaultConfig = [
+    protected array $_defaultConfig = [
         'allowedAssociations' => [
             'parents' => ['folders'],
         ],
@@ -204,7 +204,7 @@ class ObjectsController extends ResourcesController
     /**
      * @inheritDoc
      */
-    public function index()
+    public function index(): ?Response
     {
         $this->request->allowMethod(['get', 'post', 'delete']);
 
@@ -256,17 +256,19 @@ class ObjectsController extends ResourcesController
 
             $this->set('_fields', $this->request->getQuery('fields', []));
             $data = $this->paginate($query);
-            $this->addCount($data->toArray());
+            $this->addCount($data->items());
         }
 
         $this->set(compact('data'));
         $this->setSerialize(['data']);
+
+        return null;
     }
 
     /**
      * @inheritDoc
      */
-    protected function resourceUrl(EntityInterface $entity, $primaryKey)
+    protected function resourceUrl(EntityInterface $entity, $primaryKey): string
     {
         return Router::url(
             [
@@ -281,7 +283,7 @@ class ObjectsController extends ResourcesController
     /**
      * @inheritDoc
      */
-    public function resource($id)
+    public function resource($id): ?Response
     {
         $this->request->allowMethod(['get', 'patch', 'delete']);
 
@@ -399,7 +401,7 @@ class ObjectsController extends ResourcesController
      *
      * @return \BEdita\Core\Model\Action\ListRelatedObjectsAction
      */
-    protected function getAssociatedAction(Association $association)
+    protected function getAssociatedAction(Association $association): ListRelatedObjectsAction
     {
         return new ListRelatedObjectsAction(compact('association'));
     }
@@ -407,7 +409,7 @@ class ObjectsController extends ResourcesController
     /**
      * @inheritDoc
      */
-    public function related()
+    public function related(): void
     {
         $this->request->allowMethod(['get']);
 
@@ -438,7 +440,7 @@ class ObjectsController extends ResourcesController
     /**
      * @inheritDoc
      */
-    public function relationships()
+    public function relationships(): ?Response
     {
         $id = TableRegistry::getTableLocator()->get('Objects')->getId($this->request->getParam('id'));
         $relationship = $this->request->getParam('relationship');

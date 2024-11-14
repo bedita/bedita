@@ -46,7 +46,7 @@ class ObjectsTableTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.PropertyTypes',
         'plugin.BEdita/Core.Properties',
@@ -518,7 +518,7 @@ class ObjectsTableTest extends TestCase
     public function testFindAncestor()
     {
         $objects = $this->Objects->find('ancestor', [11])
-            ->order([$this->Objects->aliasField('id') => 'ASC'])
+            ->orderBy([$this->Objects->aliasField('id') => 'ASC'])
             ->toArray();
         static::assertNotEmpty($objects);
         $ids = Hash::extract($objects, '{n}.id');
@@ -801,7 +801,7 @@ class ObjectsTableTest extends TestCase
         static::assertNull($result);
 
         $object = $this->Objects->get(2);
-        $object->publish_end = DateTime::parse(time() + DAY);
+        $object->publish_end = DateTime::parse(time() + 86400);
         $this->Objects->saveOrFail($object);
 
         $result = $this->Objects->find('publishDateAllowed')->where(['id' => 2])->first();
