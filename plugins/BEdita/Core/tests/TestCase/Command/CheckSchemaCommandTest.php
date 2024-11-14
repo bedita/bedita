@@ -17,12 +17,14 @@ namespace BEdita\Core\Test\TestCase\Command;
 
 use Cake\Command\Command;
 use Cake\Console\TestSuite\ConsoleIntegrationTestTrait;
+use Cake\Core\Plugin;
 use Cake\Database\Driver\Mysql;
 use Cake\Database\Schema\TableSchema;
 use Cake\Datasource\ConnectionManager;
 use Cake\TestSuite\ConnectionHelper;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Hash;
+use TestApp\Application;
 
 /**
  * {@see BEdita\Core\Command\CheckSchemaCommand} Test Case
@@ -94,20 +96,20 @@ class CheckSchemaCommandTest extends TestCase
      * @return void
      * @covers ::execute()
      */
-    // commented out because it's not working... to be fixed
-    // public function testMissingMigrationsPlugin(): void
-    // {
-    //     $pluginCollection = Plugin::getCollection();
-    //     $migrationPlugin = $pluginCollection->get('Migrations');
-    //     $pluginCollection->remove('Migrations');
+    public function testMissingMigrationsPlugin(): void
+    {
+        $pluginCollection = Plugin::getCollection();
+        $migrationPlugin = $pluginCollection->get('Migrations');
+        $pluginCollection->remove('Migrations');
+        $this->configApplication(Application::class, []);
 
-    //     $this->exec('check_schema');
+        $this->exec('check_schema');
 
-    //     $this->assertExitCode(Command::CODE_ERROR);
-    //     $this->assertErrorContains('Plugin "Migrations" must be loaded');
-    //     // restore plugin
-    //     $pluginCollection->add($migrationPlugin);
-    // }
+        $this->assertExitCode(Command::CODE_ERROR);
+        $this->assertErrorContains('Plugin "Migrations" must be loaded');
+        // restore plugin
+        $pluginCollection->add($migrationPlugin);
+    }
 
     /**
      * Test check on offended SQL conventions.
@@ -193,102 +195,4 @@ class CheckSchemaCommandTest extends TestCase
         }
         $this->assertErrorEmpty();
     }
-
-    /**
-     * [Schema check removed for now - will be restored in a future release]
-     * Test check on new table.
-     *
-     * @return void
-     * @covers ::checkDiff()
-     * @covers ::formatMessages()
-     */
-    // public function testAddTable(): void
-    // {
-    //     /** @var \Cake\Database\Connection $connection */
-    //     $connection = ConnectionManager::get('default');
-
-    //     $table = new TableSchema('foo_bar', ['foo' => ['type' => 'string', 'length' => 255, 'null' => true, 'default' => null]]);
-    //     foreach ($table->createSql($connection) as $statement) {
-    //         $connection->execute($statement);
-    //     }
-
-    //     $this->exec('check_schema');
-
-    //     if ($this->checkAvailable($connection)) {
-    //         $this->assertExitCode(Command::CODE_ERROR);
-    //         $this->assertOutputContains('Table "foo_bar" has been added');
-    //     } else {
-    //         $this->assertExitCode(Command::CODE_SUCCESS);
-    //         $this->assertOutputContains('SQL conventions and schema differences can only be checked on MySQL');
-    //     }
-    //     $this->assertErrorEmpty();
-    // }
-
-    /**
-     * [Schema check removed for now - will be restored in a future release]
-     * Test check on removed table.
-     *
-     * @return void
-     * @covers ::checkDiff()
-     * @covers ::formatMessages()
-     */
-    // public function testRemoveTable(): void
-    // {
-    //     /** @var \Cake\Database\Connection $connection */
-    //     $connection = ConnectionManager::get('default');
-
-    //     $table = $connection->getSchemaCollection()->describe('config');
-    //     foreach ($table->dropSql($connection) as $statement) {
-    //         $connection->execute($statement);
-    //     }
-
-    //     $this->exec('check_schema');
-
-    //     if ($this->checkAvailable($connection)) {
-    //         $this->assertExitCode(Command::CODE_ERROR);
-    //         $this->assertOutputContains('Table "config" has been removed');
-    //     } else {
-    //         $this->assertExitCode(Command::CODE_SUCCESS);
-    //         $this->assertOutputContains('SQL conventions and schema differences can only be checked on MySQL');
-    //     }
-    //     $this->assertErrorEmpty();
-    // }
-
-    /**
-     * [Schema check removed for now - will be restored in a future release]
-     * Test check on removed constraint.
-     *
-     * @return void
-     * @covers ::checkDiff()
-     * @covers ::formatMessages()
-     */
-    // public function testUpdateConstraints(): void
-    // {
-    //     /** @var \Cake\Database\Connection $connection */
-    //     $connection = ConnectionManager::get('default');
-
-    //     $table = $connection->getSchemaCollection()->describe('objects');
-    //     $constraints = $table->constraints();
-    //     foreach ($table->dropConstraintSql($connection) as $statement) {
-    //         $connection->execute($statement);
-    //     }
-
-    //     $this->exec('check_schema');
-
-    //     if ($this->checkAvailable($connection)) {
-    //         $this->assertExitCode(Command::CODE_ERROR);
-    //         foreach ($constraints as $constraint) {
-    //             $info = $table->getConstraint($constraint);
-    //             if ($info && isset($info['type']) && $info['type'] !== TableSchema::CONSTRAINT_FOREIGN) {
-    //                 continue;
-    //             }
-
-    //             $this->assertOutputContains(sprintf('Constraint "%s" has been removed', $constraint));
-    //         }
-    //     } else {
-    //         $this->assertExitCode(Command::CODE_SUCCESS);
-    //         $this->assertOutputContains('SQL conventions and schema differences can only be checked on MySQL');
-    //     }
-    //     $this->assertErrorEmpty();
-    // }
 }
