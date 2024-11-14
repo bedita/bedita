@@ -87,6 +87,33 @@ class CheckFilesystemCommandTest extends TestCase
     }
 
     /**
+     * Test `execute` when httpd user is empty.
+     *
+     * @return void
+     * @covers ::execute()
+     */
+    public function testEmptyHttpdUser(): void
+    {
+        $cmd = new class extends \BEdita\Core\Command\CheckFilesystemCommand {
+            public function __construct()
+            {
+                $this->args = ['cake', 'check_filesystem'];
+                $this->io = new \Cake\Console\ConsoleIo();
+                parent::__construct();
+            }
+
+            public function getHttpdUser(): string
+            {
+                return '';
+            }
+        };
+        $args = new \Cake\Console\Arguments([], [], []);
+        $io = new \Cake\Console\ConsoleIo();
+        $actual = $cmd->execute($args, $io);
+        static::assertSame(Command::CODE_ERROR, $actual);
+    }
+
+    /**
      * Test execution when permissions are ok.
      *
      * @return void
