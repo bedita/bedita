@@ -168,6 +168,7 @@ class BeditaCommandTest extends TestCase
      *
      * @return void
      * @covers ::execute()
+     * @covers ::executeSubcommand()
      */
     public function testSubcommand(): void
     {
@@ -180,7 +181,7 @@ class BeditaCommandTest extends TestCase
      *
      * @return void
      * @covers ::execute()
-     * @covers ::executeCommand()
+     * @covers ::executeSubcommand()
      * @covers ::setup()
      */
     // commented out because it's not working... to be fixed
@@ -247,7 +248,7 @@ class BeditaCommandTest extends TestCase
      *
      * @return void
      * @covers ::execute()
-     * @covers ::executeCommand()
+     * @covers ::executeSubcommand()
      * @covers ::setup()
      */
     // commented out because it's not working... to be fixed
@@ -365,7 +366,7 @@ class BeditaCommandTest extends TestCase
      *
      * @return void
      * @covers ::execute()
-     * @covers ::executeCommand()
+     * @covers ::executeSubcommand()
      * @covers ::setup()
      */
     // commented out because it's not working... to be fixed
@@ -391,7 +392,7 @@ class BeditaCommandTest extends TestCase
      *
      * @return void
      * @covers ::execute()
-     * @covers ::executeCommand()
+     * @covers ::executeSubcommand()
      * @covers ::check()
      */
     public function testInitSchemaAndCheck(): void
@@ -413,7 +414,7 @@ class BeditaCommandTest extends TestCase
      *
      * @return void
      * @covers ::execute()
-     * @covers ::executeCommand()
+     * @covers ::executeSubcommand()
      * @covers ::check()
      */
     public function testInitSchema(): void
@@ -427,7 +428,7 @@ class BeditaCommandTest extends TestCase
      *
      * @return void
      * @covers ::execute()
-     * @covers ::executeCommand()
+     * @covers ::executeSubcommand()
      * @covers ::check()
      */
     public function testCheck(): void
