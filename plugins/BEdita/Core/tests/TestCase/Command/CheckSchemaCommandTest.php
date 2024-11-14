@@ -18,6 +18,7 @@ namespace BEdita\Core\Test\TestCase\Command;
 use Cake\Command\Command;
 use Cake\Console\TestSuite\ConsoleIntegrationTestTrait;
 use Cake\Core\Plugin;
+use Cake\Database\Connection;
 use Cake\Database\Driver\Mysql;
 use Cake\Database\Schema\TableSchema;
 use Cake\Datasource\ConnectionManager;
@@ -34,6 +35,15 @@ use TestApp\Application;
 class CheckSchemaCommandTest extends TestCase
 {
     use ConsoleIntegrationTestTrait;
+
+    /**
+     * Fixtures
+     *
+     * @var array
+     */
+    protected $fixtures = [
+        'plugin.BEdita/Core.FakeAnimals',
+    ];
 
     /**
      * @inheritDoc
@@ -88,6 +98,210 @@ class CheckSchemaCommandTest extends TestCase
         $realVendor = Hash::get((array)$connection->config(), 'realVendor');
 
         return empty($realVendor);
+    }
+
+    /**
+     * Test `checkSymbol` method.
+     *
+     * @return void
+     * @covers ::checkSymbol()
+     */
+    public function testCheckSymbol(): void
+    {
+        $cmd = new class extends \BEdita\Core\Command\CheckSchemaCommand {
+            public function checkSymbol($symbol, array $context = []): array
+            {
+                return parent::checkSymbol($symbol, $context);
+            }
+        };
+
+        $actual = $cmd->checkSymbol('fake_animals');
+        static::assertEmpty($actual);
+
+        $connection = ConnectionManager::get('default');
+        $allColumns = [];
+        $table = $this->fetchTable('fake_animals');
+        $schema = $connection->getSchemaCollection()->describe('fake_animals');
+        $columns = $schema->columns();
+        foreach ($columns as $column) {
+            $actual = $cmd->checkSymbol($column, compact('table', 'allColumns'));
+            static::assertEmpty($actual);
+            $allColumns[$column] = $table;
+        }
+        foreach ($schema->indexes() as $index) {
+            $actual = $cmd->checkSymbol($index, $schema->getIndex($index) + compact('table'));
+            static::assertEmpty($actual);
+        }
+        foreach ($schema->constraints() as $constraint) {
+            $actual = $cmd->checkSymbol($constraint, $schema->getConstraint($constraint) + compact('table'));
+            static::assertEmpty($actual);
+        }
+    }
+
+    /**
+     * Test `checkConventions`.
+     *
+     * @return void
+     * @covers ::checkConventions()
+     */
+    public function testCheckConventions(): void
+    {
+        $cmd = new class extends \BEdita\Core\Command\CheckSchemaCommand {
+            public function __construct()
+            {
+                $this->args = ['cake', 'check_schema'];
+                $this->io = new \Cake\Console\ConsoleIo();
+                parent::__construct();
+            }
+
+            public function checkConventions(Connection $connection): void
+            {
+                parent::checkConventions($connection);
+            }
+
+            public function getMessages(): array
+            {
+                return $this->messages;
+            }
+        };
+        $connection = ConnectionManager::get('default');
+        $cmd->checkConventions($connection);
+        $actual = $cmd->getMessages();
+        $this->assertTreeEmptyNaming($actual['captions']['table']);
+        $this->assertTreeEmptyNaming($actual['captions']['column']);
+    }
+
+    /**
+     * Assert that the tree of messages is empty.
+     *
+     * @param array $messages Messages tree.
+     * @return void
+     */
+    private function assertTreeEmptyNaming(array $messages): void
+    {
+        foreach ($messages as $key => $value) {
+            if ($key === 'naming') {
+                static::assertEmpty($value);
+
+                continue;
+            }
+            $this->assertTreeEmptyNaming($value);
+        }
+    }
+
+    /**
+     * Test `formatMessages`.
+     *
+     * @return void
+     * @covers ::checkConventions()
+     * @covers ::formatMessages()
+     * @covers ::errorMessage()
+     */
+    public function testCheckFormatMessages(): void
+    {
+        $cmd = new class extends \BEdita\Core\Command\CheckSchemaCommand {
+            public function __construct()
+            {
+                $this->args = ['cake', 'check_schema'];
+                $this->io = new \Cake\Console\ConsoleIo();
+                parent::__construct();
+            }
+
+            public function checkConventions(Connection $connection): void
+            {
+                parent::checkConventions($connection);
+            }
+
+            public function formatMessages(): bool
+            {
+                return parent::formatMessages();
+            }
+
+            public function addMessages(string $table, array $messages): void
+            {
+                $this->messages[$table] = $messages;
+            }
+
+            public function getMessages(): array
+            {
+                return $this->messages;
+            }
+        };
+        $connection = ConnectionManager::get('default');
+        $cmd->checkConventions($connection);
+        $cmd->addMessages('phinxlog', ['foo' => 'bar']);
+        $actual = $cmd->formatMessages();
+        static::assertFalse($actual);
+        $actual = array_keys($cmd->getMessages());
+        $messages = $cmd->getMessages();
+        unset($messages['phinxlog']);
+        ksort($messages);
+        $expected = array_keys($messages);
+        static::assertEquals($expected, $actual);
+    }
+
+    /**
+     * Test `errorMessage`.
+     *
+     * @return void
+     * @covers ::errorMessage()
+     */
+    public function testErrorMessage(): void
+    {
+        $cmd = new class extends \BEdita\Core\Command\CheckSchemaCommand {
+            public function __construct()
+            {
+                $this->args = ['cake', 'check_schema'];
+                $this->io = new \Cake\Console\ConsoleIo();
+                parent::__construct();
+            }
+
+            public function errorMessage(string $type, string $symbol, string $errorType, array $details): string
+            {
+                return parent::errorMessage($type, $symbol, $errorType, $details);
+            }
+        };
+        $actual = $cmd->errorMessage('dummy', 'foo', 'naming', ['baz', 'qux']);
+        $expected = 'dummy name "foo" is not valid (baz, qux)';
+        static::assertEquals($expected, $actual);
+        $actual = $cmd->errorMessage('dummy', 'foo', 'add', []);
+        $expected = 'dummy "foo" has been added';
+        static::assertEquals($expected, $actual);
+        $actual = $cmd->errorMessage('dummy', 'foo', 'remove', []);
+        $expected = 'dummy "foo" has been removed';
+        static::assertEquals($expected, $actual);
+        $actual = $cmd->errorMessage('dummy', 'foo', 'changed', []);
+        $expected = 'dummy "foo" has been changed';
+        static::assertEquals($expected, $actual);
+        $actual = $cmd->errorMessage('dummy', 'foo', 'whatever', []);
+        $expected = '';
+        static::assertEquals($expected, $actual);
+    }
+
+    /**
+     * Test check on Phinxlog tables.
+     *
+     * @return void
+     * @covers ::filterPhinxlogTables()
+     */
+    public function testFilterPhinxlogTables(): void
+    {
+        $cmd = new class extends \BEdita\Core\Command\CheckSchemaCommand {
+            public function filterPhinxlogTables($tables): array
+            {
+                return parent::filterPhinxlogTables($tables);
+            }
+        };
+        $tables = [
+            'documents',
+            'phinxlog',
+            'documents_phinxlog',
+        ];
+        $expected = [
+            'documents',
+        ];
+        $actual = $cmd->filterPhinxlogTables($tables);
+        static::assertEquals($expected, $actual);
     }
 
     /**

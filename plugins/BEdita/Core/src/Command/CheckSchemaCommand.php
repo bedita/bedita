@@ -150,7 +150,7 @@ class CheckSchemaCommand extends Command
      * @param \Cake\Database\Connection $connection Connection instance.
      * @return void
      */
-    protected function checkMigrationsStatus(Connection $connection)
+    protected function checkMigrationsStatus(Connection $connection): void
     {
         $migrations = new Migrations([
             'connection' => $connection->configName(),
@@ -180,7 +180,7 @@ class CheckSchemaCommand extends Command
      * @return array
      * @internal
      */
-    protected function filterPhinxlogTables(array $tables)
+    protected function filterPhinxlogTables(array $tables): array
     {
         return array_filter($tables, function ($table) {
             return $table !== 'phinxlog' && substr($table, -strlen('_phinxlog')) !== '_phinxlog';
@@ -195,7 +195,7 @@ class CheckSchemaCommand extends Command
      * @return array
      * @internal
      */
-    protected function checkSymbol($symbol, array $context = [])
+    protected function checkSymbol($symbol, array $context = []): array
     {
         $validator = new SqlConventionsValidator();
         foreach ($context as $key => $value) {
@@ -216,7 +216,7 @@ class CheckSchemaCommand extends Command
      * @param \Cake\Database\Connection $connection Connection instance.
      * @return void
      */
-    protected function checkConventions(Connection $connection)
+    protected function checkConventions(Connection $connection): void
     {
         $this->io->verbose('=====> Checking SQL conventions:');
         $allColumns = [];
@@ -264,7 +264,7 @@ class CheckSchemaCommand extends Command
      *
      * @return bool
      */
-    protected function formatMessages()
+    protected function formatMessages(): bool
     {
         if (!empty($this->messages['phinxlog'])) {
             $this->io->quiet('=====> <warning>Migration history is not in sync with migration files.</warning>');
@@ -281,20 +281,7 @@ class CheckSchemaCommand extends Command
                 foreach ($list as $symbol => $messages) {
                     $messages = array_filter($messages);
                     foreach ($messages as $errorType => $details) {
-                        switch ($errorType) {
-                            case 'naming':
-                                $lines[] = sprintf('%s name "%s" is not valid (%s)', $type, $symbol, implode(', ', $details));
-                                break;
-                            case 'add':
-                                $lines[] = sprintf('%s "%s" has been added', $type, $symbol);
-                                break;
-                            case 'remove':
-                                $lines[] = sprintf('%s "%s" has been removed', $type, $symbol);
-                                break;
-                            case 'changed':
-                                $lines[] = sprintf('%s "%s" has been changed', $type, $symbol);
-                                break;
-                        }
+                        $lines[] = $this->errorMessage($type, $symbol, $errorType, $details);
                     }
                 }
             }
@@ -319,5 +306,32 @@ class CheckSchemaCommand extends Command
         }
 
         return $check;
+    }
+
+    /**
+     * Error message.
+     *
+     * @param string $type Type of symbol.
+     * @param string $symbol Symbol name.
+     * @param string $errorType Error type.
+     * @param array $details Error details.
+     * @return string
+     */
+    protected function errorMessage(string $type, string $symbol, string $errorType, array $details): string
+    {
+        if ($errorType === 'naming') {
+            return sprintf('%s name "%s" is not valid (%s)', $type, $symbol, implode(', ', $details));
+        }
+        if ($errorType === 'add') {
+            return sprintf('%s "%s" has been added', $type, $symbol);
+        }
+        if ($errorType === 'remove') {
+            return sprintf('%s "%s" has been removed', $type, $symbol);
+        }
+        if ($errorType === 'changed') {
+            return sprintf('%s "%s" has been changed', $type, $symbol);
+        }
+
+        return '';
     }
 }
