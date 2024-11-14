@@ -37,7 +37,7 @@
         "cakephp/repl": "^2.0.1",
         "phpunit/phpunit": "^10.1.0",
         "dms/phpunit-arraysubset-asserts": "^0.5",
-        "bedita/dev-tools": "@dev",
+        "bedita/dev-tools": "^3.0.0",
         "phpstan/phpstan": "^1.7.1",
         "phpstan/extension-installer": "^1.0",
         "phpstan/phpstan-deprecation-rules": "^1.0",
