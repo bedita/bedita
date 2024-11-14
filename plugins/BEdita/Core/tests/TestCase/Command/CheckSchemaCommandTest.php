@@ -15,6 +15,7 @@ declare(strict_types=1);
 
 namespace BEdita\Core\Test\TestCase\Command;
 
+use BEdita\Core\Utility\Database;
 use Cake\Command\Command;
 use Cake\Console\TestSuite\ConsoleIntegrationTestTrait;
 use Cake\Core\Plugin;
@@ -231,7 +232,12 @@ class CheckSchemaCommandTest extends TestCase
         $cmd->checkConventions($connection);
         $cmd->addMessages('phinxlog', ['foo' => 'bar']);
         $actual = $cmd->formatMessages();
-        static::assertFalse($actual);
+        $expected = true;
+        $info = Database::basicInfo();
+        if ($info['vendor'] === 'sqlite') {
+            $expected = false;
+        }
+        static::assertSame($expected, $actual);
         $actual = array_keys($cmd->getMessages());
         $messages = $cmd->getMessages();
         unset($messages['phinxlog']);
