@@ -260,63 +260,6 @@ class CheckSchemaCommand extends Command
     }
 
     /**
-     * [Schema check removed for now - will be restored in a future release]
-     * Check if changes in schema occurred.
-     *
-     * @param \Cake\Database\Connection $connection Connection instance.
-     * @return void
-     */
-    // protected function checkDiff(Connection $connection)
-    // {
-    //     try {
-    //         $diffTask = $this->Tasks->load('Migrations.MigrationDiff');
-    //     } catch (MissingTaskException $e) {
-    //         $this->io->out(sprintf('=====> <error>Unable to check schema differences: %s</error>', $e->getMessage()));
-
-    //         return;
-    //     }
-
-    //     $this->io->verbose('=====> Checking schema differences:');
-
-    //     $diffTask->connection = $connection->configName();
-    //     $diffTask->params['plugin'] = 'BEdita/Core';
-    //     $diffTask->setup();
-
-    //     $diff = $diffTask->templateData();
-    //     if (empty($diff['data'])) {
-    //         return;
-    //     }
-    //     $diff = $diff['data'];
-
-    //     $this->io->verbose('=====>  - Checking tables added or removed... ', 0);
-    //     foreach ($this->filterPhinxlogTables(array_keys($diff['fullTables']['add'])) as $table) {
-    //         $this->messages[$table]['table'][$table]['add'] = true;
-    //     }
-    //     foreach ($this->filterPhinxlogTables(array_keys($diff['fullTables']['remove'])) as $table) {
-    //         $this->messages[$table]['table'][$table]['remove'] = true;
-    //     }
-    //     unset($diff['fullTables']);
-    //     $this->io->verbose('<info>DONE</info>');
-
-    //     foreach ($diff as $table => $elements) {
-    //         $this->io->verbose(sprintf('=====>  - Checking table <comment>%s</comment>... ', $table), 0);
-
-    //         foreach ($elements as $type => $changes) {
-    //             $type = Inflector::singularize($type);
-    //             foreach ($changes as $action => $list) {
-    //                 foreach (array_keys($list) as $symbol) {
-    //                     $this->messages[$table][$type][$symbol][$action] = true;
-    //                 }
-    //             }
-    //         }
-
-    //         $this->io->verbose('<info>DONE</info>');
-    //     }
-
-    //     $this->io->verbose('=====> ');
-    // }
-
-    /**
      * Send all messages to output.
      *
      * @return bool

@@ -91,6 +91,22 @@ class CheckSchemaCommandTest extends TestCase
     }
 
     /**
+     * Test check on unknown connection type.
+     *
+     * @return void
+     * @covers ::execute()
+     */
+    public function testUnkwownConnectionType(): void
+    {
+        ConnectionManager::setConfig('dummy', new \stdClass());
+        $this->exec('check_schema -c dummy');
+        ConnectionManager::drop('dummy');
+
+        $this->assertExitCode(Command::CODE_ERROR);
+        $this->assertErrorContains('Unknown connection type');
+    }
+
+    /**
      * Test controlled failure on missing "Migrations" plugin.
      *
      * @return void
@@ -117,6 +133,8 @@ class CheckSchemaCommandTest extends TestCase
      * @return void
      * @covers ::execute()
      * @covers ::checkConventions()
+     * @covers ::filterPhinxlogTables()
+     * @covers ::checkMigrationsStatus()
      * @covers ::checkSymbol()
      * @covers ::formatMessages()
      */
