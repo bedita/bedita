@@ -115,6 +115,7 @@ class CheckSchemaCommandTest extends TestCase
      * Test check on offended SQL conventions.
      *
      * @return void
+     * @covers ::execute()
      * @covers ::checkConventions()
      * @covers ::checkSymbol()
      * @covers ::formatMessages()
@@ -180,7 +181,7 @@ class CheckSchemaCommandTest extends TestCase
      * Test successful schema check.
      *
      * @return void
-     * @covers \BEdita\Core\Shell\Task\CheckSchemaTask
+     * @covers ::execute()
      */
     public function testCheckSchema(): void
     {
