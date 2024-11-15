@@ -15,10 +15,7 @@ declare(strict_types=1);
 namespace BEdita\Core\ORM\Inheritance;
 
 use BadMethodCallException;
-use BEdita\Core\ORM\Inheritance\Query\DeleteQuery;
-use BEdita\Core\ORM\Inheritance\Query\InsertQuery;
-use BEdita\Core\ORM\Inheritance\Query\SelectQuery;
-use BEdita\Core\ORM\Inheritance\Query\UpdateQuery;
+use BEdita\Core\ORM\Inheritance\Query\QueryFactory;
 use Cake\ORM\Marshaller as CakeMarshaller;
 use Cake\ORM\Query\SelectQuery as CakeSelectQuery;
 use Cake\ORM\Table as CakeTable;
@@ -43,6 +40,16 @@ class Table extends CakeTable
     protected CakeTable|string|null $inheritedTable = null;
 
     /**
+     * @inheritDoc
+     */
+    public function __construct($config = [])
+    {
+        $config['queryFactory'] = new QueryFactory();
+
+        parent::__construct($config);
+    }
+
+    /**
      * {@inheritDoc}
      *
      * @codeCoverageIgnore
@@ -61,46 +68,6 @@ class Table extends CakeTable
     public function marshaller(): CakeMarshaller
     {
         return new Marshaller($this);
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function query(): SelectQuery
-    {
-        return $this->selectQuery();
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function deleteQuery(): DeleteQuery
-    {
-        return new DeleteQuery($this);
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function insertQuery(): InsertQuery
-    {
-        return new InsertQuery($this);
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function selectQuery(): SelectQuery
-    {
-        return new SelectQuery($this);
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function updateQuery(): UpdateQuery
-    {
-        return new UpdateQuery($this);
     }
 
     /**
