@@ -21,10 +21,9 @@ use Cake\Console\ConsoleIo;
 use Cake\Console\ConsoleOptionParser;
 
 /**
- * DbAdmin command. Utility that internally calls other commands.
- *
- * - CheckSchemaCommand
- * - InitSchemaCommand
+ * DbAdmin command. Utility that internally calls database related commands:
+ *  - check schema consistency (CheckSchemaCommand)
+ *  - initialize a new database instance (InitSchemaCommand)
  */
 class DbAdminCommand extends Command
 {
