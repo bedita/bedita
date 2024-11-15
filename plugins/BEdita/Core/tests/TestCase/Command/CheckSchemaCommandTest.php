@@ -147,6 +147,9 @@ class CheckSchemaCommandTest extends TestCase
      */
     public function testCheckConventions(): void
     {
+        if (Database::basicInfo()['vendor'] === 'sqlite') {
+            $this->markTestSkipped('Test skipped on SQLite');
+        }
         $cmd = new class extends \BEdita\Core\Command\CheckSchemaCommand {
             public function __construct()
             {
