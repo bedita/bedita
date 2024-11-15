@@ -33,6 +33,8 @@ use Cake\Datasource\ConnectionManager;
  */
 class BeditaCommand extends Command
 {
+    use SubcommandTrait;
+
     /**
      * Console arguments
      *
@@ -198,7 +200,7 @@ class BeditaCommand extends Command
      * @return void
      * @codeCoverageIgnore
      */
-    public function check()
+    public function check(): void
     {
         $this->io->out('=====> Checking schema');
         $this->executeSubcommand('check_schema');
@@ -215,7 +217,7 @@ class BeditaCommand extends Command
      * @return void
      * @codeCoverageIgnore
      */
-    public function setup()
+    public function setup(): void
     {
         $this->io->out('=====> Checking connection');
         $this->executeSubcommand('setup_connection');
@@ -252,30 +254,5 @@ class BeditaCommand extends Command
         } finally {
             ConnectionManager::dropAlias('default');
         }
-    }
-
-    /**
-     * Execute subcommand.
-     *
-     * @param string $subcommand Subcommand to execute.
-     * @return int
-     * @codeCoverageIgnore
-     */
-    protected function executeSubcommand(string $subcommand): int
-    {
-        $subcommandArguments = [];
-        $allowedArguments = $this->subcommands[$subcommand]['arguments'];
-        foreach ($allowedArguments as $argumentName) {
-            $subcommandArguments[] = $this->args->getArgument($argumentName);
-        }
-        $allowedOptions = $this->subcommands[$subcommand]['options'];
-        foreach ($this->args->getOptions() as $option => $value) {
-            if (in_array($option, $allowedOptions)) {
-                $subcommandArguments[] = sprintf('--%s', $option);
-                $subcommandArguments[] = $value;
-            }
-        }
-
-        return $this->executeCommand($this->subcommands[$subcommand]['class'], $subcommandArguments, $this->io);
     }
 }
