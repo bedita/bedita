@@ -243,7 +243,7 @@ class SetupConnectionCommand extends Command
         // Database host.
         $host = null;
         if (!$this->args->getOption('connection-host')) {
-            $host = $this->io->askChoice('Enter database host:', null, 'localhost');
+            $host = $this->io->ask('Enter database host:', 'localhost');
         } else {
             $host = $this->args->getOption('connection-host');
         }
@@ -252,7 +252,7 @@ class SetupConnectionCommand extends Command
         // Database port.
         $port = null;
         if (!$this->args->getOption('connection-port')) {
-            $port = $this->io->askChoice('Enter database port:', null, $driver === 'Mysql' ? '3306' : '5432');
+            $port = $this->io->ask('Enter database port:', $driver === 'Mysql' ? '3306' : '5432');
         } else {
             $port = $this->args->getOption('connection-port');
         }
@@ -261,7 +261,7 @@ class SetupConnectionCommand extends Command
         // Database name.
         $databasename = null;
         if (!$this->args->getOption('connection-database')) {
-            $databasename = $this->io->askChoice('Enter database name:', null, 'bedita');
+            $databasename = $this->io->ask('Enter database name:', 'bedita');
         } else {
             $databasename = $this->args->getOption('connection-database');
         }
@@ -283,6 +283,8 @@ class SetupConnectionCommand extends Command
         } elseif (!$this->args->getOption('connection-password')) {
             $this->io->quiet('=====> <warning>Typing will NOT be hidden!</warning> Please do not enter really sensitive data here.');
             $databasepassword = $this->io->ask('Enter password to connect to database:');
+        } else {
+            $databasepassword = $this->args->getOption('connection-password');
         }
         $config['password'] = $databasepassword;
 
@@ -358,8 +360,7 @@ class SetupConnectionCommand extends Command
         $this->io->verbose('<info>DONE</info>');
 
         // Write changes to disk.
-        $success = $file->write($contents);
-        if (!$success) {
+        if (!$file->write($contents)) {
             $this->io->abort('Could not update configuration file');
         }
         $this->io->out('=====> <success>Configuration saved</success>');
