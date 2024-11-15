@@ -135,10 +135,8 @@ class InitSchemaCommandTest extends TestCase
 
         $schema = unserialize(file_get_contents(Plugin::configPath('BEdita/Core') . DS . 'Migrations' . DS . 'schema-dump-default.lock'));
 
-        // commented out because it's not working... to be fixed
-        //$this->assertExitCode(Command::CODE_SUCCESS);
-        // commented out because it's not working... to be fixed
-        //$this->assertErrorEmpty();
+        $this->assertExitCode(Command::CODE_SUCCESS);
+        $this->assertErrorEmpty();
         $this->checkCounts($schema, $connection->getSchemaCollection()->listTables());
 
         return $this->fetchTable('ObjectTypes')->find()->count();
@@ -187,10 +185,8 @@ class InitSchemaCommandTest extends TestCase
 
         $schema = unserialize(file_get_contents(Plugin::configPath('BEdita/Core') . DS . 'Migrations' . DS . 'schema-dump-default.lock'));
 
-        // commented out because it's not working... to be fixed
-        //$this->assertExitCode(Command::CODE_SUCCESS);
-        // commented out because it's not working... to be fixed
-        //$this->assertErrorEmpty();
+        $this->assertExitCode(Command::CODE_SUCCESS);
+        $this->assertErrorEmpty();
         $this->checkCounts($schema, $connection->getSchemaCollection()->listTables());
     }
 
