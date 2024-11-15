@@ -51,7 +51,7 @@ class DbAdminShell extends Shell /* @phpstan-ignore-line */
     {
         Cache::disable();
 
-        parent::startup(); /* @phpstan-ignore-line */
+        parent::startup();
     }
 
     /**
@@ -61,7 +61,7 @@ class DbAdminShell extends Shell /* @phpstan-ignore-line */
      */
     protected function _welcome(): void
     {
-        parent::_welcome(); /* @phpstan-ignore-line */
+        parent::_welcome();
 
         if ($this->param('connection')) {
             $info = ConnectionManager::get($this->param('connection'))->config();
@@ -95,7 +95,7 @@ class DbAdminShell extends Shell /* @phpstan-ignore-line */
      */
     public function getOptionParser(): ConsoleOptionParser
     {
-        $parser = parent::getOptionParser(); /* @phpstan-ignore-line */
+        $parser = parent::getOptionParser();
         $parser
             ->addSubcommand('init', [
                 'help' => 'Initialize a new BEdita 4 database instance.',

@@ -28,6 +28,40 @@ class SubcommandTraitTest extends TestCase
 {
     use SubcommandTrait;
 
+    public $functionArguments = [];
+    protected $args;
+    protected $io;
+    protected $subcommands = [
+        'foo' => [
+            'class' => 'FooCommand',
+            'arguments' => [
+                'arg1',
+                'arg2',
+            ],
+            'options' => [
+                'opt1',
+                'opt2',
+            ],
+        ],
+    ];
+
+    public function getArguments(): object
+    {
+        return $this->args;
+    }
+
+    public function executeCommand($class, $args, $io)
+    {
+        $this->functionArguments = compact('class', 'args', 'io');
+
+        return Command::CODE_SUCCESS;
+    }
+
+    public function exSubCmd($subcommand)
+    {
+        return $this->executeSubcommand($subcommand);
+    }
+
     /**
      * Test `executeSubcommand` method
      *
@@ -36,63 +70,21 @@ class SubcommandTraitTest extends TestCase
      */
     public function testExecuteSubcommand(): void
     {
-        $cmd = new class () {
-            use SubcommandTrait;
-
-            public $functionArguments = [];
-            protected $args;
-            protected $io;
-            protected $subcommands;
-
-            public function __construct()
+        $this->args = new class () {
+            public function getArgument($name): string
             {
-                $this->args = new class () {
-                    public function getArgument($name): string
-                    {
-                        return $name;
-                    }
+                return $name;
+            }
 
-                    public function getOptions(): array
-                    {
-                        return [
-                            'opt1' => 'value1',
-                            'opt2' => 'value2',
-                        ];
-                    }
-                };
-                $this->subcommands = [
-                    'foo' => [
-                        'class' => 'FooCommand',
-                        'arguments' => [
-                            'arg1',
-                            'arg2',
-                        ],
-                        'options' => [
-                            'opt1',
-                            'opt2',
-                        ],
-                    ],
+            public function getOptions(): array
+            {
+                return [
+                    'opt1' => 'value1',
+                    'opt2' => 'value2',
                 ];
             }
-
-            public function getArguments(): object
-            {
-                return $this->args;
-            }
-
-            public function executeCommand($class, $args, $io)
-            {
-                $this->functionArguments = compact('class', 'args', 'io');
-
-                return Command::CODE_SUCCESS;
-            }
-
-            public function exSubCmd($subcommand)
-            {
-                return $this->executeSubcommand($subcommand);
-            }
         };
-        $actual = $cmd->exSubCmd('foo');
+        $actual = $this->exSubCmd('foo');
         $this->assertSame(Command::CODE_SUCCESS, $actual);
         $this->assertSame([
             'arg1',
@@ -101,6 +93,6 @@ class SubcommandTraitTest extends TestCase
             'value1',
             '--opt2',
             'value2',
-        ], $cmd->functionArguments['args']);
+        ], $this->functionArguments['args']);
     }
 }
