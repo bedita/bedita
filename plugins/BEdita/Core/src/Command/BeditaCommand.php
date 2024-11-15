@@ -115,7 +115,9 @@ class BeditaCommand extends Command
     ];
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
+     *
+     * @codeCoverageIgnore
      */
     public function buildOptionParser(ConsoleOptionParser $parser): ConsoleOptionParser
     {
@@ -159,7 +161,9 @@ class BeditaCommand extends Command
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
+     *
+     * @codeCoverageIgnore
      */
     public static function getDescription(): string
     {
@@ -167,7 +171,9 @@ class BeditaCommand extends Command
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
+     *
+     * @codeCoverageIgnore
      */
     public function execute(Arguments $args, ConsoleIo $io): int
     {
@@ -253,6 +259,7 @@ class BeditaCommand extends Command
      *
      * @param string $subcommand Subcommand to execute.
      * @return int
+     * @codeCoverageIgnore
      */
     protected function executeSubcommand(string $subcommand): int
     {
