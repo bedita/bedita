@@ -31,13 +31,23 @@ use Cake\Validation\Validator;
 /**
  * Property Types - available property types
  *
- * @method \BEdita\Core\Model\Entity\PropertyType newEntity($data = null, array $options = [])
+ * @method \BEdita\Core\Model\Entity\PropertyType newEntity(array $data, array $options = [])
  * @method \BEdita\Core\Model\Entity\PropertyType[] newEntities(array $data, array $options = [])
- * @method \BEdita\Core\Model\Entity\PropertyType|bool save(\Cake\Datasource\EntityInterface $entity, $options = [])
+ * @method \BEdita\Core\Model\Entity\PropertyType|false save(\Cake\Datasource\EntityInterface $entity, array $options = [])
  * @method \BEdita\Core\Model\Entity\PropertyType patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
- * @method \BEdita\Core\Model\Entity\PropertyType[] patchEntities($entities, array $data, array $options = [])
- * @method \BEdita\Core\Model\Entity\PropertyType findOrCreate($search, callable $callback = null, $options = [])
- * @property \Cake\ORM\Association\HasMany $Properties
+ * @method \BEdita\Core\Model\Entity\PropertyType[] patchEntities(iterable $entities, array $data, array $options = [])
+ * @method \BEdita\Core\Model\Entity\PropertyType findOrCreate(\Cake\ORM\Query\SelectQuery|callable|array $search, ?callable $callback = null, array $options = [])
+ * @property \Cake\ORM\Table&\Cake\ORM\Association\HasMany $Properties
+ * @method \BEdita\Core\Model\Entity\PropertyType newEmptyEntity()
+ * @method \BEdita\Core\Model\Entity\PropertyType get(mixed $primaryKey, array|string $finder = 'all', \Psr\SimpleCache\CacheInterface|string|null $cache = null, \Closure|string|null $cacheKey = null, mixed ...$args)
+ * @method \BEdita\Core\Model\Entity\PropertyType saveOrFail(\Cake\Datasource\EntityInterface $entity, array $options = [])
+ * @method \BEdita\Core\Model\Entity\PropertyType[]|\Cake\Datasource\ResultSetInterface<\BEdita\Core\Model\Entity\PropertyType>|false saveMany(iterable $entities, array $options = [])
+ * @method \BEdita\Core\Model\Entity\PropertyType[]|\Cake\Datasource\ResultSetInterface<\BEdita\Core\Model\Entity\PropertyType> saveManyOrFail(iterable $entities, array $options = [])
+ * @method \BEdita\Core\Model\Entity\PropertyType[]|\Cake\Datasource\ResultSetInterface<\BEdita\Core\Model\Entity\PropertyType>|false deleteMany(iterable $entities, array $options = [])
+ * @method \BEdita\Core\Model\Entity\PropertyType[]|\Cake\Datasource\ResultSetInterface<\BEdita\Core\Model\Entity\PropertyType> deleteManyOrFail(iterable $entities, array $options = [])
+ * @mixin \Cake\ORM\Behavior\TimestampBehavior
+ * @mixin \BEdita\Core\Model\Behavior\SearchableBehavior
+ * @mixin \BEdita\Core\Model\Behavior\ResourceNameBehavior
  * @since 4.0.0
  */
 class PropertyTypesTable extends Table

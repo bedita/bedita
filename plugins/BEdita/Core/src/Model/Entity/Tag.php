@@ -26,10 +26,10 @@ use Cake\Utility\Hash;
  * @property string $name
  * @property array|null $labels
  * @property bool $enabled
- * @property \Cake\I18n\Time $created
- * @property \Cake\I18n\Time $modified
- *
+ * @property \Cake\I18n\DateTime $created
+ * @property \Cake\I18n\DateTime $modified
  * @property \BEdita\Core\Model\Entity\ObjectTag[] $object_tags
+ * @property-read string|null $label
  */
 class Tag extends Entity implements JsonApiSerializable
 {

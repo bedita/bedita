@@ -28,10 +28,24 @@ use Cake\Validation\Validator;
 /**
  * EndpointPermissions Model
  *
- * @property \Cake\ORM\Association\BelongsTo $Endpoints
- * @property \Cake\ORM\Association\BelongsTo $Applications
- * @property \Cake\ORM\Association\BelongsTo $Roles
+ * @property \Cake\ORM\Table&\Cake\ORM\Association\BelongsTo $Endpoints
+ * @property \Cake\ORM\Table&\Cake\ORM\Association\BelongsTo $Applications
+ * @property \Cake\ORM\Table&\Cake\ORM\Association\BelongsTo $Roles
  * @method \Cake\ORM\Query queryCache(\Cake\ORM\Query $query, string $key)
+ * @method \BEdita\Core\Model\Entity\EndpointPermission newEmptyEntity()
+ * @method \BEdita\Core\Model\Entity\EndpointPermission newEntity(array $data, array $options = [])
+ * @method \BEdita\Core\Model\Entity\EndpointPermission[] newEntities(array $data, array $options = [])
+ * @method \BEdita\Core\Model\Entity\EndpointPermission get(mixed $primaryKey, array|string $finder = 'all', \Psr\SimpleCache\CacheInterface|string|null $cache = null, \Closure|string|null $cacheKey = null, mixed ...$args)
+ * @method \BEdita\Core\Model\Entity\EndpointPermission findOrCreate(\Cake\ORM\Query\SelectQuery|callable|array $search, ?callable $callback = null, array $options = [])
+ * @method \BEdita\Core\Model\Entity\EndpointPermission patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
+ * @method \BEdita\Core\Model\Entity\EndpointPermission[] patchEntities(iterable $entities, array $data, array $options = [])
+ * @method \BEdita\Core\Model\Entity\EndpointPermission|false save(\Cake\Datasource\EntityInterface $entity, array $options = [])
+ * @method \BEdita\Core\Model\Entity\EndpointPermission saveOrFail(\Cake\Datasource\EntityInterface $entity, array $options = [])
+ * @method \BEdita\Core\Model\Entity\EndpointPermission[]|\Cake\Datasource\ResultSetInterface<\BEdita\Core\Model\Entity\EndpointPermission>|false saveMany(iterable $entities, array $options = [])
+ * @method \BEdita\Core\Model\Entity\EndpointPermission[]|\Cake\Datasource\ResultSetInterface<\BEdita\Core\Model\Entity\EndpointPermission> saveManyOrFail(iterable $entities, array $options = [])
+ * @method \BEdita\Core\Model\Entity\EndpointPermission[]|\Cake\Datasource\ResultSetInterface<\BEdita\Core\Model\Entity\EndpointPermission>|false deleteMany(iterable $entities, array $options = [])
+ * @method \BEdita\Core\Model\Entity\EndpointPermission[]|\Cake\Datasource\ResultSetInterface<\BEdita\Core\Model\Entity\EndpointPermission> deleteManyOrFail(iterable $entities, array $options = [])
+ * @mixin \BEdita\Core\Model\Behavior\QueryCacheBehavior
  * @since 4.0.0
  */
 class EndpointPermissionsTable extends Table

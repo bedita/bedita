@@ -25,12 +25,11 @@ use Cake\ORM\Entity;
  * @property int $object_id
  * @property string $lang
  * @property string $status
- * @property \Cake\I18n\Time|\Cake\I18n\DateTime $created
- * @property \Cake\I18n\Time|\Cake\I18n\DateTime $modified
+ * @property \Cake\I18n\DateTime $created
+ * @property \Cake\I18n\DateTime $modified
  * @property int $created_by
  * @property int $modified_by
- * @property array $translated_fields
- *
+ * @property array|null $translated_fields
  * @property \BEdita\Core\Model\Entity\ObjectEntity $object
  * @property \BEdita\Core\Model\Entity\User $created_by_user
  * @property \BEdita\Core\Model\Entity\User $modified_by_user

@@ -27,13 +27,13 @@ use Cake\Utility\Text;
  *
  * @property int $id
  * @property string $name
- * @property string $auth_class
+ * @property string|null $auth_class
  * @property string $slug
- * @property string $url
- * @property array $params
+ * @property string|null $url
+ * @property array|null $params
  * @property bool $enabled
- * @property \Cake\I18n\Time $created
- * @property \Cake\I18n\Time $modified
+ * @property \Cake\I18n\DateTime|null $created
+ * @property \Cake\I18n\DateTime|null $modified
  * @property \BEdita\Core\Model\Entity\ExternalAuth[] $external_auth
  * @since 4.0.0
  */

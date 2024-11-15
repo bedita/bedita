@@ -36,15 +36,23 @@ use Cake\Validation\Validator;
 /**
  * Properties Model
  *
- * @property \Cake\ORM\Association\BelongsTo $PropertyTypes
- * @property \Cake\ORM\Association\BelongsTo $ObjectTypes
- * @method \BEdita\Core\Model\Entity\Property get($primaryKey, $options = [])
- * @method \BEdita\Core\Model\Entity\Property newEntity($data = null, array $options = [])
+ * @property \BEdita\Core\Model\Table\PropertyTypesTable&\Cake\ORM\Association\BelongsTo $PropertyTypes
+ * @property \BEdita\Core\Model\Table\ObjectTypesTable&\Cake\ORM\Association\BelongsTo $ObjectTypes
+ * @method \BEdita\Core\Model\Entity\Property get(mixed $primaryKey, array|string $finder = 'all', \Psr\SimpleCache\CacheInterface|string|null $cache = null, \Closure|string|null $cacheKey = null, mixed ...$args)
+ * @method \BEdita\Core\Model\Entity\Property newEntity(array $data, array $options = [])
  * @method \BEdita\Core\Model\Entity\Property[] newEntities(array $data, array $options = [])
- * @method \BEdita\Core\Model\Entity\Property|bool save(\Cake\Datasource\EntityInterface $entity, $options = [])
+ * @method \BEdita\Core\Model\Entity\Property|false save(\Cake\Datasource\EntityInterface $entity, array $options = [])
  * @method \BEdita\Core\Model\Entity\Property patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
- * @method \BEdita\Core\Model\Entity\Property[] patchEntities($entities, array $data, array $options = [])
- * @method \BEdita\Core\Model\Entity\Property findOrCreate($search, callable $callback = null, $options = [])
+ * @method \BEdita\Core\Model\Entity\Property[] patchEntities(iterable $entities, array $data, array $options = [])
+ * @method \BEdita\Core\Model\Entity\Property findOrCreate(\Cake\ORM\Query\SelectQuery|callable|array $search, ?callable $callback = null, array $options = [])
+ * @method \BEdita\Core\Model\Entity\Property newEmptyEntity()
+ * @method \BEdita\Core\Model\Entity\Property saveOrFail(\Cake\Datasource\EntityInterface $entity, array $options = [])
+ * @method \BEdita\Core\Model\Entity\Property[]|\Cake\Datasource\ResultSetInterface<\BEdita\Core\Model\Entity\Property>|false saveMany(iterable $entities, array $options = [])
+ * @method \BEdita\Core\Model\Entity\Property[]|\Cake\Datasource\ResultSetInterface<\BEdita\Core\Model\Entity\Property> saveManyOrFail(iterable $entities, array $options = [])
+ * @method \BEdita\Core\Model\Entity\Property[]|\Cake\Datasource\ResultSetInterface<\BEdita\Core\Model\Entity\Property>|false deleteMany(iterable $entities, array $options = [])
+ * @method \BEdita\Core\Model\Entity\Property[]|\Cake\Datasource\ResultSetInterface<\BEdita\Core\Model\Entity\Property> deleteManyOrFail(iterable $entities, array $options = [])
+ * @mixin \Cake\ORM\Behavior\TimestampBehavior
+ * @mixin \BEdita\Core\Model\Behavior\SearchableBehavior
  * @since 4.0.0
  */
 class PropertiesTable extends Table

@@ -31,13 +31,22 @@ use Cake\Validation\Validator;
  * Roles Model
  *
  * @property \Cake\ORM\Association\BelongsToMany $Users
- * @method \BEdita\Core\Model\Entity\Role get($primaryKey, $options = [])
- * @method \BEdita\Core\Model\Entity\Role newEntity($data = null, array $options = [])
+ * @method \BEdita\Core\Model\Entity\Role get(mixed $primaryKey, array|string $finder = 'all', \Psr\SimpleCache\CacheInterface|string|null $cache = null, \Closure|string|null $cacheKey = null, mixed ...$args)
+ * @method \BEdita\Core\Model\Entity\Role newEntity(array $data, array $options = [])
  * @method \BEdita\Core\Model\Entity\Role[] newEntities(array $data, array $options = [])
- * @method \BEdita\Core\Model\Entity\Role|bool save(\Cake\Datasource\EntityInterface $entity, $options = [])
+ * @method \BEdita\Core\Model\Entity\Role|false save(\Cake\Datasource\EntityInterface $entity, array $options = [])
  * @method \BEdita\Core\Model\Entity\Role patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
- * @method \BEdita\Core\Model\Entity\Role[] patchEntities($entities, array $data, array $options = [])
- * @method \BEdita\Core\Model\Entity\Role findOrCreate($search, callable $callback = null, $options = [])
+ * @method \BEdita\Core\Model\Entity\Role[] patchEntities(iterable $entities, array $data, array $options = [])
+ * @method \BEdita\Core\Model\Entity\Role findOrCreate(\Cake\ORM\Query\SelectQuery|callable|array $search, ?callable $callback = null, array $options = [])
+ * @method \BEdita\Core\Model\Entity\Role newEmptyEntity()
+ * @method \BEdita\Core\Model\Entity\Role saveOrFail(\Cake\Datasource\EntityInterface $entity, array $options = [])
+ * @method \BEdita\Core\Model\Entity\Role[]|\Cake\Datasource\ResultSetInterface<\BEdita\Core\Model\Entity\Role>|false saveMany(iterable $entities, array $options = [])
+ * @method \BEdita\Core\Model\Entity\Role[]|\Cake\Datasource\ResultSetInterface<\BEdita\Core\Model\Entity\Role> saveManyOrFail(iterable $entities, array $options = [])
+ * @method \BEdita\Core\Model\Entity\Role[]|\Cake\Datasource\ResultSetInterface<\BEdita\Core\Model\Entity\Role>|false deleteMany(iterable $entities, array $options = [])
+ * @method \BEdita\Core\Model\Entity\Role[]|\Cake\Datasource\ResultSetInterface<\BEdita\Core\Model\Entity\Role> deleteManyOrFail(iterable $entities, array $options = [])
+ * @mixin \Cake\ORM\Behavior\TimestampBehavior
+ * @mixin \BEdita\Core\Model\Behavior\SearchableBehavior
+ * @mixin \BEdita\Core\Model\Behavior\ResourceNameBehavior
  * @since 4.0.0
  */
 class RolesTable extends Table

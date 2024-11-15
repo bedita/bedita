@@ -23,11 +23,11 @@ use Cake\ORM\Entity;
  *
  * @property int $id
  * @property int $object_id
- * @property string $description
+ * @property string|null $description
  * @property int $user_id
- * @property \Cake\I18n\Time $created
- * @property \Cake\I18n\Time $modified
- * @property string $params
+ * @property \Cake\I18n\DateTime $created
+ * @property \Cake\I18n\DateTime $modified
+ * @property array|null $params
  *
  * @property \BEdita\Core\Model\Entity\ObjectEntity $object
  * @property \BEdita\Core\Model\Entity\User $user

@@ -24,9 +24,9 @@ use LogicException;
  *
  * @property int $id
  * @property int $object_id
- * @property \DateTimeInterface $start_date
- * @property \DateTimeInterface|null $end_date
- * @property array $params
+ * @property \Cake\I18n\DateTime $start_date
+ * @property \Cake\I18n\DateTime|null $end_date
+ * @property array|null $params
  *
  * @property \BEdita\Core\Model\Entity\ObjectEntity $object
  */

@@ -24,8 +24,7 @@ use Cake\ORM\Entity;
  * @property int $right_id
  * @property int $priority
  * @property int $inv_priority
- * @property array $params
- *
+ * @property array|null $params
  * @property \BEdita\Core\Model\Entity\ObjectEntity $object
  * @property \BEdita\Core\Model\Entity\Relation $relation
  */

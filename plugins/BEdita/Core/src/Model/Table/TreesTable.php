@@ -40,14 +40,20 @@ use stdClass;
  * @property \Cake\ORM\Association\BelongsTo $RootObjects
  * @property \Cake\ORM\Association\BelongsTo $ParentNode
  * @property \Cake\ORM\Association\HasMany $ChildNodes
- * @method \BEdita\Core\Model\Entity\Tree get($primaryKey, $options = [])
- * @method \BEdita\Core\Model\Entity\Tree newEntity($data = null, array $options = [])
+ * @method \BEdita\Core\Model\Entity\Tree get(mixed $primaryKey, array|string $finder = 'all', \Psr\SimpleCache\CacheInterface|string|null $cache = null, \Closure|string|null $cacheKey = null, mixed ...$args)
+ * @method \BEdita\Core\Model\Entity\Tree newEntity(array $data, array $options = [])
  * @method \BEdita\Core\Model\Entity\Tree[] newEntities(array $data, array $options = [])
- * @method \BEdita\Core\Model\Entity\Tree|bool save(\Cake\Datasource\EntityInterface $entity, $options = [])
+ * @method \BEdita\Core\Model\Entity\Tree|false save(\Cake\Datasource\EntityInterface $entity, array $options = [])
  * @method \BEdita\Core\Model\Entity\Tree patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
- * @method \BEdita\Core\Model\Entity\Tree[] patchEntities($entities, array $data, array $options = [])
- * @method \BEdita\Core\Model\Entity\Tree findOrCreate($search, callable $callback = null, $options = [])
+ * @method \BEdita\Core\Model\Entity\Tree[] patchEntities(iterable $entities, array $data, array $options = [])
+ * @method \BEdita\Core\Model\Entity\Tree findOrCreate(\Cake\ORM\Query\SelectQuery|callable|array $search, ?callable $callback = null, array $options = [])
  * @mixin \BEdita\Core\Model\Behavior\TreeBehavior
+ * @method \BEdita\Core\Model\Entity\Tree newEmptyEntity()
+ * @method \BEdita\Core\Model\Entity\Tree saveOrFail(\Cake\Datasource\EntityInterface $entity, array $options = [])
+ * @method \BEdita\Core\Model\Entity\Tree[]|\Cake\Datasource\ResultSetInterface<\BEdita\Core\Model\Entity\Tree>|false saveMany(iterable $entities, array $options = [])
+ * @method \BEdita\Core\Model\Entity\Tree[]|\Cake\Datasource\ResultSetInterface<\BEdita\Core\Model\Entity\Tree> saveManyOrFail(iterable $entities, array $options = [])
+ * @method \BEdita\Core\Model\Entity\Tree[]|\Cake\Datasource\ResultSetInterface<\BEdita\Core\Model\Entity\Tree>|false deleteMany(iterable $entities, array $options = [])
+ * @method \BEdita\Core\Model\Entity\Tree[]|\Cake\Datasource\ResultSetInterface<\BEdita\Core\Model\Entity\Tree> deleteManyOrFail(iterable $entities, array $options = [])
  */
 class TreesTable extends Table
 {

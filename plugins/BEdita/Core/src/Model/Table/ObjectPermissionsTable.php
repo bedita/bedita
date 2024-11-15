@@ -28,21 +28,22 @@ use Cake\Validation\Validator;
  *
  * @property \BEdita\Core\Model\Table\ObjectsTable&\Cake\ORM\Association\BelongsTo $Objects
  * @property \BEdita\Core\Model\Table\RolesTable&\Cake\ORM\Association\BelongsTo $Roles
- * @method \BEdita\Core\Model\Entity\ObjectPermission get($primaryKey, $options = [])
+ * @property \BEdita\Core\Model\Table\UsersTable&\Cake\ORM\Association\BelongsTo $CreatedByUsers
+ * @method \BEdita\Core\Model\Entity\ObjectPermission get(mixed $primaryKey, array|string $finder = 'all', \Psr\SimpleCache\CacheInterface|string|null $cache = null, \Closure|string|null $cacheKey = null, mixed ...$args)
  * @method \BEdita\Core\Model\Entity\ObjectPermission newEntity(array $data, array $options = [])
  * @method \BEdita\Core\Model\Entity\ObjectPermission[] newEntities(array $data, array $options = [])
- * @method \BEdita\Core\Model\Entity\ObjectPermission|false save(\Cake\Datasource\EntityInterface $entity, $options = [])
+ * @method \BEdita\Core\Model\Entity\ObjectPermission|false save(\Cake\Datasource\EntityInterface $entity, array $options = [])
  * @method \BEdita\Core\Model\Entity\ObjectPermission patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
  * @method \BEdita\Core\Model\Entity\ObjectPermission[] patchEntities(iterable $entities, array $data, array $options = [])
- * @method \BEdita\Core\Model\Entity\ObjectPermission findOrCreate($search, ?callable $callback = null, $options = [])
- * @property \BEdita\Core\Model\Table\UsersTable&\Cake\ORM\Association\BelongsTo $CreatedByUsers
+ * @method \BEdita\Core\Model\Entity\ObjectPermission findOrCreate(\Cake\ORM\Query\SelectQuery|callable|array $search, ?callable $callback = null, array $options = [])
  * @method \BEdita\Core\Model\Entity\ObjectPermission newEmptyEntity()
- * @method \BEdita\Core\Model\Entity\ObjectPermission saveOrFail(\Cake\Datasource\EntityInterface $entity, $options = [])
- * @method \BEdita\Core\Model\Entity\ObjectPermission[]|\Cake\Datasource\ResultSetInterface|false saveMany(iterable $entities, $options = [])
- * @method \BEdita\Core\Model\Entity\ObjectPermission[]|\Cake\Datasource\ResultSetInterface saveManyOrFail(iterable $entities, $options = [])
- * @method \BEdita\Core\Model\Entity\ObjectPermission[]|\Cake\Datasource\ResultSetInterface|false deleteMany(iterable $entities, $options = [])
- * @method \BEdita\Core\Model\Entity\ObjectPermission[]|\Cake\Datasource\ResultSetInterface deleteManyOrFail(iterable $entities, $options = [])
+ * @method \BEdita\Core\Model\Entity\ObjectPermission saveOrFail(\Cake\Datasource\EntityInterface $entity, array $options = [])
+ * @method \BEdita\Core\Model\Entity\ObjectPermission[]|\Cake\Datasource\ResultSetInterface<\BEdita\Core\Model\Entity\ObjectPermission>|false saveMany(iterable $entities, array $options = [])
+ * @method \BEdita\Core\Model\Entity\ObjectPermission[]|\Cake\Datasource\ResultSetInterface<\BEdita\Core\Model\Entity\ObjectPermission> saveManyOrFail(iterable $entities, array $options = [])
+ * @method \BEdita\Core\Model\Entity\ObjectPermission[]|\Cake\Datasource\ResultSetInterface<\BEdita\Core\Model\Entity\ObjectPermission>|false deleteMany(iterable $entities, array $options = [])
+ * @method \BEdita\Core\Model\Entity\ObjectPermission[]|\Cake\Datasource\ResultSetInterface<\BEdita\Core\Model\Entity\ObjectPermission> deleteManyOrFail(iterable $entities, array $options = [])
  * @mixin \Cake\ORM\Behavior\TimestampBehavior
+ * @mixin \BEdita\Core\Model\Behavior\UserModifiedBehavior
  */
 class ObjectPermissionsTable extends Table
 {

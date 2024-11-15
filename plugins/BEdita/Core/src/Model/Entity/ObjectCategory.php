@@ -24,8 +24,7 @@ use Cake\ORM\Entity;
  * @property int $id
  * @property int $object_id
  * @property int $category_id
- * @property string|null $params
- *
+ * @property array|null $params
  * @property \BEdita\Core\Model\Entity\ObjectEntity $object
  * @property \BEdita\Core\Model\Entity\Category $category
  */

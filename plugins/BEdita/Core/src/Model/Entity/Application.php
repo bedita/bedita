@@ -23,11 +23,11 @@ use Cake\ORM\Entity;
  *
  * @property int $id
  * @property string $api_key
- * @property string $client_secret
+ * @property string|null $client_secret
  * @property string $name
- * @property string $description
- * @property \Cake\I18n\Time $created
- * @property \Cake\I18n\Time $modified
+ * @property string|null $description
+ * @property \Cake\I18n\DateTime $created
+ * @property \Cake\I18n\DateTime $modified
  * @property bool $enabled
  *
  * @property \BEdita\Core\Model\Entity\EndpointPermission[] $endpoint_permissions

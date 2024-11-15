@@ -22,13 +22,13 @@ use Cake\ORM\TableRegistry;
 /**
  * Config Entity.
  *
+ * @property int $id
  * @property string $name
  * @property string $context
  * @property string $content
- * @property \Cake\I18n\Time $created
- * @property \Cake\I18n\Time $modified
- * @property int $application_id
- *
+ * @property \Cake\I18n\DateTime $created
+ * @property \Cake\I18n\DateTime $modified
+ * @property int|null $application_id
  * @property \BEdita\Core\Model\Entity\Application|null $application
  * @since 4.0.0
  */

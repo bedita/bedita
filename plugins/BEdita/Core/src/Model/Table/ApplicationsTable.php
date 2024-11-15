@@ -33,16 +33,25 @@ use Cake\Validation\Validator;
 /**
  * Applications Model
  *
- * @method \BEdita\Core\Model\Entity\Application get($primaryKey, $options = [])
- * @method \BEdita\Core\Model\Entity\Application newEntity($data = null, array $options = [])
+ * @method \BEdita\Core\Model\Entity\Application get(mixed $primaryKey, array|string $finder = 'all', \Psr\SimpleCache\CacheInterface|string|null $cache = null, \Closure|string|null $cacheKey = null, mixed ...$args)
+ * @method \BEdita\Core\Model\Entity\Application newEntity(array $data, array $options = [])
  * @method \BEdita\Core\Model\Entity\Application[] newEntities(array $data, array $options = [])
- * @method \BEdita\Core\Model\Entity\Application|bool save(\Cake\Datasource\EntityInterface $entity, $options = [])
+ * @method \BEdita\Core\Model\Entity\Application|false save(\Cake\Datasource\EntityInterface $entity, array $options = [])
  * @method \BEdita\Core\Model\Entity\Application patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
- * @method \BEdita\Core\Model\Entity\Application[] patchEntities($entities, array $data, array $options = [])
- * @method \BEdita\Core\Model\Entity\Application findOrCreate($search, callable $callback = null, $options = [])
+ * @method \BEdita\Core\Model\Entity\Application[] patchEntities(iterable $entities, array $data, array $options = [])
+ * @method \BEdita\Core\Model\Entity\Application findOrCreate(\Cake\ORM\Query\SelectQuery|callable|array $search, ?callable $callback = null, array $options = [])
  * @method \Cake\ORM\Query queryCache(\Cake\ORM\Query $query, string $key)
- * @property \Cake\ORM\Association\HasMany $EndpointPermissions
+ * @property \Cake\ORM\Table&\Cake\ORM\Association\HasMany $EndpointPermissions
  * @mixin \Cake\ORM\Behavior\TimestampBehavior
+ * @method \BEdita\Core\Model\Entity\Application newEmptyEntity()
+ * @method \BEdita\Core\Model\Entity\Application saveOrFail(\Cake\Datasource\EntityInterface $entity, array $options = [])
+ * @method \BEdita\Core\Model\Entity\Application[]|\Cake\Datasource\ResultSetInterface<\BEdita\Core\Model\Entity\Application>|false saveMany(iterable $entities, array $options = [])
+ * @method \BEdita\Core\Model\Entity\Application[]|\Cake\Datasource\ResultSetInterface<\BEdita\Core\Model\Entity\Application> saveManyOrFail(iterable $entities, array $options = [])
+ * @method \BEdita\Core\Model\Entity\Application[]|\Cake\Datasource\ResultSetInterface<\BEdita\Core\Model\Entity\Application>|false deleteMany(iterable $entities, array $options = [])
+ * @method \BEdita\Core\Model\Entity\Application[]|\Cake\Datasource\ResultSetInterface<\BEdita\Core\Model\Entity\Application> deleteManyOrFail(iterable $entities, array $options = [])
+ * @mixin \BEdita\Core\Model\Behavior\SearchableBehavior
+ * @mixin \BEdita\Core\Model\Behavior\QueryCacheBehavior
+ * @mixin \BEdita\Core\Model\Behavior\ResourceNameBehavior
  * @since 4.0.0
  */
 class ApplicationsTable extends Table

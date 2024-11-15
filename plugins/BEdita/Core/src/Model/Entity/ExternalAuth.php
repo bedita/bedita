@@ -25,10 +25,10 @@ use Cake\ORM\Entity;
  * @property \BEdita\Core\Model\Entity\User $user
  * @property int $auth_provider_id
  * @property \BEdita\Core\Model\Entity\AuthProvider $auth_provider
- * @property string $provider_username
- * @property string $params
- * @property \Cake\I18n\Time $created
- * @property \Cake\I18n\Time $modified
+ * @property string|null $provider_username
+ * @property array|null $params
+ * @property \Cake\I18n\DateTime|null $created
+ * @property \Cake\I18n\DateTime|null $modified
  * @since 4.0.0
  */
 class ExternalAuth extends Entity

@@ -34,30 +34,31 @@ use Generator;
  * @property string $name
  * @property string $singular
  * @property string $alias
- * @property string $description
+ * @property string|null $description
  * @property string $plugin
  * @property string $model
  * @property string $table
- * @property array $associations
- * @property array $hidden
- * @property string[] $relations
+ * @property array|null $associations
+ * @property array|null $hidden
+ * @property array<string>|null $relations
  * @property bool $is_abstract
- * @property int $parent_id
- * @property int $tree_left
- * @property int $tree_right
- * @property string $parent_name
- * @property \Cake\I18n\Time $created
- * @property \Cake\I18n\Time $modified
+ * @property int|null $parent_id
+ * @property int|null $tree_left
+ * @property int|null $tree_right
+ * @property string|null $parent_name
+ * @property \Cake\I18n\DateTime $created
+ * @property \Cake\I18n\DateTime $modified
  * @property bool $core_type
  * @property bool $enabled
- * @property array $translation_rules
+ * @property array|null $translation_rules
  * @property bool $is_translatable
  * @property \BEdita\Core\Model\Entity\ObjectEntity[] $objects
  * @property \BEdita\Core\Model\Entity\Relation[] $left_relations
  * @property \BEdita\Core\Model\Entity\Relation[] $right_relations
  * @property \BEdita\Core\Model\Entity\Property[] $properties
- * @property \BEdita\Core\Model\Entity\ObjectType $parent
+ * @property \BEdita\Core\Model\Entity\ObjectType|null $parent
  * @property mixed $schema
+ * @property \BEdita\Core\Model\Entity\RelationType $_joinData
  */
 class ObjectType extends Entity implements JsonApiSerializable, EventDispatcherInterface
 {

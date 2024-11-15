@@ -35,15 +35,24 @@ use Psr\SimpleCache\CacheInterface;
 /**
  * Relations Model
  *
- * @property \Cake\ORM\Association\HasMany $ObjectRelations
- * @property \Cake\ORM\Association\BelongsToMany $LeftObjectTypes
- * @property \Cake\ORM\Association\BelongsToMany $RightObjectTypes
- * @method \BEdita\Core\Model\Entity\Relation newEntity($data = null, array $options = [])
+ * @property \Cake\ORM\Table&\Cake\ORM\Association\HasMany $ObjectRelations
+ * @property \Cake\ORM\Table&\Cake\ORM\Association\BelongsToMany $LeftObjectTypes
+ * @property \Cake\ORM\Table&\Cake\ORM\Association\BelongsToMany $RightObjectTypes
+ * @method \BEdita\Core\Model\Entity\Relation newEntity(array $data, array $options = [])
  * @method \BEdita\Core\Model\Entity\Relation[] newEntities(array $data, array $options = [])
- * @method \BEdita\Core\Model\Entity\Relation|bool save(\Cake\Datasource\EntityInterface $entity, $options = [])
+ * @method \BEdita\Core\Model\Entity\Relation|false save(\Cake\Datasource\EntityInterface $entity, array $options = [])
  * @method \BEdita\Core\Model\Entity\Relation patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
- * @method \BEdita\Core\Model\Entity\Relation[] patchEntities($entities, array $data, array $options = [])
- * @method \BEdita\Core\Model\Entity\Relation findOrCreate($search, callable $callback = null, $options = [])
+ * @method \BEdita\Core\Model\Entity\Relation[] patchEntities(iterable $entities, array $data, array $options = [])
+ * @method \BEdita\Core\Model\Entity\Relation findOrCreate(\Cake\ORM\Query\SelectQuery|callable|array $search, ?callable $callback = null, array $options = [])
+ * @method \BEdita\Core\Model\Entity\Relation newEmptyEntity()
+ * @method \BEdita\Core\Model\Entity\Relation get(mixed $primaryKey, array|string $finder = 'all', \Psr\SimpleCache\CacheInterface|string|null $cache = null, \Closure|string|null $cacheKey = null, mixed ...$args)
+ * @method \BEdita\Core\Model\Entity\Relation saveOrFail(\Cake\Datasource\EntityInterface $entity, array $options = [])
+ * @method \BEdita\Core\Model\Entity\Relation[]|\Cake\Datasource\ResultSetInterface<\BEdita\Core\Model\Entity\Relation>|false saveMany(iterable $entities, array $options = [])
+ * @method \BEdita\Core\Model\Entity\Relation[]|\Cake\Datasource\ResultSetInterface<\BEdita\Core\Model\Entity\Relation> saveManyOrFail(iterable $entities, array $options = [])
+ * @method \BEdita\Core\Model\Entity\Relation[]|\Cake\Datasource\ResultSetInterface<\BEdita\Core\Model\Entity\Relation>|false deleteMany(iterable $entities, array $options = [])
+ * @method \BEdita\Core\Model\Entity\Relation[]|\Cake\Datasource\ResultSetInterface<\BEdita\Core\Model\Entity\Relation> deleteManyOrFail(iterable $entities, array $options = [])
+ * @mixin \BEdita\Core\Model\Behavior\SearchableBehavior
+ * @mixin \BEdita\Core\Model\Behavior\ResourceNameBehavior
  */
 class RelationsTable extends Table
 {

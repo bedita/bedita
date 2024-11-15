@@ -22,7 +22,12 @@ use Cake\ORM\Entity;
  * Property Type Entity.
  *
  * @property string $name
- * @property mixed $params
+ * @property array|null $params
+ * @property int $id
+ * @property \Cake\I18n\DateTime|null $created
+ * @property \Cake\I18n\DateTime|null $modified
+ * @property bool $core_type
+ * @property \BEdita\Core\Model\Entity\Property[] $properties
  * @since 4.0.0
  */
 class PropertyType extends Entity implements JsonApiSerializable

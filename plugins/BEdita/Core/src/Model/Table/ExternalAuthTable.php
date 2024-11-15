@@ -31,13 +31,20 @@ use Cake\Validation\Validator;
  *
  * @property \Cake\ORM\Association\BelongsTo $Users
  * @property \Cake\ORM\Association\BelongsTo $AuthProviders
- * @method \BEdita\Core\Model\Entity\ExternalAuth get($primaryKey, $options = [])
- * @method \BEdita\Core\Model\Entity\ExternalAuth newEntity($data = null, array $options = [])
+ * @method \BEdita\Core\Model\Entity\ExternalAuth get(mixed $primaryKey, array|string $finder = 'all', \Psr\SimpleCache\CacheInterface|string|null $cache = null, \Closure|string|null $cacheKey = null, mixed ...$args)
+ * @method \BEdita\Core\Model\Entity\ExternalAuth newEntity(array $data, array $options = [])
  * @method \BEdita\Core\Model\Entity\ExternalAuth[] newEntities(array $data, array $options = [])
- * @method \BEdita\Core\Model\Entity\ExternalAuth|bool save(\Cake\Datasource\EntityInterface $entity, $options = [])
+ * @method \BEdita\Core\Model\Entity\ExternalAuth|false save(\Cake\Datasource\EntityInterface $entity, array $options = [])
  * @method \BEdita\Core\Model\Entity\ExternalAuth patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
- * @method \BEdita\Core\Model\Entity\ExternalAuth[] patchEntities($entities, array $data, array $options = [])
- * @method \BEdita\Core\Model\Entity\ExternalAuth findOrCreate($search, callable $callback = null, $options = [])
+ * @method \BEdita\Core\Model\Entity\ExternalAuth[] patchEntities(iterable $entities, array $data, array $options = [])
+ * @method \BEdita\Core\Model\Entity\ExternalAuth findOrCreate(\Cake\ORM\Query\SelectQuery|callable|array $search, ?callable $callback = null, array $options = [])
+ * @method \BEdita\Core\Model\Entity\ExternalAuth newEmptyEntity()
+ * @method \BEdita\Core\Model\Entity\ExternalAuth saveOrFail(\Cake\Datasource\EntityInterface $entity, array $options = [])
+ * @method \BEdita\Core\Model\Entity\ExternalAuth[]|\Cake\Datasource\ResultSetInterface<\BEdita\Core\Model\Entity\ExternalAuth>|false saveMany(iterable $entities, array $options = [])
+ * @method \BEdita\Core\Model\Entity\ExternalAuth[]|\Cake\Datasource\ResultSetInterface<\BEdita\Core\Model\Entity\ExternalAuth> saveManyOrFail(iterable $entities, array $options = [])
+ * @method \BEdita\Core\Model\Entity\ExternalAuth[]|\Cake\Datasource\ResultSetInterface<\BEdita\Core\Model\Entity\ExternalAuth>|false deleteMany(iterable $entities, array $options = [])
+ * @method \BEdita\Core\Model\Entity\ExternalAuth[]|\Cake\Datasource\ResultSetInterface<\BEdita\Core\Model\Entity\ExternalAuth> deleteManyOrFail(iterable $entities, array $options = [])
+ * @mixin \Cake\ORM\Behavior\TimestampBehavior
  * @since 4.0.0
  */
 class ExternalAuthTable extends Table

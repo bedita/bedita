@@ -31,14 +31,20 @@ use Cake\Validation\Validator;
 /**
  * AsyncJobs Model
  *
- * @method \BEdita\Core\Model\Entity\AsyncJob get($primaryKey, $options = [])
- * @method \BEdita\Core\Model\Entity\AsyncJob newEntity($data = null, array $options = [])
+ * @method \BEdita\Core\Model\Entity\AsyncJob get(mixed $primaryKey, array|string $finder = 'all', \Psr\SimpleCache\CacheInterface|string|null $cache = null, \Closure|string|null $cacheKey = null, mixed ...$args)
+ * @method \BEdita\Core\Model\Entity\AsyncJob newEntity(array $data, array $options = [])
  * @method \BEdita\Core\Model\Entity\AsyncJob[] newEntities(array $data, array $options = [])
- * @method \BEdita\Core\Model\Entity\AsyncJob|bool save(\Cake\Datasource\EntityInterface $entity, $options = [])
+ * @method \BEdita\Core\Model\Entity\AsyncJob|false save(\Cake\Datasource\EntityInterface $entity, array $options = [])
  * @method \BEdita\Core\Model\Entity\AsyncJob patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
- * @method \BEdita\Core\Model\Entity\AsyncJob[] patchEntities($entities, array $data, array $options = [])
- * @method \BEdita\Core\Model\Entity\AsyncJob findOrCreate($search, callable $callback = null, $options = [])
+ * @method \BEdita\Core\Model\Entity\AsyncJob[] patchEntities(iterable $entities, array $data, array $options = [])
+ * @method \BEdita\Core\Model\Entity\AsyncJob findOrCreate(\Cake\ORM\Query\SelectQuery|callable|array $search, ?callable $callback = null, array $options = [])
  * @mixin \Cake\ORM\Behavior\TimestampBehavior
+ * @method \BEdita\Core\Model\Entity\AsyncJob newEmptyEntity()
+ * @method \BEdita\Core\Model\Entity\AsyncJob saveOrFail(\Cake\Datasource\EntityInterface $entity, array $options = [])
+ * @method \BEdita\Core\Model\Entity\AsyncJob[]|\Cake\Datasource\ResultSetInterface<\BEdita\Core\Model\Entity\AsyncJob>|false saveMany(iterable $entities, array $options = [])
+ * @method \BEdita\Core\Model\Entity\AsyncJob[]|\Cake\Datasource\ResultSetInterface<\BEdita\Core\Model\Entity\AsyncJob> saveManyOrFail(iterable $entities, array $options = [])
+ * @method \BEdita\Core\Model\Entity\AsyncJob[]|\Cake\Datasource\ResultSetInterface<\BEdita\Core\Model\Entity\AsyncJob>|false deleteMany(iterable $entities, array $options = [])
+ * @method \BEdita\Core\Model\Entity\AsyncJob[]|\Cake\Datasource\ResultSetInterface<\BEdita\Core\Model\Entity\AsyncJob> deleteManyOrFail(iterable $entities, array $options = [])
  * @since 4.0.0
  */
 class AsyncJobsTable extends Table

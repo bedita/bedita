@@ -23,14 +23,19 @@ use Cake\Validation\Validator;
  *
  * @property \BEdita\Core\Model\Table\UsersTable&\Cake\ORM\Association\BelongsTo $Users
  * @property \BEdita\Core\Model\Table\ApplicationsTable&\Cake\ORM\Association\BelongsTo $Applications
- * @method \BEdita\Core\Model\Entity\History get($primaryKey, $options = [])
- * @method \BEdita\Core\Model\Entity\History newEntity($data = null, array $options = [])
+ * @method \BEdita\Core\Model\Entity\History get(mixed $primaryKey, array|string $finder = 'all', \Psr\SimpleCache\CacheInterface|string|null $cache = null, \Closure|string|null $cacheKey = null, mixed ...$args)
+ * @method \BEdita\Core\Model\Entity\History newEntity(array $data, array $options = [])
  * @method \BEdita\Core\Model\Entity\History[] newEntities(array $data, array $options = [])
- * @method \BEdita\Core\Model\Entity\History|false save(\Cake\Datasource\EntityInterface $entity, $options = [])
- * @method \BEdita\Core\Model\Entity\History saveOrFail(\Cake\Datasource\EntityInterface $entity, $options = [])
+ * @method \BEdita\Core\Model\Entity\History|false save(\Cake\Datasource\EntityInterface $entity, array $options = [])
+ * @method \BEdita\Core\Model\Entity\History saveOrFail(\Cake\Datasource\EntityInterface $entity, array $options = [])
  * @method \BEdita\Core\Model\Entity\History patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
- * @method \BEdita\Core\Model\Entity\History[] patchEntities($entities, array $data, array $options = [])
- * @method \BEdita\Core\Model\Entity\History findOrCreate($search, callable $callback = null, $options = [])
+ * @method \BEdita\Core\Model\Entity\History[] patchEntities(iterable $entities, array $data, array $options = [])
+ * @method \BEdita\Core\Model\Entity\History findOrCreate(\Cake\ORM\Query\SelectQuery|callable|array $search, ?callable $callback = null, array $options = [])
+ * @method \BEdita\Core\Model\Entity\History newEmptyEntity()
+ * @method \BEdita\Core\Model\Entity\History[]|\Cake\Datasource\ResultSetInterface<\BEdita\Core\Model\Entity\History>|false saveMany(iterable $entities, array $options = [])
+ * @method \BEdita\Core\Model\Entity\History[]|\Cake\Datasource\ResultSetInterface<\BEdita\Core\Model\Entity\History> saveManyOrFail(iterable $entities, array $options = [])
+ * @method \BEdita\Core\Model\Entity\History[]|\Cake\Datasource\ResultSetInterface<\BEdita\Core\Model\Entity\History>|false deleteMany(iterable $entities, array $options = [])
+ * @method \BEdita\Core\Model\Entity\History[]|\Cake\Datasource\ResultSetInterface<\BEdita\Core\Model\Entity\History> deleteManyOrFail(iterable $entities, array $options = [])
  * @mixin \Cake\ORM\Behavior\TimestampBehavior
  */
 class HistoryTable extends Table

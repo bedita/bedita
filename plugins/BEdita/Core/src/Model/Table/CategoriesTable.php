@@ -37,16 +37,22 @@ use Cake\Validation\Validator;
  * @property \BEdita\Core\Model\Table\CategoriesTable&\Cake\ORM\Association\HasMany $ChildCategories
  * @property \BEdita\Core\Model\Table\ObjectCategoriesTable&\Cake\ORM\Association\HasMany $ObjectCategories
  * @property \BEdita\Core\Model\Table\ObjectsTable&\Cake\ORM\Association\BelongsToMany $Objects
- * @method \BEdita\Core\Model\Entity\Category get($primaryKey, $options = [])
- * @method \BEdita\Core\Model\Entity\Category newEntity($data = null, array $options = [])
+ * @method \BEdita\Core\Model\Entity\Category get(mixed $primaryKey, array|string $finder = 'all', \Psr\SimpleCache\CacheInterface|string|null $cache = null, \Closure|string|null $cacheKey = null, mixed ...$args)
+ * @method \BEdita\Core\Model\Entity\Category newEntity(array $data, array $options = [])
  * @method \BEdita\Core\Model\Entity\Category[] newEntities(array $data, array $options = [])
- * @method \BEdita\Core\Model\Entity\Category|false save(\Cake\Datasource\EntityInterface $entity, $options = [])
- * @method \BEdita\Core\Model\Entity\Category saveOrFail(\Cake\Datasource\EntityInterface $entity, $options = [])
+ * @method \BEdita\Core\Model\Entity\Category|false save(\Cake\Datasource\EntityInterface $entity, array $options = [])
+ * @method \BEdita\Core\Model\Entity\Category saveOrFail(\Cake\Datasource\EntityInterface $entity, array $options = [])
  * @method \BEdita\Core\Model\Entity\Category patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
- * @method \BEdita\Core\Model\Entity\Category[] patchEntities($entities, array $data, array $options = [])
- * @method \BEdita\Core\Model\Entity\Category findOrCreate($search, callable $callback = null, $options = [])
+ * @method \BEdita\Core\Model\Entity\Category[] patchEntities(iterable $entities, array $data, array $options = [])
+ * @method \BEdita\Core\Model\Entity\Category findOrCreate(\Cake\ORM\Query\SelectQuery|callable|array $search, ?callable $callback = null, array $options = [])
  * @mixin \BEdita\Core\Model\Behavior\TreeBehavior
  * @mixin \Cake\ORM\Behavior\TimestampBehavior
+ * @method \BEdita\Core\Model\Entity\Category newEmptyEntity()
+ * @method \BEdita\Core\Model\Entity\Category[]|\Cake\Datasource\ResultSetInterface<\BEdita\Core\Model\Entity\Category>|false saveMany(iterable $entities, array $options = [])
+ * @method \BEdita\Core\Model\Entity\Category[]|\Cake\Datasource\ResultSetInterface<\BEdita\Core\Model\Entity\Category> saveManyOrFail(iterable $entities, array $options = [])
+ * @method \BEdita\Core\Model\Entity\Category[]|\Cake\Datasource\ResultSetInterface<\BEdita\Core\Model\Entity\Category>|false deleteMany(iterable $entities, array $options = [])
+ * @method \BEdita\Core\Model\Entity\Category[]|\Cake\Datasource\ResultSetInterface<\BEdita\Core\Model\Entity\Category> deleteManyOrFail(iterable $entities, array $options = [])
+ * @mixin \BEdita\Core\Model\Behavior\SearchableBehavior
  */
 class CategoriesTable extends Table
 {

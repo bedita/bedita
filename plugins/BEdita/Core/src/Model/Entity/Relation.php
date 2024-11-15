@@ -28,14 +28,14 @@ use stdClass;
  * @property string $label
  * @property string $inverse_name
  * @property string $inverse_label
- * @property string $description
- * @property array $params
+ * @property string|null $description
+ * @property string|null $params
  * @property string $alias
  * @property string $inverse_alias
- *
  * @property \BEdita\Core\Model\Entity\ObjectRelation[] $object_relations
  * @property \BEdita\Core\Model\Entity\ObjectType[] $left_object_types
  * @property \BEdita\Core\Model\Entity\ObjectType[] $right_object_types
+ * @property \BEdita\Core\Model\Entity\RelationType $_joinData
  */
 class Relation extends Entity implements JsonApiSerializable
 {

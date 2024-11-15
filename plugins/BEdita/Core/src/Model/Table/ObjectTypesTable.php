@@ -45,13 +45,22 @@ use Psr\SimpleCache\CacheInterface;
  * @property \Cake\ORM\Association\HasMany $Properties
  * @property \Cake\ORM\Association\BelongsToMany $LeftRelations
  * @property \Cake\ORM\Association\BelongsToMany $RightRelations
- * @method \BEdita\Core\Model\Entity\ObjectType newEntity($data = null, array $options = [])
+ * @method \BEdita\Core\Model\Entity\ObjectType newEntity(array $data, array $options = [])
  * @method \BEdita\Core\Model\Entity\ObjectType[] newEntities(array $data, array $options = [])
- * @method \BEdita\Core\Model\Entity\ObjectType|bool save(\Cake\Datasource\EntityInterface $entity, $options = [])
+ * @method \BEdita\Core\Model\Entity\ObjectType|false save(\Cake\Datasource\EntityInterface $entity, array $options = [])
  * @method \BEdita\Core\Model\Entity\ObjectType patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
- * @method \BEdita\Core\Model\Entity\ObjectType[] patchEntities($entities, array $data, array $options = [])
- * @method \BEdita\Core\Model\Entity\ObjectType findOrCreate($search, callable $callback = null, $options = [])
+ * @method \BEdita\Core\Model\Entity\ObjectType[] patchEntities(iterable $entities, array $data, array $options = [])
+ * @method \BEdita\Core\Model\Entity\ObjectType findOrCreate(\Cake\ORM\Query\SelectQuery|callable|array $search, ?callable $callback = null, array $options = [])
  * @mixin \Cake\ORM\Behavior\TreeBehavior
+ * @method \BEdita\Core\Model\Entity\ObjectType newEmptyEntity()
+ * @method \BEdita\Core\Model\Entity\ObjectType get(mixed $primaryKey, array|string $finder = 'all', \Psr\SimpleCache\CacheInterface|string|null $cache = null, \Closure|string|null $cacheKey = null, mixed ...$args)
+ * @method \BEdita\Core\Model\Entity\ObjectType saveOrFail(\Cake\Datasource\EntityInterface $entity, array $options = [])
+ * @method \BEdita\Core\Model\Entity\ObjectType[]|\Cake\Datasource\ResultSetInterface<\BEdita\Core\Model\Entity\ObjectType>|false saveMany(iterable $entities, array $options = [])
+ * @method \BEdita\Core\Model\Entity\ObjectType[]|\Cake\Datasource\ResultSetInterface<\BEdita\Core\Model\Entity\ObjectType> saveManyOrFail(iterable $entities, array $options = [])
+ * @method \BEdita\Core\Model\Entity\ObjectType[]|\Cake\Datasource\ResultSetInterface<\BEdita\Core\Model\Entity\ObjectType>|false deleteMany(iterable $entities, array $options = [])
+ * @method \BEdita\Core\Model\Entity\ObjectType[]|\Cake\Datasource\ResultSetInterface<\BEdita\Core\Model\Entity\ObjectType> deleteManyOrFail(iterable $entities, array $options = [])
+ * @mixin \Cake\ORM\Behavior\TimestampBehavior
+ * @mixin \BEdita\Core\Model\Behavior\SearchableBehavior
  * @since 4.0.0
  */
 class ObjectTypesTable extends Table

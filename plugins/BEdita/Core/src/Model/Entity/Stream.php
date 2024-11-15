@@ -40,16 +40,15 @@ use Psr\Http\Message\StreamInterface;
  * @property int $file_size
  * @property string $hash_md5
  * @property string $hash_sha1
- * @property int $width
- * @property int $height
- * @property int $duration
- * @property array $file_metadata
+ * @property int|null $width
+ * @property int|null $height
+ * @property int|null $duration
+ * @property array|null $file_metadata
  * @property bool $private_url
  * @property \Psr\Http\Message\StreamInterface|null $contents
  * @property string|null $url
- * @property \Cake\I18n\Time $created
- * @property \Cake\I18n\Time $modified
- *
+ * @property \Cake\I18n\DateTime $created
+ * @property \Cake\I18n\DateTime $modified
  * @property \BEdita\Core\Model\Entity\ObjectEntity|null $object
  */
 class Stream extends Entity implements JsonApiSerializable

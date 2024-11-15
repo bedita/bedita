@@ -41,7 +41,7 @@
         "phpstan/phpstan": "^1.7.1",
         "phpstan/extension-installer": "^1.0",
         "phpstan/phpstan-deprecation-rules": "^1.0",
-        "dereuromark/cakephp-ide-helper": "^2.2.3"
+        "dereuromark/cakephp-ide-helper": "^2.5.3"
     },
     "conflict": {
         "symfony/console": "^7",

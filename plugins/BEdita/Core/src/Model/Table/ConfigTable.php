@@ -26,17 +26,23 @@ use Cake\Validation\Validator;
 /**
  * Config Model - used to handle configuration data in DB
  *
- * @property \BEdita\Core\Model\Table\ApplicationsTable&\Cake\ORM\Association\BelongsTo $Applications
- * @method \BEdita\Core\Model\Entity\Config get($primaryKey, $options = [])
- * @method \BEdita\Core\Model\Entity\Config newEntity($data = null, array $options = [])
+ * @property \Cake\ORM\Table&\Cake\ORM\Association\BelongsTo $Applications
+ * @method \BEdita\Core\Model\Entity\Config get(mixed $primaryKey, array|string $finder = 'all', \Psr\SimpleCache\CacheInterface|string|null $cache = null, \Closure|string|null $cacheKey = null, mixed ...$args)
+ * @method \BEdita\Core\Model\Entity\Config newEntity(array $data, array $options = [])
  * @method \BEdita\Core\Model\Entity\Config[] newEntities(array $data, array $options = [])
- * @method \BEdita\Core\Model\Entity\Config|false save(\Cake\Datasource\EntityInterface $entity, $options = [])
- * @method \BEdita\Core\Model\Entity\Config saveOrFail(\Cake\Datasource\EntityInterface $entity, $options = [])
+ * @method \BEdita\Core\Model\Entity\Config|false save(\Cake\Datasource\EntityInterface $entity, array $options = [])
+ * @method \BEdita\Core\Model\Entity\Config saveOrFail(\Cake\Datasource\EntityInterface $entity, array $options = [])
  * @method \BEdita\Core\Model\Entity\Config patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
- * @method \BEdita\Core\Model\Entity\Config[] patchEntities($entities, array $data, array $options = [])
- * @method \BEdita\Core\Model\Entity\Config findOrCreate($search, callable $callback = null, $options = [])
+ * @method \BEdita\Core\Model\Entity\Config[] patchEntities(iterable $entities, array $data, array $options = [])
+ * @method \BEdita\Core\Model\Entity\Config findOrCreate(\Cake\ORM\Query\SelectQuery|callable|array $search, ?callable $callback = null, array $options = [])
  * @method \Cake\ORM\Query\SelectQuery queryCache(\Cake\ORM\Query\SelectQuery $query, string $key)
  * @mixin \Cake\ORM\Behavior\TimestampBehavior
+ * @method \BEdita\Core\Model\Entity\Config newEmptyEntity()
+ * @method \BEdita\Core\Model\Entity\Config[]|\Cake\Datasource\ResultSetInterface<\BEdita\Core\Model\Entity\Config>|false saveMany(iterable $entities, array $options = [])
+ * @method \BEdita\Core\Model\Entity\Config[]|\Cake\Datasource\ResultSetInterface<\BEdita\Core\Model\Entity\Config> saveManyOrFail(iterable $entities, array $options = [])
+ * @method \BEdita\Core\Model\Entity\Config[]|\Cake\Datasource\ResultSetInterface<\BEdita\Core\Model\Entity\Config>|false deleteMany(iterable $entities, array $options = [])
+ * @method \BEdita\Core\Model\Entity\Config[]|\Cake\Datasource\ResultSetInterface<\BEdita\Core\Model\Entity\Config> deleteManyOrFail(iterable $entities, array $options = [])
+ * @mixin \BEdita\Core\Model\Behavior\QueryCacheBehavior
  * @since 4.0.0
  */
 class ConfigTable extends Table

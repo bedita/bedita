@@ -24,12 +24,12 @@ use Cake\ORM\TableRegistry;
  * EndpointPermission Entity
  *
  * @property int $id
- * @property int $endpoint_id
- * @property int $application_id
- * @property int $role_id
+ * @property int|null $endpoint_id
+ * @property int|null $application_id
+ * @property int|null $role_id
  * @property int $permission
- * @property bool|string $read
- * @property bool|string $write
+ * @property string|bool $read
+ * @property string|bool $write
  * @property string $endpoint_name (virtual prop)
  * @property string $application_name (virtual prop)
  * @property string $role_name (virtual prop)

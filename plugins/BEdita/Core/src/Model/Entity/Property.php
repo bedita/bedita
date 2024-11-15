@@ -29,22 +29,25 @@ use stdClass;
 /**
  * Property Entity.
  *
- * @property int $id
+ * @property string $id
  * @property string $name
- * @property string $description
+ * @property string|null $description
  * @property bool $enabled
  * @property bool $is_nullable
  * @property bool $read_only
  * @property bool $required
  * @property string|null $default_value
- * @property \Cake\I18n\Time $created
- * @property \Cake\I18n\Time $modified
- * @property int $object_type_id
+ * @property \Cake\I18n\DateTime $created
+ * @property \Cake\I18n\DateTime $modified
+ * @property int|null $object_type_id
  * @property string $object_type_name
- * @property \BEdita\Core\Model\Entity\ObjectType $object_type
+ * @property \BEdita\Core\Model\Entity\ObjectType|null $object_type
  * @property int $property_type_id
  * @property string $property_type_name
- * @property \BEdita\Core\Model\Entity\PropertyType $property_type
+ * @property \BEdita\Core\Model\Entity\PropertyType|null $property_type
+ * @property string|null $label
+ * @property bool $is_static
+ * @property bool $translatable
  * @since 4.0.0
  */
 class Property extends Entity implements JsonApiSerializable

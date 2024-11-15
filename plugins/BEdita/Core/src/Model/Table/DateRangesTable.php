@@ -33,13 +33,19 @@ use Exception;
  * DateRanges Model
  *
  * @property \Cake\ORM\Association\BelongsTo $Objects
- * @method \BEdita\Core\Model\Entity\DateRange get($primaryKey, $options = [])
- * @method \BEdita\Core\Model\Entity\DateRange newEntity($data = null, array $options = [])
+ * @method \BEdita\Core\Model\Entity\DateRange get(mixed $primaryKey, array|string $finder = 'all', \Psr\SimpleCache\CacheInterface|string|null $cache = null, \Closure|string|null $cacheKey = null, mixed ...$args)
+ * @method \BEdita\Core\Model\Entity\DateRange newEntity(array $data, array $options = [])
  * @method \BEdita\Core\Model\Entity\DateRange[] newEntities(array $data, array $options = [])
- * @method \BEdita\Core\Model\Entity\DateRange|bool save(\Cake\Datasource\EntityInterface $entity, $options = [])
+ * @method \BEdita\Core\Model\Entity\DateRange|false save(\Cake\Datasource\EntityInterface $entity, array $options = [])
  * @method \BEdita\Core\Model\Entity\DateRange patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
- * @method \BEdita\Core\Model\Entity\DateRange[] patchEntities($entities, array $data, array $options = [])
- * @method \BEdita\Core\Model\Entity\DateRange findOrCreate($search, callable $callback = null, $options = [])
+ * @method \BEdita\Core\Model\Entity\DateRange[] patchEntities(iterable $entities, array $data, array $options = [])
+ * @method \BEdita\Core\Model\Entity\DateRange findOrCreate(\Cake\ORM\Query\SelectQuery|callable|array $search, ?callable $callback = null, array $options = [])
+ * @method \BEdita\Core\Model\Entity\DateRange newEmptyEntity()
+ * @method \BEdita\Core\Model\Entity\DateRange saveOrFail(\Cake\Datasource\EntityInterface $entity, array $options = [])
+ * @method \BEdita\Core\Model\Entity\DateRange[]|\Cake\Datasource\ResultSetInterface<\BEdita\Core\Model\Entity\DateRange>|false saveMany(iterable $entities, array $options = [])
+ * @method \BEdita\Core\Model\Entity\DateRange[]|\Cake\Datasource\ResultSetInterface<\BEdita\Core\Model\Entity\DateRange> saveManyOrFail(iterable $entities, array $options = [])
+ * @method \BEdita\Core\Model\Entity\DateRange[]|\Cake\Datasource\ResultSetInterface<\BEdita\Core\Model\Entity\DateRange>|false deleteMany(iterable $entities, array $options = [])
+ * @method \BEdita\Core\Model\Entity\DateRange[]|\Cake\Datasource\ResultSetInterface<\BEdita\Core\Model\Entity\DateRange> deleteManyOrFail(iterable $entities, array $options = [])
  */
 class DateRangesTable extends Table
 {

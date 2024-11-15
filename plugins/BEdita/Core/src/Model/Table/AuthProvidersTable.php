@@ -25,14 +25,21 @@ use Cake\Validation\Validator;
 /**
  * AuthProviders Model
  *
- * @property \Cake\ORM\Association\HasMany $ExternalAuth
- * @method \BEdita\Core\Model\Entity\AuthProvider get($primaryKey, $options = [])
- * @method \BEdita\Core\Model\Entity\AuthProvider newEntity($data = null, array $options = [])
+ * @property \Cake\ORM\Table&\Cake\ORM\Association\HasMany $ExternalAuth
+ * @method \BEdita\Core\Model\Entity\AuthProvider get(mixed $primaryKey, array|string $finder = 'all', \Psr\SimpleCache\CacheInterface|string|null $cache = null, \Closure|string|null $cacheKey = null, mixed ...$args)
+ * @method \BEdita\Core\Model\Entity\AuthProvider newEntity(array $data, array $options = [])
  * @method \BEdita\Core\Model\Entity\AuthProvider[] newEntities(array $data, array $options = [])
- * @method \BEdita\Core\Model\Entity\AuthProvider|bool save(\Cake\Datasource\EntityInterface $entity, $options = [])
+ * @method \BEdita\Core\Model\Entity\AuthProvider|false save(\Cake\Datasource\EntityInterface $entity, array $options = [])
  * @method \BEdita\Core\Model\Entity\AuthProvider patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
- * @method \BEdita\Core\Model\Entity\AuthProvider[] patchEntities($entities, array $data, array $options = [])
- * @method \BEdita\Core\Model\Entity\AuthProvider findOrCreate($search, callable $callback = null, $options = [])
+ * @method \BEdita\Core\Model\Entity\AuthProvider[] patchEntities(iterable $entities, array $data, array $options = [])
+ * @method \BEdita\Core\Model\Entity\AuthProvider findOrCreate(\Cake\ORM\Query\SelectQuery|callable|array $search, ?callable $callback = null, array $options = [])
+ * @method \BEdita\Core\Model\Entity\AuthProvider newEmptyEntity()
+ * @method \BEdita\Core\Model\Entity\AuthProvider saveOrFail(\Cake\Datasource\EntityInterface $entity, array $options = [])
+ * @method \BEdita\Core\Model\Entity\AuthProvider[]|\Cake\Datasource\ResultSetInterface<\BEdita\Core\Model\Entity\AuthProvider>|false saveMany(iterable $entities, array $options = [])
+ * @method \BEdita\Core\Model\Entity\AuthProvider[]|\Cake\Datasource\ResultSetInterface<\BEdita\Core\Model\Entity\AuthProvider> saveManyOrFail(iterable $entities, array $options = [])
+ * @method \BEdita\Core\Model\Entity\AuthProvider[]|\Cake\Datasource\ResultSetInterface<\BEdita\Core\Model\Entity\AuthProvider>|false deleteMany(iterable $entities, array $options = [])
+ * @method \BEdita\Core\Model\Entity\AuthProvider[]|\Cake\Datasource\ResultSetInterface<\BEdita\Core\Model\Entity\AuthProvider> deleteManyOrFail(iterable $entities, array $options = [])
+ * @mixin \Cake\ORM\Behavior\TimestampBehavior
  * @since 4.0.0
  */
 class AuthProvidersTable extends Table

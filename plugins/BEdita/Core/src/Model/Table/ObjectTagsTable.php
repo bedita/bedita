@@ -24,14 +24,19 @@ use Cake\Validation\Validator;
  *
  * @property \BEdita\Core\Model\Table\ObjectsTable&\Cake\ORM\Association\BelongsTo $Objects
  * @property \BEdita\Core\Model\Table\TagsTable&\Cake\ORM\Association\BelongsTo $Tags
- * @method \BEdita\Core\Model\Entity\ObjectTag get($primaryKey, $options = [])
- * @method \BEdita\Core\Model\Entity\ObjectTag newEntity($data = null, array $options = [])
+ * @method \BEdita\Core\Model\Entity\ObjectTag get(mixed $primaryKey, array|string $finder = 'all', \Psr\SimpleCache\CacheInterface|string|null $cache = null, \Closure|string|null $cacheKey = null, mixed ...$args)
+ * @method \BEdita\Core\Model\Entity\ObjectTag newEntity(array $data, array $options = [])
  * @method \BEdita\Core\Model\Entity\ObjectTag[] newEntities(array $data, array $options = [])
- * @method \BEdita\Core\Model\Entity\ObjectTag|false save(\Cake\Datasource\EntityInterface $entity, $options = [])
- * @method \BEdita\Core\Model\Entity\ObjectTag saveOrFail(\Cake\Datasource\EntityInterface $entity, $options = [])
+ * @method \BEdita\Core\Model\Entity\ObjectTag|false save(\Cake\Datasource\EntityInterface $entity, array $options = [])
+ * @method \BEdita\Core\Model\Entity\ObjectTag saveOrFail(\Cake\Datasource\EntityInterface $entity, array $options = [])
  * @method \BEdita\Core\Model\Entity\ObjectTag patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
- * @method \BEdita\Core\Model\Entity\ObjectTag[] patchEntities($entities, array $data, array $options = [])
- * @method \BEdita\Core\Model\Entity\ObjectTag findOrCreate($search, callable $callback = null, $options = [])
+ * @method \BEdita\Core\Model\Entity\ObjectTag[] patchEntities(iterable $entities, array $data, array $options = [])
+ * @method \BEdita\Core\Model\Entity\ObjectTag findOrCreate(\Cake\ORM\Query\SelectQuery|callable|array $search, ?callable $callback = null, array $options = [])
+ * @method \BEdita\Core\Model\Entity\ObjectTag newEmptyEntity()
+ * @method \BEdita\Core\Model\Entity\ObjectTag[]|\Cake\Datasource\ResultSetInterface<\BEdita\Core\Model\Entity\ObjectTag>|false saveMany(iterable $entities, array $options = [])
+ * @method \BEdita\Core\Model\Entity\ObjectTag[]|\Cake\Datasource\ResultSetInterface<\BEdita\Core\Model\Entity\ObjectTag> saveManyOrFail(iterable $entities, array $options = [])
+ * @method \BEdita\Core\Model\Entity\ObjectTag[]|\Cake\Datasource\ResultSetInterface<\BEdita\Core\Model\Entity\ObjectTag>|false deleteMany(iterable $entities, array $options = [])
+ * @method \BEdita\Core\Model\Entity\ObjectTag[]|\Cake\Datasource\ResultSetInterface<\BEdita\Core\Model\Entity\ObjectTag> deleteManyOrFail(iterable $entities, array $options = [])
  */
 class ObjectTagsTable extends Table
 {

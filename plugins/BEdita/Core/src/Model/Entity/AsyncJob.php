@@ -26,16 +26,16 @@ use Cake\ORM\Entity;
  * @property string $uuid
  * @property string $service
  * @property int $priority
- * @property array $payload
- * @property \Cake\I18n\Time $scheduled_from
- * @property \Cake\I18n\Time $expires
+ * @property array|null $payload
+ * @property \Cake\I18n\DateTime|null $scheduled_from
+ * @property \Cake\I18n\DateTime|null $expires
  * @property int $max_attempts
- * @property \Cake\I18n\Time $locked_until
- * @property \Cake\I18n\Time $created
- * @property \Cake\I18n\Time $modified
- * @property \Cake\I18n\Time $completed
+ * @property \Cake\I18n\DateTime|null $locked_until
+ * @property \Cake\I18n\DateTime $created
+ * @property \Cake\I18n\DateTime $modified
+ * @property \Cake\I18n\DateTime|null $completed
  * @property string $status
- * @property array $results
+ * @property array|null $results
  * @since 4.0.0
  */
 class AsyncJob extends Entity implements JsonApiSerializable

@@ -26,6 +26,21 @@ use Cake\Validation\Validator;
  * and `application_id` matching current application id.
  *
  * @since 5.0.0
+ * @property \Cake\ORM\Table&\Cake\ORM\Association\BelongsTo $Applications
+ * @method \BEdita\Core\Model\Entity\AppConfig newEmptyEntity()
+ * @method \BEdita\Core\Model\Entity\AppConfig newEntity(array $data, array $options = [])
+ * @method \BEdita\Core\Model\Entity\AppConfig[] newEntities(array $data, array $options = [])
+ * @method \BEdita\Core\Model\Entity\AppConfig get(mixed $primaryKey, array|string $finder = 'all', \Psr\SimpleCache\CacheInterface|string|null $cache = null, \Closure|string|null $cacheKey = null, mixed ...$args)
+ * @method \BEdita\Core\Model\Entity\AppConfig findOrCreate(\Cake\ORM\Query\SelectQuery|callable|array $search, ?callable $callback = null, array $options = [])
+ * @method \BEdita\Core\Model\Entity\AppConfig patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
+ * @method \BEdita\Core\Model\Entity\AppConfig[] patchEntities(iterable $entities, array $data, array $options = [])
+ * @method \BEdita\Core\Model\Entity\AppConfig|false save(\Cake\Datasource\EntityInterface $entity, array $options = [])
+ * @method \BEdita\Core\Model\Entity\AppConfig saveOrFail(\Cake\Datasource\EntityInterface $entity, array $options = [])
+ * @method \BEdita\Core\Model\Entity\AppConfig[]|\Cake\Datasource\ResultSetInterface<\BEdita\Core\Model\Entity\AppConfig>|false saveMany(iterable $entities, array $options = [])
+ * @method \BEdita\Core\Model\Entity\AppConfig[]|\Cake\Datasource\ResultSetInterface<\BEdita\Core\Model\Entity\AppConfig> saveManyOrFail(iterable $entities, array $options = [])
+ * @method \BEdita\Core\Model\Entity\AppConfig[]|\Cake\Datasource\ResultSetInterface<\BEdita\Core\Model\Entity\AppConfig>|false deleteMany(iterable $entities, array $options = [])
+ * @method \BEdita\Core\Model\Entity\AppConfig[]|\Cake\Datasource\ResultSetInterface<\BEdita\Core\Model\Entity\AppConfig> deleteManyOrFail(iterable $entities, array $options = [])
+ * @mixin \BEdita\Core\Model\Behavior\ResourceNameBehavior
  */
 class AppConfigTable extends ConfigTable
 {

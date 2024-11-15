@@ -21,16 +21,15 @@ use Cake\ORM\Entity;
  *
  * @property int $id
  * @property int $user_id
- * @property int $application_id
+ * @property int|null $application_id
  * @property string $client_token
- * @property string $secret_token
+ * @property string|null $secret_token
  * @property string $token_type
- * @property \Cake\I18n\Time $expires
- * @property \Cake\I18n\Time $created
- * @property \Cake\I18n\Time $used
- *
+ * @property \Cake\I18n\DateTime|null $expires
+ * @property \Cake\I18n\DateTime $created
+ * @property \Cake\I18n\DateTime|null $used
  * @property \BEdita\Core\Model\Entity\User $user
- * @property \BEdita\Core\Model\Entity\Application $application
+ * @property \BEdita\Core\Model\Entity\Application|null $application
  */
 class UserToken extends Entity
 {

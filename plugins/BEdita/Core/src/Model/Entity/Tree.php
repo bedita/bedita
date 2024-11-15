@@ -33,11 +33,10 @@ use Cake\ORM\TableRegistry;
  * @property bool $canonical
  * @property array|null $params
  * @property int|string $position
- *
  * @property \BEdita\Core\Model\Entity\ObjectEntity $object
  * @property \BEdita\Core\Model\Entity\ObjectEntity $parent_object
  * @property \BEdita\Core\Model\Entity\ObjectEntity $root_object
- * @property \BEdita\Core\Model\Entity\Tree $parent_node
+ * @property \BEdita\Core\Model\Entity\Tree|null $parent_node
  * @property \BEdita\Core\Model\Entity\Tree[] $child_nodes
  * @since 4.0.0
  */

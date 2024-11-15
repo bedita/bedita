@@ -27,15 +27,21 @@ use Cake\Validation\Validator;
  * Streams Model
  *
  * @property \BEdita\Core\Model\Table\ObjectsTable|\Cake\ORM\Association\BelongsTo $Objects
- * @method \BEdita\Core\Model\Entity\Stream get($primaryKey, $options = [])
- * @method \BEdita\Core\Model\Entity\Stream newEntity($data = null, array $options = [])
+ * @method \BEdita\Core\Model\Entity\Stream get(mixed $primaryKey, array|string $finder = 'all', \Psr\SimpleCache\CacheInterface|string|null $cache = null, \Closure|string|null $cacheKey = null, mixed ...$args)
+ * @method \BEdita\Core\Model\Entity\Stream newEntity(array $data, array $options = [])
  * @method \BEdita\Core\Model\Entity\Stream[] newEntities(array $data, array $options = [])
- * @method \BEdita\Core\Model\Entity\Stream|bool save(\Cake\Datasource\EntityInterface $entity, $options = [])
+ * @method \BEdita\Core\Model\Entity\Stream|false save(\Cake\Datasource\EntityInterface $entity, array $options = [])
  * @method \BEdita\Core\Model\Entity\Stream patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
- * @method \BEdita\Core\Model\Entity\Stream[] patchEntities($entities, array $data, array $options = [])
- * @method \BEdita\Core\Model\Entity\Stream findOrCreate($search, callable $callback = null, $options = [])
+ * @method \BEdita\Core\Model\Entity\Stream[] patchEntities(iterable $entities, array $data, array $options = [])
+ * @method \BEdita\Core\Model\Entity\Stream findOrCreate(\Cake\ORM\Query\SelectQuery|callable|array $search, ?callable $callback = null, array $options = [])
  * @mixin \Cake\ORM\Behavior\TimestampBehavior
  * @mixin \BEdita\Core\Model\Behavior\UploadableBehavior
+ * @method \BEdita\Core\Model\Entity\Stream newEmptyEntity()
+ * @method \BEdita\Core\Model\Entity\Stream saveOrFail(\Cake\Datasource\EntityInterface $entity, array $options = [])
+ * @method \BEdita\Core\Model\Entity\Stream[]|\Cake\Datasource\ResultSetInterface<\BEdita\Core\Model\Entity\Stream>|false saveMany(iterable $entities, array $options = [])
+ * @method \BEdita\Core\Model\Entity\Stream[]|\Cake\Datasource\ResultSetInterface<\BEdita\Core\Model\Entity\Stream> saveManyOrFail(iterable $entities, array $options = [])
+ * @method \BEdita\Core\Model\Entity\Stream[]|\Cake\Datasource\ResultSetInterface<\BEdita\Core\Model\Entity\Stream>|false deleteMany(iterable $entities, array $options = [])
+ * @method \BEdita\Core\Model\Entity\Stream[]|\Cake\Datasource\ResultSetInterface<\BEdita\Core\Model\Entity\Stream> deleteManyOrFail(iterable $entities, array $options = [])
  * @since 4.0.0
  */
 class StreamsTable extends Table
