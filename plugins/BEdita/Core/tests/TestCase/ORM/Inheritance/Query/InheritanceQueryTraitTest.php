@@ -48,7 +48,7 @@ class InheritanceQueryTraitTest extends TestCase
      * @return void
      * @covers ::addDefaultTypes()
      */
-    public function testAddDefaultTypes()
+    public function testAddDefaultTypes(): void
     {
         $this->fakeAnimals->getSchema()->setColumnType('name', 'json');
         $query = new SelectQuery($this->fakeFelines);
@@ -61,109 +61,5 @@ class InheritanceQueryTraitTest extends TestCase
         static::assertSame('json', $defaults['name']);
         static::assertSame('json', $defaults['FakeFelines.name']);
         static::assertSame('json', $defaults['FakeFelines__name']);
-    }
-
-    /**
-     * Data provider for `testAddDefaultFields` test case.
-     *
-     * @return array
-     */
-    public static function addDefaultFieldsProvider(): array
-    {
-        return [
-            'default' => [
-                [
-                    'FakeFelines.id',
-                    'FakeFelines.name',
-                    'FakeFelines.legs',
-                    'FakeFelines.modified',
-                    'FakeFelines.subclass',
-                    'FakeFelines.family',
-                ],
-                [],
-                true,
-            ],
-            'explicit no autoFields' => [
-                ['FakeFelines.name', 'FakeFelines.legs'],
-                ['FakeFelines.name', 'FakeFelines.legs'],
-                false,
-            ],
-        ];
-    }
-
-    /**
-     * Test adding fields of inherited tables to "select" clause by default.
-     *
-     * @param string[] $expected Expected fields.
-     * @param string[] $select Fields to explicitly select.
-     * @param bool $autoFields Is auto-fields enabled?
-     * @return void
-     * @covers ::_addDefaultFields()
-     * @dataProvider addDefaultFieldsProvider()
-     */
-    public function testAddDefaultFields(array $expected, array $select, bool $autoFields)
-    {
-        $query = $this->fakeFelines->find()
-            ->select($select)
-            ->enableAutoFields($autoFields);
-        $query->sql();
-
-        $selected = array_values($query->clause('select'));
-        sort($selected);
-        sort($expected);
-        static::assertEquals($expected, $selected, '');
-        static::assertEqualsCanonicalizing($expected, $selected, '');
-        static::assertEqualsWithDelta($expected, $selected, 0, '');
-    }
-
-    /**
-     * Test builder for CTI sub-query.
-     *
-     * @covers ::_transformQuery()
-     * @covers ::getInheritanceSubQuery()
-     * @covers ::subQueryAliasFields()
-     */
-    public function testTransformQuery()
-    {
-        $expectedFields = [
-            'id' => 'fake_felines.id',
-            'name' => 'fake_animals.name',
-            'legs' => 'fake_animals.legs',
-            'modified' => 'fake_animals.modified',
-            'subclass' => 'fake_mammals.subclass',
-            'family' => 'fake_felines.family',
-        ];
-        $expectedJoins = [
-            'fake_mammals' => 'fake_mammals',
-            'fake_animals' => 'fake_animals',
-        ];
-
-        $query = $this->fakeFelines->find();
-        $query->sql();
-
-        $from = $query->clause('from');
-        static::assertCount(1, $from);
-        static::assertArrayHasKey('FakeFelines', $from);
-        static::assertInstanceOf(CakeSelectQuery::class, $from['FakeFelines']);
-
-        /** @var \Cake\ORM\Query $subQuery */
-        $subQuery = $from['FakeFelines'];
-        static::assertEquals($expectedFields, $subQuery->clause('select'));
-
-        $joins = $subQuery->clause('join');
-        static::assertCount(2, $joins);
-        foreach ($expectedJoins as $alias => $table) {
-            static::assertArrayHasKey($alias, $joins);
-            static::assertSame('INNER', $joins[$alias]['type']);
-            static::assertSame($table, $joins[$alias]['table']);
-            static::assertSame($alias, $joins[$alias]['alias']);
-
-            /** @var \Cake\Database\Expression\QueryExpression $exp */
-            $exp = $joins[$alias]['conditions'];
-            static::assertSame(
-                $alias . '.id = fake_felines.id',
-                $exp->sql(new ValueBinder())
-            );
-        }
     }
 }

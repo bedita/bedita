@@ -17,7 +17,6 @@ namespace BEdita\Core\Test\TestCase\ORM\Inheritance;
 use BadMethodCallException;
 use BEdita\Core\ORM\Inheritance\AssociationCollection;
 use BEdita\Core\ORM\Inheritance\Marshaller;
-use BEdita\Core\ORM\Inheritance\Query;
 use BEdita\Core\ORM\Inheritance\Query\DeleteQuery;
 use BEdita\Core\ORM\Inheritance\Query\InsertQuery;
 use BEdita\Core\ORM\Inheritance\Query\SelectQuery;
@@ -55,63 +54,23 @@ class TableTest extends TestCase
      * @return void
      * @covers ::marshaller()
      */
-    public function testMarshaller()
+    public function testMarshaller(): void
     {
         static::assertInstanceOf(Marshaller::class, $this->fakeFelines->marshaller());
     }
 
     /**
-     * Test query
+     * Test that the query factory is correctly set up.
      *
      * @return void
-     * @covers ::query()
+     * @covers ::__construct()
      */
-    public function testQuery()
+    public function testUseInheritanceQueryFactory(): void
     {
-        static::assertInstanceOf(Query::class, $this->fakeFelines->query()); // @phpstan-ignore-line
-    }
-
-    /**
-     * Test selectQuery
-     *
-     * @return void
-     * @covers ::selectQuery()
-     */
-    public function testSelectQuery()
-    {
+        static::assertInstanceOf(SelectQuery::class, $this->fakeFelines->query());
         static::assertInstanceOf(SelectQuery::class, $this->fakeFelines->selectQuery());
-    }
-
-    /**
-     * Test insertQuery
-     *
-     * @return void
-     * @covers ::insertQuery()
-     */
-    public function testInsertQuery()
-    {
         static::assertInstanceOf(InsertQuery::class, $this->fakeFelines->insertQuery());
-    }
-
-    /**
-     * Test updateQuery
-     *
-     * @return void
-     * @covers ::updateQuery()
-     */
-    public function testUpdateQuery()
-    {
         static::assertInstanceOf(UpdateQuery::class, $this->fakeFelines->updateQuery());
-    }
-
-    /**
-     * Test deleteQuery
-     *
-     * @return void
-     * @covers ::deleteQuery()
-     */
-    public function testDeleteQuery()
-    {
         static::assertInstanceOf(DeleteQuery::class, $this->fakeFelines->deleteQuery());
     }
 
@@ -121,7 +80,7 @@ class TableTest extends TestCase
      * @return void
      * @covers ::extensionOf()
      */
-    public function testExtensionOf()
+    public function testExtensionOf(): void
     {
         $this->fakeFelines->extensionOf('FakeAnimals');
 
@@ -136,7 +95,7 @@ class TableTest extends TestCase
      * @covers ::inheritedTable()
      * @covers ::inheritedTables()
      */
-    public function testInheritedTables()
+    public function testInheritedTables(): void
     {
         static::assertEquals(null, $this->fakeFelines->inheritedTable());
         static::assertEquals([], $this->fakeFelines->inheritedTables());
@@ -162,7 +121,7 @@ class TableTest extends TestCase
      * @return void
      * @covers ::commonInheritance()
      */
-    public function testCommonInheritance()
+    public function testCommonInheritance(): void
     {
         $this->setupAssociations();
 
@@ -182,7 +141,7 @@ class TableTest extends TestCase
      * @return void
      * @covers ::isTableInherited()
      */
-    public function testIsTableInherited()
+    public function testIsTableInherited(): void
     {
         static::assertFalse($this->fakeFelines->isTableInherited('FakeMammals'));
         static::assertFalse($this->fakeFelines->isTableInherited('FakeMammals', true));
@@ -200,7 +159,7 @@ class TableTest extends TestCase
      * @return void
      * @coversNothing
      */
-    public function testBasicFindWithoutInheritance()
+    public function testBasicFindWithoutInheritance(): void
     {
         // find felines
         $felines = $this->fakeFelines->find();
@@ -223,7 +182,7 @@ class TableTest extends TestCase
      * @return void
      * @coversNothing
      */
-    public function testBasicFindWithInheritance()
+    public function testBasicFindWithInheritance(): void
     {
         $this->setupAssociations();
 
@@ -298,7 +257,7 @@ class TableTest extends TestCase
      * @return void
      * @coversNothing
      */
-    public function testContainFind()
+    public function testContainFind(): void
     {
         $this->setupAssociations();
 
@@ -375,7 +334,7 @@ class TableTest extends TestCase
      * @dataProvider selectProvider
      * @coversNothing
      */
-    public function testSelect($expected, $select)
+    public function testSelect($expected, $select): void
     {
         $this->setupAssociations();
 
@@ -414,7 +373,7 @@ class TableTest extends TestCase
      * @return void
      * @coversNothing
      */
-    public function testClauses()
+    public function testClauses(): void
     {
         $this->setupAssociations();
 
@@ -518,7 +477,7 @@ class TableTest extends TestCase
      * @dataProvider findListProvider
      * @coversNothing
      */
-    public function testFindList($expected, $listParams, $order)
+    public function testFindList($expected, $listParams, $order): void
     {
         $this->setupAssociations();
 
@@ -535,7 +494,7 @@ class TableTest extends TestCase
             $this->fakeFelines->save($feline);
         }
 
-        $query = $this->fakeFelines->find('list', $listParams);
+        $query = $this->fakeFelines->find('list', ...$listParams);
         $query->orderBy($order);
 
         $result = $query->toArray();
@@ -548,7 +507,7 @@ class TableTest extends TestCase
      * @return void
      * @covers ::hasFinder()
      */
-    public function testHasFinder()
+    public function testHasFinder(): void
     {
         $this->setupAssociations();
 
@@ -569,7 +528,7 @@ class TableTest extends TestCase
      * @return void
      * @covers ::callFinder()
      */
-    public function testCallFinder()
+    public function testCallFinder(): void
     {
         $this->setupAssociations();
 
@@ -601,7 +560,7 @@ class TableTest extends TestCase
      * @return void
      * @covers ::callFinder()
      */
-    public function testCallMissingFinder()
+    public function testCallMissingFinder(): void
     {
         $this->expectException(BadMethodCallException::class);
         $this->expectExceptionMessage('Unknown finder method "gustavo"');
@@ -614,7 +573,7 @@ class TableTest extends TestCase
      * @return void
      * @covers ::hasField()
      */
-    public function testHasField()
+    public function testHasField(): void
     {
         $this->setupAssociations();
 
@@ -629,7 +588,7 @@ class TableTest extends TestCase
      * @return void
      * @covers ::__clone()
      */
-    public function testClone()
+    public function testClone(): void
     {
         $clone = clone $this->fakeMammals;
 

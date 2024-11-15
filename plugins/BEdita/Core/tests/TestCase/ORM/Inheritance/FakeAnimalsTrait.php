@@ -16,6 +16,7 @@ declare(strict_types=1);
 namespace BEdita\Core\Test\TestCase\ORM\Inheritance;
 
 use BEdita\Core\ORM\Inheritance\Table;
+use Cake\ORM\Table as CakeTable;
 use Cake\ORM\TableRegistry;
 
 trait FakeAnimalsTrait
@@ -23,9 +24,9 @@ trait FakeAnimalsTrait
     /**
      * Table FakeAnimals
      *
-     * @var \BEdita\Core\ORM\Inheritance\Table
+     * @var \Cake\ORM\Table
      */
-    public Table $fakeAnimals;
+    public CakeTable $fakeAnimals;
 
     /**
      * Table FakeMammals
