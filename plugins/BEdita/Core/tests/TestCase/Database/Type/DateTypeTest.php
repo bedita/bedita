@@ -76,10 +76,10 @@ class DateTypeTest extends TestCase
      */
     public function testMarshal($expected, $input, $useImmutable = false)
     {
-        $dateTimeType = new DateType();
-        $result = $dateTimeType->marshal($input);
+        $dateType = new DateType();
+        $result = $dateType->marshal($input);
         if (is_string($expected)) {
-            static::assertInstanceOf($dateTimeType->getDateTimeClassName(), $result);
+            static::assertInstanceOf($dateType->getDateClassName(), $result);
             $expected = DateTime::parse($expected);
         }
         static::assertSame($expected->getTimestamp(), $result->getTimestamp());

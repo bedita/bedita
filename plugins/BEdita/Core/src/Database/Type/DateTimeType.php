@@ -63,7 +63,7 @@ class DateTimeType extends CakeDateTimeType
         if (Validation::dateTime($value) === true) {
             /** @var \Cake\I18n\Time|\Cake\I18n\DateTime $value */
             $value = call_user_func([$dateTimeClassName, 'parse'], $value);
-            if ($value->getTimezone()->getName() === 'Z') {
+            if ($value instanceof DateTimeInterface && $value->getTimezone()->getName() === 'Z') {
                 $value = $value->setTimezone('UTC');
             }
         }

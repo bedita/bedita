@@ -106,7 +106,7 @@ class DateTimeTypeTest extends TestCase
      * @dataProvider marshalSuccessProvider
      * @covers ::marshalDateTime
      */
-    public function testMarshalSuccess($expected, $input)
+    public function testMarshalSuccess($expected, $input): void
     {
         $dateTimeType = new DateTimeType();
 
@@ -115,7 +115,7 @@ class DateTimeTypeTest extends TestCase
             static::assertInstanceOf($dateTimeType->getDateTimeClassName(), $result);
             $expected = DateTime::parse($expected);
         }
-        static::assertSame($expected->getTimestamp(), $result->getTimestamp());
+        static::assertSame($expected->format('U'), $result->format('U'));
     }
 
     /**
@@ -146,7 +146,7 @@ class DateTimeTypeTest extends TestCase
      * @dataProvider marshalFailureProvider
      * @covers ::marshalDateTime
      */
-    public function testMarshalFailure($input)
+    public function testMarshalFailure($input): void
     {
         $dateTimeType = new DateTimeType();
         $result = $dateTimeType->marshal($input);
@@ -161,7 +161,7 @@ class DateTimeTypeTest extends TestCase
      * @covers ::marshal
      * @covers ::marshalDateTime
      */
-    public function testMarshalEmpty()
+    public function testMarshalEmpty(): void
     {
         $dateTimeType = new DateTimeType();
         $result = $dateTimeType->marshal('');
