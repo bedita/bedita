@@ -325,7 +325,7 @@ class CustomPropertiesBehaviorTest extends TestCase
                     'count' => $results->count(),
                 ];
             })
-            ->order('Files.id')
+            ->orderBy('Files.id')
             ->toArray();
 
         static::assertSame($expected, $result);
@@ -625,14 +625,14 @@ class CustomPropertiesBehaviorTest extends TestCase
 
         $result = $Profiles->find('customProp', ['number_of_friends' => 10])
             ->find('list')
-            ->orderAsc('id')
+            ->orderByAsc('id')
             ->toArray();
 
         static::assertEquals([$profile->id], array_keys($result));
 
         $result = $Profiles->find('customProp', ['number_of_friends' => '10'])
             ->find('list')
-            ->orderAsc('id')
+            ->orderByAsc('id')
             ->toArray();
 
         static::assertEquals([$profile->id], array_keys($result));

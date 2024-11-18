@@ -24,7 +24,6 @@ use Cake\Console\ConsoleOptionParser;
 use Cake\Database\Driver\Postgres;
 use Cake\Database\Expression\IdentifierExpression;
 use Cake\Database\Expression\QueryExpression;
-use Cake\ORM\Query;
 use Cake\ORM\Query\SelectQuery;
 use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;

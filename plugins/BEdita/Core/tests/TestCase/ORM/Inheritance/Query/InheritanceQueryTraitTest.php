@@ -16,8 +16,6 @@ namespace BEdita\Core\Test\TestCase\ORM\Inheritance\Query;
 
 use BEdita\Core\ORM\Inheritance\Query\SelectQuery;
 use BEdita\Core\Test\TestCase\ORM\Inheritance\FakeAnimalsTrait;
-use Cake\Database\ValueBinder;
-use Cake\ORM\Query\SelectQuery as CakeSelectQuery;
 use Cake\TestSuite\TestCase;
 
 /**

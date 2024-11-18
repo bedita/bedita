@@ -14,7 +14,6 @@ declare(strict_types=1);
  */
 namespace BEdita\API\Controller;
 
-use BEdita\Core\Model\Action\ListAssociatedAction;
 use BEdita\Core\Model\Action\ListRelatedObjectsAction;
 use Cake\ORM\Association;
 use Cake\Routing\Router;
