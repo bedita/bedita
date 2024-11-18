@@ -101,17 +101,13 @@ class LayeredEngine extends CacheEngine
             return $instance;
         }
 
-        if (is_array($config)) {
-            $name = $config['className'];
+        $name = $config['className'];
 
-            if (!empty($config['prefix'])) {
-                $name = $config['prefix'] . $name;
-            }
-
-            return $registry->load($name, $config);
+        if (!empty($config['prefix'])) {
+            $name = $config['prefix'] . $name;
         }
 
-        throw new Exception('Unknown cache configuration');
+        return $registry->load($name, $config);
     }
 
     /**
