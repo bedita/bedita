@@ -18,6 +18,7 @@ namespace BEdita\Core\Test\TestCase\Configure\Engine;
 use BEdita\Core\Configure\Engine\DatabaseConfig;
 use Cake\Cache\Cache;
 use Cake\Core\Configure;
+use Cake\Database\Exception\DatabaseException;
 use Cake\TestSuite\TestCase;
 
 /**
@@ -74,7 +75,7 @@ class DatabaseConfigTest extends TestCase
      * @covers ::read()
      * @covers ::valueFromString()
      */
-    public function testRead()
+    public function testRead(): void
     {
         $configData = $this->DatabaseConfig->read(null);
         static::assertEquals(true, $configData['Name2']);
@@ -103,7 +104,7 @@ class DatabaseConfigTest extends TestCase
      * @covers ::read()
      * @covers ::__construct()
      */
-    public function testReadAppId()
+    public function testReadAppId(): void
     {
         $dbConfig = new DatabaseConfig(1);
         $configData = $dbConfig->read('app');
@@ -162,10 +163,10 @@ class DatabaseConfigTest extends TestCase
      * @covers ::dump()
      * @covers ::valueToString()
      */
-    public function testDump($expected, $context, $data)
+    public function testDump($expected, $context, $data): void
     {
         if (!$expected) {
-            $this->expectException('Cake\Database\Exception');
+            $this->expectException(DatabaseException::class);
         }
         $check = $this->DatabaseConfig->dump($context, $data);
         static::assertEquals((bool)$expected, $check);
@@ -185,7 +186,7 @@ class DatabaseConfigTest extends TestCase
      * @return void
      * @coversNothing
      */
-    public function testReadByConfigure()
+    public function testReadByConfigure(): void
     {
         Configure::config('test-database', $this->DatabaseConfig);
         Configure::load('group1', 'test-database');
@@ -205,7 +206,7 @@ class DatabaseConfigTest extends TestCase
      * @dataProvider configProvider
      * @coversNothing
      */
-    public function testDumpByConfigureClass($expected, $context, $data)
+    public function testDumpByConfigureClass($expected, $context, $data): void
     {
         Configure::config('test-database', $this->DatabaseConfig);
         foreach ($data as $key => $value) {
@@ -213,7 +214,7 @@ class DatabaseConfigTest extends TestCase
         }
 
         if (!$expected) {
-            $this->expectException('Cake\Database\Exception');
+            $this->expectException(DatabaseException::class);
         }
 
         $result = Configure::dump($context, 'test-database', array_keys($data));
