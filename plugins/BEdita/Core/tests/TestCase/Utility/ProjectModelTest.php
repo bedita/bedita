@@ -486,6 +486,7 @@ class ProjectModelTest extends TestCase
                 'label' => 'Disabled category',
             ],
         ],
+        'config' => [],
     ];
 
     /**
@@ -500,6 +501,7 @@ class ProjectModelTest extends TestCase
      * @covers ::relations()
      * @covers ::properties()
      * @covers ::categories()
+     * @covers ::configs()
      */
     public function testGenerate(): void
     {
