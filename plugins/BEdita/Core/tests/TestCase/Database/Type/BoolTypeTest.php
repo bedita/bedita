@@ -73,11 +73,11 @@ class BoolTypeTest extends TestCase
             ],
             [
                 'gustavo',
-                new InvalidArgumentException('Cannot convert value of type `string` to bool'),
+                new InvalidArgumentException('Cannot convert value `gustavo` of type `string` to bool'),
             ],
             [
                 [1, 2, 3],
-                new InvalidArgumentException('Cannot convert value of type `array` to bool'),
+                new InvalidArgumentException(sprintf('Cannot convert value `%s` of type `array` to bool', print_r([1, 2, 3], true))),
             ],
         ];
     }

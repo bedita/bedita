@@ -101,10 +101,9 @@ class DateTimeTypeTest extends TestCase
      *
      * @param \DateTimeInterface|string $expected Expected result
      * @param mixed $input Input data to be marshaled.
-     * @param bool $useImmutable Should immutable datetime objects be used?
      * @return void
      * @dataProvider marshalSuccessProvider
-     * @covers ::marshalDateTime
+     * @covers ::marshal
      */
     public function testMarshalSuccess($expected, $input): void
     {
@@ -144,7 +143,7 @@ class DateTimeTypeTest extends TestCase
      * @param mixed $input Input data to be marshaled.
      * @return void
      * @dataProvider marshalFailureProvider
-     * @covers ::marshalDateTime
+     * @covers ::marshal
      */
     public function testMarshalFailure($input): void
     {
@@ -159,7 +158,6 @@ class DateTimeTypeTest extends TestCase
      *
      * @return void
      * @covers ::marshal
-     * @covers ::marshalDateTime
      */
     public function testMarshalEmpty(): void
     {

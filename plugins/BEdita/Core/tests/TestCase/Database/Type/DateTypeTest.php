@@ -17,6 +17,7 @@ namespace BEdita\Core\Test\TestCase\Database\Type;
 use BEdita\Core\Database\Type\DateType;
 use Cake\I18n\DateTime;
 use Cake\TestSuite\TestCase;
+use DateTime as PHPdateTime;
 
 /**
  * {@see \BEdita\Core\Database\Type\DateType} Test Case
@@ -57,9 +58,17 @@ class DateTypeTest extends TestCase
                 '2018-08-01',
                 1533117600,
             ],
+            [
+                '2024-11-18',
+                '2024-11-18T00:10:00+00:00',
+            ],
             'datetime' => [
                 new DateTime('2008-02-01 00:00:00'),
                 new DateTime('2008-02-01 11:12:00'),
+            ],
+            'PHP datetime' => [
+                '2024-11-18',
+                new PHPdateTime('2024-11-18'),
             ],
         ];
     }
@@ -69,12 +78,11 @@ class DateTypeTest extends TestCase
      *
      * @param \DateTimeInterface|string $expected Expected result
      * @param mixed $input Input data to be marshaled.
-     * @param bool $useImmutable Should immutable datetime objects be used?
      * @return void
      * @dataProvider marshalProvider
      * @covers ::marshal
      */
-    public function testMarshal($expected, $input, $useImmutable = false)
+    public function testMarshal($expected, $input): void
     {
         $dateType = new DateType();
         $result = $dateType->marshal($input);
@@ -82,6 +90,6 @@ class DateTypeTest extends TestCase
             static::assertInstanceOf($dateType->getDateClassName(), $result);
             $expected = DateTime::parse($expected);
         }
-        static::assertSame($expected->getTimestamp(), $result->getTimestamp());
+        static::assertSame($expected->format('U'), $result->format('U'));
     }
 }
