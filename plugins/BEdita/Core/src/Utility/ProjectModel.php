@@ -44,6 +44,7 @@ class ProjectModel
             'relations' => static::relations(),
             'properties' => static::properties(),
             'categories' => static::categories(),
+            'config' => static::configs(),
         ];
     }
 
@@ -204,6 +205,29 @@ class ProjectModel
     }
 
     /**
+     * Retrieve configurations.
+     *
+     * @return array
+     */
+    protected static function configs(): array
+    {
+        $applicationsTable = TableRegistry::getTableLocator()->get('Applications');
+        $configTable = TableRegistry::getTableLocator()->get('Config');
+
+        return $configTable
+            ->find()
+            ->select([
+                $configTable->aliasField('name'),
+                $configTable->aliasField('context'),
+                $configTable->aliasField('content'),
+                'application' => $applicationsTable->aliasField('name'),
+            ])
+            ->innerJoinWith('Applications')
+            ->order([$configTable->aliasField('context') => 'ASC', $configTable->aliasField('name') => 'ASC'])
+            ->toArray();
+    }
+
+    /**
      * Calculates the difference between the current project model
      * and a new project model passed by argument as array.
      * Diff array will contain 'create', 'update' and 'remove' keys
@@ -218,8 +242,9 @@ class ProjectModel
         $create = $update = $remove = [];
         $currentModel = json_decode(json_encode(static::generate()), true);
         foreach ($currentModel as $key => $items) {
-            if ($key === 'properties' || $key === 'categories') {
-                $diff = static::byObjectDiff((array)$items, (array)Hash::get($project, $key));
+            if (in_array($key, ['categories', 'config', 'properties'])) {
+                $method = $key === 'config' ? 'configDiff' : 'byObjectDiff';
+                $diff = static::$method((array)$items, (array)Hash::get($project, $key));
                 $create[$key] = $diff['create'];
                 $remove[$key] = $diff['remove'];
                 $update[$key] = $diff['update'];
@@ -297,6 +322,36 @@ class ProjectModel
     }
 
     /**
+     * Calculate diff between current and project model config resources.
+     *
+     * @param array $items Current items.
+     * @param array $projectItems Project items.
+     * @return array
+     */
+    protected static function configDiff(array $items, array $projectItems): array
+    {
+        $create = $update = $remove = $new = $current = [];
+        $currentKeys = array_unique(array_column($items, 'name'));
+        foreach ($currentKeys as $key) {
+            $current[$key] = Hash::extract($items, sprintf('{n}[name=%s]', $key));
+        }
+        $newKeys = array_unique(array_column($projectItems, 'name'));
+        foreach ($newKeys as $key) {
+            $new[$key] = Hash::extract($projectItems, sprintf('{n}[name=%s]', $key));
+        }
+        $allKeys = array_unique(array_merge($currentKeys, $newKeys));
+        foreach ($allKeys as $key) {
+            $newItems = (array)Hash::get($new, $key);
+            $currItems = (array)Hash::get($current, $key);
+            $create = array_merge($create, array_values(array_diff_key($newItems, $currItems)));
+            $remove = array_merge($remove, array_values(array_diff_key($currItems, $newItems)));
+            $update = array_merge($update, array_values(static::itemsToUpdate($currItems, $newItems)));
+        }
+
+        return compact('create', 'update', 'remove');
+    }
+
+    /**
      * Calculate items to update in a project model set.
      *
      * @param array $current Current items
@@ -306,9 +361,12 @@ class ProjectModel
     protected static function itemsToUpdate(array $current, array $new): array
     {
         return array_filter(array_map(
-            function ($k, array $v) use ($current) {
+            function ($k, $v) use ($current) {
                 if (empty($current[$k])) {
                     return null;
+                }
+                if (is_string($v)) {
+                    return $v !== $current[$k] ? $v : null;
                 }
                 if (empty(Hash::diff($v, (array)$current[$k]))) {
                     return null;
