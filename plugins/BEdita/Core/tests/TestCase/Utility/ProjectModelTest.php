@@ -657,4 +657,81 @@ class ProjectModelTest extends TestCase
         ProjectModel::categoriesToUpdate($update);
         static::assertEquals($expected, $update);
     }
+
+    /**
+     * Data provider for `testConfigDiff` test case.
+     *
+     * @return array
+     */
+    public function configDiffProvider(): array
+    {
+        return [
+            'empty' => [
+                [],
+                [],
+                ['create' => [], 'update' => [], 'remove' => []],
+            ],
+            'no changes' => [
+                [
+                    ['name' => 'Status', 'context' => 'core', 'content' => '{"level":"draft"}', 'application' => 'first-app'],
+                    ['name' => 'Status', 'context' => 'core', 'content' => '{"level":"on"}', 'application' => 'second-app'],
+                ],
+                [
+                    ['name' => 'Status', 'context' => 'core', 'content' => '{"level":"draft"}', 'application' => 'first-app'],
+                    ['name' => 'Status', 'context' => 'core', 'content' => '{"level":"on"}', 'application' => 'second-app'],
+                ],
+                ['create' => [], 'update' => [], 'remove' => []],
+            ],
+            'create, update, remove' => [
+                [
+                    ['name' => 'Status', 'context' => 'core', 'content' => '{"level":"draft"}', 'application' => 'first-app'],
+                    ['name' => 'Status', 'context' => 'core', 'content' => '{"level":"on"}', 'application' => 'second-app'],
+                    ['name' => 'Modules', 'context' => 'core', 'content' => '{"objects":{"color": "#230637"}}', 'application' => 'first-app'],
+                    ['name' => 'Properties', 'context' => 'core', 'content' => '{"audio":false}', 'application' => 'first-app'],
+                    ['name' => 'Debug', 'context' => 'core', 'content' => '{"level":"on"}', 'application' => 'third-app'],
+                ],
+                [
+                    ['name' => 'Status', 'context' => 'core', 'content' => '{"level":"draft"}', 'application' => 'first-app'],
+                    ['name' => 'Status', 'context' => 'core', 'content' => '{"level":"off"}', 'application' => 'second-app'],
+                    ['name' => 'Status', 'context' => 'core', 'content' => '{"level":"on"}', 'application' => 'third-app'],
+                    ['name' => 'Modules', 'context' => 'core', 'content' => '{"objects":{"color": "#230637"}}', 'application' => 'first-app'],
+                    ['name' => 'Properties', 'context' => 'core', 'content' => '{"audio":true}', 'application' => 'first-app'],
+                ],
+                [
+                    'create' => [
+                        ['name' => 'Status', 'context' => 'core', 'content' => '{"level":"on"}', 'application' => 'third-app'],
+                    ],
+                    'update' => [
+                        ['name' => 'Status', 'context' => 'core', 'content' => '{"level":"off"}', 'application' => 'second-app'],
+                        ['name' => 'Properties', 'context' => 'core', 'content' => '{"audio":true}', 'application' => 'first-app'],
+                    ],
+                    'remove' => [
+                        ['name' => 'Debug', 'context' => 'core', 'content' => '{"level":"on"}', 'application' => 'third-app'],
+                    ],
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * Test `configDiff()` method
+     *
+     * @param array $old Old config
+     * @param array $current Current config
+     * @return void
+     * @dataProvider configDiffProvider()
+     * @covers ::configDiff()
+     * @covers ::itemsToUpdate()
+     */
+    public function testConfigDiff(array $old, array $current, array $expected): void
+    {
+        $projectModel = new class extends ProjectModel {
+            public static function configDiff(array $items, array $projectItems): array
+            {
+                return parent::configDiff($items, $projectItems);
+            }
+        };
+        $actual = $projectModel::configDiff($old, $current);
+        static::assertEquals($expected, $actual);
+    }
 }
