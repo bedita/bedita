@@ -472,6 +472,26 @@ class ProjectControllerTest extends IntegrationTestCase
                     'label' => 'Disabled category',
                 ],
             ],
+            'config' => [
+                [
+                    'name' => 'appVal',
+                    'context' => 'app',
+                    'content' => '{"val": 42}',
+                    'application' => 'First app',
+                ],
+                [
+                    'name' => 'someVal',
+                    'context' => 'core',
+                    'content' => '42',
+                    'application' => 'First app',
+                ],
+                [
+                    'name' => 'myVal',
+                    'context' => 'somecontext',
+                    'content' => '42',
+                    'application' => 'First app',
+                ],
+            ],
         ];
 
         $this->configRequestHeaders('GET', ['Accept' => 'application/json']);
