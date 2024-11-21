@@ -56,12 +56,12 @@ class RelationsBehavior extends Behavior
     /**
      * Getter for object type.
      *
-     * @param array $args Method arguments.
+     * @param \BEdita\Core\Model\Entity\ObjectType|string|int|null $type Method arguments.
      * @return \BEdita\Core\Model\Entity\ObjectType
      */
-    protected function objectType(array ...$args): ObjectType
+    protected function objectType(ObjectType|string|int|null $type): ObjectType
     {
-        return $this->table()->behaviors()->call('objectType', $args);
+        return $this->table()->behaviors()->call('objectType', [$type]);
     }
 
     /**

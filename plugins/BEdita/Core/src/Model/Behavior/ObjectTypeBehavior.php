@@ -52,7 +52,7 @@ class ObjectTypeBehavior extends Behavior
     public function objectType(ObjectType|string|int|null $objectType = null): ?ObjectType
     {
         if ($objectType === null) {
-            return $this->objectType;
+            return $this->objectType ?? null;
         }
 
         if (!($objectType instanceof ObjectType)) {
