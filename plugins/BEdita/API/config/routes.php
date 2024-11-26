@@ -269,6 +269,11 @@ return function (RouteBuilder $routes) {
             ['_name' => 'objects:related']
         );
         $routes->connect(
+            '/{object_type}/{id}/clone/{title}',
+            ['controller' => 'Objects', 'action' => 'clone'],
+            ['_name' => 'objects:clone', 'pass' => ['id', 'title']]
+        );
+        $routes->connect(
             '/{object_type}/{id}/relationships/{relationship}',
             ['controller' => 'Objects', 'action' => 'relationships'],
             ['_name' => 'objects:relationships']
