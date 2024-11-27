@@ -3752,4 +3752,30 @@ class ObjectsControllerTest extends IntegrationTestCase
         $this->assertContentType('application/vnd.api+json');
         $this->assertResponseContains('Missing required key');
     }
+
+    /**
+     * Test `clone` method.
+     *
+     * @return void
+     * @covers ::clone()
+     */
+    public function testClone(): void
+    {
+        $data = [
+            'type' => 'documents',
+            'attributes' => [
+                'status' => 'draft',
+            ],
+        ];
+        $this->configRequestHeaders('POST', $this->getUserAuthHeader());
+        $this->post('/documents/2/clone/test', json_encode(compact('data')));
+        $result = json_decode((string)$this->_response->getBody(), true);
+        $this->assertResponseCode(200);
+        $this->assertContentType('application/vnd.api+json');
+        static::assertArrayHasKey('data', $result);
+        static::assertArrayHasKey('attributes', $result['data']);
+        static::assertArrayHasKey('status', $result['data']['attributes']);
+        static::assertSame('draft', $result['data']['attributes']['status']);
+        static::assertSame('test', $result['data']['attributes']['title']);
+    }
 }
