@@ -63,7 +63,7 @@ class CloneActionTest extends TestCase
     ];
 
     /**
-     * Test command execution.
+     * Test action execution.
      *
      * @return void
      * @covers ::initialize()
