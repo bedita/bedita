@@ -15,6 +15,7 @@ declare(strict_types=1);
 
 namespace BEdita\Core\Model\Action;
 
+use BEdita\Core\Utility\LoggedUser;
 use BEdita\Core\Utility\Schema;
 use Cake\Datasource\EntityInterface;
 use Cake\ORM\Locator\LocatorAwareTrait;
@@ -35,11 +36,19 @@ class CloneAction extends BaseAction
     protected $Table;
 
     /**
+     * Author ID.
+     *
+     * @var int
+     */
+    protected $authorId;
+
+    /**
      * @inheritDoc
      */
     protected function initialize(array $data)
     {
         $this->Table = $this->getConfig('table');
+        $this->authorId = empty(LoggedUser::id()) ? LoggedUser::getUserAdmin()['id'] : LoggedUser::id();
     }
 
     /**
@@ -90,8 +99,10 @@ class CloneAction extends BaseAction
             $value = in_array($field, $unique) ? sprintf('%s-copy-%s', $source, date('YmdHis')) : $source;
             $entity->set($field, $value);
         }
-        $entity->set('title', $title ?? $sourceEntity->get('title'));
-        $entity->set('status', $status ?? 'draft');
+        $entity->set('title', !empty($title) ? $title : $sourceEntity->get('title'));
+        $entity->set('status', !empty($status) ? $status : 'draft');
+        $entity->set('created_by', $this->authorId);
+        $entity->set('modified_by', $this->authorId);
 
         return $this->Table->saveOrFail($entity);
     }
@@ -142,6 +153,8 @@ class CloneAction extends BaseAction
             $newTranslation->set('lang', $objectTranslation->lang);
             $newTranslation->set('status', $objectTranslation->status);
             $newTranslation->set('translated_fields', $objectTranslation->translated_fields);
+            $newTranslation->set('created_by', $this->authorId);
+            $newTranslation->set('modified_by', $this->authorId);
             $translations[] = $newTranslation;
         }
         if (!empty($translations)) {
