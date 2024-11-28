@@ -94,7 +94,7 @@ class CloneAction extends BaseAction
     public function cloneEntity(ObjectEntity $sourceEntity, array $attributes): EntityInterface
     {
         $schema = $this->Table->getSchema();
-        $reset = Schema::getPrimaryFields($schema) + ['created', 'modified', 'created_by', 'modified_by'];
+        $reset = Schema::getPrimaryFields($schema) + ['created', 'modified'];
         $unique = Schema::getUniqueFields($schema);
         $nullable = Schema::getNullableFields($schema);
         $schemaInfo = compact('reset', 'unique', 'nullable', 'attributes');
