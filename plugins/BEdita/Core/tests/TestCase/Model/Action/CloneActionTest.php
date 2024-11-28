@@ -82,8 +82,8 @@ class CloneActionTest extends TestCase
         $id = 2;
         $title = 'new title';
         $status = 'draft';
-        $include = ['relationships', 'translations'];
-        $data = compact('title', 'status', 'include');
+        $_meta = ['include' => ['relationships', 'translations']];
+        $data = compact('title', 'status', '_meta');
         $table = $this->fetchTable('Documents');
         $action = new CloneAction(compact('table'));
         $actual = $action(compact('id', 'data'));
@@ -142,7 +142,7 @@ class CloneActionTest extends TestCase
         $title = 'new title';
         $status = 'draft';
         $include = [];
-        $data = compact('title', 'status', 'include');
+        $data = compact('title', 'status');
         $table = $this->fetchTable('Images');
         $original = $table->get($id, ['contain' => ['Streams']]);
         $action = new CloneAction(compact('table'));
