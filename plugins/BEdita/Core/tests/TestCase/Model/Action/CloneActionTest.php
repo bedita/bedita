@@ -248,7 +248,7 @@ class CloneActionTest extends TestCase
             $this->expectExceptionMessage($expected->getMessage());
         }
         $action = new class extends CloneAction {
-            public function setEntityField(array $schemaInfo, ObjectEntity $sourceEntity, ObjectEntity &$entity, string $field): mixed
+            public function setEntityField(array $schemaInfo, ObjectEntity $sourceEntity, ObjectEntity &$entity, string $field)
             {
                 return parent::setEntityField($schemaInfo, $sourceEntity, $entity, $field);
             }
