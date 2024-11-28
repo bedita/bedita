@@ -59,15 +59,16 @@ class CloneAction extends BaseAction
     public function execute(array $data = [])
     {
         $sourceId = (int)Hash::get($data, 'id');
-        $title = (string)Hash::get($data, 'title');
-        $status = (string)Hash::get($data, 'status');
-        $include = (array)Hash::get($data, 'include');
+        $include = (array)Hash::get($data, 'data._meta.include');
+        $attributes = array_filter($data['data'], function ($key) {
+            return !in_array($key, ['_meta']);
+        }, ARRAY_FILTER_USE_KEY);
         $entity = null;
-        $this->Table->getConnection()->transactional(function () use (&$entity, $sourceId, $title, $status, $include) {
+        $this->Table->getConnection()->transactional(function () use (&$entity, $sourceId, $attributes, $include) {
             $objectType = $this->Table->objectType();
             $options = $objectType->hasAssoc('Streams') ? ['contain' => ['Streams']] : [];
             $source = $this->Table->get($sourceId, $options);
-            $entity = $this->cloneEntity($source, $title, $status);
+            $entity = $this->cloneEntity($source, $attributes);
             if (!empty($source->get('streams'))) {
                 $this->cloneStreams($source->get('streams'), $entity);
             }
@@ -86,28 +87,29 @@ class CloneAction extends BaseAction
      * Clone entity
      *
      * @param \BEdita\Core\Model\Entity\ObjectEntity $sourceEntity Source object
-     * @param string $title Title
-     * @param string $status Status
+     * @param array $attributes Attributes to set
      * @return \Cake\Datasource\EntityInterface
      */
-    public function cloneEntity(ObjectEntity $sourceEntity, string $title, string $status): EntityInterface
+    public function cloneEntity(ObjectEntity $sourceEntity, array $attributes): EntityInterface
     {
         $schema = $this->Table->getSchema();
         $reset = Schema::getPrimaryFields($schema) + ['created', 'modified', 'created_by', 'modified_by'];
         $unique = Schema::getUniqueFields($schema);
         /** @var \BEdita\Core\Model\Entity\ObjectEntity $entity */
         $entity = $this->Table->newEmptyEntity();
-        $attributes = $sourceEntity->getVisible();
-        foreach ($attributes as $field) {
+        $entityAttributes = $sourceEntity->getVisible();
+        foreach ($entityAttributes as $field) {
             if (in_array($field, $reset)) {
+                continue;
+            }
+            if (array_key_exists($field, $attributes)) {
+                $entity->set($field, $attributes[$field]);
                 continue;
             }
             $source = $sourceEntity->get($field);
             $value = in_array($field, $unique) ? sprintf('%s-copy-%s', $source, date('YmdHis')) : $source;
             $entity->set($field, $value);
         }
-        $entity->set('title', !empty($title) ? $title : $sourceEntity->get('title'));
-        $entity->set('status', !empty($status) ? $status : 'draft');
         $entity->set('created_by', $this->authorId);
         $entity->set('modified_by', $this->authorId);
 

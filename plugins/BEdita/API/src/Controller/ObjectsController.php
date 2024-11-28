@@ -655,11 +655,9 @@ class ObjectsController extends ResourcesController
     public function clone(int $id): ?Response
     {
         $this->request->allowMethod(['post']);
-        $status = (string)$this->getRequest()->getData('status');
-        $title = (string)$this->getRequest()->getData('title');
-        $include = (array)$this->getRequest()->getData('_meta.include');
+        $data = (array)$this->getRequest()->getData();
         $action = new CloneAction(['table' => $this->Table]);
-        $entity = $action(compact('id', 'title', 'status', 'include'));
+        $entity = $action(compact('id', 'data'));
         $this->set(compact('entity'));
         $this->setSerialize(['entity']);
 

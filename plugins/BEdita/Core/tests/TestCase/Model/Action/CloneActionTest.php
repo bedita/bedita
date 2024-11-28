@@ -83,9 +83,10 @@ class CloneActionTest extends TestCase
         $title = 'new title';
         $status = 'draft';
         $include = ['relationships', 'translations'];
+        $data = compact('title', 'status', 'include');
         $table = $this->fetchTable('Documents');
         $action = new CloneAction(compact('table'));
-        $actual = $action(compact('id', 'title', 'status', 'include'));
+        $actual = $action(compact('id', 'data'));
         $original = $table->get($id, ['contain' => ['Test', 'TestSimple', 'TestDefaults', 'Translations']]);
         $clone = $table->get($actual->id, ['contain' => ['Test', 'TestSimple', 'TestDefaults', 'Translations']]);
         static::assertEquals($clone->title, $title);
@@ -141,10 +142,11 @@ class CloneActionTest extends TestCase
         $title = 'new title';
         $status = 'draft';
         $include = [];
+        $data = compact('title', 'status', 'include');
         $table = $this->fetchTable('Images');
         $original = $table->get($id, ['contain' => ['Streams']]);
         $action = new CloneAction(compact('table'));
-        $actual = $action(compact('id', 'title', 'status', 'include'));
+        $actual = $action(compact('id', 'data'));
         $clone = $table->get($actual->id, ['contain' => ['Streams']]);
         static::assertEquals($clone->title, $title);
         static::assertEquals($clone->status, $status);
