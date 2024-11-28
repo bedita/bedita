@@ -269,9 +269,9 @@ return function (RouteBuilder $routes) {
             ['_name' => 'objects:related']
         );
         $routes->connect(
-            '/{object_type}/{id}/clone/{title}',
+            '/{object_type}/{id}/actions/clone',
             ['controller' => 'Objects', 'action' => 'clone'],
-            ['_name' => 'objects:clone', 'pass' => ['id', 'title']]
+            ['_name' => 'objects:clone', 'pass' => ['id']]
         );
         $routes->connect(
             '/{object_type}/{id}/relationships/{relationship}',

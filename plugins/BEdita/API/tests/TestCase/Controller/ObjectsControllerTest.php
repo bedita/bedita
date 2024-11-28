@@ -3765,10 +3765,11 @@ class ObjectsControllerTest extends IntegrationTestCase
             'type' => 'documents',
             'attributes' => [
                 'status' => 'draft',
+                'title' => 'test',
             ],
         ];
         $this->configRequestHeaders('POST', $this->getUserAuthHeader());
-        $this->post('/documents/2/clone/test', json_encode(compact('data')));
+        $this->post('/documents/2/actions/clone', json_encode(compact('data')));
         $result = json_decode((string)$this->_response->getBody(), true);
         $this->assertResponseCode(200);
         $this->assertContentType('application/vnd.api+json');

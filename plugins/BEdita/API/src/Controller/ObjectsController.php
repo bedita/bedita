@@ -650,13 +650,13 @@ class ObjectsController extends ResourcesController
      * Clone object
      *
      * @param int $id The ID
-     * @param string $title The new title
      * @return \Cake\Http\Response|null
      */
-    public function clone(int $id, string $title): ?Response
+    public function clone(int $id): ?Response
     {
         $this->request->allowMethod(['post']);
         $status = (string)$this->getRequest()->getData('status');
+        $title = (string)$this->getRequest()->getData('title');
         $include = (array)$this->getRequest()->getData('_meta.include');
         $action = new CloneAction(['table' => $this->Table]);
         $entity = $action(compact('id', 'title', 'status', 'include'));
