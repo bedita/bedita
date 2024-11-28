@@ -64,7 +64,9 @@ class CloneAction extends BaseAction
         $include = (array)Hash::get($data, 'include');
         $entity = null;
         $this->Table->getConnection()->transactional(function () use (&$entity, $sourceId, $title, $status, $include) {
-            $source = $this->Table->get($sourceId, ['contain' => ['Streams']]);
+            $objectType = $this->Table->objectType();
+            $options = $objectType->hasAssoc('Streams') ? ['contain' => ['Streams']] : [];
+            $source = $this->Table->get($sourceId, $options);
             $entity = $this->cloneEntity($source, $title, $status);
             if (!empty($source->get('streams'))) {
                 $this->cloneStreams($source->get('streams'), $entity);
