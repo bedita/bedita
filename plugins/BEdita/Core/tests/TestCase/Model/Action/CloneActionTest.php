@@ -16,6 +16,7 @@ declare(strict_types=1);
 namespace BEdita\Core\Test\TestCase\Model\Action;
 
 use BEdita\Core\Model\Action\CloneAction;
+use BEdita\Core\Test\Utility\TestFilesystemTrait;
 use Cake\TestSuite\TestCase;
 
 /**
@@ -25,6 +26,8 @@ use Cake\TestSuite\TestCase;
  */
 class CloneActionTest extends TestCase
 {
+    use TestFilesystemTrait;
+
     /**
      * Fixtures
      *
@@ -60,10 +63,11 @@ class CloneActionTest extends TestCase
         'plugin.BEdita/Core.ObjectTags',
         'plugin.BEdita/Core.History',
         'plugin.BEdita/Core.Annotations',
+        'plugin.BEdita/Core.Streams',
     ];
 
     /**
-     * Test action execution.
+     * Test clone a document with relationships and translations.
      *
      * @return void
      * @covers ::initialize()
@@ -72,7 +76,7 @@ class CloneActionTest extends TestCase
      * @covers ::cloneRelationships()
      * @covers ::cloneTranslations()
      */
-    public function testExecute()
+    public function testClone(): void
     {
         // document with ID 2 from fixtures has 5 relationships records and 4 translations records
         $id = 2;
@@ -116,5 +120,48 @@ class CloneActionTest extends TestCase
                 }
             }
         }
+    }
+
+    /**
+     * Test clone a media.
+     *
+     * @return void
+     * @covers ::initialize()
+     * @covers ::execute()
+     * @covers ::cloneEntity()
+     * @covers ::cloneStreams()
+     * @covers ::cloneStream()
+     */
+    public function testCloneMedia(): void
+    {
+        $this->filesystemSetup();
+
+        // ID 14, stream bedita-logo-gray.gif
+        $id = 14;
+        $title = 'new title';
+        $status = 'draft';
+        $include = [];
+        $table = $this->fetchTable('Images');
+        $original = $table->get($id, ['contain' => ['Streams']]);
+        $action = new CloneAction(compact('table'));
+        $actual = $action(compact('id', 'title', 'status', 'include'));
+        $clone = $table->get($actual->id, ['contain' => ['Streams']]);
+        static::assertEquals($clone->title, $title);
+        static::assertEquals($clone->status, $status);
+        static::assertEquals($clone->title, $actual->title);
+        static::assertEquals($clone->status, $actual->status);
+        // stream test
+        $streams = $clone->get('streams');
+        static::assertCount(1, $streams);
+        $originalStreams = $original->get('streams');
+        $expected = $originalStreams[0];
+        $actual = $streams[0];
+        static::assertEquals($expected->file_name, $actual->file_name);
+        static::assertEquals($expected->mime_type, $actual->mime_type);
+        static::assertEquals($expected->file_size, $actual->file_size);
+        static::assertEquals($expected->hash_md5, $actual->hash_md5);
+        static::assertEquals($expected->hash_sha1, $actual->hash_sha1);
+        static::assertEquals($expected->width, $actual->width);
+        static::assertEquals($expected->height, $actual->height);
     }
 }

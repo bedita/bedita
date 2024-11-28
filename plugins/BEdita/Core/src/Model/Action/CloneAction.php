@@ -15,6 +15,8 @@ declare(strict_types=1);
 
 namespace BEdita\Core\Model\Action;
 
+use BEdita\Core\Model\Entity\ObjectEntity;
+use BEdita\Core\Model\Entity\Stream;
 use BEdita\Core\Utility\LoggedUser;
 use BEdita\Core\Utility\Schema;
 use Cake\Datasource\EntityInterface;
@@ -62,7 +64,11 @@ class CloneAction extends BaseAction
         $include = (array)Hash::get($data, 'include');
         $entity = null;
         $this->Table->getConnection()->transactional(function () use (&$entity, $sourceId, $title, $status, $include) {
-            $entity = $this->cloneEntity($sourceId, $title, $status);
+            $source = $this->Table->get($sourceId, ['contain' => ['Streams']]);
+            $entity = $this->cloneEntity($source, $title, $status);
+            if (!empty($source->get('streams'))) {
+                $this->cloneStreams($source->get('streams'), $entity);
+            }
             if (in_array('relationships', $include)) {
                 $this->cloneRelationships($sourceId, $entity->id);
             }
@@ -77,17 +83,16 @@ class CloneAction extends BaseAction
     /**
      * Clone entity
      *
-     * @param int $sourceId Source object ID
+     * @param \BEdita\Core\Model\Entity\ObjectEntity $sourceEntity Source object
      * @param string $title Title
      * @param string $status Status
      * @return \Cake\Datasource\EntityInterface
      */
-    public function cloneEntity(int $sourceId, string $title, string $status): EntityInterface
+    public function cloneEntity(ObjectEntity $sourceEntity, string $title, string $status): EntityInterface
     {
         $schema = $this->Table->getSchema();
         $reset = Schema::getPrimaryFields($schema) + ['created', 'modified', 'created_by', 'modified_by'];
         $unique = Schema::getUniqueFields($schema);
-        $sourceEntity = $this->Table->get($sourceId);
         /** @var \BEdita\Core\Model\Entity\ObjectEntity $entity */
         $entity = $this->Table->newEmptyEntity();
         $attributes = $sourceEntity->getVisible();
@@ -105,6 +110,45 @@ class CloneAction extends BaseAction
         $entity->set('modified_by', $this->authorId);
 
         return $this->Table->saveOrFail($entity);
+    }
+
+    /**
+     * Clone streams
+     *
+     * @param array $streams Source streams
+     * @param \BEdita\Core\Model\Entity\ObjectEntity $destination Destination object
+     * @return array
+     */
+    public function cloneStreams(array $streams, ObjectEntity $destination): array
+    {
+        $clonedStreams = [];
+        foreach ($streams as $stream) {
+            $clonedStreams[] = $this->cloneStream($stream, $destination);
+        }
+
+        return $clonedStreams;
+    }
+
+    /**
+     * Clone stream
+     *
+     * @param \BEdita\Core\Model\Entity\Stream $stream Source stream
+     * @param \BEdita\Core\Model\Entity\ObjectEntity $entity Destination object
+     * @return \Cake\Datasource\EntityInterface
+     */
+    public function cloneStream(Stream $stream, ObjectEntity $entity): EntityInterface
+    {
+        // clone stream and files
+        $streamsTable = $this->fetchTable('Streams');
+        $clonedStream = $streamsTable->clone($streamsTable->get($stream->uuid));
+
+        // add stream to media
+        $association = $this->Table->associations()->getByProperty('streams');
+        $action = new AddRelatedObjectsAction(compact('association'));
+        $relatedEntities = [$clonedStream];
+        $action(compact('entity', 'relatedEntities'));
+
+        return $clonedStream;
     }
 
     /**
