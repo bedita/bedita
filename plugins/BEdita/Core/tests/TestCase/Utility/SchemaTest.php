@@ -77,4 +77,19 @@ class SchemaTest extends TestCase
         }
         static::assertEquals($expected, $actual);
     }
+
+    /**
+     * Test `getNullableFields` method
+     *
+     * @return void
+     * @covers ::getNullableFields()
+     */
+    public function testGetNullableFields(): void
+    {
+        $table = $this->fetchTable('Users');
+        $schema = $table->getSchema();
+        $actual = Schema::getNullableFields($schema);
+        $expected = ['password_hash', 'last_login', 'last_login_err', 'verified', 'password_modified', 'user_preferences'];
+        static::assertEquals($expected, $actual);
+    }
 }

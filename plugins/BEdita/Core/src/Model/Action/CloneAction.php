@@ -19,6 +19,7 @@ use BEdita\Core\Model\Entity\ObjectEntity;
 use BEdita\Core\Model\Entity\Stream;
 use BEdita\Core\Utility\LoggedUser;
 use BEdita\Core\Utility\Schema;
+use BEdita\Core\Utility\Text;
 use Cake\Datasource\EntityInterface;
 use Cake\ORM\Locator\LocatorAwareTrait;
 use Cake\Utility\Hash;
@@ -95,25 +96,61 @@ class CloneAction extends BaseAction
         $schema = $this->Table->getSchema();
         $reset = Schema::getPrimaryFields($schema) + ['created', 'modified', 'created_by', 'modified_by'];
         $unique = Schema::getUniqueFields($schema);
+        $nullable = Schema::getNullableFields($schema);
+        $schemaInfo = compact('reset', 'unique', 'nullable', 'attributes');
         /** @var \BEdita\Core\Model\Entity\ObjectEntity $entity */
         $entity = $this->Table->newEmptyEntity();
         $entityAttributes = $sourceEntity->getVisible();
         foreach ($entityAttributes as $field) {
-            if (in_array($field, $reset)) {
-                continue;
-            }
-            if (array_key_exists($field, $attributes)) {
-                $entity->set($field, $attributes[$field]);
-                continue;
-            }
-            $source = $sourceEntity->get($field);
-            $value = in_array($field, $unique) ? sprintf('%s-copy-%s', $source, date('YmdHis')) : $source;
-            $entity->set($field, $value);
+            $this->setEntityField($schemaInfo, $sourceEntity, $entity, $field);
         }
         $entity->set('created_by', $this->authorId);
         $entity->set('modified_by', $this->authorId);
 
         return $this->Table->saveOrFail($entity);
+    }
+
+    /**
+     * Set entity field
+     *
+     * @param array $schemaInfo Schema information
+     * @param \BEdita\Core\Model\Entity\ObjectEntity $sourceEntity Source object
+     * @param \BEdita\Core\Model\Entity\ObjectEntity $entity Destination object
+     * @param string $field Field name
+     * @return mixed
+     */
+    protected function setEntityField(array $schemaInfo, ObjectEntity $sourceEntity, ObjectEntity &$entity, string $field): mixed
+    {
+        if (in_array($field, (array)Hash::get($schemaInfo, 'reset'))) {
+            return null; // skip
+        }
+        $attributes = (array)Hash::get($schemaInfo, 'attributes');
+        if (array_key_exists($field, $attributes)) {
+            $entity->set($field, $attributes[$field]);
+
+            return $attributes[$field];
+        }
+        $value = $sourceEntity->get($field);
+        if (!in_array($field, (array)Hash::get($schemaInfo, 'unique'))) {
+            $entity->set($field, $value);
+
+            return $value;
+        }
+        // unique and string? then generate a new value
+        if (is_string($value)) {
+            $value = sprintf('%s-%s', $value, Text::uuid());
+            $entity->set($field, $value);
+
+            return $value;
+        }
+        // unique, not a string and nullable? then 'null'
+        if (in_array($field, (array)Hash::get($schemaInfo, 'nullable'))) {
+            $entity->set($field, null);
+
+            return null;
+        }
+
+        throw new \RuntimeException(sprintf('Cannot set unique field "%s"', $field));
     }
 
     /**

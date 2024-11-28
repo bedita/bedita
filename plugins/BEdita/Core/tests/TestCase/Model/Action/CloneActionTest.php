@@ -16,6 +16,7 @@ declare(strict_types=1);
 namespace BEdita\Core\Test\TestCase\Model\Action;
 
 use BEdita\Core\Model\Action\CloneAction;
+use BEdita\Core\Model\Entity\ObjectEntity;
 use BEdita\Core\Test\Utility\TestFilesystemTrait;
 use Cake\TestSuite\TestCase;
 
@@ -73,6 +74,7 @@ class CloneActionTest extends TestCase
      * @covers ::initialize()
      * @covers ::execute()
      * @covers ::cloneEntity()
+     * @covers ::setEntityField()
      * @covers ::cloneRelationships()
      * @covers ::cloneTranslations()
      */
@@ -130,6 +132,7 @@ class CloneActionTest extends TestCase
      * @covers ::initialize()
      * @covers ::execute()
      * @covers ::cloneEntity()
+     * @covers ::setEntityField()
      * @covers ::cloneStreams()
      * @covers ::cloneStream()
      */
@@ -165,5 +168,99 @@ class CloneActionTest extends TestCase
         static::assertEquals($expected->hash_sha1, $actual->hash_sha1);
         static::assertEquals($expected->width, $actual->width);
         static::assertEquals($expected->height, $actual->height);
+    }
+
+    /**
+     * Data provider for testSetEntityField.
+     *
+     * @return array
+     */
+    public function setEntityFieldProvider(): array
+    {
+        return [
+            'reset field' => [
+                [
+                    'reset' => ['my_field'],
+                ],
+                new ObjectEntity(),
+                new ObjectEntity(['my_field' => 'value']),
+                'my_field',
+                null,
+            ],
+            'overwrite field' => [
+                [
+                    'attributes' => ['my_field' => 'overwrite_value'],
+                ],
+                new ObjectEntity(),
+                new ObjectEntity(['my_field' => 'value']),
+                'my_field',
+                'overwrite_value',
+            ],
+            'not unique field, not in attributes' => [
+                [],
+                new ObjectEntity(['my_field' => 'value']),
+                new ObjectEntity(),
+                'my_field',
+                'value',
+            ],
+            'unique field' => [
+                [
+                    'unique' => ['my_field'],
+                ],
+                new ObjectEntity(['my_field' => 'value']),
+                new ObjectEntity(),
+                'my_field',
+                'value-:::HASH:::',
+            ],
+            'not a string, unique and nullable, not in attributes' => [
+                [
+                    'unique' => ['my_field'],
+                    'nullable' => ['my_field'],
+                ],
+                new ObjectEntity(['my_field' => 999]),
+                new ObjectEntity(),
+                'my_field',
+                null,
+            ],
+            'not a string, unique and not nullable, not in attributes => exception' => [
+                [
+                    'unique' => ['my_field'],
+                ],
+                new ObjectEntity(['my_field' => 999]),
+                new ObjectEntity(),
+                'my_field',
+                new \RuntimeException('Cannot set unique field "my_field"'),
+            ],
+        ];
+    }
+
+    /**
+     * Test `setEntityField` method.
+     *
+     * @return void
+     * @covers ::setEntityField()
+     * @dataProvider setEntityFieldProvider()
+     */
+    public function testSetEntityField(array $schemaInfo, ObjectEntity $sourceEntity, ObjectEntity $entity, string $field, $expected): void
+    {
+        if ($expected instanceof \Exception) {
+            $this->expectException(get_class($expected));
+            $this->expectExceptionMessage($expected->getMessage());
+        }
+        $action = new class extends CloneAction {
+            public function setEntityField(array $schemaInfo, ObjectEntity $sourceEntity, ObjectEntity &$entity, string $field): mixed
+            {
+                return parent::setEntityField($schemaInfo, $sourceEntity, $entity, $field);
+            }
+        };
+        $actual = $action->setEntityField($schemaInfo, $sourceEntity, $entity, $field);
+        if ($expected === null) {
+            static::assertNull($actual);
+        } elseif (strpos($expected, ':::HASH:::') !== false) {
+            // check only the prefix
+            static::assertStringStartsWith(str_replace(':::HASH:::', '', $expected), $actual);
+        } else {
+            static::assertEquals($expected, $actual);
+        }
     }
 }

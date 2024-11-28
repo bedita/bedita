@@ -55,4 +55,23 @@ class Schema
 
         return $fields;
     }
+
+    /**
+     * Get nullable fields from schema.
+     *
+     * @param \Cake\Database\Schema\TableSchemaInterface $schema Table schema.
+     * @return array
+     */
+    public static function getNullableFields(TableSchemaInterface $schema): array
+    {
+        $fields = [];
+        foreach ($schema->columns() as $name) {
+            $column = $schema->getColumn($name);
+            if ($column['null']) {
+                $fields[] = $name;
+            }
+        }
+
+        return $fields;
+    }
 }
