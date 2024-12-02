@@ -71,7 +71,8 @@ class CloneObjectAction extends BaseAction
                 $this->cloneStreams($source->get('streams'), $entity);
             }
             if (in_array('relationships', $include)) {
-                $this->cloneRelationships($sourceId, $entity->id);
+                $this->cloneRelationships($sourceId, $entity->id, 'left_id');
+                $this->cloneRelationships($sourceId, $entity->id, 'right_id');
             }
             if (in_array('translations', $include)) {
                 $this->cloneTranslations($sourceId, $entity->id);
@@ -193,23 +194,22 @@ class CloneObjectAction extends BaseAction
      *
      * @param int $sourceId Source object ID
      * @param int $destinationId Destination object ID
+     * @param string $key Relationship key ('left_id' or 'right_id')
      * @return array
      */
-    public function cloneRelationships(int $sourceId, int $destinationId): array
+    public function cloneRelationships(int $sourceId, int $destinationId, string $key): array
     {
         $objectRelationsTable = $this->fetchTable('ObjectRelations');
-        $objectRelations = $objectRelationsTable->find()->where(['left_id' => $sourceId])->toArray();
+        $objectRelations = $objectRelationsTable->find()->where([$key => $sourceId])->toArray();
         if (empty($objectRelations)) {
             return [];
         }
-
-        $objectRelations = array_map(function ($objectRelation) use ($destinationId) {
-            $objectRelation->set('left_id', $destinationId);
+        $objectRelations = array_map(function ($objectRelation) use ($destinationId, $key) {
+            $objectRelation->set($key, $destinationId);
             $objectRelation->setNew(true);
 
             return $objectRelation;
         }, $objectRelations);
-
         $objectRelationsTable->saveManyOrFail($objectRelations);
 
         return $objectRelations;

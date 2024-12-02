@@ -92,35 +92,35 @@ class CloneObjectActionTest extends IntegrationTestCase
         $actual = $action(compact('id', 'data'));
         $original = $table->get($id, ['contain' => ['Test', 'TestSimple', 'TestDefaults', 'Translations']]);
         $clone = $table->get($actual->id, ['contain' => ['Test', 'TestSimple', 'TestDefaults', 'Translations']]);
-        static::assertEquals($clone->title, $title);
-        static::assertEquals($clone->status, $status);
-        static::assertEquals($clone->title, $actual->title);
-        static::assertEquals($clone->status, $actual->status);
+        $this->assertEquals($clone->title, $title);
+        $this->assertEquals($clone->status, $status);
+        $this->assertEquals($clone->title, $actual->title);
+        $this->assertEquals($clone->status, $actual->status);
         // relation test
         $relatedTest = $clone->get('test');
         $originalRelatedTest = $original->get('test');
         foreach ($relatedTest as $key => $item) {
-            static::assertEquals($item->uname, $originalRelatedTest[$key]->uname);
+            $this->assertEquals($item->uname, $originalRelatedTest[$key]->uname);
         }
         // relation test_simple
         $relatedTestSimple = $clone->get('test_simple');
         $originalRelatedTestSimple = $original->get('test_simple');
         foreach ($relatedTestSimple as $key => $item) {
-            static::assertEquals($item->uname, $originalRelatedTestSimple[$key]->uname);
+            $this->assertEquals($item->uname, $originalRelatedTestSimple[$key]->uname);
         }
         // relation test_defaults
         $relatedTestDefaults = $clone->get('test_defaults');
         $originalRelatedTestDefaults = $original->get('test_defaults');
         foreach ($relatedTestDefaults as $key => $item) {
-            static::assertEquals($item->uname, $originalRelatedTestDefaults[$key]->uname);
+            $this->assertEquals($item->uname, $originalRelatedTestDefaults[$key]->uname);
         }
         // translations
         $translations = $clone->get('translations');
-        static::assertCount(4, $translations);
+        $this->assertCount(4, $translations);
         foreach ($translations as $translation) {
             foreach ($original->get('translations') as $originalTranslation) {
                 if ($originalTranslation->lang === $translation->lang) {
-                    static::assertEquals($originalTranslation->translated_fields, $translation->translated_fields);
+                    $this->assertEquals($originalTranslation->translated_fields, $translation->translated_fields);
                 }
             }
         }
@@ -153,23 +153,72 @@ class CloneObjectActionTest extends IntegrationTestCase
         $action = new CloneObjectAction(compact('table'));
         $actual = $action(compact('id', 'data'));
         $clone = $table->get($actual->id, ['contain' => ['Streams']]);
-        static::assertEquals($clone->title, $title);
-        static::assertEquals($clone->status, $status);
-        static::assertEquals($clone->title, $actual->title);
-        static::assertEquals($clone->status, $actual->status);
+        $this->assertEquals($clone->title, $title);
+        $this->assertEquals($clone->status, $status);
+        $this->assertEquals($clone->title, $actual->title);
+        $this->assertEquals($clone->status, $actual->status);
         // stream test
         $streams = $clone->get('streams');
-        static::assertCount(1, $streams);
+        $this->assertCount(1, $streams);
         $originalStreams = $original->get('streams');
         $expected = $originalStreams[0];
         $actual = $streams[0];
-        static::assertEquals($expected->file_name, $actual->file_name);
-        static::assertEquals($expected->mime_type, $actual->mime_type);
-        static::assertEquals($expected->file_size, $actual->file_size);
-        static::assertEquals($expected->hash_md5, $actual->hash_md5);
-        static::assertEquals($expected->hash_sha1, $actual->hash_sha1);
-        static::assertEquals($expected->width, $actual->width);
-        static::assertEquals($expected->height, $actual->height);
+        $this->assertEquals($expected->file_name, $actual->file_name);
+        $this->assertEquals($expected->mime_type, $actual->mime_type);
+        $this->assertEquals($expected->file_size, $actual->file_size);
+        $this->assertEquals($expected->hash_md5, $actual->hash_md5);
+        $this->assertEquals($expected->hash_sha1, $actual->hash_sha1);
+        $this->assertEquals($expected->width, $actual->width);
+        $this->assertEquals($expected->height, $actual->height);
+    }
+
+    /**
+     * Data provider for testCloneRelationships.
+     *
+     * @return array
+     */
+    public function cloneRelationshipsProvider(): array
+    {
+        return [
+            'no relationships' => [
+                19,
+                0,
+                0,
+            ],
+            'relationship with 5 objects' => [
+                2,
+                5,
+                0,
+            ],
+        ];
+    }
+
+    /**
+     * Test clone relationships
+     *
+     * @param int $sourceId Source object ID
+     * @param int $expectedCountLeft Expected count of left relationships
+     * @param int $expectedCountRight Expected count of right relationships
+     * @return void
+     * @covers ::cloneRelationships()
+     * @dataProvider cloneRelationshipsProvider()
+     */
+    public function testCloneRelationships(int $sourceId, int $expectedCountLeft, int $expectedCountRight): void
+    {
+        $this->configRequestHeaders('POST', $this->getUserAuthHeader());
+        $source = $this->fetchTable('Objects')->get($sourceId);
+        $table = $this->fetchTable($source->get('type'));
+        $action = new class (['table' => $table]) extends CloneObjectAction {
+            public function cloneRelationships(int $sourceId, int $destinationId, string $key): array
+            {
+                return parent::cloneRelationships($sourceId, $destinationId, $key);
+            }
+        };
+        $clone = $action->cloneEntity($source, []);
+        $actual = $action->cloneRelationships($sourceId, $clone->id, 'left_id');
+        $this->assertEquals($expectedCountLeft, count($actual));
+        $actual = $action->cloneRelationships($sourceId, $clone->id, 'right_id');
+        $this->assertEquals($expectedCountRight, count($actual));
     }
 
     /**
@@ -272,12 +321,12 @@ class CloneObjectActionTest extends IntegrationTestCase
         };
         $actual = $action->setEntityField($schemaInfo, $sourceEntity, $entity, $field);
         if ($expected === null) {
-            static::assertNull($actual);
+            $this->assertNull($actual);
         } elseif (strpos($expected, ':::HASH:::') !== false) {
             // check only the prefix
-            static::assertStringStartsWith(str_replace(':::HASH:::', '', $expected), $actual);
+            $this->assertStringStartsWith(str_replace(':::HASH:::', '', $expected), $actual);
         } else {
-            static::assertEquals($expected, $actual);
+            $this->assertEquals($expected, $actual);
         }
     }
 }
