@@ -22,15 +22,18 @@ class SchemaTools
      * Get primary fields from schema.
      *
      * @param \Cake\Database\Schema\TableSchemaInterface $schema Table schema.
+     * @param array $options Options.
      * @return array
      */
-    public static function getPrimaryFields(TableSchemaInterface $schema): array
+    public static function getPrimaryFields(TableSchemaInterface $schema, array $options = []): array
     {
         $fields = [];
         foreach ($schema->constraints() as $name) {
             $constraint = $schema->getConstraint($name);
-            if ($constraint['type'] === 'primary' && count($constraint['columns']) === 1) {
-                $fields = array_merge($fields, $constraint['columns']);
+            if ($constraint['type'] === 'primary') {
+                if (empty($options['oneColumnConstraint']) || count($constraint['columns']) === 1) {
+                    $fields = array_merge($fields, $constraint['columns']);
+                }
             }
         }
 
@@ -41,15 +44,18 @@ class SchemaTools
      * Get unique fields from schema.
      *
      * @param \Cake\Database\Schema\TableSchemaInterface $schema Table schema.
+     * @param array $options Options.
      * @return array
      */
-    public static function getUniqueFields(TableSchemaInterface $schema): array
+    public static function getUniqueFields(TableSchemaInterface $schema, array $options = []): array
     {
         $fields = [];
         foreach ($schema->constraints() as $name) {
             $constraint = $schema->getConstraint($name);
-            if ($constraint['type'] === 'unique' && count($constraint['columns']) === 1) {
-                $fields = array_merge($fields, $constraint['columns']);
+            if ($constraint['type'] === 'unique') {
+                if (empty($options['oneColumnConstraint']) || count($constraint['columns']) === 1) {
+                    $fields = array_merge($fields, $constraint['columns']);
+                }
             }
         }
 

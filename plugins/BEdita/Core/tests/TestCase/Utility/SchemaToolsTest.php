@@ -54,7 +54,7 @@ class SchemaToolsTest extends TestCase
     {
         $table = $this->fetchTable('Users');
         $schema = $table->getSchema();
-        $actual = SchemaTools::getPrimaryFields($schema);
+        $actual = SchemaTools::getPrimaryFields($schema, ['oneColumnConstraint' => 1]);
         $expected = ['id'];
         static::assertEquals($expected, $actual);
     }
@@ -69,7 +69,7 @@ class SchemaToolsTest extends TestCase
     {
         $table = $this->fetchTable('Applications');
         $schema = $table->getSchema();
-        $actual = SchemaTools::getUniqueFields($schema);
+        $actual = SchemaTools::getUniqueFields($schema, ['oneColumnConstraint' => 1]);
         $expected = ['api_key', 'name'];
         $info = Database::basicInfo();
         if ($info['vendor'] === 'sqlite') {
