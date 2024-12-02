@@ -196,20 +196,19 @@ class CloneAction extends BaseAction
     public function cloneRelationships(int $sourceId, int $destinationId): array
     {
         $objectRelationsTable = $this->fetchTable('ObjectRelations');
-        $objectRelations = $objectRelationsTable->find()->where(['left_id' => $sourceId]);
-        $related = [];
-        foreach ($objectRelations as $objectRelation) {
-            $newRecord = $objectRelationsTable->newEmptyEntity();
-            $newRecord->set('relation_id', $objectRelation->relation_id);
-            $newRecord->set('left_id', $destinationId);
-            $newRecord->set('right_id', $objectRelation->right_id);
-            $newRecord->set('priority', $objectRelation->priority);
-            $newRecord->set('params', $objectRelation->params);
-            $related[] = $newRecord;
+        $objectRelations = $objectRelationsTable->find()->where(['left_id' => $sourceId])->toArray();
+        if (empty($objectRelations)) {
+            return [];
         }
-        if (!empty($related)) {
-            $objectRelationsTable->saveManyOrFail($related);
-        }
+        
+        $objectRelations = array_map(function ($objectRelation) use ($destinationId) {
+            $objectRelation->set('left_id', $destinationId);
+            $objectRelation->setNew(true);
+
+            return $objectRelation;
+        }, $objectRelations);
+
+        $objectRelationsTable->saveManyOrFail($objectRelations);
 
         return $related;
     }
