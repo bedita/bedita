@@ -177,7 +177,7 @@ class CloneAction extends BaseAction
     {
         // clone stream and files
         $streamsTable = $this->fetchTable('Streams');
-        $clonedStream = $streamsTable->clone($streamsTable->get($stream->uuid));
+        $clonedStream = $streamsTable->clone($stream);
 
         // add stream to media
         $association = $this->Table->associations()->getByProperty('streams');
