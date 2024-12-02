@@ -66,7 +66,6 @@ class CloneObjectAction extends BaseAction
             $contain = $objectType->get('associations');
             $action = new GetObjectAction(['table' => $this->Table]);
             $source = $action(['primaryKey' => $sourceId, 'contain' => $contain]);
-
             $entity = $this->cloneEntity($source, $attributes);
             if (!empty($source->get('streams'))) {
                 $this->cloneStreams($source->get('streams'), $entity);
@@ -101,6 +100,9 @@ class CloneObjectAction extends BaseAction
         $entityAttributes = $sourceEntity->getVisible();
         foreach ($entityAttributes as $field) {
             $this->setEntityField($schemaInfo, $sourceEntity, $entity, $field);
+        }
+        if (!empty($entity->get('streams'))) {
+            $entity->set('streams', []);
         }
 
         return $this->Table->saveOrFail($entity);
@@ -181,7 +183,7 @@ class CloneObjectAction extends BaseAction
 
         // add stream to media
         $clonedStream->set('object_id', $entity->id);
-        $streamsTable->saveOrFail($clonedStream);
+        $tmp = $streamsTable->saveOrFail($clonedStream);
 
         return $clonedStream;
     }

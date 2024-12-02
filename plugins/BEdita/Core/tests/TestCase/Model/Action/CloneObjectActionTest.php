@@ -139,8 +139,8 @@ class CloneObjectActionTest extends IntegrationTestCase
      */
     public function testCloneMedia(): void
     {
-        $this->configRequestHeaders('POST', $this->getUserAuthHeader());
         $this->filesystemSetup();
+        $this->configRequestHeaders('POST', $this->getUserAuthHeader());
 
         // ID 14, stream bedita-logo-gray.gif
         $id = 14;
@@ -263,6 +263,7 @@ class CloneObjectActionTest extends IntegrationTestCase
             $this->expectException(get_class($expected));
             $this->expectExceptionMessage($expected->getMessage());
         }
+        $this->configRequestHeaders('POST', $this->getUserAuthHeader());
         $action = new class extends CloneObjectAction {
             public function setEntityField(array $schemaInfo, ObjectEntity $sourceEntity, ObjectEntity $entity, string $field)
             {
