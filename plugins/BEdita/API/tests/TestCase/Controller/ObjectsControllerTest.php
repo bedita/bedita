@@ -3773,7 +3773,7 @@ class ObjectsControllerTest extends IntegrationTestCase
         $this->post('/documents/2/actions/clone', json_encode(compact('data')));
         $result = json_decode((string)$this->_response->getBody(), true);
         $this->assertResponseCode(201);
-        $this->assertHeader('Location', 'http://api.example.com/documents/' . $lastObjectId + 1);
+        $this->assertHeader('Location', sprintf('http://api.example.com/documents/%s', $lastObjectId + 1));
         $this->assertContentType('application/vnd.api+json');
         $this->assertArrayHasKey('data', $result);
         $this->assertArrayHasKey('attributes', $result['data']);

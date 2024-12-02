@@ -91,8 +91,8 @@ class CloneObjectAction extends BaseAction
     public function cloneEntity(ObjectEntity $sourceEntity, array $attributes): EntityInterface
     {
         $schema = $this->Table->getSchema();
-        $reset = SchemaTools::getPrimaryFields($schema, ['oneColumnConstraint' => 1]) + ['created', 'modified'];
-        $unique = SchemaTools::getUniqueFields($schema, ['oneColumnConstraint' => 1]);
+        $reset = SchemaTools::getPrimaryFields($schema, ['count' => 1]) + ['created', 'modified'];
+        $unique = SchemaTools::getUniqueFields($schema, ['count' => 1]);
         $nullable = SchemaTools::getNullableFields($schema);
         $schemaInfo = compact('reset', 'unique', 'nullable', 'attributes');
         /** @var \BEdita\Core\Model\Entity\ObjectEntity $entity */
