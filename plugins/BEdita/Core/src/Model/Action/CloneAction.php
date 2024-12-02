@@ -115,7 +115,7 @@ class CloneAction extends BaseAction
      * @param string $field Field name
      * @return mixed
      */
-    protected function setEntityField(array $schemaInfo, ObjectEntity $sourceEntity, ObjectEntity &$entity, string $field)
+    protected function setEntityField(array $schemaInfo, ObjectEntity $sourceEntity, ObjectEntity $entity, string $field)
     {
         if (in_array($field, (array)Hash::get($schemaInfo, 'reset'))) {
             return null; // skip
