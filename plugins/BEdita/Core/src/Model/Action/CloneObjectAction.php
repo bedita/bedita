@@ -180,8 +180,8 @@ class CloneObjectAction extends BaseAction
         $clonedStream = $streamsTable->clone($stream);
 
         // add stream to media
-       $clonedStream->set('object_id', $entity->id);
-       $streamsTable->saveOrFail($clonedStream);
+        $clonedStream->set('object_id', $entity->id);
+        $streamsTable->saveOrFail($clonedStream);
 
         return $clonedStream;
     }
@@ -210,7 +210,7 @@ class CloneObjectAction extends BaseAction
 
         $objectRelationsTable->saveManyOrFail($objectRelations);
 
-        return $related;
+        return $objectRelations;
     }
 
     /**
