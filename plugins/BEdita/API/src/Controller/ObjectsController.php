@@ -650,9 +650,9 @@ class ObjectsController extends ResourcesController
      * Clone object
      *
      * @param int $id The ID
-     * @return \Cake\Http\Response|null
+     * @return void
      */
-    public function clone(int $id): ?Response
+    public function clone(int $id): void
     {
         $this->request->allowMethod(['post']);
         $data = (array)$this->getRequest()->getData();
@@ -661,6 +661,8 @@ class ObjectsController extends ResourcesController
         $this->set(compact('entity'));
         $this->setSerialize(['entity']);
 
-        return null;
+        $this->response = $this->response
+            ->withStatus(201)
+            ->withHeader('Location', $this->resourceUrl($entity, 'id'));
     }
 }

@@ -15,17 +15,17 @@ declare(strict_types=1);
 
 namespace BEdita\Core\Test\TestCase\Model\Action;
 
+use BEdita\API\TestSuite\IntegrationTestCase;
 use BEdita\Core\Model\Action\CloneAction;
 use BEdita\Core\Model\Entity\ObjectEntity;
 use BEdita\Core\Test\Utility\TestFilesystemTrait;
-use Cake\TestSuite\TestCase;
 
 /**
  * {@see \BEdita\Core\Model\Action\CloneAction} Test Case
  *
  * @coversDefaultClass \BEdita\Core\Model\Action\CloneAction
  */
-class CloneActionTest extends TestCase
+class CloneActionTest extends IntegrationTestCase
 {
     use TestFilesystemTrait;
 
@@ -80,6 +80,7 @@ class CloneActionTest extends TestCase
      */
     public function testClone(): void
     {
+        $this->configRequestHeaders('POST', $this->getUserAuthHeader());
         // document with ID 2 from fixtures has 5 relationships records and 4 translations records
         $id = 2;
         $title = 'new title';
@@ -138,6 +139,7 @@ class CloneActionTest extends TestCase
      */
     public function testCloneMedia(): void
     {
+        $this->configRequestHeaders('POST', $this->getUserAuthHeader());
         $this->filesystemSetup();
 
         // ID 14, stream bedita-logo-gray.gif
@@ -168,6 +170,20 @@ class CloneActionTest extends TestCase
         static::assertEquals($expected->hash_sha1, $actual->hash_sha1);
         static::assertEquals($expected->width, $actual->width);
         static::assertEquals($expected->height, $actual->height);
+    }
+
+    /**
+     * Test clone unauthorized exception.
+     *
+     * @return void
+     * @covers ::initialize()
+     */
+    public function testUnauthorizedException(): void
+    {
+        $this->expectException(\Cake\Http\Exception\UnauthorizedException::class);
+        $this->expectExceptionMessage('Cannot clone object without a logged user');
+        $table = $this->fetchTable('Documents');
+        new CloneAction(compact('table'));
     }
 
     /**

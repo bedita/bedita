@@ -16,15 +16,15 @@ declare(strict_types=1);
 namespace BEdita\Core\Test\TestCase\Utility;
 
 use BEdita\Core\Utility\Database;
-use BEdita\Core\Utility\Schema;
+use BEdita\Core\Utility\SchemaTools;
 use Cake\TestSuite\TestCase;
 
 /**
- * \BEdita\Core\Utility\Schema Test Case
+ * \BEdita\Core\Utility\SchemaTools Test Case
  *
- * @covers \BEdita\Core\Utility\Schema
+ * @covers \BEdita\Core\Utility\SchemaTools
  */
-class SchemaTest extends TestCase
+class SchemaToolsTest extends TestCase
 {
     /**
      * Fixtures
@@ -54,7 +54,7 @@ class SchemaTest extends TestCase
     {
         $table = $this->fetchTable('Users');
         $schema = $table->getSchema();
-        $actual = Schema::getPrimaryFields($schema);
+        $actual = SchemaTools::getPrimaryFields($schema);
         $expected = ['id'];
         static::assertEquals($expected, $actual);
     }
@@ -69,7 +69,7 @@ class SchemaTest extends TestCase
     {
         $table = $this->fetchTable('Applications');
         $schema = $table->getSchema();
-        $actual = Schema::getUniqueFields($schema);
+        $actual = SchemaTools::getUniqueFields($schema);
         $expected = ['api_key', 'name'];
         $info = Database::basicInfo();
         if ($info['vendor'] === 'sqlite') {
@@ -88,7 +88,7 @@ class SchemaTest extends TestCase
     {
         $table = $this->fetchTable('Users');
         $schema = $table->getSchema();
-        $actual = Schema::getNullableFields($schema);
+        $actual = SchemaTools::getNullableFields($schema);
         $expected = ['password_hash', 'last_login', 'last_login_err', 'verified', 'password_modified', 'user_preferences'];
         static::assertEquals($expected, $actual);
     }

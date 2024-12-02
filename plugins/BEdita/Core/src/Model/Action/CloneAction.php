@@ -18,9 +18,10 @@ namespace BEdita\Core\Model\Action;
 use BEdita\Core\Model\Entity\ObjectEntity;
 use BEdita\Core\Model\Entity\Stream;
 use BEdita\Core\Utility\LoggedUser;
-use BEdita\Core\Utility\Schema;
+use BEdita\Core\Utility\SchemaTools;
 use BEdita\Core\Utility\Text;
 use Cake\Datasource\EntityInterface;
+use Cake\Http\Exception\UnauthorizedException;
 use Cake\ORM\Locator\LocatorAwareTrait;
 use Cake\Utility\Hash;
 
@@ -39,19 +40,14 @@ class CloneAction extends BaseAction
     protected $Table;
 
     /**
-     * Author ID.
-     *
-     * @var int
-     */
-    protected $authorId;
-
-    /**
      * @inheritDoc
      */
     protected function initialize(array $data)
     {
         $this->Table = $this->getConfig('table');
-        $this->authorId = empty(LoggedUser::id()) ? LoggedUser::getUserAdmin()['id'] : LoggedUser::id();
+        if (empty(LoggedUser::id())) {
+            throw new UnauthorizedException('Cannot clone object without a logged user');
+        }
     }
 
     /**
@@ -64,11 +60,13 @@ class CloneAction extends BaseAction
         $attributes = array_filter($data['data'], function ($key) {
             return !in_array($key, ['_meta']);
         }, ARRAY_FILTER_USE_KEY);
-        $entity = null;
-        $this->Table->getConnection()->transactional(function () use (&$entity, $sourceId, $attributes, $include) {
+
+        return $this->Table->getConnection()->transactional(function () use ($sourceId, $attributes, $include) {
             $objectType = $this->Table->objectType();
-            $options = $objectType->hasAssoc('Streams') ? ['contain' => ['Streams']] : [];
-            $source = $this->Table->get($sourceId, $options);
+            $contain = $objectType->get('associations');
+            $action = new GetObjectAction(['table' => $this->Table]);
+            $source = $action(['primaryKey' => $sourceId, 'contain' => $contain]);
+
             $entity = $this->cloneEntity($source, $attributes);
             if (!empty($source->get('streams'))) {
                 $this->cloneStreams($source->get('streams'), $entity);
@@ -79,9 +77,9 @@ class CloneAction extends BaseAction
             if (in_array('translations', $include)) {
                 $this->cloneTranslations($sourceId, $entity->id);
             }
-        });
 
-        return $entity;
+            return $entity;
+        });
     }
 
     /**
@@ -94,9 +92,9 @@ class CloneAction extends BaseAction
     public function cloneEntity(ObjectEntity $sourceEntity, array $attributes): EntityInterface
     {
         $schema = $this->Table->getSchema();
-        $reset = Schema::getPrimaryFields($schema) + ['created', 'modified'];
-        $unique = Schema::getUniqueFields($schema);
-        $nullable = Schema::getNullableFields($schema);
+        $reset = SchemaTools::getPrimaryFields($schema) + ['created', 'modified'];
+        $unique = SchemaTools::getUniqueFields($schema);
+        $nullable = SchemaTools::getNullableFields($schema);
         $schemaInfo = compact('reset', 'unique', 'nullable', 'attributes');
         /** @var \BEdita\Core\Model\Entity\ObjectEntity $entity */
         $entity = $this->Table->newEmptyEntity();
@@ -104,8 +102,6 @@ class CloneAction extends BaseAction
         foreach ($entityAttributes as $field) {
             $this->setEntityField($schemaInfo, $sourceEntity, $entity, $field);
         }
-        $entity->set('created_by', $this->authorId);
-        $entity->set('modified_by', $this->authorId);
 
         return $this->Table->saveOrFail($entity);
     }
@@ -238,8 +234,6 @@ class CloneAction extends BaseAction
             $newTranslation->set('lang', $objectTranslation->lang);
             $newTranslation->set('status', $objectTranslation->status);
             $newTranslation->set('translated_fields', $objectTranslation->translated_fields);
-            $newTranslation->set('created_by', $this->authorId);
-            $newTranslation->set('modified_by', $this->authorId);
             $translations[] = $newTranslation;
         }
         if (!empty($translations)) {

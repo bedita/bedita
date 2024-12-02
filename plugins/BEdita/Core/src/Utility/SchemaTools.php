@@ -16,7 +16,7 @@ namespace BEdita\Core\Utility;
 
 use Cake\Database\Schema\TableSchemaInterface;
 
-class Schema
+class SchemaTools
 {
     /**
      * Get primary fields from schema.

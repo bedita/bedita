@@ -3761,6 +3761,7 @@ class ObjectsControllerTest extends IntegrationTestCase
      */
     public function testClone(): void
     {
+        $lastObjectId = $this->lastObjectId();
         $data = [
             'type' => 'documents',
             'attributes' => [
@@ -3771,12 +3772,17 @@ class ObjectsControllerTest extends IntegrationTestCase
         $this->configRequestHeaders('POST', $this->getUserAuthHeader());
         $this->post('/documents/2/actions/clone', json_encode(compact('data')));
         $result = json_decode((string)$this->_response->getBody(), true);
-        $this->assertResponseCode(200);
+        $this->assertResponseCode(201);
+        $this->assertHeader('Location', 'http://api.example.com/documents/' . $lastObjectId + 1);
         $this->assertContentType('application/vnd.api+json');
-        static::assertArrayHasKey('data', $result);
-        static::assertArrayHasKey('attributes', $result['data']);
-        static::assertArrayHasKey('status', $result['data']['attributes']);
-        static::assertSame('draft', $result['data']['attributes']['status']);
-        static::assertSame('test', $result['data']['attributes']['title']);
+        $this->assertArrayHasKey('data', $result);
+        $this->assertArrayHasKey('attributes', $result['data']);
+        $this->assertArrayHasKey('status', $result['data']['attributes']);
+        $this->assertSame(sprintf('%s', $lastObjectId + 1), $result['data']['id']);
+        $this->assertSame('draft', $result['data']['attributes']['status']);
+        $this->assertSame('test', $result['data']['attributes']['title']);
+        $this->assertCount(2, $result['data']['attributes']['categories']);
+        $this->assertSame('first-cat', $result['data']['attributes']['categories'][0]['name']);
+        $this->assertSame('second-cat', $result['data']['attributes']['categories'][1]['name']);
     }
 }
