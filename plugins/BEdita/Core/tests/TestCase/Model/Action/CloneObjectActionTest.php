@@ -37,6 +37,7 @@ class CloneObjectActionTest extends IntegrationTestCase
     protected $fixtures = [
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.Objects',
+        'plugin.BEdita/Core.DateRanges',
         'plugin.BEdita/Core.Locations',
         'plugin.BEdita/Core.Media',
         'plugin.BEdita/Core.Profiles',
@@ -65,6 +66,7 @@ class CloneObjectActionTest extends IntegrationTestCase
         'plugin.BEdita/Core.History',
         'plugin.BEdita/Core.Annotations',
         'plugin.BEdita/Core.Streams',
+        'plugin.BEdita/Core.Captions',
     ];
 
     /**
@@ -328,5 +330,69 @@ class CloneObjectActionTest extends IntegrationTestCase
         } else {
             $this->assertEquals($expected, $actual);
         }
+    }
+
+    /**
+     * Test clone object with captions.
+     *
+     * @return void
+     * @covers ::initialize()
+     * @covers ::execute()
+     * @covers ::cloneEntity()
+     */
+    public function testCloneObjectWithCaptions(): void
+    {
+        $this->configRequestHeaders('POST', $this->getUserAuthHeader());
+        $id = 19;
+        $status = 'draft';
+        $data = compact('status');
+        $table = $this->fetchTable('Videos');
+        $original = $table->get($id, ['contain' => ['Captions']]);
+        $action = new CloneObjectAction(compact('table'));
+        $actual = $action(compact('id', 'data'));
+        $clone = $table->get($actual->id, ['contain' => ['Captions']]);
+        $originalCaptions = $original->get('captions');
+        $captions = $clone->get('captions');
+        $this->assertCount(1, $captions);
+        /** @var \BEdita\Core\Model\Entity\Caption $expected */
+        $expected = $originalCaptions[0];
+        /** @var \BEdita\Core\Model\Entity\Caption $actual */
+        $actual = $captions[0];
+        $this->assertEquals($expected->label, $actual->label);
+        $this->assertEquals($expected->lang, $actual->lang);
+        $this->assertEquals($expected->format, $actual->format);
+        $this->assertEquals($expected->caption_text, $actual->caption_text);
+        $this->assertEquals($expected->params, $actual->params);
+    }
+
+    /**
+     * Test clone object with date ranges.
+     *
+     * @return void
+     * @covers ::initialize()
+     * @covers ::execute()
+     * @covers ::cloneEntity()
+     */
+    public function testCloneObjectWithDateRanges(): void
+    {
+        $this->configRequestHeaders('POST', $this->getUserAuthHeader());
+        $id = 9;
+        $status = 'draft';
+        $data = compact('status');
+        $table = $this->fetchTable('Events');
+        $original = $table->get($id, ['contain' => ['DateRanges']]);
+        $action = new CloneObjectAction(compact('table'));
+        $actual = $action(compact('id', 'data'));
+        $clone = $table->get($actual->id, ['contain' => ['DateRanges']]);
+        $originalDateRanges = $original->get('date_ranges');
+        $dateRanges = $clone->get('date_ranges');
+        $this->assertCount(1, $dateRanges);
+        /** @var \BEdita\Core\Model\Entity\DateRange $expected */
+        $expected = $originalDateRanges[0];
+        /** @var \BEdita\Core\Model\Entity\DateRange $actual */
+        $actual = $dateRanges[0];
+        $this->assertEquals($expected->start_date, $actual->start_date);
+        $this->assertEquals($expected->end_date, $actual->end_date);
+        $this->assertEquals($expected->params, $actual->params);
     }
 }
