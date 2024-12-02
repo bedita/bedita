@@ -16,16 +16,16 @@ declare(strict_types=1);
 namespace BEdita\Core\Test\TestCase\Model\Action;
 
 use BEdita\API\TestSuite\IntegrationTestCase;
-use BEdita\Core\Model\Action\CloneAction;
+use BEdita\Core\Model\Action\CloneObjectAction;
 use BEdita\Core\Model\Entity\ObjectEntity;
 use BEdita\Core\Test\Utility\TestFilesystemTrait;
 
 /**
- * {@see \BEdita\Core\Model\Action\CloneAction} Test Case
+ * {@see \BEdita\Core\Model\Action\CloneObjectAction} Test Case
  *
- * @coversDefaultClass \BEdita\Core\Model\Action\CloneAction
+ * @coversDefaultClass \BEdita\Core\Model\Action\CloneObjectAction
  */
-class CloneActionTest extends IntegrationTestCase
+class CloneObjectActionTest extends IntegrationTestCase
 {
     use TestFilesystemTrait;
 
@@ -88,7 +88,7 @@ class CloneActionTest extends IntegrationTestCase
         $_meta = ['include' => ['relationships', 'translations']];
         $data = compact('title', 'status', '_meta');
         $table = $this->fetchTable('Documents');
-        $action = new CloneAction(compact('table'));
+        $action = new CloneObjectAction(compact('table'));
         $actual = $action(compact('id', 'data'));
         $original = $table->get($id, ['contain' => ['Test', 'TestSimple', 'TestDefaults', 'Translations']]);
         $clone = $table->get($actual->id, ['contain' => ['Test', 'TestSimple', 'TestDefaults', 'Translations']]);
@@ -150,7 +150,7 @@ class CloneActionTest extends IntegrationTestCase
         $data = compact('title', 'status');
         $table = $this->fetchTable('Images');
         $original = $table->get($id, ['contain' => ['Streams']]);
-        $action = new CloneAction(compact('table'));
+        $action = new CloneObjectAction(compact('table'));
         $actual = $action(compact('id', 'data'));
         $clone = $table->get($actual->id, ['contain' => ['Streams']]);
         static::assertEquals($clone->title, $title);
@@ -183,7 +183,7 @@ class CloneActionTest extends IntegrationTestCase
         $this->expectException(\Cake\Http\Exception\UnauthorizedException::class);
         $this->expectExceptionMessage('Cannot clone object without a logged user');
         $table = $this->fetchTable('Documents');
-        new CloneAction(compact('table'));
+        new CloneObjectAction(compact('table'));
     }
 
     /**
@@ -263,7 +263,7 @@ class CloneActionTest extends IntegrationTestCase
             $this->expectException(get_class($expected));
             $this->expectExceptionMessage($expected->getMessage());
         }
-        $action = new class extends CloneAction {
+        $action = new class extends CloneObjectActions {
             public function setEntityField(array $schemaInfo, ObjectEntity $sourceEntity, ObjectEntity &$entity, string $field)
             {
                 return parent::setEntityField($schemaInfo, $sourceEntity, $entity, $field);

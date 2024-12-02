@@ -26,9 +26,9 @@ use Cake\ORM\Locator\LocatorAwareTrait;
 use Cake\Utility\Hash;
 
 /**
- * Clone action
+ * Clone object action
  */
-class CloneAction extends BaseAction
+class CloneObjectAction extends BaseAction
 {
     use LocatorAwareTrait;
 
@@ -200,7 +200,7 @@ class CloneAction extends BaseAction
         if (empty($objectRelations)) {
             return [];
         }
-        
+
         $objectRelations = array_map(function ($objectRelation) use ($destinationId) {
             $objectRelation->set('left_id', $destinationId);
             $objectRelation->setNew(true);
