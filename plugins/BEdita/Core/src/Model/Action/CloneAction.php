@@ -180,10 +180,8 @@ class CloneAction extends BaseAction
         $clonedStream = $streamsTable->clone($stream);
 
         // add stream to media
-        $association = $this->Table->associations()->getByProperty('streams');
-        $action = new AddRelatedObjectsAction(compact('association'));
-        $relatedEntities = [$clonedStream];
-        $action(compact('entity', 'relatedEntities'));
+       $clonedStream->set('object_id', $entity->id);
+       $streamsTable->saveOrFail($clonedStream);
 
         return $clonedStream;
     }
