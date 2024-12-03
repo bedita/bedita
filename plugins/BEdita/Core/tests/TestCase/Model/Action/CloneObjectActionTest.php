@@ -19,6 +19,7 @@ use BEdita\API\TestSuite\IntegrationTestCase;
 use BEdita\Core\Model\Action\CloneObjectAction;
 use BEdita\Core\Model\Entity\ObjectEntity;
 use BEdita\Core\Test\Utility\TestFilesystemTrait;
+use Cake\Http\Exception\UnauthorizedException;
 
 /**
  * {@see \BEdita\Core\Model\Action\CloneObjectAction} Test Case
@@ -210,12 +211,7 @@ class CloneObjectActionTest extends IntegrationTestCase
         $this->configRequestHeaders('POST', $this->getUserAuthHeader());
         $source = $this->fetchTable('Objects')->get($sourceId);
         $table = $this->fetchTable($source->get('type'));
-        $action = new class (['table' => $table]) extends CloneObjectAction {
-            public function cloneRelationships(int $sourceId, int $destinationId, string $key): array
-            {
-                return parent::cloneRelationships($sourceId, $destinationId, $key);
-            }
-        };
+        $action = new CloneObjectAction(compact('table'));
         $clone = $action->cloneEntity($source, []);
         $actual = $action->cloneRelationships($sourceId, $clone->id, 'left_id');
         $this->assertEquals($expectedCountLeft, count($actual));
@@ -231,7 +227,7 @@ class CloneObjectActionTest extends IntegrationTestCase
      */
     public function testUnauthorizedException(): void
     {
-        $this->expectException(\Cake\Http\Exception\UnauthorizedException::class);
+        $this->expectException(UnauthorizedException::class);
         $this->expectExceptionMessage('Cannot clone object without a logged user');
         $table = $this->fetchTable('Documents');
         new CloneObjectAction(compact('table'));

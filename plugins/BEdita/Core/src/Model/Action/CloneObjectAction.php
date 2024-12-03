@@ -225,20 +225,18 @@ class CloneObjectAction extends BaseAction
     public function cloneTranslations(int $sourceId, $destinationId): array
     {
         $translationsTable = $this->fetchTable('Translations');
-        $objectTranslations = $translationsTable->find()->where(['object_id' => $sourceId]);
-        $translations = [];
-        foreach ($objectTranslations as $objectTranslation) {
-            $newTranslation = $translationsTable->newEmptyEntity();
-            $newTranslation->set('object_id', $destinationId);
-            $newTranslation->set('lang', $objectTranslation->lang);
-            $newTranslation->set('status', $objectTranslation->status);
-            $newTranslation->set('translated_fields', $objectTranslation->translated_fields);
-            $translations[] = $newTranslation;
+        $objectTranslations = $translationsTable->find()->where(['object_id' => $sourceId])->toArray();
+        if (empty($objectTranslations)) {
+            return [];
         }
-        if (!empty($translations)) {
-            $translationsTable->saveManyOrFail($translations);
-        }
+        $objectTranslations = array_map(function ($objectTranslation) use ($destinationId) {
+            $objectTranslation->set('object_id', $destinationId);
+            $objectTranslation->setNew(true);
 
-        return $translations;
+            return $objectTranslation;
+        }, $objectTranslations);
+        $translationsTable->saveManyOrFail($objectTranslations);
+
+        return $objectTranslations;
     }
 }

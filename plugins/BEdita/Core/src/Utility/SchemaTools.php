@@ -30,10 +30,11 @@ class SchemaTools
         $fields = [];
         foreach ($schema->constraints() as $name) {
             $constraint = $schema->getConstraint($name);
-            if ($constraint['type'] === 'primary') {
-                if (empty($options['count']) || count($constraint['columns']) === $options['count']) {
-                    $fields = array_merge($fields, $constraint['columns']);
-                }
+            if ($constraint['type'] !== 'primary') {
+                continue;
+            }
+            if (empty($options['count']) || count($constraint['columns']) === $options['count']) {
+                $fields = array_merge($fields, $constraint['columns']);
             }
         }
 
@@ -52,10 +53,11 @@ class SchemaTools
         $fields = [];
         foreach ($schema->constraints() as $name) {
             $constraint = $schema->getConstraint($name);
-            if ($constraint['type'] === 'unique') {
-                if (empty($options['count']) || count($constraint['columns']) === $options['count']) {
-                    $fields = array_merge($fields, $constraint['columns']);
-                }
+            if ($constraint['type'] !== 'unique') {
+                continue;
+            }
+            if (empty($options['count']) || count($constraint['columns']) === $options['count']) {
+                $fields = array_merge($fields, $constraint['columns']);
             }
         }
 
