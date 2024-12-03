@@ -220,6 +220,45 @@ class CloneObjectActionTest extends IntegrationTestCase
     }
 
     /**
+     * Data provider for testCloneTranslations.
+     *
+     * @return array
+     */
+    public function cloneTranslationsProvider(): array
+    {
+        return [
+            'object with no translations' => [
+                19, // id
+                0, // count
+            ],
+            'object with translations' => [
+                2,
+                4,
+            ],
+        ];
+    }
+
+    /**
+     * Test clone translations
+     *
+     * @param int $sourceId Source object ID
+     * @param int $expectedCount Expected count of translations
+     * @return void
+     * @covers ::cloneTranslations()
+     * @dataProvider cloneTranslationsProvider()
+     */
+    public function testCloneTranslations(int $sourceId, int $expectedCount): void
+    {
+        $this->configRequestHeaders('POST', $this->getUserAuthHeader());
+        $source = $this->fetchTable('Objects')->get($sourceId);
+        $table = $this->fetchTable($source->get('type'));
+        $action = new CloneObjectAction(compact('table'));
+        $clone = $action->cloneEntity($source, []);
+        $actual = $action->cloneTranslations($sourceId, $clone->id);
+        $this->assertEquals($expectedCount, count($actual));
+    }
+
+    /**
      * Test clone unauthorized exception.
      *
      * @return void
