@@ -169,7 +169,6 @@ class ResourcesCommandTest extends TestCase
      * @param string $description Resource description.
      * @return void
      * @dataProvider addProvider()
-     * @covers ::add()
      * @covers ::getTable()
      * @covers ::setupDefaultEntity()
      */
@@ -230,7 +229,6 @@ class ResourcesCommandTest extends TestCase
      * @param string $write Write permission
      * @return void
      * @dataProvider addPermissionProvider
-     * @covers ::add()
      * @covers ::getTable()
      * @covers ::setupEndpointPermissionEntity()
      */
@@ -303,7 +301,6 @@ class ResourcesCommandTest extends TestCase
      * @param mixed|null $value New field value.
      * @return void
      * @dataProvider editProvider
-     * @covers ::edit()
      * @covers ::getEntity()
      * @covers ::getTable()
      */
@@ -394,7 +391,6 @@ class ResourcesCommandTest extends TestCase
      * @param string $type Resource type.
      * @return void
      * @dataProvider listProvider()
-     * @covers ::ls()
      */
     public function testList($expected, $type): void
     {
@@ -461,7 +457,6 @@ class ResourcesCommandTest extends TestCase
      * @param string $answer Given answer (y/n).
      * @return void
      * @dataProvider removeProvider()
-     * @covers ::rm()
      * @covers ::getEntity()
      */
     public function testRemove($expected, $id, $answer): void
