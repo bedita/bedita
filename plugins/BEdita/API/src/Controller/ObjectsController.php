@@ -18,6 +18,7 @@ use BEdita\API\Model\Action\UpdateRelatedAction;
 use BEdita\Core\Exception\BadFilterException;
 use BEdita\Core\Model\Action\ActionTrait;
 use BEdita\Core\Model\Action\AddRelatedObjectsAction;
+use BEdita\Core\Model\Action\CloneObjectAction;
 use BEdita\Core\Model\Action\DeleteObjectAction;
 use BEdita\Core\Model\Action\DeleteObjectsAction;
 use BEdita\Core\Model\Action\GetObjectAction;
@@ -646,5 +647,25 @@ class ObjectsController extends ResourcesController
         }
 
         return $filter;
+    }
+
+    /**
+     * Clone object
+     *
+     * @param int $id The ID
+     * @return void
+     */
+    public function clone(int $id): void
+    {
+        $this->request->allowMethod(['post']);
+        $data = (array)$this->getRequest()->getData();
+        $action = new CloneObjectAction(['table' => $this->Table]);
+        $entity = $action(compact('id', 'data'));
+        $this->set(compact('entity'));
+        $this->setSerialize(['entity']);
+
+        $this->response = $this->response
+            ->withStatus(201)
+            ->withHeader('Location', $this->resourceUrl($entity, 'id'));
     }
 }

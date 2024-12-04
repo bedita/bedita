@@ -240,6 +240,10 @@ class UniqueNameBehaviorTest extends TestCase
                 null,
                 'my-title',
             ],
+            'unameStripTags' => [
+                'strip-tags',
+                '<b>strip-tags</b>',
+            ],
         ];
     }
 

@@ -161,6 +161,7 @@ class ObjectsTable extends Table
             'foreignKey' => 'object_id',
             'className' => 'BEdita/Core.Captions',
             'saveStrategy' => 'replace',
+            'sort' => ['id' => 'ASC'],
         ]);
     }
 
