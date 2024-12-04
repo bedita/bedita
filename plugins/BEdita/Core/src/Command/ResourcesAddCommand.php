@@ -12,9 +12,9 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Command;
 
+use BEdita\Core\Model\Table\AsyncJobsTable;
 use Cake\Command\Command;
 use Cake\Console\Arguments;
 use Cake\Console\ConsoleIo;
@@ -35,21 +35,21 @@ class ResourcesAddCommand extends Command
      *
      * @var \Cake\Console\Arguments
      */
-    protected $args;
+    protected Arguments $args;
 
     /**
      * Console IO
      *
      * @var \Cake\Console\ConsoleIo
      */
-    protected $io;
+    protected ConsoleIo $io;
 
     /**
      * Async jobs table
      *
      * @var \BEdita\Core\Model\Table\AsyncJobsTable
      */
-    protected $table;
+    protected AsyncJobsTable $table;
 
     /**
      * {@inheritDoc}
@@ -111,7 +111,7 @@ class ResourcesAddCommand extends Command
      * @param \Cake\Datasource\EntityInterface $entity Entity to add
      * @return void
      */
-    protected function setupDefaultEntity(EntityInterface $entity)
+    protected function setupDefaultEntity(EntityInterface $entity): void
     {
         $name = $this->io->ask('Resource name');
         if (empty($name)) {
@@ -128,7 +128,7 @@ class ResourcesAddCommand extends Command
      * @param \Cake\Datasource\EntityInterface $entity Entity to add
      * @return void
      */
-    protected function setupEndpointPermissionEntity(EntityInterface $entity)
+    protected function setupEndpointPermissionEntity(EntityInterface $entity): void
     {
         $fieldsTables = [
             'application_id' => 'Applications',

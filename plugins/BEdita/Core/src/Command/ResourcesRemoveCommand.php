@@ -16,6 +16,7 @@ declare(strict_types=1);
 namespace BEdita\Core\Command;
 
 use BEdita\Core\Model\Action\DeleteEntityAction;
+use BEdita\Core\Model\Table\AsyncJobsTable;
 use Cake\Command\Command;
 use Cake\Console\Arguments;
 use Cake\Console\ConsoleIo;
@@ -35,21 +36,21 @@ class ResourcesRemoveCommand extends Command
      *
      * @var \Cake\Console\Arguments
      */
-    protected $args;
+    protected Arguments $args;
 
     /**
      * Console IO
      *
      * @var \Cake\Console\ConsoleIo
      */
-    protected $io;
+    protected ConsoleIo $io;
 
     /**
      * Async jobs table
      *
      * @var \BEdita\Core\Model\Table\AsyncJobsTable
      */
-    protected $table;
+    protected AsyncJobsTable $table;
 
     /**
      * {@inheritDoc}

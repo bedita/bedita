@@ -18,9 +18,13 @@ use BEdita\Core\Command\StreamsCommand;
 use BEdita\Core\Model\Entity\Stream;
 use BEdita\Core\Test\Utility\TestFilesystemTrait;
 use Cake\Command\Command;
+use Cake\Console\ConsoleIo;
 use Cake\Console\TestSuite\ConsoleIntegrationTestTrait;
-use Cake\ORM\Query;
+use Cake\Datasource\Exception\RecordNotFoundException;
+use Cake\ORM\Query\SelectQuery;
 use Cake\TestSuite\TestCase;
+use Generator;
+use Throwable;
 
 /**
  * {@see BEdita\Core\Command\StreamsCommand} Test Case
@@ -37,7 +41,7 @@ class StreamsCommandTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.Relations',
         'plugin.BEdita/Core.RelationTypes',
@@ -51,7 +55,6 @@ class StreamsCommandTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->useCommandRunner();
         $this->filesystemSetup(true, true);
     }
 
@@ -128,7 +131,7 @@ class StreamsCommandTest extends TestCase
                     $stream->contents = $content;
                     $Streams->saveOrFail($stream);
                 }
-            } catch (\Throwable $t) {
+            } catch (Throwable $t) {
             }
         }
 
@@ -202,7 +205,7 @@ class StreamsCommandTest extends TestCase
     {
         $query = $this->fetchTable('Streams')->find()->where(['uuid' => '00000000-0000-0000-0000-000000000001']);
         $command = new class extends StreamsCommand {
-            public function getStreams(Query $query, int $limit = 100): \Generator
+            public function getStreams(SelectQuery $query, int $limit = 100): Generator
             {
                 $this->table = $this->fetchTable('Streams');
 
@@ -236,11 +239,11 @@ class StreamsCommandTest extends TestCase
         $command = new class extends StreamsCommand {
             public function update(Stream $stream): bool
             {
-                $this->io = new \Cake\Console\ConsoleIo();
+                $this->io = new ConsoleIo();
                 $this->table = new class {
                     public function saveOrFail(Stream $stream): Stream
                     {
-                        throw new \Cake\Datasource\Exception\RecordNotFoundException();
+                        throw new RecordNotFoundException();
                     }
                 };
 

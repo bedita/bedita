@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\Model\Action;
 
 use BEdita\API\TestSuite\IntegrationTestCase;
@@ -20,6 +19,8 @@ use BEdita\Core\Model\Action\CloneObjectAction;
 use BEdita\Core\Model\Entity\ObjectEntity;
 use BEdita\Core\Test\Utility\TestFilesystemTrait;
 use Cake\Http\Exception\UnauthorizedException;
+use Exception;
+use RuntimeException;
 
 /**
  * {@see \BEdita\Core\Model\Action\CloneObjectAction} Test Case
@@ -35,7 +36,7 @@ class CloneObjectActionTest extends IntegrationTestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.Objects',
         'plugin.BEdita/Core.DateRanges',
@@ -149,7 +150,6 @@ class CloneObjectActionTest extends IntegrationTestCase
         $id = 14;
         $title = 'new title';
         $status = 'draft';
-        $include = [];
         $data = compact('title', 'status');
         $table = $this->fetchTable('Images');
         $original = $table->get($id, ['contain' => ['Streams']]);
@@ -331,7 +331,7 @@ class CloneObjectActionTest extends IntegrationTestCase
                 new ObjectEntity(['my_field' => 999]),
                 new ObjectEntity(),
                 'my_field',
-                new \RuntimeException('Cannot set unique field "my_field"'),
+                new RuntimeException('Cannot set unique field "my_field"'),
             ],
         ];
     }
@@ -345,13 +345,13 @@ class CloneObjectActionTest extends IntegrationTestCase
      */
     public function testSetEntityField(array $schemaInfo, ObjectEntity $sourceEntity, ObjectEntity $entity, string $field, $expected): void
     {
-        if ($expected instanceof \Exception) {
+        if ($expected instanceof Exception) {
             $this->expectException(get_class($expected));
             $this->expectExceptionMessage($expected->getMessage());
         }
         $this->configRequestHeaders('POST', $this->getUserAuthHeader());
         $action = new class extends CloneObjectAction {
-            public function setEntityField(array $schemaInfo, ObjectEntity $sourceEntity, ObjectEntity $entity, string $field)
+            public function setEntityField(array $schemaInfo, ObjectEntity $sourceEntity, ObjectEntity $entity, string $field): mixed
             {
                 return parent::setEntityField($schemaInfo, $sourceEntity, $entity, $field);
             }
