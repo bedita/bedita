@@ -90,7 +90,7 @@ trait QueryFilterTrait
                         $in[] = $value;
                         continue;
                     }
-                    $exp = $this->operatorExpression($exp, $operator, $field, $value);
+                    $exp = $this->operatorExpression($exp, $operator, $field, (string)$value);
                 }
                 if (!empty($in)) {
                     $exp = $exp->in($field, $in);

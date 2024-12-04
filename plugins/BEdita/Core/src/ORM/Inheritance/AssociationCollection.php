@@ -98,9 +98,9 @@ class AssociationCollection extends CakeAssociationCollection
      * conventions being applied against the new table.
      *
      * @param \Cake\ORM\Association|null $association Association being inherited.
-     * @return \Cake\ORM\Association
+     * @return \Cake\ORM\Association|null
      */
-    protected function inheritAssociation(?Association $association = null): Association
+    protected function inheritAssociation(?Association $association = null): ?Association
     {
         if ($association === null) {
             return $association;
