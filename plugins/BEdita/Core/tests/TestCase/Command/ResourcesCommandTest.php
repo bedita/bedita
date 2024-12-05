@@ -169,7 +169,7 @@ class ResourcesCommandTest extends TestCase
      * @param string $description Resource description.
      * @return void
      * @dataProvider addProvider()
-     * @covers ::setupDefaultEntity()
+     * @covers ::execute()
      */
     public function testAddDefault($expected, $type, $name, $description = ''): void
     {
@@ -228,7 +228,7 @@ class ResourcesCommandTest extends TestCase
      * @param string $write Write permission
      * @return void
      * @dataProvider addPermissionProvider
-     * @covers ::setupEndpointPermissionEntity()
+     * @covers ::execute()
      */
     public function testAddPermission($application, $endpoint, $role, $read, $write): void
     {
@@ -388,6 +388,7 @@ class ResourcesCommandTest extends TestCase
      * @param string $type Resource type.
      * @return void
      * @dataProvider listProvider()
+     * @covers ::execute()
      */
     public function testList($expected, $type): void
     {
