@@ -127,7 +127,7 @@ class UniqueNameBehavior extends Behavior
         if (is_callable($generator)) {
             return $generator($entity, $regenerate);
         }
-        $fieldValue = $entity->get($config['sourceField']);
+        $fieldValue = strip_tags((string)$entity->get($config['sourceField']));
         if ($entity->isDirty('uname') && !empty($entity->get('uname'))) {
             $fieldValue = $entity->get('uname');
         }

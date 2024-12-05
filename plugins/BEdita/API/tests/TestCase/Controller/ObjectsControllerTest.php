@@ -3752,4 +3752,37 @@ class ObjectsControllerTest extends IntegrationTestCase
         $this->assertContentType('application/vnd.api+json');
         $this->assertResponseContains('Missing required key');
     }
+
+    /**
+     * Test `clone` method.
+     *
+     * @return void
+     * @covers ::clone()
+     */
+    public function testClone(): void
+    {
+        $lastObjectId = $this->lastObjectId();
+        $data = [
+            'type' => 'documents',
+            'attributes' => [
+                'status' => 'draft',
+                'title' => 'test',
+            ],
+        ];
+        $this->configRequestHeaders('POST', $this->getUserAuthHeader());
+        $this->post('/documents/2/actions/clone', json_encode(compact('data')));
+        $result = json_decode((string)$this->_response->getBody(), true);
+        $this->assertResponseCode(201);
+        $this->assertHeader('Location', sprintf('http://api.example.com/documents/%s', $lastObjectId + 1));
+        $this->assertContentType('application/vnd.api+json');
+        $this->assertArrayHasKey('data', $result);
+        $this->assertArrayHasKey('attributes', $result['data']);
+        $this->assertArrayHasKey('status', $result['data']['attributes']);
+        $this->assertSame(sprintf('%s', $lastObjectId + 1), $result['data']['id']);
+        $this->assertSame('draft', $result['data']['attributes']['status']);
+        $this->assertSame('test', $result['data']['attributes']['title']);
+        $this->assertCount(2, $result['data']['attributes']['categories']);
+        $this->assertSame('first-cat', $result['data']['attributes']['categories'][0]['name']);
+        $this->assertSame('second-cat', $result['data']['attributes']['categories'][1]['name']);
+    }
 }

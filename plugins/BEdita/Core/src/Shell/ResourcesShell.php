@@ -17,9 +17,11 @@ namespace BEdita\Core\Shell;
 use BEdita\Core\Model\Action\DeleteEntityAction;
 use BEdita\Core\Model\Action\ListEntitiesAction;
 use BEdita\Core\Model\Table\ApplicationsTable;
+use Cake\Console\ConsoleIo;
 use Cake\Console\ConsoleOptionParser;
 use Cake\Console\Shell;
 use Cake\Datasource\EntityInterface;
+use Cake\ORM\Locator\LocatorInterface;
 use Cake\ORM\TableRegistry;
 use Cake\Utility\Inflector;
 
@@ -27,6 +29,7 @@ use Cake\Utility\Inflector;
  * Resource shell commands: list, create, remove, enable and disable common entities
  *
  * @since 4.0.0
+ * @deprecated version 5.35.0 Use `BEdita/Core.Command/ResourcesCommand` instead
  */
 class ResourcesShell extends Shell /* @phpstan-ignore-line */
 {
@@ -49,10 +52,20 @@ class ResourcesShell extends Shell /* @phpstan-ignore-line */
      *
      * @codeCoverageIgnore
      */
+    public function __construct(?ConsoleIo $io = null, ?LocatorInterface $locator = null)
+    {
+        deprecationWarning('"ResourcesShell" should not be used. Use `BEdita\Core\Command\ResourcesCommand` instead.');
+        parent::__construct($io, $locator);
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @codeCoverageIgnore
+     */
     public function getOptionParser(): ConsoleOptionParser
     {
-        $parser = parent::getOptionParser(); /* @phpstan-ignore-line */
-
+        $parser = parent::getOptionParser();
         $options = [
             'type' => [
                 'help' => 'Entity type (applications, roles, endpoints, endpoint_permissions)',
