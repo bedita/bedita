@@ -20,7 +20,6 @@ use BEdita\Core\Model\Entity\PropertyType;
 use BEdita\Core\Model\Validation\Validation;
 use BEdita\Core\Search\SimpleSearchTrait;
 use Cake\Cache\Cache;
-use Cake\Database\Schema\TableSchemaInterface;
 use Cake\Datasource\EntityInterface;
 use Cake\Event\EventInterface;
 use Cake\Http\Exception\ForbiddenException;
@@ -77,6 +76,7 @@ class PropertyTypesTable extends Table
         $this->setTable('property_types');
         $this->setPrimaryKey('id');
         $this->setDisplayField('name');
+        $this->getSchema()->setColumnType('params', 'json');
 
         $this->addBehavior('Timestamp');
         $this->addBehavior('BEdita/Core.Searchable', ['scopes' => (array)$this->getTable()]);
@@ -108,16 +108,6 @@ class PropertyTypesTable extends Table
             ]);
 
         return $validator;
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @codeCoverageIgnore
-     */
-    public function getSchema(): TableSchemaInterface
-    {
-        return parent::getSchema()->setColumnType('params', 'json');
     }
 
     /**

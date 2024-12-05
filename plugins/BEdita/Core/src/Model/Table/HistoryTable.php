@@ -14,7 +14,6 @@ declare(strict_types=1);
  */
 namespace BEdita\Core\Model\Table;
 
-use Cake\Database\Schema\TableSchemaInterface;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
 
@@ -54,6 +53,7 @@ class HistoryTable extends Table
         $this->setTable('history');
         $this->setDisplayField('id');
         $this->setPrimaryKey('id');
+        $this->getSchema()->setColumnType('changed', 'json');
 
         $this->belongsTo('Users', [
             'foreignKey' => 'user_id',
@@ -89,15 +89,5 @@ class HistoryTable extends Table
             ->notEmptyString('resource_id');
 
         return $validator;
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @codeCoverageIgnore
-     */
-    public function getSchema(): TableSchemaInterface
-    {
-        return parent::getSchema()->setColumnType('changed', 'json');
     }
 }

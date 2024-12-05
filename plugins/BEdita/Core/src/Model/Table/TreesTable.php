@@ -21,7 +21,6 @@ use BEdita\Core\Model\Validation\Validation;
 use Cake\Core\Configure;
 use Cake\Database\Driver\Mysql;
 use Cake\Database\Expression\QueryExpression;
-use Cake\Database\Schema\TableSchemaInterface;
 use Cake\Event\EventInterface;
 use Cake\Http\Exception\BadRequestException;
 use Cake\ORM\Query\SelectQuery;
@@ -69,6 +68,7 @@ class TreesTable extends Table
         $this->setTable('trees');
         $this->setDisplayField('id');
         $this->setPrimaryKey('id');
+        $this->getSchema()->setColumnType('params', 'json');
 
         // associations with objects
         $this->belongsTo('Objects', [
@@ -322,15 +322,6 @@ class TreesTable extends Table
             $this->Objects->aliasField('object_type_id') => $foldersType,
             $this->Objects->aliasField('id') . ' IS' => $id,
         ]);
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function getSchema(): TableSchemaInterface
-    {
-        return parent::getSchema()
-            ->setColumnType('params', 'json');
     }
 
     /**

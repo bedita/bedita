@@ -23,7 +23,6 @@ use Cake\Cache\Cache;
 use Cake\Core\App;
 use Cake\Database\Expression\ComparisonExpression;
 use Cake\Database\Expression\QueryExpression;
-use Cake\Database\Schema\TableSchemaInterface;
 use Cake\Datasource\EntityInterface;
 use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\Event\EventInterface;
@@ -112,6 +111,10 @@ class ObjectTypesTable extends Table
         $this->setTable('object_types');
         $this->setPrimaryKey('id');
         $this->setDisplayField('name');
+        $this->getSchema()
+            ->setColumnType('associations', 'json')
+            ->setColumnType('hidden', 'json')
+            ->setColumnType('translation_rules', 'json');
 
         $this->hasMany('Objects', [
             'foreignKey' => 'object_type_id',
@@ -178,19 +181,6 @@ class ObjectTypesTable extends Table
             ]);
 
         return $rules;
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @codeCoverageIgnore
-     */
-    public function getSchema(): TableSchemaInterface
-    {
-        return parent::getSchema()
-            ->setColumnType('associations', 'json')
-            ->setColumnType('hidden', 'json')
-            ->setColumnType('translation_rules', 'json');
     }
 
     /**

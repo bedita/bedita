@@ -19,7 +19,6 @@ use BEdita\Core\Exception\BadFilterException;
 use BEdita\Core\Search\SimpleSearchTrait;
 use Cake\Core\Configure;
 use Cake\Database\Expression\QueryExpression;
-use Cake\Database\Schema\TableSchemaInterface;
 use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
@@ -67,6 +66,7 @@ class TranslationsTable extends Table
         $this->setTable('translations');
         $this->setPrimaryKey('id');
         $this->setDisplayField('id');
+        $this->getSchema()->setColumnType('translated_fields', 'json');
 
         $this->addBehavior('Timestamp');
         $this->addBehavior('BEdita/Core.UserModified');
@@ -146,16 +146,6 @@ class TranslationsTable extends Table
         $rules->add($rules->existsIn(['modified_by'], 'ModifiedByUsers'));
 
         return $rules;
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @codeCoverageIgnore
-     */
-    public function getSchema(): TableSchemaInterface
-    {
-        return parent::getSchema()->setColumnType('translated_fields', 'json');
     }
 
     /**

@@ -19,7 +19,6 @@ use BEdita\Core\Model\Entity\AsyncJob;
 use BEdita\Core\Model\Validation\Validation;
 use Cake\Core\Configure;
 use Cake\Database\Expression\QueryExpression;
-use Cake\Database\Schema\TableSchemaInterface;
 use Cake\Datasource\ConnectionManager;
 use Cake\Event\EventInterface;
 use Cake\I18n\DateTime;
@@ -74,6 +73,10 @@ class AsyncJobsTable extends Table
 
         $this->setPrimaryKey('uuid');
         $this->setDisplayField('payload');
+        $this->getSchema()
+            ->setColumnType('payload', 'json')
+            ->setColumnType('uuid', 'uuid')
+            ->setColumnType('results', 'json');
 
         $this->addBehavior('Timestamp', [
             'events' => [
@@ -123,19 +126,6 @@ class AsyncJobsTable extends Table
             ->allowEmptyDateTime('completed')
 
             ->allowEmptyString('results');
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @codeCoverageIgnore
-     */
-    public function getSchema(): TableSchemaInterface
-    {
-        return parent::getSchema()
-            ->setColumnType('payload', 'json')
-            ->setColumnType('uuid', 'uuid')
-            ->setColumnType('results', 'json');
     }
 
     /**

@@ -17,7 +17,6 @@ namespace BEdita\Core\Model\Table;
 
 use BEdita\Core\Exception\BadFilterException;
 use BEdita\Core\Utility\LoggedUser;
-use Cake\Database\Schema\TableSchemaInterface;
 use Cake\Datasource\EntityInterface;
 use Cake\Event\EventInterface;
 use Cake\ORM\Query\SelectQuery;
@@ -61,6 +60,7 @@ class ExternalAuthTable extends Table
         $this->setTable('external_auth');
         $this->setPrimaryKey('id');
         $this->setDisplayField('provider_username');
+        $this->getSchema()->setColumnType('params', 'json');
 
         $this->addBehavior('Timestamp');
 
@@ -107,16 +107,6 @@ class ExternalAuthTable extends Table
         $rules->add($rules->isUnique(['auth_provider_id', 'provider_username']));
 
         return $rules;
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @codeCoverageIgnore
-     */
-    public function getSchema(): TableSchemaInterface
-    {
-        return parent::getSchema()->setColumnType('params', 'json');
     }
 
     /**

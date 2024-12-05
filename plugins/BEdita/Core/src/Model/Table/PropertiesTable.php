@@ -22,7 +22,6 @@ use BEdita\Core\Model\Validation\Validation;
 use BEdita\Core\Search\SimpleSearchTrait;
 use Cake\Database\Expression\QueryExpression;
 use Cake\Database\Query\SelectQuery as DatabaseSelectQuery;
-use Cake\Database\Schema\TableSchemaInterface;
 use Cake\Datasource\ResultSetInterface;
 use Cake\Event\EventInterface;
 use Cake\ORM\Query\SelectQuery;
@@ -69,6 +68,7 @@ class PropertiesTable extends Table
         parent::initialize($config);
 
         $this->setDisplayField('name');
+        $this->getSchema()->setColumnType('id', 'string');
 
         $this->addBehavior('Timestamp');
 
@@ -127,16 +127,6 @@ class PropertiesTable extends Table
         $rules->add($rules->existsIn(['property_type_id'], 'PropertyTypes'));
 
         return $rules;
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @codeCoverageIgnore
-     */
-    public function getSchema(): TableSchemaInterface
-    {
-        return parent::getSchema()->setColumnType('id', 'string');
     }
 
     /**

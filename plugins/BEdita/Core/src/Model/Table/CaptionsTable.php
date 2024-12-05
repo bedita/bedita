@@ -14,7 +14,6 @@ declare(strict_types=1);
  */
 namespace BEdita\Core\Model\Table;
 
-use Cake\Database\Schema\TableSchemaInterface;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
@@ -55,6 +54,7 @@ class CaptionsTable extends Table
         $this->setTable('captions');
         $this->setDisplayField('label');
         $this->setPrimaryKey('id');
+        $this->getSchema()->setColumnType('params', 'json');
 
         $this->addBehavior('Timestamp');
 
@@ -108,15 +108,5 @@ class CaptionsTable extends Table
         $rules->add($rules->existsIn(['object_id'], 'Objects'));
 
         return $rules;
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @codeCoverageIgnore
-     */
-    public function getSchema(): TableSchemaInterface
-    {
-        return parent::getSchema()->setColumnType('params', 'json');
     }
 }

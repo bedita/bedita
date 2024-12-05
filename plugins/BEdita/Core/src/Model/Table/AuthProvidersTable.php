@@ -16,7 +16,6 @@ declare(strict_types=1);
 namespace BEdita\Core\Model\Table;
 
 use BEdita\Core\Model\Validation\Validation;
-use Cake\Database\Schema\TableSchemaInterface;
 use Cake\ORM\Query\SelectQuery;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
@@ -56,6 +55,7 @@ class AuthProvidersTable extends Table
         $this->setTable('auth_providers');
         $this->setPrimaryKey('id');
         $this->setDisplayField('name');
+        $this->getSchema()->setColumnType('params', 'json');
 
         $this->addBehavior('Timestamp');
 
@@ -102,16 +102,6 @@ class AuthProvidersTable extends Table
         $rules->add($rules->isUnique(['name']));
 
         return $rules;
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @codeCoverageIgnore
-     */
-    public function getSchema(): TableSchemaInterface
-    {
-        return parent::getSchema()->setColumnType('params', 'json');
     }
 
     /**

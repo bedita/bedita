@@ -15,7 +15,6 @@ declare(strict_types=1);
 
 namespace BEdita\Core\Model\Table;
 
-use Cake\Database\Schema\TableSchemaInterface;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
@@ -55,6 +54,7 @@ class ObjectCategoriesTable extends Table
         $this->setTable('object_categories');
         $this->setDisplayField('id');
         $this->setPrimaryKey('id');
+        $this->getSchema()->setColumnType('params', 'json');
 
         $this->belongsTo('Objects', [
             'foreignKey' => 'object_id',
@@ -89,16 +89,6 @@ class ObjectCategoriesTable extends Table
             ->integer('category_id')
             ->requirePresence('category_id', 'create')
             ->notEmptyString('category_id');
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @codeCoverageIgnore
-     */
-    public function getSchema(): TableSchemaInterface
-    {
-        return parent::getSchema()->setColumnType('params', 'json');
     }
 
     /**

@@ -21,7 +21,6 @@ use BEdita\Core\Search\SimpleSearchTrait;
 use BEdita\Core\Utility\LoggedUser;
 use Cake\Core\Configure;
 use Cake\Database\Expression\QueryExpression;
-use Cake\Database\Schema\TableSchemaInterface;
 use Cake\Datasource\EntityInterface;
 use Cake\Event\EventInterface;
 use Cake\I18n\DateTime;
@@ -92,6 +91,9 @@ class ObjectsTable extends Table
         $this->setEntityClass(ObjectEntity::class);
         $this->setPrimaryKey('id');
         $this->setDisplayField('title');
+        $this->getSchema()
+            ->setColumnType('custom_props', 'json')
+            ->setColumnType('extra', 'json');
 
         $this->addBehavior('BEdita/Core.ObjectModel');
         $this->addBehavior('BEdita/Core.Categories');
@@ -230,18 +232,6 @@ class ObjectsTable extends Table
         if ($entity->isDirty('status') || $entity->isDirty('uname') || $entity->isDirty('deleted')) {
             throw new LockedResourceException(__('Operation not allowed on "locked" objects'));
         }
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @codeCoverageIgnore
-     */
-    public function getSchema(): TableSchemaInterface
-    {
-        return parent::getSchema()
-            ->setColumnType('custom_props', 'json')
-            ->setColumnType('extra', 'json');
     }
 
     /**

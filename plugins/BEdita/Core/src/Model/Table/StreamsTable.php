@@ -17,7 +17,6 @@ namespace BEdita\Core\Model\Table;
 
 use BEdita\Core\Filesystem\Thumbnail;
 use BEdita\Core\Model\Entity\Stream;
-use Cake\Database\Schema\TableSchemaInterface;
 use Cake\Event\EventInterface;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
@@ -58,6 +57,9 @@ class StreamsTable extends Table
         $this->setTable('streams');
         $this->setPrimaryKey('uuid');
         $this->setDisplayField('uri');
+        $this->getSchema()
+            ->setColumnType('uuid', 'uuid')
+            ->setColumnType('file_metadata', 'json');
 
         $this->addBehavior('Timestamp');
         $this->addBehavior('BEdita/Core.Uploadable', [
@@ -154,17 +156,6 @@ class StreamsTable extends Table
         $rules->add($rules->existsIn(['object_id'], 'Objects'));
 
         return $rules;
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @codeCoverageIgnore
-     */
-    public function getSchema(): TableSchemaInterface
-    {
-        return parent::getSchema()->setColumnType('uuid', 'uuid')
-            ->setColumnType('file_metadata', 'json');
     }
 
     /**

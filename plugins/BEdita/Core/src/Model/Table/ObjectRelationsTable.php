@@ -15,7 +15,6 @@ declare(strict_types=1);
 namespace BEdita\Core\Model\Table;
 
 use BEdita\Core\Model\Validation\Validation;
-use Cake\Database\Schema\TableSchemaInterface;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
@@ -56,6 +55,7 @@ class ObjectRelationsTable extends Table
         $this->setTable('object_relations');
         $this->setDisplayField('left_id');
         $this->setPrimaryKey(['left_id', 'relation_id', 'right_id']);
+        $this->getSchema()->setColumnType('params', 'json');
 
         $this->belongsTo('LeftObjects', [
             'foreignKey' => 'left_id',
@@ -147,15 +147,5 @@ class ObjectRelationsTable extends Table
         $rules->add($rules->existsIn(['right_id'], 'RightObjects'));
 
         return $rules;
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @codeCoverageIgnore
-     */
-    public function getSchema(): TableSchemaInterface
-    {
-        return parent::getSchema()->setColumnType('params', 'json');
     }
 }

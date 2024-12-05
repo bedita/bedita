@@ -22,7 +22,6 @@ use BEdita\Core\Model\Validation\UsersValidator;
 use BEdita\Core\Utility\LoggedUser;
 use Cake\Core\Configure;
 use Cake\Database\Expression\QueryExpression;
-use Cake\Database\Schema\TableSchemaInterface;
 use Cake\Datasource\EntityInterface;
 use Cake\Event\Event;
 use Cake\Event\EventInterface;
@@ -85,6 +84,7 @@ class UsersTable extends Table
         $this->setTable('users');
         $this->setPrimaryKey('id');
         $this->setDisplayField('username');
+        $this->getSchema()->setColumnType('user_preferences', 'json');
 
         $this->extensionOf('Profiles');
 
@@ -174,16 +174,6 @@ class UsersTable extends Table
         $rules->add($rules->isUnique(['email']));
 
         return $rules;
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @codeCoverageIgnore
-     */
-    public function getSchema(): TableSchemaInterface
-    {
-        return parent::getSchema()->setColumnType('user_preferences', 'json');
     }
 
     /**

@@ -21,7 +21,6 @@ use BEdita\Core\Model\Validation\Validation;
 use BEdita\Core\Search\SimpleSearchTrait;
 use Cake\Collection\CollectionInterface;
 use Cake\Database\Expression\QueryExpression;
-use Cake\Database\Schema\TableSchemaInterface;
 use Cake\Datasource\EntityInterface;
 use Cake\Event\EventInterface;
 use Cake\ORM\Query;
@@ -67,6 +66,7 @@ class TagsTable extends Table
         $this->setTable('tags');
         $this->setDisplayField('name');
         $this->setPrimaryKey('id');
+        $this->getSchema()->setColumnType('labels', 'json');
 
         $this->addBehavior('Timestamp');
         $this->addBehavior('BEdita/Core.Searchable', ['scopes' => (array)$this->getTable()]);
@@ -108,16 +108,6 @@ class TagsTable extends Table
 
             ->boolean('enabled')
             ->notEmptyString('enabled');
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @codeCoverageIgnore
-     */
-    public function getSchema(): TableSchemaInterface
-    {
-        return parent::getSchema()->setColumnType('labels', 'json');
     }
 
     /**
