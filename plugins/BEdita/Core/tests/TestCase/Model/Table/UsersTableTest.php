@@ -100,8 +100,6 @@ class UsersTableTest extends TestCase
      */
     public function testInitialization()
     {
-        $this->Users->associations()->removeAll();
-        $this->Users->initialize([]);
         $this->assertEquals('users', $this->Users->getTable());
         $this->assertEquals('id', $this->Users->getPrimaryKey());
         $this->assertEquals('username', $this->Users->getDisplayField());

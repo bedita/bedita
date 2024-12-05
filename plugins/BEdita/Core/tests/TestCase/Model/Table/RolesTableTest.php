@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\Model\Table;
 
 use BEdita\Core\Exception\ImmutableResourceException;
@@ -84,7 +83,6 @@ class RolesTableTest extends TestCase
      */
     public function testInitialization()
     {
-        $this->Roles->initialize([]);
         $this->assertEquals('roles', $this->Roles->getTable());
         $this->assertEquals('id', $this->Roles->getPrimaryKey());
         $this->assertEquals('name', $this->Roles->getDisplayField());

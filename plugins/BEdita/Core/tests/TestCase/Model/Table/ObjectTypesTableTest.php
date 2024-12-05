@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\Model\Table;
 
 use BEdita\Core\Exception\BadFilterException;
@@ -95,8 +94,6 @@ class ObjectTypesTableTest extends TestCase
      */
     public function testInitialization()
     {
-        $this->ObjectTypes->initialize([]);
-
         static::assertEquals('object_types', $this->ObjectTypes->getTable());
         static::assertEquals('id', $this->ObjectTypes->getPrimaryKey());
         static::assertEquals('name', $this->ObjectTypes->getDisplayField());

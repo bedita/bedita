@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\Model\Table;
 
 use BEdita\Core\State\CurrentApplication;
@@ -83,7 +82,6 @@ class EndpointPermissionsTableTest extends TestCase
      */
     public function testInitialize()
     {
-        $this->EndpointPermissions->initialize([]);
         $this->assertEquals('endpoint_permissions', $this->EndpointPermissions->getTable());
         $this->assertEquals('id', $this->EndpointPermissions->getPrimaryKey());
         $this->assertEquals('id', $this->EndpointPermissions->getDisplayField());

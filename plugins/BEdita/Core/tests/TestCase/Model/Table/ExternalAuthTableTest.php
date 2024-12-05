@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\Model\Table;
 
 use BEdita\Core\Exception\BadFilterException;
@@ -89,7 +88,6 @@ class ExternalAuthTableTest extends TestCase
      */
     public function testInitialization()
     {
-        $this->ExternalAuth->initialize([]);
         $schema = $this->ExternalAuth->getSchema();
 
         static::assertEquals('external_auth', $this->ExternalAuth->getTable());

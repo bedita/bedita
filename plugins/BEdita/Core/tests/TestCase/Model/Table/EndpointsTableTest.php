@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\Model\Table;
 
 use Cake\Cache\Cache;
@@ -78,7 +77,6 @@ class EndpointsTableTest extends TestCase
      */
     public function testInitialize()
     {
-        $this->Endpoints->initialize([]);
         $this->assertEquals('endpoints', $this->Endpoints->getTable());
         $this->assertEquals('id', $this->Endpoints->getPrimaryKey());
         $this->assertEquals('name', $this->Endpoints->getDisplayField());

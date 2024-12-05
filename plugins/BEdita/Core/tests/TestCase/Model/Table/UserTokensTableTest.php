@@ -79,8 +79,6 @@ class UserTokensTableTest extends TestCase
      */
     public function testInitialization()
     {
-        $this->UserTokens->associations()->removeAll();
-        $this->UserTokens->initialize([]);
         $this->assertEquals('user_tokens', $this->UserTokens->getTable());
         $this->assertEquals('id', $this->UserTokens->getPrimaryKey());
         $this->assertEquals('id', $this->UserTokens->getDisplayField());

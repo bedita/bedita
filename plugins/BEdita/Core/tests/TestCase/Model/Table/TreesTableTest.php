@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\Model\Table;
 
 use BEdita\Core\Exception\LockedResourceException;
@@ -95,8 +94,6 @@ class TreesTableTest extends TestCase
      */
     public function testInitialize()
     {
-        $this->Trees->initialize([]);
-
         static::assertInstanceOf(BelongsTo::class, $this->Trees->Objects);
         static::assertInstanceOf(BelongsTo::class, $this->Trees->ParentObjects);
         static::assertInstanceOf(BelongsTo::class, $this->Trees->RootObjects);

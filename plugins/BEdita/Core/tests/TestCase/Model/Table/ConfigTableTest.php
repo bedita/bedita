@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\Model\Table;
 
 use BEdita\Core\State\CurrentApplication;
@@ -74,7 +73,6 @@ class ConfigTableTest extends TestCase
      */
     public function testInitialization()
     {
-        $this->Config->initialize([]);
         $this->assertEquals('config', $this->Config->getTable());
         $this->assertEquals('id', $this->Config->getPrimaryKey());
     }

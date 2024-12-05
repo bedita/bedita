@@ -90,7 +90,6 @@ class FoldersTableTest extends TestCase
      */
     public function testInitialize()
     {
-        $this->Folders->initialize([]);
         $this->assertEquals('objects', $this->Folders->getTable());
         $this->assertEquals('id', $this->Folders->getPrimaryKey());
         $this->assertEquals('title', $this->Folders->getDisplayField());

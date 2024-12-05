@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\Model\Table;
 
 use BadMethodCallException;
@@ -93,7 +92,6 @@ class ApplicationsTableTest extends TestCase
      */
     public function testInitialize()
     {
-        $this->Applications->initialize([]);
         $this->assertEquals('applications', $this->Applications->getTable());
         $this->assertEquals('id', $this->Applications->getPrimaryKey());
         $this->assertEquals('name', $this->Applications->getDisplayField());

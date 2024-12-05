@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\Model\Table;
 
 use BEdita\Core\Exception\ImmutableResourceException;
@@ -93,7 +92,6 @@ class PropertyTypesTableTest extends TestCase
      */
     public function testInitialization()
     {
-        $this->PropertyTypes->initialize([]);
         static::assertEquals('property_types', $this->PropertyTypes->getTable());
         static::assertEquals('id', $this->PropertyTypes->getPrimaryKey());
         static::assertEquals('name', $this->PropertyTypes->getDisplayField());

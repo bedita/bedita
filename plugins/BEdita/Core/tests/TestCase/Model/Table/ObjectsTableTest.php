@@ -96,7 +96,6 @@ class ObjectsTableTest extends TestCase
      */
     public function testInitialization()
     {
-        $this->Objects->initialize([]);
         $this->assertEquals('objects', $this->Objects->getTable());
         $this->assertEquals('id', $this->Objects->getPrimaryKey());
         $this->assertEquals('title', $this->Objects->getDisplayField());

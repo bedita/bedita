@@ -82,7 +82,6 @@ class PropertiesTableTest extends TestCase
      */
     public function testInitialization()
     {
-        $this->Properties->initialize([]);
         static::assertEquals('properties', $this->Properties->getTable());
         static::assertEquals('id', $this->Properties->getPrimaryKey());
         static::assertEquals('name', $this->Properties->getDisplayField());
