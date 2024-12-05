@@ -108,17 +108,9 @@ jobs:
           - '{"vendor": "MariaDB", "pdo": "mysql", "dsn": "mysql://bedita:bedita@127.0.0.1:3306/bedita?realVendor=mariadb", "image": "mariadb:10", "options": "--health-cmd \"mysqladmin ping -h localhost\" --health-interval 10s --health-timeout 5s --health-retries 5"}'
           - '{"vendor": "PostgreSQL", "pdo": "pgsql", "dsn": "postgres://bedita:bedita@127.0.0.1:5432/bedita", "image": "postgres:14", "options": "--health-cmd \"pg_isready\" --health-interval 10s --health-timeout 5s --health-retries 5"}'
         include:
-          - php: '8.1'
+          - php: '8.4'
             db: '{"vendor": "SQLite", "pdo": "sqlite", "dsn": "sqlite://tmp/test.sql", "image": "nginx:alpine", "options": "--health-cmd \"/bin/true\" --health-interval 1s --health-timeout 2s --health-retries 5"}'
-          - php: '8.1'
-            db: '{"vendor": "MySQL 8.0", "pdo": "mysql", "dsn": "mysql://bedita:bedita@127.0.0.1:3306/bedita", "image": "mysql:8.0", "options": "--health-cmd \"mysqladmin ping -h localhost\" --health-interval 10s --health-timeout 5s --health-retries 5"}'
-          - php: '8.2'
-            db: '{"vendor": "SQLite", "pdo": "sqlite", "dsn": "sqlite://tmp/test.sql", "image": "nginx:alpine", "options": "--health-cmd \"/bin/true\" --health-interval 1s --health-timeout 2s --health-retries 5"}'
-          - php: '8.2'
-            db: '{"vendor": "MySQL 8.0", "pdo": "mysql", "dsn": "mysql://bedita:bedita@127.0.0.1:3306/bedita", "image": "mysql:8.0", "options": "--health-cmd \"mysqladmin ping -h localhost\" --health-interval 10s --health-timeout 5s --health-retries 5"}'
-          - php: '8.3'
-            db: '{"vendor": "SQLite", "pdo": "sqlite", "dsn": "sqlite://tmp/test.sql", "image": "nginx:alpine", "options": "--health-cmd \"/bin/true\" --health-interval 1s --health-timeout 2s --health-retries 5"}'
-          - php: '8.3'
+          - php: '8.4'
             db: '{"vendor": "MySQL 8.0", "pdo": "mysql", "dsn": "mysql://bedita:bedita@127.0.0.1:3306/bedita", "image": "mysql:8.0", "options": "--health-cmd \"mysqladmin ping -h localhost\" --health-interval 10s --health-timeout 5s --health-retries 5"}'
     env:
       PHP_VERSION: '${{ matrix.php }}'
@@ -202,7 +194,7 @@ jobs:
       - name: 'Setup PHP'
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.1'
+          php-version: '8.3'
           tools: 'composer'
           extensions: 'mbstring, intl, pdo_sqlite'
 

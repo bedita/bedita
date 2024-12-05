@@ -21,7 +21,7 @@
         }
     ],
     "require": {
-        "php": ">=8.1",
+        "php": ">=8.3",
         "cakephp/cakephp": "^5.0.1",
         "cakephp/migrations": "^4.0.0",
         "cakephp/queue": "^2.1.0",
