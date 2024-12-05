@@ -98,4 +98,49 @@ class JsonObjectTypeTest extends TestCase
             static::assertEquals($expected, $actual);
         }
     }
+
+    /**
+     * Test `manyToPHP()` method.
+     *
+     * @return void
+     * @covers ::manyToPHP()
+     */
+    public function testManyToPHP(): void
+    {
+        $fields = ['missing', 'number', 'boolean', 'null', 'array', 'emptyArray', 'emptyObject', 'simple', 'complex'];
+        $values = [
+            'number' => '42',
+            'boolean' => 'true',
+            'null' => 'null',
+            'array' => '["one","two"]',
+            'emptyArray' => '[]',
+            'emptyObject' => '{}',
+            'simple' => '{"one":"two"}',
+            'complex' => '{"firstName":"Gustavo","lastName":"Supporto","age":42,"skills":[],"randomEmptyObject":{}}',
+        ];
+
+        $expected = [
+            'number' => 42,
+            'boolean' => true,
+            'null' => null,
+            'array' => ['one', 'two'],
+            'emptyArray' => [],
+            'emptyObject' => new stdClass(),
+            'simple' => (object)['one' => 'two'],
+            'complex' => (object)[
+                'firstName' => 'Gustavo',
+                'lastName' => 'Supporto',
+                'age' => 42,
+                'skills' => [],
+                'randomEmptyObject' => new stdClass(),
+            ],
+        ];
+
+        /** @var \Cake\Database\Connection $connection */
+        $connection = ConnectionManager::get('default');
+        $type = new JsonObjectType();
+        $actual = $type->manyToPHP($values, $fields, $connection->getDriver());
+
+        static::assertEquals($expected, $actual);
+    }
 }
