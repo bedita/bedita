@@ -15,6 +15,7 @@ declare(strict_types=1);
 
 namespace BEdita\Core\Test\TestCase\ORM;
 
+use BEdita\Core\Model\Table\ObjectsTable;
 use BEdita\Core\ORM\Locator\TableLocator;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
@@ -96,7 +97,7 @@ class TableLocatorTest extends TestCase
                 'BEdita/Core.ThisTableDoesNotExists',
             ],
             'fallbackObjectType' => [
-                'BEdita\Core\Model\Table\ObjectsTable',
+                ObjectsTable::class,
                 'Documents',
             ],
         ];

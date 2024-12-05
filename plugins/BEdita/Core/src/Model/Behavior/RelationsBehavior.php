@@ -92,10 +92,10 @@ class RelationsBehavior extends Behavior
     /**
      * Set up relations for the current table.
      *
-     * @param string|int|null $objectType Object type name or ID.
+     * @param \BEdita\Core\Model\Entity\ObjectType|string|int|null $objectType Object type name or ID.
      * @return void
      */
-    public function setupRelations(string|int|null $objectType = null): void
+    public function setupRelations(ObjectType|string|int|null $objectType = null): void
     {
         if ($objectType === null) {
             $objectType = $this->table()->getAlias();

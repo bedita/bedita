@@ -70,6 +70,7 @@ class RelationsTable extends Table
         $this->setTable('relations');
         $this->setDisplayField('name');
         $this->setPrimaryKey('id');
+        $this->getSchema()->setColumnType('params', 'jsonobject');
 
         $this->hasMany('ObjectRelations');
 
@@ -165,16 +166,6 @@ class RelationsTable extends Table
             ]);
 
         return $rules;
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @codeCoverageIgnore
-     */
-    public function getSchema(): TableSchemaInterface
-    {
-        return parent::getSchema()->setColumnType('params', 'jsonobject');
     }
 
     /**

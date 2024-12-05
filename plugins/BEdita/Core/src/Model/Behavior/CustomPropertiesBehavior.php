@@ -137,6 +137,10 @@ class CustomPropertiesBehavior extends Behavior
         return $query->formatResults(
             function (CollectionInterface $results) {
                 return $results->map(function ($row) {
+                    if (!is_array($row) || !$row instanceof EntityInterface) {
+                        return $row;
+                    }
+
                     return $this->promoteProperties($row);
                 });
             },
