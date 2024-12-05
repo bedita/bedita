@@ -55,6 +55,7 @@ class ProjectModelCommand extends Command
                 'short' => 'c',
                 'boolean' => true,
                 'required' => false,
+                'default' => true,
             ])
             ->addOption('plugin', [
                 'help' => 'Plugin to use for loading default `project_model.json` file',
@@ -86,6 +87,11 @@ class ProjectModelCommand extends Command
             $io->error(sprintf('Bad file content in %s', $file));
 
             return self::CODE_ERROR;
+        }
+
+        if ($args->getOption('cache-clear')) {
+            Cache::clearAll();
+            $io->success('Cache cleared');
         }
 
         $diff = ProjectModel::diff($project);
