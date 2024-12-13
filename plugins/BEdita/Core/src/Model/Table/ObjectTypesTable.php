@@ -21,7 +21,6 @@ use BEdita\Core\ORM\Rule\IsUniqueAmongst;
 use BEdita\Core\Search\SimpleSearchTrait;
 use Cake\Cache\Cache;
 use Cake\Core\App;
-use Cake\Database\Expression\ComparisonExpression;
 use Cake\Database\Expression\QueryExpression;
 use Cake\Datasource\EntityInterface;
 use Cake\Datasource\Exception\RecordNotFoundException;
@@ -171,11 +170,11 @@ class ObjectTypesTable extends Table
     public function buildRules(RulesChecker $rules): RulesChecker
     {
         $rules
-            ->add(new IsUniqueAmongst(['name' => ['name', 'singular']]), '_isUniqueAmongst', [
+            ->add(new IsUniqueAmongst(['name' => ['name', 'singular']]), '_isUniqueAmongstName', [
                 'errorField' => 'name',
                 'message' => __d('cake', 'This value is already in use'),
             ])
-            ->add(new IsUniqueAmongst(['singular' => ['name', 'singular']]), '_isUniqueAmongst', [
+            ->add(new IsUniqueAmongst(['singular' => ['name', 'singular']]), '_isUniqueAmongstSingular', [
                 'errorField' => 'singular',
                 'message' => __d('cake', 'This value is already in use'),
             ]);
@@ -210,7 +209,7 @@ class ObjectTypesTable extends Table
             $primaryKey = Inflector::underscore($primaryKey);
             if (!isset($allTypes[$primaryKey])) {
                 throw new RecordNotFoundException(sprintf(
-                    'Record not found in table "%s"',
+                    'Record not found in table `%s`',
                     $this->getTable()
                 ));
             }
@@ -267,7 +266,7 @@ class ObjectTypesTable extends Table
                 throw new ForbiddenException(__d('bedita', 'Core types are not removable'));
             }
         }
-        if ($entity->isDirty('parent_id') && $this->objectsExist($entity->get('id'))) {
+        if ($entity->isDirty('parent_id') && $entity->get('id') && $this->objectsExist($entity->get('id'))) {
             throw new ForbiddenException(__d('bedita', 'Parent type change forbidden: objects of this type exist'));
         }
     }
@@ -471,7 +470,7 @@ class ObjectTypesTable extends Table
                 if ($nsmCounters->count() === 0) {
                     // No nodes found: relationship apparently does not exist, or has no linked types.
                     // Add contradiction to force empty results.
-                    return $exp->add(new ComparisonExpression(1, 1, 'integer', '<>'));
+                    return $exp->add(['1 <> 1']);
                 }
 
                 // Find descendants for all found nodes using NSM rules.

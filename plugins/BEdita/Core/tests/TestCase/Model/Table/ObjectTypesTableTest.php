@@ -92,7 +92,7 @@ class ObjectTypesTableTest extends TestCase
      * @return void
      * @coversNothing
      */
-    public function testInitialization()
+    public function testInitialization(): void
     {
         static::assertEquals('object_types', $this->ObjectTypes->getTable());
         static::assertEquals('id', $this->ObjectTypes->getPrimaryKey());
@@ -221,7 +221,7 @@ class ObjectTypesTableTest extends TestCase
      * @dataProvider validationProvider
      * @covers \BEdita\Core\ORM\Rule\IsUniqueAmongst
      */
-    public function testValidation($expected, array $data)
+    public function testValidation($expected, array $data): void
     {
         $objectType = $this->ObjectTypes->newEntity([]);
         if (!empty($data['id'])) {
@@ -387,11 +387,11 @@ class ObjectTypesTableTest extends TestCase
                 'Documents',
             ],
             'missingId' => [
-                new RecordNotFoundException('Record not found in table "object_types"'),
+                new RecordNotFoundException('Record not found in table `object_types`'),
                 99,
             ],
             'missingType' => [
-                new RecordNotFoundException('Record not found in table "object_types"'),
+                new RecordNotFoundException('Record not found in table `object_types`'),
                 'missing_type',
             ],
         ];
