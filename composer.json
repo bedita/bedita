@@ -44,6 +44,7 @@
         "dereuromark/cakephp-ide-helper": "^2.5.3"
     },
     "conflict": {
+        "symfony/config": "^7",
         "symfony/console": "^7",
         "symfony/filesystem": "^7"
     },
