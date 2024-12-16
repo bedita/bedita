@@ -12,9 +12,10 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\Model\Entity;
 
+use BEdita\Core\Model\Table\ObjectTypesTable;
+use BEdita\Core\Model\Table\RolesTable;
 use BEdita\Core\Utility\JsonApiSerializable;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
@@ -31,14 +32,14 @@ class JsonApiTraitTest extends TestCase
      *
      * @var \BEdita\Core\Model\Table\RolesTable
      */
-    public $Roles;
+    public RolesTable $Roles;
 
     /**
      * Helper table.
      *
      * @var \BEdita\Core\Model\Table\ObjectTypesTable
      */
-    public $ObjectTypes;
+    public ObjectTypesTable $ObjectTypes;
 
     /**
      * Fixtures
@@ -637,7 +638,7 @@ class JsonApiTraitTest extends TestCase
      * @covers ::setSelected()
      * @dataProvider jsonApiSerializeProvider()
      */
-    public function testJsonApiSerialize($excludedKeys, $options, $fields = null)
+    public function testJsonApiSerialize($excludedKeys, $options, $fields = []): void
     {
         $expected = [
             'id' => '1',

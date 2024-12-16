@@ -16,6 +16,7 @@ namespace BEdita\Core\Test\TestCase\Model\Entity;
 
 use BEdita\Core\Filesystem\FilesystemRegistry;
 use BEdita\Core\Model\Entity\Stream as EntityStream;
+use BEdita\Core\Model\Table\StreamsTable;
 use BEdita\Core\Test\Utility\TestFilesystemTrait;
 use Cake\Core\Configure;
 use Cake\ORM\TableRegistry;
@@ -39,7 +40,7 @@ class StreamTest extends TestCase
      *
      * @var \BEdita\Core\Model\Table\StreamsTable
      */
-    public $Streams;
+    public StreamsTable $Streams;
 
     /**
      * Fixtures
@@ -120,7 +121,7 @@ class StreamTest extends TestCase
                 "test://{$hash[0]}/{$hash[1]}/{$hash[2]}/{$uuid}",
                 compact('uuid'),
                 'test',
-                3.99999,
+                3,
             ],
         ];
     }
@@ -136,7 +137,7 @@ class StreamTest extends TestCase
      * @dataProvider filesystemPathProvider()
      * @covers ::filesystemPath()
      */
-    public function testFilesystemPath($expected, array $data, $filesystem = 'default', $subLevels = 0)
+    public function testFilesystemPath(string $expected, array $data, string $filesystem = 'default', int $subLevels = 0): void
     {
         /** @var \BEdita\Core\Model\Entity\Stream $stream */
         $stream = $this->Streams->newEmptyEntity();
@@ -211,13 +212,6 @@ class StreamTest extends TestCase
         fwrite($resource, 'this is a resource');
         fseek($resource, 0);
 
-        $serializable = static::getMockBuilder(stdClass::class)
-            ->addMethods(['__toString'])
-            ->getMock();
-        $serializable
-            ->method('__toString')
-            ->willReturn('this is an object that can be converted to string');
-
         return [
             'PSR-7 stream' => [
                 'this is a stream',
@@ -241,7 +235,12 @@ class StreamTest extends TestCase
             ],
             'object' => [
                 'this is an object that can be converted to string',
-                $serializable,
+                new class () {
+                    public function __toString()
+                    {
+                        return 'this is an object that can be converted to string';
+                    }
+                },
             ],
             'array' => [
                 new InvalidArgumentException($exceptionMessage),

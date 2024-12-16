@@ -121,11 +121,11 @@ class UserModifiedBehavior extends Behavior
      * Set the user ID to the given ID, or if not passed the current logged user ID.
      *
      * @param int|null $userId Timestamp
-     * @return int
+     * @return int|null
      */
-    public function userId(?int $userId = null): int
+    public function userId(?int $userId = null): ?int
     {
-        if ($userId) {
+        if ($userId !== null) {
             $this->userId = $userId;
         } elseif ($this->userId === null) {
             $this->userId = LoggedUser::id();

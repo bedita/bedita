@@ -266,11 +266,11 @@ class DateRange extends Entity
      * whose field `start_date` is an instance of {@see Cake\I18n\Time} and field `end_date` is
      * either `null` or an instance of {@see Cake\I18n\Time}.
      *
-     * @param array ...$dateRanges Date Ranges to check.
+     * @param mixed ...$dateRanges Date Ranges to check.
      * @return void
      * @throws \LogicException Throws an exception if a malformed Date Range is encountered.
      */
-    public static function checkWellFormed(array ...$dateRanges): void
+    public static function checkWellFormed(mixed ...$dateRanges): void
     {
         $getType = function ($var) {
             if (!is_object($var)) {

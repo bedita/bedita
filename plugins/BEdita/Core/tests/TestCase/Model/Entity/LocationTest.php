@@ -12,9 +12,9 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\Model\Entity;
 
+use BEdita\Core\Model\Table\LocationsTable;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
@@ -41,7 +41,7 @@ class LocationTest extends TestCase
      *
      * @var \BEdita\Core\Model\Table\LocationsTable
      */
-    protected $Locations;
+    protected LocationsTable $Locations;
 
     /**
      * @inheritDoc

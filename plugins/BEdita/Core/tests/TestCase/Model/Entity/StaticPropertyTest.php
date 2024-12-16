@@ -12,11 +12,11 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\Model\Entity;
 
 use BEdita\Core\Model\Entity\Property;
 use BEdita\Core\Model\Entity\StaticProperty;
+use BEdita\Core\Model\Table\PropertiesTable;
 use BEdita\Core\Model\Table\StreamsTable;
 use BEdita\Core\Model\Table\UsersTable;
 use Cake\ORM\Table;
@@ -38,7 +38,7 @@ class StaticPropertyTest extends TestCase
      *
      * @var \BEdita\Core\Model\Table\PropertiesTable
      */
-    public $Properties;
+    public PropertiesTable $Properties;
 
     /**
      * Fixtures

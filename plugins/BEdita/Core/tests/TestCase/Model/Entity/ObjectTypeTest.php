@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\Model\Entity;
 
 use BEdita\Core\Model\Entity\ObjectType;
@@ -36,7 +35,7 @@ class ObjectTypeTest extends TestCase
      *
      * @var \BEdita\Core\Model\Table\ObjectTypesTable
      */
-    public $ObjectTypes;
+    public ObjectTypesTable $ObjectTypes;
 
     /**
      * Fixtures

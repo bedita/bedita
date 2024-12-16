@@ -12,9 +12,9 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\Model\Entity;
 
+use BEdita\Core\Model\Table\MediaTable;
 use BEdita\Core\Test\Utility\TestFilesystemTrait;
 use Cake\TestSuite\TestCase;
 
@@ -51,7 +51,7 @@ class MediaTest extends TestCase
      *
      * @var \BEdita\Core\Model\Table\MediaTable
      */
-    protected $Files;
+    protected MediaTable $Files;
 
     /**
      * @inheritDoc

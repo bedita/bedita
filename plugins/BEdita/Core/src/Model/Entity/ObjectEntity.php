@@ -328,9 +328,9 @@ class ObjectEntity extends Entity implements JsonApiSerializable
     /**
      * Getter for `type` virtual property.
      *
-     * @return string
+     * @return string|null
      */
-    protected function _getType(): string
+    protected function _getType(): ?string
     {
         $this->loadObjectType();
         if (!$this->object_type) {
@@ -344,9 +344,9 @@ class ObjectEntity extends Entity implements JsonApiSerializable
      * Setter for `type` virtual property.
      *
      * @param string $type Object type name.
-     * @return string
+     * @return string|null
      */
-    protected function _setType(string $type): string
+    protected function _setType(string $type): ?string
     {
         try {
             $this->object_type = TableRegistry::getTableLocator()->get('ObjectTypes')->get($type);

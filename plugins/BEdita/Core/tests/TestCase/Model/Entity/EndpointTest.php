@@ -12,11 +12,11 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\Model\Entity;
 
 use BEdita\Core\Model\Entity\Endpoint;
 use BEdita\Core\Model\Entity\ObjectType;
+use BEdita\Core\Model\Table\EndpointsTable;
 use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
@@ -35,7 +35,7 @@ class EndpointTest extends TestCase
      *
      * @var \BEdita\Core\Model\Table\EndpointsTable
      */
-    public $Endpoints;
+    public EndpointsTable $Endpoints;
 
     /**
      * Fixtures
@@ -120,7 +120,7 @@ class EndpointTest extends TestCase
                 'document',
             ],
             'not valid name' => [
-                new RecordNotFoundException('Record not found in table "object_types"'),
+                new RecordNotFoundException('Record not found in table `object_types`'),
                 'dontfindme',
             ],
         ];

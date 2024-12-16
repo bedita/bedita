@@ -322,11 +322,15 @@ class ObjectTypesTable extends Table
     /**
      * Check if objects of a certain type id exist
      *
-     * @param int $typeId Object type id
+     * @param int|null $typeId Object type id
      * @return bool True if at least an object exists, false otherwise
      */
-    protected function objectsExist(int $typeId): bool
+    protected function objectsExist(?int $typeId): bool
     {
+        if ($typeId === null) {
+            return false;
+        }
+
         return TableRegistry::getTableLocator()->get('Objects')->exists(['object_type_id IS' => $typeId]);
     }
 

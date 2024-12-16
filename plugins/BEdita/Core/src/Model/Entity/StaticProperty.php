@@ -53,10 +53,10 @@ class StaticProperty extends Property
     /**
      * Setter for `name` property.
      *
-     * @param string $name Property name.
-     * @return string
+     * @param string|null $name Property name.
+     * @return string|null
      */
-    protected function _setName(string $name): string
+    protected function _setName(?string $name): ?string
     {
         $this->inferFromSchema($name, $this->table);
 
@@ -235,7 +235,7 @@ class StaticProperty extends Property
         }
 
         // Default value.
-        if ($this->has('default')) {
+        if ($this->hasValue('default')) {
             $schema['default'] = $this->default;
         }
 

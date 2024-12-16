@@ -12,10 +12,10 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\Model\Entity;
 
 use BEdita\Core\Model\Entity\ExternalAuth;
+use BEdita\Core\Model\Table\ExternalAuthTable;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use InvalidArgumentException;
@@ -30,9 +30,9 @@ class ExternalAuthTest extends TestCase
     /**
      * Test subject's table
      *
-     * @var \BEdita\Core\Model\Table\AuthProvidersTable
+     * @var \BEdita\Core\Model\Table\ExternalAuthTable
      */
-    public $ExternalAuth;
+    public ExternalAuthTable $ExternalAuth;
 
     /**
      * Fixtures

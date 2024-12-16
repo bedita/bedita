@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Model\Entity;
 
 use BEdita\Core\Model\Table\ObjectTypesTable;
@@ -119,9 +118,9 @@ class Property extends Entity implements JsonApiSerializable
     /**
      * Getter for `property_type_name` virtual property.
      *
-     * @return string
+     * @return string|null
      */
-    protected function _getPropertyTypeName(): string
+    protected function _getPropertyTypeName(): ?string
     {
         if (!$this->property_type) {
             return null;
@@ -133,10 +132,10 @@ class Property extends Entity implements JsonApiSerializable
     /**
      * Setter for `property_type_name` virtual property.
      *
-     * @param string $propertyType Property type name.
-     * @return string
+     * @param string|null $propertyType Property type name.
+     * @return string|null
      */
-    protected function _setPropertyTypeName(string $propertyType): string
+    protected function _setPropertyTypeName(?string $propertyType): ?string
     {
         /** @var array<\BEdita\Core\Model\Entity\PropertyType> $propertyTypes */
         $propertyTypes = Cache::remember(

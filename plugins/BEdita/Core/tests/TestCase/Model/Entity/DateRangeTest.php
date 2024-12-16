@@ -12,10 +12,10 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\Model\Entity;
 
 use BEdita\Core\Model\Entity\DateRange;
+use BEdita\Core\Model\Table\DateRangesTable;
 use Cake\I18n\DateTime;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
@@ -43,7 +43,7 @@ class DateRangeTest extends TestCase
      *
      * @var \BEdita\Core\Model\Table\DateRangesTable
      */
-    protected $DateRanges;
+    protected DateRangesTable $DateRanges;
 
     /**
      * @inheritDoc

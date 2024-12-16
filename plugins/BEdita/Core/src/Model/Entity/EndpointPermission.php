@@ -112,10 +112,10 @@ class EndpointPermission extends Entity implements JsonApiSerializable
     /**
      * Decode a permission value.
      *
-     * @param int $value Integer representing a permission value.
+     * @param string|int $value Integer representing a permission value.
      * @return string|bool
      */
-    public static function decode(int $value): bool|string
+    public static function decode(string|int $value): bool|string
     {
         if (is_string($value) && is_numeric($value)) {
             $value = (int)$value;
@@ -167,10 +167,10 @@ class EndpointPermission extends Entity implements JsonApiSerializable
     /**
      * Setter for permission value.
      *
-     * @param array|int $value Permission value. Can be either an integer, or an array with `read` and `write` keys.
+     * @param mixed $value Permission value. Can be either an integer, or an array with `read` and `write` keys.
      * @return int
      */
-    protected function _setPermission(int|array $value): int
+    protected function _setPermission(mixed $value): int
     {
         if (is_array($value)) {
             $read = static::encode(array_key_exists('read', $value) ? $value['read'] : $this->read);

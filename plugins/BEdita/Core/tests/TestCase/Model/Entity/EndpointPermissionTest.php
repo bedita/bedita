@@ -12,13 +12,13 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\Model\Entity;
 
 use BEdita\Core\Model\Entity\Application;
 use BEdita\Core\Model\Entity\Endpoint;
 use BEdita\Core\Model\Entity\EndpointPermission;
 use BEdita\Core\Model\Entity\Role;
+use BEdita\Core\Model\Table\EndpointPermissionsTable;
 use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
@@ -38,7 +38,7 @@ class EndpointPermissionTest extends TestCase
      *
      * @var \BEdita\Core\Model\Table\EndpointPermissionsTable
      */
-    public $EndpointPermissions;
+    public EndpointPermissionsTable $EndpointPermissions;
 
     /**
      * Fixtures
@@ -381,7 +381,7 @@ class EndpointPermissionTest extends TestCase
                 'home',
             ],
             'not valid name' => [
-                new RecordNotFoundException('Record not found in table "endpoints"'),
+                new RecordNotFoundException('Record not found in table `endpoints`'),
                 'dontfindme',
             ],
         ];
@@ -435,7 +435,7 @@ class EndpointPermissionTest extends TestCase
                 'second role',
             ],
             'not valid name' => [
-                new RecordNotFoundException('Record not found in table "roles"'),
+                new RecordNotFoundException('Record not found in table `roles`'),
                 'dontfindme',
             ],
         ];
@@ -489,7 +489,7 @@ class EndpointPermissionTest extends TestCase
                 'First app',
             ],
             'not valid name' => [
-                new RecordNotFoundException('Record not found in table "applications"'),
+                new RecordNotFoundException('Record not found in table `applications`'),
                 'dontfindme',
             ],
         ];

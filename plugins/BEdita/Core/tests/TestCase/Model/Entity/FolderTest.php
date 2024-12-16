@@ -12,10 +12,10 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\Model\Entity;
 
 use BEdita\Core\Model\Entity\Folder;
+use BEdita\Core\Model\Table\FoldersTable;
 use BEdita\Core\Utility\LoggedUser;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
@@ -54,7 +54,7 @@ class FolderTest extends TestCase
      *
      * @var \BEdita\Core\Model\Table\FoldersTable
      */
-    public $Folders;
+    public FoldersTable $Folders;
 
     /**
      * @inheritDoc
