@@ -73,7 +73,7 @@ class TreeBehavior extends CakeTreeBehavior
                 $parentField = $this->getConfig('parent');
                 $leftField = $this->getConfig('left');
 
-                if (!$node->has($parentField)) {
+                if (!$node->hasValue($parentField)) {
                     $exp = $exp->isNull($this->table()->aliasField($parentField));
                 } else {
                     $exp = $exp->eq($this->table()->aliasField($parentField), $node->get($parentField));

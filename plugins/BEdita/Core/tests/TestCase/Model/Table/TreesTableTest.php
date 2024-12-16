@@ -372,6 +372,11 @@ class TreesTableTest extends TestCase
             ],
             'last' => [
                 2,
+                12,
+                'last',
+            ],
+            'moveRootDoNothing' => [
+                1,
                 11,
                 'last',
             ],
@@ -457,15 +462,11 @@ class TreesTableTest extends TestCase
         return [
             'first' => [
                 [11, 12, 4],
-                [4],
+                4,
             ],
             'invalid' => [
-                new RecordNotFoundException('Record not found in table "trees"'),
-                [3],
-            ],
-            'bad' => [
-                new BadRequestException('Missing required parameter "object id"'),
-                [],
+                new RecordNotFoundException('Record not found in table `trees`'),
+                3,
             ],
         ];
     }
@@ -474,13 +475,13 @@ class TreesTableTest extends TestCase
      * Test `findPathNodes` method.
      *
      * @param array|\Exception $expected Expected array path or exception.
-     * @param array $options Finder options.
+     * @param int $objectId The object id.
      * @return void
      * @dataProvider findPathNodesProvider()
      * @covers ::findPathNodes()
      * @return void
      */
-    public function testFindPathNodes($expected, array $options): void
+    public function testFindPathNodes($expected, int $objectId): void
     {
         if ($expected instanceof Exception) {
             $this->expectException(get_class($expected));
@@ -488,7 +489,7 @@ class TreesTableTest extends TestCase
             $this->expectExceptionMessage($expected->getMessage());
         }
 
-        $path = $this->Trees->find('pathNodes', $options)
+        $path = $this->Trees->find('pathNodes', subjectValue: $objectId)
             ->find('list', keyField: 'id', valueField: 'object_id')
             ->toArray();
 

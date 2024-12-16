@@ -669,8 +669,8 @@ class UsersTableTest extends TestCase
             5 => 5,
         ];
 
-        $result = $this->Users->find('roles', [1, 'second role'])
-            ->find('list', ['keyField' => 'id', 'valueField' => 'id'])
+        $result = $this->Users->find('roles', subjectValue: [1, 'second role'])
+            ->find('list', keyField: 'id', valueField: 'id')
             ->toArray();
 
         static::assertEquals($expected, $result);

@@ -227,6 +227,10 @@ class ObjectTypesTable extends Table
 
         if (empty($args['contain'])) {
             $args['contain'] = ['LeftRelations.RightObjectTypes', 'RightRelations.LeftObjectTypes'];
+            if (!empty($args['select'])) {
+                // ensure to select the primary key that corresponds to the foreign key used by LeftRelations and RightRelations
+                $args['select'][] = $this->aliasField('id');
+            }
         }
         $args['cache'] = $cache;
         $args['cacheKey'] = $cacheKey;

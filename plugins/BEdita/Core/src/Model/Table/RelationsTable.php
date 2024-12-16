@@ -155,11 +155,11 @@ class RelationsTable extends Table
     public function buildRules(RulesChecker $rules): RulesChecker
     {
         $rules
-            ->add(new IsUniqueAmongst(['name' => ['name', 'inverse_name']]), '_isUniqueAmongst', [
+            ->add(new IsUniqueAmongst(['name' => ['name', 'inverse_name']]), '_isUniqueAmongstName', [
                 'errorField' => 'name',
                 'message' => __d('cake', 'This value is already in use'),
             ])
-            ->add(new IsUniqueAmongst(['inverse_name' => ['name', 'inverse_name']]), '_isUniqueAmongst', [
+            ->add(new IsUniqueAmongst(['inverse_name' => ['name', 'inverse_name']]), '_isUniqueAmongstInverseName', [
                 'errorField' => 'inverse_name',
                 'message' => __d('cake', 'This value is already in use'),
             ]);

@@ -261,7 +261,7 @@ class ObjectsTableTest extends TestCase
                 ['ne' => 'documents'],
             ],
             'missing' => [
-                new RecordNotFoundException('Record not found in table "object_types"'),
+                new RecordNotFoundException('Record not found in table `object_types`'),
                 ['document', 'profiles', 0],
             ],
             'abstract' => [
@@ -868,7 +868,7 @@ class ObjectsTableTest extends TestCase
      */
     public function testParentsAvailable(): void
     {
-        $object = $this->Objects->get(2, ['contain' => ['Parents']]);
+        $object = $this->Objects->get(2, contain: ['Parents']);
         static::assertNotEmpty($object->parents);
 
         $firstParent = $object->parents[0];

@@ -308,11 +308,15 @@ class TreesTable extends Table
     /**
      * Check if a given ID is the ID of a Folder.
      *
-     * @param int $id ID of object being checked.
+     * @param int|null $id ID of object being checked.
      * @return bool
      */
-    protected function isFolder(int $id): bool
+    protected function isFolder(?int $id): bool
     {
+        if ($id === null) {
+            return false;
+        }
+
         static $foldersType = null;
         if ($foldersType === null) {
             $foldersType = TableRegistry::getTableLocator()->get('ObjectTypes')->get('folders')->id;
@@ -328,20 +332,16 @@ class TreesTable extends Table
      * Find path nodes from object id.
      *
      * @param \Cake\ORM\Query\SelectQuery $query Query object instance.
-     * @param array $options Array with object id as first element.
+     * @param int $subjectValue The subject object id.
      * @return \Cake\ORM\Query\SelectQuery
      */
-    protected function findPathNodes(SelectQuery $query, array $options): SelectQuery
+    protected function findPathNodes(SelectQuery $query, int $subjectValue): SelectQuery
     {
-        if (empty($options)) {
-            throw new BadRequestException(__d('bedita', 'Missing required parameter "{0}"', 'object id'));
-        }
-
         $lft = $this->aliasField('tree_left');
         $rgt = $this->aliasField('tree_right');
         $node = $this->find()
             ->select([$lft, $rgt])
-            ->where(['object_id' => $options[0]])
+            ->where(['object_id' => $subjectValue])
             ->disableHydration()
             ->firstOrFail();
 

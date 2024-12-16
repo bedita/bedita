@@ -327,7 +327,7 @@ class RelationsTableTest extends TestCase
                 'inverse_test',
             ],
             'notFoundString' => [
-                new RecordNotFoundException('Record not found in table "relations"'),
+                new RecordNotFoundException('Record not found in table `relations`'),
                 'not_exists',
             ],
         ];

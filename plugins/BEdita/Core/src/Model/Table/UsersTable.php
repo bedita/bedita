@@ -31,6 +31,7 @@ use Cake\Http\ServerRequest;
 use Cake\ORM\Locator\LocatorAwareTrait;
 use Cake\ORM\Query\SelectQuery;
 use Cake\ORM\RulesChecker;
+use Cake\ORM\Table as CakeTable;
 use Cake\Utility\Hash;
 use Cake\Validation\Validator;
 
@@ -295,17 +296,17 @@ class UsersTable extends Table
      * Find users by role name or id.
      *
      * @param \Cake\ORM\Query\SelectQuery $query Query object instance.
-     * @param array $options Array with role names or ids also as comma separated elements
+     * @param array $subjectValue Array with role names or ids also as comma separated elements
      * @return \Cake\ORM\Query\SelectQuery
      */
-    protected function findRoles(SelectQuery $query, array $options): SelectQuery
+    protected function findRoles(SelectQuery $query, array $subjectValue): SelectQuery
     {
-        if (empty($options)) {
+        if (empty($subjectValue)) {
             throw new BadFilterException(__d('bedita', 'Missing required parameter "{0}"', 'roles'));
         }
 
-        return $query->innerJoinWith('Roles', function (SelectQuery $query) use ($options) {
-            $items = $this->rolesNamesIds($options);
+        return $query->innerJoinWith('Roles', function (SelectQuery $query) use ($subjectValue) {
+            $items = $this->rolesNamesIds($subjectValue);
 
             return $query->where(function (QueryExpression $exp) use ($items) {
                 return $exp->or(function (QueryExpression $exp) use ($items) {
@@ -450,7 +451,7 @@ class UsersTable extends Table
      * @param \Cake\ORM\Table $table Table class
      * @return array
      */
-    protected function notNullableColumns(Table $table): array
+    protected function notNullableColumns(CakeTable $table): array
     {
         $res = [];
         $schema = $table->getSchema();

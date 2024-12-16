@@ -41,7 +41,7 @@ use Cake\Utility\Hash;
  * @property \BEdita\Core\Model\Table\TranslationsTable|\Cake\ORM\Association\HasMany $Translations
  * @property \BEdita\Core\Model\Table\ObjectPermissionsTable|\Cake\ORM\Association\HasMany $Permissions
  * @property \BEdita\Core\Model\Table\CaptionsTable|\Cake\ORM\Association\HasMany $Captions
- * @method \BEdita\Core\Model\Entity\ObjectEntity get($primaryKey, $options = [])
+ * @method \BEdita\Core\Model\Entity\ObjectEntity get(mixed $primaryKey, array|string $finder = 'all', \Psr\SimpleCache\CacheInterface|string|null $cache = null, \Closure|string|null $cacheKey = null, mixed ...$args)
  * @method \BEdita\Core\Model\Entity\ObjectEntity newEntity($data = null, array $options = [])
  * @method \BEdita\Core\Model\Entity\ObjectEntity[] newEntities(array $data, array $options = [])
  * @method \BEdita\Core\Model\Entity\ObjectEntity|bool save(\Cake\Datasource\EntityInterface $entity, $options = [])

@@ -198,7 +198,7 @@ class StaticPropertiesTable extends Table
             $tables = array_merge($tables, $table->inheritedTables());
         }
 
-        if (!$objectType->has('parent')) {
+        if (!$objectType->hasValue('parent')) {
             // Object type does not have a parent.
             return $tables;
         }

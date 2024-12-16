@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Model\Table;
 
 use BEdita\Core\Exception\BadFilterException;
@@ -163,7 +162,7 @@ class PropertiesTable extends Table
             ->where(function (QueryExpression $exp) use ($for) {
                 return $exp->in(
                     $this->aliasField($this->ObjectTypes->getForeignKey()),
-                    $this->ObjectTypes->find('path', compact('for'))
+                    $this->ObjectTypes->find('path', for: $for)
                         ->select([$this->ObjectTypes->aliasField($this->ObjectTypes->getBindingKey())])
                 );
             });

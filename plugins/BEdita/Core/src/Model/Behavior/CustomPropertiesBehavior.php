@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Model\Behavior;
 
 use BEdita\Core\Exception\BadFilterException;
@@ -137,7 +136,7 @@ class CustomPropertiesBehavior extends Behavior
         return $query->formatResults(
             function (CollectionInterface $results) {
                 return $results->map(function ($row) {
-                    if (!is_array($row) || !$row instanceof EntityInterface) {
+                    if (!is_array($row) && !$row instanceof EntityInterface) {
                         return $row;
                     }
 
