@@ -127,7 +127,7 @@ class PropertiesTableTest extends TestCase
      */
     public function testValidation($expected, array $data)
     {
-        $property = $this->Properties->newEntity([]);
+        $property = $this->Properties->newEmptyEntity();
         $this->Properties->patchEntity($property, $data);
         $property->object_type_id = 1;
         $property->property_type_id = 1;

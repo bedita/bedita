@@ -107,7 +107,7 @@ class RolesUsersTableTest extends TestCase
     public function testValidation($expected, array $data)
     {
         LoggedUser::setUserAdmin();
-        $objectType = $this->RolesUsers->newEntity([]);
+        $objectType = $this->RolesUsers->newEmptyEntity();
         $this->RolesUsers->patchEntity($objectType, $data);
 
         $success = $this->RolesUsers->save($objectType);
@@ -167,7 +167,7 @@ class RolesUsersTableTest extends TestCase
     public function testModifyAdminRole()
     {
         LoggedUser::setUserAdmin();
-        $entity = $this->RolesUsers->newEntity([]);
+        $entity = $this->RolesUsers->newEmptyEntity();
         $this->RolesUsers->patchEntity($entity, [
             'role_id' => 2,
             'user_id' => 1,

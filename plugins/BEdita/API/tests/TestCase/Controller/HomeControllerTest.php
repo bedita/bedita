@@ -434,7 +434,7 @@ class HomeControllerTest extends IntegrationTestCase
         // setup new permission to block `/documents` endpoint
         $EndpointPermissions = $this->fetchTable('EndpointPermissions');
         $EndpointPermissions->deleteAll([]);
-        $permission = $EndpointPermissions->newEntity([]);
+        $permission = $EndpointPermissions->newEmptyEntity();
         $permission->permission = 0b0000;
         $permission->application_id = 1;
         $permission->endpoint_id = $endpoint->id;

@@ -78,7 +78,7 @@ class LinksTableTest extends TestCase
     public function testValidation(array $expected, array $data)
     {
         $this->Links = TableRegistry::getTableLocator()->get('Links');
-        $entity = $this->Links->newEntity([]);
+        $entity = $this->Links->newEmptyEntity();
         $entity = $this->Links->patchEntity($entity, $data);
         $errors = array_keys(Hash::flatten($entity->getErrors()));
 

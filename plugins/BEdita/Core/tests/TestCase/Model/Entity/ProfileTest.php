@@ -142,7 +142,7 @@ class ProfileTest extends TestCase
      */
     public function testSetUrl($expected, $website): void
     {
-        $profile = $this->Profiles->newEntity([]);
+        $profile = $this->Profiles->newEmptyEntity();
         $profile->website = $website;
 
         $actual = $profile->website;

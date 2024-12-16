@@ -139,7 +139,7 @@ class UserModifiedBehaviorTest extends TestCase
      */
     public function testHandleEvent()
     {
-        $object = $this->Objects->newEntity([]);
+        $object = $this->Objects->newEmptyEntity();
         $object->type = 'documents';
         $object = $this->Objects->save($object);
 
@@ -166,7 +166,7 @@ class UserModifiedBehaviorTest extends TestCase
             ],
         ], false);
 
-        $object = $this->Objects->newEntity([]);
+        $object = $this->Objects->newEmptyEntity();
         $object->type = 'documents';
         $this->Objects->save($object);
     }
@@ -218,7 +218,7 @@ class UserModifiedBehaviorTest extends TestCase
      */
     public function testTouchUserDirtyField()
     {
-        $object = $this->Objects->newEntity([]);
+        $object = $this->Objects->newEmptyEntity();
         $object->type = 'documents';
         $object->created_by = 5;
         $this->Objects->saveOrFail($object);

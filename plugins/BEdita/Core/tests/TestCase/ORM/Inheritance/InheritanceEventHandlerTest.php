@@ -216,7 +216,7 @@ class InheritanceEventHandlerTest extends TestCase
      */
     public function testBeforeSave($expected, $data)
     {
-        $feline = $this->fakeFelines->newEntity([]);
+        $feline = $this->fakeFelines->newEmptyEntity();
         if (!empty($data['id'])) {
             $feline = $this->fakeFelines->get($data['id']);
         }
@@ -263,7 +263,7 @@ class InheritanceEventHandlerTest extends TestCase
             return false; // This table is not meant to store data of your pet!
         });
 
-        $feline = $this->fakeFelines->newEntity([]);
+        $feline = $this->fakeFelines->newEmptyEntity();
         $feline = $this->fakeFelines->patchEntity($feline, $data);
         $result = $this->fakeFelines->save($feline);
 

@@ -144,7 +144,7 @@ class RelationsTableTest extends TestCase
     public function testValidation($expected, array $data)
     {
         if (empty($data['id'])) {
-            $objectType = $this->Relations->newEntity([]);
+            $objectType = $this->Relations->newEmptyEntity();
         } else {
             $objectType = $this->Relations->get($data['id']);
         }

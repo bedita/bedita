@@ -255,7 +255,7 @@ class FolderTest extends TestCase
      */
     public function testGetPathNull()
     {
-        $folder = $this->Folders->newEntity([]);
+        $folder = $this->Folders->newEmptyEntity();
         static::assertNull($folder->path);
     }
 

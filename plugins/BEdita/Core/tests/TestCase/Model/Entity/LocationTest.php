@@ -61,7 +61,7 @@ class LocationTest extends TestCase
      */
     public function testGetMeta()
     {
-        $location = $this->Locations->newEntity([]);
+        $location = $this->Locations->newEmptyEntity();
 
         static::assertFalse($location->isAccessible('distance'));
     }

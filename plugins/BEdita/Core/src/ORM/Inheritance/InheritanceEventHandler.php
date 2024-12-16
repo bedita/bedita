@@ -94,7 +94,7 @@ class InheritanceEventHandler implements EventListenerInterface
         }
 
         // Prepare parent entity.
-        $parentEntity = $inheritedTable->newEntity([]);
+        $parentEntity = $inheritedTable->newEmptyEntity();
         $parentEntity->setNew($entity->isNew());
         $parentEntity = $this->toParent($entity, $parentEntity, $table, $inheritedTable);
         $options['_inheritanceRulesErrors'] = true;
@@ -122,7 +122,7 @@ class InheritanceEventHandler implements EventListenerInterface
         }
 
         // Prepare parent entity.
-        $parentEntity = $inheritedTable->newEntity([]);
+        $parentEntity = $inheritedTable->newEmptyEntity();
         $parentEntity->setNew($entity->isNew());
         $parentEntity = $this->toParent($entity, $parentEntity, $table, $inheritedTable);
         if (!$parentEntity->isDirty()) {
@@ -185,7 +185,7 @@ class InheritanceEventHandler implements EventListenerInterface
         }
 
         // Prepare parent entity.
-        $parentEntity = $inheritedTable->newEntity([]);
+        $parentEntity = $inheritedTable->newEmptyEntity();
         $parentEntity->setNew(false);
         $parentEntity = $this->toParent($entity, $parentEntity, $table, $inheritedTable);
 

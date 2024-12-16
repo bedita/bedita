@@ -119,7 +119,7 @@ class RelationTypesTableTest extends TestCase
      */
     public function testValidation($expected, array $data)
     {
-        $objectType = $this->RelationTypes->newEntity([]);
+        $objectType = $this->RelationTypes->newEmptyEntity();
         $this->RelationTypes->patchEntity($objectType, $data);
 
         $success = $this->RelationTypes->save($objectType);

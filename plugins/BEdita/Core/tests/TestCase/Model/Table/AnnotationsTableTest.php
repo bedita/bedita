@@ -129,7 +129,7 @@ class AnnotationsTableTest extends TestCase
      */
     public function testValidation(array $expected, array $data)
     {
-        $entity = $this->Annotations->newEntity([]);
+        $entity = $this->Annotations->newEmptyEntity();
         $entity = $this->Annotations->patchEntity($entity, $data);
         $errors = array_keys(Hash::flatten($entity->getErrors()));
 

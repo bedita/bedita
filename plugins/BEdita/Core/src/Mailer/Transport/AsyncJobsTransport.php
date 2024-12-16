@@ -44,7 +44,7 @@ class AsyncJobsTransport extends AbstractTransport
         /** @var \BEdita\Core\Model\Table\AsyncJobsTable $table */
         $table = TableRegistry::getTableLocator()->get('AsyncJobs');
 
-        $asyncJob = $table->newEntity([]);
+        $asyncJob = $table->newEmptyEntity();
         $asyncJob->service = $this->getConfig('service');
         $asyncJob->max_attempts = $this->getConfig('max_attempts');
         if ($this->getConfig('priority') !== null) {

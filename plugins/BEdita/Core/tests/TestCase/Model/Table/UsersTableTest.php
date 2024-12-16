@@ -203,7 +203,7 @@ class UsersTableTest extends TestCase
      */
     public function testValidation($expected, array $data)
     {
-        $user = $this->Users->newEntity([]);
+        $user = $this->Users->newEmptyEntity();
         $this->Users->patchEntity($user, $data);
         $user->type = 'users';
 
@@ -603,7 +603,7 @@ class UsersTableTest extends TestCase
     {
         Configure::write('Signup', $config);
 
-        $user = $this->Users->newEntity([]);
+        $user = $this->Users->newEmptyEntity();
         $this->Users->patchEntity($user, $data, ['validate' => 'signup']);
         $user->type = 'users';
 
@@ -629,7 +629,7 @@ class UsersTableTest extends TestCase
             'email' => 'test@email.com',
         ];
 
-        $user = $this->Users->newEntity([]);
+        $user = $this->Users->newEmptyEntity();
         $this->Users->patchEntity($user, $data, ['validate' => 'signupExternal']);
 
         $error = (bool)$user->getErrors();
@@ -739,7 +739,7 @@ class UsersTableTest extends TestCase
             $this->expectExceptionMessage($expected->getMessage());
         }
 
-        $user = $this->Users->newEntity([]);
+        $user = $this->Users->newEmptyEntity();
         $user = $this->Users->patchEntity($user, $data);
         $success = $this->Users->save($user);
 
@@ -786,7 +786,7 @@ class UsersTableTest extends TestCase
      */
     public function testCustomPropsCreate(array $data)
     {
-        $user = $this->Users->newEntity([]);
+        $user = $this->Users->newEmptyEntity();
         $user = $this->Users->patchEntity($user, $data);
         $user->type = 'users';
         $success = $this->Users->save($user);
@@ -992,7 +992,7 @@ class UsersTableTest extends TestCase
             $this->expectExceptionMessage($expected->getMessage());
         }
 
-        $user = $this->Users->newEntity([]);
+        $user = $this->Users->newEmptyEntity();
         $this->Users->patchEntity($user, $data);
 
         $success = $this->Users->save($user);

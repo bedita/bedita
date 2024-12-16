@@ -223,7 +223,7 @@ class ObjectTypesTableTest extends TestCase
      */
     public function testValidation($expected, array $data): void
     {
-        $objectType = $this->ObjectTypes->newEntity([]);
+        $objectType = $this->ObjectTypes->newEmptyEntity();
         if (!empty($data['id'])) {
             $objectType = $this->ObjectTypes->get($data['id']);
         }
@@ -611,7 +611,7 @@ class ObjectTypesTableTest extends TestCase
      */
     public function testDefaultModelRules(array $data)
     {
-        $objectType = $this->ObjectTypes->newEntity([]);
+        $objectType = $this->ObjectTypes->newEmptyEntity();
         $this->ObjectTypes->patchEntity($objectType, $data);
 
         $success = $this->ObjectTypes->save($objectType);
@@ -684,7 +684,7 @@ class ObjectTypesTableTest extends TestCase
             'singular' => 'foo',
             'name' => 'foos',
         ];
-        $entity = $this->ObjectTypes->newEntity([]);
+        $entity = $this->ObjectTypes->newEmptyEntity();
         $entity = $this->ObjectTypes->patchEntity($entity, $data);
         $this->ObjectTypes->save($entity);
 
@@ -692,7 +692,7 @@ class ObjectTypesTableTest extends TestCase
             'title' => 'Foo',
         ];
         $table = TableRegistry::getTableLocator()->get('Foos');
-        $entity = $table->newEntity([]);
+        $entity = $table->newEmptyEntity();
         $entity = $table->patchEntity($entity, $data);
         $entity->created_by = 1;
         $entity->modified_by = 1;
@@ -788,7 +788,7 @@ class ObjectTypesTableTest extends TestCase
             $this->expectException(get_class($expected));
             $this->expectExceptionMessage($expected->getMessage());
         }
-        $objectType = $this->ObjectTypes->newEntity([]);
+        $objectType = $this->ObjectTypes->newEmptyEntity();
         if (!empty($data['id'])) {
             $objectType = $this->ObjectTypes->get($data['id']);
         }

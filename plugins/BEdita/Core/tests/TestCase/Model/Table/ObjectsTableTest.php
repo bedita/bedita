@@ -377,7 +377,7 @@ class ObjectsTableTest extends TestCase
      */
     public function testSaveDateRanges()
     {
-        $object = $this->Objects->newEntity([]);
+        $object = $this->Objects->newEmptyEntity();
         $object->type = 'events';
 
         $data = [
@@ -500,7 +500,7 @@ class ObjectsTableTest extends TestCase
             $this->expectException(PersistenceFailedException::class);
         }
 
-        $object = $this->Objects->newEntity([]);
+        $object = $this->Objects->newEmptyEntity();
         $object->type = $type;
 
         $result = $this->Objects->saveOrFail($object);

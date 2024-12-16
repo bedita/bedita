@@ -151,7 +151,7 @@ class JsonSchema
     public static function resourceSchema(string $resource): array
     {
         $table = TableRegistry::getTableLocator()->get((string)Inflector::camelize($resource));
-        $entity = $table->newEntity([]);
+        $entity = $table->newEmptyEntity();
         $schema = $table->getSchema();
         $hiddenProperties = $entity->getHidden();
 

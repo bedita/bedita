@@ -108,7 +108,7 @@ class UniqueNameBehaviorTest extends TestCase
     public function testUniqueUser($username, $uname)
     {
         $Users = TableRegistry::getTableLocator()->get('Users');
-        $user = $Users->newEntity([]);
+        $user = $Users->newEmptyEntity();
 
         $user = $Users->patchEntity($user, compact('username'));
         $Users->uniqueName($user);
@@ -215,7 +215,7 @@ class UniqueNameBehaviorTest extends TestCase
     public function testGenerateUniqueName($username, $name, $config)
     {
         $Users = TableRegistry::getTableLocator()->get('Users');
-        $user = $Users->newEntity([]);
+        $user = $Users->newEmptyEntity();
         $Users->patchEntity($user, compact('username', 'name'));
         $behavior = $Users->behaviors()->get('UniqueName');
         $uname1 = $behavior->generateUniqueName($user, false, $config);
@@ -259,7 +259,7 @@ class UniqueNameBehaviorTest extends TestCase
     public function testRegenerateUniqueName($uname, $title)
     {
         $Folders = TableRegistry::getTableLocator()->get('Folders');
-        $folder = $Folders->newEntity([]);
+        $folder = $Folders->newEmptyEntity();
         $Folders->patchEntity($folder, compact('uname', 'title'));
         $behavior = $Folders->behaviors()->get('UniqueName');
         $generated = $behavior->generateUniqueName($folder, true);

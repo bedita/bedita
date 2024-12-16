@@ -93,7 +93,7 @@ class ResourcesAddCommand extends Command
         $this->args = $args;
         $this->io = $io;
         $this->table = $this->fetchTable(Inflector::camelize($type));
-        $entity = $this->table->newEntity([]);
+        $entity = $this->table->newEmptyEntity();
         if ($type === 'endpoint_permissions') {
             $this->setupEndpointPermissionEntity($entity);
         } else {

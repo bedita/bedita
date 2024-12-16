@@ -137,7 +137,7 @@ class StreamsTableTest extends TestCase
      */
     public function testValidation($expected, array $data, $uuid = false)
     {
-        $stream = $this->Streams->newEntity([]);
+        $stream = $this->Streams->newEmptyEntity();
         if ($uuid !== false) {
             $stream = $this->Streams->get($uuid);
         }
@@ -175,7 +175,7 @@ class StreamsTableTest extends TestCase
             'contents' => 'Not really GZipped',
         ];
 
-        $stream = $this->Streams->newEntity([]);
+        $stream = $this->Streams->newEmptyEntity();
         $stream = $this->Streams->patchEntity($stream, $data);
 
         $this->Streams->saveOrFail($stream);
@@ -204,7 +204,7 @@ class StreamsTableTest extends TestCase
             'contents' => 'Not really GZipped',
         ];
 
-        $stream = $this->Streams->newEntity([]);
+        $stream = $this->Streams->newEmptyEntity();
         $stream->uuid = $uuid;
         $stream = $this->Streams->patchEntity($stream, $data);
 
