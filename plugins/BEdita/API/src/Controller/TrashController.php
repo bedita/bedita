@@ -67,7 +67,7 @@ class TrashController extends AppController
      *
      * @return void
      */
-    public function index(): void
+    public function index(): ?Response
     {
         $this->request->allowMethod(['get', 'delete']);
         if ($this->request->is('delete')) {
@@ -90,6 +90,8 @@ class TrashController extends AppController
 
         $this->set(compact('trash'));
         $this->setSerialize(['trash']);
+
+        return null;
     }
 
     /**
