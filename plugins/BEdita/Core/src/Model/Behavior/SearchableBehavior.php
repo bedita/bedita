@@ -218,16 +218,16 @@ class SearchableBehavior extends Behavior
      * Finder for query search.
      *
      * @param \Cake\ORM\Query\SelectQuery $query Query object instance.
-     * @param array $options Options.
+     * @param array $subjectValue Options.
      * @return \Cake\ORM\Query\SelectQuery
      */
-    public function findQuery(SelectQuery $query, array $options): SelectQuery
+    public function findQuery(SelectQuery $query, array $subjectValue): SelectQuery
     {
-        $options += [
+        $subjectValue += [
             'exact' => false,
         ];
 
-        $text = $options['string'] ?? $options[0] ?? null;
+        $text = $subjectValue['string'] ?? $subjectValue[0] ?? null;
         if (!isset($text) || !is_string($text)) {
             // Bad filter options.
             throw new BadFilterException([
@@ -236,9 +236,9 @@ class SearchableBehavior extends Behavior
             ]);
         }
 
-        unset($options[0], $options['string']);
+        unset($subjectValue[0], $subjectValue['string']);
 
-        return $this->getAdapter()->search($query, $text, $options);
+        return $this->getAdapter()->search($query, $text, $subjectValue);
     }
 
     /**

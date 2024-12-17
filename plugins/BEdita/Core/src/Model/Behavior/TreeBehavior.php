@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Model\Behavior;
 
 use Cake\Database\Expression\ComparisonExpression;
@@ -116,7 +115,7 @@ class TreeBehavior extends CakeTreeBehavior
                 ->where(function (QueryExpression $exp) use ($node) {
                     $parentField = $this->getConfig('parent');
 
-                    if (!$node->has($parentField)) {
+                    if (!$node->hasValue($parentField)) {
                         return $exp->isNull($this->table()->aliasField($parentField));
                     }
 

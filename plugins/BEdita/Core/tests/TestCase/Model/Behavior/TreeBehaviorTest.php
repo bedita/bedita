@@ -263,7 +263,7 @@ class TreeBehaviorTest extends TestCase
             ->firstOrFail();
 
         $children = $this->Table
-            ->find('children', ['for' => $parentNode->id])
+            ->find('children', for: $parentNode->id)
             ->all();
 
         $currentPositions = $children->extract('id')->toList();
@@ -276,7 +276,7 @@ class TreeBehaviorTest extends TestCase
         }
 
         $actual = $this->Table
-            ->find('children', ['for' => $parentNode->id])
+            ->find('children', for: $parentNode->id)
             ->all()
             ->extract('id')
             ->toList();

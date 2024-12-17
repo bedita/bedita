@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Model\Behavior;
 
 use BEdita\Core\Model\Entity\ObjectType;
@@ -59,7 +58,7 @@ class RelationsBehavior extends Behavior
      * @param \BEdita\Core\Model\Entity\ObjectType|string|int|null $type Method arguments.
      * @return \BEdita\Core\Model\Entity\ObjectType
      */
-    protected function objectType(ObjectType|string|int|null $type): ObjectType
+    protected function objectType(ObjectType|string|int|null $type = null): ObjectType
     {
         return $this->table()->behaviors()->call('objectType', [$type]);
     }

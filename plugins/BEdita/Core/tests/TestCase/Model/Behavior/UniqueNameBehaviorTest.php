@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\Model\Behavior;
 
 use BEdita\Core\Model\Behavior\UniqueNameBehavior;
@@ -486,7 +485,8 @@ class UniqueNameBehaviorTest extends TestCase
      */
     public function testUniqueNameMaxLen()
     {
-        $Documents = TableRegistry::getTableLocator()->get('Documents');
+        $Documents = $this->fetchTable('Documents');
+        /** @var \BEdita\Core\Model\Behavior\UniqueNameBehavior $behavior */
         $behavior = $Documents->behaviors()->get('UniqueName');
 
         // check internal uname generation lenght

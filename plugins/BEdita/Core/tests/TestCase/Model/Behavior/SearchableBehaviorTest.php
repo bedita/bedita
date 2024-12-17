@@ -126,7 +126,7 @@ class SearchableBehaviorTest extends TestCase
         static::assertTrue($table->hasFinder('query'));
 
         $result = $table
-            ->find('query', (array)$query)
+            ->find('query', subjectValue: (array)$query)
             ->find('list')
             ->toArray();
 
@@ -149,7 +149,7 @@ class SearchableBehaviorTest extends TestCase
         $table = $this->fetchTable('FakeMammals');
         $table->addBehavior('BEdita/Core.Searchable'); // search on all fields
         $result = $table
-            ->find('query', $options)
+            ->find('query', subjectValue: $options)
             ->toArray();
 
         static::assertCount(1, $result);
@@ -163,7 +163,7 @@ class SearchableBehaviorTest extends TestCase
         ]);
 
         $result = $table
-            ->find('query', $options)
+            ->find('query', subjectValue: $options)
             ->toArray();
 
         static::assertCount(0, $result);
@@ -322,7 +322,7 @@ class SearchableBehaviorTest extends TestCase
         } else {
             $table->addBehavior('BEdita/Core.Searchable');
         }
-        $result = $table->find('query', ['string' => 'word'])->toArray();
+        $result = $table->find('query', subjectValue: ['string' => 'word'])->toArray();
         $actual = Hash::extract($result, $expectedPath);
         static::assertEquals($expected, $actual);
         Configure::write('Search', $backupConf); // restore original config
@@ -342,7 +342,7 @@ class SearchableBehaviorTest extends TestCase
         Configure::write('Search.adapters.test.scopes', ['foo2_scope']);
         $table = $this->fetchTable('FakeMammals');
         $table->addBehavior('BEdita/Core.Searchable', ['scopes' => ['foo_scope']]);
-        $table->find('query', ['string' => 'ala'])->find('list')->toArray();
+        $table->find('query', subjectValue: ['string' => 'ala'])->find('list')->toArray();
     }
 
     /**

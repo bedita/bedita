@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Model\Behavior;
 
 use ArrayObject;
@@ -220,12 +219,12 @@ class HistoryBehavior extends Behavior
      * Logged user id is used if no id is present in options array.
      *
      * @param \Cake\ORM\Query\SelectQuery $query Query object instance.
-     * @param array $options Options containing user id
+     * @param array $subjectValue Options containing user id
      * @return \Cake\ORM\Query\SelectQuery
      */
-    public function findHistoryEditor(SelectQuery $query, array $options): SelectQuery
+    public function findHistoryEditor(SelectQuery $query, array $subjectValue): SelectQuery
     {
-        $editorId = Hash::get($options, '0');
+        $editorId = Hash::get($subjectValue, '0');
         if (empty($editorId)) {
             $editorId = LoggedUser::id();
         }

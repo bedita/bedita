@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\Model\Behavior;
 
 use BEdita\Core\Utility\LoggedUser;
@@ -350,7 +349,7 @@ class HistoryBehaviorTest extends TestCase
         LoggedUser::setUserAdmin();
 
         $result = TableRegistry::getTableLocator()->get('Documents')
-            ->find('historyEditor', $options)
+            ->find('historyEditor', subjectValue: $options)
             ->find('list', keyField: 'id', valueField: 'id')
             ->toArray();
 

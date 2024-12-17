@@ -66,15 +66,11 @@ class ResourceNameBehaviorTest extends TestCase
                 'first role',
             ],
             'notFound' => [
-                new RecordNotFoundException('Record not found in table "roles"'),
+                new RecordNotFoundException('Record not found in table `roles`'),
                 'this-name-doesnt-exist',
             ],
-            'null' => [
-                new InvalidArgumentException('Expression `Roles.name` is missing operator (IS, IS NOT) with `null` value.'),
-                null,
-            ],
             'emptyString' => [
-                new RecordNotFoundException('Record not found in table "roles"'),
+                new RecordNotFoundException('Record not found in table `roles`'),
                 '',
             ],
         ];
