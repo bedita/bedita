@@ -16,10 +16,7 @@ namespace BEdita\Core\Test\TestCase\Filesystem;
 
 use BEdita\Core\Filesystem\FilesystemAdapter;
 use Cake\TestSuite\TestCase;
-use Exception;
 use League\Flysystem\FilesystemAdapter as LeagueFilesystemAdapter;
-use RuntimeException;
-use stdClass;
 
 /**
  * @coversDefaultClass \BEdita\Core\Filesystem\FilesystemAdapter
@@ -62,68 +59,36 @@ class FilesystemAdapterTest extends TestCase
     }
 
     /**
-     * Data provider for `testGetInnerAdapter` test case.
-     *
-     * @return array
-     */
-    public static function getInnerAdapterProvider(): array
-    {
-        return [
-            'ok' => [
-                true,
-                static::getMockBuilder(LeagueFilesystemAdapter::class)->getMock(),
-            ],
-            'wrong class' => [
-                new RuntimeException('Filesystem adapters must use BEdita\Core\Filesystem\AdapterInterface as a base class.'),
-                new stdClass(),
-            ],
-            'definitely not an object' => [
-                new RuntimeException('Filesystem adapters must use BEdita\Core\Filesystem\AdapterInterface as a base class.'),
-                [null, 'gustavo supporto'],
-            ],
-        ];
-    }
-
-    /**
      * Test inner adapter getter.
      *
-     * @param \Exception|bool $expected Expected result.
-     * @param mixed $innerAdapter Built inner adapter.
      * @return void
-     * @dataProvider getInnerAdapterProvider()
      * @covers ::getInnerAdapter()
      */
-    public function testGetInnerAdapter($expected, $innerAdapter)
+    public function testGetInnerAdapter(): void
     {
-        if ($expected instanceof Exception) {
-            $this->expectException(get_class($expected));
-            $this->expectExceptionCode($expected->getCode());
-            $this->expectExceptionMessage($expected->getMessage());
-        }
-
+        $innerAdapter = $this->getMockBuilder(LeagueFilesystemAdapter::class)->getMock();
         $config = [
             'baseUrl' => 'http://example.org',
             'key' => 'value',
             'visibility' => 'private',
+            'innerAdapter' => $innerAdapter,
         ];
 
-        $adapter = $this->getMockForAbstractClass(FilesystemAdapter::class);
-
-        $adapter->expects(static::once())
-            ->method('buildAdapter')
-            ->willReturn($innerAdapter)
-            ->with(static::equalTo($config));
+        $adapter = new class () extends FilesystemAdapter {
+            public function buildAdapter(array $config): LeagueFilesystemAdapter
+            {
+                return $config['innerAdapter'];
+            }
+        };
 
         /** @var \BEdita\Core\Filesystem\FilesystemAdapter $adapter */
         $adapter->initialize($config);
         $result = $adapter->getInnerAdapter();
-        if ($expected === true) {
-            static::assertSame($innerAdapter, $result);
+        static::assertSame($innerAdapter, $result);
 
-            // Test that subsequent executions return the same result.
-            $result = $adapter->getInnerAdapter();
-            static::assertSame($innerAdapter, $result);
-        }
+        // Test that subsequent executions return the same result.
+        $result = $adapter->getInnerAdapter();
+        static::assertSame($innerAdapter, $result);
     }
 
     /**

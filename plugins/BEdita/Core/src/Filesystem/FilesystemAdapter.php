@@ -16,7 +16,6 @@ namespace BEdita\Core\Filesystem;
 
 use Cake\Core\InstanceConfigTrait;
 use League\Flysystem\FilesystemAdapter as LeagueFilesystemAdapter;
-use RuntimeException;
 
 /**
  * Filesystem adapter.
@@ -74,14 +73,7 @@ abstract class FilesystemAdapter
             return $this->adapter;
         }
 
-        $adapter = $this->buildAdapter($this->getConfig());
-        if (!($adapter instanceof LeagueFilesystemAdapter)) {
-            throw new RuntimeException(
-                sprintf('Filesystem adapters must use %s as a base class.', LeagueFilesystemAdapter::class)
-            );
-        }
-
-        return $this->adapter = $adapter;
+        return $this->adapter = $this->buildAdapter($this->getConfig());
     }
 
     /**
