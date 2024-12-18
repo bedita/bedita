@@ -299,7 +299,7 @@ class Folder extends ObjectEntity
     /**
      * @inheritDoc
      */
-    protected static function listAssociations(Table $Table, array $hidden = [])
+    protected static function listAssociations(Table $Table, array $hidden = []): array
     {
         $relationships = parent::listAssociations($Table, $hidden);
         $relationships[] = 'parent';
