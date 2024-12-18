@@ -327,10 +327,7 @@ class FoldersTableTest extends TestCase
         $startDeletedInfo = $this->Folders
             ->find('ancestor', [$root->id])
             ->orderBy([$this->Folders->aliasField('id') => 'ASC'])
-            ->find('list', [
-                'keyField' => 'id',
-                'valueField' => 'deleted',
-            ])
+            ->find('list', keyField: 'id', valueField: 'deleted')
             ->toArray();
 
         $root->deleted = true;
@@ -392,10 +389,7 @@ class FoldersTableTest extends TestCase
         $notFoldersIds = $this->Folders
             ->find('ancestor', [$parentFolder->id])
             ->orderBy([$this->Folders->aliasField('id') => 'ASC'])
-            ->find('list', [
-                'keyField' => 'id',
-                'valueField' => 'id',
-            ])
+            ->find('list', keyField: 'id', valueField: 'id')
             ->where(function (QueryExpression $exp) {
                 return $exp->not(['object_type_id' => $this->Folders->objectType()->id]);
             })

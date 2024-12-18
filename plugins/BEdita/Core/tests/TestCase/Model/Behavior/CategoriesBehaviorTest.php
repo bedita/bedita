@@ -190,7 +190,7 @@ class CategoriesBehaviorTest extends TestCase
         if (!empty($objectType->get('associations'))) {
             $options = ['contain' => $objectType->get('associations')];
         }
-        $entity = $table->get($id, $options);
+        $entity = $table->get($id, ...$options);
 
         $entity = $table->patchEntity($entity, $data);
         $entity = $table->save($entity);
