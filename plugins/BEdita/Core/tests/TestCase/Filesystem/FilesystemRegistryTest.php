@@ -80,11 +80,6 @@ class FilesystemRegistryTest extends TestCase
      */
     public static function registryProvider(): array
     {
-        $failedInitialization = static::getMockBuilder(FilesystemAdapter::class)->getMock();
-        $failedInitialization
-            ->method('initialize')
-            ->willReturn(false);
-
         return [
             'found' => [
                 LocalAdapter::class,
@@ -110,15 +105,6 @@ class FilesystemRegistryTest extends TestCase
                     'className' => new stdClass(),
                 ],
             ],
-            'failed initialization' => [
-                new RuntimeException(
-                    sprintf('Filesystem adapter %s is not properly configured', get_class($failedInitialization))
-                ),
-                'Bad',
-                [
-                    'className' => $failedInitialization,
-                ],
-            ],
         ];
     }
 
@@ -134,7 +120,7 @@ class FilesystemRegistryTest extends TestCase
      * @covers ::_throwMissingClassError()
      * @covers ::_create()
      */
-    public function testRegistry($expected, $objectName, array $config = [])
+    public function testRegistry($expected, $objectName, array $config = []): void
     {
         if ($expected instanceof Exception) {
             $this->expectException(get_class($expected));
@@ -147,6 +133,25 @@ class FilesystemRegistryTest extends TestCase
         if (is_string($expected)) {
             static::assertInstanceOf($expected, $result);
         }
+    }
+
+    /**
+     * Test registry with invalid configuration.
+     *
+     * @return void
+     * @covers ::_create()
+     */
+    public function testRegistryFailInitialize(): void
+    {
+        $failedInitialization = $this->getMockBuilder(FilesystemAdapter::class)->getMock();
+        $failedInitialization
+            ->method('initialize')
+            ->willReturn(false);
+
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage(sprintf('Filesystem adapter %s is not properly configured', get_class($failedInitialization)));
+
+        FilesystemRegistry::getInstance()->load('Bad', ['className' => $failedInitialization]);
     }
 
     /**
@@ -184,9 +189,9 @@ class FilesystemRegistryTest extends TestCase
      */
     public function testGetMissing()
     {
-        $result = FilesystemRegistry::getInstance()->get('missing');
-
-        static::assertNull($result);
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('Filesystem adapter "missing" is not available.');
+        FilesystemRegistry::getInstance()->get('missing');
     }
 
     /**
@@ -261,11 +266,6 @@ class FilesystemRegistryTest extends TestCase
             'missing prefix' => [
                 new InvalidArgumentException('No prefix detected in path: path/image.png'),
                 'path/image.png',
-                [],
-            ],
-            'filesystem not found' => [
-                new UnableToMountFilesystem('No filesystem mounted with prefix missing'),
-                'missing://path/image.png',
                 [],
             ],
         ];

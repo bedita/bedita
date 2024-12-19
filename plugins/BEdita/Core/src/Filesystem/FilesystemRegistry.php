@@ -107,12 +107,12 @@ class FilesystemRegistry extends ObjectRegistry
     /**
      * {@inheritDoc}
      *
-     * @return \BEdita\Core\Filesystem\FilesystemAdapter|null
+     * @return \BEdita\Core\Filesystem\FilesystemAdapter
      */
     public function get(string $name): object
     {
         if (!in_array($name, static::configured())) {
-            return null;
+            throw new RuntimeException(sprintf('Filesystem adapter "%s" is not available.', $name));
         }
 
         if ($this->has($name)) {
@@ -172,11 +172,7 @@ class FilesystemRegistry extends ObjectRegistry
     public static function getPublicUrl(string $path): string
     {
         [$prefix, $path] = static::getPrefixAndPath($path);
-
         $adapter = static::getInstance()->get($prefix);
-        if ($adapter === null) {
-            throw new UnableToMountFilesystem(sprintf('No filesystem mounted with prefix %s', $prefix));
-        }
 
         return $adapter->getPublicUrl($path);
     }

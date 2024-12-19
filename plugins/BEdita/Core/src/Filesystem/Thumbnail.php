@@ -36,9 +36,9 @@ class Thumbnail
     /**
      * Thumbnail registry.
      *
-     * @var \BEdita\Core\Filesystem\ThumbnailRegistry
+     * @var \BEdita\Core\Filesystem\ThumbnailRegistry|null
      */
-    protected static ThumbnailRegistry $_registry;
+    protected static ?ThumbnailRegistry $_registry;
 
     /**
      * An array mapping URL schemes to fully qualified Thumbnail generator class names.
