@@ -14,11 +14,12 @@ declare(strict_types=1);
  */
 namespace BEdita\Core\Test\TestCase\Model\Action;
 
-use BEdita\API\TestSuite\IntegrationTestCase;
 use BEdita\Core\Model\Action\CloneObjectAction;
 use BEdita\Core\Model\Entity\ObjectEntity;
 use BEdita\Core\Test\Utility\TestFilesystemTrait;
+use BEdita\Core\Utility\LoggedUser;
 use Cake\Http\Exception\UnauthorizedException;
+use Cake\TestSuite\TestCase;
 use Exception;
 use RuntimeException;
 
@@ -27,7 +28,7 @@ use RuntimeException;
  *
  * @coversDefaultClass \BEdita\Core\Model\Action\CloneObjectAction
  */
-class CloneObjectActionTest extends IntegrationTestCase
+class CloneObjectActionTest extends TestCase
 {
     use TestFilesystemTrait;
 
@@ -72,6 +73,26 @@ class CloneObjectActionTest extends IntegrationTestCase
     ];
 
     /**
+     * @inheritDoc
+     */
+    public function setUp(): void
+    {
+        parent::setUp();
+
+        LoggedUser::setUserAdmin();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function tearDown(): void
+    {
+        parent::tearDown();
+
+        LoggedUser::resetUser();
+    }
+
+    /**
      * Test clone a document with relationships and translations.
      *
      * @return void
@@ -84,7 +105,6 @@ class CloneObjectActionTest extends IntegrationTestCase
      */
     public function testClone(): void
     {
-        $this->configRequestHeaders('POST', $this->getUserAuthHeader());
         // document with ID 2 from fixtures has 5 relationships records and 4 translations records
         $id = 2;
         $title = 'new title';
@@ -144,7 +164,6 @@ class CloneObjectActionTest extends IntegrationTestCase
     public function testCloneMedia(): void
     {
         $this->filesystemSetup();
-        $this->configRequestHeaders('POST', $this->getUserAuthHeader());
 
         // ID 14, stream bedita-logo-gray.gif
         $id = 14;
@@ -208,7 +227,6 @@ class CloneObjectActionTest extends IntegrationTestCase
      */
     public function testCloneRelationships(int $sourceId, int $expectedCountLeft, int $expectedCountRight): void
     {
-        $this->configRequestHeaders('POST', $this->getUserAuthHeader());
         $source = $this->fetchTable('Objects')->get($sourceId);
         $table = $this->fetchTable($source->get('type'));
         $action = new CloneObjectAction(compact('table'));
@@ -249,7 +267,6 @@ class CloneObjectActionTest extends IntegrationTestCase
      */
     public function testCloneTranslations(int $sourceId, int $expectedCount): void
     {
-        $this->configRequestHeaders('POST', $this->getUserAuthHeader());
         $source = $this->fetchTable('Objects')->get($sourceId);
         $table = $this->fetchTable($source->get('type'));
         $action = new CloneObjectAction(compact('table'));
@@ -266,6 +283,7 @@ class CloneObjectActionTest extends IntegrationTestCase
      */
     public function testUnauthorizedException(): void
     {
+        LoggedUser::resetUser();
         $this->expectException(UnauthorizedException::class);
         $this->expectExceptionMessage('Cannot clone object without a logged user');
         $table = $this->fetchTable('Documents');
@@ -349,8 +367,8 @@ class CloneObjectActionTest extends IntegrationTestCase
             $this->expectException(get_class($expected));
             $this->expectExceptionMessage($expected->getMessage());
         }
-        $this->configRequestHeaders('POST', $this->getUserAuthHeader());
-        $action = new class extends CloneObjectAction {
+
+        $action = new class (['table' => $sourceEntity->getTable()]) extends CloneObjectAction {
             public function setEntityField(array $schemaInfo, ObjectEntity $sourceEntity, ObjectEntity $entity, string $field): mixed
             {
                 return parent::setEntityField($schemaInfo, $sourceEntity, $entity, $field);
@@ -377,7 +395,6 @@ class CloneObjectActionTest extends IntegrationTestCase
      */
     public function testCloneObjectWithCaptions(): void
     {
-        $this->configRequestHeaders('POST', $this->getUserAuthHeader());
         $id = 19;
         $status = 'draft';
         $data = compact('status');
@@ -410,7 +427,6 @@ class CloneObjectActionTest extends IntegrationTestCase
      */
     public function testCloneObjectWithDateRanges(): void
     {
-        $this->configRequestHeaders('POST', $this->getUserAuthHeader());
         $id = 9;
         $status = 'draft';
         $data = compact('status');

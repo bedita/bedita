@@ -30,9 +30,9 @@ class SetRelatedObjectsAction extends UpdateRelatedObjectsAction
     /**
      * {@inheritDoc}
      *
-     * @return array|false
+     * @return array|int|false
      */
-    protected function update(EntityInterface $entity, $relatedEntities): array|false
+    protected function update(EntityInterface $entity, $relatedEntities): array|int|false
     {
         if (!($this->Association instanceof RelatedTo)) {
             $action = new SetAssociatedAction($this->getConfig());

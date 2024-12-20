@@ -47,10 +47,10 @@ class ListEntitiesAction extends BaseAction
     /**
      * Parse a filter string.
      *
-     * @param string $filter Filter string.
+     * @param mixed $filter Filter string.
      * @return array
      */
-    public static function parseFilter(string $filter): array
+    public static function parseFilter(mixed $filter): array
     {
         if (is_array($filter)) {
             return $filter;

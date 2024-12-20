@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\Model\Action;
 
 use BEdita\Core\Model\Action\SignupUserAction;
@@ -102,7 +101,7 @@ class SignupUserActivationActionTest extends TestCase
                 [],
             ],
             'async job completed' => [
-                new RecordNotFoundException('Record not found in table "async_jobs"'),
+                new RecordNotFoundException('Record not found in table `async_jobs`'),
                 [
                     'uuid' => '1e2d1c66-c0bb-47d7-be5a-5bc92202333e',
                 ],
@@ -114,7 +113,7 @@ class SignupUserActivationActionTest extends TestCase
                 ],
             ],
             'async job not valid user_id' => [
-                new RecordNotFoundException('Record not found in table "users"'),
+                new RecordNotFoundException('Record not found in table `users`'),
                 [
                     'uuid' => '427ece75-71fb-4aca-bfab-1214cd98495a',
                 ],

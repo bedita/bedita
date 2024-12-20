@@ -12,12 +12,12 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\Model\Action;
 
 use BEdita\Core\Model\Action\ActionTrait;
 use BEdita\Core\Model\Action\SignupUserAction;
 use Cake\Core\Configure;
+use Cake\ORM\Table;
 use Cake\TestSuite\TestCase;
 use RuntimeException;
 use Throwable;
@@ -82,7 +82,9 @@ class ActionTraitTest extends TestCase
             'prefix' => [
                 'BEdita\Core\Model\Action\GetObjectAction',
                 'GetObjectAction',
-                [],
+                [
+                    'table' => new Table([]),
+                ],
                 'BEdita/Core',
             ],
             'fail with config' => [
