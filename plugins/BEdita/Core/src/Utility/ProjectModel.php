@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Utility;
 
 use BEdita\Core\Model\Entity\Relation;
@@ -123,7 +122,7 @@ class ProjectModel
     {
         $relations = TableRegistry::getTableLocator()
             ->get('Relations')
-            ->find('all', ['contain' => ['LeftObjectTypes', 'RightObjectTypes']])
+            ->find('all', contain: ['LeftObjectTypes', 'RightObjectTypes'])
             ->orderBy(['name' => 'ASC'])
             ->all()
             ->each(function (EntityInterface $row): void {
@@ -223,7 +222,7 @@ class ProjectModel
                 'application' => $applicationsTable->aliasField('name'),
             ])
             ->innerJoinWith('Applications')
-            ->order([$configTable->aliasField('context') => 'ASC', $configTable->aliasField('name') => 'ASC'])
+            ->orderBy([$configTable->aliasField('context') => 'ASC', $configTable->aliasField('name') => 'ASC'])
             ->toArray();
     }
 
