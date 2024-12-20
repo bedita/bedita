@@ -16,10 +16,8 @@ namespace BEdita\API\Test\TestCase\View;
 
 use BEdita\API\Test\TestConstants;
 use Cake\Controller\Controller;
-use Cake\Http\Response;
 use Cake\Http\ServerRequest;
 use Cake\ORM\Table;
-use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
 /**
@@ -63,7 +61,7 @@ class JsonApiViewTest extends TestCase
     {
         parent::setUp();
 
-        $this->Roles = TableRegistry::getTableLocator()->get('Roles');
+        $this->Roles = $this->fetchTable('Roles');
         $this->loadPlugins(['BEdita/API' => ['routes' => true]]);
     }
 
@@ -454,7 +452,7 @@ class JsonApiViewTest extends TestCase
             $data = $data($this->Roles);
         }
 
-        $Controller = new Controller(new ServerRequest(), new Response());
+        $Controller = new Controller(request: new ServerRequest());
         if (isset($data['_serialize'])) {
             $Controller->viewBuilder()->setOption('serialize', $data['_serialize']);
             unset($data['_serialize']);
@@ -481,7 +479,7 @@ class JsonApiViewTest extends TestCase
             ],
         ]);
 
-        $Controller = new Controller($request, new Response());
+        $Controller = new Controller(request: $request);
         $Controller->viewBuilder()->setClassName('BEdita/API.JsonApi');
         $view = $Controller->createView();
         static::assertEquals('application/json', $view->getResponse()->getType());

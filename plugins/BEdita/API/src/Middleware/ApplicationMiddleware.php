@@ -60,7 +60,7 @@ class ApplicationMiddleware implements MiddlewareInterface
      */
     public function __construct(?array $config = null)
     {
-        $this->setConfig($config);
+        $this->setConfig((array)$config);
     }
 
     /**

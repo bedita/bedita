@@ -20,7 +20,7 @@ use Cake\Collection\CollectionInterface;
 use Cake\Event\Event;
 use Cake\Event\EventManager;
 use Cake\Http\Exception\NotFoundException;
-use Cake\ORM\Query;
+use Cake\ORM\Query\SelectQuery;
 use Cake\Routing\Router;
 use Cake\Utility\Hash;
 use InvalidArgumentException;
@@ -39,7 +39,7 @@ class JsonApi
      * - `beforeFormatData` dispatched before the formatting of `$items`
      * - `afterFormatData` dispatched after the formatting of `$items`
      *
-     * @param \BEdita\Core\Utility\JsonApiSerializable|array<\BEdita\Core\Utility\JsonApiSerializable>|null $items Items to be formatted.
+     * @param \BEdita\Core\Utility\JsonApiSerializable|\Cake\ORM\Query\SelectQuery|\Cake\Collection\CollectionInterface|array<\BEdita\Core\Utility\JsonApiSerializable>|null $items Items to be formatted.
      * @param int $options Serializer options.
      * @param array $fields Selected fields to view in `attributes` and `meta`, if empty (default) all fields are serialized
      * @param array $included Array to be populated with included resources.
@@ -47,9 +47,13 @@ class JsonApi
      * @throws \InvalidArgumentException Throws an exception if `$item` could not be converted to array, or
      *      if required key `id` is unset or empty.
      */
-    public static function formatData(JsonApiSerializable|array|null $items, int $options = 0, array $fields = [], array &$included = []): array
-    {
-        if ($items instanceof Query) {
+    public static function formatData(
+        JsonApiSerializable|SelectQuery|CollectionInterface|array|null $items,
+        int $options = 0,
+        array $fields = [],
+        array &$included = []
+    ): ?array {
+        if ($items instanceof SelectQuery) {
             $items = $items->all()->toList();
         } elseif ($items instanceof CollectionInterface) {
             $items = $items->toList();

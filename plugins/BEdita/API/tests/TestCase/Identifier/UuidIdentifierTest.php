@@ -54,13 +54,13 @@ class UuidIdentifierTest extends TestCase
     {
         return [
             'first' => [
-                'gustavo',
-                'gustavo',
+                ['name' => 'gustavo'],
+                ['name' => 'gustavo'],
             ],
             'second' => [
-                'gustavo',
-                '',
-                'gustavo',
+                ['name' => 'gustavo'],
+                null,
+                ['name' => 'gustavo'],
             ],
         ];
     }
@@ -68,14 +68,14 @@ class UuidIdentifierTest extends TestCase
     /**
      * Test `identify` method
      *
-     * @param string $expected Expected result
-     * @param string $find1 First string
-     * @param string $find2 Second string
+     * @param array $expected Expected result
+     * @param array|null $find1 First find
+     * @param array|null $find2 Second find
      * @return void
      * @dataProvider identifyProvider
      * @covers ::identify()
      */
-    public function testIdentify(string $expected, string $find1, string $find2 = ''): void
+    public function testIdentify(array $expected, ?array $find1, ?array $find2 = null): void
     {
         $resolver = $this->getMockBuilder(ResolverInterface::class)
             ->onlyMethods(['find'])

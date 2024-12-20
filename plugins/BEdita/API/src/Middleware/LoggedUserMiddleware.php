@@ -85,7 +85,7 @@ class LoggedUserMiddleware implements MiddlewareInterface
             (is_array($result) || $result instanceof ArrayObject) &&
             !empty($result['username']) && !empty($result['id'])
         ) {
-            LoggedUser::setUser($result);
+            LoggedUser::setUser((array)$result);
 
             return true;
         }
