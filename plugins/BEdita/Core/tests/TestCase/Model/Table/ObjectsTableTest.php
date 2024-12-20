@@ -16,9 +16,9 @@ namespace BEdita\Core\Test\TestCase\Model\Table;
 
 use BEdita\Core\Exception\LockedResourceException;
 use BEdita\Core\Model\Entity\ObjectEntity;
-use BEdita\Core\Utility\Database;
 use BEdita\Core\Utility\LoggedUser;
 use Cake\Core\Configure;
+use Cake\Database\Driver\Mysql;
 use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\I18n\DateTime;
 use Cake\ORM\Exception\PersistenceFailedException;
@@ -443,8 +443,8 @@ class ObjectsTableTest extends TestCase
     {
         $object = $this->Objects->get(1);
         $expected = '🙈 😂 😱';
-        $info = Database::basicInfo();
-        if ($info['vendor'] == 'mysql' && (empty($info['encoding']) || $info['encoding'] != 'utf8mb4')) {
+        $dbDriver = $this->Objects->getConnection()->getDriver();
+        if ($dbDriver instanceof Mysql && Hash::get($dbDriver->config(), 'encoding') !== 'utf8mb4') {
             $expected = '';
         }
         $object['description'] = $expected;
