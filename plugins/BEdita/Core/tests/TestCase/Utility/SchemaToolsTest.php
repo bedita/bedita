@@ -15,7 +15,6 @@ declare(strict_types=1);
 
 namespace BEdita\Core\Test\TestCase\Utility;
 
-use BEdita\Core\Utility\Database;
 use BEdita\Core\Utility\SchemaTools;
 use Cake\TestSuite\TestCase;
 
@@ -71,10 +70,7 @@ class SchemaToolsTest extends TestCase
         $schema = $table->getSchema();
         $actual = SchemaTools::getUniqueFields($schema, ['count' => 1]);
         $expected = ['api_key', 'name'];
-        $info = Database::basicInfo();
-        if ($info['vendor'] === 'sqlite') {
-            $expected = [];
-        }
+        sort($actual);
         static::assertEquals($expected, $actual);
     }
 
