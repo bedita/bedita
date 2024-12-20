@@ -17,7 +17,6 @@ namespace BEdita\Core\Test\TestCase\Model\Behavior;
 use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\TestSuite\TestCase;
 use Exception;
-use InvalidArgumentException;
 
 /**
  * {@see \BEdita\Core\Model\Behavior\ResourceNameBehavior} Test Case

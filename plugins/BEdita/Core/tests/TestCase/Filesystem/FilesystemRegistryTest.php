@@ -23,7 +23,6 @@ use Exception;
 use InvalidArgumentException;
 use League\Flysystem\DirectoryListing;
 use League\Flysystem\MountManager;
-use League\Flysystem\UnableToMountFilesystem;
 use League\Flysystem\UnableToResolveFilesystemMount;
 use RuntimeException;
 use stdClass;

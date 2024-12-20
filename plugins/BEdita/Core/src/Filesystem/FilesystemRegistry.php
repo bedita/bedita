@@ -23,7 +23,6 @@ use Cake\Core\StaticConfigTrait;
 use InvalidArgumentException;
 use League\Flysystem\Filesystem;
 use League\Flysystem\MountManager;
-use League\Flysystem\UnableToMountFilesystem;
 use RuntimeException;
 
 /**
