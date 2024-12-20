@@ -96,9 +96,6 @@ Configure::write('debug', true);
 
 Configure::write('Plugins', []);
 
-Cache::clear('_cake_translations_');
-Cache::clear('_cake_model_');
-
 /*
  * Load schema.
  * First load fake schema for specific test purpose
@@ -124,3 +121,7 @@ if (defined('UNIT_TEST_RUN')) {
         'skip' => $fakeTables,
     ]);
 }
+
+// ensure all is cleaned up
+Cache::clearAll();
+TableRegistry::getTableLocator()->clear();
