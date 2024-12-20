@@ -175,7 +175,7 @@ class JobsCommand extends Command
                 'service' => $this->args->getOption('service'),
             ]);
         if ($this->args->getOption('limit') !== null) {
-            $query = $query->limit($this->args->getOption('limit'));
+            $query = $query->limit((int)$this->args->getOption('limit'));
         }
         if ($query->all()->isEmpty()) {
             $this->io->out('=====> <info>Nothing to do</info>');

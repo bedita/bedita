@@ -66,9 +66,9 @@ class ObjectsHistoryCommand extends Command
     public function execute(Arguments $args, ConsoleIo $io)
     {
         $action = $args->getOption('action');
-        $id = (array)$args->getOption('id');
+        $id = (array)$args->getMultipleOption('id');
         $since = $args->getOption('since');
-        $types = (array)$args->getOption('type');
+        $types = (array)$args->getMultipleOption('type');
         $message = sprintf('Perform "%s" on objects history', $action);
         $message .= !empty($id) ? ', for resource(s) id(s) ' . implode(',', $id) : '';
         $message .= !empty($since) ? sprintf(', since %s', $since) : '';

@@ -68,7 +68,7 @@ class ResourcesCommandTest extends TestCase
      * @covers ::buildOptionParser()
      * @covers ::getDescription()
      */
-    public function testBuildOptionParser()
+    public function testBuildOptionParser(): void
     {
         $this->exec('resources --help');
         $this->assertOutputContains('Resources management command. Available subcommands: add, edit, ls, rm');
@@ -90,7 +90,7 @@ class ResourcesCommandTest extends TestCase
      * @covers ::execute()
      * @covers ::getDescription()
      */
-    public function testHelp()
+    public function testHelp(): void
     {
         $this->exec('resources add --help');
         $this->assertOutputContains('Resources management command. Available subcommands: add, edit, ls, rm');
@@ -128,7 +128,7 @@ class ResourcesCommandTest extends TestCase
      *
      * @return array
      */
-    public function addProvider(): array
+    public static function addProvider(): array
     {
         return [
             'role' => [
@@ -190,7 +190,7 @@ class ResourcesCommandTest extends TestCase
      *
      * @return array
      */
-    public function addPermissionProvider(): array
+    public static function addPermissionProvider(): array
     {
         return [
             [
@@ -266,7 +266,7 @@ class ResourcesCommandTest extends TestCase
      *
      * @return array
      */
-    public function editProvider(): array
+    public static function editProvider(): array
     {
         return [
             'Applications.api_key' => [
@@ -357,7 +357,7 @@ class ResourcesCommandTest extends TestCase
      *
      * @return array
      */
-    public function listProvider(): array
+    public static function listProvider(): array
     {
         return [
             'applications' => [
@@ -382,6 +382,7 @@ class ResourcesCommandTest extends TestCase
      * @param string $type Resource type.
      * @return void
      * @dataProvider listProvider()
+     * @covers ::execute()
      */
     public function testList($expected, $type): void
     {
@@ -448,7 +449,7 @@ class ResourcesCommandTest extends TestCase
      * @param string $answer Given answer (y/n).
      * @return void
      * @dataProvider removeProvider()
-     * @covers ::getEntity()
+     * @covers ::execute()
      */
     public function testRemove($expected, $id, $answer): void
     {

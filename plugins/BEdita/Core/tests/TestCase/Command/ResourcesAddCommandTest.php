@@ -81,7 +81,7 @@ class ResourcesAddCommandTest extends TestCase
      *
      * @return array
      */
-    public function executeProvider(): array
+    public static function executeProvider(): array
     {
         return [
             'add application' => [
@@ -187,7 +187,7 @@ class ResourcesAddCommandTest extends TestCase
     {
         $this->exec('resources_add "First app" --type wrong', ['A sample description']);
         $this->assertExitCode(Command::CODE_ERROR);
-        $this->assertErrorContains('"wrong" is not a valid value for --type. Please use one of "applications, roles, endpoints, endpoint_permissions"');
+        $this->assertErrorContains('`wrong` is not a valid value for `--type`. Please use one of `applications, roles, endpoints, endpoint_permissions`');
     }
 
     /**

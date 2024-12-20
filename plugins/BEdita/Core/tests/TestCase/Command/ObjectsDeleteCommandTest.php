@@ -48,14 +48,6 @@ class ObjectsDeleteCommandTest extends TestCase
     ];
 
     /**
-     * @inheritDoc
-     */
-    public function setUp(): void
-    {
-        parent::setUp();
-    }
-
-    /**
      * Test buildOptionParser method
      *
      * @return void

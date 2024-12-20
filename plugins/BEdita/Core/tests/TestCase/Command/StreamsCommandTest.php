@@ -16,10 +16,14 @@ namespace BEdita\Core\Test\TestCase\Command;
 
 use BEdita\Core\Command\StreamsCommand;
 use BEdita\Core\Model\Entity\Stream;
+use BEdita\Core\Model\Table\StreamsTable;
 use BEdita\Core\Test\Utility\TestFilesystemTrait;
 use Cake\Command\Command;
 use Cake\Console\ConsoleIo;
 use Cake\Console\TestSuite\ConsoleIntegrationTestTrait;
+use Cake\Console\TestSuite\StubConsoleInput;
+use Cake\Console\TestSuite\StubConsoleOutput;
+use Cake\Datasource\EntityInterface;
 use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\ORM\Query\SelectQuery;
 use Cake\TestSuite\TestCase;
@@ -161,7 +165,7 @@ class StreamsCommandTest extends TestCase
      *
      * @return array
      */
-    public function removeOrphansProvider(): array
+    public static function removeOrphansProvider(): array
     {
         return [
             'basic test' => [
@@ -239,9 +243,9 @@ class StreamsCommandTest extends TestCase
         $command = new class extends StreamsCommand {
             public function update(Stream $stream): bool
             {
-                $this->io = new ConsoleIo();
-                $this->table = new class {
-                    public function saveOrFail(Stream $stream): Stream
+                $this->io = new ConsoleIo(new StubConsoleOutput(), new StubConsoleOutput(), new StubConsoleInput([]));
+                $this->table = new class extends StreamsTable {
+                    public function saveOrFail(EntityInterface $entity, array $options = []): EntityInterface
                     {
                         throw new RecordNotFoundException();
                     }

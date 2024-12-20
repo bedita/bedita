@@ -62,9 +62,10 @@ class JobsCommandTest extends TestCase
             ->getMock();
 
         $method = $service->method('run');
-        $method->willReturn($return);
         if ($return instanceof Exception) {
             $method->willThrowException($return);
+        } else {
+            $method->willReturn($return);
         }
 
         return $service;

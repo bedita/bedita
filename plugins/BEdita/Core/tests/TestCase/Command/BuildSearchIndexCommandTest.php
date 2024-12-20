@@ -347,7 +347,7 @@ class BuildSearchIndexCommandTest extends TestCase
     public function testExecuteWrongAncestor(): void
     {
         $this->exec('build_search_index --ancestor abcdefghi');
-        $this->assertErrorContains('Record not found in table "objects"');
+        $this->assertErrorContains('Record not found in table `objects`');
         $this->assertExitCode(Command::CODE_ERROR);
     }
 

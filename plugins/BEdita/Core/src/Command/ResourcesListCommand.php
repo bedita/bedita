@@ -15,12 +15,12 @@ declare(strict_types=1);
 namespace BEdita\Core\Command;
 
 use BEdita\Core\Model\Action\ListEntitiesAction;
-use BEdita\Core\Model\Table\AsyncJobsTable;
 use Cake\Command\Command;
 use Cake\Console\Arguments;
 use Cake\Console\ConsoleIo;
 use Cake\Console\ConsoleOptionParser;
 use Cake\ORM\Locator\LocatorAwareTrait;
+use Cake\ORM\Table;
 use Cake\Utility\Inflector;
 
 /**
@@ -45,11 +45,11 @@ class ResourcesListCommand extends Command
     protected ConsoleIo $io;
 
     /**
-     * Async jobs table
+     * The table
      *
-     * @var \BEdita\Core\Model\Table\AsyncJobsTable
+     * @var \Cake\ORM\Table
      */
-    protected AsyncJobsTable $table;
+    protected Table $table;
 
     /**
      * {@inheritDoc}

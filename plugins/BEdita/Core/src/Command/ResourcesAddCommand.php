@@ -14,13 +14,13 @@ declare(strict_types=1);
  */
 namespace BEdita\Core\Command;
 
-use BEdita\Core\Model\Table\AsyncJobsTable;
 use Cake\Command\Command;
 use Cake\Console\Arguments;
 use Cake\Console\ConsoleIo;
 use Cake\Console\ConsoleOptionParser;
 use Cake\Datasource\EntityInterface;
 use Cake\ORM\Locator\LocatorAwareTrait;
+use Cake\ORM\Table;
 use Cake\Utility\Inflector;
 
 /**
@@ -47,20 +47,14 @@ class ResourcesAddCommand extends Command
     /**
      * Async jobs table
      *
-     * @var \BEdita\Core\Model\Table\AsyncJobsTable
+     * @var \Cake\ORM\Table
      */
-    protected AsyncJobsTable $table;
+    protected Table $table;
 
     /**
-     * {@inheritDoc}
-     *
-     * @codeCoverageIgnore
+     * @inheritDoc
      */
-    public function __construct()
-    {
-        $this->setName('cake resources_add');
-        parent::__construct();
-    }
+    protected string $name = 'cake resources_add';
 
     /**
      * @inheritDoc

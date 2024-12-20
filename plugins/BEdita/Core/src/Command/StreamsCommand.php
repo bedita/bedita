@@ -69,7 +69,7 @@ class StreamsCommand extends Command
             ->addOption('days', [
                 'help' => 'Days to consider for stream research for orphans (remove data older than specified days)',
                 'required' => false,
-                'default' => 1,
+                'default' => '1',
             ])
             ->addOption('force', [
                 'help' => 'Force refreshing all streams, not only those with empty metadata',
