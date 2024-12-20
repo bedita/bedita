@@ -119,15 +119,6 @@ class UserMailerTest extends TestCase
                     ],
                 ],
             ],
-            'invalid user entity' => [
-                new LogicException('Invalid user, it must be an User Entity'),
-                [
-                    'params' => [
-                        'user' => ['id' => 1],
-                        'activationUrl' => 'http://example.com',
-                    ],
-                ],
-            ],
             'missing activationUrl' => [
                 new LogicException('Parameter "params.activationUrl" missing'),
                 [
@@ -212,14 +203,6 @@ class UserMailerTest extends TestCase
             'missing user' => [
                 new LogicException('Parameter "params.user" missing'),
                 [],
-            ],
-            'invalid user entity' => [
-                new LogicException('Invalid user, it must be an User Entity'),
-                [
-                    'params' => [
-                        'user' => ['id' => 1],
-                    ],
-                ],
             ],
         ];
     }

@@ -156,10 +156,6 @@ class UserMailer extends Mailer implements UserMailerInterface
      */
     protected function checkUser(User $user): void
     {
-        if (!($user instanceof User)) {
-            throw new LogicException(__d('bedita', 'Invalid user, it must be an User Entity'));
-        }
-
         if (empty($user->email)) {
             throw new LogicException(__d('bedita', 'User email missing'));
         }

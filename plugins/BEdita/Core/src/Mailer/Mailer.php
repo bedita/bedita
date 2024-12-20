@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 /**
  * BEdita, API-first content management framework
- * Copyright 2017 ChannelWeb Srl, Chialab Srl
+ * Copyright 2024 ChannelWeb Srl, Chialab Srl
  *
  * This file is part of BEdita: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published
@@ -15,17 +15,17 @@ declare(strict_types=1);
 namespace BEdita\Core\Mailer;
 
 use BadMethodCallException;
-use Cake\Mailer\Mailer;
+use Cake\Mailer\Mailer as CakeMailer;
 
 /**
- * Email class to send serialized emails.
+ * Mailer class to send serialized emails.
  *
- * This class extends the CakePHP's core {@see Cake\Mailer\Email} class by adding a {@see self::sendRaw()}
+ * This class extends the CakePHP's core {@see Cake\Mailer\Mailer} class by adding a {@see self::sendRaw()}
  * method to send raw emails, after the object has been unserialized.
  *
- * @since 4.0.0
+ * @since 6.0.0
  */
-class Email extends Mailer
+class Mailer extends CakeMailer
 {
     /**
      * Send a raw email.
@@ -44,13 +44,7 @@ class Email extends Mailer
             throw new BadMethodCallException('You need specify one destination on to, cc or bcc.');
         }
 
-        $transport = $this->getTransport();
-        if (!$transport) {
-            $msg = 'Cannot send email, transport was not defined. Did you call transport() or define ' .
-                'a transport in the set profile?';
-            throw new BadMethodCallException($msg);
-        }
-        $contents = $transport->send($this->message);
+        $contents = $this->getTransport()->send($this->message);
         $this->logDelivery($contents);
 
         return $contents;

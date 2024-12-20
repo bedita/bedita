@@ -16,7 +16,7 @@ declare(strict_types=1);
 namespace BEdita\Core\Job\Service;
 
 use BEdita\Core\Job\JobService;
-use BEdita\Core\Mailer\Email;
+use BEdita\Core\Mailer\Mailer;
 use Cake\Utility\Hash;
 
 /**
@@ -46,7 +46,7 @@ class MailService implements JobService
     {
         $transport = Hash::get($options, 'transport', 'default');
 
-        $email = (new Email())
+        $email = (new Mailer())
             ->createFromArray($payload)
             ->setTransport($transport);
 
