@@ -284,7 +284,7 @@ class ObjectsController extends ResourcesController
     /**
      * @inheritDoc
      */
-    public function resource($id): ?Response
+    public function resource(string $id): ?Response
     {
         $this->request->allowMethod(['get', 'patch', 'delete']);
 

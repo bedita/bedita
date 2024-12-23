@@ -76,7 +76,7 @@ abstract class ResourcesController extends AppController
     {
         parent::initialize();
 
-        if (isset($this->JsonApi)) {
+        if ($this->components()->has('JsonApi')) {
             $this->JsonApi->setConfig('resourceTypes', [Inflector::underscore($this->name)]);
 
             if ($this->request->getParam('action') === 'relationships') {
@@ -216,10 +216,10 @@ abstract class ResourcesController extends AppController
      * If the request is a `PATCH` request, this action updates an existing resource.
      * If the request is a `DELETE` request, this action deletes an existing resource.
      *
-     * @param mixed $id Entity ID.
+     * @param string $id Entity ID.
      * @return \Cake\Http\Response|null
      */
-    public function resource(mixed $id): ?Response
+    public function resource(string $id): ?Response
     {
         $this->request->allowMethod(['get', 'patch', 'delete']);
 

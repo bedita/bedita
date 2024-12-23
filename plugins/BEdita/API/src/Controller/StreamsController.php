@@ -162,7 +162,7 @@ class StreamsController extends ResourcesController
      *
      * @throws \Cake\Http\Exception\ForbiddenException An exception is thrown on attempts to update existing streams.
      */
-    public function resource($id): ?Response
+    public function resource(string $id): ?Response
     {
         if ($this->request->is('patch')) {
             throw new ForbiddenException(__d(
