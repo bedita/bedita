@@ -38,7 +38,7 @@ class AnnotationsControllerTest extends IntegrationTestCase
      * @return void
      * @coversNothing
      */
-    public function testIndex()
+    public function testIndex(): void
     {
         $expected = [
             'links' => [

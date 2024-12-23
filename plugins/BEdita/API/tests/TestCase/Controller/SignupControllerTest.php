@@ -288,7 +288,7 @@ class SignupControllerTest extends IntegrationTestCase
                 [
                     'error' => [
                         'status' => '404',
-                        'title' => 'Record not found in table "async_jobs"',
+                        'title' => 'Record not found in table `async_jobs`.',
                     ],
                     'links' => [
                         'self' => 'http://api.example.com/signup/activation',
@@ -305,7 +305,7 @@ class SignupControllerTest extends IntegrationTestCase
                 [
                     'error' => [
                         'status' => '404',
-                        'title' => 'Record not found in table "users"',
+                        'title' => 'Record not found in table `users`.',
                     ],
                     'links' => [
                         'self' => 'http://api.example.com/signup/activation',

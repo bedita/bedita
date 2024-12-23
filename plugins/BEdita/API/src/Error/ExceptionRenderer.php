@@ -80,9 +80,7 @@ class ExceptionRenderer extends WebExceptionRenderer
             $trace = explode("\n", $this->error->getTraceAsString());
         }
 
-        $this->controller->loadComponent('BEdita/API.JsonApi', [
-            'contentType' => 'json',
-        ]);
+        $this->controller->loadComponent('BEdita/API.JsonApi');
 
         $this->controller->JsonApi->error($status, $title, $detail, $code, array_filter(compact('trace')));
 

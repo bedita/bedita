@@ -143,8 +143,12 @@ class FoldersController extends ObjectsController
                 return 1;
             }
 
-            $positionA = $this->positionToInt($positionA);
-            $positionB = $this->positionToInt($positionB);
+            if (is_string($positionA)) {
+                $positionA = $this->positionToInt($positionA);
+            }
+            if (is_string($positionB)) {
+                $positionB = $this->positionToInt($positionB);
+            }
 
             // if they have the same sign then sort desc
             if ($positionA * $positionB > 0) {

@@ -64,7 +64,7 @@ class LoginController extends AppController
 
         $this->Users = $this->fetchTable('Users');
 
-        if (isset($this->JsonApi)) {
+        if ($this->components()->has('JsonApi')) {
             $this->JsonApi->setConfig('parseJson', false);
         }
 

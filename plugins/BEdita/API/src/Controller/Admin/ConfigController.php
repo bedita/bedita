@@ -34,7 +34,7 @@ class ConfigController extends AdminController
     {
         parent::initialize();
 
-        if (isset($this->JsonApi)) {
+        if ($this->components()->has('JsonApi')) {
             $this->JsonApi->setConfig('clientGeneratedIds', true);
         }
     }

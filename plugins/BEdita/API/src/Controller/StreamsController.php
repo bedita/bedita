@@ -60,7 +60,7 @@ class StreamsController extends ResourcesController
 
         if ($this->request->getParam('action') === 'upload') {
             $this->loadComponent('BEdita/API.Upload');
-            if (isset($this->JsonApi)) {
+            if ($this->components()->has('JsonApi')) {
                 $this->JsonApi->setConfig('parseJson', false);
             }
         }

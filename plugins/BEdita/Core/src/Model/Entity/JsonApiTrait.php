@@ -44,21 +44,21 @@ trait JsonApiTrait
     protected array $_selected = [];
 
     /**
-     * Getter for entity's visible properties.
+     * Getter for entity's visible fields.
      *
      * @return array<string>
      */
     abstract public function getVisible(): array;
 
     /**
-     * Getter for entity's hidden properties.
+     * Getter for entity's hidden fields.
      *
      * @return array<string>
      */
     abstract public function getHidden(): array;
 
     /**
-     * Getter for entity's virtual properties.
+     * Getter for entity's virtual fields.
      *
      * @return array<string>
      */
@@ -82,37 +82,37 @@ trait JsonApiTrait
     }
 
     /**
-     * Checks if a property is accessible.
+     * Checks if a field is accessible.
      *
-     * @param string $property Property name to check
+     * @param string $field The field name to check
      * @return bool
      */
-    abstract public function isAccessible(string $property): bool;
+    abstract public function isAccessible(string $field): bool;
 
     /**
-     * Extract properties from an entity.
+     * Extract fields from an entity.
      *
-     * @param array $properties List of properties to extract
+     * @param array $fields List of properties to extract
      * @param bool $onlyDirty Return only dirty properties.
      * @return array
      */
-    abstract public function extract(array $properties, bool $onlyDirty = false): array;
+    abstract public function extract(array $fields, bool $onlyDirty = false): array;
 
     /**
-     * Check if a property exists.
+     * Checks that a field has a value.
      *
-     * @param string $property Property name.
+     * @param string $field The field to check.
      * @return bool
      */
-    abstract public function has(string $property): bool;
+    abstract public function hasValue(string $field): bool;
 
     /**
-     * Getter for a property.
+     * Getter for a field.
      *
-     * @param string $property Property name.
+     * @param string $field The field name.
      * @return mixed
      */
-    abstract public function &get(string $property): mixed;
+    abstract public function &get(string $field): mixed;
 
     /**
      * Getter for `id`.
@@ -351,7 +351,7 @@ trait JsonApiTrait
                 true
             );
 
-            if ($this->has($relationship)) {
+            if ($this->hasValue($relationship)) {
                 $entities = $this->get($relationship);
                 $data = $this->getIncluded($entities);
                 if (!is_array($entities)) {

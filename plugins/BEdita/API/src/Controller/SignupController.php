@@ -35,7 +35,7 @@ class SignupController extends AppController
         parent::initialize();
         $this->request = $this->request->withAttribute(EndpointPolicy::DEFAULT_AUTHORIZED, true);
 
-        if (isset($this->JsonApi)) {
+        if ($this->components()->has('JsonApi')) {
             $this->JsonApi->setConfig('parseJson', false);
         }
     }
