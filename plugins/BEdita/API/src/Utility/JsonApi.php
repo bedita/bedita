@@ -17,6 +17,7 @@ namespace BEdita\API\Utility;
 use BEdita\Core\Utility\JsonApiSerializable;
 use BEdita\Core\Utility\JsonSchema;
 use Cake\Collection\CollectionInterface;
+use Cake\Datasource\Paging\PaginatedInterface;
 use Cake\Event\Event;
 use Cake\Event\EventManager;
 use Cake\Http\Exception\NotFoundException;
@@ -48,7 +49,7 @@ class JsonApi
      *      if required key `id` is unset or empty.
      */
     public static function formatData(
-        JsonApiSerializable|SelectQuery|CollectionInterface|array|null $items,
+        JsonApiSerializable|SelectQuery|CollectionInterface|PaginatedInterface|array|null $items,
         int $options = 0,
         array $fields = [],
         array &$included = []
@@ -57,6 +58,8 @@ class JsonApi
             $items = $items->all()->toList();
         } elseif ($items instanceof CollectionInterface) {
             $items = $items->toList();
+        } elseif ($items instanceof PaginatedInterface) {
+            $items = $items->toArray();
         }
 
         if ($items === null) {

@@ -16,7 +16,9 @@ namespace BEdita\API\Controller\Component;
 
 use BEdita\API\Network\Exception\UnsupportedMediaTypeException;
 use BEdita\API\Utility\JsonApi;
+use BEdita\API\View\JsonApiView;
 use Cake\Controller\Component;
+use Cake\Datasource\Paging\PaginatedInterface;
 use Cake\Event\EventInterface;
 use Cake\Http\Exception\BadRequestException;
 use Cake\Http\Exception\ConflictException;
@@ -29,7 +31,6 @@ use InvalidArgumentException;
  * Handles JSON API data format in input and in output
  *
  * @since 4.0.0
- * @property \Cake\Controller\Component\RequestHandlerComponent $RequestHandler
  */
 class JsonApiComponent extends Component
 {
@@ -53,11 +54,6 @@ class JsonApiComponent extends Component
     /**
      * @inheritDoc
      */
-    public array $components = ['RequestHandler'];
-
-    /**
-     * @inheritDoc
-     */
     protected array $_defaultConfig = [
         'contentType' => null,
         'checkMediaType' => true,
@@ -75,9 +71,9 @@ class JsonApiComponent extends Component
         if (!empty($config['contentType'])) {
             $contentType = $this->getController()->getResponse()->getMimeType($config['contentType']) ?: $config['contentType'];
         }
-        $this->getController()->setResponse($this->getController()->getResponse()->withType($contentType));
-
-        $this->RequestHandler->setConfig('viewClassMap.jsonapi', 'BEdita/API.JsonApi');
+        $this->getController()
+            ->setResponse($this->getController()->getResponse()->withType($contentType))
+            ->addViewClasses([JsonApiView::class]);
     }
 
     /**
@@ -85,8 +81,6 @@ class JsonApiComponent extends Component
      */
     public function beforeFilter(EventInterface $event)
     {
-        $this->RequestHandler->setConfig('viewClassMap.json', 'BEdita/API.JsonApi');
-
         $contentType = $this->getController()->getRequest()->getHeaderLine('Content-Type');
         if (!in_array($contentType, static::ALLOWED_CONTENT_TYPES) || !$this->getConfig('parseJson')) {
             return;
@@ -160,28 +154,29 @@ class JsonApiComponent extends Component
             'home' => Router::url(['_name' => 'api:home'], true),
         ];
 
-        $paging = $request->getAttribute('paging');
-        if (!empty($paging) && is_array($paging)) {
-            $paging = reset($paging);
-            $query = $request->getQueryParams();
+        $paginated = $this->getPaginated();
+        if ($paginated === null) {
+            return $links;
+        }
 
-            $query['page'] = null;
-            $links['first'] = Router::reverse($request->withQueryParams($query), true);
+        $query = $request->getQueryParams();
 
-            $query['page'] = $paging['pageCount'] > 1 ? $paging['pageCount'] : null;
-            $links['last'] = Router::reverse($request->withQueryParams($query), true);
+        $query['page'] = null;
+        $links['first'] = Router::reverse($request->withQueryParams($query), true);
 
-            $links['prev'] = null;
-            if ($paging['prevPage']) {
-                $query['page'] = $paging['page'] > 2 ? $paging['page'] - 1 : null;
-                $links['prev'] = Router::reverse($request->withQueryParams($query), true);
-            }
+        $query['page'] = $paginated->pageCount() > 1 ? $paginated->pageCount() : null;
+        $links['last'] = Router::reverse($request->withQueryParams($query), true);
 
-            $links['next'] = null;
-            if ($paging['nextPage']) {
-                $query['page'] = $paging['page'] + 1;
-                $links['next'] = Router::reverse($request->withQueryParams($query), true);
-            }
+        $links['prev'] = null;
+        if ($paginated->hasPrevPage()) {
+            $query['page'] = $paginated->currentPage() > 2 ? $paginated->currentPage() - 1 : null;
+            $links['prev'] = Router::reverse($request->withQueryParams($query), true);
+        }
+
+        $links['next'] = null;
+        if ($paginated->hasNextPage()) {
+            $query['page'] = $paginated->currentPage() + 1;
+            $links['next'] = Router::reverse($request->withQueryParams($query), true);
         }
 
         return $links;
@@ -194,29 +189,36 @@ class JsonApiComponent extends Component
      */
     public function getMeta(): array
     {
-        $meta = [];
-
-        $paging = $this->getController()->getRequest()->getAttribute('paging');
-        if (!empty($paging) && is_array($paging)) {
-            $paging = reset($paging);
-            $paging += [
-                'current' => null,
-                'page' => null,
-                'count' => null,
-                'perPage' => null,
-                'pageCount' => null,
-            ];
-
-            $meta['pagination'] = [
-                'count' => $paging['count'],
-                'page' => $paging['page'],
-                'page_count' => $paging['pageCount'],
-                'page_items' => $paging['current'],
-                'page_size' => $paging['perPage'],
-            ];
+        $paginated = $this->getPaginated();
+        if ($paginated === null) {
+            return [];
         }
 
-        return $meta;
+        return [
+            'pagination' => [
+                'count' => $paginated->totalCount(),
+                'page' => $paginated->currentPage(),
+                'page_count' => $paginated->pageCount(),
+                'page_items' => $paginated->count(),
+                'page_size' => $paginated->perPage(),
+            ],
+        ];
+    }
+
+    /**
+     * Get first paginated result set found in view vars.
+     *
+     * @return \Cake\Datasource\Paging\PaginatedInterface|null
+     */
+    protected function getPaginated(): ?PaginatedInterface
+    {
+        foreach ($this->getController()->viewBuilder()->getVars() as $value) {
+            if ($value instanceof PaginatedInterface) {
+                return $value;
+            }
+        }
+
+        return null;
     }
 
     /**
@@ -301,10 +303,6 @@ class JsonApiComponent extends Component
     public function startup(): void
     {
         $controller = $this->getController();
-
-        if ($controller->getRequest()->is('jsonapi')) {
-            $this->RequestHandler->renderAs($controller, 'jsonapi');
-        }
 
         if ($this->getConfig('checkMediaType') && trim($controller->getRequest()->getHeaderLine('accept')) !== self::CONTENT_TYPE) {
             // http://jsonapi.org/format/#content-negotiation-servers
