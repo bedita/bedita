@@ -190,8 +190,6 @@ class MediaControllerTest extends IntegrationTestCase
      */
     public function testThumbs($expected, $id, array $query = [])
     {
-        $this->configRequestHeaders('GET');
-
         $path = '/media/thumbs';
         if (!is_array($id) && strpos((string)$id, ',') === false) {
             $path .= '/' . $id;

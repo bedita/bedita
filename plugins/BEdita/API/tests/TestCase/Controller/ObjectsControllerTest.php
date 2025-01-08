@@ -1498,7 +1498,7 @@ class ObjectsControllerTest extends IntegrationTestCase
         ];
         $expected = [
             'status' => '404',
-            'title' => 'A route matching "/news" could not be found.',
+            'title' => 'A route matching `/news` could not be found.',
         ];
 
         $this->configRequestHeaders('POST', $this->getUserAuthHeader());
@@ -3342,15 +3342,15 @@ class ObjectsControllerTest extends IntegrationTestCase
         return [
             'document' => [
                 '/document',
-                'A route matching "/document" could not be found. Did you mean "documents"?',
+                'A route matching `/document` could not be found. Did you mean `documents`?',
             ],
             'id' => [
                 '/2',
-                'A route matching "/2" could not be found. Did you mean "documents"?',
+                'A route matching `/2` could not be found. Did you mean `documents`?',
             ],
             'badurl' => [
                 '/badurl',
-                'A route matching "/badurl" could not be found.',
+                'A route matching `/badurl` could not be found.',
             ],
         ];
     }

@@ -30,38 +30,6 @@ class ResourcesControllerTest extends IntegrationTestCase
     use ArraySubsetAsserts;
 
     /**
-     * Test modelClass property copied to defaultTable.
-     *
-     * @return void
-     * @covers ::initialize()
-     */
-    public function testModelClassProp()
-    {
-        $serviceMock = $this->getMockBuilder(AuthenticationService::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-
-        $request = (new ServerRequest())->withAttribute('authentication', $serviceMock);
-
-        $controller = new class ($request) extends ResourcesController {
-            protected ?string $modelClass = 'Users';
-
-            public function getDefaultTable()
-            {
-                return $this->defaultTable;
-            }
-
-            public function getTable()
-            {
-                return $this->Table;
-            }
-        };
-
-        static::assertEquals('Users', $controller->getDefaultTable());
-        static::assertInstanceOf(UsersTable::class, $controller->getTable());
-    }
-
-    /**
      * Test relationships method to list existing relationships.
      *
      * @return void

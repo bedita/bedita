@@ -351,7 +351,7 @@ trait JsonApiTrait
                 true
             );
 
-            if ($this->hasValue($relationship)) {
+            if ($this->has($relationship) && $this->get($relationship) !== null) {
                 $entities = $this->get($relationship);
                 $data = $this->getIncluded($entities);
                 if (!is_array($entities)) {

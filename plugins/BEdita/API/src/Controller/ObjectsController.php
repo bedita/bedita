@@ -41,7 +41,7 @@ use Cake\Http\Exception\ForbiddenException;
 use Cake\Http\Exception\InternalErrorException;
 use Cake\Http\Response;
 use Cake\ORM\Association;
-use Cake\ORM\Query;
+use Cake\ORM\Query\SelectQuery;
 use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
 use Cake\Routing\Exception\MissingRouteException;
@@ -117,10 +117,10 @@ class ObjectsController extends ResourcesController
 
         parent::initialize();
 
-        if (isset($this->JsonApi) && $this->request->getParam('action') !== 'relationships') {
+        if ($this->components()->has('JsonApi') && $this->request->getParam('action') !== 'relationships') {
             $this->JsonApi->setConfig('resourceTypes', [$this->objectType->name], false);
         }
-        if (isset($this->JsonApi) && $this->request->getParam('action') === 'relationshipsSort') {
+        if ($this->components()->has('JsonApi') && $this->request->getParam('action') === 'relationshipsSort') {
             $this->JsonApi->setConfig('parseJson', false);
         }
     }
@@ -141,14 +141,14 @@ class ObjectsController extends ResourcesController
             $this->objectType = TableRegistry::getTableLocator()->get('ObjectTypes')->get($type);
             if ($type !== $this->objectType->name) {
                 $this->log(
-                    sprintf('Bad object type name "%s", could be "%s"', $type, $this->objectType->name),
+                    sprintf('Bad object type name `%s`, could be `%s`', $type, $this->objectType->name),
                     'warning',
                     ['request' => $this->request]
                 );
 
                 throw new MissingRouteException(__d(
                     'bedita',
-                    'A route matching "{0}" could not be found. Did you mean "{1}"?',
+                    'A route matching `{0}` could not be found. Did you mean `{1}`?',
                     $this->request->getRequestTarget(),
                     $this->objectType->name
                 ));
@@ -156,7 +156,7 @@ class ObjectsController extends ResourcesController
             $this->defaultTable = $this->objectType->alias;
             $this->Table = $this->fetchTable();
         } catch (RecordNotFoundException $e) {
-            $this->log(sprintf('Object type "%s" does not exist', $type), 'warning', ['request' => $this->request]);
+            $this->log(sprintf('Object type `%s` does not exist', $type), 'warning', ['request' => $this->request]);
 
             throw new MissingRouteException(['url' => $this->request->getRequestTarget()]);
         }
@@ -425,7 +425,7 @@ class ObjectsController extends ResourcesController
         $action = $this->getAssociatedAction($association);
         $objects = $action(['primaryKey' => $relatedId] + compact('filter', 'contain', 'lang'));
 
-        if ($objects instanceof Query) {
+        if ($objects instanceof SelectQuery) {
             $objects = $this->paginate($objects);
             $this->addCount($objects->toArray());
         }
@@ -469,7 +469,7 @@ class ObjectsController extends ResourcesController
                 $action = $this->getAssociatedAction($association);
                 $data = $action(['primaryKey' => $id, 'list' => true, 'filter' => $filter]);
 
-                if ($data instanceof Query) {
+                if ($data instanceof SelectQuery) {
                     $data = $this->paginate($data);
                 }
 

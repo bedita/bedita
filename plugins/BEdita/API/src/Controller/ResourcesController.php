@@ -35,7 +35,7 @@ use Cake\Http\Response;
 use Cake\ORM\Association;
 use Cake\ORM\Association\BelongsTo;
 use Cake\ORM\Association\HasOne;
-use Cake\ORM\Query;
+use Cake\ORM\Query\SelectQuery;
 use Cake\ORM\Table;
 use Cake\Routing\Router;
 use Cake\Utility\Inflector;
@@ -88,10 +88,7 @@ abstract class ResourcesController extends AppController
                 $this->JsonApi->setConfig('clientGeneratedIds', true);
             }
         }
-        // set $defaultTable if $modelClass attribute is used
-        if (empty($this->defaultTable) && !empty($this->modelClass)) {
-            $this->defaultTable = $this->modelClass;
-        }
+
         if (empty($this->Table)) {
             $this->Table = $this->fetchTable();
         }
@@ -295,7 +292,7 @@ abstract class ResourcesController extends AppController
         $action = $this->getAssociatedAction($association);
         $data = $action->execute(['primaryKey' => $relatedId] + compact('filter', 'contain'));
 
-        if ($data instanceof Query) {
+        if ($data instanceof SelectQuery) {
             $data = $this->paginate($data);
         }
 
@@ -372,7 +369,7 @@ abstract class ResourcesController extends AppController
                 $action = $this->getAssociatedAction($association);
                 $data = $action(['primaryKey' => $id, 'list' => true, 'filter' => $filter]);
 
-                if ($data instanceof Query) {
+                if ($data instanceof SelectQuery) {
                     $data = $this->paginate($data);
                 }
 

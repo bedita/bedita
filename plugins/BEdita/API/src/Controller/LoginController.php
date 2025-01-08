@@ -48,10 +48,10 @@ class LoginController extends AppController
      * @var array
      */
     public const PASSWORD_HASHER = [
-        'className' => 'Fallback',
+        'className' => 'Authentication.Fallback',
         'hashers' => [
-            'Default',
-            'Weak' => ['hashType' => 'md5'],
+            'Authentication.Default',
+            'Authentication.Legacy' => ['hashType' => 'md5'],
         ],
     ];
 
@@ -268,7 +268,7 @@ class LoginController extends AppController
             throw new BadRequestException(__d('bedita', 'Missing current password'));
         }
 
-        $hasher = PasswordHasherFactory::build(self::PASSWORD_HASHER);
+        $hasher = PasswordHasherFactory::build(static::PASSWORD_HASHER);
         if (!$hasher->check($data['old_password'], $entity->password_hash)) {
             throw new BadRequestException(__d('bedita', 'Wrong password'));
         }

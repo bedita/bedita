@@ -55,9 +55,9 @@ class TreesController extends AppController
     /**
      * Request object Table.
      *
-     * @var \BEdita\Core\Model\Table\ObjectsBaseTable
+     * @var \BEdita\Core\Model\Table\ObjectsBaseTable|\BEdita\Core\Model\Table\ObjectsTable
      */
-    protected ObjectsBaseTable $Table;
+    protected ObjectsBaseTable|ObjectsTable $Table;
 
     /**
      * Path information with ID, object type and uname of each object
@@ -210,11 +210,8 @@ class TreesController extends AppController
             return [];
         }
 
-        return $this->Trees->find('pathNodes', [$parentId])
-            ->find('list', [
-                'keyField' => 'id',
-                'valueField' => 'object_id',
-            ])
+        return $this->Trees->find('pathNodes', subjectValue: $parentId)
+            ->find('list', keyField: 'id', valueField: 'object_id')
             ->toArray();
     }
 
