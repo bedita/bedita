@@ -23,7 +23,6 @@ use BEdita\API\Policy\EndpointPolicy;
 use BEdita\API\Test\TestConstants;
 use BEdita\API\TestSuite\IntegrationTestCase;
 use Cake\Core\Configure;
-use Cake\Http\Exception\NotAcceptableException;
 use Cake\Http\ServerRequest;
 use DMS\PHPUnitExtensions\ArraySubset\ArraySubsetAsserts;
 use Exception;

@@ -14,12 +14,8 @@ declare(strict_types=1);
  */
 namespace BEdita\API\Test\TestCase\Controller;
 
-use Authentication\AuthenticationService;
-use BEdita\API\Controller\ResourcesController;
 use BEdita\API\TestSuite\IntegrationTestCase;
-use BEdita\Core\Model\Table\UsersTable;
 use Cake\Event\EventManager;
-use Cake\Http\ServerRequest;
 use DMS\PHPUnitExtensions\ArraySubset\ArraySubsetAsserts;
 
 /**

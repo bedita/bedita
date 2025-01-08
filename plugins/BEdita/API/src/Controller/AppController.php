@@ -114,7 +114,7 @@ class AppController extends Controller
     /**
      * @inheritDoc
      */
-    public function beforeFilter(EventInterface $event): void
+    public function beforeFilter(EventInterface $event)
     {
         // Internally it may throw an `UnauthorizedException` for anonymous users
         $this->Authorization->authorize($this->request, 'access');

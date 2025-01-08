@@ -16,7 +16,6 @@ namespace BEdita\API\Controller\Model;
 
 use BEdita\API\Controller\JsonBaseController;
 use BEdita\Core\Utility\ProjectModel;
-use Cake\Http\Exception\NotAcceptableException;
 
 /**
  * Controller for `/model/project` endpoint.
