@@ -40,7 +40,7 @@ class AppController extends Controller
     /**
      * @inheritDoc
      */
-    public array $paginate = [
+    protected array $paginate = [
         'order' => [
             'id' => 'asc',
         ],
@@ -84,7 +84,9 @@ class AppController extends Controller
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
+     *
+     * @codeCoverageIgnore
      */
     public function viewClasses(): array
     {
@@ -112,12 +114,10 @@ class AppController extends Controller
     /**
      * @inheritDoc
      */
-    public function beforeFilter(EventInterface $event)
+    public function beforeFilter(EventInterface $event): void
     {
         // Internally it may throw an `UnauthorizedException` for anonymous users
         $this->Authorization->authorize($this->request, 'access');
-
-        return null;
     }
 
     /**

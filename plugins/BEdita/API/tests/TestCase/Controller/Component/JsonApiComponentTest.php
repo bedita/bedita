@@ -109,6 +109,7 @@ class JsonApiComponentTest extends TestCase
      *
      * @return void
      * @covers ::getLinks()
+     * @covers ::getPaginated()
      */
     public function testLinks()
     {
@@ -131,6 +132,30 @@ class JsonApiComponentTest extends TestCase
         $component = new JsonApiComponent(new ComponentRegistry($controller), []);
 
         static::assertEquals($expected, $component->getLinks());
+    }
+
+    /**
+     * Test `getMeta()` with no pagination data.
+     *
+     * @return void
+     * @covers ::getMeta()
+     * @covers ::getPaginated()
+     */
+    public function testGetMetaEmpty(): void
+    {
+        $request = new ServerRequest([
+            'params' => [
+                'plugin' => 'BEdita/API',
+                'controller' => 'Roles',
+                'action' => 'index',
+                '_method' => 'GET',
+            ],
+            'base' => '/',
+            'url' => 'roles',
+        ]);
+        $controller = new Controller($request);
+        $component = new JsonApiComponent(new ComponentRegistry($controller), []);
+        static::assertEquals([], $component->getMeta());
     }
 
     /**
@@ -219,6 +244,7 @@ class JsonApiComponentTest extends TestCase
      * @dataProvider paginationProvider
      * @covers ::getLinks()
      * @covers ::getMeta()
+     * @covers ::getPaginated()
      */
     public function testPagination(array $expectedLinks, array $expectedMeta, array $query)
     {

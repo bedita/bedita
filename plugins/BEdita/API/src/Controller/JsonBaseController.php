@@ -34,7 +34,9 @@ abstract class JsonBaseController extends AppController
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
+     *
+     * @codeCoverageIgnore
      */
     public function viewClasses(): array
     {
