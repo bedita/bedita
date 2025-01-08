@@ -15,9 +15,6 @@ declare(strict_types=1);
 namespace BEdita\API\View;
 
 use BEdita\API\Utility\JsonApi;
-use Cake\Event\EventManager;
-use Cake\Http\Response;
-use Cake\Http\ServerRequest;
 use Cake\Utility\Hash;
 use Cake\View\JsonView;
 
@@ -31,35 +28,14 @@ class JsonApiView extends JsonView
     /**
      * @inheritDoc
      */
-    protected static $contentType = 'application/vnd.api+json';
-
-    /**
-     * @inheritDoc
-     */
     protected $_specialVars = ['_serialize', '_jsonOptions', '_jsonp', '_error', '_links', '_meta', '_fields', '_jsonApiOptions'];
-
-    /**
-     * @inheritDoc
-     */
-    public function __construct(
-        ?ServerRequest $request = null,
-        ?Response $response = null,
-        ?EventManager $eventManager = null,
-        array $viewOptions = []
-    ) {
-        if ($request && $request->is('json')) {
-            // change default response type if request is `json`
-            static::$contentType = 'application/json';
-        }
-        parent::__construct($request, $response, $eventManager, $viewOptions);
-    }
 
     /**
      * @inheritDoc
      */
     public static function contentType(): string
     {
-        return static::$contentType;
+        return 'application/vnd.api+json';
     }
 
     /**

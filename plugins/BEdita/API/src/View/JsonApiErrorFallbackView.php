@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 /**
  * BEdita, API-first content management framework
- * Copyright 2022 ChannelWeb Srl, Chialab Srl
+ * Copyright 2025 ChannelWeb Srl, Chialab Srl
  *
  * This file is part of BEdita: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published
@@ -12,15 +12,14 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-namespace BEdita\API\Controller;
-
-use Cake\View\JsonView;
-use Cake\View\NegotiationRequiredView;
+namespace BEdita\API\View;
 
 /**
- * Base class for controllers handling pure `application/json` content-type, not using JSON API
+ * A fallback view class that is used for JSON API errors.
+ *
+ * @since 6.0.0
  */
-abstract class JsonBaseController extends AppController
+class JsonApiErrorFallbackView extends JsonApiView
 {
     /**
      * @inheritDoc
@@ -28,19 +27,15 @@ abstract class JsonBaseController extends AppController
     public function initialize(): void
     {
         parent::initialize();
-        if ($this->components()->has('JsonApi')) {
-            $this->components()->unload('JsonApi');
-        }
+        $response = $this->getResponse();
+        $this->setResponse($response->withType('application/vnd.api+json'));
     }
 
     /**
      * @inheritDoc
      */
-    public function viewClasses(): array
+    public static function contentType(): string
     {
-        return [
-            JsonView::class,
-            NegotiationRequiredView::class,
-        ];
+        return parent::TYPE_MATCH_ALL;
     }
 }

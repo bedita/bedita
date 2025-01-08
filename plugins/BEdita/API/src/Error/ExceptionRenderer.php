@@ -81,7 +81,6 @@ class ExceptionRenderer extends WebExceptionRenderer
         }
 
         $this->controller->loadComponent('BEdita/API.JsonApi');
-
         $this->controller->JsonApi->error($status, $title, $detail, $code, array_filter(compact('trace')));
 
         return parent::render();

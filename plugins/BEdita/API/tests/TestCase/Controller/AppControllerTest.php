@@ -113,61 +113,6 @@ class AppControllerTest extends IntegrationTestCase
     }
 
     /**
-     * Data provider for `testCheckAccept` test case.
-     *
-     * @return array
-     */
-    public static function checkAcceptProvider(): array
-    {
-        return [
-            'ok' => [
-                true,
-                'application/vnd.api+json',
-            ],
-            'error (dramatic music)' => [
-                new NotAcceptableException('Bad request content type "gustavo/supporto"'),
-                'gustavo/supporto',
-            ],
-        ];
-    }
-
-    /**
-     * Test accepted content types in `beforeFilter()` method.
-     *
-     * @param true|\Exception $expected Expected success.
-     * @param string $accept Value of "Accept" header.
-     * @return void
-     * @dataProvider checkAcceptProvider
-     * @covers ::checkAcceptable()
-     * @covers ::beforeFilter()
-     */
-    public function testCheckAccept($expected, $accept)
-    {
-        if ($expected instanceof Exception) {
-            $this->expectException(get_class($expected));
-            $this->expectExceptionCode($expected->getCode());
-            $this->expectExceptionMessage($expected->getMessage());
-        }
-
-        $request = new ServerRequest([
-            'environment' => [
-                'HTTP_ACCEPT' => $accept,
-                'REQUEST_METHOD' => 'GET',
-            ],
-        ]);
-        $request = $request->withAttribute('authentication', new AuthenticationService())
-            ->withAttribute('authorization', new AuthorizationService(new MapResolver([
-                ServerRequest::class => EndpointPolicy::class,
-            ])));
-
-        $controller = new AppController($request);
-
-        $controller->dispatchEvent('Controller.initialize');
-
-        static::assertTrue($expected);
-    }
-
-    /**
      * Test included resources.
      *
      * @return void

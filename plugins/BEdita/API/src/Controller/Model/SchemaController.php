@@ -26,19 +26,12 @@ use Cake\Http\Response;
 class SchemaController extends JsonBaseController
 {
     /**
-     * JSON Schema content type.
-     *
-     * @var string
+     * @inheritDoc
      */
-    public const CONTENT_TYPE = 'application/schema+json';
-
-    /**
-     * {@inheritDoc}
-     *
-     * @codeCoverageIgnore
-     */
-    protected function checkAcceptable(): void
+    public function initialize(): void
     {
+        parent::initialize();
+        $this->viewBuilder()->setClassName('BEdita/API.JsonSchema');
     }
 
     /**
@@ -47,7 +40,7 @@ class SchemaController extends JsonBaseController
      * @param string $typeName Name of an object type or of a resource type.
      * @return \Cake\Http\Response
      */
-    public function jsonSchema(string $typeName): Response
+    public function jsonSchema(string $typeName): ?Response
     {
         $this->request->allowMethod(['get']);
 
@@ -59,16 +52,16 @@ class SchemaController extends JsonBaseController
 
         $url = (string)$this->request->getUri();
         $schema = JsonSchema::generate($typeName, $url);
+        if ($schema === false) {
+            $this->set('schema', false);
+            $this->viewBuilder()->setOption('serialize', 'schema');
+
+            return null;
+        }
 
         $this->set($schema);
         $this->setSerialize(array_keys((array)$schema));
 
-        $response = $this->render()
-            ->withType(static::CONTENT_TYPE);
-        if (!is_array($schema)) {
-            $response = $response->withStringBody(json_encode($schema));
-        }
-
-        return $response;
+        return null;
     }
 }

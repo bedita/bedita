@@ -16,6 +16,9 @@ namespace BEdita\API\Test\TestCase\Controller\Component;
 
 use BEdita\API\Controller\Component\JsonApiComponent;
 use BEdita\API\Network\Exception\UnsupportedMediaTypeException;
+use BEdita\API\View\JsonApiFallbackView;
+use BEdita\API\View\JsonApiNegotiationRequiredView;
+use BEdita\API\View\JsonApiView;
 use Cake\Controller\ComponentRegistry;
 use Cake\Controller\Controller;
 use Cake\Event\Event;
@@ -88,12 +91,17 @@ class JsonApiComponentTest extends TestCase
      * @dataProvider initializeProvider
      * @covers ::initialize()
      */
-    public function testInitialize($expectedMimeType, array $config)
+    public function testInitialize(string $expectedMimeType, array $config): void
     {
         $component = new JsonApiComponent(new ComponentRegistry(new Controller(new ServerRequest())), $config);
-
+        $viewClasses = $component->getController()->viewClasses();
+        $expected = [
+            JsonApiView::class,
+            JsonApiFallbackView::class,
+            JsonApiNegotiationRequiredView::class,
+        ];
+        static::assertEquals($expected, $viewClasses);
         static::assertEquals($expectedMimeType, $component->getController()->getResponse()->getHeaderLine('content-type'));
-        static::assertArrayHasKey('jsonapi', $component->RequestHandler->getConfig('viewClassMap'));
     }
 
     /**
@@ -226,7 +234,7 @@ class JsonApiComponentTest extends TestCase
             'query' => $query,
         ]);
         $controller = new Controller($request);
-        $controller->paginate(TableRegistry::getTableLocator()->get('Roles'));
+        $controller->set('result', $controller->paginate(TableRegistry::getTableLocator()->get('Roles')));
         $component = new JsonApiComponent(new ComponentRegistry($controller), []);
 
         static::assertEquals($expectedLinks, $component->getLinks());
@@ -261,7 +269,7 @@ class JsonApiComponentTest extends TestCase
             'query' => $query,
         ]);
         $controller = new Controller($request);
-        $controller->paginate(TableRegistry::getTableLocator()->get('Roles'));
+        $controller->set('result', $controller->paginate(TableRegistry::getTableLocator()->get('Roles')));
         $controller->set([
             '_links' => $base,
             '_meta' => $base,

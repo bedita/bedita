@@ -16,6 +16,8 @@ namespace BEdita\API\Controller\Component;
 
 use BEdita\API\Network\Exception\UnsupportedMediaTypeException;
 use BEdita\API\Utility\JsonApi;
+use BEdita\API\View\JsonApiFallbackView;
+use BEdita\API\View\JsonApiNegotiationRequiredView;
 use BEdita\API\View\JsonApiView;
 use Cake\Controller\Component;
 use Cake\Datasource\Paging\PaginatedInterface;
@@ -71,9 +73,20 @@ class JsonApiComponent extends Component
         if (!empty($config['contentType'])) {
             $contentType = $this->getController()->getResponse()->getMimeType($config['contentType']) ?: $config['contentType'];
         }
+
+        // Try to add JSON API views to controller if missing
+        $jsonApiViewClasses = array_diff(
+            [
+                JsonApiView::class,
+                JsonApiFallbackView::class,
+                JsonApiNegotiationRequiredView::class,
+            ],
+            $this->getController()->viewClasses()
+        );
+
         $this->getController()
             ->setResponse($this->getController()->getResponse()->withType($contentType))
-            ->addViewClasses([JsonApiView::class]);
+            ->addViewClasses($jsonApiViewClasses);
     }
 
     /**

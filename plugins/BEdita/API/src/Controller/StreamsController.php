@@ -69,13 +69,13 @@ class StreamsController extends ResourcesController
     /**
      * @inheritDoc
      */
-    protected function checkAcceptable(): void
+    public function viewClasses(): array
     {
         if ($this->request->getParam('action') === 'download') {
-            return;
+            return $this->viewClasses;
         }
 
-        parent::checkAcceptable();
+        return parent::viewClasses();
     }
 
     /**

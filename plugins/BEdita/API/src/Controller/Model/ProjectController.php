@@ -26,18 +26,6 @@ use Cake\Http\Exception\NotAcceptableException;
 class ProjectController extends JsonBaseController
 {
     /**
-     * @inheritDoc
-     */
-    protected function checkAcceptable(): void
-    {
-        if (!$this->request->is(['json'])) {
-            throw new NotAcceptableException(
-                __d('bedita', 'Bad request content type "{0}"', $this->request->getHeaderLine('Accept'))
-            );
-        }
-    }
-
-    /**
      * Get project schema.
      *
      * @return void
