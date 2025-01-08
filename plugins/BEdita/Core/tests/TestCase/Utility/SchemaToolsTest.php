@@ -18,9 +18,9 @@ use BEdita\Core\Utility\SchemaTools;
 use Cake\TestSuite\TestCase;
 
 /**
- * \BEdita\Core\Utility\SchemaTools Test Case
+ * {@see BEdita\Core\Utility\SchemaTools}  Test Case
  *
- * @covers \BEdita\Core\Utility\SchemaTools
+ * @coversDefaultClass \BEdita\Core\Utility\SchemaTools
  */
 class SchemaToolsTest extends TestCase
 {

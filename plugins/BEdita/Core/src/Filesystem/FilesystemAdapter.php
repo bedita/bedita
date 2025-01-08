@@ -94,7 +94,7 @@ abstract class FilesystemAdapter
     {
         return sprintf(
             '%s/%s',
-            rtrim($this->getConfig('baseUrl'), '/'),
+            rtrim((string)$this->getConfig('baseUrl'), '/'),
             ltrim($path, '/')
         );
     }

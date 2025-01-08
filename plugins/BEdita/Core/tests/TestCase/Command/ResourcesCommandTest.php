@@ -160,8 +160,7 @@ class ResourcesCommandTest extends TestCase
      * @param string $description Resource description.
      * @return void
      * @dataProvider addProvider()
-     * @covers ::getTable()
-     * @covers ::setupDefaultEntity()
+     * @covers ::execute()
      */
     public function testAddDefault($expected, $type, $name, $description = ''): void
     {
@@ -220,8 +219,7 @@ class ResourcesCommandTest extends TestCase
      * @param string $write Write permission
      * @return void
      * @dataProvider addPermissionProvider
-     * @covers ::getTable()
-     * @covers ::setupEndpointPermissionEntity()
+     * @covers ::execute()
      */
     public function testAddPermission($application, $endpoint, $role, $read, $write): void
     {
@@ -292,8 +290,7 @@ class ResourcesCommandTest extends TestCase
      * @param mixed|null $value New field value.
      * @return void
      * @dataProvider editProvider
-     * @covers ::getEntity()
-     * @covers ::getTable()
+     * @covers ::execute()
      */
     public function testEdit($type, $resId, $field, $value = null): void
     {
@@ -324,10 +321,10 @@ class ResourcesCommandTest extends TestCase
     }
 
     /**
-     * Test `edit` failure
+     * Test edit failure
      *
      * @return void
-     * @covers ::edit()
+     * @covers ::execute()
      */
     public function testEditFail(): void
     {
