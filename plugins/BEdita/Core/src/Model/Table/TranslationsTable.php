@@ -19,7 +19,7 @@ use BEdita\Core\Search\SimpleSearchTrait;
 use Cake\Core\Configure;
 use Cake\Database\Expression\QueryExpression;
 use Cake\Datasource\Exception\RecordNotFoundException;
-use Cake\ORM\Query;
+use Cake\ORM\Query\SelectQuery;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
@@ -150,19 +150,19 @@ class TranslationsTable extends Table
     /**
      * Find translations by object type
      *
-     * @param \Cake\ORM\Query $query Query object instance.
+     * @param \Cake\ORM\Query\SelectQuery $query Query object instance.
      * @param array $options Options array.
-     * @return \Cake\ORM\Query
+     * @return \Cake\ORM\Query\SelectQuery
      * @throws \BEdita\Core\Exception\BadFilterException
      */
-    protected function findType(Query $query, array $options): Query
+    protected function findType(SelectQuery $query, array $options): SelectQuery
     {
         if (empty($options)) {
             throw new BadFilterException(__d('bedita', 'Missing required parameter "type"'));
         }
         $typeIds = array_map([$this, 'typeId'], $options);
 
-        return $query->innerJoinWith('Objects', function (Query $query) use ($typeIds) {
+        return $query->innerJoinWith('Objects', function (SelectQuery $query) use ($typeIds) {
             return $query->where(function (QueryExpression $exp) use ($typeIds) {
                 return $exp->in('object_type_id', $typeIds);
             });
@@ -191,10 +191,10 @@ class TranslationsTable extends Table
     /**
      * Finder for available objects based on the status level.
      *
-     * @param \Cake\ORM\Query $query Query object instance.
-     * @return \Cake\ORM\Query
+     * @param \Cake\ORM\Query\SelectQuery $query Query object instance.
+     * @return \Cake\ORM\Query\SelectQuery
      */
-    protected function findAvailable(Query $query): Query
+    protected function findAvailable(SelectQuery $query): SelectQuery
     {
         return $query->find('statusLevel', [Configure::read('Status.level', 'all')]);
     }

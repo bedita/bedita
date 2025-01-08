@@ -19,7 +19,7 @@ use BEdita\Core\Search\Adapter\SimpleAdapter;
 use BEdita\Core\Search\BaseAdapter;
 use BEdita\Core\Search\SearchRegistry;
 use Cake\Datasource\EntityInterface;
-use Cake\ORM\Query;
+use Cake\ORM\Query\SelectQuery;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Hash;
 use Exception;
@@ -71,7 +71,7 @@ class SearchRegistryTest extends TestCase
                 'default',
                 [
                     'className' => new class extends BaseAdapter {
-                        public function search(Query $query, string $text, array $options = [], array $config = []): Query
+                        public function search(SelectQuery $query, string $text, array $options = [], array $config = []): SelectQuery
                         {
                             return $query;
                         }

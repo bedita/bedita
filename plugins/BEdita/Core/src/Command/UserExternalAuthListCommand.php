@@ -8,7 +8,7 @@ use Cake\Command\Command;
 use Cake\Console\Arguments;
 use Cake\Console\ConsoleIo;
 use Cake\Console\ConsoleOptionParser;
-use Cake\ORM\Query;
+use Cake\ORM\Query\SelectQuery;
 
 /**
  * Command to list external authentication records for a user.
@@ -61,7 +61,7 @@ class UserExternalAuthListCommand extends Command
         if ($user !== null) {
             $query = $query->innerJoinWith(
                 'Users',
-                fn (Query $q): Query => $q->where(['Users.id' => $user->id]),
+                fn (SelectQuery $q): SelectQuery => $q->where(['Users.id' => $user->id]),
             );
         }
 

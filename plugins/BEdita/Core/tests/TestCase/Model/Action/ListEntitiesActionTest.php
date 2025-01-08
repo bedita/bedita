@@ -19,7 +19,7 @@ use BEdita\Core\ORM\Inheritance\Table;
 use Cake\Database\Driver\Mysql;
 use Cake\Datasource\ConnectionManager;
 use Cake\I18n\DateTime;
-use Cake\ORM\Query;
+use Cake\ORM\Query\SelectQuery;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
@@ -243,7 +243,7 @@ class ListEntitiesActionTest extends TestCase
 
         $result = $action(compact('filter'));
 
-        static::assertInstanceOf(Query::class, $result);
+        static::assertInstanceOf(SelectQuery::class, $result);
         static::assertEquals($expected, $result->enableHydration(false)->toArray());
     }
 
@@ -263,7 +263,7 @@ class ListEntitiesActionTest extends TestCase
         $action = new ListEntitiesAction(compact('table'));
 
         $result = $action(['filter' => ['media_property' => true]]);
-        static::assertInstanceOf(Query::class, $result);
+        static::assertInstanceOf(SelectQuery::class, $result);
 
         $result = $result->toArray();
         static::assertCount(1, $result);
@@ -323,7 +323,7 @@ class ListEntitiesActionTest extends TestCase
 
         $result = $action(compact('contain'));
 
-        static::assertInstanceOf(Query::class, $result);
+        static::assertInstanceOf(SelectQuery::class, $result);
         static::assertEquals($expected, $result->enableHydration(false)->toArray());
     }
 

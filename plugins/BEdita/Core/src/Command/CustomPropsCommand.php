@@ -19,7 +19,7 @@ use Cake\Console\Arguments;
 use Cake\Console\ConsoleIo;
 use Cake\Console\ConsoleOptionParser;
 use Cake\Core\Exception\CakeException as Exception;
-use Cake\ORM\Query;
+use Cake\ORM\Query\SelectQuery;
 use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
 use Cake\Utility\Inflector;
@@ -133,10 +133,10 @@ class CustomPropsCommand extends Command
     /**
      * Objects generator.
      *
-     * @param \Cake\ORM\Query $query Query object
+     * @param \Cake\ORM\Query\SelectQuery $query Query object
      * @return \Generator
      */
-    protected function objectsGenerator(Query $query): Generator
+    protected function objectsGenerator(SelectQuery $query): Generator
     {
         $pageSize = 1000;
         $pages = ceil($query->count() / $pageSize);

@@ -25,7 +25,6 @@ use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\Http\Exception\ForbiddenException;
 use Cake\Http\ServerRequest;
 use Cake\ORM\Association\HasMany;
-use Cake\ORM\Query;
 use Cake\ORM\Query\SelectQuery;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
@@ -653,7 +652,7 @@ class UpdateAssociatedActionTest extends TestCase
         $entity = $Documents->find()
             ->where(fn (QueryExpression $exp): QueryExpression => $exp
                 ->eq('id', $primaryKey))
-            ->contain([$associationName => fn (Query $q): Query => $q->where(['right_id' => $body[0]['id']])])
+            ->contain([$associationName => fn (SelectQuery $q): SelectQuery => $q->where(['right_id' => $body[0]['id']])])
             ->first();
         $actualParams = Hash::get(
             (array)$entity->get(Inflector::underscore($associationName)),
