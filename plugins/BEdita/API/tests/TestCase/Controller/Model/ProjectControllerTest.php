@@ -503,12 +503,12 @@ class ProjectControllerTest extends IntegrationTestCase
     }
 
     /**
-     * Test `checkAcceptable()` method.
+     * Test content negotiation.
      *
      * @return void
-     * @covers ::checkAcceptable()
+     * @coversNothing
      */
-    public function testCheckAcceptable(): void
+    public function testContentNegotiation(): void
     {
         $this->configRequestHeaders();
         $this->get('/model/project');

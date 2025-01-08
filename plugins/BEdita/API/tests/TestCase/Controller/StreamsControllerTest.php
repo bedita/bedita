@@ -195,7 +195,7 @@ class StreamsControllerTest extends IntegrationTestCase
      *
      * @return void
      * @covers ::download()
-     * @covers ::checkAcceptable()
+     * @covers ::viewClasses()
      */
     public function testDownload(): void
     {
@@ -210,16 +210,20 @@ class StreamsControllerTest extends IntegrationTestCase
     }
 
     /**
-     * Test that `checkAcceptable()` method.
+     * Test content negotiation.
      *
      * @return void
-     * @covers ::checkAcceptable()
+     * @coversNothing
      */
-    public function testCheckAcceptable()
+    public function testContentNegotiation()
     {
         $this->configRequestHeaders('GET', ['Accept' => 'text/plain']);
         $this->get('/streams');
         $this->assertResponseCode(406);
+
+        $this->configRequestHeaders('GET', ['Accept' => 'application/json']);
+        $this->get('/streams');
+        $this->assertResponseCode(200);
     }
 
     /**
