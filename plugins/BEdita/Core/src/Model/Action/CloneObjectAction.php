@@ -210,19 +210,8 @@ class CloneObjectAction extends BaseAction
 
             return $objectRelation;
         }, $objectRelations);
-        $clone = [];
-        foreach ($objectRelations as $objectRelation) {
-            $entity = $objectRelationsTable->newEmptyEntity();
-            $entity->set('left_id', $objectRelation->get('left_id'));
-            $entity->set('right_id', $objectRelation->get('right_id'));
-            $entity->set('relation_id', $objectRelation->get('relation_id'));
-            $entity->set('priority', $objectRelation->get('priority'));
-            $entity->set('inv_priority', $objectRelation->get('inv_priority'));
-            $entity->set('params', $objectRelation->get('params'));
-            $clone[] = $entity;
-        }
 
-        return $objectRelationsTable->saveManyOrFail($clone);
+        return $objectRelationsTable->saveManyOrFail($objectRelations);
     }
 
     /**
@@ -242,19 +231,11 @@ class CloneObjectAction extends BaseAction
         $objectTranslations = array_map(function ($objectTranslation) use ($destinationId) {
             $objectTranslation->set('object_id', $destinationId);
             $objectTranslation->setNew(true);
+            unset($objectTranslation->id);
 
             return $objectTranslation;
         }, $objectTranslations);
-        $clone = [];
-        foreach ($objectTranslations as $objectTranslation) {
-            $entity = $translationsTable->newEmptyEntity();
-            $entity->set('object_id', $objectTranslation->get('object_id'));
-            $entity->set('lang', $objectTranslation->get('lang'));
-            $entity->set('status', $objectTranslation->get('status'));
-            $entity->set('translated_fields', $objectTranslation->get('translated_fields'));
-            $clone[] = $entity;
-        }
 
-        return $translationsTable->saveManyOrFail($clone);
+        return $translationsTable->saveManyOrFail($objectTranslations);
     }
 }
