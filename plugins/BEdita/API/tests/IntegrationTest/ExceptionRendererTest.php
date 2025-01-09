@@ -15,7 +15,6 @@ declare(strict_types=1);
 namespace BEdita\API\Test\IntegrationTest;
 
 use BEdita\API\TestSuite\IntegrationTestCase;
-use Cake\Core\Configure;
 use Cake\Datasource\ConnectionManager;
 use Cake\Event\Event;
 use Cake\Event\EventManager;
@@ -70,14 +69,11 @@ class ExceptionRendererTest extends IntegrationTestCase
      * @param int $expectedCode Expected response code.
      * @param string|null $expectedContentType Expected content type.
      * @param string $accept Request's "Accept" header.
-     * @param array|null $config Configuration to be written.
      * @return void
      * @dataProvider contentTypeProvider
      */
-    public function testContentType($expectedCode, $expectedContentType, $accept, ?array $config = null)
+    public function testContentType($expectedCode, $expectedContentType, $accept): void
     {
-        Configure::write($config);
-
         $this->configRequest([
             'headers' => [
                 'Accept' => $accept,
