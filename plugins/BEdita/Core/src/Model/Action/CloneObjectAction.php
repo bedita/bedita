@@ -210,9 +210,8 @@ class CloneObjectAction extends BaseAction
 
             return $objectRelation;
         }, $objectRelations);
-        $objectRelationsTable->saveManyOrFail($objectRelations);
 
-        return $objectRelations;
+        return $objectRelationsTable->saveManyOrFail($objectRelationsTable->newEntities($objectRelations));
     }
 
     /**
@@ -235,8 +234,7 @@ class CloneObjectAction extends BaseAction
 
             return $objectTranslation;
         }, $objectTranslations);
-        $translationsTable->saveManyOrFail($objectTranslations);
 
-        return $objectTranslations;
+        return $translationsTable->saveManyOrFail($translationsTable->newEntities($objectTranslations));
     }
 }
