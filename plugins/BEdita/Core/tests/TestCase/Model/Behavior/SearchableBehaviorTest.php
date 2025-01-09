@@ -110,7 +110,6 @@ class SearchableBehaviorTest extends TestCase
      * @covers ::findQuery()
      * @covers ::getAdapter()
      * @covers ::getSearchRegistry()
-     * @covers ::fitSimpleAdapterConf()
      */
     public function testFindQuery($expected, $query)
     {
@@ -131,42 +130,6 @@ class SearchableBehaviorTest extends TestCase
             ->toArray();
 
         static::assertEquals($expected, $result);
-    }
-
-    /**
-     * Test that deprecated conf works yet.
-     *
-     * @return void
-     * @covers ::findQuery()
-     * @covers ::getAdapter()
-     * @covers ::getSearchRegistry()
-     * @covers ::fitSimpleAdapterConf()
-     */
-    public function testFitSimpleSearchWithDeprecatedConf(): void
-    {
-        $options = ['string' => 'koal'];
-
-        $table = $this->fetchTable('FakeMammals');
-        $table->addBehavior('BEdita/Core.Searchable'); // search on all fields
-        $result = $table
-            ->find('query', subjectValue: $options)
-            ->toArray();
-
-        static::assertCount(1, $result);
-        static::assertEquals('koala', $result[0]->name);
-
-        $table->removeBehavior('Searchable');
-        $table->addBehavior('BEdita/Core.Searchable', [ // search on `subclass`
-            'fields' => [
-                'subclass' => 1,
-            ],
-        ]);
-
-        $result = $table
-            ->find('query', subjectValue: $options)
-            ->toArray();
-
-        static::assertCount(0, $result);
     }
 
     /**
