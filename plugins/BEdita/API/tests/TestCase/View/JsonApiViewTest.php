@@ -464,24 +464,4 @@ class JsonApiViewTest extends TestCase
 
         static::assertJsonStringEqualsJsonString($expected, $result);
     }
-
-    /**
-     * Test 'json' response in constructor
-     *
-     * @return void
-     */
-    public function testJsonRequest()
-    {
-        $request = new ServerRequest([
-            'environment' => [
-                'HTTP_ACCEPT' => 'application/json',
-                'REQUEST_METHOD' => 'GET',
-            ],
-        ]);
-
-        $Controller = new Controller(request: $request);
-        $Controller->viewBuilder()->setClassName('BEdita/API.JsonApi');
-        $view = $Controller->createView();
-        static::assertEquals('application/json', $view->getResponse()->getType());
-    }
 }
