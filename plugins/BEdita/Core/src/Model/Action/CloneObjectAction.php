@@ -211,9 +211,8 @@ class CloneObjectAction extends BaseAction
 
             return $objectRelation;
         }, $objectRelations);
-        $objectRelationsTable->saveManyOrFail($objectRelations);
 
-        return $objectRelations;
+        return $objectRelationsTable->saveManyOrFail($objectRelations);
     }
 
     /**
@@ -233,11 +232,11 @@ class CloneObjectAction extends BaseAction
         $objectTranslations = array_map(function ($objectTranslation) use ($destinationId) {
             $objectTranslation->set('object_id', $destinationId);
             $objectTranslation->setNew(true);
+            unset($objectTranslation->id);
 
             return $objectTranslation;
         }, $objectTranslations);
-        $translationsTable->saveManyOrFail($objectTranslations);
 
-        return $objectTranslations;
+        return $translationsTable->saveManyOrFail($objectTranslations);
     }
 }
