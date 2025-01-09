@@ -257,7 +257,7 @@ class ObjectsController extends ResourcesController
 
             $this->set('_fields', $this->request->getQuery('fields', []));
             $data = $this->paginate($query);
-            $this->addCount($data->items());
+            $this->addCount($data->toArray());
         }
 
         $this->set(compact('data'));
