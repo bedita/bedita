@@ -127,6 +127,38 @@ class CloneObjectActionTest extends IntegrationTestCase
                 }
             }
         }
+        // verify source object is not modified
+        $actual = $table->get($id, ['contain' => ['Test', 'TestSimple', 'TestDefaults', 'Translations']]);
+        $this->assertEquals($original->title, $actual->title);
+        $this->assertEquals($original->status, $actual->status);
+        // relation test
+        $expectedTest = $original->get('test');
+        $actualRelatedTest = $actual->get('test');
+        foreach ($expectedTest as $key => $item) {
+            $this->assertEquals($item->uname, $actualRelatedTest[$key]->uname);
+        }
+        // relation test_simple
+        $expectedTestSimple = $original->get('test_simple');
+        $actualRelatedTestSimple = $actual->get('test_simple');
+        foreach ($expectedTestSimple as $key => $item) {
+            $this->assertEquals($item->uname, $actualRelatedTestSimple[$key]->uname);
+        }
+        // relation test_defaults
+        $expectedTestDefaults = $original->get('test_defaults');
+        $actualRelatedTestDefaults = $actual->get('test_defaults');
+        foreach ($expectedTestDefaults as $key => $item) {
+            $this->assertEquals($item->uname, $actualRelatedTestDefaults[$key]->uname);
+        }
+        // translations
+        $actualTranslations = $actual->get('translations');
+        $this->assertCount(4, $actualTranslations);
+        foreach ($actualTranslations as $translation) {
+            foreach ($original->get('translations') as $expectedTranslation) {
+                if ($expectedTranslation->lang === $translation->lang) {
+                    $this->assertEquals($expectedTranslation->translated_fields, $translation->translated_fields);
+                }
+            }
+        }
     }
 
     /**
