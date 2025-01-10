@@ -18,6 +18,7 @@ use Cake\Command\Command;
 use Cake\Console\Arguments;
 use Cake\Console\ConsoleIo;
 use Cake\Console\ConsoleOptionParser;
+use Cake\Database\Expression\IdentifierExpression;
 use Cake\Database\Expression\QueryExpression;
 use Cake\I18n\Date;
 use Cake\ORM\Locator\LocatorAwareTrait;
@@ -151,7 +152,10 @@ class ObjectsHistoryCommand extends Command
             'joinType' => 'INNER',
             'conditions' => function (QueryExpression $exp, SelectQuery $q) use ($historyTable, $objectsTable) {
                 return $exp->eq(
-                    $historyTable->aliasField('resource_id'),
+                    new IdentifierExpression(
+                        $historyTable->aliasField('resource_id'),
+                        Hash::get($historyTable->getSchema()->getColumn('resource_id'), 'collate')
+                    ),
                     $q->func()->cast($objectsTable->aliasField('id'), 'char')
                 );
             },
