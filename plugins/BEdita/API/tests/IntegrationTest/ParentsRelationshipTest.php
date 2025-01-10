@@ -260,11 +260,11 @@ class ParentsRelationshipTest extends IntegrationTestCase
     {
         return [
             'zero' => [
-                '[position.notEquals]: The provided value is invalid',
+                '[position.notEquals]: The provided value must not be equal to `0`',
                 0,
             ],
             'invalid string' => [
-                '[position.inList]: The provided value is invalid',
+                '[position.inList]: The provided value must be one of: `first, last`',
                 'gustavo',
             ],
             'empty' => [
