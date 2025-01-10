@@ -19,6 +19,7 @@ use Cake\Command\Command;
 use Cake\Console\Arguments;
 use Cake\Console\ConsoleIo;
 use Cake\Console\ConsoleOptionParser;
+use Cake\Database\Expression\IdentifierExpression;
 use Cake\Database\Expression\QueryExpression;
 use Cake\I18n\FrozenDate;
 use Cake\ORM\Locator\LocatorAwareTrait;
@@ -139,13 +140,17 @@ class ObjectsHistoryCommand extends Command
     {
         $objectsTable = $this->fetchTable('Objects');
         $objectTypesTable = $this->fetchTable('ObjectTypes');
+        /** @var \Cake\ORM\Table $historyTable */
         $historyTable = $objectsTable->getBehavior('History')->Table;
         $historyTable->belongsTo('Objects', [
             'foreignKey' => false,
             'joinType' => 'INNER',
             'conditions' => function (QueryExpression $exp, Query $q) use ($historyTable, $objectsTable) {
                 return $exp->eq(
-                    $historyTable->aliasField('resource_id'),
+                    new IdentifierExpression(
+                        $historyTable->aliasField('resource_id'),
+                        Hash::get($historyTable->getSchema()->getColumn('resource_id'), 'collate')
+                    ),
                     $q->func()->cast($objectsTable->aliasField('id'), 'char')
                 );
             },
