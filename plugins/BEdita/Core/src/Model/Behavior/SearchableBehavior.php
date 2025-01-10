@@ -16,7 +16,6 @@ namespace BEdita\Core\Model\Behavior;
 
 use ArrayObject;
 use BEdita\Core\Exception\BadFilterException;
-use BEdita\Core\Search\Adapter\SimpleAdapter;
 use BEdita\Core\Search\BaseAdapter;
 use BEdita\Core\Search\SearchRegistry;
 use Cake\Core\Configure;
