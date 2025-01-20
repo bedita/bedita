@@ -225,6 +225,22 @@ class UniqueNameBehaviorTest extends TestCase
     }
 
     /**
+     * Test generate unique name when title is numeric.
+     *
+     * @return array
+     * @covers ::generateUniqueName()
+     */
+    public function testGenerateUniqueNameFromNumericTitle(): void
+    {
+        $Profiles = $this->fetchTable('Profiles');
+        $profile = $Profiles->newEmptyEntity();
+        $Profiles->patchEntity($profile, ['title' => '12345']);
+        $config = ['sourceField' => 'title'];
+        $generatedUname = $Profiles->behaviors()->get('UniqueName')->generateUniqueName($profile, false, $config);
+        static::assertIsNotNumeric($generatedUname);
+    }
+
+    /**
      * Data provider for `testRegenerate` test case.
      *
      * @return array
