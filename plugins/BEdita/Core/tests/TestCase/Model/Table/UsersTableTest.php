@@ -502,7 +502,7 @@ class UsersTableTest extends TestCase
             'generic' => [
                 [
                     1 => 'first user',
-                    21 => 'third user',
+                    20 => 'third user',
                 ],
                 [
                     'auth_provider' => 'example',
@@ -520,13 +520,13 @@ class UsersTableTest extends TestCase
             'array' => [
                 [
                     1 => 'first user',
-                    21 => 'third user',
+                    20 => 'third user',
                 ],
                 [
                     'auth_provider' => 'example',
                     'username' => [
                         'first_user',
-                        'third user',
+                        'third_user',
                     ],
                 ],
             ],

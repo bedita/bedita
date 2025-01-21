@@ -52,7 +52,7 @@ class UsersFixture extends TestFixture
                 'password_modified' => '2016-03-15 09:57:38',
             ],
             [
-                'id' => 21,
+                'id' => 20,
                 'username' => 'third user',
                 'password_hash' => (new WeakPasswordHasher(['hashType' => 'md5']))->hash('password3'),
                 'blocked' => 0,

@@ -264,7 +264,7 @@ class ExternalAuthTableTest extends TestCase
                     ],
                     [
                         'id' => 4,
-                        'user_id' => 21,
+                        'user_id' => 20,
                         'auth_provider_id' => 1,
                         'params' => null,
                         'provider_username' => 'third_user',
@@ -287,7 +287,7 @@ class ExternalAuthTableTest extends TestCase
                     ],
                     [
                         'id' => 4,
-                        'user_id' => 21,
+                        'user_id' => 20,
                         'auth_provider_id' => 1,
                         'params' => null,
                         'provider_username' => 'third_user',
@@ -312,7 +312,7 @@ class ExternalAuthTableTest extends TestCase
                     ],
                     [
                         'id' => 4,
-                        'user_id' => 21,
+                        'user_id' => 20,
                         'auth_provider_id' => 1,
                         'params' => null,
                         'provider_username' => 'third_user',
