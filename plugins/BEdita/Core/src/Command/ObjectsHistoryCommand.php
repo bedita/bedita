@@ -24,6 +24,7 @@ use Cake\Database\Expression\QueryExpression;
 use Cake\I18n\FrozenDate;
 use Cake\ORM\Locator\LocatorAwareTrait;
 use Cake\ORM\Query;
+use Cake\ORM\Table;
 use Cake\Utility\Hash;
 
 /**
@@ -96,7 +97,7 @@ class ObjectsHistoryCommand extends Command
         $query = $this->fetchQuery($options);
         $historyTable = $this->fetchTable('Objects')->getBehavior('History')->Table;
         $aliasId = $historyTable->aliasField('id');
-        foreach ($this->historyIterator($query, $aliasId) as $historyItem) {
+        foreach ($this->historyIterator($historyTable, $query, $aliasId) as $historyItem) {
             $io->verbose('======> Deleting history item ' . $historyItem->id);
             try {
                 $historyTable->deleteOrFail($historyItem);
@@ -122,7 +123,7 @@ class ObjectsHistoryCommand extends Command
         $query = $this->fetchQuery($options);
         $historyTable = $this->fetchTable('Objects')->getBehavior('History')->Table;
         $aliasId = $historyTable->aliasField('id');
-        foreach ($this->historyIterator($query, $aliasId) as $historyItem) {
+        foreach ($this->historyIterator($historyTable, $query, $aliasId) as $historyItem) {
             $counter++;
             $io->info('======> ' . json_encode($historyItem->toArray()));
         }
@@ -178,17 +179,25 @@ class ObjectsHistoryCommand extends Command
     /**
      * Get history items as iterable.
      *
+     * @param \Cake\ORM\Table $historyTable The history table
      * @param \Cake\ORM\Query $query The query
+     * @param string $aliasId The alias for history id
      * @return iterable
      */
-    private function historyIterator(Query $query, string $aliasId): iterable
+    private function historyIterator(Table $historyTable, Query $query, string $aliasId): iterable
     {
         $lastId = 0;
         while (true) {
             $q = clone $query;
-            $q = $q->where(fn (QueryExpression $exp): QueryExpression => $exp->gt($aliasId, $lastId));
-            $results = $q->orderAsc($aliasId)->all();
-            if ($results->isEmpty()) {
+            $q = $q
+                ->distinct(array_map(
+                    // Avoid duplicate results when INNER JOIN-ing hasMany associations and similar.
+                    [$historyTable, 'aliasField'],
+                    (array)$historyTable->getPrimaryKey()
+                ))
+                ->where(fn (QueryExpression $exp): QueryExpression => $exp->gt($aliasId, $lastId));
+            $results = $q->orderAsc($aliasId);
+            if ($results->all()->isEmpty()) {
                 break;
             }
             foreach ($results as $entity) {
