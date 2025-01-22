@@ -91,7 +91,7 @@ class AuthProvider extends Entity
     public function checkAuthorization($providerResponse, $providerUsername)
     {
         $fieldPath = Hash::get($this->get('params'), 'provider_username_field', 'id');
-        $userName = Hash::get($providerResponse, (string)$fieldPath);
+        $userName = (string)Hash::get($providerResponse, (string)$fieldPath);
 
         return $userName === $providerUsername;
     }
