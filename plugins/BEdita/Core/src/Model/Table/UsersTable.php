@@ -292,16 +292,10 @@ class UsersTable extends Table
         return $query->innerJoinWith('ExternalAuth', function (Query $query) use ($options) {
             $query = $query->find('authProvider', $options);
             if (!empty($options['username'])) {
-                if (is_array($options['username'])) {
-                    $query = $query->where(fn(QueryExpression $exp) => $exp->in(
-                        $this->ExternalAuth->aliasField('provider_username'),
-                        $options['username']
-                    ));
-                } else {
-                    $query = $query->where([
-                        $this->ExternalAuth->aliasField('provider_username') => $options['username'],
-                    ]);
-                }
+                $query = $query->where(fn (QueryExpression $exp) => $exp->in(
+                    $this->ExternalAuth->aliasField('provider_username'),
+                    (array)$options['username'],
+                ));
             }
 
             return $query;
