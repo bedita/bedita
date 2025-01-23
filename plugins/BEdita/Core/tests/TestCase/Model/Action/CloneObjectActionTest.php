@@ -86,7 +86,7 @@ class CloneObjectActionTest extends IntegrationTestCase
         $this->configRequestHeaders('POST', $this->getUserAuthHeader());
         // document with ID 2 from fixtures has 5 relationships records and 4 translations records
         $id = 2;
-        $title = 'new title';
+        $title = 'new title for my clone';
         $status = 'draft';
         $_meta = ['include' => ['relationships', 'translations']];
         $data = compact('title', 'status', '_meta');
@@ -99,6 +99,7 @@ class CloneObjectActionTest extends IntegrationTestCase
         $this->assertEquals($clone->status, $status);
         $this->assertEquals($clone->title, $actual->title);
         $this->assertEquals($clone->status, $actual->status);
+        $this->assertEquals('new-title-for-my-clone', $clone->uname);
         // relation test
         $relatedTest = $clone->get('test');
         $originalRelatedTest = $original->get('test');
@@ -179,7 +180,7 @@ class CloneObjectActionTest extends IntegrationTestCase
 
         // ID 14, stream bedita-logo-gray.gif
         $id = 14;
-        $title = 'new title';
+        $title = 'new title for my clone';
         $status = 'draft';
         $include = [];
         $data = compact('title', 'status');
