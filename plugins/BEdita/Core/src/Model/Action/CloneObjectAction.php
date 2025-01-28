@@ -102,6 +102,7 @@ class CloneObjectAction extends BaseAction
         foreach ($entityAttributes as $field) {
             $this->setEntityField($schemaInfo, $sourceEntity, $entity, $field);
         }
+        $entity->set('uname', null);
         if (!empty($entity->get('streams'))) {
             $entity->set('streams', []);
         }
