@@ -239,6 +239,10 @@ class JsonApiTraitTest extends TestCase
                         'id' => '1',
                         'type' => 'users',
                     ],
+                    [
+                        'id' => '20',
+                        'type' => 'users',
+                    ],
                 ],
                 'links' => [
                     'related' => '/roles/1/users',
@@ -253,7 +257,7 @@ class JsonApiTraitTest extends TestCase
         $included = $role['included'];
 
         static::assertSame($expected, $relationships);
-        static::assertCount(1, $included);
+        static::assertCount(2, $included);
     }
 
     /**

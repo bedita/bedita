@@ -88,7 +88,7 @@ class CustomPropsCommandTest extends TestCase
         ]);
         $this->exec('custom_props');
         FilesystemRegistry::dropAll();
-        $this->assertOutputContains('Updated 2 users without errors');
+        $this->assertOutputContains('Updated 3 users without errors');
         $this->assertExitSuccess();
     }
 

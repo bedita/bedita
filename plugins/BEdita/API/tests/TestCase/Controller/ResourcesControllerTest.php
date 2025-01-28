@@ -119,13 +119,46 @@ class ResourcesControllerTest extends IntegrationTestCase
                         ],
                     ],
                 ],
+                [
+                    'id' => '20',
+                    'type' => 'users',
+                    'links' => [
+                        'self' => 'http://api.example.com/users/20',
+                    ],
+                    'relationships' => [
+                        'roles' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/users/20/roles',
+                                'self' => 'http://api.example.com/users/20/relationships/roles',
+                            ],
+                        ],
+                        'another_test' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/users/20/another_test',
+                                'self' => 'http://api.example.com/users/20/relationships/another_test',
+                            ],
+                        ],
+                        'parents' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/users/20/parents',
+                                'self' => 'http://api.example.com/users/20/relationships/parents',
+                            ],
+                        ],
+                        'translations' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/users/20/translations',
+                                'self' => 'http://api.example.com/users/20/relationships/translations',
+                            ],
+                        ],
+                    ],
+                ],
             ],
             'meta' => [
                 'pagination' => [
-                    'count' => 1,
+                    'count' => 2,
                     'page' => 1,
                     'page_count' => 1,
-                    'page_items' => 1,
+                    'page_items' => 2,
                     'page_size' => 20,
                 ],
             ],
@@ -539,6 +572,10 @@ class ResourcesControllerTest extends IntegrationTestCase
         $data = [
             [
                 'id' => '1',
+                'type' => 'users',
+            ],
+            [
+                'id' => '20',
                 'type' => 'users',
             ],
         ];

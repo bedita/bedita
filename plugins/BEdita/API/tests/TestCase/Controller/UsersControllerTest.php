@@ -46,10 +46,10 @@ class UsersControllerTest extends IntegrationTestCase
             ],
             'meta' => [
                 'pagination' => [
-                    'count' => 2,
+                    'count' => 3,
                     'page' => 1,
                     'page_count' => 1,
-                    'page_items' => 2,
+                    'page_items' => 3,
                     'page_size' => 20,
                 ],
                 'schema' => [
@@ -232,6 +232,94 @@ class UsersControllerTest extends IntegrationTestCase
                             'links' => [
                                 'related' => 'http://api.example.com/users/5/translations',
                                 'self' => 'http://api.example.com/users/5/relationships/translations',
+                            ],
+                        ],
+                    ],
+                ],
+                [
+                    'id' => '20',
+                    'type' => 'users',
+                    'attributes' => [
+                        'username' => 'third user',
+                        'name' => 'third',
+                        'surname' => 'User',
+                        'email' => 'third.user@example.com',
+                        'person_title' => '',
+                        'gender' => null,
+                        'birthdate' => null,
+                        'deathdate' => null,
+                        'company' => false,
+                        'company_name' => null,
+                        'company_kind' => null,
+                        'street_address' => null,
+                        'city' => null,
+                        'zipcode' => null,
+                        'country' => null,
+                        'state_name' => null,
+                        'phone' => null,
+                        'website' => null,
+                        'national_id_number' => null,
+                        'vat_number' => null,
+                        'status' => 'on',
+                        'uname' => 'third-user',
+                        'title' => 'Mr. third User',
+                        'description' => null,
+                        'body' => null,
+                        'extra' => null,
+                        'lang' => 'en',
+                        'publish_start' => null,
+                        'publish_end' => null,
+                        'another_username' => null, // custom property
+                        'another_email' => null, // custom property
+                        'pseudonym' => null,
+                        'user_preferences' => null,
+                    ],
+                    'meta' => [
+                        'blocked' => false,
+                        'last_login' => null,
+                        'last_login_err' => null,
+                        'num_login_err' => 1,
+                        'locked' => false,
+                        'created' => '2016-05-13T07:09:23+00:00',
+                        'modified' => '2016-05-13T07:09:23+00:00',
+                        'published' => null,
+                        'created_by' => 1,
+                        'modified_by' => 1,
+                        'verified' => '2017-05-30T17:36:00+00:00',
+                        'password_modified' => '2017-05-30T17:36:00+00:00',
+                        'external_auth' => [
+                            [
+                                'provider' => 'example',
+                                'username' => 'third_user',
+                            ],
+                        ],
+                    ],
+                    'links' => [
+                        'self' => 'http://api.example.com/users/20',
+                    ],
+                    'relationships' => [
+                        'roles' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/users/20/roles',
+                                'self' => 'http://api.example.com/users/20/relationships/roles',
+                            ],
+                        ],
+                        'another_test' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/users/20/another_test',
+                                'self' => 'http://api.example.com/users/20/relationships/another_test',
+                            ],
+                        ],
+                        'parents' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/users/20/parents',
+                                'self' => 'http://api.example.com/users/20/relationships/parents',
+                            ],
+                        ],
+                        'translations' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/users/20/translations',
+                                'self' => 'http://api.example.com/users/20/relationships/translations',
                             ],
                         ],
                     ],

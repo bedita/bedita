@@ -93,6 +93,6 @@ class AuthProvider extends Entity
         $fieldPath = Hash::get($this->get('params'), 'provider_username_field', 'id');
         $userName = Hash::get($providerResponse, (string)$fieldPath);
 
-        return $userName === $providerUsername;
+        return $userName !== null && (string)$userName === $providerUsername;
     }
 }
