@@ -22,9 +22,9 @@ use BEdita\Core\Utility\SchemaTools;
 use BEdita\Core\Utility\Text;
 use Cake\Datasource\EntityInterface;
 use Cake\Http\Exception\UnauthorizedException;
+use Cake\ORM\Association\HasMany;
 use Cake\ORM\Locator\LocatorAwareTrait;
 use Cake\Utility\Hash;
-use Cake\Utility\Inflector;
 
 /**
  * Clone object action
@@ -132,13 +132,18 @@ class CloneObjectAction extends BaseAction
             return $attributes[$field];
         }
         $value = $sourceEntity->get($field);
-        if ($sourceEntity->getTable()->hasAssociation(Inflector::camelize($field))) {
-            $value = array_map(function ($data) {
-                $entityClass = get_class($data);
+        $association = $sourceEntity->getTable()->associations()->getByProperty($field);
+        if ($association instanceof HasMany) {
+            $targetTable = $association->getTarget();
+            $foreignKey = $association->getForeignKey();
+            $foreignKeys = is_array($foreignKey) ? $foreignKey : [$foreignKey];
+            $value = array_map(function ($data) use ($targetTable, $foreignKeys) {
                 unset($data['id']);
-                unset($data['object_id']);
+                foreach ($foreignKeys as $foreignKey) {
+                    unset($data[$foreignKey]);
+                }
 
-                return new $entityClass($data->toArray());
+                return $targetTable->newEntity($data->toArray());
             }, $value);
             $entity->set($field, $value);
 
