@@ -15,7 +15,6 @@ declare(strict_types=1);
 
 namespace BEdita\Core\Model\Action;
 
-use BEdita\Core\Model\Entity\DateRange;
 use BEdita\Core\Model\Entity\ObjectEntity;
 use BEdita\Core\Model\Entity\Stream;
 use BEdita\Core\Utility\LoggedUser;
@@ -25,6 +24,7 @@ use Cake\Datasource\EntityInterface;
 use Cake\Http\Exception\UnauthorizedException;
 use Cake\ORM\Locator\LocatorAwareTrait;
 use Cake\Utility\Hash;
+use Cake\Utility\Inflector;
 
 /**
  * Clone object action
@@ -132,13 +132,13 @@ class CloneObjectAction extends BaseAction
             return $attributes[$field];
         }
         $value = $sourceEntity->get($field);
-        if ($field === 'date_ranges') {
-            $value = array_map(function ($dateRange) {
-                return new DateRange([
-                    'start_date' => $dateRange['start_date'],
-                    'end_date' => $dateRange['end_date'],
-                    'params' => $dateRange['params'],
-                ]);
+        if ($sourceEntity->getTable()->hasAssociation(Inflector::camelize($field))) {
+            $value = array_map(function ($data) {
+                $entityClass = get_class($data);
+                unset($data['id']);
+                unset($data['object_id']);
+
+                return new $entityClass($data->toArray());
             }, $value);
             $entity->set($field, $value);
 

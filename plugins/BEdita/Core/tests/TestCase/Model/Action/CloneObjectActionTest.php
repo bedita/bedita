@@ -440,6 +440,7 @@ class CloneObjectActionTest extends IntegrationTestCase
      * @covers ::initialize()
      * @covers ::execute()
      * @covers ::cloneEntity()
+     * @covers ::setEntityField()
      */
     public function testCloneObjectWithDateRanges(): void
     {
