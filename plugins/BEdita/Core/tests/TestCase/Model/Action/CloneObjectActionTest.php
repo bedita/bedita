@@ -462,5 +462,11 @@ class CloneObjectActionTest extends IntegrationTestCase
         $this->assertEquals($expected->start_date, $actual->start_date);
         $this->assertEquals($expected->end_date, $actual->end_date);
         $this->assertEquals($expected->params, $actual->params);
+        // verify that original is unchanged
+        $original = $table->get($id, ['contain' => ['DateRanges']]);
+        $originalDateRanges = $original->get('date_ranges');
+        $this->assertCount(1, $originalDateRanges);
+        $this->assertEquals($expected->start_date, $originalDateRanges[0]->start_date);
+        $this->assertEquals($expected->end_date, $originalDateRanges[0]->end_date);
     }
 }

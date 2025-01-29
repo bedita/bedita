@@ -15,6 +15,7 @@ declare(strict_types=1);
 
 namespace BEdita\Core\Model\Action;
 
+use BEdita\Core\Model\Entity\DateRange;
 use BEdita\Core\Model\Entity\ObjectEntity;
 use BEdita\Core\Model\Entity\Stream;
 use BEdita\Core\Utility\LoggedUser;
@@ -131,6 +132,18 @@ class CloneObjectAction extends BaseAction
             return $attributes[$field];
         }
         $value = $sourceEntity->get($field);
+        if ($field === 'date_ranges') {
+            $value = array_map(function ($dateRange) {
+                return new DateRange([
+                    'start_date' => $dateRange['start_date'],
+                    'end_date' => $dateRange['end_date'],
+                    'params' => $dateRange['params'],
+                ]);
+            }, $value);
+            $entity->set($field, $value);
+
+            return $value;
+        }
         if (!in_array($field, (array)Hash::get($schemaInfo, 'unique'))) {
             $entity->set($field, $value);
 
