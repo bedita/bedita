@@ -100,6 +100,9 @@ class CloneObjectAction extends BaseAction
         /** @var \BEdita\Core\Model\Entity\ObjectEntity $entity */
         $entity = $this->Table->newEmptyEntity();
         $entityAttributes = $sourceEntity->getVisible();
+        $entityAttributes = array_filter($entityAttributes, function ($field) {
+            return $field !== 'streams';
+        });
         foreach ($entityAttributes as $field) {
             $this->setEntityField($schemaInfo, $sourceEntity, $entity, $field);
         }
