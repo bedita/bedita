@@ -22,6 +22,7 @@ use BEdita\Core\Utility\SchemaTools;
 use BEdita\Core\Utility\Text;
 use Cake\Datasource\EntityInterface;
 use Cake\Http\Exception\UnauthorizedException;
+use Cake\ORM\Association\HasMany;
 use Cake\ORM\Locator\LocatorAwareTrait;
 use Cake\Utility\Hash;
 
@@ -99,6 +100,9 @@ class CloneObjectAction extends BaseAction
         /** @var \BEdita\Core\Model\Entity\ObjectEntity $entity */
         $entity = $this->Table->newEmptyEntity();
         $entityAttributes = $sourceEntity->getVisible();
+        $entityAttributes = array_filter($entityAttributes, function ($field) {
+            return $field !== 'streams';
+        });
         foreach ($entityAttributes as $field) {
             $this->setEntityField($schemaInfo, $sourceEntity, $entity, $field);
         }
@@ -131,6 +135,23 @@ class CloneObjectAction extends BaseAction
             return $attributes[$field];
         }
         $value = $sourceEntity->get($field);
+        $association = $sourceEntity->getTable()->associations()->getByProperty($field);
+        if ($association instanceof HasMany) {
+            $targetTable = $association->getTarget();
+            $foreignKey = $association->getForeignKey();
+            $foreignKeys = is_array($foreignKey) ? $foreignKey : [$foreignKey];
+            $value = array_map(function ($data) use ($targetTable, $foreignKeys) {
+                unset($data['id']);
+                foreach ($foreignKeys as $foreignKey) {
+                    unset($data[$foreignKey]);
+                }
+
+                return $targetTable->newEntity($data->toArray());
+            }, $value);
+            $entity->set($field, $value);
+
+            return $value;
+        }
         if (!in_array($field, (array)Hash::get($schemaInfo, 'unique'))) {
             $entity->set($field, $value);
 
