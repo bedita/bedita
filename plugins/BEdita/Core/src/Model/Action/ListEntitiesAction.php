@@ -15,6 +15,8 @@ declare(strict_types=1);
 namespace BEdita\Core\Model\Action;
 
 use BEdita\Core\Exception\BadFilterException;
+use BEdita\Core\ORM\FinderFilterInterface;
+use BEdita\Core\ORM\FinderFilterTrait;
 use BEdita\Core\ORM\QueryFilterTrait;
 use Cake\ORM\Query\SelectQuery;
 use Cake\ORM\Table;
@@ -25,8 +27,9 @@ use Cake\Utility\Inflector;
  *
  * @since 4.0.0
  */
-class ListEntitiesAction extends BaseAction
+class ListEntitiesAction extends BaseAction implements FinderFilterInterface
 {
+    use FinderFilterTrait;
     use QueryFilterTrait;
 
     /**
@@ -82,7 +85,7 @@ class ListEntitiesAction extends BaseAction
     /**
      * Build a filter and return modified query object.
      *
-     * @param \Cake\ORM\Query $query Query object instance.
+     * @param \Cake\ORM\Query\SelectQuery $query Query object instance.
      * @param array $filter Filter data.
      * @return \Cake\ORM\Query\SelectQuery
      * @throws \BEdita\Core\Exception\BadFilterException
@@ -92,13 +95,15 @@ class ListEntitiesAction extends BaseAction
         $customPropsOptions = [];
         foreach ($filter as $key => $value) {
             $variableKey = Inflector::variable($key);
-            if ($this->Table->hasFinder($variableKey)) {
-                // Finder.
-                if ($value === true) {
-                    $value = [];
-                }
+            $hasFinder = $this->Table instanceof FinderFilterInterface
+                ? $this->Table->hasFilter($variableKey)
+                : $this->hasFilter($variableKey, $this->Table);
 
-                $query = $query->find($variableKey, (array)$value);
+
+            if ($hasFinder) {
+                $query = $this->Table instanceof FinderFilterInterface
+                    ? $this->Table->callFilter($variableKey, $query, $value)
+                    : $this->callFilter($variableKey, $query, $value, $this->Table);
 
                 continue;
             }

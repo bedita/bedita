@@ -15,6 +15,8 @@ declare(strict_types=1);
 namespace BEdita\Core\ORM\Inheritance;
 
 use BadMethodCallException;
+use BEdita\Core\ORM\FinderFilterInterface;
+use BEdita\Core\ORM\FinderFilterTrait;
 use BEdita\Core\ORM\Inheritance\Query\QueryFactory;
 use Cake\ORM\Marshaller as CakeMarshaller;
 use Cake\ORM\Query\SelectQuery as CakeSelectQuery;
@@ -30,8 +32,13 @@ use Cake\ORM\TableRegistry;
  *
  * @since 4.0.0
  */
-class Table extends CakeTable
+class Table extends CakeTable implements FinderFilterInterface
 {
+    use FinderFilterTrait {
+        hasFilter as private privateHasFilter;
+        callFilter as private privateCallFilter;
+    }
+
     /**
      * Table that is being inherited by this one.
      *
@@ -244,6 +251,56 @@ class Table extends CakeTable
         }
 
         return $inheritedTable->hasField($field);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function hasFilter(string $name, ?CakeTable $table = null): bool
+    {
+        $found = $this->privateHasFilter($name);
+        if ($found === true) {
+            return true;
+        }
+
+        $inheritedTable = $this->inheritedTable();
+        if ($inheritedTable === null) {
+            return false;
+        }
+
+        if ($inheritedTable instanceof FinderFilterInterface) {
+            return $inheritedTable->hasFilter($name);
+        }
+
+        return $this->privateHasFilter($name, $inheritedTable);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function callFilter(string $name, CakeSelectQuery $query, mixed $value, ?CakeTable $table = null): CakeSelectQuery
+    {
+        $filter = $this->getFilter($name);
+        if ($filter !== null) {
+            return $this->invokeFilter($filter, $query, $value);
+        }
+
+        $inheritedTable = $this->inheritedTable();
+        if ($inheritedTable !== null) {
+            $originalAlias = $inheritedTable->getAlias();
+            $inheritedTable->setAlias($this->getAlias());
+            try {
+                if ($inheritedTable instanceof FinderFilterInterface) {
+                    return $inheritedTable->callFilter($name, $query, $value);
+                }
+
+                return $this->privateCallFilter($name, $query, $value, $inheritedTable);
+            } finally {
+                $inheritedTable->setAlias($originalAlias);
+            }
+        }
+
+        throw new BadMethodCallException(sprintf('Unknown filter method "%s"', $name));
     }
 
     /**
