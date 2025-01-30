@@ -361,7 +361,7 @@ class ObjectsTable extends Table
      * @param \Cake\ORM\Query\SelectQuery $query Query object instance.
      * @return \Cake\ORM\Query\SelectQuery
      */
-    protected function findMine(SelectQuery $query): SelectQuery
+    public function findMine(SelectQuery $query): SelectQuery
     {
         return $query->where(function (QueryExpression $exp) {
             return $exp->eq($this->aliasField($this->CreatedByUsers->getForeignKey()), LoggedUser::id());
@@ -372,12 +372,12 @@ class ObjectsTable extends Table
      * Finder for objects having a certain `ancestor` on the tree.
      *
      * @param \Cake\ORM\Query\SelectQuery $query Query object instance.
-     * @param array $options Id or unique name of ancestor
+     * @param string|int $parent Id or unique name of ancestor
      * @return \Cake\ORM\Query\SelectQuery
      */
-    protected function findAncestor(SelectQuery $query, array $options): SelectQuery
+    public function findAncestor(SelectQuery $query, string|int $parent): SelectQuery
     {
-        $parentId = $this->getId((string)Hash::get($options, '0'));
+        $parentId = $this->getId($parent);
         $parentNode = $this->TreeNodes->find()
             ->where([
                 $this->TreeNodes->aliasField('object_id') => $parentId,
@@ -405,9 +405,9 @@ class ObjectsTable extends Table
      * @param array $options Id or unique name of ancestor
      * @return \Cake\ORM\Query\SelectQuery
      */
-    protected function findParent(SelectQuery $query, array $options): SelectQuery
+    public function findParent(SelectQuery $query, string|int $parent): SelectQuery
     {
-        $parentId = $this->getId((string)Hash::get($options, '0'));
+        $parentId = $this->getId($parent);
 
         return $query
             ->innerJoinWith('TreeNodes', function (SelectQuery $query) use ($parentId) {
@@ -422,15 +422,15 @@ class ObjectsTable extends Table
      * Retrieve object translation for a language.
      *
      * @param \Cake\ORM\Query\SelectQuery $query Query object instance.
-     * @param array $options Lang options.
+     * @param string $lang The translation language.
      * @return \Cake\ORM\Query\SelectQuery
      */
-    protected function findTranslations(SelectQuery $query, array $options): SelectQuery
+    protected function findTranslations(SelectQuery $query, ?string $lang = null): SelectQuery
     {
-        return $query->contain('Translations', function (SelectQuery $query) use ($options) {
+        return $query->contain('Translations', function (SelectQuery $query) use ($lang) {
             $query = $query->find('statusLevel', [Configure::read('Status.level', 'all')]);
-            if (isset($options['lang'])) {
-                $query = $query->where(['Translations.lang' => $options['lang']]);
+            if ($lang !== null) {
+                $query = $query->where(['Translations.lang' => $lang]);
             }
 
             return $query;
@@ -503,12 +503,11 @@ class ObjectsTable extends Table
      * Finder to get an object by ID or 'uname'
      *
      * @param \Cake\ORM\Query\SelectQuery $query Query object instance.
-     * @param array $options Array with ID or uname as first element.
+     * @param string|int $id ID or uname.
      * @return \Cake\ORM\Query\SelectQuery
      */
-    protected function findUnameId(SelectQuery $query, array $options): SelectQuery
+    protected function findUnameId(SelectQuery $query, string|int $id): SelectQuery
     {
-        $id = (string)Hash::get($options, '0');
         if (is_numeric($id)) {
             return $query->where([$this->aliasField('id') => (int)$id]);
         }
@@ -520,24 +519,24 @@ class ObjectsTable extends Table
      * Finder for categories by name.
      *
      * @param \Cake\ORM\Query\SelectQuery $query Query object instance.
-     * @param array $options Category names.
+     * @param array<string>|string $name Category names.
      * @return \Cake\ORM\Query\SelectQuery
      */
-    protected function findCategories(SelectQuery $query, array $options): SelectQuery
+    public function findCategories(SelectQuery $query, array|string $name): SelectQuery
     {
-        return $this->categoriesQuery('Categories', $query, $options);
+        return $this->categoriesQuery('Categories', $query, $name);
     }
 
     /**
      * Finder for tags by name.
      *
      * @param \Cake\ORM\Query\SelectQuery $query Query object instance.
-     * @param array $options Tag names.
+     * @param array<string>|string $name Tag names.
      * @return \Cake\ORM\Query\SelectQuery
      */
-    protected function findTags(SelectQuery $query, array $options): SelectQuery
+    public function findTags(SelectQuery $query, array|string $name): SelectQuery
     {
-        return $this->categoriesQuery('Tags', $query, $options);
+        return $this->categoriesQuery('Tags', $query, $name);
     }
 
     /**
@@ -546,22 +545,22 @@ class ObjectsTable extends Table
      *
      * @param string $assoc Association name, 'Tags' or 'Categories'
      * @param \Cake\ORM\Query\SelectQuery $query Query object instance.
-     * @param array $options Tag or category names.
+     * @param array<string>|string $name Tag or category names.
      * @return \Cake\ORM\Query\SelectQuery
      */
-    protected function categoriesQuery(string $assoc, SelectQuery $query, array $options): SelectQuery
+    protected function categoriesQuery(string $assoc, SelectQuery $query, array|string $name): SelectQuery
     {
         /**
          * If a single element is passed with comma separated values
          * a new array is created fromm it.
          */
-        if (count($options) === 1) {
-            $options = array_filter(explode(',', reset($options)));
+        if (is_string($name)) {
+            $name = array_filter(explode(',', $name));
         }
 
         return $query->distinct([$this->aliasField('id')])
-            ->innerJoinWith($assoc, function (SelectQuery $query) use ($assoc, $options) {
-                return $query->where([sprintf('%s.name IN', $assoc) => $options]);
+            ->innerJoinWith($assoc, function (SelectQuery $query) use ($assoc, $name) {
+                return $query->where([sprintf('%s.name IN', $assoc) => $name]);
             });
     }
 }

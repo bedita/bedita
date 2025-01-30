@@ -500,7 +500,7 @@ class FoldersControllerTest extends IntegrationTestCase
         $foldersTable = TableRegistry::getTableLocator()->get('Folders');
         $folderId = 11;
         $children = $foldersTable
-            ->find('ancestor', [$folderId])
+            ->find('ancestor', parent: $folderId)
             ->toArray();
 
         $authHeader = $this->getUserAuthHeader();
@@ -993,7 +993,7 @@ class FoldersControllerTest extends IntegrationTestCase
 
         $getDescendants = function () use ($folderId, $foldersTable) {
             return $foldersTable
-                ->find('ancestor', [$folderId])
+                ->find('ancestor', parent: $folderId)
                 ->orderBy([$foldersTable->aliasField('id') => 'ASC'])
                 ->find('list')
                 ->toArray();

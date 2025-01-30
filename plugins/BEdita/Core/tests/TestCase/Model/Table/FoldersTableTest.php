@@ -329,7 +329,7 @@ class FoldersTableTest extends TestCase
         // get root and trashes it
         $root = $this->Folders->get(13);
         $startDeletedInfo = $this->Folders
-            ->find('ancestor', [$root->id])
+            ->find('ancestor', parent: $root->id)
             ->orderBy([$this->Folders->aliasField('id') => 'ASC'])
             ->find('list', keyField: 'id', valueField: 'deleted')
             ->toArray();
@@ -338,7 +338,7 @@ class FoldersTableTest extends TestCase
         $this->Folders->save($root);
 
         $children = $this->Folders
-            ->find('ancestor', [$root->id])
+            ->find('ancestor', parent: $root->id)
             ->orderBy([$this->Folders->aliasField('id') => 'ASC']);
         foreach ($children as $child) {
             if ($child->type === 'folders') {
@@ -355,7 +355,7 @@ class FoldersTableTest extends TestCase
         $this->Folders->save($root);
 
         $restoredDeletedInfo = $this->Folders
-            ->find('ancestor', [$root->id])
+            ->find('ancestor', parent: $root->id)
             ->orderBy([$this->Folders->aliasField('id') => 'ASC'])
             ->find('list', [
                 'keyField' => 'id',
@@ -391,7 +391,7 @@ class FoldersTableTest extends TestCase
 
         // get descendants not folders
         $notFoldersIds = $this->Folders
-            ->find('ancestor', [$parentFolder->id])
+            ->find('ancestor', parent: $parentFolder->id)
             ->orderBy([$this->Folders->aliasField('id') => 'ASC'])
             ->find('list', keyField: 'id', valueField: 'id')
             ->where(function (QueryExpression $exp) {
@@ -484,7 +484,7 @@ class FoldersTableTest extends TestCase
         $this->Folders->save($parent);
 
         $children = $this->Folders
-            ->find('ancestor', [11])
+            ->find('ancestor', parent: 11)
             ->orderBy([$this->Folders->aliasField('id') => 'ASC'])
             ->where(['object_type_id' => $this->Folders->objectType()->id])
             ->toArray();

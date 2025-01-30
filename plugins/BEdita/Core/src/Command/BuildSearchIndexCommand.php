@@ -182,7 +182,7 @@ class BuildSearchIndexCommand extends Command
         }
         $ancestor = (string)$args->getOption('ancestor');
         if (!empty($ancestor)) {
-            $query = $query->find('ancestor', [$ancestor]);
+            $query = $query->find('ancestor', parent: $ancestor);
         }
         $lastId = 0;
         while (true) {

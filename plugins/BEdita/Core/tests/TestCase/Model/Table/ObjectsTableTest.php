@@ -518,7 +518,7 @@ class ObjectsTableTest extends TestCase
      */
     public function testFindAncestor()
     {
-        $objects = $this->Objects->find('ancestor', [11])
+        $objects = $this->Objects->find('ancestor', parent: 11)
             ->orderBy([$this->Objects->aliasField('id') => 'ASC'])
             ->toArray();
         static::assertNotEmpty($objects);
@@ -534,7 +534,7 @@ class ObjectsTableTest extends TestCase
      */
     public function testFindParent()
     {
-        $objects = $this->Objects->find('parent', [12])->toArray();
+        $objects = $this->Objects->find('parent', parent: 12)->toArray();
         static::assertNotEmpty($objects);
         $ids = Hash::extract($objects, '{n}.id');
         static::assertEquals([4], $ids);
@@ -662,7 +662,7 @@ class ObjectsTableTest extends TestCase
      */
     public function testFindTranslations()
     {
-        $result = $this->Objects->find('translations', ['lang' => 'fr'])
+        $result = $this->Objects->find('translations', lang: 'fr')
             ->where(['Objects.id' => 2])
             ->toArray();
 
@@ -820,7 +820,7 @@ class ObjectsTableTest extends TestCase
     {
         $result = TableRegistry::getTableLocator()
             ->get('Documents')
-            ->find('categories', ['first-cat,second-cat'])
+            ->find('categories', name: 'first-cat,second-cat')
             ->toArray();
         static::assertSame(1, count($result));
     }
@@ -836,7 +836,7 @@ class ObjectsTableTest extends TestCase
     {
         $result = TableRegistry::getTableLocator()
             ->get('Profiles')
-            ->find('tags', ['first-tag'])
+            ->find('tags', name: 'first-tag')
             ->toArray();
         static::assertSame(1, count($result));
     }
@@ -851,13 +851,13 @@ class ObjectsTableTest extends TestCase
     {
         $result = TableRegistry::getTableLocator()
             ->get('Profiles')
-            ->find('unameId', ['gustavo-supporto'])
+            ->find('unameId', id: 'gustavo-supporto')
             ->firstOrFail();
         static::assertSame(4, $result->get('id'));
 
         $result = TableRegistry::getTableLocator()
             ->get('Profiles')
-            ->find('unameId', [4])
+            ->find('unameId', id: 4)
             ->firstOrFail();
         static::assertSame('gustavo-supporto', $result->get('uname'));
     }

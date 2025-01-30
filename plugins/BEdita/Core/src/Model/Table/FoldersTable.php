@@ -231,7 +231,7 @@ class FoldersTable extends ObjectsTable
         }
 
         $options['descendants'] = $this
-            ->find('ancestor', [$entity->get('id')])
+            ->find('ancestor', parent: $entity->get('id'))
             ->where([
                 $this->aliasField('object_type_id') => $this->objectType()->id,
             ])
