@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\Model\Table;
 
 use Cake\ORM\TableRegistry;
@@ -38,7 +37,7 @@ class LinksTableTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.Relations',
         'plugin.BEdita/Core.RelationTypes',
@@ -51,7 +50,7 @@ class LinksTableTest extends TestCase
      *
      * @return array
      */
-    public function validationProvider()
+    public static function validationProvider(): array
     {
         return [
             'ok' => [
@@ -79,7 +78,7 @@ class LinksTableTest extends TestCase
     public function testValidation(array $expected, array $data)
     {
         $this->Links = TableRegistry::getTableLocator()->get('Links');
-        $entity = $this->Links->newEntity([]);
+        $entity = $this->Links->newEmptyEntity();
         $entity = $this->Links->patchEntity($entity, $data);
         $errors = array_keys(Hash::flatten($entity->getErrors()));
 

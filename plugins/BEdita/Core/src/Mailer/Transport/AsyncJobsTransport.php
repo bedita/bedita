@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Mailer\Transport;
 
 use Cake\Mailer\AbstractTransport;
@@ -32,7 +31,7 @@ class AsyncJobsTransport extends AbstractTransport
     /**
      * @inheritDoc
      */
-    protected $_defaultConfig = [
+    protected array $_defaultConfig = [
         'service' => 'mail',
         'max_attempts' => 3,
     ];
@@ -45,7 +44,7 @@ class AsyncJobsTransport extends AbstractTransport
         /** @var \BEdita\Core\Model\Table\AsyncJobsTable $table */
         $table = TableRegistry::getTableLocator()->get('AsyncJobs');
 
-        $asyncJob = $table->newEntity([]);
+        $asyncJob = $table->newEmptyEntity();
         $asyncJob->service = $this->getConfig('service');
         $asyncJob->max_attempts = $this->getConfig('max_attempts');
         if ($this->getConfig('priority') !== null) {
@@ -53,12 +52,6 @@ class AsyncJobsTransport extends AbstractTransport
         }
 
         $payload = $message->jsonSerialize();
-        // $payload += [
-        //     // '_boundary' => BeditaEmail::getBoundary($email),
-        //     '_message' => $message->getBodyString(),
-        //     '_htmlMessage' => $message->getBodyHtml(),
-        //     '_textMessage' => $message->getBodyText(),
-        // ];
         // Remove unnecessary attributes from payload since templates have already been rendered
         // `viewVars` may contain objects that are "heavy" to serialize (like some entities)
         unset($payload['viewVars'], $payload['viewConfig']);

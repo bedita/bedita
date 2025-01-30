@@ -53,7 +53,7 @@ class MockMigrationsTable extends Table
     /**
      * @inheritDoc
      */
-    public function update()
+    public function update(): void
     {
     }
 }

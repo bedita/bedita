@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\Model\Table;
 
 use BEdita\Core\Model\Table\AppConfigTable;
@@ -39,7 +38,7 @@ class AppConfigTableTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.Applications',
         'plugin.BEdita/Core.Config',
     ];
@@ -70,7 +69,6 @@ class AppConfigTableTest extends TestCase
      */
     public function testInitialize(): void
     {
-        $this->AppConfig->initialize([]);
         $this->assertEquals('config', $this->AppConfig->getTable());
         $this->assertEquals('id', $this->AppConfig->getPrimaryKey());
         $this->assertTrue($this->AppConfig->behaviors()->has('ResourceName'));
@@ -81,7 +79,7 @@ class AppConfigTableTest extends TestCase
      *
      * @return array
      */
-    public function validationProvider(): array
+    public static function validationProvider(): array
     {
         return [
             'valid' => [

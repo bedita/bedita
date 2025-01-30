@@ -20,6 +20,7 @@ use BEdita\Core\Model\Entity\StaticProperty;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use Cake\Validation\Validation;
+use Exception;
 
 /**
  * {@see \BEdita\Core\Model\Table\PropertiesTable} Test Case
@@ -40,7 +41,7 @@ class PropertiesTableTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.PropertyTypes',
         'plugin.BEdita/Core.Properties',
@@ -81,7 +82,6 @@ class PropertiesTableTest extends TestCase
      */
     public function testInitialization()
     {
-        $this->Properties->initialize([]);
         static::assertEquals('properties', $this->Properties->getTable());
         static::assertEquals('id', $this->Properties->getPrimaryKey());
         static::assertEquals('name', $this->Properties->getDisplayField());
@@ -96,7 +96,7 @@ class PropertiesTableTest extends TestCase
      *
      * @return array
      */
-    public function validationProvider()
+    public static function validationProvider(): array
     {
         return [
             'valid' => [
@@ -127,7 +127,7 @@ class PropertiesTableTest extends TestCase
      */
     public function testValidation($expected, array $data)
     {
-        $property = $this->Properties->newEntity([]);
+        $property = $this->Properties->newEmptyEntity();
         $this->Properties->patchEntity($property, $data);
         $property->object_type_id = 1;
         $property->property_type_id = 1;
@@ -147,7 +147,7 @@ class PropertiesTableTest extends TestCase
      *
      * @return array
      */
-    public function findObjectTypeProvider()
+    public static function findObjectTypeProvider(): array
     {
         return [
             'objects' => [
@@ -214,7 +214,7 @@ class PropertiesTableTest extends TestCase
      */
     public function testFindObjectType($expected, array $options)
     {
-        if ($expected instanceof \Exception) {
+        if ($expected instanceof Exception) {
             $this->expectException(get_class($expected));
             $this->expectExceptionCode($expected->getCode());
             $this->expectExceptionMessage($expected->getMessage());
@@ -238,7 +238,7 @@ class PropertiesTableTest extends TestCase
      *
      * @return array
      */
-    public function findTypeProvider()
+    public static function findTypeProvider(): array
     {
         $objects = [
             'id',
@@ -343,7 +343,7 @@ class PropertiesTableTest extends TestCase
      */
     public function testFindType($expected, $objectType, $type = 'both')
     {
-        if ($expected instanceof \Exception) {
+        if ($expected instanceof Exception) {
             $this->expectException(get_class($expected));
             $this->expectExceptionCode($expected->getCode());
             $this->expectExceptionMessage($expected->getMessage());
@@ -460,7 +460,7 @@ class PropertiesTableTest extends TestCase
      *
      * @return array
      */
-    public function findResourceProvider(): array
+    public static function findResourceProvider(): array
     {
         return [
             'property' => [
@@ -496,7 +496,7 @@ class PropertiesTableTest extends TestCase
      */
     public function testFindResource($expected, $options)
     {
-        if ($expected instanceof \Exception) {
+        if ($expected instanceof Exception) {
             $this->expectException(get_class($expected));
             $this->expectExceptionMessage($expected->getMessage());
         }

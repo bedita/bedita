@@ -14,6 +14,7 @@ declare(strict_types=1);
  */
 namespace BEdita\Core\Command;
 
+use BEdita\Core\Model\Table\AsyncJobsTable;
 use Cake\Command\Command;
 use Cake\Console\Arguments;
 use Cake\Console\ConsoleIo;
@@ -21,6 +22,7 @@ use Cake\Console\ConsoleOptionParser;
 use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\ORM\Locator\LocatorAwareTrait;
 use Cake\Utility\Hash;
+use Exception;
 
 /**
  * Jobs command.
@@ -34,21 +36,21 @@ class JobsCommand extends Command
      *
      * @var \Cake\Console\Arguments
      */
-    protected $args;
+    protected Arguments $args;
 
     /**
      * Console IO
      *
      * @var \Cake\Console\ConsoleIo
      */
-    protected $io;
+    protected ConsoleIo $io;
 
     /**
      * Async jobs table
      *
      * @var \BEdita\Core\Model\Table\AsyncJobsTable
      */
-    protected $table;
+    protected AsyncJobsTable $table;
 
     /**
      * @inheritDoc
@@ -130,7 +132,7 @@ class JobsCommand extends Command
             $result = $asyncJob->run();
             $success = is_bool($result) ? $result : (bool)Hash::get((array)$result, 'success');
             $messages = is_array($result) ? (array)Hash::get($result, 'messages') : [];
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $success = false;
             $messages[] = $e->getMessage();
             $this->log($e->getMessage(), 'error');
@@ -173,7 +175,7 @@ class JobsCommand extends Command
                 'service' => $this->args->getOption('service'),
             ]);
         if ($this->args->getOption('limit') !== null) {
-            $query = $query->limit($this->args->getOption('limit'));
+            $query = $query->limit((int)$this->args->getOption('limit'));
         }
         if ($query->all()->isEmpty()) {
             $this->io->out('=====> <info>Nothing to do</info>');

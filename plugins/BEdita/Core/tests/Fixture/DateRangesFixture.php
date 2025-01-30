@@ -26,7 +26,7 @@ class DateRangesFixture extends TestFixture
      *
      * @var array
      */
-    public $records = [
+    public array $records = [
         [
             'object_id' => 9,
             'start_date' => '2017-03-07 12:40:19',

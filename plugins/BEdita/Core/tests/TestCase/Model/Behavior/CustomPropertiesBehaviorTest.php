@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\Model\Behavior;
 
 use BEdita\Core\Exception\BadFilterException;
@@ -23,6 +22,7 @@ use Cake\Datasource\ConnectionManager;
 use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
+use Exception;
 
 /**
  * {@see \BEdita\Core\Model\Behavior\CustomPropertiesBehavior} Test Case
@@ -38,7 +38,7 @@ class CustomPropertiesBehaviorTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.PropertyTypes',
         'plugin.BEdita/Core.Properties',
@@ -94,7 +94,7 @@ class CustomPropertiesBehaviorTest extends TestCase
      *
      * @return array
      */
-    public function getAvailableProvider()
+    public static function getAvailableProvider(): array
     {
         return [
             'locations' => [
@@ -236,7 +236,7 @@ class CustomPropertiesBehaviorTest extends TestCase
      *
      * @return array
      */
-    public function beforeFindProvider()
+    public static function beforeFindProvider(): array
     {
         return [
             'simple' => [
@@ -325,7 +325,7 @@ class CustomPropertiesBehaviorTest extends TestCase
                     'count' => $results->count(),
                 ];
             })
-            ->order('Files.id')
+            ->orderBy('Files.id')
             ->toArray();
 
         static::assertSame($expected, $result);
@@ -355,7 +355,7 @@ class CustomPropertiesBehaviorTest extends TestCase
      *
      * @return array
      */
-    public function beforeSaveProvider()
+    public static function beforeSaveProvider(): array
     {
         return [
             'simple' => [
@@ -520,7 +520,7 @@ class CustomPropertiesBehaviorTest extends TestCase
      *
      * @return array
      */
-    public function findCustomPropProvider(): array
+    public static function findCustomPropProvider(): array
     {
         return [
             'empty options' => [
@@ -587,7 +587,7 @@ class CustomPropertiesBehaviorTest extends TestCase
         if (!$connection->getDriver() instanceof Mysql) {
             $this->expectException(BadFilterException::class);
             $this->expectExceptionMessage('customProp finder isn\'t supported for datasource');
-        } elseif ($expected instanceof \Exception) {
+        } elseif ($expected instanceof Exception) {
             $this->expectException(get_class($expected));
             $this->expectExceptionMessage($expected->getMessage());
         }
@@ -596,7 +596,7 @@ class CustomPropertiesBehaviorTest extends TestCase
             ->get($tableName)
             ->find('customProp', $options)
             ->find('list')
-            ->orderAsc('id')
+            ->orderByAsc('id')
             ->toArray();
 
         sort($expected);
@@ -625,14 +625,14 @@ class CustomPropertiesBehaviorTest extends TestCase
 
         $result = $Profiles->find('customProp', ['number_of_friends' => 10])
             ->find('list')
-            ->orderAsc('id')
+            ->orderByAsc('id')
             ->toArray();
 
         static::assertEquals([$profile->id], array_keys($result));
 
         $result = $Profiles->find('customProp', ['number_of_friends' => '10'])
             ->find('list')
-            ->orderAsc('id')
+            ->orderByAsc('id')
             ->toArray();
 
         static::assertEquals([$profile->id], array_keys($result));

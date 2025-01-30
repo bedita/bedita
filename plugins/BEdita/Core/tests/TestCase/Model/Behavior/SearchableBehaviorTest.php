@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\Model\Behavior;
 
 use BEdita\Core\Exception\BadFilterException;
@@ -22,9 +21,11 @@ use Cake\Core\Configure;
 use Cake\Datasource\EntityInterface;
 use Cake\Event\Event;
 use Cake\Event\EventManager;
-use Cake\ORM\Query;
+use Cake\ORM\Query\SelectQuery;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Hash;
+use Exception;
+use RuntimeException;
 
 /**
  * {@see \BEdita\Core\Model\Behavior\SearchableBehavior} Test Case
@@ -38,7 +39,7 @@ class SearchableBehaviorTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.FakeAnimals',
         'plugin.BEdita/Core.FakeMammals',
         'plugin.BEdita/Core.FakeFelines',
@@ -72,7 +73,7 @@ class SearchableBehaviorTest extends TestCase
      *
      * @return array
      */
-    public function findQueryProvider()
+    public static function findQueryProvider(): array
     {
         return [
             'ok' => [
@@ -109,11 +110,10 @@ class SearchableBehaviorTest extends TestCase
      * @covers ::findQuery()
      * @covers ::getAdapter()
      * @covers ::getSearchRegistry()
-     * @covers ::fitSimpleAdapterConf()
      */
     public function testFindQuery($expected, $query)
     {
-        if ($expected instanceof \Exception) {
+        if ($expected instanceof Exception) {
             $this->expectException(get_class($expected));
             $this->expectExceptionCode($expected->getCode());
             $this->expectExceptionMessage($expected->getMessage());
@@ -125,47 +125,11 @@ class SearchableBehaviorTest extends TestCase
         static::assertTrue($table->hasFinder('query'));
 
         $result = $table
-            ->find('query', (array)$query)
+            ->find('query', subjectValue: (array)$query)
             ->find('list')
             ->toArray();
 
         static::assertEquals($expected, $result);
-    }
-
-    /**
-     * Test that deprecated conf works yet.
-     *
-     * @return void
-     * @covers ::findQuery()
-     * @covers ::getAdapter()
-     * @covers ::getSearchRegistry()
-     * @covers ::fitSimpleAdapterConf()
-     */
-    public function testFitSimpleSearchWithDeprecatedConf(): void
-    {
-        $options = ['string' => 'koal'];
-
-        $table = $this->fetchTable('FakeMammals');
-        $table->addBehavior('BEdita/Core.Searchable'); // search on all fields
-        $result = $table
-            ->find('query', $options)
-            ->toArray();
-
-        static::assertCount(1, $result);
-        static::assertEquals('koala', $result[0]->name);
-
-        $table->removeBehavior('Searchable');
-        $table->addBehavior('BEdita/Core.Searchable', [ // search on `subclass`
-            'fields' => [
-                'subclass' => 1,
-            ],
-        ]);
-
-        $result = $table
-            ->find('query', $options)
-            ->toArray();
-
-        static::assertCount(0, $result);
     }
 
     /**
@@ -183,7 +147,7 @@ class SearchableBehaviorTest extends TestCase
                 $this->condition = $condition;
             }
 
-            public function search(Query $query, string $text, array $options = []): Query
+            public function search(SelectQuery $query, string $text, array $options = []): SelectQuery
             {
                 return empty($this->condition) ? $query : $query->where($this->condition);
             }
@@ -321,7 +285,7 @@ class SearchableBehaviorTest extends TestCase
         } else {
             $table->addBehavior('BEdita/Core.Searchable');
         }
-        $result = $table->find('query', ['string' => 'word'])->toArray();
+        $result = $table->find('query', subjectValue: ['string' => 'word'])->toArray();
         $actual = Hash::extract($result, $expectedPath);
         static::assertEquals($expected, $actual);
         Configure::write('Search', $backupConf); // restore original config
@@ -335,13 +299,13 @@ class SearchableBehaviorTest extends TestCase
      */
     public function testGetAdapterException(): void
     {
-        $this->expectException(\RuntimeException::class);
+        $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('No search adapter found for current scopes');
         Configure::write('Search.use', ['test']);
         Configure::write('Search.adapters.test.scopes', ['foo2_scope']);
         $table = $this->fetchTable('FakeMammals');
         $table->addBehavior('BEdita/Core.Searchable', ['scopes' => ['foo_scope']]);
-        $table->find('query', ['string' => 'ala'])->find('list')->toArray();
+        $table->find('query', subjectValue: ['string' => 'ala'])->find('list')->toArray();
     }
 
     /**
@@ -362,7 +326,7 @@ class SearchableBehaviorTest extends TestCase
             public $afterDeleteCount = 0;
             public $afterSaveCount = 0;
 
-            public function search(Query $query, string $text, array $options = []): Query
+            public function search(SelectQuery $query, string $text, array $options = []): SelectQuery
             {
                 return $query;
             }
@@ -445,7 +409,7 @@ class SearchableBehaviorTest extends TestCase
             public $afterDeleteCount = 0;
             public $afterSaveCount = 0;
 
-            public function search(Query $query, string $text, array $options = []): Query
+            public function search(SelectQuery $query, string $text, array $options = []): SelectQuery
             {
                 return $query;
             }

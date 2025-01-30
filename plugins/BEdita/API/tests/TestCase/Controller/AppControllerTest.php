@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\API\Test\TestCase\Controller;
 
 use Authentication\AuthenticationService;
@@ -24,9 +23,9 @@ use BEdita\API\Policy\EndpointPolicy;
 use BEdita\API\Test\TestConstants;
 use BEdita\API\TestSuite\IntegrationTestCase;
 use Cake\Core\Configure;
-use Cake\Http\Exception\NotAcceptableException;
 use Cake\Http\ServerRequest;
 use DMS\PHPUnitExtensions\ArraySubset\ArraySubsetAsserts;
+use Exception;
 
 /**
  * @coversDefaultClass \BEdita\API\Controller\AppController
@@ -60,7 +59,7 @@ class AppControllerTest extends IntegrationTestCase
      *
      * @return array
      */
-    public function isIdentityRequiredProvider()
+    public static function isIdentityRequiredProvider(): array
     {
         return [
             'ok' => [
@@ -85,7 +84,7 @@ class AppControllerTest extends IntegrationTestCase
      */
     public function testIsIdentityRequired($expected, $method): void
     {
-        if ($expected instanceof \Exception) {
+        if ($expected instanceof Exception) {
             $this->expectException(get_class($expected));
             $this->expectExceptionCode($expected->getCode());
             $this->expectExceptionMessage($expected->getMessage());
@@ -108,61 +107,6 @@ class AppControllerTest extends IntegrationTestCase
         $controller = new AppController($request);
 
         $controller->dispatchEvent('Controller.startup');
-
-        static::assertTrue($expected);
-    }
-
-    /**
-     * Data provider for `testCheckAccept` test case.
-     *
-     * @return array
-     */
-    public function checkAcceptProvider()
-    {
-        return [
-            'ok' => [
-                true,
-                'application/vnd.api+json',
-            ],
-            'error (dramatic music)' => [
-                new NotAcceptableException('Bad request content type "gustavo/supporto"'),
-                'gustavo/supporto',
-            ],
-        ];
-    }
-
-    /**
-     * Test accepted content types in `beforeFilter()` method.
-     *
-     * @param true|\Exception $expected Expected success.
-     * @param string $accept Value of "Accept" header.
-     * @return void
-     * @dataProvider checkAcceptProvider
-     * @covers ::checkAcceptable()
-     * @covers ::beforeFilter()
-     */
-    public function testCheckAccept($expected, $accept)
-    {
-        if ($expected instanceof \Exception) {
-            $this->expectException(get_class($expected));
-            $this->expectExceptionCode($expected->getCode());
-            $this->expectExceptionMessage($expected->getMessage());
-        }
-
-        $request = new ServerRequest([
-            'environment' => [
-                'HTTP_ACCEPT' => $accept,
-                'REQUEST_METHOD' => 'GET',
-            ],
-        ]);
-        $request = $request->withAttribute('authentication', new AuthenticationService())
-            ->withAttribute('authorization', new AuthorizationService(new MapResolver([
-                ServerRequest::class => EndpointPolicy::class,
-            ])));
-
-        $controller = new AppController($request);
-
-        $controller->dispatchEvent('Controller.initialize');
 
         static::assertTrue($expected);
     }
@@ -326,7 +270,7 @@ class AppControllerTest extends IntegrationTestCase
      *
      * @return array
      */
-    public function includeErrorProvider()
+    public static function includeErrorProvider(): array
     {
         return [
             'not a string' => [

@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\API\Controller;
 
 use BEdita\Core\Filesystem\Thumbnail;
@@ -31,9 +30,9 @@ class MediaController extends ObjectsController
     /**
      * Get and validate IDs in request URL.
      *
-     * @return int[]
+     * @return array<int>
      */
-    protected function getIds()
+    protected function getIds(): array
     {
         $id = $this->request->getParam('id');
         $ids = $this->request->getQuery('ids');
@@ -94,7 +93,7 @@ class MediaController extends ObjectsController
      *
      * @return void
      */
-    public function thumbs()
+    public function thumbs(): void
     {
         $this->request->allowMethod(['get']);
 

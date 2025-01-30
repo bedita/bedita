@@ -28,7 +28,7 @@ class ObjectsResolver implements ResolverInterface
     /**
      * @inheritDoc
      */
-    public function getPolicy($resource)
+    public function getPolicy($resource): ObjectPolicy
     {
         if ($resource instanceof ObjectEntity) {
             return new ObjectPolicy();

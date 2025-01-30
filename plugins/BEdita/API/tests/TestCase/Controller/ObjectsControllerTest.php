@@ -36,7 +36,7 @@ class ObjectsControllerTest extends IntegrationTestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.DateRanges',
         'plugin.BEdita/Core.Locations',
         'plugin.BEdita/Core.Media',
@@ -1498,7 +1498,7 @@ class ObjectsControllerTest extends IntegrationTestCase
         ];
         $expected = [
             'status' => '404',
-            'title' => 'A route matching "/news" could not be found.',
+            'title' => 'A route matching `/news` could not be found.',
         ];
 
         $this->configRequestHeaders('POST', $this->getUserAuthHeader());
@@ -1676,7 +1676,7 @@ class ObjectsControllerTest extends IntegrationTestCase
      *
      * @return array
      */
-    public function editWithPermissionOnParentProvider(): array
+    public static function editWithPermissionOnParentProvider(): array
     {
         return [
             'forbidden uname change' => [
@@ -2180,7 +2180,7 @@ class ObjectsControllerTest extends IntegrationTestCase
      *
      * @return array
      */
-    public function linksAvailableProvider()
+    public static function linksAvailableProvider(): array
     {
         return [
             'children' => [
@@ -2834,7 +2834,7 @@ class ObjectsControllerTest extends IntegrationTestCase
      *
      * @return array
      */
-    public function missingAuthProvider()
+    public static function missingAuthProvider(): array
     {
         return [
             'get' => [
@@ -3272,7 +3272,7 @@ class ObjectsControllerTest extends IntegrationTestCase
      *
      * @return array
      */
-    public function resourceTypeProvider()
+    public static function resourceTypeProvider(): array
     {
         return [
             'mainResource' => [
@@ -3337,20 +3337,20 @@ class ObjectsControllerTest extends IntegrationTestCase
      *
      * @return array
      */
-    public function missingRouteProvider()
+    public static function missingRouteProvider(): array
     {
         return [
             'document' => [
                 '/document',
-                'A route matching "/document" could not be found. Did you mean "documents"?',
+                'A route matching `/document` could not be found. Did you mean `documents`?',
             ],
             'id' => [
                 '/2',
-                'A route matching "/2" could not be found. Did you mean "documents"?',
+                'A route matching `/2` could not be found. Did you mean `documents`?',
             ],
             'badurl' => [
                 '/badurl',
-                'A route matching "/badurl" could not be found.',
+                'A route matching `/badurl` could not be found.',
             ],
         ];
     }
@@ -3468,7 +3468,7 @@ class ObjectsControllerTest extends IntegrationTestCase
      *
      * @return array
      */
-    public function saveEntityOptionsProvider()
+    public static function saveEntityOptionsProvider(): array
     {
         return [
             'lock' => [

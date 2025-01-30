@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\API\Test\TestCase\Controller;
 
 use BEdita\API\Test\TestConstants;
@@ -116,7 +115,7 @@ class TreesControllerTest extends IntegrationTestCase
      *
      * @return void
      */
-    public function treesProvider(): array
+    public static function treesProvider(): array
     {
         $error = [
             'status' => '404',

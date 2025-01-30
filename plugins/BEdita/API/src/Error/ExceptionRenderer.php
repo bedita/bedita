@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\API\Error;
 
 use BEdita\Core\Exception\BadFilterException;
@@ -41,7 +40,7 @@ class ExceptionRenderer extends WebExceptionRenderer
      *
      * @var array
      */
-    protected $additionalHttpCodes = [
+    protected array $additionalHttpCodes = [
         BadFilterException::class => 400,
         LockedResourceException::class => 403,
         ImmutableResourceException::class => 403,
@@ -81,16 +80,10 @@ class ExceptionRenderer extends WebExceptionRenderer
             $trace = explode("\n", $this->error->getTraceAsString());
         }
 
-        $this->controller->loadComponent('RequestHandler');
-        $this->controller->RequestHandler->setConfig('viewClassMap.json', 'BEdita/API.JsonApi');
         $this->controller->loadComponent('BEdita/API.JsonApi', [
-            'contentType' => 'json',
-            // 'contentType' => $this->controller->request->is('json') ? 'json' : null,
-            // 'checkMediaType' => $this->controller->request->is('jsonapi'),
+            'contentType' => $this->controller->getRequest()->is('json') ? 'json' : null,
         ]);
-
         $this->controller->JsonApi->error($status, $title, $detail, $code, array_filter(compact('trace')));
-        $this->controller->RequestHandler->renderAs($this->controller, 'jsonapi');
 
         return parent::render();
     }
@@ -122,7 +115,7 @@ class ExceptionRenderer extends WebExceptionRenderer
      * @param \Throwable $error Exception.
      * @return string Error message
      */
-    protected function errorDetail(Throwable $error)
+    protected function errorDetail(Throwable $error): string
     {
         if (!$error instanceof CakeException) {
             return '';

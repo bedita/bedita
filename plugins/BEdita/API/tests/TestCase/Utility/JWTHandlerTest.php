@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\API\Test\TestCase\Utility;
 
 use BEdita\API\Utility\JWTHandler;
@@ -21,8 +20,12 @@ use BEdita\Core\State\CurrentApplication;
 use Cake\Routing\Router;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Security;
+use Exception;
+use Firebase\JWT\ExpiredException;
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
+use InvalidArgumentException;
+use UnexpectedValueException;
 
 /**
  * @coversDefaultClass \BEdita\API\Utility\JWTHandler
@@ -34,7 +37,7 @@ class JWTHandlerTest extends TestCase
      *
      * @return array
      */
-    public function decodeProvider(): array
+    public static function decodeProvider(): array
     {
         $payload = ['someData' => 'someValue'];
         $token = JWT::encode($payload, Security::getSalt(), 'HS256');
@@ -47,15 +50,15 @@ class JWTHandlerTest extends TestCase
                 $token,
             ],
             'invalidToken' => [
-                new \UnexpectedValueException('Wrong number of segments'),
+                new UnexpectedValueException('Wrong number of segments'),
                 $invalidToken,
             ],
             'expiredToken' => [
-                new \Firebase\JWT\ExpiredException('Expired token'),
+                new ExpiredException('Expired token'),
                 $expiredToken,
             ],
             'wrongAlgorithmOption' => [
-                new \InvalidArgumentException('Algorithm must be a string'),
+                new InvalidArgumentException('Algorithm must be a string'),
                 $token,
                 [
                     'algorithm' => ['HS256'],
@@ -76,7 +79,7 @@ class JWTHandlerTest extends TestCase
      */
     public function testDecode($expected, string $token, array $options = []): void
     {
-        if ($expected instanceof \Exception) {
+        if ($expected instanceof Exception) {
             $this->expectException(get_class($expected));
             $this->expectExceptionMessage($expected->getMessage());
             $this->expectExceptionCode($expected->getCode());

@@ -80,9 +80,9 @@ class SysinfoControllerTest extends IntegrationTestCase
      */
     public function testHeadRequest()
     {
-        $this->configRequestHeaders('HEAD', ['Accept' => '*/*']);
-        $this->_sendRequest('/admin/sysinfo', 'HEAD');
-        $this->assertResponseCode(406);
+        $this->configRequestHeaders('HEAD', $this->getUserAuthHeader() + ['Accept' => '*/*']);
+        $this->head('/admin/sysinfo');
+        $this->assertResponseCode(405);
         $this->assertContentType('application/vnd.api+json');
         $this->assertResponseNotEmpty();
     }

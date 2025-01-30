@@ -17,6 +17,7 @@ namespace BEdita\Core\Test\TestCase\Model\Table;
 use BEdita\Core\Model\Entity\AsyncJob;
 use BEdita\Core\Model\Table\AsyncJobsTable;
 use Cake\Datasource\ConnectionManager;
+use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\ORM\TableRegistry;
 use Cake\Queue\QueueManager;
 use Cake\TestSuite\TestCase;
@@ -38,7 +39,7 @@ class AsyncJobsTableTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.AsyncJobs',
     ];
 
@@ -142,7 +143,7 @@ class AsyncJobsTableTest extends TestCase
      */
     public function testLockNotPending()
     {
-        $this->expectException(\Cake\Datasource\Exception\RecordNotFoundException::class);
+        $this->expectException(RecordNotFoundException::class);
         $this->AsyncJobs->lock('6407afa6-96a3-4aeb-90c1-1541756efdef');
     }
 
@@ -365,7 +366,7 @@ class AsyncJobsTableTest extends TestCase
             ],
         ];
 
-        $actual = $this->AsyncJobs->find('priority', ['service' => 'example2'])->find('list')->toArray();
+        $actual = $this->AsyncJobs->find('priority', service: 'example2')->find('list')->toArray();
 
         static::assertSame($expected, $actual);
     }
@@ -387,7 +388,7 @@ class AsyncJobsTableTest extends TestCase
             ],
         ];
 
-        $actual = $this->AsyncJobs->find('priority', ['priority' => 5])->find('list')->toArray();
+        $actual = $this->AsyncJobs->find('priority', priority: 5)->find('list')->toArray();
 
         static::assertSame($expected, $actual);
     }
@@ -436,7 +437,7 @@ class AsyncJobsTableTest extends TestCase
      *
      * @return array
      */
-    public function updateResultsProvider(): array
+    public static function updateResultsProvider(): array
     {
         return [
             'success false, some message' => [

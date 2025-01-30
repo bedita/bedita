@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Model\Action;
 
 use Cake\Datasource\EntityInterface;
@@ -32,10 +31,10 @@ class RemoveRelatedObjectsAction extends UpdateRelatedObjectsAction
      * Remove existing relations using `\BEdita\Core\Model\Action\RemoveAssociatedAction`.
      *
      * @param \Cake\Datasource\EntityInterface $entity Source entity.
-     * @param \Cake\Datasource\EntityInterface|\Cake\Datasource\EntityInterface[]|null $relatedEntities Related entity(-ies).
+     * @param \Cake\Datasource\EntityInterface|array<\Cake\Datasource\EntityInterface>|null $relatedEntities Related entity(-ies).
      * @return int|false Number of updated relationships, or `false` on failure.
      */
-    protected function update(EntityInterface $entity, $relatedEntities)
+    protected function update(EntityInterface $entity, EntityInterface|array|null $relatedEntities): int|false
     {
         $action = new RemoveAssociatedAction($this->getConfig());
         $action->setEventManager($this->getEventManager());

@@ -12,10 +12,9 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\Model\Table;
 
-use Cake\I18n\FrozenTime;
+use Cake\I18n\DateTime;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
@@ -38,7 +37,7 @@ class DateRangesTableTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.Objects',
         'plugin.BEdita/Core.DateRanges',
@@ -76,8 +75,8 @@ class DateRangesTableTest extends TestCase
             'end_date' => '2017-01-10T17:18:19Z',
         ]);
 
-        static::assertInstanceOf(FrozenTime::class, $dateRange->start_date);
-        static::assertInstanceOf(FrozenTime::class, $dateRange->end_date);
+        static::assertInstanceOf(DateTime::class, $dateRange->start_date);
+        static::assertInstanceOf(DateTime::class, $dateRange->end_date);
     }
 
     /**
@@ -85,7 +84,7 @@ class DateRangesTableTest extends TestCase
      *
      * @return array
      */
-    public function findDateProvider()
+    public static function findDateProvider(): array
     {
         return [
             'startAfter' => [
@@ -184,7 +183,7 @@ class DateRangesTableTest extends TestCase
      *
      * @return array
      */
-    public function fromToDateFilterProvider()
+    public static function fromToDateFilterProvider(): array
     {
         return [
             'from ok' => [

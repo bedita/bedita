@@ -28,7 +28,7 @@ class RelationshipsPriorityTest extends IntegrationTestCase
     /**
      * @inheritDoc
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.Media',
         'plugin.BEdita/Core.Streams',
     ];
@@ -58,7 +58,7 @@ class RelationshipsPriorityTest extends IntegrationTestCase
      *
      * @return array
      */
-    public function priorityProvider(): array
+    public static function priorityProvider(): array
     {
         return [
             'ok' => [

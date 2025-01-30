@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\Model\Table;
 
 use BEdita\Core\Exception\LockedResourceException;
@@ -26,6 +25,8 @@ use Cake\ORM\Association\HasMany;
 use Cake\ORM\Behavior\TreeBehavior;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
+use Exception;
+use RuntimeException;
 
 /**
  * BEdita\Core\Model\Table\TreesTable Test Case
@@ -46,7 +47,7 @@ class TreesTableTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.PropertyTypes',
         'plugin.BEdita/Core.Properties',
@@ -93,8 +94,6 @@ class TreesTableTest extends TestCase
      */
     public function testInitialize()
     {
-        $this->Trees->initialize([]);
-
         static::assertInstanceOf(BelongsTo::class, $this->Trees->Objects);
         static::assertInstanceOf(BelongsTo::class, $this->Trees->ParentObjects);
         static::assertInstanceOf(BelongsTo::class, $this->Trees->RootObjects);
@@ -108,7 +107,7 @@ class TreesTableTest extends TestCase
      *
      * @return array
      */
-    public function isParentValidProvider()
+    public static function isParentValidProvider(): array
     {
         return [
             'null, no object ID' => [
@@ -149,7 +148,7 @@ class TreesTableTest extends TestCase
      */
     public function testIsParentValid($expected, $parentId, $objectId = null)
     {
-        $entity = $this->Trees->newEntity([]);
+        $entity = $this->Trees->newEmptyEntity();
         if ($objectId !== null) {
             $entity->object_id = $objectId;
         }
@@ -162,7 +161,7 @@ class TreesTableTest extends TestCase
      *
      * @return array
      */
-    public function isPositionUniqueProvider()
+    public static function isPositionUniqueProvider(): array
     {
         return [
             'folder, not unique' => [
@@ -204,7 +203,7 @@ class TreesTableTest extends TestCase
         $this->Trees->deleteAll(['object_id' => 13]);
         $this->Trees->recover();
 
-        $entity = $this->Trees->newEntity([]);
+        $entity = $this->Trees->newEmptyEntity();
         $entity->object_id = $objectId;
         $entity->parent_id = $parentId;
         static::assertEquals($expected, $this->Trees->isPositionUnique($entity));
@@ -215,7 +214,7 @@ class TreesTableTest extends TestCase
      *
      * @return array
      */
-    public function changeRootProvider()
+    public static function changeRootProvider(): array
     {
         return [
             'becomeRoot' => [
@@ -243,13 +242,13 @@ class TreesTableTest extends TestCase
     {
         $node = $this->Trees->get(2);
         static::assertEquals(11, $node->root_id);
-        $children = $this->Trees->find('children', ['for' => 2])->all()->toList();
+        $children = $this->Trees->find('children', for: 2)->all()->toList();
 
         $node->parent_id = $parentId;
         static::assertTrue((bool)$this->Trees->save($node));
 
         $node = $this->Trees->get(2);
-        $actualChildren = $this->Trees->find('children', ['for' => 2])->all()->toList();
+        $actualChildren = $this->Trees->find('children', for: 2)->all()->toList();
 
         static::assertEquals($rootExpected, $node->root_id);
         static::assertCount(count($children), $actualChildren);
@@ -285,7 +284,7 @@ class TreesTableTest extends TestCase
      */
     public function testMoveParentAsChild()
     {
-        $this->expectException(\RuntimeException::class);
+        $this->expectException(RuntimeException::class);
         // create new Folder
         LoggedUser::setUserAdmin();
         $Folders = TableRegistry::getTableLocator()->get('Folders');
@@ -310,7 +309,7 @@ class TreesTableTest extends TestCase
      *
      * @return array
      */
-    public function deleteOrphanedProvider()
+    public static function deleteOrphanedProvider(): array
     {
         return [
             'not a folder' => [
@@ -343,7 +342,7 @@ class TreesTableTest extends TestCase
      */
     public function testDeleteOrphaned($expected, $objectId, $primary = true)
     {
-        if ($expected instanceof \Exception) {
+        if ($expected instanceof Exception) {
             $this->expectException(get_class($expected));
             $this->expectExceptionCode($expected->getCode());
             $this->expectExceptionMessage($expected->getMessage());
@@ -363,7 +362,7 @@ class TreesTableTest extends TestCase
      *
      * @return array
      */
-    public function setPositionProvider()
+    public static function setPositionProvider(): array
     {
         return [
             'first' => [
@@ -373,6 +372,11 @@ class TreesTableTest extends TestCase
             ],
             'last' => [
                 2,
+                12,
+                'last',
+            ],
+            'moveRootDoNothing' => [
+                1,
                 11,
                 'last',
             ],
@@ -396,7 +400,7 @@ class TreesTableTest extends TestCase
      */
     public function testSetPosition($expected, $objectId, $position)
     {
-        if ($expected instanceof \Exception) {
+        if ($expected instanceof Exception) {
             $this->expectException(get_class($expected));
             $this->expectExceptionCode($expected->getCode());
             $this->expectExceptionMessage($expected->getMessage());
@@ -453,20 +457,16 @@ class TreesTableTest extends TestCase
      *
      * @return array
      */
-    public function findPathNodesProvider()
+    public static function findPathNodesProvider(): array
     {
         return [
             'first' => [
                 [11, 12, 4],
-                [4],
+                4,
             ],
             'invalid' => [
-                new RecordNotFoundException('Record not found in table "trees"'),
-                [3],
-            ],
-            'bad' => [
-                new BadRequestException('Missing required parameter "object id"'),
-                [],
+                new RecordNotFoundException('Record not found in table `trees`'),
+                3,
             ],
         ];
     }
@@ -475,25 +475,22 @@ class TreesTableTest extends TestCase
      * Test `findPathNodes` method.
      *
      * @param array|\Exception $expected Expected array path or exception.
-     * @param array $options Finder options.
+     * @param int $objectId The object id.
      * @return void
      * @dataProvider findPathNodesProvider()
      * @covers ::findPathNodes()
      * @return void
      */
-    public function testFindPathNodes($expected, array $options): void
+    public function testFindPathNodes($expected, int $objectId): void
     {
-        if ($expected instanceof \Exception) {
+        if ($expected instanceof Exception) {
             $this->expectException(get_class($expected));
             $this->expectExceptionCode($expected->getCode());
             $this->expectExceptionMessage($expected->getMessage());
         }
 
-        $path = $this->Trees->find('pathNodes', $options)
-            ->find('list', [
-                'keyField' => 'id',
-                'valueField' => 'object_id',
-            ])
+        $path = $this->Trees->find('pathNodes', subjectValue: $objectId)
+            ->find('list', keyField: 'id', valueField: 'object_id')
             ->toArray();
 
         static::assertSame($expected, array_values($path));

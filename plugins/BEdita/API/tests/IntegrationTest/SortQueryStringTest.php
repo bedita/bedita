@@ -27,7 +27,7 @@ class SortQueryStringTest extends IntegrationTestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.DateRanges',
     ];
 
@@ -36,7 +36,7 @@ class SortQueryStringTest extends IntegrationTestCase
      *
      * @return array
      */
-    public function sortProvider()
+    public static function sortProvider(): array
     {
         return [
             'simpleObject' => [

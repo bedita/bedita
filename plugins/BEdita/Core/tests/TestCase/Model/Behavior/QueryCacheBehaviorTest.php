@@ -12,9 +12,9 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\Model\Behavior;
 
+use AllowDynamicProperties;
 use Cake\Cache\Cache;
 use Cake\ORM\Locator\LocatorAwareTrait;
 use Cake\TestSuite\TestCase;
@@ -25,7 +25,7 @@ use Cake\TestSuite\TestCase;
  * @property \BEdita\Core\Model\Table\ConfigTable $Config
  * @coversDefaultClass \BEdita\Core\Model\Behavior\QueryCacheBehavior
  */
-#[\AllowDynamicProperties]
+#[AllowDynamicProperties]
 class QueryCacheBehaviorTest extends TestCase
 {
     use LocatorAwareTrait;
@@ -35,7 +35,7 @@ class QueryCacheBehaviorTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.Applications',
         'plugin.BEdita/Core.Config',
     ];

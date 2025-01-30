@@ -12,18 +12,21 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\Model\Entity;
 
 use BEdita\Core\Filesystem\FilesystemRegistry;
 use BEdita\Core\Model\Entity\Stream as EntityStream;
+use BEdita\Core\Model\Table\StreamsTable;
 use BEdita\Core\Test\Utility\TestFilesystemTrait;
 use Cake\Core\Configure;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Text;
+use Exception;
+use InvalidArgumentException;
 use Laminas\Diactoros\Stream;
 use Psr\Http\Message\StreamInterface;
+use stdClass;
 
 /**
  * @coversDefaultClass \BEdita\Core\Model\Entity\Stream
@@ -37,14 +40,14 @@ class StreamTest extends TestCase
      *
      * @var \BEdita\Core\Model\Table\StreamsTable
      */
-    public $Streams;
+    public StreamsTable $Streams;
 
     /**
      * Fixtures
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.Relations',
         'plugin.BEdita/Core.RelationTypes',
@@ -77,7 +80,7 @@ class StreamTest extends TestCase
      *
      * @return array
      */
-    public function filesystemPathProvider()
+    public static function filesystemPathProvider(): array
     {
         $uuid = Text::uuid();
         $hash = sha1($uuid);
@@ -118,7 +121,7 @@ class StreamTest extends TestCase
                 "test://{$hash[0]}/{$hash[1]}/{$hash[2]}/{$uuid}",
                 compact('uuid'),
                 'test',
-                3.99999,
+                3,
             ],
         ];
     }
@@ -134,8 +137,9 @@ class StreamTest extends TestCase
      * @dataProvider filesystemPathProvider()
      * @covers ::filesystemPath()
      */
-    public function testFilesystemPath($expected, array $data, $filesystem = 'default', $subLevels = 0)
+    public function testFilesystemPath(string $expected, array $data, string $filesystem = 'default', int $subLevels = 0): void
     {
+        /** @var \BEdita\Core\Model\Entity\Stream $stream */
         $stream = $this->Streams->newEmptyEntity();
         $stream->set($data, ['guard' => false]);
 
@@ -196,7 +200,7 @@ class StreamTest extends TestCase
      *
      * @return array
      */
-    public function setContentsProvider()
+    public static function setContentsProvider(): array
     {
         static $exceptionMessage = 'Invalid contents provided, must be a PSR-7 stream, a resource or a value that can be converted to string';
 
@@ -207,13 +211,6 @@ class StreamTest extends TestCase
         $resource = fopen('php://memory', 'wb+');
         fwrite($resource, 'this is a resource');
         fseek($resource, 0);
-
-        $serializable = $this->getMockBuilder(\stdClass::class)
-            ->addMethods(['__toString'])
-            ->getMock();
-        $serializable
-            ->method('__toString')
-            ->willReturn('this is an object that can be converted to string');
 
         return [
             'PSR-7 stream' => [
@@ -238,21 +235,26 @@ class StreamTest extends TestCase
             ],
             'object' => [
                 'this is an object that can be converted to string',
-                $serializable,
+                new class () {
+                    public function __toString()
+                    {
+                        return 'this is an object that can be converted to string';
+                    }
+                },
             ],
             'array' => [
-                new \InvalidArgumentException($exceptionMessage),
+                new InvalidArgumentException($exceptionMessage),
                 [1, 2, 3],
             ],
             'hash' => [
-                new \InvalidArgumentException($exceptionMessage),
+                new InvalidArgumentException($exceptionMessage),
                 [
                     'hello' => 'it\'s me',
                 ],
             ],
             'other object' => [
-                new \InvalidArgumentException($exceptionMessage),
-                new \stdClass(),
+                new InvalidArgumentException($exceptionMessage),
+                new stdClass(),
             ],
         ];
     }
@@ -269,7 +271,7 @@ class StreamTest extends TestCase
      */
     public function testSetContents($expected, $contents)
     {
-        if ($expected instanceof \Exception) {
+        if ($expected instanceof Exception) {
             $this->expectException(get_class($expected));
             $this->expectExceptionCode($expected->getCode());
             $this->expectExceptionMessage($expected->getMessage());
@@ -295,7 +297,7 @@ class StreamTest extends TestCase
      *
      * @return array
      */
-    public function getUrlProvider()
+    public static function getUrlProvider(): array
     {
         return [
             'available' => [

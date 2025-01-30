@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\Model\Entity;
 
 use BEdita\Core\Model\Entity\Property;
@@ -30,7 +29,7 @@ class ObjectTypeNameTraitTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.PropertyTypes',
         'plugin.BEdita/Core.Properties',
@@ -43,7 +42,7 @@ class ObjectTypeNameTraitTest extends TestCase
      *
      * @return array
      */
-    public function getObjectTypeNameProvider()
+    public static function getObjectTypeNameProvider(): array
     {
         return [
             'document' => [
@@ -85,7 +84,7 @@ class ObjectTypeNameTraitTest extends TestCase
      *
      * @return array
      */
-    public function setObjectTypeNameProvider()
+    public static function setObjectTypeNameProvider(): array
     {
         return [
             'document' => [

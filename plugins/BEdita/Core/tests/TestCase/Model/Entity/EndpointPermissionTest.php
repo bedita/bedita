@@ -12,16 +12,18 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\Model\Entity;
 
 use BEdita\Core\Model\Entity\Application;
 use BEdita\Core\Model\Entity\Endpoint;
 use BEdita\Core\Model\Entity\EndpointPermission;
 use BEdita\Core\Model\Entity\Role;
+use BEdita\Core\Model\Table\EndpointPermissionsTable;
 use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
+use Exception;
+use InvalidArgumentException;
 
 /**
  * {@see \BEdita\Core\Model\Entity\EndpointPermission} Test Case
@@ -36,14 +38,14 @@ class EndpointPermissionTest extends TestCase
      *
      * @var \BEdita\Core\Model\Table\EndpointPermissionsTable
      */
-    public $EndpointPermissions;
+    public EndpointPermissionsTable $EndpointPermissions;
 
     /**
      * Fixtures
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.Roles',
         'plugin.BEdita/Core.Endpoints',
@@ -86,7 +88,7 @@ class EndpointPermissionTest extends TestCase
         ];
         $endpointPermission = $this->EndpointPermissions->patchEntity($endpointPermission, $data);
         if (!($endpointPermission instanceof EndpointPermission)) {
-            throw new \InvalidArgumentException();
+            throw new InvalidArgumentException();
         }
 
         $this->assertEquals(1, $endpointPermission->id);
@@ -97,7 +99,7 @@ class EndpointPermissionTest extends TestCase
      *
      * @return array
      */
-    public function encodeProvider()
+    public static function encodeProvider(): array
     {
         return [
             'no' => [EndpointPermission::PERM_NO, false],
@@ -129,7 +131,7 @@ class EndpointPermissionTest extends TestCase
      *
      * @return array
      */
-    public function decodeProvider()
+    public static function decodeProvider(): array
     {
         return [
             'no' => [false, EndpointPermission::PERM_NO],
@@ -161,7 +163,7 @@ class EndpointPermissionTest extends TestCase
      *
      * @return array
      */
-    public function setPermissionProvider()
+    public static function setPermissionProvider(): array
     {
         return [
             'integer' => [
@@ -235,7 +237,7 @@ class EndpointPermissionTest extends TestCase
      *
      * @return array
      */
-    public function getReadWriteProvider()
+    public static function getReadWriteProvider(): array
     {
         return [
             'readOnly' => [
@@ -287,7 +289,7 @@ class EndpointPermissionTest extends TestCase
      *
      * @return array
      */
-    public function setReadWriteProvider()
+    public static function setReadWriteProvider(): array
     {
         return [
             'no' => [
@@ -367,7 +369,7 @@ class EndpointPermissionTest extends TestCase
      *
      * @return array
      */
-    public function setEndpointNameProvider(): array
+    public static function setEndpointNameProvider(): array
     {
         return [
             'null' => [
@@ -379,7 +381,7 @@ class EndpointPermissionTest extends TestCase
                 'home',
             ],
             'not valid name' => [
-                new RecordNotFoundException('Record not found in table "endpoints"'),
+                new RecordNotFoundException('Record not found in table `endpoints`'),
                 'dontfindme',
             ],
         ];
@@ -396,7 +398,7 @@ class EndpointPermissionTest extends TestCase
      */
     public function testSetEndpointName($expected, ?string $name): void
     {
-        if ($expected instanceof \Exception) {
+        if ($expected instanceof Exception) {
             $this->expectException(RecordNotFoundException::class);
             $this->expectExceptionMessage($expected->getMessage());
         }
@@ -421,7 +423,7 @@ class EndpointPermissionTest extends TestCase
      *
      * @return array
      */
-    public function setRoleNameProvider(): array
+    public static function setRoleNameProvider(): array
     {
         return [
             'null' => [
@@ -433,7 +435,7 @@ class EndpointPermissionTest extends TestCase
                 'second role',
             ],
             'not valid name' => [
-                new RecordNotFoundException('Record not found in table "roles"'),
+                new RecordNotFoundException('Record not found in table `roles`'),
                 'dontfindme',
             ],
         ];
@@ -450,7 +452,7 @@ class EndpointPermissionTest extends TestCase
      */
     public function testSetRoleName($expected, ?string $name): void
     {
-        if ($expected instanceof \Exception) {
+        if ($expected instanceof Exception) {
             $this->expectException(RecordNotFoundException::class);
             $this->expectExceptionMessage($expected->getMessage());
         }
@@ -475,7 +477,7 @@ class EndpointPermissionTest extends TestCase
      *
      * @return array
      */
-    public function setApplicationNameProvider(): array
+    public static function setApplicationNameProvider(): array
     {
         return [
             'null' => [
@@ -487,7 +489,7 @@ class EndpointPermissionTest extends TestCase
                 'First app',
             ],
             'not valid name' => [
-                new RecordNotFoundException('Record not found in table "applications"'),
+                new RecordNotFoundException('Record not found in table `applications`'),
                 'dontfindme',
             ],
         ];
@@ -504,7 +506,7 @@ class EndpointPermissionTest extends TestCase
      */
     public function testSetApplicationName($expected, ?string $name): void
     {
-        if ($expected instanceof \Exception) {
+        if ($expected instanceof Exception) {
             $this->expectException(RecordNotFoundException::class);
             $this->expectExceptionMessage($expected->getMessage());
         }

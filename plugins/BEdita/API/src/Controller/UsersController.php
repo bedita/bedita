@@ -24,7 +24,7 @@ class UsersController extends ObjectsController
     /**
      * @inheritDoc
      */
-    public $defaultTable = 'Users';
+    public ?string $defaultTable = 'Users';
 
     /**
      * Meta properties accessible for admins
@@ -36,7 +36,7 @@ class UsersController extends ObjectsController
     /**
      * @inheritDoc
      */
-    protected $_defaultConfig = [
+    protected array $_defaultConfig = [
         'allowedAssociations' => [
             'roles' => ['roles'],
             'parents' => ['folders'],

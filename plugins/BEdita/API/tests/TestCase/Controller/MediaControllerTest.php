@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\API\Test\TestCase\Controller;
 
 use BEdita\API\Datasource\JsonApiPaginator;
@@ -33,7 +32,7 @@ class MediaControllerTest extends IntegrationTestCase
     /**
      * @inheritDoc
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.Streams',
     ];
 
@@ -105,7 +104,7 @@ class MediaControllerTest extends IntegrationTestCase
      *
      * @return array
      */
-    public function thumbsProvider()
+    public static function thumbsProvider(): array
     {
         return [
             'single, default' => [
@@ -191,8 +190,6 @@ class MediaControllerTest extends IntegrationTestCase
      */
     public function testThumbs($expected, $id, array $query = [])
     {
-        $this->configRequestHeaders('GET');
-
         $path = '/media/thumbs';
         if (!is_array($id) && strpos((string)$id, ',') === false) {
             $path .= '/' . $id;

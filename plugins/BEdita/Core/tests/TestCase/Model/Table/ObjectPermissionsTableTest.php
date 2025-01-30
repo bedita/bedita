@@ -19,6 +19,7 @@ use Cake\Http\Exception\ForbiddenException;
 use Cake\ORM\Association\BelongsTo;
 use Cake\ORM\Behavior\TimestampBehavior;
 use Cake\TestSuite\TestCase;
+use Exception;
 
 /**
  * {@see \BEdita\Core\Model\Table\ObjectPermissionsTable} Test Case
@@ -39,7 +40,7 @@ class ObjectPermissionsTableTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.Objects',
         'plugin.BEdita/Core.Profiles',
@@ -96,7 +97,7 @@ class ObjectPermissionsTableTest extends TestCase
      *
      * @return array
      */
-    public function buildRulesProvider()
+    public static function buildRulesProvider(): array
     {
         return [
             'invalidObject' => [
@@ -147,7 +148,7 @@ class ObjectPermissionsTableTest extends TestCase
      *
      * @return array
      */
-    public function beforeSaveProvider(): array
+    public static function beforeSaveProvider(): array
     {
         return [
             'admin' => [
@@ -219,7 +220,7 @@ class ObjectPermissionsTableTest extends TestCase
      */
     public function testBeforeSave($expected, array $user, array $data): void
     {
-        if ($expected instanceof \Exception) {
+        if ($expected instanceof Exception) {
             $this->expectExceptionObject($expected);
         }
 
@@ -245,7 +246,7 @@ class ObjectPermissionsTableTest extends TestCase
      */
     public function testBeforeSaveWithPermissionOk(): void
     {
-        $user = $this->fetchTable('Users')->get(5, ['contain' => 'Roles']);
+        $user = $this->fetchTable('Users')->get(5, contain: 'Roles');
         LoggedUser::setUser($user->toArray());
         $ObjectTypes = $this->fetchTable('ObjectTypes');
         /** @var \BEdita\Core\Model\Entity\ObjectType $ot */
@@ -274,7 +275,7 @@ class ObjectPermissionsTableTest extends TestCase
      *
      * @return array
      */
-    public function beforeDeleteProvider(): array
+    public static function beforeDeleteProvider(): array
     {
         return [
             'admin' => [
@@ -308,7 +309,7 @@ class ObjectPermissionsTableTest extends TestCase
      */
     public function testBeforeDelete($expected, array $user): void
     {
-        if ($expected instanceof \Exception) {
+        if ($expected instanceof Exception) {
             $this->expectExceptionObject($expected);
         }
 

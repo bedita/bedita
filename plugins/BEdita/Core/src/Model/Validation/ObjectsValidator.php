@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Model\Validation;
 
 use Cake\ORM\TableRegistry;
@@ -90,7 +89,7 @@ class ObjectsValidator extends Validator
      * @see \BEdita\Core\Model\Validation\Validation::notNumeric()
      * @return $this
      */
-    public function notNumeric(string $field, ?string $message = null, $when = null)
+    public function notNumeric(string $field, ?string $message = null, callable|string|null $when = null)
     {
         $extra = array_filter(['on' => $when, 'message' => $message]);
 

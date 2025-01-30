@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\API\Test\TestCase\Controller;
 
 use BEdita\API\TestSuite\IntegrationTestCase;
@@ -31,7 +30,7 @@ class StreamsControllerTest extends IntegrationTestCase
     /**
      * @inheritDoc
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.Streams',
     ];
 
@@ -153,7 +152,7 @@ class StreamsControllerTest extends IntegrationTestCase
      *
      * @return array
      */
-    public function linkStreamProvider()
+    public static function linkStreamProvider(): array
     {
         return [
             'not a media' => [
@@ -196,7 +195,7 @@ class StreamsControllerTest extends IntegrationTestCase
      *
      * @return void
      * @covers ::download()
-     * @covers ::checkAcceptable()
+     * @covers ::viewClasses()
      */
     public function testDownload(): void
     {
@@ -211,16 +210,20 @@ class StreamsControllerTest extends IntegrationTestCase
     }
 
     /**
-     * Test that `checkAcceptable()` method.
+     * Test content negotiation.
      *
      * @return void
-     * @covers ::checkAcceptable()
+     * @coversNothing
      */
-    public function testCheckAcceptable()
+    public function testContentNegotiation()
     {
         $this->configRequestHeaders('GET', ['Accept' => 'text/plain']);
         $this->get('/streams');
         $this->assertResponseCode(406);
+
+        $this->configRequestHeaders('GET', ['Accept' => 'application/json']);
+        $this->get('/streams');
+        $this->assertResponseCode(200);
     }
 
     /**

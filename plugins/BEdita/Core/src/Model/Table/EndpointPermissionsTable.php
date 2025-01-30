@@ -12,13 +12,13 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Model\Table;
 
+use ArrayAccess;
 use BEdita\Core\State\CurrentApplication;
 use Cake\Database\Expression\ComparisonExpression;
 use Cake\Database\Expression\QueryExpression;
-use Cake\ORM\Query;
+use Cake\ORM\Query\SelectQuery;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Utility\Hash;
@@ -27,10 +27,24 @@ use Cake\Validation\Validator;
 /**
  * EndpointPermissions Model
  *
- * @property \Cake\ORM\Association\BelongsTo $Endpoints
- * @property \Cake\ORM\Association\BelongsTo $Applications
- * @property \Cake\ORM\Association\BelongsTo $Roles
+ * @property \Cake\ORM\Table&\Cake\ORM\Association\BelongsTo $Endpoints
+ * @property \Cake\ORM\Table&\Cake\ORM\Association\BelongsTo $Applications
+ * @property \Cake\ORM\Table&\Cake\ORM\Association\BelongsTo $Roles
  * @method \Cake\ORM\Query queryCache(\Cake\ORM\Query $query, string $key)
+ * @method \BEdita\Core\Model\Entity\EndpointPermission newEmptyEntity()
+ * @method \BEdita\Core\Model\Entity\EndpointPermission newEntity(array $data, array $options = [])
+ * @method \BEdita\Core\Model\Entity\EndpointPermission[] newEntities(array $data, array $options = [])
+ * @method \BEdita\Core\Model\Entity\EndpointPermission get(mixed $primaryKey, array|string $finder = 'all', \Psr\SimpleCache\CacheInterface|string|null $cache = null, \Closure|string|null $cacheKey = null, mixed ...$args)
+ * @method \BEdita\Core\Model\Entity\EndpointPermission findOrCreate(\Cake\ORM\Query\SelectQuery|callable|array $search, ?callable $callback = null, array $options = [])
+ * @method \BEdita\Core\Model\Entity\EndpointPermission patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
+ * @method \BEdita\Core\Model\Entity\EndpointPermission[] patchEntities(iterable $entities, array $data, array $options = [])
+ * @method \BEdita\Core\Model\Entity\EndpointPermission|false save(\Cake\Datasource\EntityInterface $entity, array $options = [])
+ * @method \BEdita\Core\Model\Entity\EndpointPermission saveOrFail(\Cake\Datasource\EntityInterface $entity, array $options = [])
+ * @method \BEdita\Core\Model\Entity\EndpointPermission[]|\Cake\Datasource\ResultSetInterface<\BEdita\Core\Model\Entity\EndpointPermission>|false saveMany(iterable $entities, array $options = [])
+ * @method \BEdita\Core\Model\Entity\EndpointPermission[]|\Cake\Datasource\ResultSetInterface<\BEdita\Core\Model\Entity\EndpointPermission> saveManyOrFail(iterable $entities, array $options = [])
+ * @method \BEdita\Core\Model\Entity\EndpointPermission[]|\Cake\Datasource\ResultSetInterface<\BEdita\Core\Model\Entity\EndpointPermission>|false deleteMany(iterable $entities, array $options = [])
+ * @method \BEdita\Core\Model\Entity\EndpointPermission[]|\Cake\Datasource\ResultSetInterface<\BEdita\Core\Model\Entity\EndpointPermission> deleteManyOrFail(iterable $entities, array $options = [])
+ * @mixin \BEdita\Core\Model\Behavior\QueryCacheBehavior
  * @since 4.0.0
  */
 class EndpointPermissionsTable extends Table
@@ -96,11 +110,11 @@ class EndpointPermissionsTable extends Table
      *  - `strict`: enable strict mode to exclude endpoint permissions applied to all endpoints
      *      (filter out endpoint permissions with `endpoint_id = NULL`).
      *
-     * @param \Cake\ORM\Query $query Query object instance.
+     * @param \Cake\ORM\Query\SelectQuery $query Query object instance.
      * @param array $options Additional options.
-     * @return \Cake\ORM\Query
+     * @return \Cake\ORM\Query\SelectQuery
      */
-    protected function findByEndpoint(Query $query, array $options): Query
+    protected function findByEndpoint(SelectQuery $query, array $options): SelectQuery
     {
         $field = $this->aliasField($this->Endpoints->getForeignKey());
         $ids = array_filter((array)Hash::get($options, 'endpointIds', []));
@@ -133,11 +147,11 @@ class EndpointPermissionsTable extends Table
      *  - `strict`: enable strict mode to exclude endpoint permissions applied to all applications
      *      (filter out endpoint permissions with `application_id = NULL`).
      *
-     * @param \Cake\ORM\Query $query Query object instance.
+     * @param \Cake\ORM\Query\SelectQuery $query Query object instance.
      * @param array $options Additional options.
-     * @return \Cake\ORM\Query
+     * @return \Cake\ORM\Query\SelectQuery
      */
-    protected function findByApplication(Query $query, array $options): Query
+    protected function findByApplication(SelectQuery $query, array $options): SelectQuery
     {
         $field = $this->aliasField($this->Applications->getForeignKey());
         $id = Hash::get($options, 'applicationId');
@@ -170,11 +184,11 @@ class EndpointPermissionsTable extends Table
      *  - `strict`: enable strict mode to exclude endpoint permissions applied to all roles
      *      (filter out endpoint permissions with `role_id = NULL`).
      *
-     * @param \Cake\ORM\Query $query Query object instance.
+     * @param \Cake\ORM\Query\SelectQuery $query Query object instance.
      * @param array $options Additional options.
-     * @return \Cake\ORM\Query
+     * @return \Cake\ORM\Query\SelectQuery
      */
-    protected function findByRole(Query $query, array $options): Query
+    protected function findByRole(SelectQuery $query, array $options): SelectQuery
     {
         $field = $this->aliasField($this->Roles->getForeignKey());
         $ids = array_filter((array)Hash::get($options, 'roleIds', []));
@@ -207,11 +221,11 @@ class EndpointPermissionsTable extends Table
      * - `role_name`: the role name
      * - `application_name`: the application name
      *
-     * @param \Cake\ORM\Query $query Query object instance.
+     * @param \Cake\ORM\Query\SelectQuery $query Query object instance.
      * @param array $options Additional options.
-     * @return \Cake\ORM\Query
+     * @return \Cake\ORM\Query\SelectQuery
      */
-    protected function findResource(Query $query, array $options): Query
+    protected function findResource(SelectQuery $query, array $options): SelectQuery
     {
         $endpoint = Hash::get($options, 'endpoint_name');
         $role = Hash::get($options, 'role_name');
@@ -220,7 +234,7 @@ class EndpointPermissionsTable extends Table
         if ($endpoint === null) {
             $query = $query->whereNull('endpoint_id');
         } else {
-            $query = $query->innerJoinWith('Endpoints', function (Query $query) use ($endpoint) {
+            $query = $query->innerJoinWith('Endpoints', function (SelectQuery $query) use ($endpoint) {
                 return $query->where(['Endpoints.name' => $endpoint]);
             });
         }
@@ -228,7 +242,7 @@ class EndpointPermissionsTable extends Table
         if ($role === null) {
             $query = $query->whereNull('role_id');
         } else {
-            $query = $query->innerJoinWith('Roles', function (Query $query) use ($role) {
+            $query = $query->innerJoinWith('Roles', function (SelectQuery $query) use ($role) {
                 return $query->where(['Roles.name' => $role]);
             });
         }
@@ -236,7 +250,7 @@ class EndpointPermissionsTable extends Table
         if ($application === null) {
             $query = $query->whereNull('application_id');
         } else {
-            $query = $query->innerJoinWith('Applications', function (Query $query) use ($application) {
+            $query = $query->innerJoinWith('Applications', function (SelectQuery $query) use ($application) {
                 return $query->where(['Applications.name' => $application]);
             });
         }
@@ -267,11 +281,11 @@ class EndpointPermissionsTable extends Table
      * Fetch endpoint permissions using cache.
      *
      * @param int|null $endpointId Endpoint id.
-     * @param null|array|\ArrayAccess $user User data. Is null if user is unlogged and contains `roles` array if logged.
+     * @param \ArrayAccess|array|null $user User data. Is null if user is unlogged and contains `roles` array if logged.
      * @param bool $strict Strict check.
      * @return array
      */
-    public function fetchPermissions(?int $endpointId, $user, bool $strict): array
+    public function fetchPermissions(?int $endpointId, array|ArrayAccess|null $user, bool $strict): array
     {
         $applicationId = CurrentApplication::getApplicationId();
         $endpointIds = array_filter([$endpointId]);

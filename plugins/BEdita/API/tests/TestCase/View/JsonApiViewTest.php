@@ -12,15 +12,12 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\API\Test\TestCase\View;
 
 use BEdita\API\Test\TestConstants;
 use Cake\Controller\Controller;
-use Cake\Http\Response;
 use Cake\Http\ServerRequest;
 use Cake\ORM\Table;
-use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
 /**
@@ -40,7 +37,7 @@ class JsonApiViewTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.PropertyTypes',
         'plugin.BEdita/Core.Properties',
@@ -64,7 +61,7 @@ class JsonApiViewTest extends TestCase
     {
         parent::setUp();
 
-        $this->Roles = TableRegistry::getTableLocator()->get('Roles');
+        $this->Roles = $this->fetchTable('Roles');
         $this->loadPlugins(['BEdita/API' => ['routes' => true]]);
     }
 
@@ -83,7 +80,7 @@ class JsonApiViewTest extends TestCase
      *
      * @return array
      */
-    public function renderWithoutViewProvider()
+    public static function renderWithoutViewProvider(): array
     {
         return [
             'data' => [
@@ -426,9 +423,9 @@ class JsonApiViewTest extends TestCase
                 function (Table $Table) {
                     return [
                         'objects' => [
-                            $Table->get(1, ['contain' => 'Users']),
-                            $Table->get(2, ['contain' => 'Users']),
-                            $Table->get(1, ['contain' => 'Users'])->set('id', 3),
+                            $Table->get(1, contain: 'Users'),
+                            $Table->get(2, contain: 'Users'),
+                            $Table->get(1, contain: 'Users')->set('id', 3),
                         ],
                         '_serialize' => true,
                         '_fields' => [
@@ -455,7 +452,7 @@ class JsonApiViewTest extends TestCase
             $data = $data($this->Roles);
         }
 
-        $Controller = new Controller(new ServerRequest(), new Response());
+        $Controller = new Controller(request: new ServerRequest());
         if (isset($data['_serialize'])) {
             $Controller->viewBuilder()->setOption('serialize', $data['_serialize']);
             unset($data['_serialize']);
@@ -466,25 +463,5 @@ class JsonApiViewTest extends TestCase
         $result = $Controller->createView()->render();
 
         static::assertJsonStringEqualsJsonString($expected, $result);
-    }
-
-    /**
-     * Test 'json' response in constructor
-     *
-     * @return void
-     */
-    public function testJsonRequest()
-    {
-        $request = new ServerRequest([
-            'environment' => [
-                'HTTP_ACCEPT' => 'application/json',
-                'REQUEST_METHOD' => 'GET',
-            ],
-        ]);
-
-        $Controller = new Controller($request, new Response());
-        $Controller->viewBuilder()->setClassName('BEdita/API.JsonApi');
-        $view = $Controller->createView();
-        static::assertEquals('application/json', $view->getResponse()->getType());
     }
 }

@@ -14,6 +14,7 @@ declare(strict_types=1);
  */
 namespace BEdita\API\Identifier;
 
+use ArrayAccess;
 use Authentication\Identifier\AbstractIdentifier;
 use Authentication\Identifier\Resolver\ResolverAwareTrait;
 use Cake\Utility\Hash;
@@ -28,7 +29,7 @@ class ApplicationIdentifier extends AbstractIdentifier
     /**
      * @inheritDoc
      */
-    protected $_defaultConfig = [
+    protected array $_defaultConfig = [
         'fields' => [
             self::CREDENTIAL_USERNAME => 'client_id',
             self::CREDENTIAL_PASSWORD => 'client_secret',
@@ -43,7 +44,7 @@ class ApplicationIdentifier extends AbstractIdentifier
     /**
      * @inheritDoc
      */
-    public function identify(array $credentials)
+    public function identify(array $credentials): ArrayAccess|array|null
     {
         $credentials = [
             $this->getConfig('fields.' . self::CREDENTIAL_USERNAME) => Hash::get($credentials, self::CREDENTIAL_USERNAME),

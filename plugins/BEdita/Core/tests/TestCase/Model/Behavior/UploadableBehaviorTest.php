@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\Model\Behavior;
 
 use BEdita\Core\Filesystem\FilesystemRegistry;
@@ -39,7 +38,7 @@ class UploadableBehaviorTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.Relations',
         'plugin.BEdita/Core.RelationTypes',
@@ -72,7 +71,7 @@ class UploadableBehaviorTest extends TestCase
      *
      * @return array
      */
-    public function afterSaveProvider(): array
+    public static function afterSaveProvider(): array
     {
         $originalContents = "Sample uploaded file.\n";
         $newContents = 'Modified contents.';

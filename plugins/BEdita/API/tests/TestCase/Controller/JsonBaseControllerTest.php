@@ -48,8 +48,6 @@ class JsonBaseControllerTest extends TestCase
         $controller = new class ($request) extends JsonBaseController {
         };
 
-        static::assertEquals('Json', $controller->RequestHandler->getConfig('viewClassMap.json'));
         static::assertFalse($controller->components()->has('JsonApi'));
-        static::assertEquals('Json', $controller->viewBuilder()->getClassName());
     }
 }

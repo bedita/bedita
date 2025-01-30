@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\API\Controller\Admin;
 
 /**
@@ -26,17 +25,17 @@ class ConfigController extends AdminController
     /**
      * @inheritDoc
      */
-    public function initialize(): void
-    {
-        parent::initialize();
-
-        if (isset($this->JsonApi)) {
-            $this->JsonApi->setConfig('clientGeneratedIds', true);
-        }
-    }
+    public ?string $defaultTable = 'Config';
 
     /**
      * @inheritDoc
      */
-    public $defaultTable = 'Config';
+    public function initialize(): void
+    {
+        parent::initialize();
+
+        if ($this->components()->has('JsonApi')) {
+            $this->JsonApi->setConfig('clientGeneratedIds', true);
+        }
+    }
 }

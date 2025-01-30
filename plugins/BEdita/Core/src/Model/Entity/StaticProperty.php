@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Model\Entity;
 
 use Cake\Database\TypeFactory;
@@ -54,10 +53,10 @@ class StaticProperty extends Property
     /**
      * Setter for `name` property.
      *
-     * @param string $name Property name.
-     * @return string
+     * @param string|null $name Property name.
+     * @return string|null
      */
-    protected function _setName($name)
+    protected function _setName(?string $name): ?string
     {
         $this->inferFromSchema($name, $this->table);
 
@@ -67,10 +66,10 @@ class StaticProperty extends Property
     /**
      * Setter for `table` virtual property.
      *
-     * @param string|\Cake\ORM\Table $table Table.
+     * @param \Cake\ORM\Table|string $table Table.
      * @return string
      */
-    protected function _setTable($table)
+    protected function _setTable(string|Table $table): string
     {
         if (!($table instanceof Table)) {
             $table = TableRegistry::getTableLocator()->get($table);
@@ -86,7 +85,7 @@ class StaticProperty extends Property
      *
      * @return \Cake\ORM\Table|null
      */
-    protected function _getTable()
+    protected function _getTable(): ?Table
     {
         if (isset($this->_fields['table'])) {
             // Explicitly set.
@@ -105,9 +104,9 @@ class StaticProperty extends Property
      *
      * @param string|null $name Column name.
      * @param \Cake\ORM\Table|null $table Table object instance.
-     * @return array|mixed|null
+     * @return mixed|array|null
      */
-    protected static function getSchemaColumnDefinition($name, ?Table $table = null)
+    protected static function getSchemaColumnDefinition(?string $name, ?Table $table = null): mixed
     {
         if ($name === null || $table === null) {
             return null;
@@ -123,7 +122,7 @@ class StaticProperty extends Property
      * @param \Cake\ORM\Table|null $table Table object instance.
      * @return void
      */
-    protected function inferFromSchema($name, ?Table $table = null)
+    protected function inferFromSchema(?string $name, ?Table $table = null): void
     {
         $schema = static::getSchemaColumnDefinition($name, $table);
         if ($schema === null) {
@@ -149,7 +148,7 @@ class StaticProperty extends Property
      *
      * @return mixed|null
      */
-    protected function _getDefault()
+    protected function _getDefault(): mixed
     {
         if (array_key_exists('default', $this->_fields)) {
             // Previously cached value.
@@ -186,7 +185,7 @@ class StaticProperty extends Property
      *
      * @return bool
      */
-    protected function _getRequired()
+    protected function _getRequired(): bool
     {
         if (!$this->table) {
             return !$this->is_nullable && $this->default === null;
@@ -215,7 +214,7 @@ class StaticProperty extends Property
     /**
      * @inheritDoc
      */
-    public function getSchema($accessMode = null)
+    public function getSchema($accessMode = null): mixed
     {
         $schema = parent::getSchema($accessMode);
         if (!is_array($schema)) {
@@ -236,7 +235,7 @@ class StaticProperty extends Property
         }
 
         // Default value.
-        if ($this->has('default')) {
+        if ($this->hasValue('default')) {
             $schema['default'] = $this->default;
         }
 

@@ -12,8 +12,9 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Model\Action;
+
+use Cake\ORM\Table;
 
 /**
  * Command to delete an object.
@@ -27,12 +28,12 @@ class DeleteObjectAction extends BaseAction
      *
      * @var \Cake\ORM\Table
      */
-    protected $Table;
+    protected Table $Table;
 
     /**
      * @inheritDoc
      */
-    protected function initialize(array $data)
+    protected function initialize(array $data): void
     {
         $this->Table = $this->getConfig('table');
     }
@@ -40,7 +41,7 @@ class DeleteObjectAction extends BaseAction
     /**
      * @inheritDoc
      */
-    public function execute(array $data = [])
+    public function execute(array $data = []): bool
     {
         $entity = $data['entity'];
 

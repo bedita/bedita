@@ -12,14 +12,13 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\API\Test\TestCase\Controller;
 
 use BEdita\API\TestSuite\IntegrationTestCase;
 use BEdita\Core\Model\Action\SaveEntityAction;
 use BEdita\Core\State\CurrentApplication;
 use Cake\Cache\Cache;
-use Cake\I18n\FrozenTime;
+use Cake\I18n\DateTime;
 use Cake\ORM\TableRegistry;
 use Cake\Utility\Hash;
 
@@ -80,8 +79,8 @@ class LoginControllerTest extends IntegrationTestCase
 
         $lastLogin = TableRegistry::getTableLocator()->get('Users')->get(1)->get('last_login');
         static::assertNotNull($lastLogin);
-        static::assertEquals(FrozenTime::now()->timestamp, $lastLogin->timestamp, '');
-        static::assertEqualsWithDelta(FrozenTime::now()->timestamp, $lastLogin->timestamp, 1, '');
+        static::assertEquals(DateTime::now()->timestamp, $lastLogin->timestamp, '');
+        static::assertEqualsWithDelta(DateTime::now()->timestamp, $lastLogin->timestamp, 1, '');
 
         return $result['meta'];
     }
@@ -205,7 +204,7 @@ class LoginControllerTest extends IntegrationTestCase
 
         $user = $this->fetchTable('Users')->get(1);
         static::assertNotNull($user->last_login_err);
-        static::assertEqualsWithDelta(FrozenTime::now()->timestamp, $user->last_login_err->timestamp, 1, '');
+        static::assertEqualsWithDelta(DateTime::now()->timestamp, $user->last_login_err->timestamp, 1, '');
         static::assertEquals(2, $user->num_login_err);
     }
 
@@ -565,13 +564,13 @@ class LoginControllerTest extends IntegrationTestCase
         $action = new SaveEntityAction(['table' => TableRegistry::getTableLocator()->get('AsyncJobs')]);
 
         return $action([
-            'entity' => TableRegistry::getTableLocator()->get('AsyncJobs')->newEntity([]),
+            'entity' => TableRegistry::getTableLocator()->get('AsyncJobs')->newEmptyEntity(),
             'data' => [
                 'service' => 'credentials_change',
                 'payload' => [
                     'user_id' => 1,
                 ],
-                'scheduled_from' => new FrozenTime('1 day'),
+                'scheduled_from' => new DateTime('1 day'),
                 'priority' => 1,
             ],
         ]);
@@ -773,7 +772,7 @@ class LoginControllerTest extends IntegrationTestCase
      *
      * @return array
      */
-    public function statusProvider()
+    public static function statusProvider(): array
     {
         return [
             'draft' => [
@@ -830,7 +829,7 @@ class LoginControllerTest extends IntegrationTestCase
      *
      * @return array
      */
-    public function passwordChangeProvider()
+    public static function passwordChangeProvider(): array
     {
         return [
             'missing' => [
@@ -1027,7 +1026,7 @@ class LoginControllerTest extends IntegrationTestCase
      *
      * @return array
      */
-    public function optoutProvider()
+    public static function optoutProvider(): array
     {
         return [
             'ok' => [

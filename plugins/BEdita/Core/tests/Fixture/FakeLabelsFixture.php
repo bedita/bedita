@@ -24,7 +24,7 @@ class FakeLabelsFixture extends TestFixture
     /**
      * @inheritDoc
      */
-    public $records = [
+    public array $records = [
         ['color' => 'red'],
         ['color' => 'green', 'fake_tag_id' => 1],
         ['color' => 'brown'],

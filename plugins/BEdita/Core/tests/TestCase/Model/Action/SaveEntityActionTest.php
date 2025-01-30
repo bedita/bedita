@@ -12,11 +12,11 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\Model\Action;
 
 use BEdita\Core\Exception\InvalidDataException;
 use BEdita\Core\Model\Action\SaveEntityAction;
+use Cake\Http\Exception\InternalErrorException;
 use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
@@ -34,7 +34,7 @@ class SaveEntityActionTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.FakeAnimals',
     ];
 
@@ -50,7 +50,7 @@ class SaveEntityActionTest extends TestCase
         $table = TableRegistry::getTableLocator()->get('FakeAnimals');
         $action = new SaveEntityAction(compact('table'));
 
-        $entity = $table->newEntity([]);
+        $entity = $table->newEmptyEntity();
         $data = [
             'name' => 'monkey',
             'legs' => 2,
@@ -98,16 +98,16 @@ class SaveEntityActionTest extends TestCase
      */
     public function testExecuteSaveErrors()
     {
-        $this->expectException(\Cake\Http\Exception\InternalErrorException::class);
+        $this->expectException(InternalErrorException::class);
         $entity = TableRegistry::getTableLocator()->get('FakeAnimals')->get(1);
 
         $table = $this->getMockBuilder(Table::class)
             ->getMock();
 
         $table->method('patchEntity')
-            ->will(static::returnValue($entity));
+            ->willReturn($entity);
         $table->method('save')
-            ->will(static::returnValue(false));
+            ->willReturn(false);
 
         $action = new SaveEntityAction(compact('table'));
 

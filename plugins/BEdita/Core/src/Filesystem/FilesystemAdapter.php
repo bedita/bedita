@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Filesystem;
 
 use Cake\Core\InstanceConfigTrait;
@@ -38,7 +37,7 @@ abstract class FilesystemAdapter
      *
      * @var array
      */
-    protected $_defaultConfig = [
+    protected array $_defaultConfig = [
         'baseUrl' => null,
         'visibility' => 'public',
     ];
@@ -48,7 +47,7 @@ abstract class FilesystemAdapter
      *
      * @var \League\Flysystem\FilesystemAdapter
      */
-    protected $adapter;
+    protected LeagueFilesystemAdapter $adapter;
 
     /**
      * Initialize filesystem adapter class.
@@ -68,20 +67,13 @@ abstract class FilesystemAdapter
      *
      * @return \League\Flysystem\FilesystemAdapter
      */
-    public function getInnerAdapter()
+    public function getInnerAdapter(): LeagueFilesystemAdapter
     {
         if (!empty($this->adapter)) {
             return $this->adapter;
         }
 
-        $adapter = $this->buildAdapter($this->getConfig());
-        if (!($adapter instanceof LeagueFilesystemAdapter)) {
-            throw new \RuntimeException(
-                sprintf('Filesystem adapters must use %s as a base class.', AdapterInterface::class)
-            );
-        }
-
-        return $this->adapter = $adapter;
+        return $this->adapter = $this->buildAdapter($this->getConfig());
     }
 
     /**
@@ -90,7 +82,7 @@ abstract class FilesystemAdapter
      * @param array $config Adapter configuration.
      * @return \League\Flysystem\FilesystemAdapter
      */
-    abstract protected function buildAdapter(array $config);
+    abstract protected function buildAdapter(array $config): LeagueFilesystemAdapter;
 
     /**
      * Get public URL for an item.
@@ -98,7 +90,7 @@ abstract class FilesystemAdapter
      * @param string $path Resource path.
      * @return string
      */
-    public function getPublicUrl($path): string
+    public function getPublicUrl(string $path): string
     {
         return sprintf(
             '%s/%s',

@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\API\Controller;
 
 use Cake\Http\Exception\ForbiddenException;
@@ -45,7 +44,7 @@ class UploadController extends ObjectsController
      * @param string $fileName Original file name.
      * @return void
      */
-    public function upload($fileName)
+    public function upload(string $fileName): void
     {
         $associations = (array)Hash::get($this->objectType, 'associations');
         if (!in_array('Streams', $associations)) {
@@ -56,7 +55,7 @@ class UploadController extends ObjectsController
             ));
         }
 
-        $this->Table->getConnection()->transactional(function () use ($fileName) {
+        $this->Table->getConnection()->transactional(function () use ($fileName): void {
             $this->request = $this->request
                 ->withData('title', $fileName)
                 ->withData('type', Inflector::underscore($this->Table->getAlias()));

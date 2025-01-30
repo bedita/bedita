@@ -21,15 +21,15 @@
         }
     ],
     "require": {
-        "php": "^7.4 || ^8.0",
-        "cakephp/authentication": "^2.9",
-        "cakephp/authorization": "^2.2",
-        "cakephp/cakephp": "~4.5.0",
+        "php": ">=8.3",
+        "cakephp/authentication": "^3.0.3",
+        "cakephp/authorization": "^3.1.2",
+        "cakephp/cakephp": "5.1.*",
         "firebase/php-jwt": "^6.9"
     },
     "require-dev": {
-        "phpunit/phpunit": "^9.5",
-        "cakephp/cakephp-codesniffer": "^4.7"
+        "cakephp/cakephp-codesniffer": "^5.0",
+        "phpunit/phpunit": "^10.5.5 || ^11.1.3"
     },
     "autoload": {
         "psr-4": {

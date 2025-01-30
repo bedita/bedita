@@ -1,24 +1,23 @@
 <?php
 
-use Aws\MediaPackageVod\Exception\MediaPackageVodException;
 use Migrations\AbstractMigration;
 
 class ConfigChangePrimaryKey extends AbstractMigration
 {
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
-    public $autoId = false;
+    public bool $autoId = false;
 
     /**
      * Config rows to keep
      *
      * @var array
      */
-    protected $configRows = [];
+    protected array $configRows = [];
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function up()
     {

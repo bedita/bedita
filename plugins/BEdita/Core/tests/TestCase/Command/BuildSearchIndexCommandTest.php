@@ -20,6 +20,7 @@ use Cake\Console\TestSuite\ConsoleIntegrationTestTrait;
 use Cake\Core\Configure;
 use Cake\Datasource\EntityInterface;
 use Cake\TestSuite\TestCase;
+use Exception;
 
 /**
  * BEdita\Core\Command\BuildSearchIndexCommand Test Case
@@ -33,7 +34,7 @@ class BuildSearchIndexCommandTest extends TestCase
     /**
      * @inheritDoc
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.Objects',
         'plugin.BEdita/Core.Trees',
@@ -47,7 +48,6 @@ class BuildSearchIndexCommandTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
-        $this->useCommandRunner();
     }
 
     /**
@@ -124,7 +124,7 @@ class BuildSearchIndexCommandTest extends TestCase
         {
             public function indexResource(EntityInterface $entity, string $operation): void
             {
-                throw new \Exception('Test exception');
+                throw new Exception('Test exception');
             }
         };
         Configure::write('Search.adapters.default', [
@@ -347,7 +347,7 @@ class BuildSearchIndexCommandTest extends TestCase
     public function testExecuteWrongAncestor(): void
     {
         $this->exec('build_search_index --ancestor abcdefghi');
-        $this->assertErrorContains('Record not found in table "objects"');
+        $this->assertErrorContains('Record not found in table `objects`');
         $this->assertExitCode(Command::CODE_ERROR);
     }
 

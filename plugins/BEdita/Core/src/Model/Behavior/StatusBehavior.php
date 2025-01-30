@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Model\Behavior;
 
 use BEdita\Core\Exception\BadFilterException;
@@ -21,7 +20,7 @@ use Cake\Database\Expression\QueryExpression;
 use Cake\Datasource\EntityInterface;
 use Cake\Http\Exception\BadRequestException;
 use Cake\ORM\Behavior;
-use Cake\ORM\Query;
+use Cake\ORM\Query\SelectQuery;
 
 /**
  * This behavior adds finders for object's status filtering.
@@ -35,7 +34,7 @@ class StatusBehavior extends Behavior
      *
      * @var array
      */
-    protected $_defaultConfig = [
+    protected array $_defaultConfig = [
         'implementedMethods' => [
             'checkStatus' => 'checkStatus',
         ],
@@ -72,13 +71,13 @@ class StatusBehavior extends Behavior
     /**
      * Finder for objects based on status level.
      *
-     * @param \Cake\ORM\Query $query Query object instance.
+     * @param \Cake\ORM\Query\SelectQuery $query Query object instance.
      * @param array $options Object status level.
-     * @return \Cake\ORM\Query
+     * @return \Cake\ORM\Query\SelectQuery
      * @throws \BEdita\Core\Exception\BadFilterException Throws an exception if an invalid set of options is passed to
      *      the finder.
      */
-    public function findStatusLevel(Query $query, array $options)
+    public function findStatusLevel(SelectQuery $query, array $options): SelectQuery
     {
         if (empty($options[0])) {
             throw new BadFilterException(__d('bedita', 'Invalid options for finder "{0}"', 'status'));

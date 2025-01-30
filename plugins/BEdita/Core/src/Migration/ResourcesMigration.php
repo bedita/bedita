@@ -150,7 +150,7 @@ abstract class ResourcesMigration extends AbstractMigration
         foreach ($data as $action => $items) {
             array_walk(
                 $items,
-                function ($item) use ($action) {
+                function ($item) use ($action): void {
                     $this->columnAction($action, $item);
                 }
             );

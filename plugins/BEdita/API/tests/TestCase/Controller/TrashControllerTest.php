@@ -258,7 +258,7 @@ class TrashControllerTest extends IntegrationTestCase
      *
      * @return array
      */
-    public function restoreProvider()
+    public static function restoreProvider(): array
     {
         return [
             'not found' => [

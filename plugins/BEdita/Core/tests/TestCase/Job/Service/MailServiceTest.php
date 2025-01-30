@@ -12,13 +12,14 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\Job\Service;
 
 use BEdita\Core\Job\Service\MailService;
 use Cake\Mailer\TransportFactory;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Hash;
+use Exception;
+use LogicException;
 
 /**
  * {@see \BEdita\Core\Job\Service\MailService} Test Case
@@ -55,7 +56,7 @@ class MailServiceTest extends TestCase
      *
      * @return array
      */
-    public function runProvider()
+    public static function runProvider(): array
     {
         return [
             'simple' => [
@@ -85,7 +86,7 @@ class MailServiceTest extends TestCase
                 ],
             ],
             'missing' => [
-                new \LogicException('You need specify one destination on to, cc or bcc.'),
+                new LogicException('You need specify one destination on to, cc or bcc.'),
                 [],
             ],
         ];
@@ -102,7 +103,7 @@ class MailServiceTest extends TestCase
      */
     public function testRun($expected, array $payload)
     {
-        if ($expected instanceof \Exception) {
+        if ($expected instanceof Exception) {
             $this->expectException(get_class($expected));
             $this->expectExceptionCode($expected->getCode());
             $this->expectExceptionMessage($expected->getMessage());

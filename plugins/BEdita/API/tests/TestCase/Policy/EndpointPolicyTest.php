@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\API\Test\TestCase\Policy;
 
 use Authentication\Identity as AuthenticationIdentity;
@@ -29,6 +28,7 @@ use Cake\Http\Exception\UnauthorizedException;
 use Cake\Http\ServerRequest;
 use Cake\ORM\Locator\LocatorAwareTrait;
 use Cake\TestSuite\TestCase;
+use Exception;
 use Laminas\Diactoros\Uri;
 use Psr\Http\Message\UriInterface;
 
@@ -46,7 +46,7 @@ class EndpointPolicyTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.Roles',
         'plugin.BEdita/Core.Endpoints',
@@ -69,7 +69,7 @@ class EndpointPolicyTest extends TestCase
      *
      * @return array
      */
-    public function canAccessProvider()
+    public static function canAccessProvider(): array
     {
         $service = new AuthorizationService(new MapResolver());
         $arrayIdentity = new AuthenticationIdentity([
@@ -155,7 +155,7 @@ class EndpointPolicyTest extends TestCase
         $requestMethod = 'GET',
         ?string $attribute = null
     ) {
-        if ($expected instanceof \Exception) {
+        if ($expected instanceof Exception) {
             $this->expectException(get_class($expected));
             $this->expectExceptionMessage($expected->getMessage());
         }
@@ -236,7 +236,7 @@ class EndpointPolicyTest extends TestCase
      */
     public function testBlockAnonymousWritesByDefault()
     {
-        $this->expectException(\Cake\Http\Exception\UnauthorizedException::class);
+        $this->expectException(UnauthorizedException::class);
         $this->expectExceptionMessage('Unauthorized');
         // Ensure no permissions apply to anonymous user on `/home` endpoint.
         $this->fetchTable('EndpointPermissions')->deleteAll(['role_id IS' => null, 'endpoint_id' => 2]);
@@ -259,7 +259,7 @@ class EndpointPolicyTest extends TestCase
      */
     public function testBlockUnloggedByDefault()
     {
-        $this->expectException(\Cake\Http\Exception\UnauthorizedException::class);
+        $this->expectException(UnauthorizedException::class);
         $this->expectExceptionMessage('Unauthorized');
         // Ensure no permissions apply to anonymous user on `/home` endpoint.
         $this->fetchTable('EndpointPermissions')->deleteAll(['role_id IS' => null, 'endpoint_id' => 2]);

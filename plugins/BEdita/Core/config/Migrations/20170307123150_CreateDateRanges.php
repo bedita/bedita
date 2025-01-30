@@ -1,14 +1,16 @@
 <?php
+
 use Migrations\AbstractMigration;
 
 class CreateDateRanges extends AbstractMigration
 {
+    public bool $autoId = false;
 
-    public $autoId = false;
-
+    /**
+     * @inheritDoc
+     */
     public function up()
     {
-
         $this->table('date_ranges')
             ->addColumn('id', 'integer', [
                 'autoIncrement' => true,
@@ -89,7 +91,7 @@ class CreateDateRanges extends AbstractMigration
                 'object_id'
             );
 
-        $this->dropTable('date_ranges');
+        $this->table('date_ranges')->drop()->save();
     }
 }
 

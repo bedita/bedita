@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\Model\Table;
 
 use BEdita\Core\Exception\BadFilterException;
@@ -25,6 +24,8 @@ use Cake\ORM\Association\HasMany;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Hash;
+use Exception;
+use LogicException;
 
 /**
  * {@see \BEdita\Core\Model\Table\ObjectTypesTable} Test Case
@@ -45,7 +46,7 @@ class ObjectTypesTableTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.Objects',
         'plugin.BEdita/Core.PropertyTypes',
@@ -91,10 +92,8 @@ class ObjectTypesTableTest extends TestCase
      * @return void
      * @coversNothing
      */
-    public function testInitialization()
+    public function testInitialization(): void
     {
-        $this->ObjectTypes->initialize([]);
-
         static::assertEquals('object_types', $this->ObjectTypes->getTable());
         static::assertEquals('id', $this->ObjectTypes->getPrimaryKey());
         static::assertEquals('name', $this->ObjectTypes->getDisplayField());
@@ -107,7 +106,7 @@ class ObjectTypesTableTest extends TestCase
      *
      * @return array
      */
-    public function validationProvider()
+    public static function validationProvider(): array
     {
         return [
             'valid' => [
@@ -222,9 +221,9 @@ class ObjectTypesTableTest extends TestCase
      * @dataProvider validationProvider
      * @covers \BEdita\Core\ORM\Rule\IsUniqueAmongst
      */
-    public function testValidation($expected, array $data)
+    public function testValidation($expected, array $data): void
     {
-        $objectType = $this->ObjectTypes->newEntity([]);
+        $objectType = $this->ObjectTypes->newEmptyEntity();
         if (!empty($data['id'])) {
             $objectType = $this->ObjectTypes->get($data['id']);
         }
@@ -239,7 +238,7 @@ class ObjectTypesTableTest extends TestCase
      *
      * @return array
      */
-    public function getProvider()
+    public static function getProvider(): array
     {
         return [
             'id' => [
@@ -388,11 +387,11 @@ class ObjectTypesTableTest extends TestCase
                 'Documents',
             ],
             'missingId' => [
-                new RecordNotFoundException('Record not found in table "object_types"'),
+                new RecordNotFoundException('Record not found in table `object_types`'),
                 99,
             ],
             'missingType' => [
-                new RecordNotFoundException('Record not found in table "object_types"'),
+                new RecordNotFoundException('Record not found in table `object_types`'),
                 'missing_type',
             ],
         ];
@@ -409,7 +408,7 @@ class ObjectTypesTableTest extends TestCase
      */
     public function testGet($expected, $primaryKey)
     {
-        if ($expected instanceof \Exception) {
+        if ($expected instanceof Exception) {
             $this->expectException(get_class($expected));
             $this->expectExceptionMessage($expected->getMessage());
         }
@@ -496,11 +495,11 @@ class ObjectTypesTableTest extends TestCase
      *
      * @return array
      */
-    public function findByRelationProvider()
+    public static function findByRelationProvider(): array
     {
         return [
             'error' => [
-                new \LogicException('Missing required parameter "name"'),
+                new LogicException('Missing required parameter "name"'),
                 [],
             ],
             'right' => [
@@ -545,7 +544,7 @@ class ObjectTypesTableTest extends TestCase
      */
     public function testFindByRelation($expected, array $options)
     {
-        if ($expected instanceof \Exception) {
+        if ($expected instanceof Exception) {
             $this->expectException(get_class($expected));
             $this->expectExceptionMessage($expected->getMessage());
         }
@@ -581,7 +580,7 @@ class ObjectTypesTableTest extends TestCase
      *
      * @return array
      */
-    public function modelRulesProvider()
+    public static function modelRulesProvider(): array
     {
         return [
             'foo' => [
@@ -612,7 +611,7 @@ class ObjectTypesTableTest extends TestCase
      */
     public function testDefaultModelRules(array $data)
     {
-        $objectType = $this->ObjectTypes->newEntity([]);
+        $objectType = $this->ObjectTypes->newEmptyEntity();
         $this->ObjectTypes->patchEntity($objectType, $data);
 
         $success = $this->ObjectTypes->save($objectType);
@@ -630,7 +629,7 @@ class ObjectTypesTableTest extends TestCase
      *
      * @return array
      */
-    public function beforeDeleteProvider()
+    public static function beforeDeleteProvider(): array
     {
         return [
             'objects' => [
@@ -660,7 +659,7 @@ class ObjectTypesTableTest extends TestCase
      */
     public function testBeforeDelete($typeName, $expected)
     {
-        if ($expected instanceof \Exception) {
+        if ($expected instanceof Exception) {
             $this->expectException(get_class($expected));
             $this->expectExceptionMessage($expected->getMessage());
         }
@@ -685,7 +684,7 @@ class ObjectTypesTableTest extends TestCase
             'singular' => 'foo',
             'name' => 'foos',
         ];
-        $entity = $this->ObjectTypes->newEntity([]);
+        $entity = $this->ObjectTypes->newEmptyEntity();
         $entity = $this->ObjectTypes->patchEntity($entity, $data);
         $this->ObjectTypes->save($entity);
 
@@ -693,7 +692,7 @@ class ObjectTypesTableTest extends TestCase
             'title' => 'Foo',
         ];
         $table = TableRegistry::getTableLocator()->get('Foos');
-        $entity = $table->newEntity([]);
+        $entity = $table->newEmptyEntity();
         $entity = $table->patchEntity($entity, $data);
         $entity->created_by = 1;
         $entity->modified_by = 1;
@@ -712,7 +711,7 @@ class ObjectTypesTableTest extends TestCase
      */
     public function testChangeParent()
     {
-        $this->expectException(\Cake\Http\Exception\ForbiddenException::class);
+        $this->expectException(ForbiddenException::class);
         $this->expectExceptionMessage('Parent type change forbidden: objects of this type exist');
         $objectType = $this->ObjectTypes->get('users');
         $objectType->set('parent_name', 'media');
@@ -724,7 +723,7 @@ class ObjectTypesTableTest extends TestCase
      *
      * @return array
      */
-    public function beforeSaveProvider()
+    public static function beforeSaveProvider(): array
     {
         return [
             'objects' => [
@@ -785,11 +784,11 @@ class ObjectTypesTableTest extends TestCase
      */
     public function testBeforeSave($data, $expected)
     {
-        if ($expected instanceof \Exception) {
+        if ($expected instanceof Exception) {
             $this->expectException(get_class($expected));
             $this->expectExceptionMessage($expected->getMessage());
         }
-        $objectType = $this->ObjectTypes->newEntity([]);
+        $objectType = $this->ObjectTypes->newEmptyEntity();
         if (!empty($data['id'])) {
             $objectType = $this->ObjectTypes->get($data['id']);
         }
@@ -803,7 +802,7 @@ class ObjectTypesTableTest extends TestCase
      *
      * @return array
      */
-    public function findObjectIdProvider()
+    public static function findObjectIdProvider(): array
     {
         return [
             'missingId' => [
@@ -836,7 +835,7 @@ class ObjectTypesTableTest extends TestCase
      */
     public function testFindObjectId($expected, array $options)
     {
-        if ($expected instanceof \Exception) {
+        if ($expected instanceof Exception) {
             $this->expectException(get_class($expected));
             $this->expectExceptionMessage($expected->getMessage());
         }
@@ -850,7 +849,7 @@ class ObjectTypesTableTest extends TestCase
      *
      * @return array
      */
-    public function findParentProvider()
+    public static function findParentProvider(): array
     {
         return [
             'missing' => [
@@ -879,12 +878,12 @@ class ObjectTypesTableTest extends TestCase
      */
     public function testFindParent($expected, array $options)
     {
-        if ($expected instanceof \Exception) {
+        if ($expected instanceof Exception) {
             $this->expectException(get_class($expected));
             $this->expectExceptionMessage($expected->getMessage());
         }
 
-        $type = $this->ObjectTypes->find('parent', $options)->order(['name' => 'ASC'])->firstOrFail();
+        $type = $this->ObjectTypes->find('parent', $options)->orderBy(['name' => 'ASC'])->firstOrFail();
         static::assertEquals($expected, $type->name);
     }
 }

@@ -12,14 +12,15 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\Model\Entity;
 
 use BEdita\Core\Model\Entity\AuthProvider;
+use BEdita\Core\Model\Table\AuthProvidersTable;
 use Cake\Core\Configure;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Hash;
+use InvalidArgumentException;
 
 /**
  * {@see \BEdita\Core\Model\Entity\AuthProvider} Test Case
@@ -33,14 +34,14 @@ class AuthProviderTest extends TestCase
      *
      * @var \BEdita\Core\Model\Table\AuthProvidersTable
      */
-    public $AuthProviders;
+    public AuthProvidersTable $AuthProviders;
 
     /**
      * Fixtures
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.Roles',
         'plugin.BEdita/Core.AuthProviders',
     ];
@@ -81,7 +82,7 @@ class AuthProviderTest extends TestCase
         ];
         $authProvider = $this->AuthProviders->patchEntity($authProvider, $data);
         if (!($authProvider instanceof AuthProvider)) {
-            throw new \InvalidArgumentException();
+            throw new InvalidArgumentException();
         }
 
         static::assertEquals(1, $authProvider->id);
@@ -106,7 +107,7 @@ class AuthProviderTest extends TestCase
      *
      * @return array
      */
-    public function getRolesProvider()
+    public static function getRolesProvider(): array
     {
         return [
             'empty' => [
@@ -153,7 +154,7 @@ class AuthProviderTest extends TestCase
      *
      * @return array
      */
-    public function checkAuthorizationProvider()
+    public static function checkAuthorizationProvider(): array
     {
         return [
             'ok' => [

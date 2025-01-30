@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\API\Controller\Model;
 
 use Cake\Datasource\Exception\RecordNotFoundException;
@@ -29,12 +28,12 @@ class RelationsController extends ModelController
     /**
      * @inheritDoc
      */
-    public $defaultTable = 'Relations';
+    public ?string $defaultTable = 'Relations';
 
     /**
      * @inheritDoc
      */
-    protected $_defaultConfig = [
+    protected array $_defaultConfig = [
         'allowedAssociations' => [
             'left_object_types' => ['object_types'],
             'right_object_types' => ['object_types'],

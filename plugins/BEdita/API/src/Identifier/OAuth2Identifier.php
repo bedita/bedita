@@ -14,6 +14,7 @@ declare(strict_types=1);
  */
 namespace BEdita\API\Identifier;
 
+use ArrayAccess;
 use Authentication\Identifier\AbstractIdentifier;
 use Authentication\Identifier\Resolver\ResolverAwareTrait;
 use BEdita\Core\Utility\OAuth2;
@@ -26,7 +27,7 @@ class OAuth2Identifier extends AbstractIdentifier
     /**
      * @inheritDoc
      */
-    protected $_defaultConfig = [
+    protected array $_defaultConfig = [
         'resolver' => [
             'className' => 'Authentication.Orm',
             'userModel' => 'Users',
@@ -37,7 +38,7 @@ class OAuth2Identifier extends AbstractIdentifier
     /**
      * @inheritDoc
      */
-    public function identify(array $credentials)
+    public function identify(array $credentials): ArrayAccess|array|null
     {
         /** @var \BEdita\Core\Model\Entity\AuthProvider $authProvider */
         $authProvider = $this->getConfig('authProvider');

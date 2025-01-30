@@ -12,16 +12,15 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\API\Datasource;
 
 use BEdita\Core\Model\Table\ObjectsTable;
 use Cake\Datasource\Paging\NumericPaginator;
+use Cake\Datasource\Paging\PaginatedInterface;
 use Cake\Datasource\QueryInterface;
 use Cake\Datasource\RepositoryInterface;
-use Cake\Datasource\ResultSetInterface;
 use Cake\Http\Exception\BadRequestException;
-use Cake\ORM\Query;
+use Cake\ORM\Query\SelectQuery;
 
 /**
  * Handle model pagination using JSON API conventions.
@@ -33,7 +32,7 @@ class JsonApiPaginator extends NumericPaginator
     /**
      * @inheritDoc
      */
-    protected $_defaultConfig = [
+    protected array $_defaultConfig = [
         'page' => 1,
         'limit' => 20,
         'maxLimit' => 100,
@@ -48,14 +47,14 @@ class JsonApiPaginator extends NumericPaginator
     public const MAX_LIMIT = 500;
 
     /**
-     * Remove any other `order` clause if an explicit 'sort' is requested
-     *
      * {@inheritDoc}
+     *
+     * Remove any other `order` clause if an explicit 'sort' is requested
      */
-    public function paginate($object, array $params = [], array $settings = []): ResultSetInterface
+    public function paginate(mixed $object, array $params = [], array $settings = []): PaginatedInterface
     {
         if ($object instanceof QueryInterface && !empty($params['sort'])) {
-            $object->order([], Query::OVERWRITE);
+            $object->orderBy([], SelectQuery::OVERWRITE);
         }
 
         return parent::paginate($object, $params, $settings);

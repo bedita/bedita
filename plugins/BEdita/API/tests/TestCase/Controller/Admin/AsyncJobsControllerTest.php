@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\API\Test\TestCase\Controller\Admin;
 
 use BEdita\API\TestSuite\IntegrationTestCase;
@@ -417,7 +416,7 @@ class AsyncJobsControllerTest extends IntegrationTestCase
 
         $asyncJob = TableRegistry::getTableLocator()->get('AsyncJobs')
             ->find()
-            ->order(['created' => 'DESC'])
+            ->orderBy(['created' => 'DESC'])
             ->first();
 
         $this->assertHeader('Location', 'http://api.example.com/admin/async_jobs/' . $asyncJob->get('uuid'));

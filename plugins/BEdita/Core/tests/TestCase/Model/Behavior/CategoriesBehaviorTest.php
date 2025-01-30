@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\Model\Behavior;
 
 use Cake\ORM\TableRegistry;
@@ -31,7 +30,7 @@ class CategoriesBehaviorTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.PropertyTypes',
         'plugin.BEdita/Core.Properties',
@@ -52,7 +51,7 @@ class CategoriesBehaviorTest extends TestCase
      *
      * @return array
      */
-    public function beforeSaveProvider()
+    public static function beforeSaveProvider(): array
     {
         return [
             'ok' => [
@@ -191,7 +190,7 @@ class CategoriesBehaviorTest extends TestCase
         if (!empty($objectType->get('associations'))) {
             $options = ['contain' => $objectType->get('associations')];
         }
-        $entity = $table->get($id, $options);
+        $entity = $table->get($id, ...$options);
 
         $entity = $table->patchEntity($entity, $data);
         $entity = $table->save($entity);
@@ -221,7 +220,7 @@ class CategoriesBehaviorTest extends TestCase
     public function testFetchCategories(): void
     {
         $table = TableRegistry::getTableLocator()->get('Documents');
-        $entity = $table->get(3, ['contain' => ['Categories']]);
+        $entity = $table->get(3, contain: ['Categories']);
         $data = [
             'categories' => [
                 [
@@ -248,7 +247,7 @@ class CategoriesBehaviorTest extends TestCase
     public function testFetchTags(): void
     {
         $table = TableRegistry::getTableLocator()->get('Profiles');
-        $entity = $table->get(4, ['contain' => ['Tags']]);
+        $entity = $table->get(4, contain: ['Tags']);
         $entity = $table->patchEntity($entity, [
             'tags' => [
                 [
@@ -266,7 +265,7 @@ class CategoriesBehaviorTest extends TestCase
         $entity = $table->save($entity);
         static::assertNotFalse($entity);
 
-        $entity = $table->get(4, ['contain' => ['Tags']]);
+        $entity = $table->get(4, contain: ['Tags']);
         $tags = (array)$entity->get('tags');
         $names = Hash::extract($tags, '{n}.name');
         sort($names);
@@ -294,7 +293,7 @@ class CategoriesBehaviorTest extends TestCase
         $table->saveOrFail($tag);
 
         $table = TableRegistry::getTableLocator()->get('Profiles');
-        $entity = $table->get(4, ['contain' => ['Tags']]);
+        $entity = $table->get(4, contain: ['Tags']);
         $entity = $table->patchEntity($entity, [
             'tags' => [
                 [

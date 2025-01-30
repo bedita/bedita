@@ -28,7 +28,7 @@ class ObjectsFixture extends TestFixture
      *
      * @var array
      */
-    public $records = [
+    public array $records = [
         // 1
         [
             'object_type_id' => 4,

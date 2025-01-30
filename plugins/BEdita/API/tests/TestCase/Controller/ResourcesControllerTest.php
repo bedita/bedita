@@ -12,15 +12,10 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\API\Test\TestCase\Controller;
 
-use Authentication\AuthenticationService;
-use BEdita\API\Controller\ResourcesController;
 use BEdita\API\TestSuite\IntegrationTestCase;
-use BEdita\Core\Model\Table\UsersTable;
 use Cake\Event\EventManager;
-use Cake\Http\ServerRequest;
 use DMS\PHPUnitExtensions\ArraySubset\ArraySubsetAsserts;
 
 /**
@@ -29,38 +24,6 @@ use DMS\PHPUnitExtensions\ArraySubset\ArraySubsetAsserts;
 class ResourcesControllerTest extends IntegrationTestCase
 {
     use ArraySubsetAsserts;
-
-    /**
-     * Test modelClass property copied to defaultTable.
-     *
-     * @return void
-     * @covers ::initialize()
-     */
-    public function testModelClassProp()
-    {
-        $serviceMock = $this->getMockBuilder(AuthenticationService::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-
-        $request = (new ServerRequest())->withAttribute('authentication', $serviceMock);
-
-        $controller = new class ($request) extends ResourcesController {
-            protected $modelClass = 'Users';
-
-            public function getDefaultTable()
-            {
-                return $this->defaultTable;
-            }
-
-            public function getTable()
-            {
-                return $this->Table;
-            }
-        };
-
-        static::assertEquals('Users', $controller->getDefaultTable());
-        static::assertInstanceOf(UsersTable::class, $controller->getTable());
-    }
 
     /**
      * Test relationships method to list existing relationships.
@@ -373,7 +336,7 @@ class ResourcesControllerTest extends IntegrationTestCase
 
         $this->configRequestHeaders('POST', $this->getUserAuthHeader());
         $this->post('/roles', json_encode(compact('data')));
-        $result = json_decode((string)$this->_response->getBody(), true);
+        json_decode((string)$this->_response->getBody(), true);
         $this->assertResponseCode(201);
     }
 

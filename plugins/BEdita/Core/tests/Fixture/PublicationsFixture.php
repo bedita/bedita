@@ -26,7 +26,7 @@ class PublicationsFixture extends TestFixture
      *
      * @var array
      */
-    public $records = [
+    public array $records = [
         // Beware: this is a `fake` fixture, object with id 15 is acutally a `document`!
         [
             'id' => 15,

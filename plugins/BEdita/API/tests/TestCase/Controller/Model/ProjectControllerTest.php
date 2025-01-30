@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\API\Test\TestCase\Controller\Model;
 
 use BEdita\API\TestSuite\IntegrationTestCase;
@@ -504,12 +503,12 @@ class ProjectControllerTest extends IntegrationTestCase
     }
 
     /**
-     * Test `checkAcceptable()` method.
+     * Test content negotiation.
      *
      * @return void
-     * @covers ::checkAcceptable()
+     * @coversNothing
      */
-    public function testCheckAcceptable(): void
+    public function testContentNegotiation(): void
     {
         $this->configRequestHeaders();
         $this->get('/model/project');

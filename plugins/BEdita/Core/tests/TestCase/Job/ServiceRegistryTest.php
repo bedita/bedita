@@ -17,6 +17,7 @@ namespace BEdita\Core\Test\TestCase\Job;
 use BEdita\Core\Job\JobService;
 use BEdita\Core\Job\ServiceRegistry;
 use Cake\TestSuite\TestCase;
+use LogicException;
 
 /**
  * {@see \BEdita\Core\Job\ServiceRegistry} Test Case
@@ -47,7 +48,7 @@ class ServiceRegistryTest extends TestCase
             ->getMock();
 
         $service->method('run')
-            ->will(static::returnValue($return));
+            ->willReturn($return);
 
         return $service;
     }
@@ -91,7 +92,7 @@ class ServiceRegistryTest extends TestCase
      */
     public function testGetFail()
     {
-        $this->expectException(\LogicException::class);
+        $this->expectException(LogicException::class);
         ServiceRegistry::get('gustavo');
     }
 

@@ -21,7 +21,7 @@ class AsyncJobsEndpointAdminOnly extends AbstractMigration
                 ],
             ])
             ->save();
-        $endpointId = (int)$this->getQueryBuilder()
+        $endpointId = (int)$this->getSelectBuilder()
             ->select(['id'])
             ->from(['endpoints'])
             ->where(['name' => 'async_jobs'])
@@ -44,13 +44,13 @@ class AsyncJobsEndpointAdminOnly extends AbstractMigration
      */
     public function down(): void
     {
-        $endpointId = (int)$this->getQueryBuilder()
+        $endpointId = (int)$this->getSelectBuilder()
             ->select(['id'])
             ->from(['endpoints'])
             ->where(['name' => 'async_jobs'])
             ->execute()
             ->fetch()[0];
-        $endpointPermissionId = (int)$this->getQueryBuilder()
+        $endpointPermissionId = (int)$this->getSelectBuilder()
             ->select(['id'])
             ->from(['endpoint_permissions'])
             ->where([
@@ -61,11 +61,11 @@ class AsyncJobsEndpointAdminOnly extends AbstractMigration
             ])
             ->execute()
             ->fetch()[0];
-        $this->getQueryBuilder()
+        $this->getDeleteBuilder()
             ->delete('endpoint_permissions')
             ->where(['id' => $endpointPermissionId])
             ->execute();
-        $this->getQueryBuilder()
+        $this->getDeleteBuilder()
             ->delete('endpoints')
             ->where(['id' => $endpointId])
             ->execute();

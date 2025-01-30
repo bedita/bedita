@@ -26,7 +26,7 @@ class TreesFixture extends TestFixture
      *
      * @var array
      */
-    public $records = [
+    public array $records = [
 
         // root folder
         [

@@ -12,11 +12,12 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\Model\Table;
 
+use BEdita\Core\Exception\ImmutableResourceException;
 use BEdita\Core\Model\Table\ObjectTypesTable;
 use Cake\Cache\Cache;
+use Cake\Http\Exception\ForbiddenException;
 use Cake\ORM\Association\HasMany;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
@@ -41,7 +42,7 @@ class PropertyTypesTableTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.AsyncJobs',
         'plugin.BEdita/Core.PropertyTypes',
@@ -91,7 +92,6 @@ class PropertyTypesTableTest extends TestCase
      */
     public function testInitialization()
     {
-        $this->PropertyTypes->initialize([]);
         static::assertEquals('property_types', $this->PropertyTypes->getTable());
         static::assertEquals('id', $this->PropertyTypes->getPrimaryKey());
         static::assertEquals('name', $this->PropertyTypes->getDisplayField());
@@ -104,7 +104,7 @@ class PropertyTypesTableTest extends TestCase
      *
      * @return array
      */
-    public function validationProvider()
+    public static function validationProvider(): array
     {
         return [
             'valid' => [
@@ -193,7 +193,7 @@ class PropertyTypesTableTest extends TestCase
      */
     public function testBeforeDeleteInUse()
     {
-        $this->expectException(\Cake\Http\Exception\ForbiddenException::class);
+        $this->expectException(ForbiddenException::class);
         $this->expectExceptionCode('403');
         $this->expectExceptionMessage('Property type with existing properties');
         $propertyType = $this->PropertyTypes->get(1);
@@ -221,7 +221,7 @@ class PropertyTypesTableTest extends TestCase
      *
      * @return array
      */
-    public function detectProvider()
+    public static function detectProvider(): array
     {
         return [
             'by name' => [
@@ -309,7 +309,7 @@ class PropertyTypesTableTest extends TestCase
      */
     public function testBeforeSaveForbidden()
     {
-        $this->expectException(\BEdita\Core\Exception\ImmutableResourceException::class);
+        $this->expectException(ImmutableResourceException::class);
         $this->expectExceptionCode('403');
         $this->expectExceptionMessage('Could not modify core property');
         $propertyType = $this->PropertyTypes->get(1);

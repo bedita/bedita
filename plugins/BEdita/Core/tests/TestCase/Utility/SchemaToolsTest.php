@@ -12,10 +12,8 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\Utility;
 
-use BEdita\Core\Utility\Database;
 use BEdita\Core\Utility\SchemaTools;
 use Cake\TestSuite\TestCase;
 
@@ -31,7 +29,7 @@ class SchemaToolsTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.Objects',
         'plugin.BEdita/Core.Locations',
@@ -71,10 +69,7 @@ class SchemaToolsTest extends TestCase
         $schema = $table->getSchema();
         $actual = SchemaTools::getUniqueFields($schema, ['count' => 1]);
         $expected = ['api_key', 'name'];
-        $info = Database::basicInfo();
-        if ($info['vendor'] === 'sqlite') {
-            $expected = [];
-        }
+        sort($actual);
         static::assertEquals($expected, $actual);
     }
 

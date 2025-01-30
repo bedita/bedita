@@ -12,12 +12,12 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Mailer;
 
 use BEdita\Core\Model\Entity\User;
 use Cake\Core\Configure;
 use Cake\Mailer\Mailer;
+use LogicException;
 
 /**
  * Mailer class to send notifications to users
@@ -36,10 +36,10 @@ class UserMailer extends Mailer implements UserMailerInterface
      * @return \Cake\Mailer\Mailer
      * @throws \LogicException When missing some required parameter
      */
-    public function welcome($options): Mailer
+    public function welcome(array $options): Mailer
     {
         if (empty($options['params']['user'])) {
-            throw new \LogicException(__d('bedita', 'Parameter "{0}" missing', ['params.user']));
+            throw new LogicException(__d('bedita', 'Parameter "{0}" missing', ['params.user']));
         }
 
         $user = $options['params']['user'];
@@ -76,11 +76,11 @@ class UserMailer extends Mailer implements UserMailerInterface
     public function signup(array $options): Mailer
     {
         if (empty($options['params']['activationUrl'])) {
-            throw new \LogicException(__d('bedita', 'Parameter "{0}" missing', ['params.activationUrl']));
+            throw new LogicException(__d('bedita', 'Parameter "{0}" missing', ['params.activationUrl']));
         }
 
         if (empty($options['params']['user'])) {
-            throw new \LogicException(__d('bedita', 'Parameter "{0}" missing', ['params.user']));
+            throw new LogicException(__d('bedita', 'Parameter "{0}" missing', ['params.user']));
         }
 
         $user = $options['params']['user'];
@@ -118,11 +118,11 @@ class UserMailer extends Mailer implements UserMailerInterface
     public function changeRequest(array $options): Mailer
     {
         if (empty($options['params']['changeUrl'])) {
-            throw new \LogicException(__d('bedita', 'Parameter "{0}" missing', ['params.changeUrl']));
+            throw new LogicException(__d('bedita', 'Parameter "{0}" missing', ['params.changeUrl']));
         }
 
         if (empty($options['params']['user'])) {
-            throw new \LogicException(__d('bedita', 'Parameter "{0}" missing', ['params.user']));
+            throw new LogicException(__d('bedita', 'Parameter "{0}" missing', ['params.user']));
         }
 
         $user = $options['params']['user'];
@@ -153,14 +153,10 @@ class UserMailer extends Mailer implements UserMailerInterface
      * @return void
      * @throws \LogicException When user is not valid
      */
-    protected function checkUser($user)
+    protected function checkUser(User $user): void
     {
-        if (!($user instanceof User)) {
-            throw new \LogicException(__d('bedita', 'Invalid user, it must be an User Entity'));
-        }
-
         if (empty($user->email)) {
-            throw new \LogicException(__d('bedita', 'User email missing'));
+            throw new LogicException(__d('bedita', 'User email missing'));
         }
     }
 
@@ -170,7 +166,7 @@ class UserMailer extends Mailer implements UserMailerInterface
      *
      * @return string
      */
-    protected function getProjectName()
+    protected function getProjectName(): string
     {
         $name = Configure::read('Project.name');
 

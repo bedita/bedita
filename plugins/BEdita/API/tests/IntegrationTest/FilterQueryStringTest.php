@@ -30,7 +30,7 @@ class FilterQueryStringTest extends IntegrationTestCase
     /**
      * @inheritDoc
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.DateRanges',
     ];
 
@@ -61,7 +61,7 @@ class FilterQueryStringTest extends IntegrationTestCase
      *
      * @return array
      */
-    public function filterDateProvider()
+    public static function filterDateProvider(): array
     {
         return [
             'simple' => [
@@ -120,7 +120,7 @@ class FilterQueryStringTest extends IntegrationTestCase
      *
      * @return array
      */
-    public function filterGeoProvider()
+    public static function filterGeoProvider(): array
     {
         return [
             'simple' => [
@@ -169,7 +169,7 @@ class FilterQueryStringTest extends IntegrationTestCase
      *
      * @return array
      */
-    public function badFilterProvider()
+    public static function badFilterProvider(): array
     {
         return [
             'simple' => [
@@ -254,7 +254,7 @@ class FilterQueryStringTest extends IntegrationTestCase
      *
      * @return array
      */
-    public function searchFilterProvider()
+    public static function searchFilterProvider(): array
     {
         return [
             'here' => [
@@ -437,7 +437,7 @@ class FilterQueryStringTest extends IntegrationTestCase
      *
      * @return array
      */
-    public function typeFilterProvider()
+    public static function typeFilterProvider(): array
     {
         return [
             'simple' => [
@@ -506,7 +506,7 @@ class FilterQueryStringTest extends IntegrationTestCase
      *
      * @return array
      */
-    public function fieldsFilterProvider()
+    public static function fieldsFilterProvider(): array
     {
         return [
             'simple' => [
@@ -639,7 +639,7 @@ class FilterQueryStringTest extends IntegrationTestCase
      *
      * @return array
      */
-    public function trashFilterProvider()
+    public static function trashFilterProvider(): array
     {
         return [
             'simple' => [
@@ -699,7 +699,7 @@ class FilterQueryStringTest extends IntegrationTestCase
      *
      * @return array
      */
-    public function parentAncestorFilterProvider()
+    public static function parentAncestorFilterProvider(): array
     {
         return [
             'root parent' => [
@@ -782,7 +782,7 @@ class FilterQueryStringTest extends IntegrationTestCase
      *
      * @return array
      */
-    public function categoriesTagsProvider()
+    public static function categoriesTagsProvider(): array
     {
         return [
             'categories' => [
@@ -865,7 +865,7 @@ class FilterQueryStringTest extends IntegrationTestCase
      *
      * @return array
      */
-    public function relatedFilterProvider()
+    public static function relatedFilterProvider(): array
     {
         return [
             'test' => [

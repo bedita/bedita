@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Command;
 
 use BEdita\Core\Model\Entity\ObjectEntity;
@@ -21,8 +20,9 @@ use Cake\Console\Arguments;
 use Cake\Console\ConsoleIo;
 use Cake\Console\ConsoleOptionParser;
 use Cake\Database\Expression\QueryExpression;
-use Cake\I18n\FrozenDate;
+use Cake\I18n\Date;
 use Cake\ORM\Locator\LocatorAwareTrait;
+use Throwable;
 
 /**
  * ObjectsDelete command.
@@ -55,11 +55,11 @@ class ObjectsDeleteCommand extends Command
     public function execute(Arguments $args, ConsoleIo $io)
     {
         $since = $args->getOption('since');
-        $types = (array)$args->getOption('type');
+        $types = (array)$args->getMultipleOption('type');
         $message = 'Deleting from trash objects, since ' . $since;
         $message .= !empty($types) ? ', for type(s) ' . implode(',', $types) : '';
         $io->info($message);
-        $conditions = ['deleted' => true, 'locked' => false, 'modified <' => new FrozenDate($since)];
+        $conditions = ['deleted' => true, 'locked' => false, 'modified <' => new Date($since)];
         $deleted = $errors = 0;
         if (empty($types)) {
             $types = [null];
@@ -90,7 +90,7 @@ class ObjectsDeleteCommand extends Command
             $io->verbose(sprintf('Deleting object %s', $object->id));
             $object->getTable()->deleteOrFail($object);
             $deleted++;
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             $io->error(sprintf('Error deleting object %s: %s', $object->id, $e->getMessage()));
             $errors++;
         }
@@ -112,7 +112,7 @@ class ObjectsDeleteCommand extends Command
         while (true) {
             $q = clone $query;
             $q = $q->where(fn (QueryExpression $exp): QueryExpression => $exp->gt($table->aliasField('id'), $lastId));
-            $results = $q->orderAsc($table->aliasField('id'))->all();
+            $results = $q->orderByAsc($table->aliasField('id'))->all();
             if ($results->isEmpty()) {
                 break;
             }

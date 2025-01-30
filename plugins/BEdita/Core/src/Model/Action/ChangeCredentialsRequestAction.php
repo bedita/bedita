@@ -12,19 +12,20 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Model\Action;
 
 use BEdita\Core\Exception\InvalidDataException;
 use BEdita\Core\Mailer\UserMailerTrait;
 use BEdita\Core\Model\Entity\AsyncJob;
 use BEdita\Core\Model\Entity\User;
+use BEdita\Core\Model\Table\AsyncJobsTable;
+use BEdita\Core\Model\Table\UsersTable;
 use BEdita\Core\Model\Validation\Validation;
 use Cake\Database\Expression\QueryExpression;
 use Cake\Event\EventDispatcherTrait;
 use Cake\Event\EventInterface;
 use Cake\Event\EventListenerInterface;
-use Cake\I18n\FrozenTime;
+use Cake\I18n\DateTime;
 use Cake\ORM\TableRegistry;
 use Cake\Validation\Validator;
 
@@ -49,19 +50,19 @@ class ChangeCredentialsRequestAction extends BaseAction implements EventListener
      *
      * @var \BEdita\Core\Model\Table\UsersTable
      */
-    protected $Users;
+    protected UsersTable $Users;
 
     /**
      * The AsyncJobs table
      *
      * @var \BEdita\Core\Model\Table\AsyncJobsTable
      */
-    protected $AsyncJobs;
+    protected AsyncJobsTable $AsyncJobs;
 
     /**
      * @inheritDoc
      */
-    protected function initialize(array $config)
+    protected function initialize(array $config): void
     {
         $this->Users = TableRegistry::getTableLocator()->get('Users');
         $this->AsyncJobs = TableRegistry::getTableLocator()->get('AsyncJobs');
@@ -72,7 +73,7 @@ class ChangeCredentialsRequestAction extends BaseAction implements EventListener
     /**
      * @inheritDoc
      */
-    public function execute(array $data = [])
+    public function execute(array $data = []): true
     {
         $errors = $this->validate($data);
         if ($errors !== true) {
@@ -96,7 +97,7 @@ class ChangeCredentialsRequestAction extends BaseAction implements EventListener
      * @param array $data Input
      * @return array|true Array of validation errors, or true if input is valid.
      */
-    public function validate(array $data)
+    public function validate(array $data): array|bool
     {
         $validator = new Validator();
         $validator->setProvider('bedita', Validation::class);
@@ -126,7 +127,7 @@ class ChangeCredentialsRequestAction extends BaseAction implements EventListener
      * @param string $contact Contact method (email).
      * @return \BEdita\Core\Model\Entity\User
      */
-    protected function getUser($contact)
+    protected function getUser(string $contact): User
     {
         $user = $this->Users->find()
             ->where(function (QueryExpression $exp) use ($contact) {
@@ -143,19 +144,19 @@ class ChangeCredentialsRequestAction extends BaseAction implements EventListener
      * @param \BEdita\Core\Model\Entity\User $user The user requesting change
      * @return \BEdita\Core\Model\Entity\AsyncJob
      */
-    protected function createJob(User $user)
+    protected function createJob(User $user): AsyncJob
     {
         $asyncJobsTable = TableRegistry::getTableLocator()->get('AsyncJobs');
         $action = new SaveEntityAction(['table' => $asyncJobsTable]);
 
         return $action([
-            'entity' => $asyncJobsTable->newEntity([]),
+            'entity' => $asyncJobsTable->newEmptyEntity(),
             'data' => [
                 'service' => 'credentials_change',
                 'payload' => [
                     'user_id' => $user->id,
                 ],
-                'scheduled_from' => new FrozenTime('1 day'),
+                'scheduled_from' => new DateTime('1 day'),
                 'priority' => 1,
             ],
         ]);
@@ -170,7 +171,7 @@ class ChangeCredentialsRequestAction extends BaseAction implements EventListener
      * @param string $changeUrl Change URL
      * @return void
      */
-    public function sendMail(EventInterface $event, User $user, AsyncJob $asyncJob, $changeUrl)
+    public function sendMail(EventInterface $event, User $user, AsyncJob $asyncJob, string $changeUrl): void
     {
         $options = [
             'params' => compact('user', 'changeUrl'),
@@ -185,7 +186,7 @@ class ChangeCredentialsRequestAction extends BaseAction implements EventListener
      * @param string $changeUrl Base change URL
      * @return string
      */
-    protected function getChangeUrl($uuid, $changeUrl)
+    protected function getChangeUrl(string $uuid, string $changeUrl): string
     {
         $changeUrl .= strpos($changeUrl, '?') === false ? '?' : '&';
 

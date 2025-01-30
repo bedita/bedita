@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\Model\Entity;
 
 use BEdita\Core\Model\Entity\Category;
@@ -30,7 +29,7 @@ class CategoryTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.Categories',
         'plugin.BEdita/Core.Relations',
@@ -67,7 +66,7 @@ class CategoryTest extends TestCase
      *
      * @return array
      */
-    public function getParentProvider()
+    public static function getParentProvider(): array
     {
         return [
             'no parent' => [
@@ -107,7 +106,7 @@ class CategoryTest extends TestCase
      *
      * @return array
      */
-    public function setParentProvider()
+    public static function setParentProvider(): array
     {
         return [
             'no parent' => [

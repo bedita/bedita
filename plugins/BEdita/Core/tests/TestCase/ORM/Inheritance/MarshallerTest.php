@@ -12,11 +12,10 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\ORM\Inheritance;
 
 use BEdita\Core\ORM\Inheritance\Marshaller;
-use Cake\I18n\FrozenTime;
+use Cake\I18n\DateTime;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
@@ -65,7 +64,7 @@ class MarshallerTest extends TestCase
      *
      * @return array
      */
-    public function buildPropertyMapProvider()
+    public static function buildPropertyMapProvider(): array
     {
         return [
             'marshallInheritedDate' => [
@@ -80,7 +79,7 @@ class MarshallerTest extends TestCase
                 [
                     'name' => 'tiger',
                     'legs' => 4,
-                    'modified' => new FrozenTime('2018-02-20 12:05:00'),
+                    'modified' => new DateTime('2018-02-20 12:05:00'),
                     'family' => 'The big tiger family',
                 ],
             ],

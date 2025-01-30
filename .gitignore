@@ -24,6 +24,7 @@
 /webroot/_files/*
 !/webroot/_files/.gitkeep
 .phpunit.result.cache
+.phpunit.cache
 
 # BEdita plugins folders #
 ##########################
@@ -54,3 +55,4 @@
 Icon?
 ehthumbs.db
 Thumbs.db
+.phpunit.cache/test-results

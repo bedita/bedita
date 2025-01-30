@@ -28,6 +28,7 @@ use Cake\Http\Exception\UnauthorizedException;
 use Cake\Http\ServerRequest;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Hash;
+use Exception;
 
 /**
  * {@see \BEdita\API\Middleware\ApplicationMiddleware} Test Case
@@ -41,7 +42,7 @@ class ApplicationMiddlewareTest extends TestCase
     /**
      * @inheritDoc
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.Config',
         'plugin.BEdita/Core.Applications',
     ];
@@ -102,7 +103,7 @@ class ApplicationMiddlewareTest extends TestCase
     {
         static::assertNull(CurrentApplication::getApplication());
 
-        $expected = $this->fetchTable('Applications')->find('apiKey', ['apiKey' => API_KEY])->firstOrFail();
+        $expected = $this->fetchTable('Applications')->find('apiKey', apiKey: API_KEY)->firstOrFail();
         $serviceMock = $this->getMockForAuthenticationService(new Identity($expected));
         $request = (new ServerRequest())->withAttribute('authentication', $serviceMock);
         $handler = new TestRequestHandler();
@@ -118,7 +119,7 @@ class ApplicationMiddlewareTest extends TestCase
      *
      * @return array
      */
-    public function appFromJWTProvider(): array
+    public static function appFromJWTProvider(): array
     {
         return [
             'read from jwt already decoded => user identity found' => [
@@ -264,7 +265,7 @@ class ApplicationMiddlewareTest extends TestCase
      *
      * @return array
      */
-    public function setFromApiKeyProvider(): array
+    public static function setFromApiKeyProvider(): array
     {
         return [
             'ok' => [
@@ -306,7 +307,7 @@ class ApplicationMiddlewareTest extends TestCase
      */
     public function testSetAppFromApiKey($expected, ?string $apiKey, array $config = []): void
     {
-        if ($expected instanceof \Exception) {
+        if ($expected instanceof Exception) {
             $this->expectExceptionObject($expected);
         }
 

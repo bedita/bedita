@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\API\Test\IntegrationTest;
 
 use BEdita\API\TestSuite\IntegrationTestCase;
@@ -26,7 +25,7 @@ class PaginationTest extends IntegrationTestCase
     /**
      * @inheritDoc
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.Locations',
         'plugin.BEdita/Core.Media',
     ];
@@ -36,7 +35,7 @@ class PaginationTest extends IntegrationTestCase
      *
      * @return array
      */
-    public function optionsProvider()
+    public static function optionsProvider(): array
     {
         return [
             'default' => [

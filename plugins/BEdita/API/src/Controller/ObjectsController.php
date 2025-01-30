@@ -32,6 +32,7 @@ use BEdita\Core\Model\Action\SortRelatedObjectsAction;
 use BEdita\Core\Model\Entity\ObjectType;
 use BEdita\Core\Model\Table\ObjectsTable;
 use BEdita\Core\Model\Table\RolesTable;
+use Cake\Collection\CollectionInterface;
 use Cake\Datasource\EntityInterface;
 use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\Event\EventInterface;
@@ -40,7 +41,7 @@ use Cake\Http\Exception\ForbiddenException;
 use Cake\Http\Exception\InternalErrorException;
 use Cake\Http\Response;
 use Cake\ORM\Association;
-use Cake\ORM\Query;
+use Cake\ORM\Query\SelectQuery;
 use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
 use Cake\Routing\Exception\MissingRouteException;
@@ -60,19 +61,19 @@ class ObjectsController extends ResourcesController
     /**
      * @inheritDoc
      */
-    public $defaultTable = 'Objects';
+    public ?string $defaultTable = 'Objects';
 
     /**
      * The referred object type entity filled when `object_type` request param is set and valid
      *
-     * @var \BEdita\Core\Model\Entity\ObjectType
+     * @var \BEdita\Core\Model\Entity\ObjectType|null
      */
-    protected $objectType = null;
+    protected ?ObjectType $objectType = null;
 
     /**
      * @inheritDoc
      */
-    protected $_defaultConfig = [
+    protected array $_defaultConfig = [
         'allowedAssociations' => [
             'parents' => ['folders'],
         ],
@@ -116,10 +117,10 @@ class ObjectsController extends ResourcesController
 
         parent::initialize();
 
-        if (isset($this->JsonApi) && $this->request->getParam('action') !== 'relationships') {
+        if ($this->components()->has('JsonApi') && $this->request->getParam('action') !== 'relationships') {
             $this->JsonApi->setConfig('resourceTypes', [$this->objectType->name], false);
         }
-        if (isset($this->JsonApi) && $this->request->getParam('action') === 'relationshipsSort') {
+        if ($this->components()->has('JsonApi') && $this->request->getParam('action') === 'relationshipsSort') {
             $this->JsonApi->setConfig('parseJson', false);
         }
     }
@@ -133,21 +134,21 @@ class ObjectsController extends ResourcesController
      * @return void
      * @throws \Cake\Routing\Exception\MissingRouteException If `object_type` param is not valid
      */
-    protected function initObjectModel()
+    protected function initObjectModel(): void
     {
         $type = $this->request->getParam('object_type', Inflector::underscore((string)$this->request->getParam('controller')));
         try {
             $this->objectType = TableRegistry::getTableLocator()->get('ObjectTypes')->get($type);
             if ($type !== $this->objectType->name) {
                 $this->log(
-                    sprintf('Bad object type name "%s", could be "%s"', $type, $this->objectType->name),
+                    sprintf('Bad object type name `%s`, could be `%s`', $type, $this->objectType->name),
                     'warning',
                     ['request' => $this->request]
                 );
 
                 throw new MissingRouteException(__d(
                     'bedita',
-                    'A route matching "{0}" could not be found. Did you mean "{1}"?',
+                    'A route matching `{0}` could not be found. Did you mean `{1}`?',
                     $this->request->getRequestTarget(),
                     $this->objectType->name
                 ));
@@ -155,7 +156,7 @@ class ObjectsController extends ResourcesController
             $this->defaultTable = $this->objectType->alias;
             $this->Table = $this->fetchTable();
         } catch (RecordNotFoundException $e) {
-            $this->log(sprintf('Object type "%s" does not exist', $type), 'warning', ['request' => $this->request]);
+            $this->log(sprintf('Object type `%s` does not exist', $type), 'warning', ['request' => $this->request]);
 
             throw new MissingRouteException(['url' => $this->request->getRequestTarget()]);
         }
@@ -204,7 +205,7 @@ class ObjectsController extends ResourcesController
     /**
      * @inheritDoc
      */
-    public function index()
+    public function index(): ?Response
     {
         $this->request->allowMethod(['get', 'post', 'delete']);
 
@@ -261,12 +262,14 @@ class ObjectsController extends ResourcesController
 
         $this->set(compact('data'));
         $this->setSerialize(['data']);
+
+        return null;
     }
 
     /**
      * @inheritDoc
      */
-    protected function resourceUrl(EntityInterface $entity, $primaryKey)
+    protected function resourceUrl(EntityInterface $entity, $primaryKey): string
     {
         return Router::url(
             [
@@ -281,7 +284,7 @@ class ObjectsController extends ResourcesController
     /**
      * @inheritDoc
      */
-    public function resource($id)
+    public function resource(string $id): ?Response
     {
         $this->request->allowMethod(['get', 'patch', 'delete']);
 
@@ -399,7 +402,7 @@ class ObjectsController extends ResourcesController
      *
      * @return \BEdita\Core\Model\Action\ListRelatedObjectsAction
      */
-    protected function getAssociatedAction(Association $association)
+    protected function getAssociatedAction(Association $association): ListRelatedObjectsAction
     {
         return new ListRelatedObjectsAction(compact('association'));
     }
@@ -407,7 +410,7 @@ class ObjectsController extends ResourcesController
     /**
      * @inheritDoc
      */
-    public function related()
+    public function related(): void
     {
         $this->request->allowMethod(['get']);
 
@@ -422,7 +425,7 @@ class ObjectsController extends ResourcesController
         $action = $this->getAssociatedAction($association);
         $objects = $action(['primaryKey' => $relatedId] + compact('filter', 'contain', 'lang'));
 
-        if ($objects instanceof Query) {
+        if ($objects instanceof SelectQuery) {
             $objects = $this->paginate($objects);
             $this->addCount($objects->toArray());
         }
@@ -438,7 +441,7 @@ class ObjectsController extends ResourcesController
     /**
      * @inheritDoc
      */
-    public function relationships()
+    public function relationships(): ?Response
     {
         $id = TableRegistry::getTableLocator()->get('Objects')->getId($this->request->getParam('id'));
         $relationship = $this->request->getParam('relationship');
@@ -466,7 +469,7 @@ class ObjectsController extends ResourcesController
                 $action = $this->getAssociatedAction($association);
                 $data = $action(['primaryKey' => $id, 'list' => true, 'filter' => $filter]);
 
-                if ($data instanceof Query) {
+                if ($data instanceof SelectQuery) {
                     $data = $this->paginate($data);
                 }
 
@@ -555,7 +558,7 @@ class ObjectsController extends ResourcesController
      * @param string $relationship relation name
      * @return string|null
      */
-    protected function getAvailableUrl($relationship)
+    protected function getAvailableUrl(string $relationship): ?string
     {
         $available = parent::getAvailableUrl($relationship);
         if ($available !== null) {
@@ -585,7 +588,7 @@ class ObjectsController extends ResourcesController
      * @param string $relationship relation name
      * @return array List of available types
      */
-    protected function getAvailableTypes($relationship)
+    protected function getAvailableTypes(string $relationship): array
     {
         foreach ($this->objectType->getRelations('right') as $relation) {
             if ($relation->inverse_name !== $relationship) {
@@ -608,10 +611,10 @@ class ObjectsController extends ResourcesController
     /**
      * Add count data to the entities when query string `count` is present.
      *
-     * @param array|\Cake\Collection\CollectionInterface $entities List of entities
+     * @param \Cake\Collection\CollectionInterface|array $entities List of entities
      * @return void
      */
-    protected function addCount($entities): void
+    protected function addCount(array|CollectionInterface $entities): void
     {
         $count = $this->request->getQuery('count');
         if (empty($count)) {

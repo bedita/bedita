@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\API\Controller;
 
 /**
@@ -27,5 +26,5 @@ class ConfigController extends ResourcesController
     /**
      * @inheritDoc
      */
-    public $defaultTable = 'AppConfig';
+    public ?string $defaultTable = 'AppConfig';
 }

@@ -37,9 +37,6 @@ class UploadComponent extends Component
      */
     public function beforeFilter(EventInterface $event): void
     {
-        // avoid that RequestHandler tries to parse body
-        $this->getController()->RequestHandler->setConfig('inputTypeMap', [], false);
-
         $request = $this->getController()->getRequest();
         // Decode base64-encoded body.
         if ($request->getHeaderLine('Content-Transfer-Encoding') === 'base64') {
@@ -61,7 +58,7 @@ class UploadComponent extends Component
      * @param int|null $objectId Object id.
      * @return \Cake\Datasource\EntityInterface
      */
-    public function upload($fileName, ?int $objectId = null): EntityInterface
+    public function upload(string $fileName, ?int $objectId = null): EntityInterface
     {
         $request = $this->getController()->getRequest();
         $request->allowMethod(['post']);

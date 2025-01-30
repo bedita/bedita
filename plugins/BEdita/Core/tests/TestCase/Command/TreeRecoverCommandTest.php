@@ -12,9 +12,9 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\Command;
 
+use AllowDynamicProperties;
 use BEdita\Core\Command\TreeRecoverCommand;
 use Cake\Command\Command;
 use Cake\Console\TestSuite\ConsoleIntegrationTestTrait;
@@ -31,7 +31,7 @@ use Cake\TestSuite\TestCase;
  * @property \BEdita\Core\Model\Table\CategoriesTable $Categories
  * @covers \BEdita\Core\Command\TreeRecoverCommand
  */
-#[\AllowDynamicProperties]
+#[AllowDynamicProperties]
 class TreeRecoverCommandTest extends TestCase
 {
     use ConsoleIntegrationTestTrait;
@@ -42,7 +42,7 @@ class TreeRecoverCommandTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.Objects',
         'plugin.BEdita/Core.Trees',
@@ -59,7 +59,6 @@ class TreeRecoverCommandTest extends TestCase
         parent::setUp();
 
         $this->cleanupConsoleTrait();
-        $this->useCommandRunner();
         $this->Trees = $this->fetchTable('Trees');
         $this->Categories = $this->fetchTable('Categories');
     }

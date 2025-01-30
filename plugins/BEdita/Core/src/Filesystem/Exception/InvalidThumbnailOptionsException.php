@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Filesystem\Exception;
 
 use Cake\Core\Exception\CakeException;
@@ -27,5 +26,5 @@ class InvalidThumbnailOptionsException extends CakeException
     /**
      * @inheritDoc
      */
-    protected $_defaultCode = 400;
+    protected int $_defaultCode = 400;
 }

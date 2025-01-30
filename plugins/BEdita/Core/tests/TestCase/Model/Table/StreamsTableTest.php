@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\Model\Table;
 
 use BEdita\Core\Model\Entity\Stream;
@@ -43,7 +42,7 @@ class StreamsTableTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.Relations',
         'plugin.BEdita/Core.RelationTypes',
@@ -79,8 +78,6 @@ class StreamsTableTest extends TestCase
      */
     public function testInitialization()
     {
-        $this->Streams->initialize([]);
-
         static::assertEquals('streams', $this->Streams->getTable());
         static::assertEquals('uuid', $this->Streams->getPrimaryKey());
         static::assertEquals('uri', $this->Streams->getDisplayField());
@@ -94,7 +91,7 @@ class StreamsTableTest extends TestCase
      *
      * @return array
      */
-    public function validationProvider()
+    public static function validationProvider(): array
     {
         return [
             'empty' => [
@@ -140,7 +137,7 @@ class StreamsTableTest extends TestCase
      */
     public function testValidation($expected, array $data, $uuid = false)
     {
-        $stream = $this->Streams->newEntity([]);
+        $stream = $this->Streams->newEmptyEntity();
         if ($uuid !== false) {
             $stream = $this->Streams->get($uuid);
         }
@@ -178,7 +175,7 @@ class StreamsTableTest extends TestCase
             'contents' => 'Not really GZipped',
         ];
 
-        $stream = $this->Streams->newEntity([]);
+        $stream = $this->Streams->newEmptyEntity();
         $stream = $this->Streams->patchEntity($stream, $data);
 
         $this->Streams->saveOrFail($stream);
@@ -207,7 +204,7 @@ class StreamsTableTest extends TestCase
             'contents' => 'Not really GZipped',
         ];
 
-        $stream = $this->Streams->newEntity([]);
+        $stream = $this->Streams->newEmptyEntity();
         $stream->uuid = $uuid;
         $stream = $this->Streams->patchEntity($stream, $data);
 

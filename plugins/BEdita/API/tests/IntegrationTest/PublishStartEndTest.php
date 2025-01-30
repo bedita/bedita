@@ -16,7 +16,7 @@ namespace BEdita\API\Test\IntegrationTest;
 
 use BEdita\API\TestSuite\IntegrationTestCase;
 use Cake\Core\Configure;
-use Cake\I18n\FrozenTime;
+use Cake\I18n\DateTime;
 use Cake\ORM\TableRegistry;
 use Cake\Utility\Hash;
 
@@ -31,7 +31,7 @@ class PublishStartEndTest extends IntegrationTestCase
      *
      * @return array
      */
-    public function listProvider(): array
+    public static function listProvider(): array
     {
         return [
             'publishable docs' => [
@@ -76,36 +76,36 @@ class PublishStartEndTest extends IntegrationTestCase
      *
      * @return array
      */
-    public function singleProvider(): array
+    public static function singleProvider(): array
     {
         return [
             'not started' => [
                 404,
                 true,
                 [
-                    'publish_start' => FrozenTime::now()->addDay(),
+                    'publish_start' => DateTime::now()->addDays(1),
                 ],
             ],
             'no conf' => [
                 200,
                 false,
                 [
-                    'publish_start' => FrozenTime::now()->addDay(),
+                    'publish_start' => DateTime::now()->addDays(1),
                 ],
             ],
             'ended' => [
                 404,
                 true,
                 [
-                    'publish_end' => FrozenTime::now()->subDay(),
+                    'publish_end' => DateTime::now()->subDays(1),
                 ],
             ],
             'started' => [
                 200,
                 true,
                 [
-                    'publish_start' => FrozenTime::now()->subDay(),
-                    'publish_end' => FrozenTime::now()->addDay(),
+                    'publish_start' => DateTime::now()->subDays(1),
+                    'publish_end' => DateTime::now()->addDays(1),
                 ],
             ],
         ];

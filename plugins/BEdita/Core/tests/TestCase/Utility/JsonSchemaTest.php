@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\Utility;
 
 use BEdita\API\Test\TestConstants;
@@ -22,6 +21,7 @@ use Cake\Cache\Cache;
 use Cake\Http\Exception\NotFoundException;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
+use Exception;
 
 /**
  * {@see \BEdita\Core\Utility\JsonSchema} Test Case
@@ -35,7 +35,7 @@ class JsonSchemaTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.PropertyTypes',
         'plugin.BEdita/Core.Properties',
@@ -65,7 +65,7 @@ class JsonSchemaTest extends TestCase
      *
      * @return array
      */
-    public function generateProvider()
+    public static function generateProvider(): array
     {
         return [
             'objects' => [
@@ -224,7 +224,7 @@ class JsonSchemaTest extends TestCase
      */
     public function testGenerate($expected, $name)
     {
-        if ($expected instanceof \Exception) {
+        if ($expected instanceof Exception) {
             $this->expectException(get_class($expected));
             $this->expectExceptionMessage($expected->getMessage());
         }
@@ -274,7 +274,7 @@ class JsonSchemaTest extends TestCase
             'property_type_name' => 'string',
             'object_type_name' => 'documents',
         ];
-        $entity = $properties->newEntity([]);
+        $entity = $properties->newEmptyEntity();
         $entity = $properties->patchEntity($entity, $data);
         $entity = $properties->save($entity);
         $result = JsonSchema::generate($type, $url);
@@ -309,7 +309,7 @@ class JsonSchemaTest extends TestCase
      *
      * @return array
      */
-    public function schemaRevisionProvider()
+    public static function schemaRevisionProvider(): array
     {
         return [
             'objects' => [

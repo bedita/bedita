@@ -12,11 +12,11 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Model\Behavior;
 
 use BEdita\Core\Exception\BadFilterException;
 use BEdita\Core\Model\Entity\ObjectEntity;
+use BEdita\Core\Model\Entity\ObjectType;
 use BEdita\Core\Model\Validation\Validation;
 use Cake\Collection\CollectionInterface;
 use Cake\Database\Driver\Mysql;
@@ -25,7 +25,7 @@ use Cake\Database\Expression\QueryExpression;
 use Cake\Datasource\EntityInterface;
 use Cake\Event\EventInterface;
 use Cake\ORM\Behavior;
-use Cake\ORM\Query;
+use Cake\ORM\Query\SelectQuery;
 use Cake\ORM\TableRegistry;
 use Cake\Utility\Hash;
 
@@ -39,7 +39,7 @@ class CustomPropertiesBehavior extends Behavior
     /**
      * @inheritDoc
      */
-    protected $_defaultConfig = [
+    protected array $_defaultConfig = [
         'field' => 'custom_props',
         'filter' => [
             'number' => FILTER_VALIDATE_FLOAT,
@@ -59,9 +59,9 @@ class CustomPropertiesBehavior extends Behavior
      * The custom properties available.
      * It is an array with properties name as key and Property entity as value
      *
-     * @var array
+     * @var array|null
      */
-    protected $available = null;
+    protected ?array $available = null;
 
     /**
      * @inheritDoc
@@ -80,9 +80,9 @@ class CustomPropertiesBehavior extends Behavior
      * Getter for object type.
      *
      * @param array $args Method arguments.
-     * @return \BEdita\Core\Model\Entity\ObjectType
+     * @return \BEdita\Core\Model\Entity\ObjectType|null
      */
-    protected function objectType(...$args)
+    protected function objectType(array ...$args): ?ObjectType
     {
         return $this->table()->behaviors()->call('objectType', $args);
     }
@@ -90,9 +90,9 @@ class CustomPropertiesBehavior extends Behavior
     /**
      * Get available properties for object type
      *
-     * @return \BEdita\Core\Model\Entity\Property[]
+     * @return array<\BEdita\Core\Model\Entity\Property>
      */
-    public function getAvailable()
+    public function getAvailable(): array
     {
         if ($this->available !== null) {
             return $this->available;
@@ -119,7 +119,7 @@ class CustomPropertiesBehavior extends Behavior
      *
      * @return array
      */
-    public function getDefaultValues()
+    public function getDefaultValues(): array
     {
         return array_fill_keys(array_keys($this->getAvailable()), null);
     }
@@ -128,18 +128,22 @@ class CustomPropertiesBehavior extends Behavior
      * Set custom properties keys as main properties
      *
      * @param \Cake\Event\EventInterface $event Fired event.
-     * @param \Cake\ORM\Query $query Query object instance.
-     * @return \Cake\ORM\Query
+     * @param \Cake\ORM\Query\SelectQuery $query Query object instance.
+     * @return \Cake\ORM\Query\SelectQuery
      */
-    public function beforeFind(EventInterface $event, Query $query): Query
+    public function beforeFind(EventInterface $event, SelectQuery $query): SelectQuery
     {
         return $query->formatResults(
             function (CollectionInterface $results) {
                 return $results->map(function ($row) {
+                    if (!is_array($row) && !$row instanceof EntityInterface) {
+                        return $row;
+                    }
+
                     return $this->promoteProperties($row);
                 });
             },
-            Query::PREPEND
+            SelectQuery::PREPEND
         );
     }
 
@@ -148,14 +152,16 @@ class CustomPropertiesBehavior extends Behavior
      *
      * @param \Cake\Event\EventInterface $event Fired event.
      * @param \Cake\Datasource\EntityInterface $entity Entity.
-     * @return false|void
+     * @return false|null
      */
-    public function beforeSave(EventInterface $event, EntityInterface $entity)
+    public function beforeSave(EventInterface $event, EntityInterface $entity): ?false
     {
         $this->demoteProperties($entity);
         if ($entity->hasErrors()) {
             return false;
         }
+
+        return null;
     }
 
     /**
@@ -165,7 +171,7 @@ class CustomPropertiesBehavior extends Behavior
      * @param \Cake\Datasource\EntityInterface|array $entity The entity or the array to work on
      * @return \Cake\Datasource\EntityInterface|array
      */
-    protected function promoteProperties($entity)
+    protected function promoteProperties(EntityInterface|array $entity): EntityInterface|array
     {
         $field = $this->getConfig('field');
         if ((!is_array($entity) && !($entity instanceof EntityInterface)) || !$this->isFieldSet($entity, $field)) {
@@ -194,7 +200,7 @@ class CustomPropertiesBehavior extends Behavior
      * @param array $customProps Custom properties array
      * @return \Cake\Datasource\EntityInterface|array
      */
-    protected function setupCustomProps($entity, array $customProps)
+    protected function setupCustomProps(EntityInterface|array $entity, array $customProps): EntityInterface|array
     {
         if (is_array($entity)) {
             return array_merge($entity, $customProps);
@@ -255,7 +261,7 @@ class CustomPropertiesBehavior extends Behavior
      * @param array $schema Property JSON Schema
      * @return mixed
      */
-    protected function formatValue($value, array $schema)
+    protected function formatValue(mixed $value, array $schema): mixed
     {
         if ($value === null) {
             return null;
@@ -290,7 +296,7 @@ class CustomPropertiesBehavior extends Behavior
      * @param string $field The field being looked for.
      * @return bool
      */
-    protected function isFieldSet($entity, $field): bool
+    protected function isFieldSet(EntityInterface|array $entity, string $field): bool
     {
         if ($entity instanceof ObjectEntity) {
             return $entity->hasProperty($field);
@@ -302,12 +308,12 @@ class CustomPropertiesBehavior extends Behavior
     /**
      * Finder for custom property.
      *
-     * @param \Cake\ORM\Query $query Query object instance.
+     * @param \Cake\ORM\Query\SelectQuery $query Query object instance.
      * @param array $options Options.
-     * @return \Cake\ORM\Query
+     * @return \Cake\ORM\Query\SelectQuery
      * @throws \Cake\Http\Exception\BadRequestException When
      */
-    public function findCustomProp(Query $query, array $options): Query
+    public function findCustomProp(SelectQuery $query, array $options): SelectQuery
     {
         // for now we handle just MySQL
         if (!($query->getConnection()->getDriver() instanceof Mysql)) {
@@ -328,7 +334,7 @@ class CustomPropertiesBehavior extends Behavior
         }
         unset($value);
 
-        return $query->where(function (QueryExpression $exp, Query $query) use ($options) {
+        return $query->where(function (QueryExpression $exp, SelectQuery $query) use ($options) {
             $field = $this->table()->aliasField($this->getConfig('field'));
 
             return $exp->and(array_map(

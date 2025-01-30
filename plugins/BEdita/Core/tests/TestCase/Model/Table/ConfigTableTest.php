@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\Model\Table;
 
 use BEdita\Core\State\CurrentApplication;
@@ -21,6 +20,7 @@ use Cake\Http\Exception\BadRequestException;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Hash;
+use Exception;
 
 /**
  * {@see \BEdita\Core\Model\Table\ConfigTable} Test Case
@@ -41,7 +41,7 @@ class ConfigTableTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.Applications',
         'plugin.BEdita/Core.Config',
     ];
@@ -73,7 +73,6 @@ class ConfigTableTest extends TestCase
      */
     public function testInitialization()
     {
-        $this->Config->initialize([]);
         $this->assertEquals('config', $this->Config->getTable());
         $this->assertEquals('id', $this->Config->getPrimaryKey());
     }
@@ -83,7 +82,7 @@ class ConfigTableTest extends TestCase
      *
      * @return array
      */
-    public function validationProvider()
+    public static function validationProvider(): array
     {
         return [
             'valid' => [
@@ -160,7 +159,7 @@ class ConfigTableTest extends TestCase
      *
      * @return array
      */
-    public function findNameProvider()
+    public static function findNameProvider(): array
     {
         return [
             'simple' => [
@@ -222,7 +221,7 @@ class ConfigTableTest extends TestCase
      */
     public function testFindName($expected, array $data)
     {
-        if ($expected instanceof \Exception) {
+        if ($expected instanceof Exception) {
             $this->expectException(get_class($expected));
             $this->expectExceptionMessage($expected->getMessage());
         }
@@ -234,7 +233,7 @@ class ConfigTableTest extends TestCase
     /**
      * Data provider for `testFetchConfig`
      */
-    public function fetchConfigProvider(): array
+    public static function fetchConfigProvider(): array
     {
         return [
             'group2' => [

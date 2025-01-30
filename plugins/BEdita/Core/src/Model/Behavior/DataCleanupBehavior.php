@@ -12,9 +12,9 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Model\Behavior;
 
+use ArrayObject;
 use Cake\Core\Configure;
 use Cake\Event\EventInterface;
 use Cake\ORM\Behavior;
@@ -37,7 +37,7 @@ class DataCleanupBehavior extends Behavior
      *
      * @var array
      */
-    protected $_defaultConfig = [
+    protected array $_defaultConfig = [
         'fields' => [
             'status' => 'draft',
             'deleted' => 0,
@@ -52,7 +52,7 @@ class DataCleanupBehavior extends Behavior
      * @param \ArrayObject $data The input data to save
      * @return void
      */
-    public function beforeMarshal(EventInterface $event, \ArrayObject $data)
+    public function beforeMarshal(EventInterface $event, ArrayObject $data): void
     {
         // fill defaults only on new objects
         if (!empty($data['id'])) {

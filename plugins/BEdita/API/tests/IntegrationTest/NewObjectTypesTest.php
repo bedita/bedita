@@ -28,7 +28,7 @@ class NewObjectTypesTest extends IntegrationTestCase
     /**
      * @inheritDoc
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.Media',
         'plugin.BEdita/Core.Streams',
     ];
@@ -36,7 +36,7 @@ class NewObjectTypesTest extends IntegrationTestCase
     /**
      * Data provider for `testNewTypes`
      */
-    public function newTypesProvider()
+    public static function newTypesProvider(): array
     {
         return [
             'cats' => [

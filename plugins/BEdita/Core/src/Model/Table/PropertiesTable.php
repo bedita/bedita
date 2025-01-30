@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Model\Table;
 
 use BEdita\Core\Exception\BadFilterException;
@@ -21,11 +20,10 @@ use BEdita\Core\Model\Entity\StaticProperty;
 use BEdita\Core\Model\Validation\Validation;
 use BEdita\Core\Search\SimpleSearchTrait;
 use Cake\Database\Expression\QueryExpression;
-use Cake\Database\Query as DatabaseQuery;
-use Cake\Database\Schema\TableSchemaInterface;
+use Cake\Database\Query\SelectQuery as DatabaseSelectQuery;
 use Cake\Datasource\ResultSetInterface;
 use Cake\Event\EventInterface;
-use Cake\ORM\Query;
+use Cake\ORM\Query\SelectQuery;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
@@ -36,15 +34,23 @@ use Cake\Validation\Validator;
 /**
  * Properties Model
  *
- * @property \Cake\ORM\Association\BelongsTo $PropertyTypes
- * @property \Cake\ORM\Association\BelongsTo $ObjectTypes
- * @method \BEdita\Core\Model\Entity\Property get($primaryKey, $options = [])
- * @method \BEdita\Core\Model\Entity\Property newEntity($data = null, array $options = [])
+ * @property \BEdita\Core\Model\Table\PropertyTypesTable&\Cake\ORM\Association\BelongsTo $PropertyTypes
+ * @property \BEdita\Core\Model\Table\ObjectTypesTable&\Cake\ORM\Association\BelongsTo $ObjectTypes
+ * @method \BEdita\Core\Model\Entity\Property get(mixed $primaryKey, array|string $finder = 'all', \Psr\SimpleCache\CacheInterface|string|null $cache = null, \Closure|string|null $cacheKey = null, mixed ...$args)
+ * @method \BEdita\Core\Model\Entity\Property newEntity(array $data, array $options = [])
  * @method \BEdita\Core\Model\Entity\Property[] newEntities(array $data, array $options = [])
- * @method \BEdita\Core\Model\Entity\Property|bool save(\Cake\Datasource\EntityInterface $entity, $options = [])
+ * @method \BEdita\Core\Model\Entity\Property|false save(\Cake\Datasource\EntityInterface $entity, array $options = [])
  * @method \BEdita\Core\Model\Entity\Property patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
- * @method \BEdita\Core\Model\Entity\Property[] patchEntities($entities, array $data, array $options = [])
- * @method \BEdita\Core\Model\Entity\Property findOrCreate($search, callable $callback = null, $options = [])
+ * @method \BEdita\Core\Model\Entity\Property[] patchEntities(iterable $entities, array $data, array $options = [])
+ * @method \BEdita\Core\Model\Entity\Property findOrCreate(\Cake\ORM\Query\SelectQuery|callable|array $search, ?callable $callback = null, array $options = [])
+ * @method \BEdita\Core\Model\Entity\Property newEmptyEntity()
+ * @method \BEdita\Core\Model\Entity\Property saveOrFail(\Cake\Datasource\EntityInterface $entity, array $options = [])
+ * @method \BEdita\Core\Model\Entity\Property[]|\Cake\Datasource\ResultSetInterface<\BEdita\Core\Model\Entity\Property>|false saveMany(iterable $entities, array $options = [])
+ * @method \BEdita\Core\Model\Entity\Property[]|\Cake\Datasource\ResultSetInterface<\BEdita\Core\Model\Entity\Property> saveManyOrFail(iterable $entities, array $options = [])
+ * @method \BEdita\Core\Model\Entity\Property[]|\Cake\Datasource\ResultSetInterface<\BEdita\Core\Model\Entity\Property>|false deleteMany(iterable $entities, array $options = [])
+ * @method \BEdita\Core\Model\Entity\Property[]|\Cake\Datasource\ResultSetInterface<\BEdita\Core\Model\Entity\Property> deleteManyOrFail(iterable $entities, array $options = [])
+ * @mixin \Cake\ORM\Behavior\TimestampBehavior
+ * @mixin \BEdita\Core\Model\Behavior\SearchableBehavior
  * @since 4.0.0
  */
 class PropertiesTable extends Table
@@ -61,6 +67,7 @@ class PropertiesTable extends Table
         parent::initialize($config);
 
         $this->setDisplayField('name');
+        $this->getSchema()->setColumnType('id', 'string');
 
         $this->addBehavior('Timestamp');
 
@@ -122,23 +129,13 @@ class PropertiesTable extends Table
     }
 
     /**
-     * {@inheritDoc}
-     *
-     * @codeCoverageIgnore
-     */
-    public function getSchema(): TableSchemaInterface
-    {
-        return parent::getSchema()->setColumnType('id', 'string');
-    }
-
-    /**
      * Find both static and dynamic properties by default.
      *
      * @param \Cake\Event\EventInterface $event Dispatched event.
-     * @param \Cake\ORM\Query $query Query object.
+     * @param \Cake\ORM\Query\SelectQuery $query Query object.
      * @return void
      */
-    public function beforeFind(EventInterface $event, Query $query)
+    public function beforeFind(EventInterface $event, SelectQuery $query): void
     {
         $from = $query->clause('from');
         if (empty($from)) {
@@ -149,11 +146,11 @@ class PropertiesTable extends Table
     /**
      * Return properties for an object type, considering inheritance.
      *
-     * @param \Cake\ORM\Query $query Query object instance.
+     * @param \Cake\ORM\Query\SelectQuery $query Query object instance.
      * @param array $options Filter options.
-     * @return \Cake\ORM\Query
+     * @return \Cake\ORM\Query\SelectQuery
      */
-    protected function findObjectType(Query $query, array $options = [])
+    protected function findObjectType(SelectQuery $query, array $options = []): SelectQuery
     {
         $options = array_filter($options);
         if (count($options) !== 1) {
@@ -165,7 +162,7 @@ class PropertiesTable extends Table
             ->where(function (QueryExpression $exp) use ($for) {
                 return $exp->in(
                     $this->aliasField($this->ObjectTypes->getForeignKey()),
-                    $this->ObjectTypes->find('path', compact('for'))
+                    $this->ObjectTypes->find('path', for: $for)
                         ->select([$this->ObjectTypes->aliasField($this->ObjectTypes->getBindingKey())])
                 );
             });
@@ -175,12 +172,12 @@ class PropertiesTable extends Table
      * Find property resource by name and object type.
      * Options array argument MUST contain 'name' and 'object_type_name' keys.
      *
-     * @param \Cake\ORM\Query $query Query object instance.
+     * @param \Cake\ORM\Query\SelectQuery $query Query object instance.
      * @param array $options Options array.
-     * @return \Cake\ORM\Query
+     * @return \Cake\ORM\Query\SelectQuery
      * @throws \BEdita\Core\Exception\BadFilterException
      */
-    protected function findResource(Query $query, array $options): Query
+    protected function findResource(SelectQuery $query, array $options): SelectQuery
     {
         if (empty($options['name'])) {
             throw new BadFilterException(__d('bedita', 'Missing required parameter "{0}"', 'name'));
@@ -197,11 +194,11 @@ class PropertiesTable extends Table
     /**
      * Find properties by their type (either `'static'`, `'dynamic'` or `'both'`).
      *
-     * @param \Cake\ORM\Query $query Query object instance.
+     * @param \Cake\ORM\Query\SelectQuery $query Query object instance.
      * @param array $options Additional options.
-     * @return \Cake\ORM\Query
+     * @return \Cake\ORM\Query\SelectQuery
      */
-    protected function findType(Query $query, array $options)
+    protected function findType(SelectQuery $query, array $options): SelectQuery
     {
         if (empty($options[0]) || !in_array($options[0], ['static', 'dynamic', 'both'])) {
             throw new BadFilterException(__d('bedita', 'Invalid options for finder "{0}"', 'type'));
@@ -232,11 +229,11 @@ class PropertiesTable extends Table
                     '',
                     $this->getPrimaryKey() => 'identifier',
                 ]); // Use implicit type conversion, or PostgreSQL will complain about mixing integers and UUIDs.
-                $from = (new DatabaseQuery($this->getConnection()))
+                $from = (new DatabaseSelectQuery($this->getConnection()))
                     ->select($select)
                     ->from($this->getTable())
                     ->unionAll(
-                        (new DatabaseQuery($this->getConnection()))
+                        (new DatabaseSelectQuery($this->getConnection()))
                             ->select($select)
                             ->from($table->getTable())
                     );

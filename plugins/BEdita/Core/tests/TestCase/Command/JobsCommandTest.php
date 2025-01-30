@@ -14,12 +14,14 @@ declare(strict_types=1);
  */
 namespace BEdita\Core\Test\TestCase\Command;
 
+use BadMethodCallException;
 use BEdita\Core\Job\JobService;
 use BEdita\Core\Job\ServiceRegistry;
 use Cake\Command\Command;
 use Cake\Console\TestSuite\ConsoleIntegrationTestTrait;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Text;
+use Exception;
 
 /**
  * {@see BEdita\Core\Command\JobsCommand} Test Case
@@ -35,18 +37,9 @@ class JobsCommandTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.AsyncJobs',
     ];
-
-    /**
-     * @inheritDoc
-     */
-    protected function setUp(): void
-    {
-        parent::setUp();
-        $this->useCommandRunner();
-    }
 
     /**
      * @inheritDoc
@@ -69,9 +62,10 @@ class JobsCommandTest extends TestCase
             ->getMock();
 
         $method = $service->method('run');
-        $method->will(static::returnValue($return));
-        if ($return instanceof \Exception) {
+        if ($return instanceof Exception) {
             $method->willThrowException($return);
+        } else {
+            $method->willReturn($return);
         }
 
         return $service;
@@ -154,7 +148,7 @@ class JobsCommandTest extends TestCase
      */
     public function testProcessFailException()
     {
-        $exception = new \BadMethodCallException('example');
+        $exception = new BadMethodCallException('example');
         $uuid = 'd6bb8c84-6b29-432e-bb84-c3c4b2c1b99c';
         ServiceRegistry::set('example', $this->getMockService($exception));
         $this->exec(sprintf('jobs process %s', $uuid));

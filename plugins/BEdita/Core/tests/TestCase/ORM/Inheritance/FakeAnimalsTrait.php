@@ -12,10 +12,10 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\ORM\Inheritance;
 
 use BEdita\Core\ORM\Inheritance\Table;
+use Cake\ORM\Table as CakeTable;
 use Cake\ORM\TableRegistry;
 
 trait FakeAnimalsTrait
@@ -23,30 +23,30 @@ trait FakeAnimalsTrait
     /**
      * Table FakeAnimals
      *
-     * @var \BEdita\Core\ORM\Inheritance\Table
+     * @var \Cake\ORM\Table
      */
-    public $fakeAnimals;
+    public CakeTable $fakeAnimals;
 
     /**
      * Table FakeMammals
      *
      * @var \BEdita\Core\ORM\Inheritance\Table
      */
-    public $fakeMammals;
+    public Table $fakeMammals;
 
     /**
      * Table FakeFelines
      *
      * @var \BEdita\Core\ORM\Inheritance\Table
      */
-    public $fakeFelines;
+    public Table $fakeFelines;
 
     /**
      * Table options used for initialization
      *
      * @var array
      */
-    protected $tableOptions = ['className' => Table::class];
+    protected array $tableOptions = ['className' => Table::class];
 
     /**
      * Gets fixtures.
@@ -68,7 +68,7 @@ trait FakeAnimalsTrait
      *
      * @return void
      */
-    public function setupTables()
+    public function setupTables(): void
     {
         $this->fakeFelines = TableRegistry::getTableLocator()->get('FakeFelines', $this->tableOptions);
         $this->fakeMammals = TableRegistry::getTableLocator()->get('FakeMammals', $this->tableOptions);
@@ -80,7 +80,7 @@ trait FakeAnimalsTrait
      *
      * @return void
      */
-    protected function setupAssociations()
+    protected function setupAssociations(): void
     {
         $this->fakeMammals->extensionOf('FakeAnimals');
         $this->fakeFelines->extensionOf('FakeMammals');

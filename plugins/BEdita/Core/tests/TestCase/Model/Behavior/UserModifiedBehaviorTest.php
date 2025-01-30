@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\Model\Behavior;
 
 use BEdita\Core\Model\Entity\ObjectEntity;
@@ -20,6 +19,7 @@ use BEdita\Core\Utility\LoggedUser;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use DMS\PHPUnitExtensions\ArraySubset\ArraySubsetAsserts;
+use UnexpectedValueException;
 
 /**
  * {@see \BEdita\Core\Model\Behavior\UserModifiedBehavior} Test Case
@@ -35,7 +35,7 @@ class UserModifiedBehaviorTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.PropertyTypes',
         'plugin.BEdita/Core.Properties',
@@ -106,7 +106,6 @@ class UserModifiedBehaviorTest extends TestCase
      */
     public function testUserId()
     {
-        $behavior = $this->Objects->behaviors()->get('UserModified');
         static::assertSame(1, $this->Objects->userId());
 
         static::assertSame(99, $this->Objects->userId(99));
@@ -139,7 +138,7 @@ class UserModifiedBehaviorTest extends TestCase
      */
     public function testHandleEvent()
     {
-        $object = $this->Objects->newEntity([]);
+        $object = $this->Objects->newEmptyEntity();
         $object->type = 'documents';
         $object = $this->Objects->save($object);
 
@@ -158,7 +157,7 @@ class UserModifiedBehaviorTest extends TestCase
      */
     public function testHandleEventFailure()
     {
-        $this->expectException(\UnexpectedValueException::class);
+        $this->expectException(UnexpectedValueException::class);
         $this->expectExceptionMessage('When should be one of "always", "new" or "existing". The passed value "sometimes" is invalid');
         $this->Objects->behaviors()->get('UserModified')->setConfig('events', [
             'Model.beforeSave' => [
@@ -166,7 +165,7 @@ class UserModifiedBehaviorTest extends TestCase
             ],
         ], false);
 
-        $object = $this->Objects->newEntity([]);
+        $object = $this->Objects->newEmptyEntity();
         $object->type = 'documents';
         $this->Objects->save($object);
     }
@@ -218,7 +217,7 @@ class UserModifiedBehaviorTest extends TestCase
      */
     public function testTouchUserDirtyField()
     {
-        $object = $this->Objects->newEntity([]);
+        $object = $this->Objects->newEmptyEntity();
         $object->type = 'documents';
         $object->created_by = 5;
         $this->Objects->saveOrFail($object);

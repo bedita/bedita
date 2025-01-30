@@ -12,13 +12,12 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\ORM\Association;
 
 use BEdita\Core\Model\Entity\ObjectType;
 use BEdita\Core\ORM\Association\RelatedTo;
 use Cake\Database\Expression\QueryExpression;
-use Cake\ORM\Query;
+use Cake\ORM\Query\SelectQuery;
 use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
@@ -33,7 +32,7 @@ class RelatedToTest extends TestCase
      *
      * @var string[]
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.Relations',
         'plugin.BEdita/Core.RelationTypes',
@@ -51,7 +50,7 @@ class RelatedToTest extends TestCase
      *
      * @return array[]
      */
-    public function getSubQueryForMatchingProvider(): array
+    public static function getSubQueryForMatchingProvider(): array
     {
         return [
             'simple' => [
@@ -88,7 +87,7 @@ class RelatedToTest extends TestCase
                 'Documents',
                 'Test',
                 [
-                    'queryBuilder' => function (Query $query) {
+                    'queryBuilder' => function (SelectQuery $query): SelectQuery {
                         return $query->where([
                             'Test.title' => 'title two',
                         ]);
@@ -121,7 +120,7 @@ class RelatedToTest extends TestCase
 
         $subQuery = $association->getSubQueryForMatching($options);
 
-        static::assertInstanceOf(Query::class, $subQuery);
+        static::assertInstanceOf(SelectQuery::class, $subQuery);
 
         $result = $table->find('list')
             ->where(function (QueryExpression $exp) use ($table, $subQuery) {
@@ -137,7 +136,7 @@ class RelatedToTest extends TestCase
      *
      * @return array[]
      */
-    public function isAbstractProvider(): array
+    public static function isAbstractProvider(): array
     {
         return [
             'abstract' => [
@@ -194,7 +193,7 @@ class RelatedToTest extends TestCase
      *
      * @return array[]
      */
-    public function isInverseProvider(): array
+    public static function isInverseProvider(): array
     {
         return [
             'direct' => [
@@ -297,7 +296,7 @@ class RelatedToTest extends TestCase
      *
      * @return array[]
      */
-    public function getTargetProvider(): array
+    public static function getTargetProvider(): array
     {
         return [
             'no object type set' => [null, [], 'BEdita/Core.Objects', null],
@@ -354,7 +353,7 @@ class RelatedToTest extends TestCase
      *
      * @return array
      */
-    public function attachToProvider(): array
+    public static function attachToProvider(): array
     {
         return [
             'no related inheritance table' => [
@@ -410,8 +409,8 @@ class RelatedToTest extends TestCase
         $Table = $this->getTableLocator()->get($tableName);
         $Association = $Table->associations()->getByProperty($relation);
 
-        $result = $Table->find('list', ['valueField' => 'title'])
-            ->innerJoinWith($Association->getName(), function (Query $q) use ($joinConditions) {
+        $result = $Table->find('list', valueField: 'title')
+            ->innerJoinWith($Association->getName(), function (SelectQuery $q) use ($joinConditions) {
                 if (empty($joinConditions)) {
                     return $q;
                 }

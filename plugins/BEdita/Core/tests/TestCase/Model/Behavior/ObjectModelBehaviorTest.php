@@ -12,9 +12,9 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\Model\Behavior;
 
+use AllowDynamicProperties;
 use Cake\ORM\Locator\LocatorAwareTrait;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Hash;
@@ -25,7 +25,7 @@ use Cake\Utility\Hash;
  * @property \BEdita\Core\Model\Table\ObjectsTable $Documents
  * @coversDefaultClass \BEdita\Core\Model\Behavior\ObjectModelBehavior
  */
-#[\AllowDynamicProperties]
+#[AllowDynamicProperties]
 class ObjectModelBehaviorTest extends TestCase
 {
     use LocatorAwareTrait;
@@ -35,7 +35,7 @@ class ObjectModelBehaviorTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.FakeAnimals',
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.PropertyTypes',
@@ -76,7 +76,7 @@ class ObjectModelBehaviorTest extends TestCase
         $related = $this->Documents->get(2);
         $this->Documents->addRelated($entity, 'test', [$related]);
 
-        $entity = $this->Documents->get(3, ['contain' => 'Test']);
+        $entity = $this->Documents->get(3, contain: 'Test');
         $ids = Hash::extract($entity->get('test'), '{n}.id');
         sort($ids);
         static::assertEquals([2, 4], $ids);
@@ -94,7 +94,7 @@ class ObjectModelBehaviorTest extends TestCase
         $related = $this->Documents->get(2);
         $this->Documents->replaceRelated($entity, 'test', [$related]);
 
-        $entity = $this->Documents->get(3, ['contain' => 'Test']);
+        $entity = $this->Documents->get(3, contain: 'Test');
         $ids = Hash::extract($entity->get('test'), '{n}.id');
         static::assertEquals([2], $ids);
     }
@@ -111,7 +111,7 @@ class ObjectModelBehaviorTest extends TestCase
         $related = $this->Documents->get(4);
         $this->Documents->removeRelated($entity, 'test', [$related]);
 
-        $entity = $this->Documents->get(3, ['contain' => 'Test']);
+        $entity = $this->Documents->get(3, contain: 'Test');
         $ids = Hash::extract($entity->get('test'), '{n}.id');
         static::assertEquals([], $ids);
     }

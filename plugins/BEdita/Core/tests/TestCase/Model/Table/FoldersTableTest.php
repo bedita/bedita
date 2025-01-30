@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\Model\Table;
 
 use BEdita\Core\Model\Entity\ObjectType;
@@ -43,7 +42,7 @@ class FoldersTableTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.PropertyTypes',
         'plugin.BEdita/Core.Properties',
@@ -91,7 +90,6 @@ class FoldersTableTest extends TestCase
      */
     public function testInitialize()
     {
-        $this->Folders->initialize([]);
         $this->assertEquals('objects', $this->Folders->getTable());
         $this->assertEquals('id', $this->Folders->getPrimaryKey());
         $this->assertEquals('title', $this->Folders->getDisplayField());
@@ -118,7 +116,7 @@ class FoldersTableTest extends TestCase
      *
      * @return array
      */
-    public function hasAtMostOneParentProvider()
+    public static function hasAtMostOneParentProvider(): array
     {
         return [
             'emptyParents' => [
@@ -169,7 +167,7 @@ class FoldersTableTest extends TestCase
      *
      * @return array
      */
-    public function saveProvider()
+    public static function saveProvider(): array
     {
         return [
             'parentNotSet' => [
@@ -328,11 +326,8 @@ class FoldersTableTest extends TestCase
         $root = $this->Folders->get(13);
         $startDeletedInfo = $this->Folders
             ->find('ancestor', [$root->id])
-            ->order([$this->Folders->aliasField('id') => 'ASC'])
-            ->find('list', [
-                'keyField' => 'id',
-                'valueField' => 'deleted',
-            ])
+            ->orderBy([$this->Folders->aliasField('id') => 'ASC'])
+            ->find('list', keyField: 'id', valueField: 'deleted')
             ->toArray();
 
         $root->deleted = true;
@@ -340,7 +335,7 @@ class FoldersTableTest extends TestCase
 
         $children = $this->Folders
             ->find('ancestor', [$root->id])
-            ->order([$this->Folders->aliasField('id') => 'ASC']);
+            ->orderBy([$this->Folders->aliasField('id') => 'ASC']);
         foreach ($children as $child) {
             if ($child->type === 'folders') {
                 // folders should have deleted field set to true
@@ -357,7 +352,7 @@ class FoldersTableTest extends TestCase
 
         $restoredDeletedInfo = $this->Folders
             ->find('ancestor', [$root->id])
-            ->order([$this->Folders->aliasField('id') => 'ASC'])
+            ->orderBy([$this->Folders->aliasField('id') => 'ASC'])
             ->find('list', [
                 'keyField' => 'id',
                 'valueField' => 'deleted',
@@ -380,12 +375,12 @@ class FoldersTableTest extends TestCase
         $folderIds = [12];
 
         // add subfolders
-        $subfolder = $this->Folders->newEntity([]);
+        $subfolder = $this->Folders->newEmptyEntity();
         $subfolder->parent = $parentFolder;
         $this->Folders->save($subfolder);
         $folderIds[] = $subfolder->id;
 
-        $anotherSubfolder = $this->Folders->newEntity([]);
+        $anotherSubfolder = $this->Folders->newEmptyEntity();
         $anotherSubfolder->parent = $subfolder;
         $this->Folders->save($anotherSubfolder);
         $folderIds[] = $anotherSubfolder->id;
@@ -393,11 +388,8 @@ class FoldersTableTest extends TestCase
         // get descendants not folders
         $notFoldersIds = $this->Folders
             ->find('ancestor', [$parentFolder->id])
-            ->order([$this->Folders->aliasField('id') => 'ASC'])
-            ->find('list', [
-                'keyField' => 'id',
-                'valueField' => 'id',
-            ])
+            ->orderBy([$this->Folders->aliasField('id') => 'ASC'])
+            ->find('list', keyField: 'id', valueField: 'id')
             ->where(function (QueryExpression $exp) {
                 return $exp->not(['object_type_id' => $this->Folders->objectType()->id]);
             })
@@ -425,10 +417,10 @@ class FoldersTableTest extends TestCase
             static::assertTrue($Objects->exists(['id' => $id]));
         }
 
-        $currenTree = $Trees->find()->order(['tree_left' => 'ASC'])->toArray();
+        $currenTree = $Trees->find()->orderBy(['tree_left' => 'ASC'])->toArray();
         // check that after recover the tree is the same.
         $Trees->recover();
-        static::assertEquals($currenTree, $Trees->find()->order(['tree_left' => 'ASC'])->toArray());
+        static::assertEquals($currenTree, $Trees->find()->orderBy(['tree_left' => 'ASC'])->toArray());
     }
 
     /**
@@ -440,7 +432,7 @@ class FoldersTableTest extends TestCase
     public function testIsFolderRestorableNoCheckOnParents()
     {
         // new entity
-        $folder = $this->Folders->newEntity([]);
+        $folder = $this->Folders->newEmptyEntity();
         static::assertTrue($this->Folders->isFolderRestorable($folder));
 
         // deleted is not dirty
@@ -489,7 +481,7 @@ class FoldersTableTest extends TestCase
 
         $children = $this->Folders
             ->find('ancestor', [11])
-            ->order([$this->Folders->aliasField('id') => 'ASC'])
+            ->orderBy([$this->Folders->aliasField('id') => 'ASC'])
             ->where(['object_type_id' => $this->Folders->objectType()->id])
             ->toArray();
 
@@ -533,7 +525,7 @@ class FoldersTableTest extends TestCase
      *
      * @return array
      */
-    public function getSortProvider(): array
+    public static function getSortProvider(): array
     {
         return [
             'Order position Trees.tree_left asc' => [

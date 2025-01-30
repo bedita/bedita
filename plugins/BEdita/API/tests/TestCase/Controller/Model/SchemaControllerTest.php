@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\API\Test\TestCase\Controller\Model;
 
 use BEdita\API\Test\TestConstants;
@@ -33,7 +32,7 @@ class SchemaControllerTest extends IntegrationTestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.Media',
         'plugin.BEdita/Core.Locations',
         'plugin.BEdita/Core.PropertyTypes',
@@ -45,7 +44,7 @@ class SchemaControllerTest extends IntegrationTestCase
      *
      * @return array
      */
-    public function jsonSchemaProvider()
+    public static function jsonSchemaProvider(): array
     {
         return [
             'locations' => [

@@ -40,7 +40,7 @@ class UserTokensTableTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.Applications',
         'plugin.BEdita/Core.Objects',
@@ -79,8 +79,6 @@ class UserTokensTableTest extends TestCase
      */
     public function testInitialization()
     {
-        $this->UserTokens->associations()->removeAll();
-        $this->UserTokens->initialize([]);
         $this->assertEquals('user_tokens', $this->UserTokens->getTable());
         $this->assertEquals('id', $this->UserTokens->getPrimaryKey());
         $this->assertEquals('id', $this->UserTokens->getDisplayField());
@@ -94,7 +92,7 @@ class UserTokensTableTest extends TestCase
      *
      * @return array
      */
-    public function validationProvider()
+    public static function validationProvider(): array
     {
         return [
             'ok' => [
@@ -129,7 +127,7 @@ class UserTokensTableTest extends TestCase
      */
     public function testValidation(array $expected, array $data)
     {
-        $entity = $this->UserTokens->newEntity([]);
+        $entity = $this->UserTokens->newEmptyEntity();
         $entity = $this->UserTokens->patchEntity($entity, $data);
         $errors = array_keys(Hash::flatten($entity->getErrors()));
 
@@ -144,7 +142,7 @@ class UserTokensTableTest extends TestCase
      */
     public function testValidFinder()
     {
-        $entity = $this->UserTokens->find('valid')->order(['id' => 'ASC'])->first();
+        $entity = $this->UserTokens->find('valid')->orderBy(['id' => 'ASC'])->first();
 
         static::assertNotEmpty($entity);
         static::assertEquals(1, $entity->get('id'));
@@ -155,7 +153,7 @@ class UserTokensTableTest extends TestCase
      *
      * @return array
      */
-    public function getTokenTypesProvider()
+    public static function getTokenTypesProvider(): array
     {
         return [
             'default' => [

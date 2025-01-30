@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\API\Test\TestCase\Error;
 
 use BEdita\Core\Exception\InvalidDataException;
@@ -25,6 +24,7 @@ use Cake\Http\Exception\NotFoundException;
 use Cake\Http\Response;
 use Cake\TestSuite\TestCase;
 use Exception;
+use LogicException;
 
 /**
  * @coversDefaultClass \BEdita\API\Error\ExceptionRenderer
@@ -68,7 +68,7 @@ class ExceptionRendererTest extends TestCase
      *
      * @return array
      */
-    public function errorDetailsProvider()
+    public static function errorDetailsProvider(): array
     {
         return [
             'simple' => [
@@ -107,12 +107,12 @@ class ExceptionRendererTest extends TestCase
                 'err title',
             ],
             'previous exception' => [
-                new BadRequestException('Bad', 400, new \LogicException('Logic Error')),
+                new BadRequestException('Bad', 400, new LogicException('Logic Error')),
                 'Bad',
                 'Logic Error',
             ],
             'not a Cake exception' => [
-                new \LogicException('hello'),
+                new LogicException('hello'),
                 'hello',
             ],
         ];
@@ -159,7 +159,7 @@ class ExceptionRendererTest extends TestCase
      *
      * @return array
      */
-    public function renderJsonProvider()
+    public static function renderJsonProvider(): array
     {
         return [
             'debugOn' => [

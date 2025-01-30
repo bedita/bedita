@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\API\Test\TestCase\Identifier;
 
 use BEdita\API\Identifier\OAuth2Identifier;
@@ -32,7 +31,7 @@ class OAuth2IdentifierTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.Applications',
         'plugin.BEdita/Core.Config',
         'plugin.BEdita/Core.ObjectTypes',
@@ -55,7 +54,7 @@ class OAuth2IdentifierTest extends TestCase
      *
      * @return array
      */
-    public function identifyProvider(): array
+    public static function identifyProvider(): array
     {
         return [
             'found' => [

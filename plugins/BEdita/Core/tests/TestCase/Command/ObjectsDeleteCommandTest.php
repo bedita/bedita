@@ -12,12 +12,12 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\Command;
 
 use Cake\Console\TestSuite\ConsoleIntegrationTestTrait;
 use Cake\Event\EventManager;
 use Cake\TestSuite\TestCase;
+use Exception;
 
 /**
  * {@see BEdita\Core\Command\ObjectsDeleteCommand} Test Case
@@ -33,7 +33,7 @@ class ObjectsDeleteCommandTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.PropertyTypes',
         'plugin.BEdita/Core.Properties',
@@ -46,15 +46,6 @@ class ObjectsDeleteCommandTest extends TestCase
         'plugin.BEdita/Core.Users',
         'plugin.BEdita/Core.Streams',
     ];
-
-    /**
-     * @inheritDoc
-     */
-    public function setUp(): void
-    {
-        parent::setUp();
-        $this->useCommandRunner();
-    }
 
     /**
      * Test buildOptionParser method
@@ -113,7 +104,7 @@ class ObjectsDeleteCommandTest extends TestCase
     public function testExecuteError(): void
     {
         $throwError = function () {
-            throw new \Exception('An error');
+            throw new Exception('An error');
         };
 
         // add listener to global event manager

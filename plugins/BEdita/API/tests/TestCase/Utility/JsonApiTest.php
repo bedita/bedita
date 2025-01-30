@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\API\Test\TestCase\Utility;
 
 use BEdita\API\Test\TestConstants;
@@ -25,6 +24,7 @@ use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Hash;
+use InvalidArgumentException;
 
 /**
  * @coversDefaultClass \BEdita\API\Utility\JsonApi
@@ -43,7 +43,7 @@ class JsonApiTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.PropertyTypes',
         'plugin.BEdita/Core.Relations',
@@ -86,7 +86,7 @@ class JsonApiTest extends TestCase
      *
      * @return array
      */
-    public function formatDataProvider()
+    public static function formatDataProvider(): array
     {
         return [
             'multipleQueryItems' => [
@@ -528,7 +528,7 @@ class JsonApiTest extends TestCase
      *
      * @return array
      */
-    public function parseDataProvider()
+    public static function parseDataProvider(): array
     {
         return [
             'singleItem' => [
@@ -742,7 +742,9 @@ class JsonApiTest extends TestCase
             ],
         ];
 
-        $result = JsonApi::formatData(TableRegistry::getTableLocator()->get('Documents')->get(2));
+        /** @var \BEdita\Core\Model\Entity\ObjectEntity $document */
+        $document = TableRegistry::getTableLocator()->get('Documents')->get(2);
+        $result = JsonApi::formatData($document);
         $result = json_decode(json_encode($result), true);
 
         static::assertEquals($expected, $result);
@@ -753,7 +755,7 @@ class JsonApiTest extends TestCase
      *
      * @return array
      */
-    public function schemaInfoProvider()
+    public static function schemaInfoProvider(): array
     {
         return [
             'roles' => [
@@ -810,6 +812,7 @@ class JsonApiTest extends TestCase
             return $items;
         });
 
+        /** @var \BEdita\Core\Model\Entity\ObjectEntity $document */
         $document = TableRegistry::getTableLocator()->get('Documents')->get(2);
         $result = JsonApi::formatData($document);
 
@@ -840,12 +843,12 @@ class JsonApiTest extends TestCase
             return $data;
         });
 
-        $document = TableRegistry::getTableLocator()->get('Documents')
+        $documents = TableRegistry::getTableLocator()->get('Documents')
             ->find('type', ['documents'])
             ->limit(2)
-            ->all();
+            ->toArray();
 
-        $result = JsonApi::formatData($document);
+        $result = JsonApi::formatData($documents);
         $expected = [true, true];
         static::assertEquals(1, $dispatchedEvent);
         static::assertEquals($expected, Hash::extract($result, '{n}.meta.after_format'));
@@ -859,7 +862,7 @@ class JsonApiTest extends TestCase
      */
     public function testNotJsonSerializable(): void
     {
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage(sprintf('Objects must implement "%s", got "array" instead', JsonApiSerializable::class));
 
         JsonApi::formatData(['name' => 'Gustavo']);

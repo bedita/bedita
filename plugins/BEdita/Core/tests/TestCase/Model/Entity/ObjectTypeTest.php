@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\Model\Entity;
 
 use BEdita\Core\Model\Entity\ObjectType;
@@ -21,6 +20,8 @@ use Cake\Event\Event;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Hash;
+use Iterator;
+use stdClass;
 
 /**
  * {@see \BEdita\Core\Model\Entity\ObjectType} Test Case
@@ -34,14 +35,14 @@ class ObjectTypeTest extends TestCase
      *
      * @var \BEdita\Core\Model\Table\ObjectTypesTable
      */
-    public $ObjectTypes;
+    public ObjectTypesTable $ObjectTypes;
 
     /**
      * Fixtures
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.PropertyTypes',
         'plugin.BEdita/Core.Properties',
@@ -142,7 +143,7 @@ class ObjectTypeTest extends TestCase
      *
      * @return array
      */
-    public function getSetSingularProvider()
+    public static function getSetSingularProvider(): array
     {
         return [
             'default' => ['foo_bar', 'foo_bars', 'FooBar'],
@@ -190,7 +191,7 @@ class ObjectTypeTest extends TestCase
      *
      * @return array
      */
-    public function getSetTableProvider()
+    public static function getSetTableProvider(): array
     {
         return [
             'pluginSyntax' => ['BEdita/Core.Objects', 'BEdita/Core', 'Objects', 'BEdita/Core.Objects'],
@@ -225,7 +226,7 @@ class ObjectTypeTest extends TestCase
      *
      * @return array
      */
-    public function getRelationsByNameProvider()
+    public static function getRelationsByNameProvider(): array
     {
         return [
             'empty' => [
@@ -334,7 +335,7 @@ class ObjectTypeTest extends TestCase
      *
      * @return array[]
      */
-    public function getParentProvider(): array
+    public static function getParentProvider(): array
     {
         return [
             'no parent' => [
@@ -352,7 +353,7 @@ class ObjectTypeTest extends TestCase
             'parent, preloaded' => [
                 'objects',
                 function (ObjectTypesTable $table): ObjectType {
-                    return $table->get('locations', ['contain' => ['Parent']]);
+                    return $table->get('locations', contain: ['Parent']);
                 },
             ],
         ];
@@ -386,7 +387,7 @@ class ObjectTypeTest extends TestCase
      *
      * @return array
      */
-    public function getSetParentNameProvider()
+    public static function getSetParentNameProvider(): array
     {
         return [
             'objects' => [
@@ -457,7 +458,7 @@ class ObjectTypeTest extends TestCase
             'is_abstract' => true,
             'enabled' => false,
         ];
-        $objectType = $this->ObjectTypes->newEntity([]);
+        $objectType = $this->ObjectTypes->newEmptyEntity();
         $this->ObjectTypes->patchEntity($objectType, $data);
         $success = $this->ObjectTypes->save($objectType);
         static::assertTrue((bool)$success);
@@ -472,7 +473,7 @@ class ObjectTypeTest extends TestCase
      *
      * @return array
      */
-    public function getSchemaProvider()
+    public static function getSchemaProvider(): array
     {
         return [
             'objects' => [
@@ -570,7 +571,7 @@ class ObjectTypeTest extends TestCase
                                 [
                                     'type' => 'null',
                                 ],
-                                new \stdClass(),
+                                new stdClass(),
                             ],
                         ],
                         'created' => [
@@ -661,7 +662,7 @@ class ObjectTypeTest extends TestCase
                                 [
                                     'type' => 'null',
                                 ],
-                                new \stdClass(),
+                                new stdClass(),
                             ],
                             '$id' => '/properties/files_property',
                             'title' => 'Files Property',
@@ -734,7 +735,7 @@ class ObjectTypeTest extends TestCase
                                 [
                                     'type' => 'null',
                                 ],
-                                new \stdClass(),
+                                new stdClass(),
                             ],
                             '$id' => '/properties/provider_extra',
                             'title' => 'Provider Extra',
@@ -861,7 +862,7 @@ class ObjectTypeTest extends TestCase
                                 [
                                     'type' => 'null',
                                 ],
-                                new \stdClass(),
+                                new stdClass(),
                             ],
                         ],
                         'created' => [
@@ -1223,7 +1224,7 @@ class ObjectTypeTest extends TestCase
      */
     public function testGetSchemaNoProperties()
     {
-        $objectType = $this->ObjectTypes->newEntity([]);
+        $objectType = $this->ObjectTypes->newEmptyEntity();
         $objectType->is_abstract = false;
 
         $schema = $objectType->schema;
@@ -1316,7 +1317,7 @@ class ObjectTypeTest extends TestCase
      *
      * @return array[]
      */
-    public function getFullInheritanceChainProvider(): array
+    public static function getFullInheritanceChainProvider(): array
     {
         return [
             'objects' => [
@@ -1352,7 +1353,7 @@ class ObjectTypeTest extends TestCase
         $objectType = $this->ObjectTypes->get($name);
 
         $fullChain = $objectType->getFullInheritanceChain();
-        static::assertInstanceOf(\Iterator::class, $fullChain);
+        static::assertInstanceOf(Iterator::class, $fullChain);
 
         $fullChain = iterator_to_array($fullChain);
         foreach ($fullChain as $ancestor) {
@@ -1368,7 +1369,7 @@ class ObjectTypeTest extends TestCase
      *
      * @return array[]
      */
-    public function isDescendantOfProvider(): array
+    public static function isDescendantOfProvider(): array
     {
         return [
             'media descendant of objects' => [true, 'media', 'objects'],
@@ -1408,7 +1409,7 @@ class ObjectTypeTest extends TestCase
      *
      * @return array[]
      */
-    public function getClosestCommonAncestorProvider(): array
+    public static function getClosestCommonAncestorProvider(): array
     {
         return [
             'Ø = null' => [null, []],

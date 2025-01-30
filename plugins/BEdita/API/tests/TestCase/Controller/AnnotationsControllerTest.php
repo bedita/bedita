@@ -28,7 +28,7 @@ class AnnotationsControllerTest extends IntegrationTestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.Annotations',
     ];
 
@@ -38,7 +38,7 @@ class AnnotationsControllerTest extends IntegrationTestCase
      * @return void
      * @coversNothing
      */
-    public function testIndex()
+    public function testIndex(): void
     {
         $expected = [
             'links' => [

@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Model\Entity;
 
 use BEdita\Core\Utility\JsonApiSerializable;
@@ -23,13 +22,14 @@ use Cake\ORM\Entity;
  *
  * @property int $id
  * @property string $name
- * @property string $description
+ * @property string|null $description
  * @property bool $unchangeable
  * @property int $priority
- * @property \Cake\I18n\Time $created
- * @property \Cake\I18n\Time $modified
+ * @property \Cake\I18n\DateTime|null $created
+ * @property \Cake\I18n\DateTime|null $modified
  * @property \BEdita\Core\Model\Entity\User[] $users
  * @property \BEdita\Core\Model\Entity\EndpointPermission[] $endpoint_permissions
+ * @property \BEdita\Core\Model\Entity\ObjectPermission[] $object_permissions
  * @since 4.0.0
  */
 class Role extends Entity implements JsonApiSerializable
@@ -39,7 +39,7 @@ class Role extends Entity implements JsonApiSerializable
     /**
      * @inheritDoc
      */
-    protected $_accessible = [
+    protected array $_accessible = [
         '*' => false,
         'name' => true,
         'description' => true,
@@ -48,7 +48,7 @@ class Role extends Entity implements JsonApiSerializable
     /**
      * @inheritDoc
      */
-    protected $_hidden = [
+    protected array $_hidden = [
         'endpoint_permissions',
         'object_permissions',
     ];

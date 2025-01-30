@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\Model\Action;
 
 use BEdita\Core\Model\Action\ListAssociatedAction;
@@ -22,6 +21,9 @@ use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\ORM\Association;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
+use Exception;
+use InvalidArgumentException;
+use LogicException;
 
 /**
  * @coversDefaultClass \BEdita\Core\Model\Action\ListAssociatedAction
@@ -33,7 +35,7 @@ class ListAssociatedActionTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.FakeAnimals',
         'plugin.BEdita/Core.FakeArticles',
         'plugin.BEdita/Core.FakeMammals',
@@ -82,7 +84,7 @@ class ListAssociatedActionTest extends TestCase
      *
      * @return array
      */
-    public function invocationProvider()
+    public static function invocationProvider(): array
     {
         return [
             'belongsToMany' => [
@@ -106,7 +108,7 @@ class ListAssociatedActionTest extends TestCase
                 ['invalid', 'pk'],
             ],
             'missing primaryKey' => [
-                new \InvalidArgumentException('Missing required option "primaryKey"'),
+                new InvalidArgumentException('Missing required option "primaryKey"'),
                 'FakeTags',
                 'FakeArticles',
                 null,
@@ -206,7 +208,7 @@ class ListAssociatedActionTest extends TestCase
      */
     public function testInvocation($expected, $table, $association, $id, ?array $options = null)
     {
-        if ($expected instanceof \Exception) {
+        if ($expected instanceof Exception) {
             $this->expectException(get_class($expected));
             $this->expectExceptionMessage($expected->getMessage());
         }
@@ -237,7 +239,7 @@ class ListAssociatedActionTest extends TestCase
      */
     public function testUnknownAssociationType()
     {
-        $this->expectException(\LogicException::class);
+        $this->expectException(LogicException::class);
         $this->expectExceptionMessageMatches('/^Unknown association type "\w+"$/');
         $sourceTable = TableRegistry::getTableLocator()->get('FakeArticles');
         $association = static::getMockForAbstractClass(Association::class, [

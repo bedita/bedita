@@ -21,6 +21,7 @@ use Cake\Database\Driver\Postgres;
 use Cake\Datasource\ConnectionManager;
 use Cake\ORM\Table;
 use Cake\TestSuite\TestCase;
+use Exception;
 
 /**
  * @coversDefaultClass \BEdita\Core\Search\Adapter\SimpleAdapter
@@ -37,7 +38,7 @@ class SimpleAdapterTest extends TestCase
     /**
      * @inheritDoc
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.FakeAnimals',
         'plugin.BEdita/Core.FakeMammals',
         'plugin.BEdita/Core.FakeFelines',
@@ -75,7 +76,7 @@ class SimpleAdapterTest extends TestCase
      *
      * @return array
      */
-    public function getFieldsProvider()
+    public static function getFieldsProvider(): array
     {
         return [
             'default' => [
@@ -148,7 +149,7 @@ class SimpleAdapterTest extends TestCase
      *
      * @return array
      */
-    public function searchProvider()
+    public static function searchProvider()
     {
         return [
             'basic' => [
@@ -265,7 +266,7 @@ class SimpleAdapterTest extends TestCase
             static::markTestSkipped('Case-insensitive test cases are skipped on Postgres');
         }
 
-        if ($expected instanceof \Exception) {
+        if ($expected instanceof Exception) {
             $this->expectExceptionObject($expected);
         }
 

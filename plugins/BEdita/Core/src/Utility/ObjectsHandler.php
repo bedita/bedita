@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Utility;
 
 use Cake\Console\Exception\StopException;
@@ -69,7 +68,7 @@ class ObjectsHandler
      * @param array $user User performing action data
      * @return \Cake\Datasource\EntityInterface Entity saved
      */
-    public static function save($type, $data, $user = []): EntityInterface
+    public static function save(string|int $type, array $data, array $user = []): EntityInterface
     {
         static::checkEnvironment();
         $currentUser = LoggedUser::getUser();
@@ -99,12 +98,12 @@ class ObjectsHandler
     /**
      * COMPLETELY and IRREVOCABLY remove an object from the database.
      *
-     * @param int|string $id Object to remove ID or uname
+     * @param string|int $id Object to remove ID or uname
      * @return bool success
      * @throws \Cake\Datasource\Exception\RecordNotFoundException
      * @throws \Cake\ORM\Exception\PersistenceFailedException
      */
-    public static function remove($id): bool
+    public static function remove(int|string $id): bool
     {
         static::checkEnvironment();
         $objectsTable = TableRegistry::getTableLocator()->get('Objects');

@@ -27,7 +27,7 @@ class CaptionsTest extends IntegrationTestCase
     /**
      * @inheritDoc
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.Captions',
     ];
 

@@ -142,7 +142,7 @@ class RelationshipsParamsTest extends IntegrationTestCase
      *
      * @return array
      */
-    public function invalidParamsProvider()
+    public static function invalidParamsProvider(): array
     {
         return [
             'POST, not an object' => [

@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\Mailer;
 
 use BEdita\Core\Mailer\UserMailer;
@@ -22,6 +21,8 @@ use Cake\Mailer\MailerAwareTrait;
 use Cake\Mailer\TransportFactory;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
+use Exception;
+use LogicException;
 
 /**
  * @coversDefaultClass \BEdita\Core\Mailer\UserMailer
@@ -42,7 +43,7 @@ class UserMailerTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.AsyncJobs',
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.PropertyTypes',
@@ -98,7 +99,7 @@ class UserMailerTest extends TestCase
      *
      * @return array
      */
-    public function signupProvider()
+    public static function signupProvider(): array
     {
         return [
             'ok' => [
@@ -111,24 +112,15 @@ class UserMailerTest extends TestCase
                 ],
             ],
             'missing user' => [
-                new \LogicException('Parameter "params.user" missing'),
+                new LogicException('Parameter "params.user" missing'),
                 [
                     'params' => [
-                        'activationUrl' => 'http://example.com',
-                    ],
-                ],
-            ],
-            'invalid user entity' => [
-                new \LogicException('Invalid user, it must be an User Entity'),
-                [
-                    'params' => [
-                        'user' => ['id' => 1],
                         'activationUrl' => 'http://example.com',
                     ],
                 ],
             ],
             'missing activationUrl' => [
-                new \LogicException('Parameter "params.activationUrl" missing'),
+                new LogicException('Parameter "params.activationUrl" missing'),
                 [
                     'params' => [
                         'userId' => 5,
@@ -151,7 +143,7 @@ class UserMailerTest extends TestCase
      */
     public function testSignup($expected, $options)
     {
-        if ($expected instanceof \Exception) {
+        if ($expected instanceof Exception) {
             $this->expectException(get_class($expected));
             $this->expectExceptionMessage($expected->getMessage());
         }
@@ -179,7 +171,7 @@ class UserMailerTest extends TestCase
         $user->email = null;
         $Users->save($user);
 
-        $this->expectException(\LogicException::class);
+        $this->expectException(LogicException::class);
         $this->expectExceptionMessage('User email missing');
 
         $options = [
@@ -197,7 +189,7 @@ class UserMailerTest extends TestCase
      *
      * @return array
      */
-    public function welcomeProvider()
+    public static function welcomeProvider(): array
     {
         return [
             'ok' => [
@@ -209,16 +201,8 @@ class UserMailerTest extends TestCase
                 ],
             ],
             'missing user' => [
-                new \LogicException('Parameter "params.user" missing'),
+                new LogicException('Parameter "params.user" missing'),
                 [],
-            ],
-            'invalid user entity' => [
-                new \LogicException('Invalid user, it must be an User Entity'),
-                [
-                    'params' => [
-                        'user' => ['id' => 1],
-                    ],
-                ],
             ],
         ];
     }
@@ -235,7 +219,7 @@ class UserMailerTest extends TestCase
      */
     public function testWelcome($expected, $options)
     {
-        if ($expected instanceof \Exception) {
+        if ($expected instanceof Exception) {
             $this->expectException(get_class($expected));
             $this->expectExceptionMessage($expected->getMessage());
         }
@@ -254,7 +238,7 @@ class UserMailerTest extends TestCase
      *
      * @return array
      */
-    public function changeRequestProvider()
+    public static function changeRequestProvider(): array
     {
         return [
             'ok' => [
@@ -267,7 +251,7 @@ class UserMailerTest extends TestCase
                 ],
             ],
             'missing userId' => [
-                new \LogicException('Parameter "params.user" missing'),
+                new LogicException('Parameter "params.user" missing'),
                 [
                     'params' => [
                         'changeUrl' => 'http://example.com',
@@ -275,7 +259,7 @@ class UserMailerTest extends TestCase
                 ],
             ],
             'missing changeUrl' => [
-                new \LogicException('Parameter "params.changeUrl" missing'),
+                new LogicException('Parameter "params.changeUrl" missing'),
                 [
                     'params' => [
                         'userId' => 1,
@@ -297,7 +281,7 @@ class UserMailerTest extends TestCase
      */
     public function testChangeRequest($expected, $options)
     {
-        if ($expected instanceof \Exception) {
+        if ($expected instanceof Exception) {
             $this->expectException(get_class($expected));
             $this->expectExceptionMessage($expected->getMessage());
         }
@@ -316,7 +300,7 @@ class UserMailerTest extends TestCase
      *
      * @return array
      */
-    public function getProjectNameProvider()
+    public static function getProjectNameProvider(): array
     {
         return [
             'default' => [
@@ -344,12 +328,11 @@ class UserMailerTest extends TestCase
         Configure::write('Project.name', $configured);
 
         $mailer = new class extends UserMailer {
-            // make method public in
-            public function getProjectName()
+            public function getPublicProjectName()
             {
                 return parent::getProjectName();
             }
         };
-        static::assertEquals($expected, $mailer->getProjectName());
+        static::assertEquals($expected, $mailer->getPublicProjectName());
     }
 }

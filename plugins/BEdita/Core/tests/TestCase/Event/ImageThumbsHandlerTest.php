@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\Event;
 
 use BEdita\Core\Event\ImageThumbsHandler;
@@ -37,7 +36,7 @@ class ImageThumbsHandlerTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.Objects',
         'plugin.BEdita/Core.Profiles',
@@ -62,13 +61,8 @@ class ImageThumbsHandlerTest extends TestCase
      *
      * @return array
      */
-    public function afterSaveAssociatedProvider(): array
+    public static function afterSaveAssociatedProvider(): array
     {
-        $image = $this->getMockBuilder(ObjectEntity::class)
-            ->onlyMethods(['get'])
-            ->getMock();
-        $image->method('get')->willReturn('images');
-
         return [
             'noStream' => [
                 [
@@ -78,17 +72,22 @@ class ImageThumbsHandlerTest extends TestCase
             ],
             'noImages' => [
                 [
-                    'entity' => $this->getMockBuilder('BEdita\Core\Model\Entity\Stream')->getMock(),
+                    'entity' => static fn (self $testCase) => $testCase->getMockBuilder(Stream::class)->getMock(),
                     'relatedEntities' => [],
                 ],
                 false,
             ],
             'stream and images' => [
                 [
-                    'entity' => $this->getMockBuilder('BEdita\Core\Model\Entity\Stream')->getMock(),
-                    'relatedEntities' => [
-                        $image,
-                    ],
+                    'entity' => static fn (self $testCase) => $testCase->getMockBuilder(Stream::class)->getMock(),
+                    'relatedEntities' => static function (self $testCase) {
+                        $image = $testCase->getMockBuilder(ObjectEntity::class)
+                            ->onlyMethods(['get'])
+                            ->getMock();
+                        $image->method('get')->willReturn('images');
+
+                        return [$image];
+                    },
                 ],
                 true,
             ],
@@ -113,6 +112,12 @@ class ImageThumbsHandlerTest extends TestCase
                 $this->called = true;
             }
         };
+
+        $data = array_map(
+            fn ($value) => is_callable($value) ? $value($this) : $value,
+            $data
+        );
+
         $event = new Event('Associated.afterSave', $this, $data);
         $handler->afterSaveAssociated($event);
         static::assertEquals($updateThumbsIsCalled, $handler->called);
@@ -130,8 +135,8 @@ class ImageThumbsHandlerTest extends TestCase
 
         $stream = new Stream(['uuid' => Text::uuid()]);
         $mock = $this->getMockBuilder(ThumbnailGenerator::class)
-            ->onlyMethods(['getUrl', 'exists', 'generate'])
-            ->getMockForAbstractClass();
+            ->onlyMethods(['getUrl', 'exists', 'generate', 'delete'])
+            ->getMock();
         $mock->expects(static::once())
             ->method('getUrl')
             ->with($stream, [])

@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Model\Behavior;
 
 use Cake\Datasource\EntityInterface;
@@ -62,7 +61,7 @@ class UniqueNameBehavior extends Behavior
      *
      * @var array
      */
-    protected $_defaultConfig = [
+    protected array $_defaultConfig = [
         'sourceField' => 'title',
         'prefix' => '',
         'replacement' => '-',
@@ -105,7 +104,7 @@ class UniqueNameBehavior extends Behavior
             $uname = $this->generateUniqueName($entity, true);
         }
 
-        $entity->set('uname', Text::truncate($uname, self::UNAME_MAX_LENGTH));
+        $entity->set('uname', Text::truncate($uname, self::UNAME_MAX_LENGTH, ['ellipsis' => '']));
     }
 
     /**
@@ -194,7 +193,7 @@ class UniqueNameBehavior extends Behavior
      * @param \Cake\Datasource\EntityInterface $entity The entity to save
      * @return void
      */
-    public function beforeRules(EventInterface $event, EntityInterface $entity)
+    public function beforeRules(EventInterface $event, EntityInterface $entity): void
     {
         $this->uniqueName($entity);
     }

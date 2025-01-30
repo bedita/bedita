@@ -24,8 +24,7 @@ use Cake\ORM\Entity;
  * @property int $right_id
  * @property int $priority
  * @property int $inv_priority
- * @property array $params
- *
+ * @property array|null $params
  * @property \BEdita\Core\Model\Entity\ObjectEntity $object
  * @property \BEdita\Core\Model\Entity\Relation $relation
  */
@@ -34,7 +33,7 @@ class ObjectRelation extends Entity
     /**
      * @inheritDoc
      */
-    protected $_accessible = [
+    protected array $_accessible = [
         '*' => true,
         'left_id' => false,
         'relation_id' => false,
@@ -44,7 +43,7 @@ class ObjectRelation extends Entity
     /**
      * @inheritDoc
      */
-    protected $_hidden = [
+    protected array $_hidden = [
         'left_id',
         'right_id',
         'relation_id',

@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Model\Table;
 
 use BEdita\Core\Exception\BadFilterException;
@@ -21,28 +20,38 @@ use BEdita\Core\ORM\Rule\IsUniqueAmongst;
 use BEdita\Core\Search\SimpleSearchTrait;
 use Cake\Cache\Cache;
 use Cake\Database\Expression\QueryExpression;
-use Cake\Database\Schema\TableSchemaInterface;
 use Cake\Datasource\EntityInterface;
 use Cake\Event\EventInterface;
-use Cake\ORM\Query;
+use Cake\ORM\Query\SelectQuery;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
 use Cake\Utility\Inflector;
 use Cake\Validation\Validator;
+use Closure;
+use Psr\SimpleCache\CacheInterface;
 
 /**
  * Relations Model
  *
- * @property \Cake\ORM\Association\HasMany $ObjectRelations
- * @property \Cake\ORM\Association\BelongsToMany $LeftObjectTypes
- * @property \Cake\ORM\Association\BelongsToMany $RightObjectTypes
- * @method \BEdita\Core\Model\Entity\Relation newEntity($data = null, array $options = [])
+ * @property \Cake\ORM\Table&\Cake\ORM\Association\HasMany $ObjectRelations
+ * @property \Cake\ORM\Table&\Cake\ORM\Association\BelongsToMany $LeftObjectTypes
+ * @property \Cake\ORM\Table&\Cake\ORM\Association\BelongsToMany $RightObjectTypes
+ * @method \BEdita\Core\Model\Entity\Relation newEntity(array $data, array $options = [])
  * @method \BEdita\Core\Model\Entity\Relation[] newEntities(array $data, array $options = [])
- * @method \BEdita\Core\Model\Entity\Relation|bool save(\Cake\Datasource\EntityInterface $entity, $options = [])
+ * @method \BEdita\Core\Model\Entity\Relation|false save(\Cake\Datasource\EntityInterface $entity, array $options = [])
  * @method \BEdita\Core\Model\Entity\Relation patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
- * @method \BEdita\Core\Model\Entity\Relation[] patchEntities($entities, array $data, array $options = [])
- * @method \BEdita\Core\Model\Entity\Relation findOrCreate($search, callable $callback = null, $options = [])
+ * @method \BEdita\Core\Model\Entity\Relation[] patchEntities(iterable $entities, array $data, array $options = [])
+ * @method \BEdita\Core\Model\Entity\Relation findOrCreate(\Cake\ORM\Query\SelectQuery|callable|array $search, ?callable $callback = null, array $options = [])
+ * @method \BEdita\Core\Model\Entity\Relation newEmptyEntity()
+ * @method \BEdita\Core\Model\Entity\Relation get(mixed $primaryKey, array|string $finder = 'all', \Psr\SimpleCache\CacheInterface|string|null $cache = null, \Closure|string|null $cacheKey = null, mixed ...$args)
+ * @method \BEdita\Core\Model\Entity\Relation saveOrFail(\Cake\Datasource\EntityInterface $entity, array $options = [])
+ * @method \BEdita\Core\Model\Entity\Relation[]|\Cake\Datasource\ResultSetInterface<\BEdita\Core\Model\Entity\Relation>|false saveMany(iterable $entities, array $options = [])
+ * @method \BEdita\Core\Model\Entity\Relation[]|\Cake\Datasource\ResultSetInterface<\BEdita\Core\Model\Entity\Relation> saveManyOrFail(iterable $entities, array $options = [])
+ * @method \BEdita\Core\Model\Entity\Relation[]|\Cake\Datasource\ResultSetInterface<\BEdita\Core\Model\Entity\Relation>|false deleteMany(iterable $entities, array $options = [])
+ * @method \BEdita\Core\Model\Entity\Relation[]|\Cake\Datasource\ResultSetInterface<\BEdita\Core\Model\Entity\Relation> deleteManyOrFail(iterable $entities, array $options = [])
+ * @mixin \BEdita\Core\Model\Behavior\SearchableBehavior
+ * @mixin \BEdita\Core\Model\Behavior\ResourceNameBehavior
  */
 class RelationsTable extends Table
 {
@@ -60,6 +69,7 @@ class RelationsTable extends Table
         $this->setTable('relations');
         $this->setDisplayField('name');
         $this->setPrimaryKey('id');
+        $this->getSchema()->setColumnType('params', 'jsonobject');
 
         $this->hasMany('ObjectRelations');
 
@@ -145,11 +155,11 @@ class RelationsTable extends Table
     public function buildRules(RulesChecker $rules): RulesChecker
     {
         $rules
-            ->add(new IsUniqueAmongst(['name' => ['name', 'inverse_name']]), '_isUniqueAmongst', [
+            ->add(new IsUniqueAmongst(['name' => ['name', 'inverse_name']]), '_isUniqueAmongstName', [
                 'errorField' => 'name',
                 'message' => __d('cake', 'This value is already in use'),
             ])
-            ->add(new IsUniqueAmongst(['inverse_name' => ['name', 'inverse_name']]), '_isUniqueAmongst', [
+            ->add(new IsUniqueAmongst(['inverse_name' => ['name', 'inverse_name']]), '_isUniqueAmongstInverseName', [
                 'errorField' => 'inverse_name',
                 'message' => __d('cake', 'This value is already in use'),
             ]);
@@ -158,41 +168,34 @@ class RelationsTable extends Table
     }
 
     /**
-     * {@inheritDoc}
-     *
-     * @codeCoverageIgnore
+     * @inheritDoc
      */
-    public function getSchema(): TableSchemaInterface
-    {
-        return parent::getSchema()->setColumnType('params', 'jsonobject');
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @return \BEdita\Core\Model\Entity\Relation
-     */
-    public function get($primaryKey, array $options = []): EntityInterface
-    {
+    public function get(
+        mixed $primaryKey,
+        array|string $finder = 'all',
+        CacheInterface|string|null $cache = null,
+        Closure|string|null $cacheKey = null,
+        mixed ...$args
+    ): EntityInterface {
         if (!is_numeric($primaryKey)) {
-            $relation = $this->find('byName', ['name' => $primaryKey])
+            $relation = $this->find('byName', name: $primaryKey)
                 ->select('id')
                 ->firstOrFail();
 
             $primaryKey = $relation->id;
         }
 
-        return parent::get($primaryKey, $options);
+        return parent::get($primaryKey, $finder, $cache, $cacheKey, ...$args);
     }
 
     /**
      * Find a relation by its name or inverse name.
      *
-     * @param \Cake\ORM\Query $query Query object.
+     * @param \Cake\ORM\Query\SelectQuery $query Query object.
      * @param array $options Additional options. The `name` key is required.
-     * @return \Cake\ORM\Query
+     * @return \Cake\ORM\Query\SelectQuery
      */
-    protected function findByName(Query $query, array $options = [])
+    protected function findByName(SelectQuery $query, array $options = []): SelectQuery
     {
         if (empty($options['name'])) {
             throw new BadFilterException(__d('bedita', 'Missing required parameter "{0}"', 'name'));
@@ -231,7 +234,7 @@ class RelationsTable extends Table
      *
      * @return void
      */
-    public function afterSave()
+    public function afterSave(): void
     {
         Cache::clear(ObjectTypesTable::CACHE_CONFIG);
     }
@@ -241,7 +244,7 @@ class RelationsTable extends Table
      *
      * @return void
      */
-    public function afterDelete()
+    public function afterDelete(): void
     {
         Cache::clear(ObjectTypesTable::CACHE_CONFIG);
     }

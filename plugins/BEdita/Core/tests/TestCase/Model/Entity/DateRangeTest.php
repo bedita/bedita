@@ -12,13 +12,15 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\Model\Entity;
 
 use BEdita\Core\Model\Entity\DateRange;
-use Cake\I18n\FrozenTime;
+use BEdita\Core\Model\Table\DateRangesTable;
+use Cake\I18n\DateTime;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
+use Exception;
+use LogicException;
 
 /**
  * @coversDefaultClass \BEdita\Core\Model\Entity\DateRange
@@ -30,7 +32,7 @@ class DateRangeTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.Objects',
         'plugin.BEdita/Core.DateRanges',
@@ -41,7 +43,7 @@ class DateRangeTest extends TestCase
      *
      * @var \BEdita\Core\Model\Table\DateRangesTable
      */
-    protected $DateRanges;
+    protected DateRangesTable $DateRanges;
 
     /**
      * @inheritDoc
@@ -58,7 +60,7 @@ class DateRangeTest extends TestCase
      *
      * @return array
      */
-    public function isBeforeProvider()
+    public static function isBeforeProvider(): array
     {
         return [
             [
@@ -199,7 +201,7 @@ class DateRangeTest extends TestCase
      *
      * @return array
      */
-    public function isAfterProvider()
+    public static function isAfterProvider(): array
     {
         return [
             [
@@ -340,7 +342,7 @@ class DateRangeTest extends TestCase
      *
      * @return array
      */
-    public function normalizeProvider()
+    public static function normalizeProvider(): array
     {
         return [
             'empty' => [
@@ -525,7 +527,7 @@ class DateRangeTest extends TestCase
      *
      * @return array
      */
-    public function diffProvider()
+    public static function diffProvider(): array
     {
         return [
             'empty' => [
@@ -658,25 +660,25 @@ class DateRangeTest extends TestCase
      *
      * @return array
      */
-    public function checkWellFormedProvider()
+    public static function checkWellFormedProvider(): array
     {
         return [
             'not a date range' => [
-                new \LogicException('Invalid Date Range entity class: expected "BEdita\Core\Model\Entity\DateRange", got "resource"'),
+                new LogicException('Invalid Date Range entity class: expected "BEdita\Core\Model\Entity\DateRange", got "resource"'),
                 [
                     fopen(__FILE__, 'r'),
                 ],
                 false,
             ],
             'not a date range /2' => [
-                new \LogicException('Invalid Date Range entity class: expected "BEdita\Core\Model\Entity\DateRange", got "Cake\ORM\TableRegistry"'),
+                new LogicException('Invalid Date Range entity class: expected "BEdita\Core\Model\Entity\DateRange", got "Cake\ORM\TableRegistry"'),
                 [
                     new TableRegistry(),
                 ],
                 false,
             ],
             'invalid start date' => [
-                new \LogicException('Invalid "start_date": expected "DateTimeInterface", got "NULL"'),
+                new LogicException('Invalid "start_date": expected "DateTimeInterface", got "NULL"'),
                 [
                     [
                         'start_date' => null,
@@ -685,10 +687,10 @@ class DateRangeTest extends TestCase
                 ],
             ],
             'invalid end date' => [
-                new \LogicException('Invalid "end_date": expected "DateTimeInterface", got "string"'),
+                new LogicException('Invalid "end_date": expected "DateTimeInterface", got "string"'),
                 [
                     new DateRange([
-                        'start_date' => new FrozenTime(),
+                        'start_date' => new DateTime(),
                         'end_date' => 'better than yesterday, worse than tomorrow',
                     ]),
                 ],
@@ -718,7 +720,7 @@ class DateRangeTest extends TestCase
      */
     public function testCheckWellFormed($expected, array $dateRanges, $marshal = true)
     {
-        if ($expected instanceof \Exception) {
+        if ($expected instanceof Exception) {
             $this->expectException(get_class($expected));
             $this->expectExceptionMessage($expected->getMessage());
         }

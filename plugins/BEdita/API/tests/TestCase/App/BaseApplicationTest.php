@@ -26,6 +26,7 @@ use Cake\Http\ServerRequest;
 use Cake\Queue\QueueManager;
 use Cake\Routing\Middleware\RoutingMiddleware;
 use Cake\TestSuite\TestCase;
+use Exception;
 
 /**
  * {@see BEdita\API\App\Application} Test Case
@@ -39,7 +40,7 @@ class BaseApplicationTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.AuthProviders',
     ];
 
@@ -94,7 +95,7 @@ class BaseApplicationTest extends TestCase
      *
      * @return array
      */
-    public function configPluginsProvider(): array
+    public static function configPluginsProvider(): array
     {
         return [
             'simple' => [
@@ -178,7 +179,7 @@ class BaseApplicationTest extends TestCase
      *
      * @return array
      */
-    public function authenticationServiceProvider(): array
+    public static function authenticationServiceProvider(): array
     {
         return [
             'default' => [
@@ -275,7 +276,7 @@ class BaseApplicationTest extends TestCase
      *
      * @return array
      */
-    public function loadAuthProvidersProvider(): array
+    public static function loadAuthProvidersProvider(): array
     {
         return [
             'ok' => [
@@ -304,7 +305,7 @@ class BaseApplicationTest extends TestCase
      */
     public function testLoadAuthProviders($expected, string $authProvider): void
     {
-        if ($expected instanceof \Exception) {
+        if ($expected instanceof Exception) {
             $this->expectException(get_class($expected));
             $this->expectExceptionMessage($expected->getMessage());
         }

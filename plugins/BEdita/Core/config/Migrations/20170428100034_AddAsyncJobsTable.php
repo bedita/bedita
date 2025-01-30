@@ -144,7 +144,7 @@ class AddAsyncJobsTable extends AbstractMigration
      */
     public function down()
     {
-        $this->dropTable('async_jobs');
+        $this->table('async_jobs')->drop()->save();
     }
 }
 

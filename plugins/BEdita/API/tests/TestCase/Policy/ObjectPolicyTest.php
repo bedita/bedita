@@ -20,7 +20,7 @@ use Authorization\Identity;
 use Authorization\Policy\MapResolver;
 use BEdita\API\Policy\ObjectPolicy;
 use BEdita\Core\Utility\LoggedUser;
-use Cake\ORM\Query;
+use Cake\ORM\Query\SelectQuery;
 use Cake\TestSuite\TestCase;
 
 /**
@@ -30,7 +30,7 @@ use Cake\TestSuite\TestCase;
  */
 class ObjectPolicyTest extends TestCase
 {
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.Objects',
         'plugin.BEdita/Core.Profiles',
@@ -46,7 +46,7 @@ class ObjectPolicyTest extends TestCase
      *
      * @return array
      */
-    public function beforeProvider(): array
+    public static function beforeProvider(): array
     {
         return [
             'no identity' => [
@@ -95,7 +95,7 @@ class ObjectPolicyTest extends TestCase
      *
      * @return array
      */
-    public function canUpdateProvider(): array
+    public static function canUpdateProvider(): array
     {
         return [
             'no permissions set' => [
@@ -156,7 +156,7 @@ class ObjectPolicyTest extends TestCase
         /** @var \BEdita\Core\Model\Entity\ObjectType $objectType */
         $objectType = $objectTypesTable
             ->find()
-            ->innerJoinWith('Objects', function (Query $q) use ($id) {
+            ->innerJoinWith('Objects', function (SelectQuery $q) use ($id) {
                 return $q->where(['Objects.id' => $id]);
             })
             ->first();
@@ -176,7 +176,7 @@ class ObjectPolicyTest extends TestCase
      *
      * @return array
      */
-    public function canUpdateParentsProvider(): array
+    public static function canUpdateParentsProvider(): array
     {
         return [
             'no permissions set' => [
@@ -269,7 +269,7 @@ class ObjectPolicyTest extends TestCase
         /** @var \BEdita\Core\Model\Entity\ObjectType $objectType */
         $objectType = $objectTypesTable
             ->find()
-            ->innerJoinWith('Objects', function (Query $q) use ($childrenId) {
+            ->innerJoinWith('Objects', function (SelectQuery $q) use ($childrenId) {
                 return $q->where(['Objects.id' => $childrenId]);
             })
             ->first();

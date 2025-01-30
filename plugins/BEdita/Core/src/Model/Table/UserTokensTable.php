@@ -12,13 +12,12 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Model\Table;
 
 use Cake\Core\Configure;
 use Cake\Database\Expression\QueryExpression;
-use Cake\I18n\FrozenTime;
-use Cake\ORM\Query;
+use Cake\I18n\DateTime;
+use Cake\ORM\Query\SelectQuery;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
@@ -28,13 +27,19 @@ use Cake\Validation\Validator;
  *
  * @property \BEdita\Core\Model\Table\UsersTable|\Cake\ORM\Association\BelongsTo $Users
  * @property \BEdita\Core\Model\Table\ApplicationsTable|\Cake\ORM\Association\BelongsTo $Applications
- * @method \BEdita\Core\Model\Entity\UserToken get($primaryKey, $options = [])
- * @method \BEdita\Core\Model\Entity\UserToken newEntity($data = null, array $options = [])
+ * @method \BEdita\Core\Model\Entity\UserToken get(mixed $primaryKey, array|string $finder = 'all', \Psr\SimpleCache\CacheInterface|string|null $cache = null, \Closure|string|null $cacheKey = null, mixed ...$args)
+ * @method \BEdita\Core\Model\Entity\UserToken newEntity(array $data, array $options = [])
  * @method \BEdita\Core\Model\Entity\UserToken[] newEntities(array $data, array $options = [])
- * @method \BEdita\Core\Model\Entity\UserToken|bool save(\Cake\Datasource\EntityInterface $entity, $options = [])
+ * @method \BEdita\Core\Model\Entity\UserToken|false save(\Cake\Datasource\EntityInterface $entity, array $options = [])
  * @method \BEdita\Core\Model\Entity\UserToken patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
- * @method \BEdita\Core\Model\Entity\UserToken[] patchEntities($entities, array $data, array $options = [])
- * @method \BEdita\Core\Model\Entity\UserToken findOrCreate($search, callable $callback = null, $options = [])
+ * @method \BEdita\Core\Model\Entity\UserToken[] patchEntities(iterable $entities, array $data, array $options = [])
+ * @method \BEdita\Core\Model\Entity\UserToken findOrCreate(\Cake\ORM\Query\SelectQuery|callable|array $search, ?callable $callback = null, array $options = [])
+ * @method \BEdita\Core\Model\Entity\UserToken newEmptyEntity()
+ * @method \BEdita\Core\Model\Entity\UserToken saveOrFail(\Cake\Datasource\EntityInterface $entity, array $options = [])
+ * @method \BEdita\Core\Model\Entity\UserToken[]|\Cake\Datasource\ResultSetInterface<\BEdita\Core\Model\Entity\UserToken>|false saveMany(iterable $entities, array $options = [])
+ * @method \BEdita\Core\Model\Entity\UserToken[]|\Cake\Datasource\ResultSetInterface<\BEdita\Core\Model\Entity\UserToken> saveManyOrFail(iterable $entities, array $options = [])
+ * @method \BEdita\Core\Model\Entity\UserToken[]|\Cake\Datasource\ResultSetInterface<\BEdita\Core\Model\Entity\UserToken>|false deleteMany(iterable $entities, array $options = [])
+ * @method \BEdita\Core\Model\Entity\UserToken[]|\Cake\Datasource\ResultSetInterface<\BEdita\Core\Model\Entity\UserToken> deleteManyOrFail(iterable $entities, array $options = [])
  * @mixin \Cake\ORM\Behavior\TimestampBehavior
  */
 class UserTokensTable extends Table
@@ -135,7 +140,7 @@ class UserTokensTable extends Table
      *
      * @return array
      */
-    public function getTokenTypes()
+    public function getTokenTypes(): array
     {
         $confTypes = (array)Configure::read('UserTokens.types');
 
@@ -145,12 +150,12 @@ class UserTokensTable extends Table
     /**
      * Finder for valid tokens: tokens not expired and not used
      *
-     * @param \Cake\ORM\Query $query Query object instance.
-     * @return \Cake\ORM\Query
+     * @param \Cake\ORM\Query\SelectQuery $query Query object instance.
+     * @return \Cake\ORM\Query\SelectQuery
      */
-    protected function findValid(Query $query)
+    protected function findValid(SelectQuery $query): SelectQuery
     {
-        $now = FrozenTime::now();
+        $now = DateTime::now();
 
         return $query
             ->where(function (QueryExpression $exp) use ($now) {

@@ -12,21 +12,23 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\API\Model\Action;
 
 use Authorization\Policy\Exception\MissingPolicyException;
 use BEdita\Core\Model\Action\BaseAction;
+use BEdita\Core\Model\Action\UpdateAssociatedAction as BEditaCoreUpdateAssociatedAction;
 use BEdita\Core\ORM\Association\RelatedTo;
 use Cake\Database\Expression\QueryExpression;
 use Cake\Datasource\EntityInterface;
 use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\Http\Exception\ForbiddenException;
+use Cake\Http\ServerRequest;
 use Cake\ORM\Association;
 use Cake\ORM\Association\BelongsTo;
 use Cake\ORM\Association\BelongsToMany;
 use Cake\ORM\Association\HasOne;
 use Cake\Utility\Hash;
+use LogicException;
 
 /**
  * Command to update links between entities.
@@ -40,19 +42,19 @@ class UpdateAssociatedAction extends BaseAction
      *
      * @var \BEdita\Core\Model\Action\UpdateAssociatedAction
      */
-    protected $Action;
+    protected BEditaCoreUpdateAssociatedAction $Action;
 
     /**
      * Request instance.
      *
      * @var \Cake\Http\ServerRequest
      */
-    protected $request;
+    protected ServerRequest $request;
 
     /**
      * @inheritDoc
      */
-    protected function initialize(array $data)
+    protected function initialize(array $data): void
     {
         $this->Action = $this->getConfig('action');
         $this->request = $this->getConfig('request');
@@ -61,11 +63,11 @@ class UpdateAssociatedAction extends BaseAction
     /**
      * @inheritDoc
      */
-    public function execute(array $data = [])
+    public function execute(array $data = []): mixed
     {
         $association = $this->Action->getConfig('association');
         if (!($association instanceof Association)) {
-            throw new \LogicException(__d('bedita', 'Unknown association type'));
+            throw new LogicException(__d('bedita', 'Unknown association type'));
         }
 
         $entity = $association->getSource()->get($data['primaryKey']);
@@ -131,9 +133,9 @@ class UpdateAssociatedAction extends BaseAction
      *
      * @param array $data Request data.
      * @param \Cake\ORM\Association $association Association.
-     * @return \Cake\Datasource\EntityInterface[]
+     * @return array<\Cake\Datasource\EntityInterface>
      */
-    protected function getTargetEntities(array $data, Association $association)
+    protected function getTargetEntities(array $data, Association $association): array
     {
         $target = $association->getTarget();
         $primaryKeyField = $target->getPrimaryKey();
@@ -149,7 +151,7 @@ class UpdateAssociatedAction extends BaseAction
                 return $exp->in($targetPKField, $targetPrimaryKeys);
             });
         $targetEntities = $targetEntities->all()->indexBy($primaryKeyField)->toArray();
-        /** @var \Cake\Datasource\EntityInterface[] $targetEntities */
+        /** @var array<\Cake\Datasource\EntityInterface> $targetEntities */
 
         // sort following the original order
         uksort(
@@ -184,7 +186,7 @@ class UpdateAssociatedAction extends BaseAction
      * @param array|null $meta Relation metadata.
      * @return array|null
      */
-    protected function prepareMeta($association, $meta)
+    protected function prepareMeta(Association&BelongsToMany $association, ?array $meta): ?array
     {
         if (!$association instanceof RelatedTo) {
             return $meta;

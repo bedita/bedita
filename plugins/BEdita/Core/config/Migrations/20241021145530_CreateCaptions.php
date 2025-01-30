@@ -9,7 +9,7 @@ use Phinx\Db\Adapter\MysqlAdapter;
  */
 class CreateCaptions extends AbstractMigration
 {
-    public $autoId = false;
+    public bool $autoId = false;
 
     /**
      * Change Method.
@@ -19,7 +19,7 @@ class CreateCaptions extends AbstractMigration
      *
      * @return void
      */
-    public function change()
+    public function change(): void
     {
         $limit = null;
         if ($this->getAdapter()->getAdapterType() === 'mysql') {

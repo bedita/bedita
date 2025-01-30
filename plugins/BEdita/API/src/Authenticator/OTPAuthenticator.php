@@ -19,7 +19,7 @@ class OTPAuthenticator extends DynamicFormAuthenticator
     /**
      * @inheritDoc
      */
-    protected $_defaultConfig = [
+    protected array $_defaultConfig = [
         'fields' => [
             'authorization_code' => 'authorization_code',
             'username' => 'username',

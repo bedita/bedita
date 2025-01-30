@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\Utility;
 
 use BEdita\Core\Utility\Resources;
@@ -21,6 +20,7 @@ use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Hash;
 use Cake\Utility\Inflector;
+use Exception;
 
 /**
  * {@see \BEdita\Core\Utility\Resources} Test Case
@@ -34,7 +34,7 @@ class ResourcesTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.PropertyTypes',
         'plugin.BEdita/Core.Properties',
@@ -61,7 +61,7 @@ class ResourcesTest extends TestCase
      *
      * @return array
      */
-    public function createProvider(): array
+    public static function createProvider(): array
     {
         return [
             'roles' => [
@@ -231,7 +231,7 @@ class ResourcesTest extends TestCase
      *
      * @return array
      */
-    public function removeProvider(): array
+    public static function removeProvider(): array
     {
         return [
             'roles' => [
@@ -362,7 +362,7 @@ class ResourcesTest extends TestCase
      *
      * @return array
      */
-    public function updateProvider(): array
+    public static function updateProvider(): array
     {
         return [
             'roles' => [
@@ -527,7 +527,7 @@ class ResourcesTest extends TestCase
      *
      * @return array
      */
-    public function saveProvider(): array
+    public static function saveProvider(): array
     {
         return [
             'simple' => [
@@ -599,7 +599,7 @@ class ResourcesTest extends TestCase
      * @covers ::saveType()
      * @dataProvider saveProvider
      */
-    public function testSave(array $resources, ?\Exception $exception = null): void
+    public function testSave(array $resources, ?Exception $exception = null): void
     {
         if ($exception) {
             $this->expectException(get_class($exception));

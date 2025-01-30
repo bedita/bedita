@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\Model\Behavior;
 
 use BEdita\Core\Model\Entity\ObjectType;
@@ -29,7 +28,7 @@ class ObjectTypeBehaviorTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.Relations',
         'plugin.BEdita/Core.RelationTypes',
@@ -41,7 +40,7 @@ class ObjectTypeBehaviorTest extends TestCase
      *
      * @return array
      */
-    public function objectTypeProvider()
+    public static function objectTypeProvider(): array
     {
         return [
             'getter' => [
@@ -77,7 +76,6 @@ class ObjectTypeBehaviorTest extends TestCase
         if (!$table->hasBehavior('ObjectType')) {
             $table->addBehavior('BEdita/Core.ObjectType');
         }
-        $behavior = $table->behaviors()->get('ObjectType');
 
         static::assertTrue($table->behaviors()->hasMethod('objectType'));
 

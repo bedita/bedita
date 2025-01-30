@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\Model\Behavior;
 
 use Cake\ORM\Table;
@@ -31,7 +30,7 @@ class PriorityBehaviorTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.Objects',
         'plugin.BEdita/Core.Relations',
@@ -44,7 +43,7 @@ class PriorityBehaviorTest extends TestCase
      *
      * @return array
      */
-    public function initializeProvider()
+    public static function initializeProvider(): array
     {
         return [
             'default' => [
@@ -115,7 +114,7 @@ class PriorityBehaviorTest extends TestCase
     {
         $table = TableRegistry::getTableLocator()->get('ObjectRelations');
 
-        $entity = $table->newEntity([]);
+        $entity = $table->newEmptyEntity();
         $entity->set([
             'left_id' => 9,
             'relation_id' => 3,
@@ -150,7 +149,7 @@ class PriorityBehaviorTest extends TestCase
                 'left_id' => 2,
                 'relation_id' => 1,
             ])
-            ->order(['priority'])
+            ->orderBy(['priority'])
             ->all()
             ->toList();
 
@@ -169,7 +168,7 @@ class PriorityBehaviorTest extends TestCase
                 'left_id' => 2,
                 'relation_id' => 1,
             ])
-            ->order(['priority'])
+            ->orderBy(['priority'])
             ->all()
             ->toList();
 
@@ -199,7 +198,7 @@ class PriorityBehaviorTest extends TestCase
                 'left_id' => 2,
                 'relation_id' => 1,
             ])
-            ->order(['priority'])
+            ->orderBy(['priority'])
             ->all()
             ->toList();
 
@@ -218,7 +217,7 @@ class PriorityBehaviorTest extends TestCase
                 'left_id' => 2,
                 'relation_id' => 1,
             ])
-            ->order(['priority'])
+            ->orderBy(['priority'])
             ->all()
             ->toList();
 
@@ -247,7 +246,7 @@ class PriorityBehaviorTest extends TestCase
                 'left_id' => 2,
                 'relation_id' => 1,
             ])
-            ->order(['priority'])
+            ->orderBy(['priority'])
             ->all()
             ->toList();
 
@@ -265,7 +264,7 @@ class PriorityBehaviorTest extends TestCase
                 'left_id' => 2,
                 'relation_id' => 1,
             ])
-            ->order(['priority'])
+            ->orderBy(['priority'])
             ->all()
             ->toList();
 
@@ -280,7 +279,7 @@ class PriorityBehaviorTest extends TestCase
      *
      * @return array
      */
-    public function compactEntityFieldProvider()
+    public static function compactEntityFieldProvider(): array
     {
         return [
             'empty scope' => [
@@ -348,7 +347,7 @@ class PriorityBehaviorTest extends TestCase
      *
      * @return array
      */
-    public function updateEntityPrioritiesProvider()
+    public static function updateEntityPrioritiesProvider(): array
     {
         return [
             'empty scope' => [

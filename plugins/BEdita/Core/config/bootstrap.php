@@ -13,8 +13,6 @@ use Cake\Core\Configure;
 use Cake\Core\Configure\Engine\IniConfig;
 use Cake\Database\TypeFactory;
 use Cake\I18n\ChainMessagesLoader;
-use Cake\I18n\Date;
-use Cake\I18n\FrozenDate;
 use Cake\I18n\I18n;
 use Cake\ORM\TableRegistry;
 
@@ -39,27 +37,6 @@ if (!defined('UNIT_TEST_RUN') && !in_array(PHP_SAPI, ['cli', 'phpdbg'])) {
 if (!Configure::isConfigured('ini')) {
     Configure::config('ini', new IniConfig());
 }
-
-/*
- * Enable immutable time objects in the ORM.
- *
- * You can enable default locale format parsing by adding calls
- * to `useLocaleParser()`. This enables the automatic conversion of
- * locale specific date formats. For details see
- * @link https://book.cakephp.org/3.0/en/core-libraries/internationalization-and-localization.html#parsing-localized-datetime-data
- */
-// Type::build('time')
-//     ->useImmutable();
-// Type::build('date')
-//     ->useImmutable();
-// Type::build('datetime')
-//     ->useImmutable();
-
-/*
- * Set the default format used converting a date to json
- */
-FrozenDate::setJsonEncodeFormat('yyyy-MM-dd');
-Date::setJsonEncodeFormat('yyyy-MM-dd');
 
 /**
  * Use custom DateType & DateTimeType

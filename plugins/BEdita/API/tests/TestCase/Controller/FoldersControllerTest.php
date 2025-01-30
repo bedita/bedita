@@ -619,7 +619,7 @@ class FoldersControllerTest extends IntegrationTestCase
      *
      * @return array
      */
-    public function setRelationshipsAllowedMethodsProvider()
+    public static function setRelationshipsAllowedMethodsProvider(): array
     {
         return [
             'get' => [
@@ -885,7 +885,7 @@ class FoldersControllerTest extends IntegrationTestCase
      *
      * @return array
      */
-    public function getOrphanFolderProvider()
+    public static function getOrphanFolderProvider(): array
     {
         return [
             'folders/:id' => ['12'],
@@ -928,7 +928,7 @@ class FoldersControllerTest extends IntegrationTestCase
      *
      * @return array
      */
-    public function moveFolderProvider()
+    public static function moveFolderProvider(): array
     {
         return [
             'becomeRoot' => [
@@ -955,14 +955,14 @@ class FoldersControllerTest extends IntegrationTestCase
      * @dataProvider moveFolderProvider
      * @coversNothing
      */
-    public function testMoveFolder($folderId, $parentId)
+    public function testMoveFolder($folderId, $parentId): void
     {
         $foldersTable = TableRegistry::getTableLocator()->get('Folders');
 
         $getDescendants = function () use ($folderId, $foldersTable) {
             return $foldersTable
                 ->find('ancestor', [$folderId])
-                ->order([$foldersTable->aliasField('id') => 'ASC'])
+                ->orderBy([$foldersTable->aliasField('id') => 'ASC'])
                 ->find('list')
                 ->toArray();
         };
@@ -1053,15 +1053,15 @@ class FoldersControllerTest extends IntegrationTestCase
      *
      * @return array
      */
-    public function setChildrenPositionInvalidProvider()
+    public static function setChildrenPositionInvalidProvider(): array
     {
         return [
             'zero' => [
-                '[position.notEquals]: The provided value is invalid',
+                '[position.notEquals]: The provided value must not be equal to `0`',
                 0,
             ],
             'invalid string' => [
-                '[position.inList]: The provided value is invalid',
+                '[position.inList]: The provided value must be one of: `first, last`',
                 'gustavo',
             ],
             'empty' => [
@@ -1140,7 +1140,7 @@ class FoldersControllerTest extends IntegrationTestCase
      *
      * @return array
      */
-    public function moveChildrenProvider()
+    public static function moveChildrenProvider(): array
     {
         return [
             'noMove' => [

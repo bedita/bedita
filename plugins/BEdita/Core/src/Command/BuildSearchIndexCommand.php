@@ -21,6 +21,7 @@ use Cake\Console\ConsoleOptionParser;
 use Cake\Database\Expression\QueryExpression;
 use Cake\Datasource\EntityInterface;
 use Cake\Utility\Hash;
+use Exception;
 
 /**
  * Build search index command.
@@ -89,7 +90,7 @@ class BuildSearchIndexCommand extends Command
             $result = $this->fetchTable('ObjectTypes')
                 ->find()
                 ->where(['enabled' => true, 'is_abstract' => false])
-                ->orderAsc('name')
+                ->orderByAsc('name')
                 ->toArray();
             $types = (array)Hash::extract($result, '{n}.name');
         }
@@ -103,7 +104,7 @@ class BuildSearchIndexCommand extends Command
                     $indexed = $this->doIndexResource($entity, $adapters, $io);
                     $counter = $counter + $indexed;
                 }
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 $io->error($e->getMessage());
 
                 return Command::CODE_ERROR;
@@ -169,7 +170,7 @@ class BuildSearchIndexCommand extends Command
     protected function objectsIterator(Arguments $args, string $type): iterable
     {
         $table = $this->fetchTable('Objects');
-        $query = $table->find()->orderAsc($table->aliasField('id'))->limit(200);
+        $query = $table->find()->orderByAsc($table->aliasField('id'))->limit(200);
         $query = $query->find('type', [$type]);
         $id = array_filter(explode(',', (string)$args->getOption('id')));
         if (!empty($id)) {

@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\Model\Behavior;
 
 use BEdita\Core\Exception\BadFilterException;
@@ -29,7 +28,7 @@ class GeometryBehaviorTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.PropertyTypes',
         'plugin.BEdita/Core.Properties',
@@ -85,7 +84,7 @@ class GeometryBehaviorTest extends TestCase
      *
      * @return array
      */
-    public function findGeoProvider()
+    public static function findGeoProvider(): array
     {
         return [
             'near point' => [
@@ -148,7 +147,7 @@ class GeometryBehaviorTest extends TestCase
      *
      * @return array
      */
-    public function badGeoProvider()
+    public static function badGeoProvider(): array
     {
         return [
             'gustavo' => [
@@ -190,7 +189,7 @@ class GeometryBehaviorTest extends TestCase
      */
     public function testBadGeo($conditions)
     {
-        $this->expectException(\BEdita\Core\Exception\BadFilterException::class);
+        $this->expectException(BadFilterException::class);
         $this->Locations->find('geo', $conditions)->toArray();
     }
 }

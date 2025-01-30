@@ -24,7 +24,7 @@ class RolesFixture extends TestFixture
     /**
      * @inheritDoc
      */
-    public $records = [
+    public array $records = [
         [
             'name' => 'first role',
             'description' => 'this is the very first role',

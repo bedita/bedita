@@ -12,17 +12,18 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Model\Action;
 
 use BEdita\Core\Mailer\UserMailerTrait;
 use BEdita\Core\Model\Entity\User;
+use BEdita\Core\Model\Table\AsyncJobsTable;
+use BEdita\Core\Model\Table\UsersTable;
 use Cake\Event\EventDispatcherTrait;
 use Cake\Event\EventInterface;
 use Cake\Event\EventListenerInterface;
 use Cake\Http\Exception\BadRequestException;
 use Cake\Http\Exception\ConflictException;
-use Cake\I18n\FrozenTime;
+use Cake\I18n\DateTime;
 use Cake\ORM\TableRegistry;
 
 /**
@@ -40,19 +41,19 @@ class SignupUserActivationAction extends BaseAction implements EventListenerInte
      *
      * @var \BEdita\Core\Model\Table\UsersTable
      */
-    protected $Users;
+    protected UsersTable $Users;
 
     /**
      * The AsyncJobs table
      *
      * @var \BEdita\Core\Model\Table\AsyncJobsTable
      */
-    protected $AsyncJobs;
+    protected AsyncJobsTable $AsyncJobs;
 
     /**
      * @inheritDoc
      */
-    protected function initialize(array $config)
+    protected function initialize(array $config): void
     {
         $this->Users = TableRegistry::getTableLocator()->get('Users');
         $this->AsyncJobs = TableRegistry::getTableLocator()->get('AsyncJobs');
@@ -66,24 +67,24 @@ class SignupUserActivationAction extends BaseAction implements EventListenerInte
      * @throws \Cake\Http\Exception\BadRequestException When missing id or async_jobs row is invalid
      * @throws \Cake\Http\Exception\ConflictException When the user is already active
      */
-    public function execute(array $data = [])
+    public function execute(array $data = []): User
     {
         if (empty($data['uuid'])) {
             throw new BadRequestException(__d('bedita', 'Parameter "{0}" missing', ['uuid']));
         }
 
-        $asyncJob = $this->AsyncJobs->get($data['uuid'], ['finder' => 'incomplete']);
+        $asyncJob = $this->AsyncJobs->get($data['uuid'], finder: 'incomplete');
 
         if (empty($asyncJob->payload['user_id'])) {
             throw new BadRequestException(__d('bedita', 'Invalid async job, missing user_id'));
         }
 
-        $user = $this->Users->get($asyncJob->payload['user_id'], ['contain' => ['Roles']]);
+        $user = $this->Users->get($asyncJob->payload['user_id'], contain: ['Roles']);
         if ($user->status === 'on' && $user->verified !== null) {
             throw new ConflictException(__d('bedita', 'User already active'));
         }
 
-        $now = new FrozenTime();
+        $now = new DateTime();
 
         // the user is the creator of himself
         $user->created_by = $user->id;
@@ -107,7 +108,7 @@ class SignupUserActivationAction extends BaseAction implements EventListenerInte
      * @param \BEdita\Core\Model\Entity\User $user The user
      * @return void
      */
-    public function sendMail(EventInterface $event, User $user)
+    public function sendMail(EventInterface $event, User $user): void
     {
         $options = [
             'params' => compact('user'),

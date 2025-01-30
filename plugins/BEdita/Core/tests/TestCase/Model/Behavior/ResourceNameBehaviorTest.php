@@ -16,6 +16,7 @@ namespace BEdita\Core\Test\TestCase\Model\Behavior;
 
 use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\TestSuite\TestCase;
+use Exception;
 
 /**
  * {@see \BEdita\Core\Model\Behavior\ResourceNameBehavior} Test Case
@@ -29,7 +30,7 @@ class ResourceNameBehaviorTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.Relations',
         'plugin.BEdita/Core.RelationTypes',
@@ -48,7 +49,7 @@ class ResourceNameBehaviorTest extends TestCase
      *
      * @return array
      */
-    public function getIdProvider()
+    public static function getIdProvider(): array
     {
         return [
             'id' => [
@@ -64,15 +65,11 @@ class ResourceNameBehaviorTest extends TestCase
                 'first role',
             ],
             'notFound' => [
-                new RecordNotFoundException('Record not found in table "roles"'),
+                new RecordNotFoundException('Record not found in table `roles`'),
                 'this-name-doesnt-exist',
             ],
-            'null' => [
-                new \InvalidArgumentException('Expression `Roles.name` is missing operator (IS, IS NOT) with `null` value.'),
-                null,
-            ],
             'emptyString' => [
-                new RecordNotFoundException('Record not found in table "roles"'),
+                new RecordNotFoundException('Record not found in table `roles`'),
                 '',
             ],
         ];
@@ -90,7 +87,7 @@ class ResourceNameBehaviorTest extends TestCase
     public function testGetId($expected, $name)
     {
         $Roles = $this->fetchTable('Roles');
-        if ($expected instanceof \Exception) {
+        if ($expected instanceof Exception) {
             $this->expectException(get_class($expected));
             $this->expectExceptionCode($expected->getCode());
             $this->expectExceptionMessage($expected->getMessage());

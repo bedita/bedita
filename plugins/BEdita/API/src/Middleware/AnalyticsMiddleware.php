@@ -37,14 +37,14 @@ class AnalyticsMiddleware implements MiddlewareInterface
      *
      * @var float
      */
-    protected $startTime = null;
+    protected float $startTime;
 
     /**
      * Analytics data
      *
      * @var array
      */
-    protected $data = [];
+    protected array $data = [];
 
     /**
      * Configure analytics logger if not configured yet
@@ -72,7 +72,7 @@ class AnalyticsMiddleware implements MiddlewareInterface
      * @return float
      * @codeCoverageIgnore
      */
-    public function getStartTime()
+    public function getStartTime(): float
     {
         return $this->startTime;
     }
@@ -83,7 +83,7 @@ class AnalyticsMiddleware implements MiddlewareInterface
      * @return array
      * @codeCoverageIgnore
      */
-    public function getData()
+    public function getData(): array
     {
         return $this->data;
     }
@@ -95,7 +95,7 @@ class AnalyticsMiddleware implements MiddlewareInterface
      * @param \Psr\Http\Message\ResponseInterface $response The response.
      * @return array
      */
-    protected function readCustomData(ServerRequestInterface $request, ResponseInterface $response)
+    protected function readCustomData(ServerRequestInterface $request, ResponseInterface $response): array
     {
         $event = $this->dispatchEvent('Analytics.custom', [$request, $response]);
         if (empty($event->getResult())) {
@@ -111,7 +111,7 @@ class AnalyticsMiddleware implements MiddlewareInterface
      * @param \Psr\Http\Message\ResponseInterface $response The response.
      * @return string|null
      */
-    public function getAppErrorCode(ResponseInterface $response)
+    public function getAppErrorCode(ResponseInterface $response): ?string
     {
         if ($response->getStatusCode() < 400) {
             return null;

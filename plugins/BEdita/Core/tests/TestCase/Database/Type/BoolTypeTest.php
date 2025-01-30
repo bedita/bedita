@@ -17,6 +17,7 @@ namespace BEdita\Core\Test\TestCase\Database\Type;
 use BEdita\Core\Database\Type\BoolType;
 use Cake\Datasource\ConnectionManager;
 use Cake\TestSuite\TestCase;
+use Exception;
 use InvalidArgumentException;
 
 /**
@@ -31,7 +32,7 @@ class BoolTypeTest extends TestCase
      *
      * @return array
      */
-    public function toDatabaseProvider()
+    public static function toDatabaseProvider(): array
     {
         return [
             [
@@ -72,11 +73,11 @@ class BoolTypeTest extends TestCase
             ],
             [
                 'gustavo',
-                new InvalidArgumentException('Cannot convert value of type `string` to bool'),
+                new InvalidArgumentException('Cannot convert value `gustavo` of type `string` to bool'),
             ],
             [
                 [1, 2, 3],
-                new InvalidArgumentException('Cannot convert value of type `array` to bool'),
+                new InvalidArgumentException(sprintf('Cannot convert value `%s` of type `array` to bool', print_r([1, 2, 3], true))),
             ],
         ];
     }
@@ -92,7 +93,7 @@ class BoolTypeTest extends TestCase
      */
     public function testToDatabase($input, $expected)
     {
-        if ($expected instanceof \Exception) {
+        if ($expected instanceof Exception) {
             $this->expectException(get_class($expected));
             $this->expectExceptionMessage($expected->getMessage());
         }

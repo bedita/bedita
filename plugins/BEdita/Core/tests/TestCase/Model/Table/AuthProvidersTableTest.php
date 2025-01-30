@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\Model\Table;
 
 use Cake\ORM\TableRegistry;
@@ -38,7 +37,7 @@ class AuthProvidersTableTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.AuthProviders',
     ];
 
@@ -70,7 +69,6 @@ class AuthProvidersTableTest extends TestCase
      */
     public function testInitialization()
     {
-        $this->AuthProviders->initialize([]);
         $schema = $this->AuthProviders->getSchema();
 
         $this->assertEquals('auth_providers', $this->AuthProviders->getTable());
@@ -87,7 +85,7 @@ class AuthProvidersTableTest extends TestCase
      *
      * @return array
      */
-    public function validationProvider()
+    public static function validationProvider(): array
     {
         return [
             'valid' => [
@@ -100,7 +98,6 @@ class AuthProvidersTableTest extends TestCase
             ],
             'notUnique' => [
                 [
-                    'name._required',
                     'name.unique',
                 ],
                 [
@@ -143,7 +140,7 @@ class AuthProvidersTableTest extends TestCase
      */
     public function testValidation(array $expected, array $data): void
     {
-        $authProvider = $this->AuthProviders->newEntity([]);
+        $authProvider = $this->AuthProviders->newEmptyEntity();
         $this->AuthProviders->patchEntity($authProvider, $data);
 
         $errors = $authProvider->getErrors();

@@ -26,9 +26,9 @@ use Cake\ORM\Entity;
  * @property string|null $format
  * @property string|null $lang
  * @property string|null $caption_text
- * @property array $params
- * @property \Cake\I18n\FrozenTime $created
- * @property \Cake\I18n\FrozenTime $modified
+ * @property array|null $params
+ * @property \Cake\I18n\DateTime $created
+ * @property \Cake\I18n\DateTime $modified
  *
  * @property \BEdita\Core\Model\Entity\ObjectEntity $object
  */
@@ -37,7 +37,7 @@ class Caption extends Entity
     /**
      * @inheritDoc
      */
-    protected $_accessible = [
+    protected array $_accessible = [
         '*' => true,
         'id' => false,
     ];
@@ -45,7 +45,7 @@ class Caption extends Entity
     /**
      * @inheritDoc
      */
-    protected $_hidden = [
+    protected array $_hidden = [
         'id',
         'object_id',
         'created',

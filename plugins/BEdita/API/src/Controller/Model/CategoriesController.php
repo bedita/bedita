@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\API\Controller\Model;
 
 /**
@@ -26,12 +25,12 @@ class CategoriesController extends ModelController
     /**
      * @inheritDoc
      */
-    public $defaultTable = 'Categories';
+    public ?string $defaultTable = 'Categories';
 
     /**
      * @inheritDoc
      */
-    protected $_defaultConfig = [
+    protected array $_defaultConfig = [
         'allowedAssociations' => [
             'object_type' => ['object_types'],
             'parent_category' => ['categories'],

@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\API\Test\TestCase\Model\Action;
 
 use Authentication\Identity as AuthenticationIdentity;
@@ -39,7 +38,7 @@ class UpdateRelatedActionTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.Objects',
         'plugin.BEdita/Core.Profiles',
@@ -62,7 +61,7 @@ class UpdateRelatedActionTest extends TestCase
      *
      * @return array[]
      */
-    public function invocationProvider(): array
+    public static function invocationProvider(): array
     {
         return [
             'simple' => [
@@ -182,7 +181,7 @@ class UpdateRelatedActionTest extends TestCase
         if ($data !== null) {
             $matching = Hash::extract(
                 $association->getSource()
-                    ->get($id, ['contain' => [$association->getName()]])
+                    ->get($id, contain: [$association->getName()])
                     ->get($association->getProperty()),
                 '{*}.id'
             );

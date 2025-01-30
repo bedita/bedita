@@ -12,12 +12,10 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\API\Controller\Model;
 
 use BEdita\API\Controller\JsonBaseController;
 use BEdita\Core\Utility\ProjectModel;
-use Cake\Http\Exception\NotAcceptableException;
 
 /**
  * Controller for `/model/project` endpoint.
@@ -26,18 +24,6 @@ use Cake\Http\Exception\NotAcceptableException;
  */
 class ProjectController extends JsonBaseController
 {
-    /**
-     * @inheritDoc
-     */
-    protected function checkAcceptable(): void
-    {
-        if (!$this->request->is(['json'])) {
-            throw new NotAcceptableException(
-                __d('bedita', 'Bad request content type "{0}"', $this->request->getHeaderLine('Accept'))
-            );
-        }
-    }
-
     /**
      * Get project schema.
      *

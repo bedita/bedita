@@ -12,10 +12,11 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\Model\Table;
 
+use BEdita\Core\Exception\ImmutableResourceException;
 use BEdita\Core\Utility\LoggedUser;
+use Cake\Http\Exception\ForbiddenException;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
@@ -38,7 +39,7 @@ class RolesUsersTableTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.Roles',
         'plugin.BEdita/Core.Relations',
@@ -74,7 +75,7 @@ class RolesUsersTableTest extends TestCase
      *
      * @return array
      */
-    public function validationProvider()
+    public static function validationProvider(): array
     {
         return [
             'valid' => [
@@ -106,7 +107,7 @@ class RolesUsersTableTest extends TestCase
     public function testValidation($expected, array $data)
     {
         LoggedUser::setUserAdmin();
-        $objectType = $this->RolesUsers->newEntity([]);
+        $objectType = $this->RolesUsers->newEmptyEntity();
         $this->RolesUsers->patchEntity($objectType, $data);
 
         $success = $this->RolesUsers->save($objectType);
@@ -120,7 +121,7 @@ class RolesUsersTableTest extends TestCase
      */
     public function testDeleteAdminRole()
     {
-        $this->expectException(\BEdita\Core\Exception\ImmutableResourceException::class);
+        $this->expectException(ImmutableResourceException::class);
         $this->expectExceptionCode('403');
         $this->expectExceptionMessage('Could not update relationship for users/roles for ADMIN_USER and ADMIN_ROLE');
         $entity = $this->RolesUsers->get(1);
@@ -136,7 +137,7 @@ class RolesUsersTableTest extends TestCase
     public function testDeleteAdminRoleForbidden()
     {
         LoggedUser::resetUser();
-        $this->expectException(\Cake\Http\Exception\ForbiddenException::class);
+        $this->expectException(ForbiddenException::class);
         $this->expectExceptionCode('403');
         $this->expectExceptionMessage('Could not update role. Insufficient priority');
         $entity = $this->RolesUsers->get(2);
@@ -166,7 +167,7 @@ class RolesUsersTableTest extends TestCase
     public function testModifyAdminRole()
     {
         LoggedUser::setUserAdmin();
-        $entity = $this->RolesUsers->newEntity([]);
+        $entity = $this->RolesUsers->newEmptyEntity();
         $this->RolesUsers->patchEntity($entity, [
             'role_id' => 2,
             'user_id' => 1,
@@ -185,7 +186,7 @@ class RolesUsersTableTest extends TestCase
     public function testModifyAdminRoleForbidden()
     {
         LoggedUser::resetUser();
-        $this->expectException(\Cake\Http\Exception\ForbiddenException::class);
+        $this->expectException(ForbiddenException::class);
         $this->expectExceptionCode('403');
         $this->expectExceptionMessage('Could not update role. Insufficient priority');
         $entity = $this->RolesUsers->get(1);

@@ -1,5 +1,5 @@
 <?php
-use Cake\Auth\WeakPasswordHasher;
+use Authentication\PasswordHasher\LegacyPasswordHasher;
 use Migrations\AbstractMigration;
 
 /**
@@ -9,12 +9,12 @@ class Alpha extends AbstractMigration
 {
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
-    public $autoId = false;
+    public bool $autoId = false;
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function up()
     {
@@ -1566,7 +1566,7 @@ class Alpha extends AbstractMigration
             ->insert([
                 'id' => 1,
                 'username' => 'bedita',
-                'password_hash' => (new WeakPasswordHasher(['hashType' => 'md5']))->hash('password1'),
+                'password_hash' => (new LegacyPasswordHasher(['hashType' => 'md5']))->hash('password1'),
             ])
             ->save();
 
@@ -1595,7 +1595,7 @@ class Alpha extends AbstractMigration
                 [
                     'constraint' => 'annotations_objectid_fk',
                     'update' => 'NO_ACTION',
-                    'delete' => 'CASCADE'
+                    'delete' => 'CASCADE',
                 ]
             )
             ->addForeignKey(
@@ -1605,7 +1605,7 @@ class Alpha extends AbstractMigration
                 [
                     'constraint' => 'annotations_userid_fk',
                     'update' => 'RESTRICT',
-                    'delete' => 'RESTRICT'
+                    'delete' => 'RESTRICT',
                 ]
             )
             ->update();
@@ -1618,7 +1618,7 @@ class Alpha extends AbstractMigration
                 [
                     'constraint' => 'endpointpermissions_applicationid_fk',
                     'update' => 'RESTRICT',
-                    'delete' => 'RESTRICT'
+                    'delete' => 'RESTRICT',
                 ]
             )
             ->addForeignKey(
@@ -1628,7 +1628,7 @@ class Alpha extends AbstractMigration
                 [
                     'constraint' => 'endpointpermissions_endpointid_fk',
                     'update' => 'RESTRICT',
-                    'delete' => 'RESTRICT'
+                    'delete' => 'RESTRICT',
                 ]
             )
             ->addForeignKey(
@@ -1638,7 +1638,7 @@ class Alpha extends AbstractMigration
                 [
                     'constraint' => 'endpointpermissions_roleid_fk',
                     'update' => 'RESTRICT',
-                    'delete' => 'RESTRICT'
+                    'delete' => 'RESTRICT',
                 ]
             )
             ->update();
@@ -1651,7 +1651,7 @@ class Alpha extends AbstractMigration
                 [
                     'constraint' => 'endpoints_objecttypeid_fk',
                     'update' => 'RESTRICT',
-                    'delete' => 'RESTRICT'
+                    'delete' => 'RESTRICT',
                 ]
             )
             ->update();
@@ -1664,7 +1664,7 @@ class Alpha extends AbstractMigration
                 [
                     'constraint' => 'externalauth_authprovider_fk',
                     'update' => 'RESTRICT',
-                    'delete' => 'RESTRICT'
+                    'delete' => 'RESTRICT',
                 ]
             )
             ->addForeignKey(
@@ -1674,7 +1674,7 @@ class Alpha extends AbstractMigration
                 [
                     'constraint' => 'externalauth_userid_fk',
                     'update' => 'NO_ACTION',
-                    'delete' => 'CASCADE'
+                    'delete' => 'CASCADE',
                 ]
             )
             ->update();
@@ -1687,7 +1687,7 @@ class Alpha extends AbstractMigration
                 [
                     'constraint' => 'media_id_fk',
                     'update' => 'NO_ACTION',
-                    'delete' => 'CASCADE'
+                    'delete' => 'CASCADE',
                 ]
             )
             ->update();
@@ -1700,7 +1700,7 @@ class Alpha extends AbstractMigration
                 [
                     'constraint' => 'objectpermissions_objectid_fk',
                     'update' => 'NO_ACTION',
-                    'delete' => 'CASCADE'
+                    'delete' => 'CASCADE',
                 ]
             )
             ->addForeignKey(
@@ -1710,7 +1710,7 @@ class Alpha extends AbstractMigration
                 [
                     'constraint' => 'objectpermissions_roleid_fk',
                     'update' => 'NO_ACTION',
-                    'delete' => 'CASCADE'
+                    'delete' => 'CASCADE',
                 ]
             )
             ->update();
@@ -1723,7 +1723,7 @@ class Alpha extends AbstractMigration
                 [
                     'constraint' => 'objectproperties_objectid_fk',
                     'update' => 'NO_ACTION',
-                    'delete' => 'CASCADE'
+                    'delete' => 'CASCADE',
                 ]
             )
             ->addForeignKey(
@@ -1733,7 +1733,7 @@ class Alpha extends AbstractMigration
                 [
                     'constraint' => 'objectproperties_propertyid_fk',
                     'update' => 'NO_ACTION',
-                    'delete' => 'CASCADE'
+                    'delete' => 'CASCADE',
                 ]
             )
             ->update();
@@ -1746,7 +1746,7 @@ class Alpha extends AbstractMigration
                 [
                     'constraint' => 'objectrelations_leftid_fk',
                     'update' => 'NO_ACTION',
-                    'delete' => 'CASCADE'
+                    'delete' => 'CASCADE',
                 ]
             )
             ->addForeignKey(
@@ -1756,7 +1756,7 @@ class Alpha extends AbstractMigration
                 [
                     'constraint' => 'objectrelations_relationid_fk',
                     'update' => 'NO_ACTION',
-                    'delete' => 'CASCADE'
+                    'delete' => 'CASCADE',
                 ]
             )
             ->addForeignKey(
@@ -1766,7 +1766,7 @@ class Alpha extends AbstractMigration
                 [
                     'constraint' => 'objectrelations_rightid_fk',
                     'update' => 'NO_ACTION',
-                    'delete' => 'CASCADE'
+                    'delete' => 'CASCADE',
                 ]
             )
             ->update();
@@ -1779,7 +1779,7 @@ class Alpha extends AbstractMigration
                 [
                     'constraint' => 'objects_createdby_fk',
                     'update' => 'NO_ACTION',
-                    'delete' => 'CASCADE'
+                    'delete' => 'CASCADE',
                 ]
             )
             ->addForeignKey(
@@ -1789,7 +1789,7 @@ class Alpha extends AbstractMigration
                 [
                     'constraint' => 'objects_modifiedby_fk',
                     'update' => 'NO_ACTION',
-                    'delete' => 'CASCADE'
+                    'delete' => 'CASCADE',
                 ]
             )
             ->addForeignKey(
@@ -1799,7 +1799,7 @@ class Alpha extends AbstractMigration
                 [
                     'constraint' => 'objects_objtype_fk',
                     'update' => 'NO_ACTION',
-                    'delete' => 'CASCADE'
+                    'delete' => 'CASCADE',
                 ]
             )
             ->update();
@@ -1812,7 +1812,7 @@ class Alpha extends AbstractMigration
                 [
                     'constraint' => 'profiles_id_fk',
                     'update' => 'NO_ACTION',
-                    'delete' => 'CASCADE'
+                    'delete' => 'CASCADE',
                 ]
             )
             ->update();
@@ -1825,7 +1825,7 @@ class Alpha extends AbstractMigration
                 [
                     'constraint' => 'properties_objtype_fk',
                     'update' => 'RESTRICT',
-                    'delete' => 'RESTRICT'
+                    'delete' => 'RESTRICT',
                 ]
             )
             ->addForeignKey(
@@ -1835,7 +1835,7 @@ class Alpha extends AbstractMigration
                 [
                     'constraint' => 'properties_proptype_fk',
                     'update' => 'RESTRICT',
-                    'delete' => 'RESTRICT'
+                    'delete' => 'RESTRICT',
                 ]
             )
             ->update();
@@ -1848,7 +1848,7 @@ class Alpha extends AbstractMigration
                 [
                     'constraint' => 'relationtypes_objtypeid_fk',
                     'update' => 'NO_ACTION',
-                    'delete' => 'CASCADE'
+                    'delete' => 'CASCADE',
                 ]
             )
             ->addForeignKey(
@@ -1858,7 +1858,7 @@ class Alpha extends AbstractMigration
                 [
                     'constraint' => 'relationtypes_relationid_fk',
                     'update' => 'NO_ACTION',
-                    'delete' => 'CASCADE'
+                    'delete' => 'CASCADE',
                 ]
             )
             ->update();
@@ -1871,7 +1871,7 @@ class Alpha extends AbstractMigration
                 [
                     'constraint' => 'rolesusers_roleid_fk',
                     'update' => 'NO_ACTION',
-                    'delete' => 'CASCADE'
+                    'delete' => 'CASCADE',
                 ]
             )
             ->addForeignKey(
@@ -1881,7 +1881,7 @@ class Alpha extends AbstractMigration
                 [
                     'constraint' => 'rolesusers_userid_fk',
                     'update' => 'NO_ACTION',
-                    'delete' => 'CASCADE'
+                    'delete' => 'CASCADE',
                 ]
             )
             ->update();
@@ -1894,7 +1894,7 @@ class Alpha extends AbstractMigration
                 [
                     'constraint' => 'trees_objectid_fk',
                     'update' => 'NO_ACTION',
-                    'delete' => 'CASCADE'
+                    'delete' => 'CASCADE',
                 ]
             )
             ->addForeignKey(
@@ -1904,7 +1904,7 @@ class Alpha extends AbstractMigration
                 [
                     'constraint' => 'trees_parentid_fk',
                     'update' => 'NO_ACTION',
-                    'delete' => 'CASCADE'
+                    'delete' => 'CASCADE',
                 ]
             )
             ->addForeignKey(
@@ -1914,7 +1914,7 @@ class Alpha extends AbstractMigration
                 [
                     'constraint' => 'trees_rootid_fk',
                     'update' => 'NO_ACTION',
-                    'delete' => 'CASCADE'
+                    'delete' => 'CASCADE',
                 ]
             )
             ->update();
@@ -1927,7 +1927,7 @@ class Alpha extends AbstractMigration
                 [
                     'constraint' => 'users_id_fk',
                     'update' => 'NO_ACTION',
-                    'delete' => 'CASCADE'
+                    'delete' => 'CASCADE',
                 ]
             )
             ->update();
@@ -2058,27 +2058,27 @@ class Alpha extends AbstractMigration
                 'id'
             );
 
-        $this->dropTable('annotations');
-        $this->dropTable('applications');
-        $this->dropTable('auth_providers');
-        $this->dropTable('config');
-        $this->dropTable('endpoint_permissions');
-        $this->dropTable('endpoints');
-        $this->dropTable('external_auth');
-        $this->dropTable('media');
-        $this->dropTable('object_permissions');
-        $this->dropTable('object_properties');
-        $this->dropTable('object_relations');
-        $this->dropTable('object_types');
-        $this->dropTable('objects');
-        $this->dropTable('profiles');
-        $this->dropTable('properties');
-        $this->dropTable('property_types');
-        $this->dropTable('relation_types');
-        $this->dropTable('relations');
-        $this->dropTable('roles');
-        $this->dropTable('roles_users');
-        $this->dropTable('trees');
-        $this->dropTable('users');
+        $this->table('annotations')->drop()->save();
+        $this->table('applications')->drop()->save();
+        $this->table('auth_providers')->drop()->save();
+        $this->table('config')->drop()->save();
+        $this->table('endpoint_permissions')->drop()->save();
+        $this->table('endpoints')->drop()->save();
+        $this->table('external_auth')->drop()->save();
+        $this->table('media')->drop()->save();
+        $this->table('object_permissions')->drop()->save();
+        $this->table('object_properties')->drop()->save();
+        $this->table('object_relations')->drop()->save();
+        $this->table('object_types')->drop()->save();
+        $this->table('objects')->drop()->save();
+        $this->table('profiles')->drop()->save();
+        $this->table('properties')->drop()->save();
+        $this->table('property_types')->drop()->save();
+        $this->table('relation_types')->drop()->save();
+        $this->table('relations')->drop()->save();
+        $this->table('roles')->drop()->save();
+        $this->table('roles_users')->drop()->save();
+        $this->table('trees')->drop()->save();
+        $this->table('users')->drop()->save();
     }
 }

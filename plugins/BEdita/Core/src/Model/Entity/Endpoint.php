@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Model\Entity;
 
 use BEdita\Core\Utility\JsonApiSerializable;
@@ -24,14 +23,13 @@ use Cake\ORM\TableRegistry;
  *
  * @property int $id
  * @property string $name
- * @property string $description
- * @property \Cake\I18n\Time $created
- * @property \Cake\I18n\Time $modified
+ * @property string|null $description
+ * @property \Cake\I18n\DateTime $created
+ * @property \Cake\I18n\DateTime $modified
  * @property bool $enabled
- * @property int $object_type_id
+ * @property int|null $object_type_id
  * @property string $object_type_name (virtual prop)
- *
- * @property \BEdita\Core\Model\Entity\ObjectType $object_type
+ * @property \BEdita\Core\Model\Entity\ObjectType|null $object_type
  * @property \BEdita\Core\Model\Entity\EndpointPermission[] $endpoint_permissions
  * @since 4.0.0
  */
@@ -42,7 +40,7 @@ class Endpoint extends Entity implements JsonApiSerializable
     /**
      * @inheritDoc
      */
-    protected $_accessible = [
+    protected array $_accessible = [
         '*' => true,
         'id' => false,
         'created' => false,

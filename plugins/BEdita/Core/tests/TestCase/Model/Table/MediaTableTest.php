@@ -41,7 +41,7 @@ class MediaTableTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.History',
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.Objects',
@@ -88,7 +88,7 @@ class MediaTableTest extends TestCase
      *
      * @return array
      */
-    public function saveProvider()
+    public static function saveProvider(): array
     {
         return [
             'valid' => [

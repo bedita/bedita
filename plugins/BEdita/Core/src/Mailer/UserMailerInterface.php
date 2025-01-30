@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Mailer;
 
 use Cake\Mailer\Mailer;
@@ -34,7 +33,7 @@ interface UserMailerInterface
      * @return \Cake\Mailer\Mailer
      * @throws \LogicException When missing some required parameter
      */
-    public function welcome($options): Mailer;
+    public function welcome(array $options): Mailer;
 
     /**
      * Signup message.

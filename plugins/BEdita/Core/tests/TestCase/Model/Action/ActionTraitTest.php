@@ -12,13 +12,15 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\Model\Action;
 
 use BEdita\Core\Model\Action\ActionTrait;
 use BEdita\Core\Model\Action\SignupUserAction;
 use Cake\Core\Configure;
+use Cake\ORM\Table;
 use Cake\TestSuite\TestCase;
+use RuntimeException;
+use Throwable;
 
 /**
  *  {@see \BEdita\Core\Model\Action\ActionTrait} Test Case
@@ -54,7 +56,7 @@ class ActionTraitTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.Objects',
         'plugin.BEdita/Core.Relations',
@@ -66,7 +68,7 @@ class ActionTraitTest extends TestCase
      *
      * @return void
      */
-    public function createActionProvider()
+    public static function createActionProvider(): array
     {
         return [
             'simple' => [
@@ -80,15 +82,17 @@ class ActionTraitTest extends TestCase
             'prefix' => [
                 'BEdita\Core\Model\Action\GetObjectAction',
                 'GetObjectAction',
-                [],
+                [
+                    'table' => new Table([]),
+                ],
                 'BEdita/Core',
             ],
             'fail with config' => [
-                new \RuntimeException('Unable to find class "MyPlugin.MyListAction"'),
+                new RuntimeException('Unable to find class "MyPlugin.MyListAction"'),
                 'ListObjectsAction',
             ],
             'direct fail' => [
-                new \RuntimeException('Unable to find class "BEdita/Core.\My\Class'),
+                new RuntimeException('Unable to find class "BEdita/Core.\My\Class'),
                 '\My\Class',
             ],
         ];
@@ -107,7 +111,7 @@ class ActionTraitTest extends TestCase
      */
     public function testCreateAction($expected, string $class, array $options = [], string $prefix = 'BEdita/Core')
     {
-        if ($expected instanceof \Throwable) {
+        if ($expected instanceof Throwable) {
             $this->expectException(get_class($expected));
             $this->expectExceptionMessage($expected->getMessage());
         }

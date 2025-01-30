@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\API\Controller\Model;
 
 /**
@@ -26,12 +25,12 @@ class PropertiesController extends ModelController
     /**
      * @inheritDoc
      */
-    public $defaultTable = 'Properties';
+    public ?string $defaultTable = 'Properties';
 
     /**
      * @inheritDoc
      */
-    protected $_defaultConfig = [
+    protected array $_defaultConfig = [
         'allowedAssociations' => [
             'object_types' => ['object_types'],
         ],

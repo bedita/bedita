@@ -12,16 +12,14 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Model\Table;
 
 use BEdita\Core\Exception\BadFilterException;
 use BEdita\Core\Search\SimpleSearchTrait;
 use Cake\Core\Configure;
 use Cake\Database\Expression\QueryExpression;
-use Cake\Database\Schema\TableSchemaInterface;
 use Cake\Datasource\Exception\RecordNotFoundException;
-use Cake\ORM\Query;
+use Cake\ORM\Query\SelectQuery;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
@@ -33,16 +31,23 @@ use Cake\Validation\Validator;
  * @property \BEdita\Core\Model\Table\ObjectsTable|\Cake\ORM\Association\BelongsTo $Objects
  * @property \BEdita\Core\Model\Table\UsersTable|\Cake\ORM\Association\BelongsTo $CreatedByUsers
  * @property \BEdita\Core\Model\Table\UsersTable|\Cake\ORM\Association\BelongsTo $ModifiedByUsers
- * @method \BEdita\Core\Model\Entity\Translation get($primaryKey, $options = [])
- * @method \BEdita\Core\Model\Entity\Translation newEntity($data = null, array $options = [])
+ * @method \BEdita\Core\Model\Entity\Translation get(mixed $primaryKey, array|string $finder = 'all', \Psr\SimpleCache\CacheInterface|string|null $cache = null, \Closure|string|null $cacheKey = null, mixed ...$args)
+ * @method \BEdita\Core\Model\Entity\Translation newEntity(array $data, array $options = [])
  * @method \BEdita\Core\Model\Entity\Translation[] newEntities(array $data, array $options = [])
- * @method \BEdita\Core\Model\Entity\Translation|bool save(\Cake\Datasource\EntityInterface $entity, $options = [])
+ * @method \BEdita\Core\Model\Entity\Translation|false save(\Cake\Datasource\EntityInterface $entity, array $options = [])
  * @method \BEdita\Core\Model\Entity\Translation patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
- * @method \BEdita\Core\Model\Entity\Translation[] patchEntities($entities, array $data, array $options = [])
- * @method \BEdita\Core\Model\Entity\Translation findOrCreate($search, callable $callback = null, $options = [])
+ * @method \BEdita\Core\Model\Entity\Translation[] patchEntities(iterable $entities, array $data, array $options = [])
+ * @method \BEdita\Core\Model\Entity\Translation findOrCreate(\Cake\ORM\Query\SelectQuery|callable|array $search, ?callable $callback = null, array $options = [])
  * @mixin \Cake\ORM\Behavior\TimestampBehavior
  * @mixin \BEdita\Core\Model\Behavior\UserModifiedBehavior
  * @mixin \BEdita\Core\Model\Behavior\StatusBehavior
+ * @method \BEdita\Core\Model\Entity\Translation newEmptyEntity()
+ * @method \BEdita\Core\Model\Entity\Translation saveOrFail(\Cake\Datasource\EntityInterface $entity, array $options = [])
+ * @method \BEdita\Core\Model\Entity\Translation[]|\Cake\Datasource\ResultSetInterface<\BEdita\Core\Model\Entity\Translation>|false saveMany(iterable $entities, array $options = [])
+ * @method \BEdita\Core\Model\Entity\Translation[]|\Cake\Datasource\ResultSetInterface<\BEdita\Core\Model\Entity\Translation> saveManyOrFail(iterable $entities, array $options = [])
+ * @method \BEdita\Core\Model\Entity\Translation[]|\Cake\Datasource\ResultSetInterface<\BEdita\Core\Model\Entity\Translation>|false deleteMany(iterable $entities, array $options = [])
+ * @method \BEdita\Core\Model\Entity\Translation[]|\Cake\Datasource\ResultSetInterface<\BEdita\Core\Model\Entity\Translation> deleteManyOrFail(iterable $entities, array $options = [])
+ * @mixin \BEdita\Core\Model\Behavior\SearchableBehavior
  */
 class TranslationsTable extends Table
 {
@@ -60,6 +65,7 @@ class TranslationsTable extends Table
         $this->setTable('translations');
         $this->setPrimaryKey('id');
         $this->setDisplayField('id');
+        $this->getSchema()->setColumnType('translated_fields', 'json');
 
         $this->addBehavior('Timestamp');
         $this->addBehavior('BEdita/Core.UserModified');
@@ -142,31 +148,21 @@ class TranslationsTable extends Table
     }
 
     /**
-     * {@inheritDoc}
-     *
-     * @codeCoverageIgnore
-     */
-    public function getSchema(): TableSchemaInterface
-    {
-        return parent::getSchema()->setColumnType('translated_fields', 'json');
-    }
-
-    /**
      * Find translations by object type
      *
-     * @param \Cake\ORM\Query $query Query object instance.
+     * @param \Cake\ORM\Query\SelectQuery $query Query object instance.
      * @param array $options Options array.
-     * @return \Cake\ORM\Query
+     * @return \Cake\ORM\Query\SelectQuery
      * @throws \BEdita\Core\Exception\BadFilterException
      */
-    protected function findType(Query $query, array $options): Query
+    protected function findType(SelectQuery $query, array $options): SelectQuery
     {
         if (empty($options)) {
             throw new BadFilterException(__d('bedita', 'Missing required parameter "type"'));
         }
         $typeIds = array_map([$this, 'typeId'], $options);
 
-        return $query->innerJoinWith('Objects', function (Query $query) use ($typeIds) {
+        return $query->innerJoinWith('Objects', function (SelectQuery $query) use ($typeIds) {
             return $query->where(function (QueryExpression $exp) use ($typeIds) {
                 return $exp->in('object_type_id', $typeIds);
             });
@@ -195,10 +191,10 @@ class TranslationsTable extends Table
     /**
      * Finder for available objects based on the status level.
      *
-     * @param \Cake\ORM\Query $query Query object instance.
-     * @return \Cake\ORM\Query
+     * @param \Cake\ORM\Query\SelectQuery $query Query object instance.
+     * @return \Cake\ORM\Query\SelectQuery
      */
-    protected function findAvailable(Query $query): Query
+    protected function findAvailable(SelectQuery $query): SelectQuery
     {
         return $query->find('statusLevel', [Configure::read('Status.level', 'all')]);
     }

@@ -28,7 +28,7 @@ class HistoryController extends ResourcesController
     /**
      * @inheritDoc
      */
-    protected $_defaultConfig = [
+    protected array $_defaultConfig = [
         'allowedAssociations' => [
             'user' => ['users'],
         ],
@@ -47,7 +47,7 @@ class HistoryController extends ResourcesController
     /**
      * @inheritDoc
      */
-    protected function setRelationshipsAllowedMethods(Association $association)
+    protected function setRelationshipsAllowedMethods(Association $association): void
     {
         $this->request->allowMethod(['get']);
     }

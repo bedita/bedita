@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\Migration;
 
 use BEdita\Core\Test\TestCase\Migration\Migrations\TestAdd;
@@ -34,7 +33,7 @@ class ResourcesMigrationTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.PropertyTypes',
         'plugin.BEdita/Core.Properties',
@@ -52,7 +51,7 @@ class ResourcesMigrationTest extends TestCase
      */
     public function testUp(): void
     {
-        $migration = new TestAdd('test', 1);
+        $migration = new TestAdd('test', 20241220102400);
 
         $migration->up();
 
@@ -72,7 +71,7 @@ class ResourcesMigrationTest extends TestCase
         $objectType = $ObjectTypes->newEntity(['name' => 'foos', 'singular' => 'foo']);
         $ObjectTypes->saveOrFail($objectType);
 
-        $migration = new TestAdd('test', 1);
+        $migration = new TestAdd('test', 20241220102400);
 
         $migration->down();
 
@@ -90,7 +89,7 @@ class ResourcesMigrationTest extends TestCase
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('YAML file not found');
 
-        $migration = new TestMissing('test', 1);
+        $migration = new TestMissing('test', 20241220102400);
         $migration->up();
     }
 
@@ -108,7 +107,7 @@ class ResourcesMigrationTest extends TestCase
     {
         MockMigrationsTable::$calls = [];
 
-        $migration = new TestColumns('test', 1);
+        $migration = new TestColumns('test', 20241220102400);
         $migration->up();
 
         $expected = [
@@ -173,7 +172,7 @@ class ResourcesMigrationTest extends TestCase
     {
         MockMigrationsTable::$calls = [];
 
-        $migration = new TestColumns('test', 1);
+        $migration = new TestColumns('test', 20241220102400);
         $migration->down();
 
         $expected = [

@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Model\Table;
 
 use BEdita\Core\Model\Validation\Validation;
@@ -25,17 +24,25 @@ use Cake\Validation\Validator;
 /**
  * Endpoints Model
  *
- * @method \BEdita\Core\Model\Entity\Endpoint get($primaryKey, $options = [])
- * @method \BEdita\Core\Model\Entity\Endpoint newEntity($data = null, array $options = [])
+ * @method \BEdita\Core\Model\Entity\Endpoint get(mixed $primaryKey, array|string $finder = 'all', \Psr\SimpleCache\CacheInterface|string|null $cache = null, \Closure|string|null $cacheKey = null, mixed ...$args)
+ * @method \BEdita\Core\Model\Entity\Endpoint newEntity(array $data, array $options = [])
  * @method \BEdita\Core\Model\Entity\Endpoint[] newEntities(array $data, array $options = [])
- * @method \BEdita\Core\Model\Entity\Endpoint|bool save(\Cake\Datasource\EntityInterface $entity, $options = [])
+ * @method \BEdita\Core\Model\Entity\Endpoint|false save(\Cake\Datasource\EntityInterface $entity, array $options = [])
  * @method \BEdita\Core\Model\Entity\Endpoint patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
- * @method \BEdita\Core\Model\Entity\Endpoint[] patchEntities($entities, array $data, array $options = [])
- * @method \BEdita\Core\Model\Entity\Endpoint findOrCreate($search, callable $callback = null, $options = [])
+ * @method \BEdita\Core\Model\Entity\Endpoint[] patchEntities(iterable $entities, array $data, array $options = [])
+ * @method \BEdita\Core\Model\Entity\Endpoint findOrCreate(\Cake\ORM\Query\SelectQuery|callable|array $search, ?callable $callback = null, array $options = [])
  * @method \Cake\ORM\Query queryCache(\Cake\ORM\Query $query, string $key)
- * @property \Cake\ORM\Association\BelongsTo $ObjectTypes
- * @property \Cake\ORM\Association\HasMany $EndpointPermissions
+ * @property \Cake\ORM\Table&\Cake\ORM\Association\BelongsTo $ObjectTypes
+ * @property \Cake\ORM\Table&\Cake\ORM\Association\HasMany $EndpointPermissions
  * @mixin \Cake\ORM\Behavior\TimestampBehavior
+ * @method \BEdita\Core\Model\Entity\Endpoint newEmptyEntity()
+ * @method \BEdita\Core\Model\Entity\Endpoint saveOrFail(\Cake\Datasource\EntityInterface $entity, array $options = [])
+ * @method \BEdita\Core\Model\Entity\Endpoint[]|\Cake\Datasource\ResultSetInterface<\BEdita\Core\Model\Entity\Endpoint>|false saveMany(iterable $entities, array $options = [])
+ * @method \BEdita\Core\Model\Entity\Endpoint[]|\Cake\Datasource\ResultSetInterface<\BEdita\Core\Model\Entity\Endpoint> saveManyOrFail(iterable $entities, array $options = [])
+ * @method \BEdita\Core\Model\Entity\Endpoint[]|\Cake\Datasource\ResultSetInterface<\BEdita\Core\Model\Entity\Endpoint>|false deleteMany(iterable $entities, array $options = [])
+ * @method \BEdita\Core\Model\Entity\Endpoint[]|\Cake\Datasource\ResultSetInterface<\BEdita\Core\Model\Entity\Endpoint> deleteManyOrFail(iterable $entities, array $options = [])
+ * @mixin \BEdita\Core\Model\Behavior\QueryCacheBehavior
+ * @mixin \BEdita\Core\Model\Behavior\ResourceNameBehavior
  * @since 4.0.0
  */
 class EndpointsTable extends Table

@@ -12,17 +12,17 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\Model\Table;
 
 use BEdita\Core\Exception\BadFilterException;
 use BEdita\Core\Utility\LoggedUser;
 use Cake\Core\Configure;
-use Cake\I18n\FrozenTime;
+use Cake\I18n\DateTime;
 use Cake\ORM\Association\BelongsTo;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Hash;
+use Exception;
 
 /**
  * {@see \BEdita\Core\Model\Table\ExternalAuthTable} Test Case
@@ -43,7 +43,7 @@ class ExternalAuthTableTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.Relations',
         'plugin.BEdita/Core.RelationTypes',
@@ -88,7 +88,6 @@ class ExternalAuthTableTest extends TestCase
      */
     public function testInitialization()
     {
-        $this->ExternalAuth->initialize([]);
         $schema = $this->ExternalAuth->getSchema();
 
         static::assertEquals('external_auth', $this->ExternalAuth->getTable());
@@ -106,7 +105,7 @@ class ExternalAuthTableTest extends TestCase
      *
      * @return array
      */
-    public function validationProvider()
+    public static function validationProvider(): array
     {
         return [
             'valid' => [
@@ -150,7 +149,7 @@ class ExternalAuthTableTest extends TestCase
      */
     public function testValidation($expected, array $data)
     {
-        $externalAuth = $this->ExternalAuth->newEntity([]);
+        $externalAuth = $this->ExternalAuth->newEmptyEntity();
         $this->ExternalAuth->patchEntity($externalAuth, $data);
 
         $success = $this->ExternalAuth->save($externalAuth);
@@ -241,7 +240,7 @@ class ExternalAuthTableTest extends TestCase
      *
      * @return array
      */
-    public function findAuthProviderProvider() // Nice name, huh!?
+    public static function findAuthProviderProvider(): array // Nice name, huh!?
     {
         return [
             'missing parameter' => [
@@ -259,8 +258,8 @@ class ExternalAuthTableTest extends TestCase
                         'auth_provider_id' => 1,
                         'params' => null,
                         'provider_username' => 'first_user',
-                        'created' => new FrozenTime('2018-04-07 12:51:27'),
-                        'modified' => new FrozenTime('2018-04-07 12:51:27'),
+                        'created' => new DateTime('2018-04-07 12:51:27'),
+                        'modified' => new DateTime('2018-04-07 12:51:27'),
                     ],
                 ],
                 'example',
@@ -273,8 +272,8 @@ class ExternalAuthTableTest extends TestCase
                         'auth_provider_id' => 1,
                         'params' => null,
                         'provider_username' => 'first_user',
-                        'created' => new FrozenTime('2018-04-07 12:51:27'),
-                        'modified' => new FrozenTime('2018-04-07 12:51:27'),
+                        'created' => new DateTime('2018-04-07 12:51:27'),
+                        'modified' => new DateTime('2018-04-07 12:51:27'),
                     ],
                 ],
                 [
@@ -289,8 +288,8 @@ class ExternalAuthTableTest extends TestCase
                         'auth_provider_id' => 1,
                         'params' => null,
                         'provider_username' => 'first_user',
-                        'created' => new FrozenTime('2018-04-07 12:51:27'),
-                        'modified' => new FrozenTime('2018-04-07 12:51:27'),
+                        'created' => new DateTime('2018-04-07 12:51:27'),
+                        'modified' => new DateTime('2018-04-07 12:51:27'),
                     ],
                 ],
                 1,
@@ -309,7 +308,7 @@ class ExternalAuthTableTest extends TestCase
      */
     public function testFindAuthProvider($expected, $authProvider)
     {
-        if ($expected instanceof \Exception) {
+        if ($expected instanceof Exception) {
             $this->expectException(get_class($expected));
             $this->expectExceptionMessage($expected->getMessage());
         }
@@ -330,7 +329,7 @@ class ExternalAuthTableTest extends TestCase
      *
      * @return array
      */
-    public function findByUserProvider(): array
+    public static function findByUserProvider(): array
     {
         return [
             'bad data' => [
@@ -348,8 +347,8 @@ class ExternalAuthTableTest extends TestCase
                         'auth_provider_id' => 2,
                         'params' => null,
                         'provider_username' => '17fec0fa-068a-4d7c-8283-da91d47cef7d',
-                        'created' => new FrozenTime('2018-04-07 12:51:27'),
-                        'modified' => new FrozenTime('2018-04-07 12:51:27'),
+                        'created' => new DateTime('2018-04-07 12:51:27'),
+                        'modified' => new DateTime('2018-04-07 12:51:27'),
                         'auth_provider' => [
                             'id' => 2,
                             'name' => 'uuid',
@@ -357,8 +356,8 @@ class ExternalAuthTableTest extends TestCase
                             'url' => null,
                             'params' => ['status' => 'on'],
                             'enabled' => true,
-                            'created' => new FrozenTime('2018-04-07 12:51:27'),
-                            'modified' => new FrozenTime('2018-04-07 12:51:27'),
+                            'created' => new DateTime('2018-04-07 12:51:27'),
+                            'modified' => new DateTime('2018-04-07 12:51:27'),
                         ],
                     ],
                 ],
@@ -372,8 +371,8 @@ class ExternalAuthTableTest extends TestCase
                         'auth_provider_id' => 2,
                         'params' => null,
                         'provider_username' => '17fec0fa-068a-4d7c-8283-da91d47cef7d',
-                        'created' => new FrozenTime('2018-04-07 12:51:27'),
-                        'modified' => new FrozenTime('2018-04-07 12:51:27'),
+                        'created' => new DateTime('2018-04-07 12:51:27'),
+                        'modified' => new DateTime('2018-04-07 12:51:27'),
                         'auth_provider' => [
                             'id' => 2,
                             'name' => 'uuid',
@@ -381,8 +380,8 @@ class ExternalAuthTableTest extends TestCase
                             'url' => null,
                             'params' => ['status' => 'on'],
                             'enabled' => true,
-                            'created' => new FrozenTime('2018-04-07 12:51:27'),
-                            'modified' => new FrozenTime('2018-04-07 12:51:27'),
+                            'created' => new DateTime('2018-04-07 12:51:27'),
+                            'modified' => new DateTime('2018-04-07 12:51:27'),
                         ],
                     ],
                 ],
@@ -402,7 +401,7 @@ class ExternalAuthTableTest extends TestCase
      */
     public function testFindByUser($expected, $user): void
     {
-        if ($expected instanceof \Exception) {
+        if ($expected instanceof Exception) {
             $this->expectException(get_class($expected));
             $this->expectExceptionMessage($expected->getMessage());
         }

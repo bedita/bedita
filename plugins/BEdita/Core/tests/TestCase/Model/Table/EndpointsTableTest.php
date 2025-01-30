@@ -12,13 +12,13 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\Model\Table;
 
 use Cake\Cache\Cache;
 use Cake\Http\Exception\NotFoundException;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
+use Exception;
 
 /**
  * BEdita\Core\Model\Table\EndpointsTable Test Case
@@ -39,7 +39,7 @@ class EndpointsTableTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.Endpoints',
         'plugin.BEdita/Core.Relations',
@@ -77,7 +77,6 @@ class EndpointsTableTest extends TestCase
      */
     public function testInitialize()
     {
-        $this->Endpoints->initialize([]);
         $this->assertEquals('endpoints', $this->Endpoints->getTable());
         $this->assertEquals('id', $this->Endpoints->getPrimaryKey());
         $this->assertEquals('name', $this->Endpoints->getDisplayField());
@@ -92,7 +91,7 @@ class EndpointsTableTest extends TestCase
      *
      * @return array
      */
-    public function validationProvider()
+    public static function validationProvider(): array
     {
         return [
             'valid' => [
@@ -141,7 +140,7 @@ class EndpointsTableTest extends TestCase
      *
      * @return array
      */
-    public function buildRulesProvider()
+    public static function buildRulesProvider(): array
     {
         return [
             'wrongObjectType' => [
@@ -181,7 +180,7 @@ class EndpointsTableTest extends TestCase
      *
      * @return array
      */
-    public function fetchIdProvider()
+    public static function fetchIdProvider(): array
     {
         return [
             '/auth' => [
@@ -220,7 +219,7 @@ class EndpointsTableTest extends TestCase
     {
         $cacheConf = $this->Endpoints->behaviors()->get('QueryCache')->getConfig('cacheConfig');
         Cache::clear($cacheConf);
-        if ($expected instanceof \Exception) {
+        if ($expected instanceof Exception) {
             $this->expectException(get_class($expected));
             $this->expectExceptionMessage($expected->getMessage());
         }

@@ -12,19 +12,21 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\Model\Table;
 
 use Authentication\Identity;
+use Authentication\PasswordHasher\LegacyPasswordHasher;
+use BEdita\Core\Exception\BadFilterException;
+use BEdita\Core\Exception\ImmutableResourceException;
 use BEdita\Core\Model\Table\UsersTable;
 use BEdita\Core\Utility\LoggedUser;
-use Cake\Auth\WeakPasswordHasher;
 use Cake\Core\Configure;
 use Cake\Http\Exception\BadRequestException;
 use Cake\Http\ServerRequest;
-use Cake\I18n\FrozenTime;
+use Cake\I18n\DateTime;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
+use Exception;
 
 /**
  * {@see \BEdita\Core\Model\Table\UsersTable} Test Case
@@ -45,7 +47,7 @@ class UsersTableTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.Relations',
         'plugin.BEdita/Core.RelationTypes',
@@ -98,8 +100,6 @@ class UsersTableTest extends TestCase
      */
     public function testInitialization()
     {
-        $this->Users->associations()->removeAll();
-        $this->Users->initialize([]);
         $this->assertEquals('users', $this->Users->getTable());
         $this->assertEquals('id', $this->Users->getPrimaryKey());
         $this->assertEquals('username', $this->Users->getDisplayField());
@@ -113,14 +113,14 @@ class UsersTableTest extends TestCase
      *
      * @return array
      */
-    public function saveProvider()
+    public static function saveProvider(): array
     {
         return [
             'valid' => [
                 false,
                 [
                     'username' => 'globetrotter user',
-                    'password_hash' => (new WeakPasswordHasher(['hashType' => 'md5']))->hash('hunter1'),
+                    'password_hash' => (new LegacyPasswordHasher(['hashType' => 'md5']))->hash('hunter1'),
                     'blocked' => 0,
                     'last_login' => null,
                     'last_login_err' => null,
@@ -132,7 +132,7 @@ class UsersTableTest extends TestCase
                 true,
                 [
                     'username' => 'support user',
-                    'password_hash' => (new WeakPasswordHasher(['hashType' => 'md5']))->hash('hunter2'),
+                    'password_hash' => (new LegacyPasswordHasher(['hashType' => 'md5']))->hash('hunter2'),
                     'blocked' => 0,
                     'last_login' => null,
                     'last_login_err' => null,
@@ -172,7 +172,7 @@ class UsersTableTest extends TestCase
      *
      * @return array
      */
-    public function validationProvider()
+    public static function validationProvider(): array
     {
         return [
             'valid' => [
@@ -203,7 +203,7 @@ class UsersTableTest extends TestCase
      */
     public function testValidation($expected, array $data)
     {
-        $user = $this->Users->newEntity([]);
+        $user = $this->Users->newEmptyEntity();
         $this->Users->patchEntity($user, $data);
         $user->type = 'users';
 
@@ -225,7 +225,7 @@ class UsersTableTest extends TestCase
     public function testLogin()
     {
         $identity = new Identity($this->Users->get(1));
-        $expected = new FrozenTime();
+        $expected = new DateTime();
         $this->Users->dispatchEvent('Authentication.afterIdentify', compact('identity'));
 
         $lastLogin = $this->Users->get(1)->last_login;
@@ -261,7 +261,7 @@ class UsersTableTest extends TestCase
         $request = new ServerRequest();
         $request = $request->withData('grant_type', 'password')
             ->withData('username', 'second user');
-        $now = new FrozenTime();
+        $now = new DateTime();
         $this->Users->dispatchEvent('Authentication.failure', compact('request'));
 
         $user = $this->Users->get(5);
@@ -426,7 +426,7 @@ class UsersTableTest extends TestCase
      */
     public function testSoftDeleteAdminUser()
     {
-        $this->expectException(\BEdita\Core\Exception\ImmutableResourceException::class);
+        $this->expectException(ImmutableResourceException::class);
         $this->expectExceptionCode('403');
         $this->expectExceptionMessage('Could not delete "User" 1');
         $user = $this->Users->get(UsersTable::ADMIN_USER);
@@ -442,7 +442,7 @@ class UsersTableTest extends TestCase
      */
     public function testSoftDeleteLoggedUser()
     {
-        $this->expectException(\Cake\Http\Exception\BadRequestException::class);
+        $this->expectException(BadRequestException::class);
         $this->expectExceptionCode('400');
         $this->expectExceptionMessage('Logged users cannot delete their own account');
         LoggedUser::setUser(['id' => 5]);
@@ -472,7 +472,7 @@ class UsersTableTest extends TestCase
      */
     public function testHardDeleteAdminUser()
     {
-        $this->expectException(\BEdita\Core\Exception\ImmutableResourceException::class);
+        $this->expectException(ImmutableResourceException::class);
         $this->expectExceptionCode('403');
         $this->expectExceptionMessage('Could not delete "User" 1');
         $user = $this->Users->get(UsersTable::ADMIN_USER);
@@ -496,7 +496,7 @@ class UsersTableTest extends TestCase
      *
      * @return array
      */
-    public function findExternalAuthProvider()
+    public static function findExternalAuthProvider(): array
     {
         return [
             'generic' => [
@@ -550,7 +550,7 @@ class UsersTableTest extends TestCase
      *
      * @return array
      */
-    public function validationSignupProvider()
+    public static function validationSignupProvider(): array
     {
         return [
             'valid' => [
@@ -603,7 +603,7 @@ class UsersTableTest extends TestCase
     {
         Configure::write('Signup', $config);
 
-        $user = $this->Users->newEntity([]);
+        $user = $this->Users->newEmptyEntity();
         $this->Users->patchEntity($user, $data, ['validate' => 'signup']);
         $user->type = 'users';
 
@@ -629,7 +629,7 @@ class UsersTableTest extends TestCase
             'email' => 'test@email.com',
         ];
 
-        $user = $this->Users->newEntity([]);
+        $user = $this->Users->newEmptyEntity();
         $this->Users->patchEntity($user, $data, ['validate' => 'signupExternal']);
 
         $error = (bool)$user->getErrors();
@@ -669,8 +669,8 @@ class UsersTableTest extends TestCase
             5 => 5,
         ];
 
-        $result = $this->Users->find('roles', [1, 'second role'])
-            ->find('list', ['keyField' => 'id', 'valueField' => 'id'])
+        $result = $this->Users->find('roles', subjectValue: [1, 'second role'])
+            ->find('list', keyField: 'id', valueField: 'id')
             ->toArray();
 
         static::assertEquals($expected, $result);
@@ -684,7 +684,7 @@ class UsersTableTest extends TestCase
      */
     public function testFindRolesFail()
     {
-        $this->expectException(\BEdita\Core\Exception\BadFilterException::class);
+        $this->expectException(BadFilterException::class);
         $this->expectExceptionMessage('Missing required parameter "roles"');
         $this->Users->find('roles', [])
             ->toArray();
@@ -695,7 +695,7 @@ class UsersTableTest extends TestCase
      *
      * @return array
      */
-    public function beforeMarshalProvider()
+    public static function beforeMarshalProvider(): array
     {
         return [
             'ok' => [
@@ -734,12 +734,12 @@ class UsersTableTest extends TestCase
     {
         Configure::write('Auth.passwordPolicy.rule', $passwdRule);
         Configure::write('Auth.passwordPolicy.message', $passwdMessage);
-        if ($expected instanceof \Exception) {
+        if ($expected instanceof Exception) {
             $this->expectException(get_class($expected));
             $this->expectExceptionMessage($expected->getMessage());
         }
 
-        $user = $this->Users->newEntity([]);
+        $user = $this->Users->newEmptyEntity();
         $user = $this->Users->patchEntity($user, $data);
         $success = $this->Users->save($user);
 
@@ -751,7 +751,7 @@ class UsersTableTest extends TestCase
      *
      * @return array
      */
-    public function customPropsCreateProvider()
+    public static function customPropsCreateProvider(): array
     {
         return [
             'users custom prop' => [
@@ -786,7 +786,7 @@ class UsersTableTest extends TestCase
      */
     public function testCustomPropsCreate(array $data)
     {
-        $user = $this->Users->newEntity([]);
+        $user = $this->Users->newEmptyEntity();
         $user = $this->Users->patchEntity($user, $data);
         $user->type = 'users';
         $success = $this->Users->save($user);
@@ -949,7 +949,7 @@ class UsersTableTest extends TestCase
      *
      * @return array
      */
-    public function prefixProvider()
+    public static function prefixProvider(): array
     {
         return [
             'valid' => [
@@ -986,13 +986,13 @@ class UsersTableTest extends TestCase
      */
     public function testPrefix($expected, array $data)
     {
-        if ($expected instanceof \Exception) {
+        if ($expected instanceof Exception) {
             $this->expectException(get_class($expected));
             $this->expectExceptionCode($expected->getCode());
             $this->expectExceptionMessage($expected->getMessage());
         }
 
-        $user = $this->Users->newEntity([]);
+        $user = $this->Users->newEmptyEntity();
         $this->Users->patchEntity($user, $data);
 
         $success = $this->Users->save($user);

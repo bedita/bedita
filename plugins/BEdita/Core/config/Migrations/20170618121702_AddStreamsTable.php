@@ -388,7 +388,7 @@ class AddStreamsTable extends AbstractMigration
             )
             ->update();
 
-        $this->dropTable('streams');
+        $this->table('streams')->drop()->save();
     }
 }
 

@@ -12,12 +12,12 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\Database\Type;
 
 use BEdita\Core\Database\Type\JsonObjectType;
 use Cake\Datasource\ConnectionManager;
 use Cake\TestSuite\TestCase;
+use stdClass;
 
 /**
  * @coversDefaultClass \BEdita\Core\Database\Type\JsonObjectType
@@ -29,14 +29,14 @@ class JsonObjectTypeTest extends TestCase
      *
      * @return array
      */
-    public function toPHPProvider()
+    public static function toPHPProvider(): array
     {
-        $obj = new \stdClass();
+        $obj = new stdClass();
         $obj->firstName = 'Gustavo';
         $obj->lastName = 'Supporto';
         $obj->age = 42;
         $obj->skills = [];
-        $obj->randomEmptyObject = new \stdClass();
+        $obj->randomEmptyObject = new stdClass();
 
         return [
             'string' => [
@@ -64,7 +64,7 @@ class JsonObjectTypeTest extends TestCase
                 '[]',
             ],
             'empty object' => [
-                new \stdClass(),
+                new stdClass(),
                 '{}',
             ],
             'complex' => [
@@ -96,5 +96,50 @@ class JsonObjectTypeTest extends TestCase
         } else {
             static::assertEquals($expected, $actual);
         }
+    }
+
+    /**
+     * Test `manyToPHP()` method.
+     *
+     * @return void
+     * @covers ::manyToPHP()
+     */
+    public function testManyToPHP(): void
+    {
+        $fields = ['missing', 'number', 'boolean', 'null', 'array', 'emptyArray', 'emptyObject', 'simple', 'complex'];
+        $values = [
+            'number' => '42',
+            'boolean' => 'true',
+            'null' => 'null',
+            'array' => '["one","two"]',
+            'emptyArray' => '[]',
+            'emptyObject' => '{}',
+            'simple' => '{"one":"two"}',
+            'complex' => '{"firstName":"Gustavo","lastName":"Supporto","age":42,"skills":[],"randomEmptyObject":{}}',
+        ];
+
+        $expected = [
+            'number' => 42,
+            'boolean' => true,
+            'null' => null,
+            'array' => ['one', 'two'],
+            'emptyArray' => [],
+            'emptyObject' => new stdClass(),
+            'simple' => (object)['one' => 'two'],
+            'complex' => (object)[
+                'firstName' => 'Gustavo',
+                'lastName' => 'Supporto',
+                'age' => 42,
+                'skills' => [],
+                'randomEmptyObject' => new stdClass(),
+            ],
+        ];
+
+        /** @var \Cake\Database\Connection $connection */
+        $connection = ConnectionManager::get('default');
+        $type = new JsonObjectType();
+        $actual = $type->manyToPHP($values, $fields, $connection->getDriver());
+
+        static::assertEquals($expected, $actual);
     }
 }

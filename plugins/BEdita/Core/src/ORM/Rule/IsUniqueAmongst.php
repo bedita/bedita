@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\ORM\Rule;
 
 use Cake\Datasource\EntityInterface;
@@ -32,7 +31,7 @@ class IsUniqueAmongst extends IsUnique
      * @param array $extracted Extracted fields.
      * @return array
      */
-    protected function buildConditions($alias, $extracted)
+    protected function buildConditions(string $alias, array $extracted): array
     {
         $conditions = [];
         foreach ($extracted as $field => $value) {

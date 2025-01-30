@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\Filesystem\Thumbnail;
 
 use BEdita\Core\Exception\InvalidDataException;
@@ -22,6 +21,7 @@ use BEdita\Core\Filesystem\Thumbnail\GlideGenerator;
 use BEdita\Core\Test\Utility\TestFilesystemTrait;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
+use Exception;
 use League\Flysystem\StorageAttributes;
 
 /**
@@ -36,7 +36,7 @@ class GlideGeneratorTest extends TestCase
      *
      * @var string[]
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.Objects',
         'plugin.BEdita/Core.Media',
@@ -91,7 +91,7 @@ class GlideGeneratorTest extends TestCase
      *
      * @return array
      */
-    public function getUrlProvider()
+    public static function getUrlProvider(): array
     {
         return [
             'invalid txt file' => [
@@ -130,7 +130,7 @@ class GlideGeneratorTest extends TestCase
      */
     public function testGetUrl($expected, $uuid, array $options = [])
     {
-        if ($expected instanceof \Exception) {
+        if ($expected instanceof Exception) {
             $this->expectException(get_class($expected));
             $this->expectExceptionCode($expected->getCode());
             $this->expectExceptionMessage($expected->getMessage());
@@ -148,7 +148,7 @@ class GlideGeneratorTest extends TestCase
      *
      * @return array
      */
-    public function getExtensionThumb()
+    public static function getExtensionThumb(): array
     {
         return [
             'png file' => [
@@ -194,7 +194,7 @@ class GlideGeneratorTest extends TestCase
      *
      * @return array
      */
-    public function generateProvider()
+    public static function generateProvider(): array
     {
         return [
             'text file' => [
@@ -251,7 +251,7 @@ class GlideGeneratorTest extends TestCase
      */
     public function testGenerate($expected, $uuid, array $options = [])
     {
-        if ($expected instanceof \Exception) {
+        if ($expected instanceof Exception) {
             $this->expectException(get_class($expected));
             $this->expectExceptionCode($expected->getCode());
             $this->expectExceptionMessage($expected->getMessage());
@@ -269,7 +269,7 @@ class GlideGeneratorTest extends TestCase
      *
      * @return array
      */
-    public function existsProvider()
+    public static function existsProvider(): array
     {
         return [
             'not valid' => [

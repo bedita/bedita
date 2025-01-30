@@ -12,15 +12,14 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\Model\Action;
 
 use BEdita\Core\Model\Action\ListEntitiesAction;
 use BEdita\Core\ORM\Inheritance\Table;
 use Cake\Database\Driver\Mysql;
 use Cake\Datasource\ConnectionManager;
-use Cake\I18n\FrozenTime;
-use Cake\ORM\Query;
+use Cake\I18n\DateTime;
+use Cake\ORM\Query\SelectQuery;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
@@ -34,7 +33,7 @@ class ListEntitiesActionTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.FakeAnimals',
         'plugin.BEdita/Core.FakeArticles',
         'plugin.BEdita/Core.FakeMammals',
@@ -68,7 +67,7 @@ class ListEntitiesActionTest extends TestCase
      *
      * @return array
      */
-    public function parseFilterProvider()
+    public static function parseFilterProvider(): array
     {
         return [
             'normal' => [
@@ -120,7 +119,7 @@ class ListEntitiesActionTest extends TestCase
      *
      * @return array
      */
-    public function executeProvider()
+    public static function executeProvider(): array
     {
         return [
             'plain' => [
@@ -129,7 +128,7 @@ class ListEntitiesActionTest extends TestCase
                         'id' => 1,
                         'name' => 'cat',
                         'legs' => 4,
-                        'modified' => new FrozenTime('2018-02-20 09:50:00'),
+                        'modified' => new DateTime('2018-02-20 09:50:00'),
                     ],
                     [
                         'id' => 2,
@@ -152,7 +151,7 @@ class ListEntitiesActionTest extends TestCase
                         'id' => 1,
                         'name' => 'cat',
                         'legs' => 4,
-                        'modified' => new FrozenTime('2018-02-20 09:50:00'),
+                        'modified' => new DateTime('2018-02-20 09:50:00'),
                     ],
                     [
                         'id' => 2,
@@ -175,7 +174,7 @@ class ListEntitiesActionTest extends TestCase
                         'id' => 1,
                         'name' => 'cat',
                         'legs' => 4,
-                        'modified' => new FrozenTime('2018-02-20 09:50:00'),
+                        'modified' => new DateTime('2018-02-20 09:50:00'),
                     ],
                 ],
                 'fake_articles=1',
@@ -186,7 +185,7 @@ class ListEntitiesActionTest extends TestCase
                         'id' => 1,
                         'name' => 'cat',
                         'legs' => 4,
-                        'modified' => new FrozenTime('2018-02-20 09:50:00'),
+                        'modified' => new DateTime('2018-02-20 09:50:00'),
                     ],
                 ],
                 ['fake_articles' => [1, 2] ],
@@ -197,7 +196,7 @@ class ListEntitiesActionTest extends TestCase
                         'id' => 1,
                         'name' => 'cat',
                         'legs' => 4,
-                        'modified' => new FrozenTime('2018-02-20 09:50:00'),
+                        'modified' => new DateTime('2018-02-20 09:50:00'),
                         'subclass' => 'Eutheria',
                     ],
                 ],
@@ -244,7 +243,7 @@ class ListEntitiesActionTest extends TestCase
 
         $result = $action(compact('filter'));
 
-        static::assertInstanceOf(Query::class, $result);
+        static::assertInstanceOf(SelectQuery::class, $result);
         static::assertEquals($expected, $result->enableHydration(false)->toArray());
     }
 
@@ -264,7 +263,7 @@ class ListEntitiesActionTest extends TestCase
         $action = new ListEntitiesAction(compact('table'));
 
         $result = $action(['filter' => ['media_property' => true]]);
-        static::assertInstanceOf(Query::class, $result);
+        static::assertInstanceOf(SelectQuery::class, $result);
 
         $result = $result->toArray();
         static::assertCount(1, $result);
@@ -286,7 +285,7 @@ class ListEntitiesActionTest extends TestCase
                 'id' => 1,
                 'name' => 'cat',
                 'legs' => 4,
-                'modified' => new FrozenTime('2018-02-20 09:50:00'),
+                'modified' => new DateTime('2018-02-20 09:50:00'),
                 'fake_articles' => [
                     [
                         'id' => 1,
@@ -324,7 +323,7 @@ class ListEntitiesActionTest extends TestCase
 
         $result = $action(compact('contain'));
 
-        static::assertInstanceOf(Query::class, $result);
+        static::assertInstanceOf(SelectQuery::class, $result);
         static::assertEquals($expected, $result->enableHydration(false)->toArray());
     }
 

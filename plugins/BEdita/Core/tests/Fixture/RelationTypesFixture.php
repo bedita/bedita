@@ -26,7 +26,7 @@ class RelationTypesFixture extends TestFixture
      *
      * @var array
      */
-    public $records = [
+    public array $records = [
         [
             'relation_id' => 1, // test / inverse_test
             'object_type_id' => 2, // documents

@@ -12,15 +12,17 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\Model\Table;
 
+use BadMethodCallException;
+use BEdita\Core\Exception\ImmutableResourceException;
 use BEdita\Core\Model\Table\ApplicationsTable;
 use BEdita\Core\State\CurrentApplication;
 use Cake\Cache\Cache;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Hash;
+use Exception;
 
 /**
  * {@see \BEdita\Core\Model\Table\ApplicationsTable} Test Case
@@ -48,7 +50,7 @@ class ApplicationsTableTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.Applications',
         'plugin.BEdita/Core.Config',
@@ -90,7 +92,6 @@ class ApplicationsTableTest extends TestCase
      */
     public function testInitialize()
     {
-        $this->Applications->initialize([]);
         $this->assertEquals('applications', $this->Applications->getTable());
         $this->assertEquals('id', $this->Applications->getPrimaryKey());
         $this->assertEquals('name', $this->Applications->getDisplayField());
@@ -105,7 +106,7 @@ class ApplicationsTableTest extends TestCase
      *
      * @return array
      */
-    public function validationProvider()
+    public static function validationProvider(): array
     {
         return [
             'valid' => [
@@ -184,7 +185,7 @@ class ApplicationsTableTest extends TestCase
      *
      * @return array
      */
-    public function apiKeyGenerationProvider()
+    public static function apiKeyGenerationProvider(): array
     {
         return [
             'new' => [
@@ -261,7 +262,7 @@ class ApplicationsTableTest extends TestCase
      *
      * @return array
      */
-    public function findApiKeyProvider()
+    public static function findApiKeyProvider(): array
     {
         return [
             'found' => [
@@ -277,7 +278,7 @@ class ApplicationsTableTest extends TestCase
                 'invalid',
             ],
             'badMethodException' => [
-                new \BadMethodCallException('Required option "apiKey" must be a not empty string'),
+                new BadMethodCallException('Required option "apiKey" must be a not empty string'),
                 ['this', 'is', 'not', 'a', 'string'],
             ],
         ];
@@ -294,7 +295,7 @@ class ApplicationsTableTest extends TestCase
      */
     public function testFindApiKey($expected, $apiKey)
     {
-        if ($expected instanceof \Exception) {
+        if ($expected instanceof Exception) {
             $this->expectException(get_class($expected));
             $this->expectExceptionMessage($expected->getMessage());
         }
@@ -309,7 +310,7 @@ class ApplicationsTableTest extends TestCase
      *
      * @return array
      */
-    public function findCredentialsProvider(): array
+    public static function findCredentialsProvider(): array
     {
         return [
             'no secret' => [
@@ -326,7 +327,7 @@ class ApplicationsTableTest extends TestCase
                 ],
             ],
             'badMethodException' => [
-                new \BadMethodCallException('Required option "client_id" must be a not empty string'),
+                new BadMethodCallException('Required option "client_id" must be a not empty string'),
                 [],
             ],
         ];
@@ -347,7 +348,7 @@ class ApplicationsTableTest extends TestCase
         $app->set('enabled', true);
         $this->Applications->saveOrFail($app);
 
-        if ($expected instanceof \Exception) {
+        if ($expected instanceof Exception) {
             $this->expectException(get_class($expected));
             $this->expectExceptionMessage($expected->getMessage());
         }
@@ -389,7 +390,7 @@ class ApplicationsTableTest extends TestCase
      */
     public function testAfterSave(): void
     {
-        $app = $this->Applications->find('apiKey', ['apiKey' => API_KEY])->first();
+        $app = $this->Applications->find('apiKey', apiKey: API_KEY)->first();
         $cacheConf = $this->Applications->behaviors()->get('QueryCache')->getConfig('cacheConfig');
         $read = Cache::read(sprintf('app_%s', API_KEY), $cacheConf);
         static::assertNotEmpty($read);
@@ -410,7 +411,7 @@ class ApplicationsTableTest extends TestCase
      */
     public function testDeleteDefaultApplication()
     {
-        $this->expectException(\BEdita\Core\Exception\ImmutableResourceException::class);
+        $this->expectException(ImmutableResourceException::class);
         $this->expectExceptionCode('403');
         $this->expectExceptionMessage('Could not delete "Application" 1');
         $application = $this->Applications->get(ApplicationsTable::DEFAULT_APPLICATION);
@@ -425,7 +426,7 @@ class ApplicationsTableTest extends TestCase
      */
     public function testDeleteCurrentApplication()
     {
-        $this->expectException(\BEdita\Core\Exception\ImmutableResourceException::class);
+        $this->expectException(ImmutableResourceException::class);
         $this->expectExceptionCode('403');
         $this->expectExceptionMessage('Could not delete "Application" 2');
         $application = $this->Applications->get(2);
@@ -441,7 +442,7 @@ class ApplicationsTableTest extends TestCase
      */
     public function testDisableDefaultApplication()
     {
-        $this->expectException(\BEdita\Core\Exception\ImmutableResourceException::class);
+        $this->expectException(ImmutableResourceException::class);
         $this->expectExceptionCode('403');
         $this->expectExceptionMessage('Could not disable "Application" 1');
         $application = $this->Applications->get(ApplicationsTable::DEFAULT_APPLICATION);
@@ -457,7 +458,7 @@ class ApplicationsTableTest extends TestCase
      */
     public function testDisableCurrentApplication()
     {
-        $this->expectException(\BEdita\Core\Exception\ImmutableResourceException::class);
+        $this->expectException(ImmutableResourceException::class);
         $this->expectExceptionCode('403');
         $this->expectExceptionMessage('Could not disable "Application" 2');
         $application = $this->Applications->get(2);

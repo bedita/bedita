@@ -12,12 +12,11 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Model\Behavior;
 
 use Cake\Cache\Cache;
 use Cake\ORM\Behavior;
-use Cake\ORM\Query;
+use Cake\ORM\Query\SelectQuery;
 
 /**
  * Behavior to handle caching easily in table classes via `queryCache` methods.
@@ -30,7 +29,7 @@ class QueryCacheBehavior extends Behavior
     /**
      * @inheritDoc
      */
-    protected $_defaultConfig = [
+    protected array $_defaultConfig = [
         'cacheConfig' => '_bedita_core_',
     ];
 
@@ -57,11 +56,11 @@ class QueryCacheBehavior extends Behavior
     /**
      * Add query cache using configured cache config.
      *
-     * @param \Cake\ORM\Query $query Query object
+     * @param \Cake\ORM\SelectQuery $query Query object
      * @param string $key Cache key
-     * @return \Cake\ORM\Query
+     * @return \Cake\ORM\SelectQuery
      */
-    public function queryCache(Query $query, string $key): Query
+    public function queryCache(SelectQuery $query, string $key): SelectQuery
     {
         return $query->cache($key, $this->getConfig('cacheConfig'));
     }

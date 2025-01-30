@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\API\Controller;
 
 use Cake\Http\Exception\ForbiddenException;
@@ -33,7 +32,7 @@ class StreamsController extends ResourcesController
     /**
      * @inheritDoc
      */
-    protected $_defaultConfig = [
+    protected array $_defaultConfig = [
         'allowedAssociations' => [
             'object' => [], // Descendant types of `media` are automatically added in controller initialization.
         ],
@@ -42,7 +41,7 @@ class StreamsController extends ResourcesController
     /**
      * @inheritDoc
      */
-    public $defaultTable = 'Streams';
+    public ?string $defaultTable = 'Streams';
 
     /**
      * @inheritDoc
@@ -61,7 +60,7 @@ class StreamsController extends ResourcesController
 
         if ($this->request->getParam('action') === 'upload') {
             $this->loadComponent('BEdita/API.Upload');
-            if (isset($this->JsonApi)) {
+            if ($this->components()->has('JsonApi')) {
                 $this->JsonApi->setConfig('parseJson', false);
             }
         }
@@ -70,13 +69,13 @@ class StreamsController extends ResourcesController
     /**
      * @inheritDoc
      */
-    protected function checkAcceptable(): void
+    public function viewClasses(): array
     {
         if ($this->request->getParam('action') === 'download') {
-            return;
+            return $this->viewClasses;
         }
 
-        parent::checkAcceptable();
+        return parent::viewClasses();
     }
 
     /**
@@ -85,7 +84,7 @@ class StreamsController extends ResourcesController
      * @param string $fileName Original file name.
      * @return void
      */
-    public function upload($fileName): void
+    public function upload(string $fileName): void
     {
         $data = $this->Upload->upload($fileName);
 
@@ -163,7 +162,7 @@ class StreamsController extends ResourcesController
      *
      * @throws \Cake\Http\Exception\ForbiddenException An exception is thrown on attempts to update existing streams.
      */
-    public function resource($id)
+    public function resource(string $id): ?Response
     {
         if ($this->request->is('patch')) {
             throw new ForbiddenException(__d(

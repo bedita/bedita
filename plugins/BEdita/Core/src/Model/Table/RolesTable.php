@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Model\Table;
 
 use BEdita\Core\Exception\ImmutableResourceException;
@@ -22,7 +21,7 @@ use BEdita\Core\Utility\LoggedUser;
 use Cake\Database\Expression\QueryExpression;
 use Cake\Datasource\EntityInterface;
 use Cake\Event\EventInterface;
-use Cake\ORM\Query;
+use Cake\ORM\Query\SelectQuery;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
@@ -31,13 +30,22 @@ use Cake\Validation\Validator;
  * Roles Model
  *
  * @property \Cake\ORM\Association\BelongsToMany $Users
- * @method \BEdita\Core\Model\Entity\Role get($primaryKey, $options = [])
- * @method \BEdita\Core\Model\Entity\Role newEntity($data = null, array $options = [])
+ * @method \BEdita\Core\Model\Entity\Role get(mixed $primaryKey, array|string $finder = 'all', \Psr\SimpleCache\CacheInterface|string|null $cache = null, \Closure|string|null $cacheKey = null, mixed ...$args)
+ * @method \BEdita\Core\Model\Entity\Role newEntity(array $data, array $options = [])
  * @method \BEdita\Core\Model\Entity\Role[] newEntities(array $data, array $options = [])
- * @method \BEdita\Core\Model\Entity\Role|bool save(\Cake\Datasource\EntityInterface $entity, $options = [])
+ * @method \BEdita\Core\Model\Entity\Role|false save(\Cake\Datasource\EntityInterface $entity, array $options = [])
  * @method \BEdita\Core\Model\Entity\Role patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
- * @method \BEdita\Core\Model\Entity\Role[] patchEntities($entities, array $data, array $options = [])
- * @method \BEdita\Core\Model\Entity\Role findOrCreate($search, callable $callback = null, $options = [])
+ * @method \BEdita\Core\Model\Entity\Role[] patchEntities(iterable $entities, array $data, array $options = [])
+ * @method \BEdita\Core\Model\Entity\Role findOrCreate(\Cake\ORM\Query\SelectQuery|callable|array $search, ?callable $callback = null, array $options = [])
+ * @method \BEdita\Core\Model\Entity\Role newEmptyEntity()
+ * @method \BEdita\Core\Model\Entity\Role saveOrFail(\Cake\Datasource\EntityInterface $entity, array $options = [])
+ * @method \BEdita\Core\Model\Entity\Role[]|\Cake\Datasource\ResultSetInterface<\BEdita\Core\Model\Entity\Role>|false saveMany(iterable $entities, array $options = [])
+ * @method \BEdita\Core\Model\Entity\Role[]|\Cake\Datasource\ResultSetInterface<\BEdita\Core\Model\Entity\Role> saveManyOrFail(iterable $entities, array $options = [])
+ * @method \BEdita\Core\Model\Entity\Role[]|\Cake\Datasource\ResultSetInterface<\BEdita\Core\Model\Entity\Role>|false deleteMany(iterable $entities, array $options = [])
+ * @method \BEdita\Core\Model\Entity\Role[]|\Cake\Datasource\ResultSetInterface<\BEdita\Core\Model\Entity\Role> deleteManyOrFail(iterable $entities, array $options = [])
+ * @mixin \Cake\ORM\Behavior\TimestampBehavior
+ * @mixin \BEdita\Core\Model\Behavior\SearchableBehavior
+ * @mixin \BEdita\Core\Model\Behavior\ResourceNameBehavior
  * @since 4.0.0
  */
 class RolesTable extends Table
@@ -121,10 +129,10 @@ class RolesTable extends Table
     /**
      * Finder for my roles (i.e.: roles of currently logged users).
      *
-     * @param \Cake\ORM\Query $query Query object instance.
-     * @return \Cake\ORM\Query
+     * @param \Cake\ORM\Query\SelectQuery $query Query object instance.
+     * @return \Cake\ORM\Query\SelectQuery
      */
-    protected function findMine(Query $query)
+    protected function findMine(SelectQuery $query): SelectQuery
     {
         return $query
             ->where(function (QueryExpression $exp) {
@@ -147,7 +155,7 @@ class RolesTable extends Table
      * @return void
      * @throws \BEdita\Core\Exception\ImmutableResourceException if entity is not deletable
      */
-    public function beforeDelete(EventInterface $event, EntityInterface $entity)
+    public function beforeDelete(EventInterface $event, EntityInterface $entity): void
     {
         if ($entity->id === static::ADMIN_ROLE) {
             throw new ImmutableResourceException(__d('bedita', 'Could not delete "Role" {0}', $entity->id));

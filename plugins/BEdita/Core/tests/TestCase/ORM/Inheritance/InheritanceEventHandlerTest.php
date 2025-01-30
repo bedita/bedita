@@ -12,13 +12,13 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\ORM\Inheritance;
 
+use ArrayObject;
 use BEdita\Core\ORM\Inheritance\InheritanceEventHandler;
 use Cake\Datasource\EntityInterface;
 use Cake\Event\Event;
-use Cake\I18n\FrozenTime;
+use Cake\I18n\DateTime;
 use Cake\ORM\Exception\PersistenceFailedException;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\TableRegistry;
@@ -67,7 +67,7 @@ class InheritanceEventHandlerTest extends TestCase
      *
      * @return array
      */
-    public function saveProvider()
+    public static function saveProvider(): array
     {
         return [
             'only ancestor field' => [
@@ -192,7 +192,7 @@ class InheritanceEventHandlerTest extends TestCase
                     'family' => 'purring cats',
                     'legs' => 4,
                     'subclass' => 'None',
-                    'modified' => new FrozenTime('2018-02-20 09:50:00'),
+                    'modified' => new DateTime('2018-02-20 09:50:00'),
                 ],
                 [
                     'id' => 1,
@@ -216,7 +216,7 @@ class InheritanceEventHandlerTest extends TestCase
      */
     public function testBeforeSave($expected, $data)
     {
-        $feline = $this->fakeFelines->newEntity([]);
+        $feline = $this->fakeFelines->newEmptyEntity();
         if (!empty($data['id'])) {
             $feline = $this->fakeFelines->get($data['id']);
         }
@@ -263,7 +263,7 @@ class InheritanceEventHandlerTest extends TestCase
             return false; // This table is not meant to store data of your pet!
         });
 
-        $feline = $this->fakeFelines->newEntity([]);
+        $feline = $this->fakeFelines->newEmptyEntity();
         $feline = $this->fakeFelines->patchEntity($feline, $data);
         $result = $this->fakeFelines->save($feline);
 
@@ -280,7 +280,7 @@ class InheritanceEventHandlerTest extends TestCase
      *
      * @return array
      */
-    public function applicationRulesErrorsPropagationProvider()
+    public static function applicationRulesErrorsPropagationProvider(): array
     {
         $fakeFelinesError = [
             'family' => ['FakeFelinesFailure' => 'Invalid family.'],
@@ -398,7 +398,7 @@ class InheritanceEventHandlerTest extends TestCase
         // Main table
         $this->fakeFelines->getEventManager()->on(
             'Model.beforeSave',
-            function (Event $event, EntityInterface $entity, \ArrayObject $options) use (&$eventDispatchedFelines) {
+            function (Event $event, EntityInterface $entity, ArrayObject $options) use (&$eventDispatchedFelines) {
                 $eventDispatchedFelines++;
                 static::assertArrayNotHasKey('_inherited', $options);
                 static::assertTrue($options['atomic']);
@@ -408,7 +408,7 @@ class InheritanceEventHandlerTest extends TestCase
         // Inherited table
         $this->fakeMammals->getEventManager()->on(
             'Model.beforeSave',
-            function (Event $event, EntityInterface $entity, \ArrayObject $options) use (&$eventDispatchedMammals) {
+            function (Event $event, EntityInterface $entity, ArrayObject $options) use (&$eventDispatchedMammals) {
                 $eventDispatchedMammals++;
                 static::assertArrayHasKey('_inherited', $options);
                 static::assertTrue($options['_inherited']);
@@ -419,7 +419,7 @@ class InheritanceEventHandlerTest extends TestCase
         // Inherited table
         $this->fakeAnimals->getEventManager()->on(
             'Model.beforeSave',
-            function (Event $event, EntityInterface $entity, \ArrayObject $options) use (&$eventDispatchedAnimals) {
+            function (Event $event, EntityInterface $entity, ArrayObject $options) use (&$eventDispatchedAnimals) {
                 $eventDispatchedAnimals++;
                 static::assertArrayHasKey('_inherited', $options);
                 static::assertTrue($options['_inherited']);
@@ -433,7 +433,7 @@ class InheritanceEventHandlerTest extends TestCase
             'subclass' => 'Lucky pets',
             'family' => 'Cats',
         ]);
-        $result = $this->fakeFelines->save($feline);
+        $this->fakeFelines->save($feline);
 
         static::assertSame(1, $eventDispatchedFelines);
         static::assertSame(1, $eventDispatchedMammals);

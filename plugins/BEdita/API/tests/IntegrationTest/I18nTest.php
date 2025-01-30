@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\API\Test\IntegrationTest;
 
 use BEdita\API\TestSuite\IntegrationTestCase;
@@ -73,7 +72,7 @@ class I18nTest extends IntegrationTestCase
      *
      * @return array
      */
-    public function langProvider()
+    public static function langProvider(): array
     {
         return [
             'document 2 fr' => [

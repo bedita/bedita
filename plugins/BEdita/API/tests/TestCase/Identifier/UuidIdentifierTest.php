@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\API\Test\TestCase\Identifier;
 
 use Authentication\Identifier\Resolver\ResolverInterface;
@@ -31,7 +30,7 @@ class UuidIdentifierTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.History',
         'plugin.BEdita/Core.PropertyTypes',
@@ -51,17 +50,17 @@ class UuidIdentifierTest extends TestCase
      *
      * @return array
      */
-    public function identifyProvider(): array
+    public static function identifyProvider(): array
     {
         return [
             'first' => [
-                'gustavo',
-                'gustavo',
+                ['name' => 'gustavo'],
+                ['name' => 'gustavo'],
             ],
             'second' => [
-                'gustavo',
-                '',
-                'gustavo',
+                ['name' => 'gustavo'],
+                null,
+                ['name' => 'gustavo'],
             ],
         ];
     }
@@ -69,14 +68,14 @@ class UuidIdentifierTest extends TestCase
     /**
      * Test `identify` method
      *
-     * @param string $expected Expected result
-     * @param string $find1 First string
-     * @param string $find2 Second string
+     * @param array $expected Expected result
+     * @param array|null $find1 First find
+     * @param array|null $find2 Second find
      * @return void
      * @dataProvider identifyProvider
      * @covers ::identify()
      */
-    public function testIdentify(string $expected, string $find1, string $find2 = ''): void
+    public function testIdentify(array $expected, ?array $find1, ?array $find2 = null): void
     {
         $resolver = $this->getMockBuilder(ResolverInterface::class)
             ->onlyMethods(['find'])

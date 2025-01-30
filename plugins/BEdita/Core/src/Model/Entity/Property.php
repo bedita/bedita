@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Model\Entity;
 
 use BEdita\Core\Model\Table\ObjectTypesTable;
@@ -24,26 +23,30 @@ use Cake\ORM\Entity;
 use Cake\ORM\TableRegistry;
 use Cake\Utility\Hash;
 use Cake\Utility\Inflector;
+use stdClass;
 
 /**
  * Property Entity.
  *
- * @property int $id
+ * @property string $id
  * @property string $name
- * @property string $description
+ * @property string|null $description
  * @property bool $enabled
  * @property bool $is_nullable
  * @property bool $read_only
  * @property bool $required
  * @property string|null $default_value
- * @property \Cake\I18n\Time $created
- * @property \Cake\I18n\Time $modified
- * @property int $object_type_id
+ * @property \Cake\I18n\DateTime $created
+ * @property \Cake\I18n\DateTime $modified
+ * @property int|null $object_type_id
  * @property string $object_type_name
- * @property \BEdita\Core\Model\Entity\ObjectType $object_type
+ * @property \BEdita\Core\Model\Entity\ObjectType|null $object_type
  * @property int $property_type_id
  * @property string $property_type_name
- * @property \BEdita\Core\Model\Entity\PropertyType $property_type
+ * @property \BEdita\Core\Model\Entity\PropertyType|null $property_type
+ * @property string|null $label
+ * @property bool $is_static
+ * @property bool $translatable
  * @since 4.0.0
  */
 class Property extends Entity implements JsonApiSerializable
@@ -54,7 +57,7 @@ class Property extends Entity implements JsonApiSerializable
     /**
      * @inheritDoc
      */
-    protected $_accessible = [
+    protected array $_accessible = [
         '*' => true,
         'id' => false,
         'object_type_id' => false,
@@ -73,7 +76,7 @@ class Property extends Entity implements JsonApiSerializable
     /**
      * @inheritDoc
      */
-    protected $_virtual = [
+    protected array $_virtual = [
         'property_type_name',
         'object_type_name',
     ];
@@ -81,7 +84,7 @@ class Property extends Entity implements JsonApiSerializable
     /**
      * @inheritDoc
      */
-    protected $_hidden = [
+    protected array $_hidden = [
         'object_type_id',
         'object_type',
         'property_type_id',
@@ -94,7 +97,7 @@ class Property extends Entity implements JsonApiSerializable
      *
      * @return \BEdita\Core\Model\Entity\PropertyType|null
      */
-    protected function _getPropertyType()
+    protected function _getPropertyType(): ?PropertyType
     {
         if (array_key_exists('property_type', $this->_fields)) {
             return $this->_fields['property_type'];
@@ -102,9 +105,7 @@ class Property extends Entity implements JsonApiSerializable
 
         try {
             $this->_fields['property_type'] = TableRegistry::getTableLocator()->get('PropertyTypes')
-                ->get($this->property_type_id, [
-                    'cache' => ObjectTypesTable::CACHE_CONFIG,
-                ]);
+                ->get($this->property_type_id, cache: ObjectTypesTable::CACHE_CONFIG);
 
             return $this->_fields['property_type'];
         } catch (RecordNotFoundException $e) {
@@ -117,9 +118,9 @@ class Property extends Entity implements JsonApiSerializable
     /**
      * Getter for `property_type_name` virtual property.
      *
-     * @return string
+     * @return string|null
      */
-    protected function _getPropertyTypeName()
+    protected function _getPropertyTypeName(): ?string
     {
         if (!$this->property_type) {
             return null;
@@ -131,12 +132,12 @@ class Property extends Entity implements JsonApiSerializable
     /**
      * Setter for `property_type_name` virtual property.
      *
-     * @param string $propertyType Property type name.
-     * @return string
+     * @param string|null $propertyType Property type name.
+     * @return string|null
      */
-    protected function _setPropertyTypeName($propertyType)
+    protected function _setPropertyTypeName(?string $propertyType): ?string
     {
-        /** @var \BEdita\Core\Model\Entity\PropertyType[] $propertyTypes */
+        /** @var array<\BEdita\Core\Model\Entity\PropertyType> $propertyTypes */
         $propertyTypes = Cache::remember(
             'property_types',
             function () {
@@ -167,7 +168,7 @@ class Property extends Entity implements JsonApiSerializable
      *
      * @return bool
      */
-    protected function _getRequired()
+    protected function _getRequired(): bool
     {
         return !$this->is_nullable;
     }
@@ -202,7 +203,7 @@ class Property extends Entity implements JsonApiSerializable
      * @param string|null $accessMode Access mode (either `"readOnly"` or `"writeOnly"`, or `null` for read-write access).
      * @return mixed
      */
-    public function getSchema($accessMode = null)
+    public function getSchema(?string $accessMode = null): mixed
     {
         if (!$this->property_type) {
             // Missing property type. Validation party: anything is allowed.
@@ -222,7 +223,7 @@ class Property extends Entity implements JsonApiSerializable
                     [
                         'type' => 'null',
                     ],
-                    empty($schema) ? new \stdClass() : $schema,
+                    empty($schema) ? new stdClass() : $schema,
                 ],
             ];
         }

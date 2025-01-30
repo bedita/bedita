@@ -12,13 +12,14 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\Model\Entity;
 
 use BEdita\Core\Model\Entity\Folder;
+use BEdita\Core\Model\Table\FoldersTable;
 use BEdita\Core\Utility\LoggedUser;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
+use RuntimeException;
 
 /**
  * {@see \BEdita\Core\Model\Entity\Folder} Test Case
@@ -32,7 +33,7 @@ class FolderTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.PropertyTypes',
         'plugin.BEdita/Core.Properties',
@@ -53,7 +54,7 @@ class FolderTest extends TestCase
      *
      * @var \BEdita\Core\Model\Table\FoldersTable
      */
-    public $Folders;
+    public FoldersTable $Folders;
 
     /**
      * @inheritDoc
@@ -217,7 +218,7 @@ class FolderTest extends TestCase
      *
      * @return array
      */
-    public function getPathProvider()
+    public static function getPathProvider(): array
     {
         return [
             'root' => [
@@ -254,7 +255,7 @@ class FolderTest extends TestCase
      */
     public function testGetPathNull()
     {
-        $folder = $this->Folders->newEntity([]);
+        $folder = $this->Folders->newEmptyEntity();
         static::assertNull($folder->path);
     }
 
@@ -266,7 +267,7 @@ class FolderTest extends TestCase
      */
     public function testGetPathOrphanFolder()
     {
-        $this->expectException(\RuntimeException::class);
+        $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('Folder "12" is not on the tree.');
         TableRegistry::getTableLocator()->get('Trees')->deleteAll(['object_id' => 12]);
         TableRegistry::getTableLocator()->get('Trees')->recover();
@@ -348,7 +349,7 @@ class FolderTest extends TestCase
      *
      * @return array[]
      */
-    public function descendantHavePermissionsProvider(): array
+    public static function descendantHavePermissionsProvider(): array
     {
         return [
             'guest user' => [

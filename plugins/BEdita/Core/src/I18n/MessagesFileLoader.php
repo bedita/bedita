@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\I18n;
 
 use Cake\Core\Plugin;
@@ -30,9 +29,9 @@ class MessagesFileLoader extends BaseLoader
     /**
      * List of plugins where lookup should happen for the given domain.
      *
-     * @var string[]
+     * @var array<string>
      */
-    protected $plugins = [];
+    protected array $plugins = [];
 
     /**
      * Return plugins list
@@ -47,7 +46,7 @@ class MessagesFileLoader extends BaseLoader
     /**
      * {@inheritDoc}
      *
-     * @param string[] $name Additional plugins to look up in for translations.
+     * @param array<string> $plugins Additional plugins to look up in for translations.
      */
     public function __construct(string $name, string $locale, string $extension = 'po', array $plugins = [])
     {

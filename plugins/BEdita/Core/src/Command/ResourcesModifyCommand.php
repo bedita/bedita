@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Command;
 
 use BEdita\Core\Model\Table\ApplicationsTable;
@@ -21,6 +20,7 @@ use Cake\Console\Arguments;
 use Cake\Console\ConsoleIo;
 use Cake\Console\ConsoleOptionParser;
 use Cake\ORM\Locator\LocatorAwareTrait;
+use Cake\ORM\Table;
 use Cake\Utility\Inflector;
 
 /**
@@ -35,21 +35,21 @@ class ResourcesModifyCommand extends Command
      *
      * @var \Cake\Console\Arguments
      */
-    protected $args;
+    protected Arguments $args;
 
     /**
      * Console IO
      *
      * @var \Cake\Console\ConsoleIo
      */
-    protected $io;
+    protected ConsoleIo $io;
 
     /**
-     * Async jobs table
+     * The Table
      *
-     * @var \BEdita\Core\Model\Table\AsyncJobsTable
+     * @var \Cake\ORM\Table
      */
-    protected $table;
+    protected Table $table;
 
     /**
      * {@inheritDoc}
@@ -65,9 +65,9 @@ class ResourcesModifyCommand extends Command
     /**
      * Editable resource fields
      *
-     * @var string[]
+     * @var <array>string
      */
-    public static $editableFields = ['api_key', 'description', 'enabled', 'name', 'unchangeable'];
+    public static array $editableFields = ['api_key', 'description', 'enabled', 'name', 'unchangeable'];
 
     /**
      * @inheritDoc

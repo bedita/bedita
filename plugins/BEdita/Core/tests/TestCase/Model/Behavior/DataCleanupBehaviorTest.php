@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\Model\Behavior;
 
 use Cake\Core\Configure;
@@ -31,7 +30,7 @@ class DataCleanupBehaviorTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.Relations',
         'plugin.BEdita/Core.RelationTypes',
@@ -45,7 +44,7 @@ class DataCleanupBehaviorTest extends TestCase
      *
      * @return array
      */
-    public function cleanupProvider()
+    public static function cleanupProvider(): array
     {
         return [
             'status' => [
@@ -154,7 +153,7 @@ class DataCleanupBehaviorTest extends TestCase
      *
      * @return array
      */
-    public function statusLevelProvider(): array
+    public static function statusLevelProvider(): array
     {
         return [
             'status' => [

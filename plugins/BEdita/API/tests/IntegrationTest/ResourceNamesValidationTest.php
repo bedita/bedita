@@ -26,7 +26,7 @@ class ResourceNamesValidationTest extends IntegrationTestCase
      *
      * @return array
      */
-    public function validateProvider(): array
+    public static function validateProvider(): array
     {
         return [
             'bad ptype' => [

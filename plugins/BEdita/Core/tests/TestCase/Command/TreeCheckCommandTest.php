@@ -12,9 +12,9 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\Command;
 
+use AllowDynamicProperties;
 use BEdita\Core\Command\TreeCheckCommand;
 use Cake\Console\TestSuite\ConsoleIntegrationTestTrait;
 use Cake\Database\Driver\Mysql;
@@ -28,7 +28,7 @@ use Cake\TestSuite\TestCase;
  * @property \BEdita\Core\Model\Table\CategoriesTable $Categories
  * @covers \BEdita\Core\Command\TreeCheckCommand
  */
-#[\AllowDynamicProperties]
+#[AllowDynamicProperties]
 class TreeCheckCommandTest extends TestCase
 {
     use ConsoleIntegrationTestTrait;
@@ -39,7 +39,7 @@ class TreeCheckCommandTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.Relations',
         'plugin.BEdita/Core.RelationTypes',
@@ -60,7 +60,6 @@ class TreeCheckCommandTest extends TestCase
         parent::setUp();
 
         $this->cleanupConsoleTrait();
-        $this->useCommandRunner();
         $this->Trees = $this->fetchTable('Trees');
         $this->Categories = $this->fetchTable('Categories');
     }

@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\Model\Behavior;
 
 use BEdita\Core\Model\Behavior\UniqueNameBehavior;
@@ -35,7 +34,7 @@ class UniqueNameBehaviorTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.PropertyTypes',
         'plugin.BEdita/Core.Properties',
@@ -74,7 +73,7 @@ class UniqueNameBehaviorTest extends TestCase
      *
      * @return array
      */
-    public function uniqueUserProvider()
+    public static function uniqueUserProvider(): array
     {
         return [
             'simple' => [
@@ -108,7 +107,7 @@ class UniqueNameBehaviorTest extends TestCase
     public function testUniqueUser($username, $uname)
     {
         $Users = TableRegistry::getTableLocator()->get('Users');
-        $user = $Users->newEntity([]);
+        $user = $Users->newEmptyEntity();
 
         $user = $Users->patchEntity($user, compact('username'));
         $Users->uniqueName($user);
@@ -123,7 +122,7 @@ class UniqueNameBehaviorTest extends TestCase
      *
      * @return array
      */
-    public function uniqueNameProvider()
+    public static function uniqueNameProvider(): array
     {
         return [
             'mix' => [
@@ -164,7 +163,7 @@ class UniqueNameBehaviorTest extends TestCase
      *
      * @return array
      */
-    public function generateUniqueUserProvider()
+    public static function generateUniqueUserProvider(): array
     {
         return [
             'defaultConfig' => [
@@ -215,7 +214,7 @@ class UniqueNameBehaviorTest extends TestCase
     public function testGenerateUniqueName($username, $name, $config)
     {
         $Users = TableRegistry::getTableLocator()->get('Users');
-        $user = $Users->newEntity([]);
+        $user = $Users->newEmptyEntity();
         $Users->patchEntity($user, compact('username', 'name'));
         $behavior = $Users->behaviors()->get('UniqueName');
         $uname1 = $behavior->generateUniqueName($user, false, $config);
@@ -229,7 +228,7 @@ class UniqueNameBehaviorTest extends TestCase
      *
      * @return array
      */
-    public function regenerateUniqueNameProvider()
+    public static function regenerateUniqueNameProvider(): array
     {
         return [
             'providedUname' => [
@@ -259,7 +258,7 @@ class UniqueNameBehaviorTest extends TestCase
     public function testRegenerateUniqueName($uname, $title)
     {
         $Folders = TableRegistry::getTableLocator()->get('Folders');
-        $folder = $Folders->newEntity([]);
+        $folder = $Folders->newEmptyEntity();
         $Folders->patchEntity($folder, compact('uname', 'title'));
         $behavior = $Folders->behaviors()->get('UniqueName');
         $generated = $behavior->generateUniqueName($folder, true);
@@ -276,7 +275,7 @@ class UniqueNameBehaviorTest extends TestCase
      *
      * @return array
      */
-    public function uniqueNameExistsProvider()
+    public static function uniqueNameExistsProvider(): array
     {
         return [
             'uname exists, id null' => [
@@ -331,7 +330,7 @@ class UniqueNameBehaviorTest extends TestCase
      *
      * @return array
      */
-    public function uniqueFromValueProvider()
+    public static function uniqueFromValueProvider(): array
     {
         return [
             'simpleNoConf' => [
@@ -486,7 +485,8 @@ class UniqueNameBehaviorTest extends TestCase
      */
     public function testUniqueNameMaxLen()
     {
-        $Documents = TableRegistry::getTableLocator()->get('Documents');
+        $Documents = $this->fetchTable('Documents');
+        /** @var \BEdita\Core\Model\Behavior\UniqueNameBehavior $behavior */
         $behavior = $Documents->behaviors()->get('UniqueName');
 
         // check internal uname generation lenght

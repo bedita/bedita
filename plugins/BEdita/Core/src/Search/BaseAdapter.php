@@ -16,7 +16,7 @@ namespace BEdita\Core\Search;
 
 use Cake\Core\InstanceConfigTrait;
 use Cake\Datasource\EntityInterface;
-use Cake\ORM\Query;
+use Cake\ORM\Query\SelectQuery;
 
 /**
  * Abstract search adapter.
@@ -32,7 +32,7 @@ abstract class BaseAdapter
      *
      * @var array
      */
-    protected $_defaultConfig = [];
+    protected array $_defaultConfig = [];
 
     /**
      * Adapter alias.
@@ -83,12 +83,12 @@ abstract class BaseAdapter
     /**
      * Build `$query` used for search.
      *
-     * @param \Cake\ORM\Query $query The query instance
+     * @param \Cake\ORM\Query\SelectQuery $query The query instance
      * @param string $text The text to look for
      * @param array $options Options for search
-     * @return \Cake\ORM\Query
+     * @return \Cake\ORM\Query\SelectQuery
      */
-    abstract public function search(Query $query, string $text, array $options = []): Query;
+    abstract public function search(SelectQuery $query, string $text, array $options = []): SelectQuery;
 
     /**
      * Index a resource by `$operation`.

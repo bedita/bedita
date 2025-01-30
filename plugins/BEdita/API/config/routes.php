@@ -14,8 +14,8 @@
 use Cake\Routing\Route\InflectedRoute;
 use Cake\Routing\RouteBuilder;
 
-return function (RouteBuilder $routes) {
-    $routes->plugin('BEdita/API', ['path' => '/','_namePrefix' => 'api:'], function (RouteBuilder $routes) {
+return function (RouteBuilder $routes): void {
+    $routes->plugin('BEdita/API', ['path' => '/','_namePrefix' => 'api:'], function (RouteBuilder $routes): void {
         $resourcesControllers = [
             'config',
             'roles',
@@ -135,7 +135,7 @@ return function (RouteBuilder $routes) {
         $resourcesRoutes = function (array $controllers) {
             $controller = implode('|', $controllers);
 
-            return function (RouteBuilder $routes) use ($controller) {
+            return function (RouteBuilder $routes) use ($controller): void {
                 $routes->connect(
                     '/{controller}',
                     ['action' => 'index'],
@@ -165,7 +165,7 @@ return function (RouteBuilder $routes) {
             [
                 '_namePrefix' => 'admin:',
             ],
-            function (RouteBuilder $routes) use ($adminControllers, $resourcesRoutes) {
+            function (RouteBuilder $routes) use ($adminControllers, $resourcesRoutes): void {
                 $callback = $resourcesRoutes($adminControllers);
                 $callback($routes);
                 $routes->connect(
@@ -182,7 +182,7 @@ return function (RouteBuilder $routes) {
             [
                 '_namePrefix' => 'model:',
             ],
-            function (RouteBuilder $routes) use ($modelingControllers, $resourcesRoutes) {
+            function (RouteBuilder $routes) use ($modelingControllers, $resourcesRoutes): void {
                 $callback = $resourcesRoutes($modelingControllers);
                 $callback($routes);
                 $routes->connect(

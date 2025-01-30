@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Command;
 
 use Cake\Command\Command;
@@ -31,7 +30,7 @@ class TreeRecoverCommand extends Command
     /**
      * @inheritDoc
      */
-    public $defaultTable = 'Trees';
+    protected ?string $defaultTable = 'Trees';
 
     /**
      * {@inheritDoc}
@@ -85,7 +84,7 @@ class TreeRecoverCommand extends Command
         $io->out('=====> <info>Beginning tree recovery...</info>');
 
         $start = microtime(true);
-        $this->Trees->recover();
+        $this->fetchTable()->recover();
         $end = microtime(true);
 
         $io->out(sprintf('=====> <success>Tree recovery completed</success> (took <info>%f</info> seconds)', $end - $start));

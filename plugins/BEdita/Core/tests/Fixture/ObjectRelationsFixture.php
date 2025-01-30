@@ -26,7 +26,7 @@ class ObjectRelationsFixture extends TestFixture
      *
      * @var array
      */
-    public $records = [
+    public array $records = [
         [
             'left_id' => 2,
             'relation_id' => 1,

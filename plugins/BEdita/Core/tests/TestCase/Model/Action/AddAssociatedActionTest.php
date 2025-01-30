@@ -12,17 +12,19 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\Model\Action;
 
+use ArrayObject;
 use BEdita\Core\Exception\InvalidDataException;
 use BEdita\Core\Model\Action\AddAssociatedAction;
-use Cake\Core\Exception\CakeException as Exception;
+use Cake\Core\Exception\CakeException as CakeException;
 use Cake\Event\Event;
-use Cake\ORM\Query;
+use Cake\ORM\Query\SelectQuery;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Inflector;
+use Exception;
+use RuntimeException;
 
 /**
  * @covers \BEdita\Core\Model\Action\AddAssociatedAction
@@ -36,7 +38,7 @@ class AddAssociatedActionTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.FakeAnimals',
         'plugin.BEdita/Core.FakeArticles',
         'plugin.BEdita/Core.FakeTags',
@@ -71,7 +73,7 @@ class AddAssociatedActionTest extends TestCase
      *
      * @return array
      */
-    public function invocationProvider()
+    public static function invocationProvider(): array
     {
         return [
             'nothingToDo' => [
@@ -103,7 +105,7 @@ class AddAssociatedActionTest extends TestCase
                 [1, 2],
             ],
             'belongsTo' => [
-                new \RuntimeException(
+                new RuntimeException(
                     'Unable to add additional links with association of type "Cake\ORM\Association\BelongsTo"'
                 ),
                 'FakeArticles',
@@ -127,7 +129,7 @@ class AddAssociatedActionTest extends TestCase
      */
     public function testInvocation($expected, $table, $association, $entity, $related)
     {
-        if ($expected instanceof \Exception) {
+        if ($expected instanceof Exception) {
             $this->expectException(get_class($expected));
             $this->expectExceptionMessage($expected->getMessage());
         }
@@ -135,7 +137,7 @@ class AddAssociatedActionTest extends TestCase
         $association = TableRegistry::getTableLocator()->get($table)->getAssociation($association);
         $action = new AddAssociatedAction(compact('association'));
 
-        $entity = $association->getSource()->get($entity, ['contain' => [$association->getName()]]);
+        $entity = $association->getSource()->get($entity, contain: [$association->getName()]);
         $relatedEntities = null;
         if (is_int($related)) {
             $relatedEntities = $association->getTarget()->get($related);
@@ -154,7 +156,7 @@ class AddAssociatedActionTest extends TestCase
             static::assertSame('add', $event->getData('action'));
             static::assertSame($association, $event->getData('association'));
             static::assertSame($entity, $event->getData('entity'));
-            static::assertInstanceOf(\ArrayObject::class, $event->getData('relatedEntities'));
+            static::assertInstanceOf(ArrayObject::class, $event->getData('relatedEntities'));
             $rel = is_object($relatedEntities) ? [$relatedEntities] : (array)$relatedEntities;
             static::assertSameSize($rel, $event->getData('relatedEntities'));
             $n = count($rel);
@@ -183,7 +185,7 @@ class AddAssociatedActionTest extends TestCase
                 ])
                 ->matching(
                     Inflector::camelize($association->getSource()->getTable()),
-                    function (Query $query) use ($association, $entity) {
+                    function (SelectQuery $query) use ($association, $entity) {
                         return $query->where([
                             $association->getSource()->aliasField($association->getSource()->getPrimaryKey()) => $entity->id,
                         ]);
@@ -227,7 +229,7 @@ class AddAssociatedActionTest extends TestCase
 
             $action = new AddAssociatedAction(compact('association'));
             $action(compact('entity', 'relatedEntities'));
-        } catch (Exception $e) {
+        } catch (CakeException $e) {
             $expected = [
                 'detail' => [
                     'gustavo' => [
@@ -259,7 +261,7 @@ class AddAssociatedActionTest extends TestCase
         $association = TableRegistry::getTableLocator()->get('FakeArticles')->getAssociation('FakeTags');
         $action = new AddAssociatedAction(compact('association'));
 
-        $entity = $association->getSource()->get(1, ['contain' => [$association->getName()]]);
+        $entity = $association->getSource()->get(1, contain: [$association->getName()]);
         $relatedEntities = array_map(
             function ($id) use ($association) {
                 $relatedEntity = $association->getTarget()->get($id);
@@ -275,10 +277,11 @@ class AddAssociatedActionTest extends TestCase
         $result = $action(compact('entity', 'relatedEntities'));
 
         $actual = $association->junction()
-            ->find('list', [
-                'keyField' => $association->getTargetForeignKey(),
-                'valueField' => 'fake_params',
-            ])
+            ->find(
+                'list',
+                keyField: $association->getTargetForeignKey(),
+                valueField: 'fake_params'
+            )
             ->toArray();
 
         static::assertEquals(count($expected), $result);

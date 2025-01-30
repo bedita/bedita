@@ -27,7 +27,7 @@ class FieldsQueryStringTest extends IntegrationTestCase
      *
      * @return array
      */
-    public function fieldsProvider()
+    public static function fieldsProvider(): array
     {
         return [
             'simple' => [

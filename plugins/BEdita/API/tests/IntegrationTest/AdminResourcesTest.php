@@ -28,7 +28,7 @@ class AdminResourcesTest extends IntegrationTestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.Config',
     ];
 
@@ -37,7 +37,7 @@ class AdminResourcesTest extends IntegrationTestCase
      *
      * @return array
      */
-    public function resourceProvider()
+    public static function resourceProvider(): array
     {
         return [
             'apps' => [

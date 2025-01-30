@@ -22,15 +22,15 @@ use Cake\ORM\Entity;
  *
  * @property int $id
  * @property string $resource_id
- * @property string $resource_type
- * @property \Cake\I18n\Time $created
- * @property int $user_id
- * @property int $application_id
+ * @property string|null $resource_type
+ * @property \Cake\I18n\DateTime $created
+ * @property int|null $user_id
+ * @property int|null $application_id
  * @property string|null $user_action
  * @property array|null $changed
  *
  * @property \BEdita\Core\Model\Entity\User $user
- * @property \BEdita\Core\Model\Entity\Application $application
+ * @property \BEdita\Core\Model\Entity\Application|null $application
  */
 class History extends Entity implements JsonApiSerializable
 {
@@ -45,7 +45,7 @@ class History extends Entity implements JsonApiSerializable
      *
      * @var array
      */
-    protected $_accessible = [
+    protected array $_accessible = [
         '*' => false,
     ];
 }

@@ -12,14 +12,14 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Model\Table;
 
+use ArrayObject;
 use BEdita\Core\Model\Entity\Folder;
 use Cake\Database\Expression\QueryExpression;
 use Cake\Datasource\EntityInterface;
 use Cake\Event\EventInterface;
-use Cake\ORM\Query;
+use Cake\ORM\Query\SelectQuery;
 use Cake\ORM\Rule\ValidCount;
 use Cake\ORM\RulesChecker;
 
@@ -109,7 +109,7 @@ class FoldersTable extends ObjectsTable
      * @param \BEdita\Core\Model\Entity\Folder $entity The folder entity to check
      * @return bool
      */
-    public function hasAtMostOneParent(Folder $entity)
+    public function hasAtMostOneParent(Folder $entity): bool
     {
         if (empty($entity->parents)) {
             return true;
@@ -129,7 +129,7 @@ class FoldersTable extends ObjectsTable
      * @param \BEdita\Core\Model\Entity\Folder $entity The entity to check
      * @return bool
      */
-    public function isFolderRestorable(Folder $entity)
+    public function isFolderRestorable(Folder $entity): bool
     {
         if ($entity->isNew() || !$entity->isDirty('deleted') || $entity->deleted === true) {
             return true;
@@ -141,7 +141,7 @@ class FoldersTable extends ObjectsTable
             ->firstOrFail();
 
         $deletedParents = $this->find()
-            ->innerJoinWith('TreeNodes', function (Query $query) use ($node) {
+            ->innerJoinWith('TreeNodes', function (SelectQuery $query) use ($node) {
                 return $query->where(function (QueryExpression $exp) use ($node) {
                     return $exp
                         ->lt($this->TreeNodes->aliasField('tree_left'), $node->get('tree_left'))
@@ -162,11 +162,11 @@ class FoldersTable extends ObjectsTable
      * @param \Cake\Datasource\EntityInterface $entity The entity to save
      * @return void
      */
-    public function beforeSave(EventInterface $event, EntityInterface $entity)
+    public function beforeSave(EventInterface $event, EntityInterface $entity): bool
     {
-        parent::beforeSave($event, $entity);
-
         $entity->setDirty('parents', false);
+
+        return parent::beforeSave($event, $entity);
     }
 
     /**
@@ -176,7 +176,7 @@ class FoldersTable extends ObjectsTable
      * @param \BEdita\Core\Model\Entity\Folder $entity The folder entity persisted
      * @return void
      */
-    public function afterSave(EventInterface $event, Folder $entity)
+    public function afterSave(EventInterface $event, Folder $entity): void
     {
         $this->updateChildrenDeletedField($entity);
 
@@ -221,7 +221,7 @@ class FoldersTable extends ObjectsTable
      * @param \ArrayObject $options Delete options
      * @return void
      */
-    public function beforeDelete(EventInterface $event, EntityInterface $entity, \ArrayObject $options)
+    public function beforeDelete(EventInterface $event, EntityInterface $entity, ArrayObject $options): void
     {
         if (!empty($options['_isDescendant'])) {
             return;
@@ -243,7 +243,7 @@ class FoldersTable extends ObjectsTable
      * @param \ArrayObject $options Delete options
      * @return void
      */
-    public function afterDelete(EventInterface $event, EntityInterface $entity, \ArrayObject $options)
+    public function afterDelete(EventInterface $event, EntityInterface $entity, ArrayObject $options): void
     {
         if (empty($options['descendants'])) {
             return;
@@ -257,18 +257,18 @@ class FoldersTable extends ObjectsTable
     /**
      * Finder for root folders.
      *
-     * @param \Cake\ORM\Query $query Query object instance.
-     * @return \Cake\ORM\Query
+     * @param \Cake\ORM\Query\SelectQuery $query Query object instance.
+     * @return \Cake\ORM\Query\SelectQuery
      */
-    protected function findRoots(Query $query)
+    protected function findRoots(SelectQuery $query): SelectQuery
     {
         return $query
-            ->innerJoinWith('TreeNodes', function (Query $query) {
+            ->innerJoinWith('TreeNodes', function (SelectQuery $query) {
                 return $query->where(function (QueryExpression $exp) {
                     return $exp->isNull($this->TreeNodes->aliasField('parent_id'));
                 });
             })
-            ->order('TreeNodes.tree_left');
+            ->orderBy('TreeNodes.tree_left');
     }
 
     /**
@@ -278,7 +278,7 @@ class FoldersTable extends ObjectsTable
      * @param \BEdita\Core\Model\Entity\Folder $folder The parent folder.
      * @return void
      */
-    protected function updateChildrenDeletedField(Folder $folder)
+    protected function updateChildrenDeletedField(Folder $folder): void
     {
         if (!$folder->isDirty('deleted')) {
             return;

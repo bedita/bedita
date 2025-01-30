@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\API\Controller;
 
 use Cake\Http\Exception\MethodNotAllowedException;
@@ -27,7 +26,7 @@ class AsyncJobsController extends ResourcesController
     /**
      * @inheritDoc
      */
-    public $defaultTable = 'AsyncJobs';
+    public ?string $defaultTable = 'AsyncJobs';
 
     /**
      * @inheritDoc

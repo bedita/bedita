@@ -25,12 +25,12 @@ class RolesController extends ResourcesController
     /**
      * @inheritDoc
      */
-    public $defaultTable = 'Roles';
+    public ?string $defaultTable = 'Roles';
 
     /**
      * @inheritDoc
      */
-    protected $_defaultConfig = [
+    protected array $_defaultConfig = [
         'allowedAssociations' => [
             'users' => ['users'],
         ],

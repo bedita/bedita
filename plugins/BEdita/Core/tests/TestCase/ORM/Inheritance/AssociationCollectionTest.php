@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\ORM\Inheritance;
 
 use BEdita\Core\ORM\Association\RelatedTo;
@@ -68,7 +67,7 @@ class AssociationCollectionTest extends TestCase
      *
      * @return array
      */
-    public function getProvider()
+    public static function getProvider(): array
     {
         return [
             'own' => [
@@ -187,7 +186,6 @@ class AssociationCollectionTest extends TestCase
      */
     public function testRemove()
     {
-        $association = $this->fakeMammals->getAssociation('FakeFelines');
         $collection = new AssociationCollection($this->fakeMammals);
         $collection->remove('FakeFelines');
 
@@ -281,7 +279,7 @@ class AssociationCollectionTest extends TestCase
      *
      * @return array
      */
-    public function inheritedAssociationsRelatedToProvider()
+    public static function inheritedAssociationsRelatedToProvider(): array
     {
         return [
             'isAbstract' => [

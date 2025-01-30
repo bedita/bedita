@@ -12,10 +12,10 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Model\Action;
 
 use Cake\Datasource\EntityInterface;
+use Cake\ORM\Association;
 
 /**
  * Abstract class for updating associations between entities.
@@ -30,12 +30,12 @@ abstract class UpdateAssociatedAction extends BaseAction
      *
      * @var \Cake\ORM\Association
      */
-    protected $Association;
+    protected Association $Association;
 
     /**
      * @inheritDoc
      */
-    protected function initialize(array $config)
+    protected function initialize(array $config): void
     {
         $this->Association = $this->getConfig('association');
     }
@@ -45,7 +45,7 @@ abstract class UpdateAssociatedAction extends BaseAction
      *
      * @return array|int|false
      */
-    public function execute(array $data = [])
+    public function execute(array $data = []): array|int|false
     {
         return $this->update($data['entity'], $data['relatedEntities']);
     }
@@ -54,8 +54,8 @@ abstract class UpdateAssociatedAction extends BaseAction
      * Perform update.
      *
      * @param \Cake\Datasource\EntityInterface $entity Source entity.
-     * @param \Cake\Datasource\EntityInterface|\Cake\Datasource\EntityInterface[]|null $relatedEntities Related entity(-ies).
+     * @param \Cake\Datasource\EntityInterface|array<\Cake\Datasource\EntityInterface>|null $relatedEntities Related entity(-ies).
      * @return array|int|false
      */
-    abstract protected function update(EntityInterface $entity, $relatedEntities);
+    abstract protected function update(EntityInterface $entity, EntityInterface|array|null $relatedEntities): array|int|false;
 }

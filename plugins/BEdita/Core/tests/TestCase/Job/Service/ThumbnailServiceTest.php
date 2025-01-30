@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\Job\Service;
 
 use BEdita\Core\Filesystem\Thumbnail;
@@ -21,6 +20,7 @@ use BEdita\Core\Job\Service\ThumbnailService;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Text;
+use Exception;
 use PHPUnit\Framework\MockObject\Rule\InvocationOrder;
 
 /**
@@ -33,7 +33,7 @@ class ThumbnailServiceTest extends TestCase
      *
      * @var string[]
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.Objects',
         'plugin.BEdita/Core.Media',
@@ -105,7 +105,7 @@ class ThumbnailServiceTest extends TestCase
      *
      * @return array
      */
-    public function runProvider()
+    public static function runProvider(): array
     {
         return [
             'ok' => [
@@ -167,7 +167,7 @@ class ThumbnailServiceTest extends TestCase
             ->method('generate')
             ->with($stream, $payload['options']);
         if ($shouldThrow) {
-            $method->willThrowException(new \Exception('This is an exception'));
+            $method->willThrowException(new Exception('This is an exception'));
         } else {
             $method->willReturn(true);
         }

@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Model\Action;
 
 use BEdita\Core\Model\Entity\ObjectEntity;
@@ -23,7 +22,9 @@ use BEdita\Core\Utility\Text;
 use Cake\Datasource\EntityInterface;
 use Cake\Http\Exception\UnauthorizedException;
 use Cake\ORM\Locator\LocatorAwareTrait;
+use Cake\ORM\Table;
 use Cake\Utility\Hash;
+use RuntimeException;
 
 /**
  * Clone object action
@@ -37,12 +38,12 @@ class CloneObjectAction extends BaseAction
      *
      * @var \Cake\ORM\Table
      */
-    protected $Table;
+    protected Table $Table;
 
     /**
      * @inheritDoc
      */
-    protected function initialize(array $data)
+    protected function initialize(array $data): void
     {
         $this->Table = $this->getConfig('table');
         if (empty(LoggedUser::id())) {
@@ -53,7 +54,7 @@ class CloneObjectAction extends BaseAction
     /**
      * @inheritDoc
      */
-    public function execute(array $data = [])
+    public function execute(array $data = []): EntityInterface
     {
         $sourceId = (int)Hash::get($data, 'id');
         $include = (array)Hash::get($data, 'data._meta.include');
@@ -118,7 +119,7 @@ class CloneObjectAction extends BaseAction
      * @param string $field Field name
      * @return mixed
      */
-    protected function setEntityField(array $schemaInfo, ObjectEntity $sourceEntity, ObjectEntity $entity, string $field)
+    protected function setEntityField(array $schemaInfo, ObjectEntity $sourceEntity, ObjectEntity $entity, string $field): mixed
     {
         if (in_array($field, (array)Hash::get($schemaInfo, 'reset'))) {
             return null; // skip
@@ -149,7 +150,7 @@ class CloneObjectAction extends BaseAction
             return null;
         }
 
-        throw new \RuntimeException(sprintf('Cannot set unique field "%s"', $field));
+        throw new RuntimeException(sprintf('Cannot set unique field "%s"', $field));
     }
 
     /**
@@ -184,7 +185,7 @@ class CloneObjectAction extends BaseAction
 
         // add stream to media
         $clonedStream->set('object_id', $entity->id);
-        $tmp = $streamsTable->saveOrFail($clonedStream);
+        $streamsTable->saveOrFail($clonedStream);
 
         return $clonedStream;
     }
@@ -221,7 +222,7 @@ class CloneObjectAction extends BaseAction
      * @param int $destinationId Destination object ID
      * @return array
      */
-    public function cloneTranslations(int $sourceId, $destinationId): array
+    public function cloneTranslations(int $sourceId, int $destinationId): array
     {
         $translationsTable = $this->fetchTable('Translations');
         $objectTranslations = $translationsTable->find()->where(['object_id' => $sourceId])->toArray();

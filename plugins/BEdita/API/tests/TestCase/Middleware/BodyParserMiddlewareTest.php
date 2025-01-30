@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\API\Test\TestCase\Middleware;
 
 use BEdita\API\Middleware\BodyParserMiddleware;
@@ -52,7 +51,7 @@ class BodyParserMiddlewareTest extends TestCase
      *
      * @return array
      */
-    public function decodeFormProvider(): array
+    public static function decodeFormProvider(): array
     {
         return [
             'empty' => [

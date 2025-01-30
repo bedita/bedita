@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\API\Test\TestCase\Model\Action;
 
 use Authorization\Identity;
@@ -26,11 +25,13 @@ use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\Http\Exception\ForbiddenException;
 use Cake\Http\ServerRequest;
 use Cake\ORM\Association\HasMany;
-use Cake\ORM\Query;
+use Cake\ORM\Query\SelectQuery;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Hash;
 use Cake\Utility\Inflector;
+use Exception;
+use InvalidArgumentException;
 
 /**
  * @covers \BEdita\API\Model\Action\UpdateAssociatedAction
@@ -42,7 +43,7 @@ class UpdateAssociatedActionTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.FakeAnimals',
         'plugin.BEdita/Core.FakeArticles',
         'plugin.BEdita/Core.FakeTags',
@@ -61,25 +62,34 @@ class UpdateAssociatedActionTest extends TestCase
     {
         parent::setUp();
 
-        TableRegistry::getTableLocator()->get('FakeTags')
+        $this->fetchTable('FakeTags')
             ->belongsToMany('FakeArticles', [
                 'joinTable' => 'fake_articles_tags',
             ]);
         /** @var \Cake\ORM\Association\BelongsToMany $association */
-        $association = TableRegistry::getTableLocator()->get('FakeTags')->getAssociation('FakeArticles');
+        $association = $this->fetchTable('FakeTags')->getAssociation('FakeArticles');
         $association->junction()
             ->getValidator()
             ->email('fake_params');
 
-        TableRegistry::getTableLocator()->get('FakeArticles')
-            ->belongsToMany('FakeTags', [
+        $fakeArticles = $this->fetchTable('FakeArticles');
+        if (!$fakeArticles->hasAssociation('FakeTags')) {
+            $fakeArticles->belongsToMany('FakeTags', [
                 'joinTable' => 'fake_articles_tags',
-            ])
-            ->getSource()
-            ->belongsTo('FakeAnimals');
+            ]);
+        }
+        $fakeArticles->belongsTo('FakeAnimals');
 
-        TableRegistry::getTableLocator()->get('FakeAnimals')
-            ->hasMany('FakeArticles');
+        $this->fetchTable('FakeAnimals')->hasMany('FakeArticles');
+    }
+
+    public function tearDown(): void
+    {
+        TableRegistry::getTableLocator()->remove('FakeTags');
+        TableRegistry::getTableLocator()->remove('FakeArticles');
+        TableRegistry::getTableLocator()->remove('FakeAnimals');
+
+        parent::tearDown();
     }
 
     /**
@@ -87,7 +97,7 @@ class UpdateAssociatedActionTest extends TestCase
      *
      * @return array
      */
-    public function invocationProvider()
+    public static function invocationProvider(): array
     {
         return [
             'belongsToManyDuplicateEntry' => [
@@ -138,7 +148,7 @@ class UpdateAssociatedActionTest extends TestCase
                 ],
             ],
             'unsupportedMultipleEntities' => [
-                new \InvalidArgumentException(
+                new InvalidArgumentException(
                     'Unable to link multiple entities'
                 ),
                 'FakeArticles',
@@ -224,7 +234,7 @@ class UpdateAssociatedActionTest extends TestCase
      */
     public function testInvocation($expected, $table, $association, $id, $data)
     {
-        if ($expected instanceof \Exception) {
+        if ($expected instanceof Exception) {
             $this->expectException(get_class($expected));
             $this->expectExceptionMessage($expected->getMessage());
         }
@@ -239,7 +249,7 @@ class UpdateAssociatedActionTest extends TestCase
 
         $request = $request->withParsedBody($data)
             ->withAttribute('identity', $identityMock);
-        $association = TableRegistry::getTableLocator()->get($table)->getAssociation($association);
+        $association = $this->fetchTable($table)->getAssociation($association);
         $parentAction = new SetAssociatedAction(compact('association'));
         $action = new UpdateAssociatedAction(['action' => $parentAction, 'request' => $request]);
 
@@ -250,7 +260,7 @@ class UpdateAssociatedActionTest extends TestCase
             $count = $association->getTarget()->find()
                 ->matching(
                     Inflector::camelize($association->getSource()->getTable()),
-                    function (Query $query) use ($association, $id) {
+                    function (SelectQuery $query) use ($association, $id) {
                         return $query->where([
                             $association->getSource()->aliasField($association->getSource()->getPrimaryKey()) => $id,
                         ]);
@@ -271,8 +281,8 @@ class UpdateAssociatedActionTest extends TestCase
     public function testKeepJunctionData()
     {
         // Prepare link with junction data.
-        $junction = TableRegistry::getTableLocator()->get('FakeArticlesTags');
-        $junctionEntity = $junction->newEntity([]);
+        $junction = $this->fetchTable('FakeArticlesTags');
+        $junctionEntity = $junction->newEmptyEntity();
         $junction->patchEntity($junctionEntity, [
             'fake_article_id' => 2,
             'fake_tag_id' => 1,
@@ -298,7 +308,7 @@ class UpdateAssociatedActionTest extends TestCase
                     'id' => 2,
                 ],
             ]);
-        $association = TableRegistry::getTableLocator()->get('FakeArticles')->getAssociation('FakeTags');
+        $association = $this->fetchTable('FakeArticles')->getAssociation('FakeTags');
         $parentAction = new SetAssociatedAction(compact('association'));
         $action = new UpdateAssociatedAction(['action' => $parentAction, 'request' => $request]);
 
@@ -350,7 +360,7 @@ class UpdateAssociatedActionTest extends TestCase
         $request = $request->withParsedBody($data)
             ->withAttribute('identity', $identityMock);
 
-        $association = TableRegistry::getTableLocator()->get('FakeTags')->getAssociation('FakeArticles');
+        $association = $this->fetchTable('FakeTags')->getAssociation('FakeArticles');
         $parentAction = new SetAssociatedAction(compact('association'));
         $action = new UpdateAssociatedAction(['action' => $parentAction, 'request' => $request]);
 
@@ -387,8 +397,8 @@ class UpdateAssociatedActionTest extends TestCase
             ->onlyMethods(['getSource', 'getTarget'])
             ->getMock();
 
-        $associationMock->method('getSource')->willReturn(TableRegistry::getTableLocator()->get('FakeAnimals'));
-        $associationMock->method('getTarget')->willReturn(TableRegistry::getTableLocator()->get('FakeArticles'));
+        $associationMock->method('getSource')->willReturn($this->fetchTable('FakeAnimals'));
+        $associationMock->method('getTarget')->willReturn($this->fetchTable('FakeArticles'));
 
         $parentAction = new SetAssociatedAction(['association' => $associationMock]);
         $action = new UpdateAssociatedAction(['action' => $parentAction, 'request' => $request]);
@@ -418,7 +428,7 @@ class UpdateAssociatedActionTest extends TestCase
         $request = $request->withParsedBody($data)
             ->withAttribute('identity', $identityMock);
 
-        $association = TableRegistry::getTableLocator()->get('FakeTags')->getAssociation('FakeArticles');
+        $association = $this->fetchTable('FakeTags')->getAssociation('FakeArticles');
         $parentAction = new SetAssociatedAction(compact('association'));
         $action = new UpdateAssociatedAction(['action' => $parentAction, 'request' => $request]);
 
@@ -431,7 +441,7 @@ class UpdateAssociatedActionTest extends TestCase
      *
      * @return array[]
      */
-    public function prepareMetaProvider(): array
+    public static function prepareMetaProvider(): array
     {
         return [
             'add relation without params, body without params' => [
@@ -624,7 +634,7 @@ class UpdateAssociatedActionTest extends TestCase
      */
     public function testPrepareMeta($expectedResult, $expectedParams, $associationName, $primaryKey, $body): void
     {
-        $Documents = TableRegistry::getTableLocator()->get('Documents');
+        $Documents = $this->fetchTable('Documents');
         $association = $Documents->getAssociation($associationName);
         $identityMock = $this->getMockBuilder(Identity::class)
             ->disableOriginalConstructor()
@@ -642,7 +652,7 @@ class UpdateAssociatedActionTest extends TestCase
         $entity = $Documents->find()
             ->where(fn (QueryExpression $exp): QueryExpression => $exp
                 ->eq('id', $primaryKey))
-            ->contain([$associationName => fn (Query $q): Query => $q->where(['right_id' => $body[0]['id']])])
+            ->contain([$associationName => fn (SelectQuery $q): SelectQuery => $q->where(['right_id' => $body[0]['id']])])
             ->first();
         $actualParams = Hash::get(
             (array)$entity->get(Inflector::underscore($associationName)),

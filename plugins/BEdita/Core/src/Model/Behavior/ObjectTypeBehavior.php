@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Model\Behavior;
 
 use BEdita\Core\Model\Entity\ObjectType;
@@ -29,7 +28,7 @@ class ObjectTypeBehavior extends Behavior
     /**
      * @inheritDoc
      */
-    protected $_defaultConfig = [
+    protected array $_defaultConfig = [
         'table' => 'ObjectTypes',
         'implementedMethods' => [
             'objectType' => 'objectType',
@@ -41,7 +40,7 @@ class ObjectTypeBehavior extends Behavior
      *
      * @var \BEdita\Core\Model\Entity\ObjectType
      */
-    protected $objectType;
+    protected ObjectType $objectType;
 
     /**
      * Getter/setter for object type.
@@ -49,10 +48,10 @@ class ObjectTypeBehavior extends Behavior
      * @param \BEdita\Core\Model\Entity\ObjectType|string|int|null $objectType Object type entity, name or ID.
      * @return \BEdita\Core\Model\Entity\ObjectType|null
      */
-    public function objectType($objectType = null)
+    public function objectType(ObjectType|string|int|null $objectType = null): ?ObjectType
     {
         if ($objectType === null) {
-            return $this->objectType;
+            return $this->objectType ?? null;
         }
 
         if (!($objectType instanceof ObjectType)) {

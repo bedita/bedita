@@ -12,10 +12,10 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\Model\Action;
 
 use BEdita\Core\Model\Action\DeleteEntitiesAction;
+use Cake\ORM\Exception\PersistenceFailedException;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
@@ -31,7 +31,7 @@ class DeleteEntitiesActionTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.FakeAnimals',
     ];
 
@@ -60,7 +60,7 @@ class DeleteEntitiesActionTest extends TestCase
      */
     public function testExecuteFail(): void
     {
-        $this->expectException(\Cake\ORM\Exception\PersistenceFailedException::class);
+        $this->expectException(PersistenceFailedException::class);
         $action = new DeleteEntitiesAction();
         $entity = TableRegistry::getTableLocator()->get('FakeAnimals')->newEmptyEntity();
         $entities = [$entity];

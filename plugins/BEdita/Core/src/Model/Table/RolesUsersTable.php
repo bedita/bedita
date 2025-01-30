@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Model\Table;
 
 use BEdita\Core\Exception\ImmutableResourceException;
@@ -30,13 +29,19 @@ use Cake\Validation\Validator;
  *
  * @property \Cake\ORM\Association\BelongsTo $Roles
  * @property \Cake\ORM\Association\BelongsTo $Users
- * @method \BEdita\Core\Model\Entity\RolesUser get($primaryKey, $options = [])
- * @method \BEdita\Core\Model\Entity\RolesUser newEntity($data = null, array $options = [])
+ * @method \BEdita\Core\Model\Entity\RolesUser get(mixed $primaryKey, array|string $finder = 'all', \Psr\SimpleCache\CacheInterface|string|null $cache = null, \Closure|string|null $cacheKey = null, mixed ...$args)
+ * @method \BEdita\Core\Model\Entity\RolesUser newEntity(array $data, array $options = [])
  * @method \BEdita\Core\Model\Entity\RolesUser[] newEntities(array $data, array $options = [])
- * @method \BEdita\Core\Model\Entity\RolesUser|bool save(\Cake\Datasource\EntityInterface $entity, $options = [])
+ * @method \BEdita\Core\Model\Entity\RolesUser|false save(\Cake\Datasource\EntityInterface $entity, array $options = [])
  * @method \BEdita\Core\Model\Entity\RolesUser patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
- * @method \BEdita\Core\Model\Entity\RolesUser[] patchEntities($entities, array $data, array $options = [])
- * @method \BEdita\Core\Model\Entity\RolesUser findOrCreate($search, callable $callback = null, $options = [])
+ * @method \BEdita\Core\Model\Entity\RolesUser[] patchEntities(iterable $entities, array $data, array $options = [])
+ * @method \BEdita\Core\Model\Entity\RolesUser findOrCreate(\Cake\ORM\Query\SelectQuery|callable|array $search, ?callable $callback = null, array $options = [])
+ * @method \BEdita\Core\Model\Entity\RolesUser newEmptyEntity()
+ * @method \BEdita\Core\Model\Entity\RolesUser saveOrFail(\Cake\Datasource\EntityInterface $entity, array $options = [])
+ * @method \BEdita\Core\Model\Entity\RolesUser[]|\Cake\Datasource\ResultSetInterface<\BEdita\Core\Model\Entity\RolesUser>|false saveMany(iterable $entities, array $options = [])
+ * @method \BEdita\Core\Model\Entity\RolesUser[]|\Cake\Datasource\ResultSetInterface<\BEdita\Core\Model\Entity\RolesUser> saveManyOrFail(iterable $entities, array $options = [])
+ * @method \BEdita\Core\Model\Entity\RolesUser[]|\Cake\Datasource\ResultSetInterface<\BEdita\Core\Model\Entity\RolesUser>|false deleteMany(iterable $entities, array $options = [])
+ * @method \BEdita\Core\Model\Entity\RolesUser[]|\Cake\Datasource\ResultSetInterface<\BEdita\Core\Model\Entity\RolesUser> deleteManyOrFail(iterable $entities, array $options = [])
  */
 class RolesUsersTable extends Table
 {
@@ -100,7 +105,7 @@ class RolesUsersTable extends Table
      * @throws \Cake\Http\Exception\ForbiddenException; if logged user cannot modify user role
      * @throws \BEdita\Core\Exception\ImmutableResourceException; if entity is not deletable
      */
-    public function beforeDelete(EventInterface $event, EntityInterface $entity)
+    public function beforeDelete(EventInterface $event, EntityInterface $entity): void
     {
         if ($entity->role_id === RolesTable::ADMIN_ROLE && $entity->user_id === UsersTable::ADMIN_USER) {
             throw new ImmutableResourceException(__d('bedita', 'Could not update relationship for users/roles for ADMIN_USER and ADMIN_ROLE'));
@@ -118,7 +123,7 @@ class RolesUsersTable extends Table
      * @return void
      * @throws \Cake\Http\Exception\ForbiddenException; if logged user cannot modify user role
      */
-    public function beforeSave(EventInterface $event, EntityInterface $entity)
+    public function beforeSave(EventInterface $event, EntityInterface $entity): void
     {
         if (!$this->canHandle($entity->role_id)) {
             throw new ForbiddenException(__d('bedita', 'Could not update role. Insufficient priority'));

@@ -53,11 +53,11 @@ class UpdateChildrenOrder extends AbstractMigration
     ];
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
-    public function up()
+    public function up(): void
     {
-        /* @var \Migrations\CakeAdapter $adapter */
+        /** @var \Migrations\CakeAdapter $adapter */
         $adapter = $this->getAdapter();
         $table = new Table([
             'table' => 'property_types',
@@ -74,11 +74,11 @@ class UpdateChildrenOrder extends AbstractMigration
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
-    public function down()
+    public function down(): void
     {
-        /* @var \Migrations\CakeAdapter $adapter */
+        /** @var \Migrations\CakeAdapter $adapter */
         $adapter = $this->getAdapter();
         $table = new Table([
             'table' => 'property_types',

@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Utility;
 
 use Cake\Datasource\EntityInterface;
@@ -52,7 +51,7 @@ class Resources extends ResourcesBase
      *
      * @var array
      */
-    protected static $defaults = [
+    protected static array $defaults = [
         // since default usage is in migrations
         // don't commit transactions but let migrations do it
         'save' => [
@@ -84,7 +83,7 @@ class Resources extends ResourcesBase
      *
      * @var array
      */
-    protected static $allowed = [
+    protected static array $allowed = [
         'applications',
         'auth_providers',
         'categories',
@@ -102,7 +101,7 @@ class Resources extends ResourcesBase
      *
      * @var array
      */
-    protected static $otherTypesMap = [
+    protected static array $otherTypesMap = [
         'properties' => Properties::class,
         'relations' => Relations::class,
     ];

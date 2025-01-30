@@ -12,10 +12,10 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\Model\Entity;
 
 use BEdita\Core\Model\Entity\Tree;
+use BEdita\Core\Model\Table\TreesTable;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
@@ -31,7 +31,7 @@ class TreeTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.PropertyTypes',
         'plugin.BEdita/Core.Properties',
@@ -49,7 +49,7 @@ class TreeTest extends TestCase
      *
      * @var \BEdita\Core\Model\Table\TreesTable
      */
-    public $Trees;
+    public TreesTable $Trees;
 
     /**
      * @inheritDoc

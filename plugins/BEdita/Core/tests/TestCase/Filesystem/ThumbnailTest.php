@@ -12,10 +12,10 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\Filesystem;
 
 use BEdita\Core\Filesystem\Exception\InvalidStreamException;
+use BEdita\Core\Filesystem\Exception\InvalidThumbnailOptionsException;
 use BEdita\Core\Filesystem\Thumbnail;
 use BEdita\Core\Filesystem\ThumbnailGenerator;
 use BEdita\Core\Filesystem\ThumbnailRegistry;
@@ -24,6 +24,8 @@ use BEdita\Core\Test\TestCase\Filesystem\Thumbnail\TestGenerator;
 use BEdita\Core\Utility\Text;
 use Cake\Core\Configure;
 use Cake\TestSuite\TestCase;
+use Exception;
+use RuntimeException;
 
 /**
  * @coversDefaultClass \BEdita\Core\Filesystem\Thumbnail
@@ -157,7 +159,7 @@ class ThumbnailTest extends TestCase
      *
      * @return array
      */
-    public function getProvider()
+    public static function getProvider(): array
     {
         return [
             'existing' => [
@@ -194,9 +196,9 @@ class ThumbnailTest extends TestCase
                 new InvalidStreamException(),
             ],
             'other error' => [
-                new \RuntimeException('Some exception', -1),
+                new RuntimeException('Some exception', -1),
                 false,
-                new \RuntimeException('Some exception', -1),
+                new RuntimeException('Some exception', -1),
             ],
         ];
     }
@@ -216,7 +218,7 @@ class ThumbnailTest extends TestCase
      */
     public function testGet($expected, $exists, $result = null)
     {
-        if ($expected instanceof \Exception) {
+        if ($expected instanceof Exception) {
             $this->expectException(get_class($expected));
             $this->expectExceptionCode($expected->getCode());
             $this->expectExceptionMessage($expected->getMessage());
@@ -244,7 +246,7 @@ class ThumbnailTest extends TestCase
             ->method('generate');
         if (!$exists) {
             $invocation = $invocation->with($stream, $options);
-            if ($result instanceof \Exception) {
+            if ($result instanceof Exception) {
                 $invocation->willThrowException($result);
             } else {
                 $invocation->willReturn($result);
@@ -266,7 +268,7 @@ class ThumbnailTest extends TestCase
      */
     public function testGetOptionsMissingPreset()
     {
-        $this->expectException(\BEdita\Core\Filesystem\Exception\InvalidThumbnailOptionsException::class);
+        $this->expectException(InvalidThumbnailOptionsException::class);
         $this->expectExceptionCode('400');
         $this->expectExceptionMessage('Preset "gustavo" not found');
         Configure::delete('Thumbnails.presets.gustavo');
@@ -282,7 +284,7 @@ class ThumbnailTest extends TestCase
      */
     public function testGetOptionsCustomNotAllowed()
     {
-        $this->expectException(\BEdita\Core\Filesystem\Exception\InvalidThumbnailOptionsException::class);
+        $this->expectException(InvalidThumbnailOptionsException::class);
         $this->expectExceptionCode('400');
         $this->expectExceptionMessage('Thumbnails can only be generated for one of the configured presets');
         Configure::write('Thumbnails.allowAny', false);

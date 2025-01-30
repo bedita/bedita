@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\API\Controller\Model;
 
 use Cake\ORM\Table;
@@ -28,12 +27,12 @@ class ObjectTypesController extends ModelController
     /**
      * @inheritDoc
      */
-    public $defaultTable = 'ObjectTypes';
+    public ?string $defaultTable = 'ObjectTypes';
 
     /**
      * @inheritDoc
      */
-    protected $_defaultConfig = [
+    protected array $_defaultConfig = [
         'allowedAssociations' => [
             'left_relations' => ['relations'],
             'right_relations' => ['relations'],

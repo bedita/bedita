@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Model\Table;
 
 use BEdita\Core\Exception\BadFilterException;
@@ -21,19 +20,20 @@ use BEdita\Core\ORM\Rule\IsUniqueAmongst;
 use BEdita\Core\Search\SimpleSearchTrait;
 use Cake\Cache\Cache;
 use Cake\Core\App;
-use Cake\Database\Expression\ComparisonExpression;
 use Cake\Database\Expression\QueryExpression;
-use Cake\Database\Schema\TableSchemaInterface;
 use Cake\Datasource\EntityInterface;
 use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\Event\EventInterface;
 use Cake\Http\Exception\BadRequestException;
 use Cake\Http\Exception\ForbiddenException;
-use Cake\ORM\Query;
+use Cake\ORM\Query\SelectQuery;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
 use Cake\Utility\Inflector;
+use Closure;
+use LogicException;
+use Psr\SimpleCache\CacheInterface;
 
 /**
  * ObjectTypes Model
@@ -42,13 +42,22 @@ use Cake\Utility\Inflector;
  * @property \Cake\ORM\Association\HasMany $Properties
  * @property \Cake\ORM\Association\BelongsToMany $LeftRelations
  * @property \Cake\ORM\Association\BelongsToMany $RightRelations
- * @method \BEdita\Core\Model\Entity\ObjectType newEntity($data = null, array $options = [])
+ * @method \BEdita\Core\Model\Entity\ObjectType newEntity(array $data, array $options = [])
  * @method \BEdita\Core\Model\Entity\ObjectType[] newEntities(array $data, array $options = [])
- * @method \BEdita\Core\Model\Entity\ObjectType|bool save(\Cake\Datasource\EntityInterface $entity, $options = [])
+ * @method \BEdita\Core\Model\Entity\ObjectType|false save(\Cake\Datasource\EntityInterface $entity, array $options = [])
  * @method \BEdita\Core\Model\Entity\ObjectType patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
- * @method \BEdita\Core\Model\Entity\ObjectType[] patchEntities($entities, array $data, array $options = [])
- * @method \BEdita\Core\Model\Entity\ObjectType findOrCreate($search, callable $callback = null, $options = [])
+ * @method \BEdita\Core\Model\Entity\ObjectType[] patchEntities(iterable $entities, array $data, array $options = [])
+ * @method \BEdita\Core\Model\Entity\ObjectType findOrCreate(\Cake\ORM\Query\SelectQuery|callable|array $search, ?callable $callback = null, array $options = [])
  * @mixin \Cake\ORM\Behavior\TreeBehavior
+ * @method \BEdita\Core\Model\Entity\ObjectType newEmptyEntity()
+ * @method \BEdita\Core\Model\Entity\ObjectType get(mixed $primaryKey, array|string $finder = 'all', \Psr\SimpleCache\CacheInterface|string|null $cache = null, \Closure|string|null $cacheKey = null, mixed ...$args)
+ * @method \BEdita\Core\Model\Entity\ObjectType saveOrFail(\Cake\Datasource\EntityInterface $entity, array $options = [])
+ * @method \BEdita\Core\Model\Entity\ObjectType[]|\Cake\Datasource\ResultSetInterface<\BEdita\Core\Model\Entity\ObjectType>|false saveMany(iterable $entities, array $options = [])
+ * @method \BEdita\Core\Model\Entity\ObjectType[]|\Cake\Datasource\ResultSetInterface<\BEdita\Core\Model\Entity\ObjectType> saveManyOrFail(iterable $entities, array $options = [])
+ * @method \BEdita\Core\Model\Entity\ObjectType[]|\Cake\Datasource\ResultSetInterface<\BEdita\Core\Model\Entity\ObjectType>|false deleteMany(iterable $entities, array $options = [])
+ * @method \BEdita\Core\Model\Entity\ObjectType[]|\Cake\Datasource\ResultSetInterface<\BEdita\Core\Model\Entity\ObjectType> deleteManyOrFail(iterable $entities, array $options = [])
+ * @mixin \Cake\ORM\Behavior\TimestampBehavior
+ * @mixin \BEdita\Core\Model\Behavior\SearchableBehavior
  * @since 4.0.0
  */
 class ObjectTypesTable extends Table
@@ -86,7 +95,7 @@ class ObjectTypesTable extends Table
     /**
      * @inheritDoc
      */
-    protected $_validatorClass = ObjectTypesValidator::class;
+    protected string $_validatorClass = ObjectTypesValidator::class;
 
     /**
      * {@inheritDoc}
@@ -100,6 +109,10 @@ class ObjectTypesTable extends Table
         $this->setTable('object_types');
         $this->setPrimaryKey('id');
         $this->setDisplayField('name');
+        $this->getSchema()
+            ->setColumnType('associations', 'json')
+            ->setColumnType('hidden', 'json')
+            ->setColumnType('translation_rules', 'json');
 
         $this->hasMany('Objects', [
             'foreignKey' => 'object_type_id',
@@ -156,11 +169,11 @@ class ObjectTypesTable extends Table
     public function buildRules(RulesChecker $rules): RulesChecker
     {
         $rules
-            ->add(new IsUniqueAmongst(['name' => ['name', 'singular']]), '_isUniqueAmongst', [
+            ->add(new IsUniqueAmongst(['name' => ['name', 'singular']]), '_isUniqueAmongstName', [
                 'errorField' => 'name',
                 'message' => __d('cake', 'This value is already in use'),
             ])
-            ->add(new IsUniqueAmongst(['singular' => ['name', 'singular']]), '_isUniqueAmongst', [
+            ->add(new IsUniqueAmongst(['singular' => ['name', 'singular']]), '_isUniqueAmongstSingular', [
                 'errorField' => 'singular',
                 'message' => __d('cake', 'This value is already in use'),
             ]);
@@ -171,23 +184,15 @@ class ObjectTypesTable extends Table
     /**
      * {@inheritDoc}
      *
-     * @codeCoverageIgnore
-     */
-    public function getSchema(): TableSchemaInterface
-    {
-        return parent::getSchema()
-            ->setColumnType('associations', 'json')
-            ->setColumnType('hidden', 'json')
-            ->setColumnType('translation_rules', 'json');
-    }
-
-    /**
-     * {@inheritDoc}
-     *
      * @return \BEdita\Core\Model\Entity\ObjectType
      */
-    public function get($primaryKey, array $options = []): EntityInterface
-    {
+    public function get(
+        mixed $primaryKey,
+        array|string $finder = 'all',
+        CacheInterface|string|null $cache = null,
+        Closure|string|null $cacheKey = null,
+        mixed ...$args
+    ): EntityInterface {
         if (is_string($primaryKey) && !is_numeric($primaryKey)) {
             $allTypes = array_flip(
                 $this->find('list')
@@ -195,7 +200,7 @@ class ObjectTypesTable extends Table
                     ->toArray()
             );
             $allTypes += array_flip(
-                $this->find('list', ['valueField' => 'singular'])
+                $this->find('list', valueField: 'singular')
                     ->cache('map_singular', self::CACHE_CONFIG)
                     ->toArray()
             );
@@ -203,7 +208,7 @@ class ObjectTypesTable extends Table
             $primaryKey = Inflector::underscore($primaryKey);
             if (!isset($allTypes[$primaryKey])) {
                 throw new RecordNotFoundException(sprintf(
-                    'Record not found in table "%s"',
+                    'Record not found in table `%s`',
                     $this->getTable()
                 ));
             }
@@ -211,15 +216,25 @@ class ObjectTypesTable extends Table
             $primaryKey = $allTypes[$primaryKey];
         }
 
-        if (empty($options)) {
-            $options = [
-                'key' => sprintf('id_%d_rel', $primaryKey),
-                'cache' => self::CACHE_CONFIG,
-                'contain' => ['LeftRelations.RightObjectTypes', 'RightRelations.LeftObjectTypes'],
-            ];
+        if ($cacheKey === null) {
+            $cacheKey = sprintf('id_%d_rel', $primaryKey);
         }
 
-        return parent::get($primaryKey, $options);
+        if ($cache === null) {
+            $cache = self::CACHE_CONFIG;
+        }
+
+        if (empty($args['contain'])) {
+            $args['contain'] = ['LeftRelations.RightObjectTypes', 'RightRelations.LeftObjectTypes'];
+            if (!empty($args['select'])) {
+                // ensure to select the primary key that corresponds to the foreign key used by LeftRelations and RightRelations
+                $args['select'][] = $this->aliasField('id');
+            }
+        }
+        $args['cache'] = $cache;
+        $args['cacheKey'] = $cacheKey;
+
+        return parent::get($primaryKey, ...$args);
     }
 
     /**
@@ -236,7 +251,7 @@ class ObjectTypesTable extends Table
      * @return void
      * @throws \Cake\Http\Exception\ForbiddenException if operation on entity is not allowed
      */
-    public function beforeRules(EventInterface $event, EntityInterface $entity)
+    public function beforeRules(EventInterface $event, EntityInterface $entity): void
     {
         if ($entity->isNew()) {
             if (empty($entity->get('parent_id'))) {
@@ -254,7 +269,7 @@ class ObjectTypesTable extends Table
                 throw new ForbiddenException(__d('bedita', 'Core types are not removable'));
             }
         }
-        if ($entity->isDirty('parent_id') && $this->objectsExist($entity->get('id'))) {
+        if ($entity->isDirty('parent_id') && $entity->get('id') && $this->objectsExist($entity->get('id'))) {
             throw new ForbiddenException(__d('bedita', 'Parent type change forbidden: objects of this type exist'));
         }
     }
@@ -265,7 +280,7 @@ class ObjectTypesTable extends Table
      *
      * @return void
      */
-    public function afterSave()
+    public function afterSave(): void
     {
         Cache::clear(self::CACHE_CONFIG);
     }
@@ -282,7 +297,7 @@ class ObjectTypesTable extends Table
      * @return void
      * @throws \Cake\Http\Exception\ForbiddenException|\Cake\Http\Exception\BadRequestException if entity is not saveable
      */
-    public function beforeSave(EventInterface $event, EntityInterface $entity)
+    public function beforeSave(EventInterface $event, EntityInterface $entity): void
     {
         if ($entity->isDirty('is_abstract')) {
             if ($entity->get('is_abstract') && $this->objectsExist($entity->get('id'))) {
@@ -306,11 +321,15 @@ class ObjectTypesTable extends Table
     /**
      * Check if objects of a certain type id exist
      *
-     * @param int $typeId Object type id
+     * @param int|null $typeId Object type id
      * @return bool True if at least an object exists, false otherwise
      */
-    protected function objectsExist($typeId)
+    protected function objectsExist(?int $typeId): bool
     {
+        if ($typeId === null) {
+            return false;
+        }
+
         return TableRegistry::getTableLocator()->get('Objects')->exists(['object_type_id IS' => $typeId]);
     }
 
@@ -322,7 +341,7 @@ class ObjectTypesTable extends Table
      * @return void
      * @throws \Cake\Http\Exception\ForbiddenException if entity is not deletable
      */
-    public function beforeDelete(EventInterface $event, EntityInterface $entity)
+    public function beforeDelete(EventInterface $event, EntityInterface $entity): void
     {
         if ($this->objectsExist($entity->get('id'))) {
             throw new ForbiddenException(__d('bedita', 'Objects of this type exist'));
@@ -334,7 +353,7 @@ class ObjectTypesTable extends Table
      *
      * @return void
      */
-    public function afterDelete()
+    public function afterDelete(): void
     {
         Cache::clear(self::CACHE_CONFIG);
     }
@@ -342,7 +361,7 @@ class ObjectTypesTable extends Table
     /**
      * @inheritDoc
      */
-    public function findContainRelations(Query $query, array $options): Query
+    public function findContainRelations(SelectQuery $query, array $options): SelectQuery
     {
         return $query->contain(['LeftRelations', 'RightRelations']);
     }
@@ -350,12 +369,12 @@ class ObjectTypesTable extends Table
     /**
      * Find object types having a parent by `name` or `id`
      *
-     * @param \Cake\ORM\Query $query Query object.
+     * @param \Cake\ORM\Query\SelectQuery $query Query object.
      * @param array $options Additional options. The first element containing `id` or `name` is required.
-     * @return \Cake\ORM\Query
+     * @return \Cake\ORM\Query\SelectQuery
      * @throws \BEdita\Core\Exception\BadFilterException When missing required parameters.
      */
-    public function findParent(Query $query, array $options)
+    public function findParent(SelectQuery $query, array $options): SelectQuery
     {
         if (empty($options[0])) {
             throw new BadFilterException(__d('bedita', 'Missing required parameter "{0}"', 'parent'));
@@ -398,16 +417,16 @@ class ObjectTypesTable extends Table
      *     ->find('byRelation', ['name' => 'my_relation', 'descendants' => true]);
      * ```
      *
-     * @param \Cake\ORM\Query $query Query object.
+     * @param \Cake\ORM\Query\SelectQuery $query Query object.
      * @param array $options Additional options. The `name` key is required, while `side` is optional
      *      and assumed to be `'right'` by default.
-     * @return \Cake\ORM\Query
+     * @return \Cake\ORM\Query\SelectQuery
      * @throws \LogicException When missing required parameters.
      */
-    protected function findByRelation(Query $query, array $options = [])
+    protected function findByRelation(SelectQuery $query, array $options = []): SelectQuery
     {
         if (empty($options['name'])) {
-            throw new \LogicException(__d('bedita', 'Missing required parameter "{0}"', 'name'));
+            throw new LogicException(__d('bedita', 'Missing required parameter "{0}"', 'name'));
         }
         $name = Inflector::underscore($options['name']);
 
@@ -420,13 +439,13 @@ class ObjectTypesTable extends Table
 
         // Build sub-queries to find object-types that lay on the left and right side of searched relationship, respectively.
         $leftSubQuery = $this->find()
-            ->innerJoinWith('LeftRelations', function (Query $query) use ($name, $leftField) {
+            ->innerJoinWith('LeftRelations', function (SelectQuery $query) use ($name, $leftField) {
                 return $query->where(function (QueryExpression $exp) use ($name, $leftField) {
                     return $exp->eq($this->LeftRelations->aliasField($leftField), $name);
                 });
             });
         $rightSubQuery = $this->find()
-            ->innerJoinWith('RightRelations', function (Query $query) use ($name, $rightField) {
+            ->innerJoinWith('RightRelations', function (SelectQuery $query) use ($name, $rightField) {
                 return $query->where(function (QueryExpression $exp) use ($name, $rightField) {
                     return $exp->eq($this->RightRelations->aliasField($rightField), $name);
                 });
@@ -458,7 +477,7 @@ class ObjectTypesTable extends Table
                 if ($nsmCounters->count() === 0) {
                     // No nodes found: relationship apparently does not exist, or has no linked types.
                     // Add contradiction to force empty results.
-                    return $exp->add(new ComparisonExpression(1, 1, 'integer', '<>'));
+                    return $exp->add(['1 <> 1']);
                 }
 
                 // Find descendants for all found nodes using NSM rules.
@@ -481,24 +500,24 @@ class ObjectTypesTable extends Table
         // Everything is said and done by now. Fingers crossed!
         return $query
             ->where($conditionsBuilder)
-            ->order([$this->aliasField('tree_left') => 'asc']);
+            ->orderBy([$this->aliasField('tree_left') => 'asc']);
     }
 
     /**
      * Finder to get object type starting from object id or uname.
      *
-     * @param \Cake\ORM\Query $query Query object.
+     * @param \Cake\ORM\Query\SelectQuery $query Query object.
      * @param array $options Additional options. The `id` key is required.
-     * @return \Cake\ORM\Query
+     * @return \Cake\ORM\Query\SelectQuery
      * @throws \BEdita\Core\Exception\BadFilterException When missing required parameters.
      */
-    protected function findObjectId(Query $query, array $options = [])
+    protected function findObjectId(SelectQuery $query, array $options = []): SelectQuery
     {
         if (empty($options['id'])) {
             throw new BadFilterException(__d('bedita', 'Missing required parameter "{0}"', 'id'));
         }
 
-        return $query->innerJoinWith('Objects', function (Query $query) use ($options) {
+        return $query->innerJoinWith('Objects', function (SelectQuery $query) use ($options) {
             if (!is_numeric($options['id'])) {
                 return $query->where([$this->Objects->aliasField('uname') => $options['id']]);
             }

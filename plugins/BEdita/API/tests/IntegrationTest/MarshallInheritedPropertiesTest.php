@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\API\Test\IntegrationTest;
 
 use BEdita\API\TestSuite\IntegrationTestCase;
@@ -27,7 +26,7 @@ class MarshallInheritedPropertiesTest extends IntegrationTestCase
      *
      * @return array
      */
-    public function marshallProvider()
+    public static function marshallProvider(): array
     {
         return [
             'date' => [

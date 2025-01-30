@@ -1,4 +1,5 @@
 <?php
+
 use Migrations\AbstractMigration;
 
 class AddAsyncJobsTableIndex extends AbstractMigration
@@ -8,9 +9,10 @@ class AddAsyncJobsTableIndex extends AbstractMigration
      *
      * More information on this method is available here:
      * https://book.cakephp.org/phinx/0/en/migrations.html#the-change-method
+     *
      * @return void
      */
-    public function change()
+    public function change(): void
     {
         $this->table('async_jobs')
             ->addIndex(
@@ -28,6 +30,7 @@ class AddAsyncJobsTableIndex extends AbstractMigration
                 [
                     'name' => 'asyncjobs_modified_idx',
                 ]
-            );
+            )
+            ->update();
     }
 }

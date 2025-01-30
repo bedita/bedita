@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\API\Test\TestCase\Controller\Component;
 
 use BEdita\API\TestSuite\IntegrationTestCase;
@@ -32,7 +31,7 @@ class UploadComponentTest extends IntegrationTestCase
     /**
      * @inheritDoc
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.Streams',
     ];
 
@@ -59,7 +58,7 @@ class UploadComponentTest extends IntegrationTestCase
      *
      * @return array
      */
-    public function uploadProvider()
+    public static function uploadProvider(): array
     {
         return [
             'javascript' => [

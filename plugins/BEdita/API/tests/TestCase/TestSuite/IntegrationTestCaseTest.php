@@ -31,7 +31,7 @@ class IntegrationTestCaseTest extends IntegrationTestCase
      *
      * @return array
      */
-    public function authFixturesProvider()
+    public static function authFixturesProvider(): array
     {
         return [
             'default' => [
@@ -126,7 +126,7 @@ class IntegrationTestCaseTest extends IntegrationTestCase
         foreach ($fixtures as $f) {
             $mock->addFixture($f);
         }
-        $mock->__construct();
+        $mock->__construct('integrationTest');
         static::assertEquals($expected, $mock->fixtures);
     }
 
@@ -201,7 +201,7 @@ class IntegrationTestCaseTest extends IntegrationTestCase
      *
      * @return array
      */
-    public function headersProvider()
+    public static function headersProvider(): array
     {
         return [
             'getNoOptions' => [

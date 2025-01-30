@@ -12,19 +12,21 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\Model\Action;
 
+use ArrayObject;
 use BEdita\Core\Exception\InvalidDataException;
 use BEdita\Core\Model\Action\SetAssociatedAction;
-use Cake\Core\Exception\CakeException as Exception;
+use Cake\Core\Exception\CakeException;
 use Cake\Event\Event;
 use Cake\ORM\Association\BelongsToMany;
 use Cake\ORM\Association\HasMany;
-use Cake\ORM\Query;
+use Cake\ORM\Query\SelectQuery;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Inflector;
+use Exception;
+use InvalidArgumentException;
 
 /**
  * @covers \BEdita\Core\Model\Action\SetAssociatedAction
@@ -38,7 +40,7 @@ class SetAssociatedActionTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.FakeAnimals',
         'plugin.BEdita/Core.FakeArticles',
         'plugin.BEdita/Core.FakeTags',
@@ -79,7 +81,7 @@ class SetAssociatedActionTest extends TestCase
      *
      * @return array
      */
-    public function invocationProvider()
+    public static function invocationProvider(): array
     {
         return [
             'belongsToManyEmpty' => [
@@ -111,7 +113,7 @@ class SetAssociatedActionTest extends TestCase
                 [1, 2],
             ],
             'unsupportedMultipleEntities' => [
-                new \InvalidArgumentException(
+                new InvalidArgumentException(
                     'Unable to link multiple entities'
                 ),
                 'FakeArticles',
@@ -191,7 +193,7 @@ class SetAssociatedActionTest extends TestCase
      */
     public function testInvocation($expected, $table, $association, $entity, $related)
     {
-        if ($expected instanceof \Exception) {
+        if ($expected instanceof Exception) {
             $this->expectException(get_class($expected));
             $this->expectExceptionMessage($expected->getMessage());
         }
@@ -200,7 +202,7 @@ class SetAssociatedActionTest extends TestCase
         $toMany = $association instanceof BelongsToMany || $association instanceof HasMany;
         $action = new SetAssociatedAction(compact('association'));
 
-        $entity = $association->getSource()->get($entity, ['contain' => [$association->getName()]]);
+        $entity = $association->getSource()->get($entity, contain: [$association->getName()]);
 
         $relatedEntities = null;
         if (is_int($related)) {
@@ -224,7 +226,7 @@ class SetAssociatedActionTest extends TestCase
             static::assertSame('set', $event->getData('action'));
             static::assertSame($association, $event->getData('association'));
             static::assertSame($entity, $event->getData('entity'));
-            static::assertInstanceOf(\ArrayObject::class, $event->getData('relatedEntities'));
+            static::assertInstanceOf(ArrayObject::class, $event->getData('relatedEntities'));
             $rel = is_object($relatedEntities) || !$toMany ? [$relatedEntities] : (array)$relatedEntities;
             static::assertSameSize($rel, $event->getData('relatedEntities'));
             $n = count($rel);
@@ -250,7 +252,7 @@ class SetAssociatedActionTest extends TestCase
             $count = $association->getTarget()->find()
                 ->matching(
                     Inflector::camelize($association->getSource()->getTable()),
-                    function (Query $query) use ($association, $entity) {
+                    function (SelectQuery $query) use ($association, $entity) {
                         return $query->where([
                             $association->getSource()->aliasField($association->getSource()->getPrimaryKey()) => $entity->id,
                         ]);
@@ -294,7 +296,7 @@ class SetAssociatedActionTest extends TestCase
 
             $action = new SetAssociatedAction(compact('association'));
             $action(compact('entity', 'relatedEntities'));
-        } catch (Exception $e) {
+        } catch (CakeException $e) {
             $expected = [
                 'detail' => [
                     'gustavo' => [
@@ -315,7 +317,7 @@ class SetAssociatedActionTest extends TestCase
      *
      * @return array
      */
-    public function invocationWithValidationErrorsProvider()
+    public static function invocationWithValidationErrorsProvider(): array
     {
         return [
             'new link' => [1, 2],
@@ -354,7 +356,7 @@ class SetAssociatedActionTest extends TestCase
 
             $action = new SetAssociatedAction(compact('association'));
             $action(compact('entity', 'relatedEntities'));
-        } catch (Exception $e) {
+        } catch (CakeException $e) {
             $expected = [
                 'detail' => [
                     $field => [
@@ -374,7 +376,7 @@ class SetAssociatedActionTest extends TestCase
      *
      * @return array
      */
-    public function joinDataProvider()
+    public static function joinDataProvider(): array
     {
         return [
             'entity' => [

@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Model\Entity;
 
 use BEdita\Core\Model\Table\RolesTable;
@@ -21,6 +20,7 @@ use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
 use Cake\Utility\Hash;
+use RuntimeException;
 
 /**
  * Folder Entity
@@ -158,7 +158,7 @@ class Folder extends ObjectEntity
      *
      * @return \BEdita\Core\Model\Entity\Folder|null
      */
-    protected function _getParent()
+    protected function _getParent(): ?Folder
     {
         return Hash::get((array)$this->parents, '0');
     }
@@ -170,7 +170,7 @@ class Folder extends ObjectEntity
      * @param \BEdita\Core\Model\Entity\Folder|null $folder The folder entity to set as parent
      * @return \BEdita\Core\Model\Entity\Folder|null
      */
-    protected function _setParent(?Folder $folder = null)
+    protected function _setParent(?Folder $folder = null): ?Folder
     {
         if ($folder === null) {
             $this->parents = [];
@@ -200,10 +200,10 @@ class Folder extends ObjectEntity
     /**
      * Setter for `parent_id` virtual property.
      *
-     * @param int|string|null $parentId The parent id to set. Can be a numeric string
+     * @param string|int|null $parentId The parent id to set. Can be a numeric string
      * @return int|null
      */
-    protected function _setParentId($parentId): ?int
+    protected function _setParentId(int|string|null $parentId): ?int
     {
         if ($parentId === null) {
             $this->parent = null;
@@ -267,7 +267,7 @@ class Folder extends ObjectEntity
      * @return string|null
      * @throws \RuntimeException If Folder is not found on tree.
      */
-    protected function _getPath()
+    protected function _getPath(): ?string
     {
         if (!$this->has('id')) {
             return null;
@@ -275,14 +275,11 @@ class Folder extends ObjectEntity
 
         try {
             $path = TableRegistry::getTableLocator()->get('Trees')
-                ->find('pathNodes', [$this->id])
-                ->find('list', [
-                    'keyField' => 'id',
-                    'valueField' => 'object_id',
-                ])
+                ->find('pathNodes', subjectValue: $this->id)
+                ->find('list', keyField: 'id', valueField: 'object_id')
                 ->toArray();
         } catch (RecordNotFoundException $previous) {
-            throw new \RuntimeException(__d('bedita', 'Folder "{0}" is not on the tree.', $this->id), 0, $previous);
+            throw new RuntimeException(__d('bedita', 'Folder "{0}" is not on the tree.', $this->id), 0, $previous);
         }
 
         return sprintf('/%s', implode('/', $path));
@@ -293,7 +290,7 @@ class Folder extends ObjectEntity
      *
      * @return bool
      */
-    public function isParentSet()
+    public function isParentSet(): bool
     {
         return array_key_exists('parents', $this->_fields);
     }
@@ -301,7 +298,7 @@ class Folder extends ObjectEntity
     /**
      * @inheritDoc
      */
-    protected static function listAssociations(Table $Table, array $hidden = [])
+    protected static function listAssociations(Table $Table, array $hidden = []): array
     {
         $relationships = parent::listAssociations($Table, $hidden);
         $relationships[] = 'parent';

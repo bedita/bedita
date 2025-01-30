@@ -30,7 +30,7 @@ class PriorityBehavior extends Behavior
     /**
      * @inheritDoc
      */
-    protected $_defaultConfig = [
+    protected array $_defaultConfig = [
         'disabled' => false,
         'fields' => [],
     ];
@@ -49,7 +49,7 @@ class PriorityBehavior extends Behavior
 
         $fields = Hash::normalize($this->getConfig('fields'));
         unset($fields['_all']);
-        foreach ($fields as $field => &$config) {
+        foreach ($fields as &$config) {
             $config = (array)$config + $defaultConfig;
         }
         unset($config);
@@ -67,7 +67,7 @@ class PriorityBehavior extends Behavior
      * @param \Cake\Datasource\EntityInterface $entity Entity instance.
      * @return void
      */
-    public function beforeSave(EventInterface $event, EntityInterface $entity)
+    public function beforeSave(EventInterface $event, EntityInterface $entity): void
     {
         if ($this->getConfig('disabled') !== true) {
             $fields = $this->getConfig('fields');
@@ -84,7 +84,7 @@ class PriorityBehavior extends Behavior
      * @param \Cake\Datasource\EntityInterface $entity Entity instance.
      * @return void
      */
-    public function beforeDelete(EventInterface $event, EntityInterface $entity)
+    public function beforeDelete(EventInterface $event, EntityInterface $entity): void
     {
         if ($this->getConfig('disabled') !== true) {
             $fields = $this->getConfig('fields');
@@ -158,7 +158,7 @@ class PriorityBehavior extends Behavior
      * Get scope conditions from entity.
      *
      * @param \Cake\Datasource\EntityInterface $entity Entity instance.
-     * @param string[] $scope A list of scope fields.
+     * @param array<string> $scope A list of scope fields.
      * @return array A list of conditions.
      */
     protected function _getConditions(EntityInterface $entity, array $scope): array

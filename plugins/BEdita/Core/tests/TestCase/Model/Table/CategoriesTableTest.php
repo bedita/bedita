@@ -12,13 +12,13 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\Model\Table;
 
 use BEdita\Core\Exception\BadFilterException;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Hash;
+use Exception;
 
 /**
  * {@see \BEdita\Core\Model\Table\CategoriesTable} Test Case
@@ -39,7 +39,7 @@ class CategoriesTableTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.Relations',
         'plugin.BEdita/Core.RelationTypes',
@@ -143,10 +143,10 @@ class CategoriesTableTest extends TestCase
         $order = [
             $this->Categories->aliasField('id') => 'ASC',
         ];
-        $categories = $this->Categories->find('type', ['documents'])->order($order)->toArray();
+        $categories = $this->Categories->find('type', ['documents'])->orderBy($order)->toArray();
         static::assertEquals([1, 2, 3, 4], Hash::extract($categories, '{n}.id'));
 
-        $categories = $this->Categories->find('type', ['news'])->order($order)->toArray();
+        $categories = $this->Categories->find('type', ['news'])->orderBy($order)->toArray();
         static::assertEquals([], $categories);
     }
 
@@ -169,7 +169,7 @@ class CategoriesTableTest extends TestCase
      *
      * @return array
      */
-    public function findResourceProvider(): array
+    public static function findResourceProvider(): array
     {
         return [
             'category' => [
@@ -205,7 +205,7 @@ class CategoriesTableTest extends TestCase
      */
     public function testFindResource($expected, $options): void
     {
-        if ($expected instanceof \Exception) {
+        if ($expected instanceof Exception) {
             $this->expectException(get_class($expected));
             $this->expectExceptionMessage($expected->getMessage());
         }

@@ -12,9 +12,9 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\Model\Action;
 
+use ArrayObject;
 use BEdita\Core\Model\Action\SetRelatedObjectsAction;
 use BEdita\Core\ORM\Association\RelatedTo;
 use BEdita\Core\Utility\LoggedUser;
@@ -24,6 +24,7 @@ use Cake\Event\Event;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Inflector;
+use Exception;
 
 /**
  * @covers \BEdita\Core\Model\Action\SetRelatedObjectsAction
@@ -37,7 +38,7 @@ class SetRelatedObjectsActionTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.PropertyTypes',
         'plugin.BEdita/Core.Properties',
@@ -76,7 +77,7 @@ class SetRelatedObjectsActionTest extends TestCase
      *
      * @return array
      */
-    public function invocationProvider()
+    public static function invocationProvider(): array
     {
         return [
             'nothingToDo' => [
@@ -180,7 +181,7 @@ class SetRelatedObjectsActionTest extends TestCase
      */
     public function testInvocation($expected, $objectType, $relation, $id, array $related)
     {
-        if ($expected instanceof \Exception) {
+        if ($expected instanceof Exception) {
             $this->expectException(get_class($expected));
             $this->expectExceptionMessage($expected->getMessage());
         }
@@ -215,7 +216,7 @@ class SetRelatedObjectsActionTest extends TestCase
             static::assertSame('set', $event->getData('action'));
             static::assertSame($association, $event->getData('association'));
             static::assertSame($entity, $event->getData('entity'));
-            static::assertInstanceOf(\ArrayObject::class, $event->getData('relatedEntities'));
+            static::assertInstanceOf(ArrayObject::class, $event->getData('relatedEntities'));
             $rel = is_object($relatedEntities) ? [$relatedEntities] : (array)$relatedEntities;
             static::assertSameSize($rel, $event->getData('relatedEntities'));
             $n = count($rel);
@@ -268,16 +269,16 @@ class SetRelatedObjectsActionTest extends TestCase
     public function testSetEntitiesRelatedToOtherObject(): void
     {
         $Documents = TableRegistry::getTableLocator()->get('Documents');
-        $relatedEntities = $Documents->get(3, ['contain' => ['Test']])->get('test');
+        $relatedEntities = $Documents->get(3, contain: ['Test'])->get('test');
 
-        $entity = $Documents->get(2, ['contain' => ['Test']]);
+        $entity = $Documents->get(2, contain: ['Test']);
         static::assertCount(2, $entity->get('test'));
 
         $association = $Documents->getAssociation('Test');
         $action = new SetRelatedObjectsAction(compact('association'));
         $action(compact('entity', 'relatedEntities'));
 
-        $entity = $Documents->get(2, ['contain' => ['Test']]);
+        $entity = $Documents->get(2, contain: ['Test']);
         static::assertCount(1, $entity->get('test'));
 
         $expected = collection($relatedEntities)->sortBy('id')->extract('id')->toList();

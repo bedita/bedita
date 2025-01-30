@@ -16,15 +16,16 @@ namespace BEdita\Core\Test\TestCase\Model\Table;
 
 use BEdita\Core\Exception\LockedResourceException;
 use BEdita\Core\Model\Entity\ObjectEntity;
-use BEdita\Core\Utility\Database;
 use BEdita\Core\Utility\LoggedUser;
 use Cake\Core\Configure;
+use Cake\Database\Driver\Mysql;
 use Cake\Datasource\Exception\RecordNotFoundException;
-use Cake\I18n\FrozenTime;
+use Cake\I18n\DateTime;
 use Cake\ORM\Exception\PersistenceFailedException;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Hash;
+use Exception;
 
 /**
  * {@see \BEdita\Core\Model\Table\ObjectsTable} Test Case
@@ -45,7 +46,7 @@ class ObjectsTableTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.PropertyTypes',
         'plugin.BEdita/Core.Properties',
@@ -95,7 +96,6 @@ class ObjectsTableTest extends TestCase
      */
     public function testInitialization()
     {
-        $this->Objects->initialize([]);
         $this->assertEquals('objects', $this->Objects->getTable());
         $this->assertEquals('id', $this->Objects->getPrimaryKey());
         $this->assertEquals('title', $this->Objects->getDisplayField());
@@ -109,7 +109,7 @@ class ObjectsTableTest extends TestCase
      *
      * @return array
      */
-    public function saveProvider()
+    public static function saveProvider(): array
     {
         return [
             'valid' => [
@@ -159,7 +159,7 @@ class ObjectsTableTest extends TestCase
      *
      * @return array
      */
-    public function validationProvider()
+    public static function validationProvider(): array
     {
         return [
             'valid' => [
@@ -217,7 +217,7 @@ class ObjectsTableTest extends TestCase
      *
      * @return array
      */
-    public function findTypeProvider()
+    public static function findTypeProvider(): array
     {
         return [
             'documents' => [
@@ -261,7 +261,7 @@ class ObjectsTableTest extends TestCase
                 ['ne' => 'documents'],
             ],
             'missing' => [
-                new RecordNotFoundException('Record not found in table "object_types"'),
+                new RecordNotFoundException('Record not found in table `object_types`'),
                 ['document', 'profiles', 0],
             ],
             'abstract' => [
@@ -311,7 +311,7 @@ class ObjectsTableTest extends TestCase
      */
     public function testFindType($expected, array $types)
     {
-        if ($expected instanceof \Exception) {
+        if ($expected instanceof Exception) {
             $this->expectException(get_class($expected));
             $this->expectExceptionCode($expected->getCode());
             $this->expectExceptionMessage($expected->getMessage());
@@ -327,7 +327,7 @@ class ObjectsTableTest extends TestCase
      *
      * @return array
      */
-    public function findDateRangesProvider()
+    public static function findDateRangesProvider(): array
     {
         return [
             'simple' => [
@@ -377,7 +377,7 @@ class ObjectsTableTest extends TestCase
      */
     public function testSaveDateRanges()
     {
-        $object = $this->Objects->newEntity([]);
+        $object = $this->Objects->newEmptyEntity();
         $object->type = 'events';
 
         $data = [
@@ -443,8 +443,8 @@ class ObjectsTableTest extends TestCase
     {
         $object = $this->Objects->get(1);
         $expected = '🙈 😂 😱';
-        $info = Database::basicInfo();
-        if ($info['vendor'] == 'mysql' && (empty($info['encoding']) || $info['encoding'] != 'utf8mb4')) {
+        $dbDriver = $this->Objects->getConnection()->getDriver();
+        if ($dbDriver instanceof Mysql && Hash::get($dbDriver->config(), 'encoding') !== 'utf8mb4') {
             $expected = '';
         }
         $object['description'] = $expected;
@@ -458,7 +458,7 @@ class ObjectsTableTest extends TestCase
      *
      * @return array
      */
-    public function saveAbstractDisabledTypes()
+    public static function saveAbstractDisabledTypes(): array
     {
         return [
             'objects' => [
@@ -500,7 +500,7 @@ class ObjectsTableTest extends TestCase
             $this->expectException(PersistenceFailedException::class);
         }
 
-        $object = $this->Objects->newEntity([]);
+        $object = $this->Objects->newEmptyEntity();
         $object->type = $type;
 
         $result = $this->Objects->saveOrFail($object);
@@ -517,7 +517,7 @@ class ObjectsTableTest extends TestCase
     public function testFindAncestor()
     {
         $objects = $this->Objects->find('ancestor', [11])
-            ->order([$this->Objects->aliasField('id') => 'ASC'])
+            ->orderBy([$this->Objects->aliasField('id') => 'ASC'])
             ->toArray();
         static::assertNotEmpty($objects);
         $ids = Hash::extract($objects, '{n}.id');
@@ -543,7 +543,7 @@ class ObjectsTableTest extends TestCase
      *
      * @return array
      */
-    public function checkLangTagProvider()
+    public static function checkLangTagProvider(): array
     {
         return [
             'any lang' => [
@@ -593,7 +593,7 @@ class ObjectsTableTest extends TestCase
      *
      * @return array
      */
-    public function checkLockedProvider(): array
+    public static function checkLockedProvider(): array
     {
         return [
             'not locked' => [
@@ -640,7 +640,7 @@ class ObjectsTableTest extends TestCase
      */
     public function testCheckLocked($expected, array $data): void
     {
-        if ($expected instanceof \Exception) {
+        if ($expected instanceof Exception) {
             $this->expectException(get_class($expected));
             $this->expectExceptionMessage($expected->getMessage());
         }
@@ -698,7 +698,7 @@ class ObjectsTableTest extends TestCase
      *
      * @return array
      */
-    public function findAvailableProvider(): array
+    public static function findAvailableProvider(): array
     {
         return [
             'no status' => [
@@ -738,7 +738,7 @@ class ObjectsTableTest extends TestCase
      *
      * @return array
      */
-    public function findPublishableProvider(): array
+    public static function findPublishableProvider(): array
     {
         return [
             'on + publish' => [
@@ -800,7 +800,7 @@ class ObjectsTableTest extends TestCase
         static::assertNull($result);
 
         $object = $this->Objects->get(2);
-        $object->publish_end = FrozenTime::parse(time() + DAY);
+        $object->publish_end = DateTime::parse(time() + 86400);
         $this->Objects->saveOrFail($object);
 
         $result = $this->Objects->find('publishDateAllowed')->where(['id' => 2])->first();
@@ -868,7 +868,7 @@ class ObjectsTableTest extends TestCase
      */
     public function testParentsAvailable(): void
     {
-        $object = $this->Objects->get(2, ['contain' => ['Parents']]);
+        $object = $this->Objects->get(2, contain: ['Parents']);
         static::assertNotEmpty($object->parents);
 
         $firstParent = $object->parents[0];

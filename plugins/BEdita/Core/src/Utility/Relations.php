@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Utility;
 
 use Cake\Datasource\EntityInterface;
@@ -49,7 +48,7 @@ class Relations extends ResourcesBase
      *
      * @var array
      */
-    protected static $defaults = [
+    protected static array $defaults = [
         // since default usage is in migrations
         // don't commit transactions but let migrations do it
         'save' => [
@@ -105,7 +104,7 @@ class Relations extends ResourcesBase
      * @param array $options Table locator options
      * @return void
      */
-    protected static function addTypes($relationId, array $types, string $side, array $options = []): void
+    protected static function addTypes(string|int $relationId, array $types, string $side, array $options = []): void
     {
         $RelationTypes = static::getTable('RelationTypes', $options);
         $ObjectTypes = static::getTable('ObjectTypes', $options);
@@ -155,7 +154,7 @@ class Relations extends ResourcesBase
      * @param array $options Table locator options
      * @return void
      */
-    protected static function removeTypes($relationId, array $types, string $side, array $options = []): void
+    protected static function removeTypes(string|int $relationId, array $types, string $side, array $options = []): void
     {
         $RelationTypes = static::getTable('RelationTypes', $options);
         $ObjectTypes = static::getTable('ObjectTypes', $options);

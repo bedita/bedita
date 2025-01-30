@@ -12,12 +12,11 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\Model\Action;
 
 use BEdita\Core\Model\Action\ListRelatedFoldersAction;
 use BEdita\Core\Model\Entity\Folder;
-use Cake\ORM\Query;
+use Cake\ORM\Query\SelectQuery;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Hash;
@@ -32,7 +31,7 @@ class ListRelatedFoldersActionTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.Relations',
         'plugin.BEdita/Core.RelationTypes',
@@ -69,7 +68,7 @@ class ListRelatedFoldersActionTest extends TestCase
         $action = new ListRelatedFoldersAction(compact('association'));
         $result = $action(['primaryKey' => 11]);
 
-        static::assertInstanceOf(Query::class, $result);
+        static::assertInstanceOf(SelectQuery::class, $result);
 
         $children = $result->toArray();
 
@@ -79,7 +78,7 @@ class ListRelatedFoldersActionTest extends TestCase
         $treesTable = TableRegistry::getTableLocator()->get('Trees');
         $node = $treesTable->find()->where(['object_id' => 11])->first();
         $expected = $treesTable
-            ->find('children', ['for' => $node->id, 'direct' => true])
+            ->find('children', for: $node->id, direct: true)
             ->toArray();
         $expected = Hash::extract($expected, '{n}.object_id');
         sort($expected);

@@ -16,6 +16,7 @@ namespace BEdita\API\Controller;
 
 use BEdita\API\Policy\EndpointPolicy;
 use BEdita\Core\Model\Action\ActionTrait;
+use Cake\Http\Response;
 
 /**
  * Controller for `/signup` endpoint.
@@ -34,7 +35,7 @@ class SignupController extends AppController
         parent::initialize();
         $this->request = $this->request->withAttribute(EndpointPolicy::DEFAULT_AUTHORIZED, true);
 
-        if (isset($this->JsonApi)) {
+        if ($this->components()->has('JsonApi')) {
             $this->JsonApi->setConfig('parseJson', false);
         }
     }
@@ -54,7 +55,7 @@ class SignupController extends AppController
      *
      * @return void
      */
-    public function signup()
+    public function signup(): void
     {
         $this->request->allowMethod('post');
 
@@ -74,7 +75,7 @@ class SignupController extends AppController
      *
      * @return \Cake\Http\Response
      */
-    public function activation()
+    public function activation(): Response
     {
         $this->request->allowMethod('post');
 

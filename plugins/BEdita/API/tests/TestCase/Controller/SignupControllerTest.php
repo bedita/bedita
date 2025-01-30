@@ -16,7 +16,7 @@ namespace BEdita\API\Test\TestCase\Controller;
 
 use BEdita\API\TestSuite\IntegrationTestCase;
 use Cake\Core\Configure;
-use Cake\I18n\FrozenTime;
+use Cake\I18n\DateTime;
 use Cake\Mailer\TransportFactory;
 use Cake\ORM\TableRegistry;
 use Cake\Utility\Hash;
@@ -34,7 +34,7 @@ class SignupControllerTest extends IntegrationTestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.AsyncJobs',
     ];
 
@@ -57,7 +57,7 @@ class SignupControllerTest extends IntegrationTestCase
      *
      * @return array
      */
-    public function signupProvider()
+    public static function signupProvider(): array
     {
         return [
             'not allowed' => [
@@ -250,7 +250,7 @@ class SignupControllerTest extends IntegrationTestCase
      *
      * @return array
      */
-    public function activationErrorProvider()
+    public static function activationErrorProvider(): array
     {
         return [
             'not allowed' => [
@@ -288,7 +288,7 @@ class SignupControllerTest extends IntegrationTestCase
                 [
                     'error' => [
                         'status' => '404',
-                        'title' => 'Record not found in table "async_jobs"',
+                        'title' => 'Record not found in table `async_jobs`.',
                     ],
                     'links' => [
                         'self' => 'http://api.example.com/signup/activation',
@@ -305,7 +305,7 @@ class SignupControllerTest extends IntegrationTestCase
                 [
                     'error' => [
                         'status' => '404',
-                        'title' => 'Record not found in table "users"',
+                        'title' => 'Record not found in table `users`.',
                     ],
                     'links' => [
                         'self' => 'http://api.example.com/signup/activation',
@@ -389,7 +389,7 @@ class SignupControllerTest extends IntegrationTestCase
         $this->post('/signup', json_encode($data));
 
         $asyncJob = TableRegistry::getTableLocator()->get('AsyncJobs')->find()
-            ->order(['AsyncJobs.created' => 'DESC'])
+            ->orderBy(['AsyncJobs.created' => 'DESC'])
             ->first();
 
         $activationData = ['uuid' => $asyncJob->uuid];
@@ -424,18 +424,18 @@ class SignupControllerTest extends IntegrationTestCase
         $this->post('/signup', json_encode($data));
 
         $asyncJob = TableRegistry::getTableLocator()->get('AsyncJobs')->find()
-            ->order(['AsyncJobs.created' => 'DESC'])
+            ->orderBy(['AsyncJobs.created' => 'DESC'])
             ->first();
 
         $activationData = ['uuid' => $asyncJob->uuid];
 
         $Users = TableRegistry::getTableLocator()->get('Users');
         $user = $Users->find()
-            ->order(['created' => 'DESC'])
+            ->orderBy(['created' => 'DESC'])
             ->first();
 
         $user->status = 'on';
-        $user->verified = new FrozenTime();
+        $user->verified = new DateTime();
         $Users->save($user);
 
         $this->configRequestHeaders('POST', [

@@ -19,7 +19,8 @@ use Cake\Console\Arguments;
 use Cake\Console\ConsoleIo;
 use Cake\Console\ConsoleOptionParser;
 use Cake\Core\Exception\CakeException as Exception;
-use Cake\ORM\Query;
+use Cake\ORM\Query\SelectQuery;
+use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
 use Cake\Utility\Inflector;
 use Generator;
@@ -38,7 +39,7 @@ class CustomPropsCommand extends Command
      *
      * @var \Cake\ORM\Table
      */
-    protected $Table;
+    protected Table $Table;
 
     /**
      * @inheritDoc
@@ -62,7 +63,7 @@ class CustomPropsCommand extends Command
     public function execute(Arguments $args, ConsoleIo $io): ?int
     {
         $types = TableRegistry::getTableLocator()->get('ObjectTypes')
-            ->find('list', ['valueField' => 'name'])
+            ->find('list', valueField: 'name')
             ->where(['is_abstract' => false])
             ->all()
             ->toList();
@@ -132,10 +133,10 @@ class CustomPropsCommand extends Command
     /**
      * Objects generator.
      *
-     * @param \Cake\ORM\Query $query Query object
+     * @param \Cake\ORM\Query\SelectQuery $query Query object
      * @return \Generator
      */
-    protected function objectsGenerator(Query $query): Generator
+    protected function objectsGenerator(SelectQuery $query): Generator
     {
         $pageSize = 1000;
         $pages = ceil($query->count() / $pageSize);

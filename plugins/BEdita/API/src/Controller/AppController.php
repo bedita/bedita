@@ -15,11 +15,13 @@ declare(strict_types=1);
 namespace BEdita\API\Controller;
 
 use BEdita\API\Datasource\JsonApiPaginator;
+use BEdita\API\View\JsonApiFallbackView;
+use BEdita\API\View\JsonApiNegotiationRequiredView;
+use BEdita\API\View\JsonApiView;
 use Cake\Controller\Controller;
 use Cake\Core\Configure;
 use Cake\Event\EventInterface;
 use Cake\Http\Exception\BadRequestException;
-use Cake\Http\Exception\NotAcceptableException;
 use Cake\Http\Exception\NotFoundException;
 use Cake\ORM\Association;
 use Cake\ORM\Table;
@@ -38,7 +40,7 @@ class AppController extends Controller
     /**
      * @inheritDoc
      */
-    public $paginate = [
+    protected array $paginate = [
         'order' => [
             'id' => 'asc',
         ],
@@ -56,7 +58,6 @@ class AppController extends Controller
         $this->response = $this->response->withHeader('X-BEdita-Version', (string)Configure::read('BEdita.version'));
 
         $this->paginate = (array)Configure::read('Pagination') + $this->paginate;
-        $this->loadComponent('RequestHandler');
         if ($this->request->is(['json', 'jsonapi'])) {
             $this->loadComponent('BEdita/API.JsonApi', [
                 'contentType' => $this->request->is('json') ? 'json' : null,
@@ -83,6 +84,20 @@ class AppController extends Controller
     }
 
     /**
+     * {@inheritDoc}
+     *
+     * @codeCoverageIgnore
+     */
+    public function viewClasses(): array
+    {
+        return [
+            JsonApiView::class,
+            JsonApiFallbackView::class,
+            JsonApiNegotiationRequiredView::class,
+        ];
+    }
+
+    /**
      * Is identity required?
      *
      * @return bool
@@ -101,38 +116,19 @@ class AppController extends Controller
      */
     public function beforeFilter(EventInterface $event)
     {
-        $this->checkAcceptable();
-
         // Internally it may throw an `UnauthorizedException` for anonymous users
         $this->Authorization->authorize($this->request, 'access');
-
-        return null;
-    }
-
-    /**
-     * Perform HTTP Content Negotiation using `Accept` header.
-     *
-     * @return void
-     * @throws \Cake\Http\Exception\NotAcceptableException If request isn't accetable
-     */
-    protected function checkAcceptable(): void
-    {
-        if (!$this->request->is(['json', 'jsonapi'])) {
-            throw new NotAcceptableException(
-                __d('bedita', 'Bad request content type "{0}"', $this->request->getHeaderLine('Accept'))
-            );
-        }
     }
 
     /**
      * Prepare a list of associations to be contained from `?include` query parameter.
      *
-     * @param string|array|null $include Association(s) to be included.
+     * @param array|string|null $include Association(s) to be included.
      * @param \Cake\ORM\Table|null $table Table to consider.
      * @return array
      * @throws \Cake\Http\Exception\BadRequestException Throws an exception if a
      */
-    protected function prepareInclude($include, ?Table $table = null): array
+    protected function prepareInclude(string|array|null $include, ?Table $table = null): array
     {
         if ($include === null) {
             return [];

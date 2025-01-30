@@ -28,7 +28,7 @@ class TreeBehaviorTest extends TestCase
      *
      * @var string[]
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.FakeCategories',
     ];
 
@@ -92,7 +92,7 @@ class TreeBehaviorTest extends TestCase
      *
      * @return array
      */
-    public function getCurrentPositionProvider(): array
+    public static function getCurrentPositionProvider(): array
     {
         return [
             '1st node, root' => [
@@ -143,7 +143,7 @@ class TreeBehaviorTest extends TestCase
      *
      * @return array
      */
-    public function moveAtProvider(): array
+    public static function moveAtProvider(): array
     {
         return [
             'first' => [
@@ -263,7 +263,7 @@ class TreeBehaviorTest extends TestCase
             ->firstOrFail();
 
         $children = $this->Table
-            ->find('children', ['for' => $parentNode->id])
+            ->find('children', for: $parentNode->id)
             ->all();
 
         $currentPositions = $children->extract('id')->toList();
@@ -276,7 +276,7 @@ class TreeBehaviorTest extends TestCase
         }
 
         $actual = $this->Table
-            ->find('children', ['for' => $parentNode->id])
+            ->find('children', for: $parentNode->id)
             ->all()
             ->extract('id')
             ->toList();

@@ -29,14 +29,14 @@ class LayeredEngine extends CacheEngine
      *
      * @var \Cake\Cache\CacheEngine
      */
-    protected $persistent = null;
+    protected CacheEngine $persistent;
 
     /**
      * In-memory cache instance.
      *
      * @var \Cake\Cache\Engine\ArrayEngine
      */
-    protected $memory = null;
+    protected ArrayEngine $memory;
 
     /**
      * The default config used unless overridden by runtime configuration
@@ -45,7 +45,7 @@ class LayeredEngine extends CacheEngine
      *
      * @var array
      */
-    protected $_defaultConfig = [
+    protected array $_defaultConfig = [
         'duration' => 3600,
         'groups' => [],
         'prefix' => 'cake_',
@@ -79,7 +79,7 @@ class LayeredEngine extends CacheEngine
      * @return \Cake\Cache\CacheEngine The engine instance
      * @throws \Exception If the configuration is wrong
      */
-    protected function getEngineInstance($config): CacheEngine
+    protected function getEngineInstance(array|string $config): CacheEngine
     {
         $registry = Cache::getRegistry();
 
@@ -101,17 +101,13 @@ class LayeredEngine extends CacheEngine
             return $instance;
         }
 
-        if (is_array($config)) {
-            $name = $config['className'];
+        $name = $config['className'];
 
-            if (!empty($config['prefix'])) {
-                $name = $config['prefix'] . $name;
-            }
-
-            return $registry->load($name, $config);
+        if (!empty($config['prefix'])) {
+            $name = $config['prefix'] . $name;
         }
 
-        throw new Exception('Unknown cache configuration');
+        return $registry->load($name, $config);
     }
 
     /**
@@ -134,7 +130,7 @@ class LayeredEngine extends CacheEngine
     /**
      * @inheritDoc
      */
-    public function increment($key, $offset = 1)
+    public function increment($key, $offset = 1): int|false
     {
         $value = $this->persistent->increment($key, $offset);
         $this->memory->set($key, $value);
@@ -145,7 +141,7 @@ class LayeredEngine extends CacheEngine
     /**
      * @inheritDoc
      */
-    public function decrement($key, $offset = 1)
+    public function decrement($key, $offset = 1): int|false
     {
         $value = $this->persistent->decrement($key, $offset);
         $this->memory->set($key, $value);
@@ -186,7 +182,7 @@ class LayeredEngine extends CacheEngine
     /**
      * @inheritDoc
      */
-    public function get($key, $default = null)
+    public function get($key, $default = null): mixed
     {
         $value = $this->read($key);
         if ($value !== null) {

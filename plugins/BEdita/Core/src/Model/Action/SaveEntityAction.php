@@ -12,12 +12,13 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Model\Action;
 
 use BEdita\Core\Exception\InvalidDataException;
+use Cake\Datasource\EntityInterface;
 use Cake\Http\Exception\InternalErrorException;
 use Cake\Log\LogTrait;
+use Cake\ORM\Table;
 use Cake\Utility\Hash;
 
 /**
@@ -34,12 +35,12 @@ class SaveEntityAction extends BaseAction
      *
      * @var \Cake\ORM\Table
      */
-    protected $Table;
+    protected Table $Table;
 
     /**
      * @inheritDoc
      */
-    protected function initialize(array $config)
+    protected function initialize(array $config): void
     {
         $this->Table = $this->getConfig('table');
     }
@@ -47,7 +48,7 @@ class SaveEntityAction extends BaseAction
     /**
      * @inheritDoc
      */
-    public function execute(array $data = [])
+    public function execute(array $data = []): EntityInterface
     {
         $entityOptions = (array)Hash::get($data, 'entityOptions');
         $saveOptions = (array)Hash::get($data, 'saveOptions');

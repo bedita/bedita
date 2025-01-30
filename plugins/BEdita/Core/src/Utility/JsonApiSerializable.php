@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Utility;
 
 /**
@@ -66,12 +65,12 @@ interface JsonApiSerializable
      * @param array $fields Selected fields to view in `attributes` and `meta`, default empty => all fields are serialized
      * @return array
      */
-    public function jsonApiSerialize($options = 0, $fields = []);
+    public function jsonApiSerialize(int $options = 0, array $fields = []): array;
 
     /**
      * Get prefix used for `_name` in routing urls creation.
      *
      * @return string
      */
-    public function routeNamePrefix();
+    public function routeNamePrefix(): string;
 }

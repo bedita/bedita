@@ -20,6 +20,7 @@ use Cake\ORM\Association\BelongsTo;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Hash;
+use Exception;
 
 /**
  * {@see \BEdita\Core\Model\Table\AnnotationsTable} Test Case
@@ -40,7 +41,7 @@ class AnnotationsTableTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.Relations',
         'plugin.BEdita/Core.RelationTypes',
@@ -87,7 +88,7 @@ class AnnotationsTableTest extends TestCase
      *
      * @return array
      */
-    public function validationProvider()
+    public static function validationProvider(): array
     {
         return [
             'ok' => [
@@ -99,7 +100,6 @@ class AnnotationsTableTest extends TestCase
             ],
             'invalid 1' => [
                 [
-                    'object_id._required',
                     'object_id.integer',
                 ],
                 [
@@ -128,7 +128,7 @@ class AnnotationsTableTest extends TestCase
      */
     public function testValidation(array $expected, array $data)
     {
-        $entity = $this->Annotations->newEntity([]);
+        $entity = $this->Annotations->newEmptyEntity();
         $entity = $this->Annotations->patchEntity($entity, $data);
         $errors = array_keys(Hash::flatten($entity->getErrors()));
 
@@ -140,7 +140,7 @@ class AnnotationsTableTest extends TestCase
      *
      * @return array
      */
-    public function beforeSaveProvider()
+    public static function beforeSaveProvider(): array
     {
         return [
             'help' => [
@@ -180,7 +180,7 @@ class AnnotationsTableTest extends TestCase
     public function testBeforeSave($expected, array $data, $id = null)
     {
         LoggedUser::setUser(['id' => 5]);
-        if ($expected instanceof \Exception) {
+        if ($expected instanceof Exception) {
             $this->expectException(get_class($expected));
             $this->expectExceptionMessage($expected->getMessage());
         }
@@ -216,10 +216,10 @@ class AnnotationsTableTest extends TestCase
      */
     public function testBeforeDeleteFailure()
     {
-        $this->expectException(\Cake\Http\Exception\ForbiddenException::class);
+        $this->expectException(ForbiddenException::class);
         $this->expectExceptionMessage('Could not delete annotation "1" of user "1"');
         LoggedUser::setUser(['id' => 5]);
         $annotation = $this->Annotations->get(1);
-        $success = $this->Annotations->delete($annotation);
+        $this->Annotations->delete($annotation);
     }
 }

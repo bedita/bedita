@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\Model\Action;
 
 use BEdita\Core\Model\Action\ListObjectsAction;
@@ -31,7 +30,7 @@ class ListObjectsActionTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.Relations',
         'plugin.BEdita/Core.RelationTypes',
@@ -148,7 +147,7 @@ class ListObjectsActionTest extends TestCase
 
         static::assertInstanceOf(Query::class, $result);
         static::assertSame(2, $result->count());
-        $result->order(['Objects.id' => 'ASC']);
+        $result->orderBy(['Objects.id' => 'ASC']);
         $result = $result->toArray();
 
         static::assertNotEmpty($result[0]['translations']);

@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\Model\Action;
 
 use BEdita\Core\Exception\InvalidDataException;
@@ -30,6 +29,7 @@ use Cake\Mailer\TransportFactory;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Hash;
+use Exception;
 
 /**
  * @covers \BEdita\Core\Model\Action\SignupUserAction
@@ -41,7 +41,7 @@ class SignupUserActionTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.PropertyTypes',
         'plugin.BEdita/Core.Properties',
@@ -83,7 +83,7 @@ class SignupUserActionTest extends TestCase
      *
      * @return array
      */
-    public function executeProvider()
+    public static function executeProvider(): array
     {
         return [
             'ok' => [
@@ -206,7 +206,7 @@ class SignupUserActionTest extends TestCase
             static::assertTrue(is_string($arguments[3]));
         });
 
-        if ($expected instanceof \Exception) {
+        if ($expected instanceof Exception) {
             $this->expectException(get_class($expected));
         }
 
@@ -232,7 +232,7 @@ class SignupUserActionTest extends TestCase
      *
      * @return array
      */
-    public function executeExtAuthProvider()
+    public static function executeExtAuthProvider(): array
     {
         return [
             'ok' => [
@@ -323,7 +323,7 @@ class SignupUserActionTest extends TestCase
      */
     public function testExecuteExtAuth($expected, array $data, array $oauthResponse)
     {
-        if ($expected instanceof \Exception) {
+        if ($expected instanceof Exception) {
             $this->expectException(get_class($expected));
             $this->expectExceptionMessage($expected->getMessage());
         }
@@ -417,7 +417,7 @@ class SignupUserActionTest extends TestCase
             'access_token' => 'incredibly-long-string',
         ];
         $action = new SignupUserAction();
-        $result = $action(compact('data'));
+        $action(compact('data'));
     }
 
     /**
@@ -475,7 +475,7 @@ class SignupUserActionTest extends TestCase
      */
     public function testExceptionSendMail()
     {
-        $this->expectException(\Cake\Http\Exception\InternalErrorException::class);
+        $this->expectException(InternalErrorException::class);
         $data = [
             'data' => [
                 'username' => 'testsignup',
@@ -568,7 +568,7 @@ class SignupUserActionTest extends TestCase
      *
      * @return array
      */
-    public function rolesProvider()
+    public static function rolesProvider(): array
     {
         return [
             'roleAsFromConfig' => [
@@ -734,7 +734,7 @@ class SignupUserActionTest extends TestCase
     public function testRoles($expected, array $data, array $config = [])
     {
         Configure::write('Signup', $config);
-        if ($expected instanceof \Exception) {
+        if ($expected instanceof Exception) {
             $this->expectException(get_class($expected));
             $this->expectExceptionCode($expected->getCode());
         }

@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\Model\Entity;
 
 use BEdita\Core\Model\Entity\ObjectEntity;
@@ -20,6 +19,7 @@ use BEdita\Core\Model\Table\ObjectsTable;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Hash;
+use InvalidArgumentException;
 
 /**
  * {@see \BEdita\Core\Model\Entity\ObjectEntity} Test Case
@@ -33,14 +33,14 @@ class ObjectEntityTest extends TestCase
      *
      * @var \BEdita\Core\Model\Table\ObjectsTable
      */
-    public $Objects;
+    public ObjectsTable $Objects;
 
     /**
      * Fixtures
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.Relations',
         'plugin.BEdita/Core.RelationTypes',
@@ -107,7 +107,7 @@ class ObjectEntityTest extends TestCase
         ];
         $object = $this->Objects->patchEntity($object, $data);
         if (!($object instanceof ObjectEntity)) {
-            throw new \InvalidArgumentException();
+            throw new InvalidArgumentException();
         }
 
         $this->assertEquals(1, $object->id);
@@ -124,7 +124,7 @@ class ObjectEntityTest extends TestCase
      *
      * @return array
      */
-    public function getTypeProvider()
+    public static function getTypeProvider(): array
     {
         return [
             'document' => [
@@ -178,7 +178,7 @@ class ObjectEntityTest extends TestCase
      *
      * @return array
      */
-    public function visiblePropertiesProvider()
+    public static function visiblePropertiesProvider(): array
     {
         return [
             'document' => [
@@ -264,7 +264,7 @@ class ObjectEntityTest extends TestCase
      *
      * @return array
      */
-    public function setTypeProvider()
+    public static function setTypeProvider(): array
     {
         return [
             'document' => [
@@ -450,7 +450,7 @@ class ObjectEntityTest extends TestCase
             'translations',
         ];
 
-        $entity = TableRegistry::getTableLocator()->get('Documents')->newEntity([]);
+        $entity = TableRegistry::getTableLocator()->get('Documents')->newEmptyEntity();
         $entity->set('type', 'documents');
         $entity = $entity->jsonApiSerialize();
 
@@ -496,7 +496,7 @@ class ObjectEntityTest extends TestCase
             ],
         ];
 
-        $entity = TableRegistry::getTableLocator()->get('Users')->newEntity([]);
+        $entity = TableRegistry::getTableLocator()->get('Users')->newEmptyEntity();
         $entity->set('id', 1);
         $entity->set('type', 'users');
         $entity = $entity->jsonApiSerialize();
@@ -523,7 +523,7 @@ class ObjectEntityTest extends TestCase
             'translations',
         ];
 
-        $entity = TableRegistry::getTableLocator()->get('Documents')->getAssociation('Test')->newEntity([]);
+        $entity = TableRegistry::getTableLocator()->get('Documents')->getAssociation('Test')->newEmptyEntity();
         $entity->set('type', 'profile');
         $entity = $entity->jsonApiSerialize();
 
@@ -549,7 +549,7 @@ class ObjectEntityTest extends TestCase
             'translations',
         ];
 
-        $entity = TableRegistry::getTableLocator()->get('Objects')->newEntity([]);
+        $entity = TableRegistry::getTableLocator()->get('Objects')->newEmptyEntity();
         $entity->set('type', 'folders');
         $entity = $entity->jsonApiSerialize();
 
@@ -568,7 +568,7 @@ class ObjectEntityTest extends TestCase
      */
     public function testGetRelationshipsDeleted()
     {
-        $entity = TableRegistry::getTableLocator()->get('Documents')->newEntity([]);
+        $entity = TableRegistry::getTableLocator()->get('Documents')->newEmptyEntity();
         $entity->set('type', 'documents');
         $entity->set('deleted', true);
         $entity = $entity->jsonApiSerialize();
@@ -584,7 +584,7 @@ class ObjectEntityTest extends TestCase
      */
     public function testGetRelationshipsIncluded()
     {
-        $entity = TableRegistry::getTableLocator()->get('Documents')->get(2, ['contain' => ['Test']]);
+        $entity = TableRegistry::getTableLocator()->get('Documents')->get(2, contain: ['Test']);
         $entity = $entity->jsonApiSerialize();
 
         static::assertArrayHasKey('relationships', $entity);
@@ -603,7 +603,7 @@ class ObjectEntityTest extends TestCase
      */
     public function testGetRelationshipsSingleIncluded()
     {
-        $entity = TableRegistry::getTableLocator()->get('Folders')->get(12, ['contain' => ['Parents']]);
+        $entity = TableRegistry::getTableLocator()->get('Folders')->get(12, contain: ['Parents']);
         $entity = $entity->jsonApiSerialize();
 
         static::assertArrayHasKey('relationships', $entity);
@@ -623,7 +623,7 @@ class ObjectEntityTest extends TestCase
     public function testGetRelationshipsCount(): void
     {
         $count = ['test' => 12];
-        $entity = TableRegistry::getTableLocator()->get('Documents')->newEntity([]);
+        $entity = TableRegistry::getTableLocator()->get('Documents')->newEmptyEntity();
         $entity->set('type', 'documents');
         $entity->set('_countData', $count);
         $entity = $entity->jsonApiSerialize();
@@ -696,7 +696,7 @@ class ObjectEntityTest extends TestCase
      *
      * @return array
      */
-    public function getPermissionsProvider(): array
+    public static function getPermissionsProvider(): array
     {
         return [
             'no perms' => [

@@ -17,7 +17,6 @@ namespace BEdita\Core\Model\Table;
 use BEdita\Core\Model\Entity\Media;
 use BEdita\Core\Model\Table\ObjectsBaseTable as Table;
 use BEdita\Core\Model\Validation\MediaValidator;
-use Cake\Database\Schema\TableSchemaInterface;
 use Cake\Event\EventInterface;
 
 /**
@@ -38,7 +37,7 @@ class MediaTable extends Table
     /**
      * @inheritDoc
      */
-    protected $_validatorClass = MediaValidator::class;
+    protected string $_validatorClass = MediaValidator::class;
 
     /**
      * {@inheritDoc}
@@ -52,6 +51,7 @@ class MediaTable extends Table
         $this->setTable('media');
         $this->setPrimaryKey('id');
         $this->setDisplayField('name');
+        $this->getSchema()->setColumnType('provider_extra', 'json');
 
         $this->extensionOf('Objects');
 
@@ -74,16 +74,6 @@ class MediaTable extends Table
                 'name',
             ],
         ]);
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @codeCoverageIgnore
-     */
-    public function getSchema(): TableSchemaInterface
-    {
-        return parent::getSchema()->setColumnType('provider_extra', 'json');
     }
 
     /**

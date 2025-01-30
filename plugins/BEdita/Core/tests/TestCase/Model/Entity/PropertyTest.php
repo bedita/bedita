@@ -12,13 +12,15 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\Model\Entity;
 
 use BEdita\Core\Model\Entity\Property;
 use BEdita\Core\Model\Entity\PropertyType;
+use BEdita\Core\Model\Table\PropertiesTable;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
+use InvalidArgumentException;
+use stdClass;
 
 /**
  * {@see \BEdita\Core\Model\Entity\Property} Test Case
@@ -32,14 +34,14 @@ class PropertyTest extends TestCase
      *
      * @var \BEdita\Core\Model\Table\PropertiesTable
      */
-    public $Properties;
+    public PropertiesTable $Properties;
 
     /**
      * Fixtures
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.PropertyTypes',
         'plugin.BEdita/Core.Properties',
@@ -95,7 +97,7 @@ class PropertyTest extends TestCase
         ];
         $property = $this->Properties->patchEntity($property, $data);
         if (!($property instanceof Property)) {
-            throw new \InvalidArgumentException();
+            throw new InvalidArgumentException();
         }
 
         static::assertEquals(1, $property->id);
@@ -110,7 +112,7 @@ class PropertyTest extends TestCase
      *
      * @return array
      */
-    public function getPropertyTypeNameProvider()
+    public static function getPropertyTypeNameProvider(): array
     {
         return [
             'document' => [
@@ -218,7 +220,7 @@ class PropertyTest extends TestCase
      *
      * @return array
      */
-    public function getRequiredProvider()
+    public static function getRequiredProvider(): array
     {
         return [
             'true' => [
@@ -254,7 +256,7 @@ class PropertyTest extends TestCase
      *
      * @return array
      */
-    public function getSchemaProvider()
+    public static function getSchemaProvider(): array
     {
         return [
             'email' => [
@@ -277,7 +279,7 @@ class PropertyTest extends TestCase
                         [
                             'type' => 'null',
                         ],
-                        new \stdClass(),
+                        new stdClass(),
                     ],
                 ],
                 'json',
@@ -350,7 +352,7 @@ class PropertyTest extends TestCase
      *
      * @return array
      */
-    public function getTranslatableProvider(): array
+    public static function getTranslatableProvider(): array
     {
         return [
             'missing type' => [

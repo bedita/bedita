@@ -12,8 +12,10 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Model\Action;
+
+use Cake\Datasource\EntityInterface;
+use Cake\ORM\Query\SelectQuery;
 
 /**
  * Command to list associated objects for folders.
@@ -28,7 +30,7 @@ class ListRelatedFoldersAction extends ListRelatedObjectsAction
     /**
      * @inheritDoc
      */
-    public function execute(array $data = [])
+    public function execute(array $data = []): SelectQuery|EntityInterface|null
     {
         $result = parent::execute($data);
 
