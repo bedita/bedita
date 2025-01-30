@@ -57,5 +57,15 @@ class ProfilesFixture extends TestFixture
             'birthdate' => null,
             'deathdate' => null,
         ],
+        [
+            'id' => 20,
+            'name' => 'third',
+            'surname' => 'User',
+            'email' => 'third.user@example.com',
+            'person_title' => '',
+            'gender' => null,
+            'birthdate' => null,
+            'deathdate' => null,
+        ],
     ];
 }

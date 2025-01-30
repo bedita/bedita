@@ -134,6 +134,9 @@ class UniqueNameBehavior extends Behavior
             $fieldValue = (string)$entity->get('type');
             $regenerate = true;
         }
+        if (is_numeric($fieldValue)) {
+            $regenerate = true;
+        }
 
         return $this->uniqueNameFromValue($fieldValue, $regenerate);
     }

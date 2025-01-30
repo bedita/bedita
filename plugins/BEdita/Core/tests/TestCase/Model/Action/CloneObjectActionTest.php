@@ -107,7 +107,7 @@ class CloneObjectActionTest extends TestCase
     {
         // document with ID 2 from fixtures has 5 relationships records and 4 translations records
         $id = 2;
-        $title = 'new title';
+        $title = 'new title for my clone';
         $status = 'draft';
         $_meta = ['include' => ['relationships', 'translations']];
         $data = compact('title', 'status', '_meta');
@@ -120,6 +120,7 @@ class CloneObjectActionTest extends TestCase
         $this->assertEquals($clone->status, $status);
         $this->assertEquals($clone->title, $actual->title);
         $this->assertEquals($clone->status, $actual->status);
+        $this->assertEquals('new-title-for-my-clone', $clone->uname);
         // relation test
         $relatedTest = $clone->get('test');
         $originalRelatedTest = $original->get('test');
@@ -199,7 +200,7 @@ class CloneObjectActionTest extends TestCase
 
         // ID 14, stream bedita-logo-gray.gif
         $id = 14;
-        $title = 'new title';
+        $title = 'new title for my clone';
         $status = 'draft';
         $data = compact('title', 'status');
         $table = $this->fetchTable('Images');
@@ -456,6 +457,7 @@ class CloneObjectActionTest extends TestCase
      * @covers ::initialize()
      * @covers ::execute()
      * @covers ::cloneEntity()
+     * @covers ::setEntityField()
      */
     public function testCloneObjectWithDateRanges(): void
     {
@@ -477,5 +479,11 @@ class CloneObjectActionTest extends TestCase
         $this->assertEquals($expected->start_date, $actual->start_date);
         $this->assertEquals($expected->end_date, $actual->end_date);
         $this->assertEquals($expected->params, $actual->params);
+        // verify that original is unchanged
+        $original = $table->get($id, ['contain' => ['DateRanges']]);
+        $originalDateRanges = $original->get('date_ranges');
+        $this->assertCount(1, $originalDateRanges);
+        $this->assertEquals($expected->start_date, $originalDateRanges[0]->start_date);
+        $this->assertEquals($expected->end_date, $originalDateRanges[0]->end_date);
     }
 }

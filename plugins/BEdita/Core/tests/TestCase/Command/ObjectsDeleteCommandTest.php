@@ -129,4 +129,28 @@ class ObjectsDeleteCommandTest extends TestCase
         $this->assertOutputContains('Done');
         $this->assertExitSuccess();
     }
+
+    /**
+     * Test `execute` method
+     *
+     * @return void
+     * @covers ::execute()
+     * @covers ::objectsIterator()
+     * @covers ::deleteObject()
+     */
+    public function testDeleteMedia(): void
+    {
+        $table = $this->fetchTable('Files');
+        $entity = $table->newEntity([
+            'title' => 'New file in trash',
+            'media_property' => false,
+        ]);
+        $entity->created_by = 1;
+        $entity->modified_by = 1;
+        $entity->deleted = true;
+        $entity = $table->saveOrFail($entity);
+        $this->exec('objects_delete --type files --since tomorrow');
+        $this->assertOutputContains('Deleted from trash 1 objects [0 errors]');
+        $this->assertExitSuccess();
+    }
 }

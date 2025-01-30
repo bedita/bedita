@@ -272,16 +272,20 @@ class JsonApiViewTest extends TestCase
                             'relationships' => [
                                 'users' => [
                                     'data' => [
-                                       [
+                                        [
                                             'id' => '1',
                                             'type' => 'users',
-                                       ],
+                                        ],
+                                        [
+                                            'id' => '20',
+                                            'type' => 'users',
+                                        ],
                                     ],
                                     'links' => [
                                         'related' => '/roles/1/users',
                                         'self' => '/roles/1/relationships/users',
                                     ],
-                                 ],
+                                ],
                             ],
                         ],
                         [
@@ -293,16 +297,16 @@ class JsonApiViewTest extends TestCase
                             'relationships' => [
                                 'users' => [
                                     'data' => [
-                                       [
+                                        [
                                             'id' => '5',
                                             'type' => 'users',
-                                       ],
+                                        ],
                                     ],
                                     'links' => [
                                         'related' => '/roles/2/users',
                                         'self' => '/roles/2/relationships/users',
                                     ],
-                                 ],
+                                ],
                             ],
                         ],
                         [
@@ -314,16 +318,20 @@ class JsonApiViewTest extends TestCase
                             'relationships' => [
                                 'users' => [
                                     'data' => [
-                                       [
+                                        [
                                             'id' => '1',
                                             'type' => 'users',
-                                       ],
+                                        ],
+                                        [
+                                            'id' => '20',
+                                            'type' => 'users',
+                                        ],
                                     ],
                                     'links' => [
                                         'related' => '/roles/3/users',
                                         'self' => '/roles/3/relationships/users',
                                     ],
-                                 ],
+                                ],
                             ],
                         ],
                     ],
@@ -373,6 +381,47 @@ class JsonApiViewTest extends TestCase
                                     'links' => [
                                         'related' => '/users/1/translations',
                                         'self' => '/users/1/relationships/translations',
+                                    ],
+                                ],
+                            ],
+                        ],
+                        [
+                            'id' => '20',
+                            'type' => 'users',
+                            'meta' => [
+                                'external_auth' => [
+                                    [
+                                        'provider' => 'example',
+                                        'username' => 'third_user',
+                                    ],
+                                ],
+                            ],
+                            'links' => [
+                                'self' => '/users/20',
+                            ],
+                            'relationships' => [
+                                'another_test' => [
+                                    'links' => [
+                                        'related' => '/users/20/another_test',
+                                        'self' => '/users/20/relationships/another_test',
+                                    ],
+                                ],
+                                'roles' => [
+                                    'links' => [
+                                        'related' => '/users/20/roles',
+                                        'self' => '/users/20/relationships/roles',
+                                    ],
+                                ],
+                                'parents' => [
+                                    'links' => [
+                                        'related' => '/users/20/parents',
+                                        'self' => '/users/20/relationships/parents',
+                                    ],
+                                ],
+                                'translations' => [
+                                    'links' => [
+                                        'related' => '/users/20/translations',
+                                        'self' => '/users/20/relationships/translations',
                                     ],
                                 ],
                             ],

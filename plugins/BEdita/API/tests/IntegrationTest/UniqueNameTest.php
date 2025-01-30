@@ -158,6 +158,34 @@ class UniqueNameTest extends IntegrationTestCase
     }
 
     /**
+     * Test invalid numeric unique name.
+     *
+     * @return void
+     * @coversNothing
+     */
+    public function testPostNumericTitle(): void
+    {
+        $authHeader = $this->getUserAuthHeader();
+        $this->configRequestHeaders('POST', $authHeader);
+
+        $data = [
+            'type' => 'documents',
+            'attributes' => [
+                'title' => '123',
+            ],
+        ];
+        $this->post('/documents', json_encode(compact('data')));
+
+        $this->assertResponseCode(201);
+        $this->assertContentType('application/vnd.api+json');
+        $this->assertResponseNotEmpty();
+        $body = json_decode((string)$this->_response->getBody(), true);
+        static::assertIsArray($body);
+        static::assertArrayHasKey('data', $body);
+        static::assertIsNotNumeric(Hash::get($body, 'data.attributes.uname'));
+    }
+
+    /**
      * Test invalid numeric unique name updating an object.
      *
      * @return void

@@ -257,6 +257,7 @@ class ObjectsTableTest extends TestCase
                     17 => 'Modern art',
                     18 => 'Contemporary art',
                     19 => 'Funny video of Gustavo',
+                    20 => 'Mr. third User',
                 ],
                 ['ne' => 'documents'],
             ],
@@ -285,6 +286,7 @@ class ObjectsTableTest extends TestCase
                     17 => 'Modern art',
                     18 => 'Contemporary art',
                     19 => 'Funny video of Gustavo',
+                    20 => 'Mr. third User',
                 ],
                 ['objects'],
             ],
@@ -702,11 +704,11 @@ class ObjectsTableTest extends TestCase
     {
         return [
             'no status' => [
-                16,
+                17,
                 ['id > 0'],
             ],
             'status on' => [
-                11,
+                12,
                 ['id > 5'],
                 'on',
             ],
@@ -742,14 +744,14 @@ class ObjectsTableTest extends TestCase
     {
         return [
             'on + publish' => [
-                14,
+                15,
                 [
                     'Status.level' => 'on',
                     'Publish.checkDate' => true,
                 ],
             ],
             'draft' => [
-                19,
+                20,
                 [
                     'Status.level' => 'draft',
                 ],
@@ -785,7 +787,7 @@ class ObjectsTableTest extends TestCase
     public function testFindPublishDateAllowed(): void
     {
         $result = $this->Objects->find('publishDateAllowed')->toArray();
-        static::assertSame(16, count($result));
+        static::assertSame(17, count($result));
     }
 
     /**

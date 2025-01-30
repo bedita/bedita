@@ -88,7 +88,9 @@ class ObjectsDeleteCommand extends Command
     {
         try {
             $io->verbose(sprintf('Deleting object %s', $object->id));
-            $object->getTable()->deleteOrFail($object);
+            $table = $object->getTable();
+            $object = $table->get($object->id);
+            $table->deleteOrFail($object);
             $deleted++;
         } catch (Throwable $e) {
             $io->error(sprintf('Error deleting object %s: %s', $object->id, $e->getMessage()));

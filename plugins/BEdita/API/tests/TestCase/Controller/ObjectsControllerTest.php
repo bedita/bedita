@@ -69,10 +69,10 @@ class ObjectsControllerTest extends IntegrationTestCase
             ],
             'meta' => [
                 'pagination' => [
-                    'count' => 16,
+                    'count' => 17,
                     'page' => 1,
                     'page_count' => 1,
-                    'page_items' => 16,
+                    'page_items' => 17,
                     'page_size' => 20,
                 ],
                 'schema' => [
@@ -978,6 +978,58 @@ class ObjectsControllerTest extends IntegrationTestCase
                             'links' => [
                                 'related' => 'http://api.example.com/videos/19/inverse_test_abstract',
                                 'self' => 'http://api.example.com/videos/19/relationships/inverse_test_abstract',
+                            ],
+                        ],
+                    ],
+                ],
+                [
+                    'id' => '20',
+                    'type' => 'users',
+                    'attributes' => [
+                        'status' => 'on',
+                        'uname' => 'third-user',
+                        'title' => 'Mr. third User',
+                        'description' => null,
+                        'body' => null,
+                        'extra' => null,
+                        'lang' => 'en',
+                        'publish_start' => null,
+                        'publish_end' => null,
+                    ],
+                    'meta' => [
+                        'locked' => false,
+                        'created' => '2016-05-13T07:09:23+00:00',
+                        'modified' => '2016-05-13T07:09:23+00:00',
+                        'published' => null,
+                        'created_by' => 1,
+                        'modified_by' => 1,
+                    ],
+                    'links' => [
+                        'self' => 'http://api.example.com/users/20',
+                    ],
+                    'relationships' => [
+                        'roles' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/users/20/roles',
+                                'self' => 'http://api.example.com/users/20/relationships/roles',
+                            ],
+                        ],
+                        'another_test' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/users/20/another_test',
+                                'self' => 'http://api.example.com/users/20/relationships/another_test',
+                            ],
+                        ],
+                        'parents' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/users/20/parents',
+                                'self' => 'http://api.example.com/users/20/relationships/parents',
+                            ],
+                        ],
+                        'translations' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/users/20/translations',
+                                'self' => 'http://api.example.com/users/20/relationships/translations',
                             ],
                         ],
                     ],

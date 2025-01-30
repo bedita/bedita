@@ -51,6 +51,17 @@ class UsersFixture extends TestFixture
                 'verified' => null,
                 'password_modified' => '2016-03-15 09:57:38',
             ],
+            [
+                'id' => 20,
+                'username' => 'third user',
+                'password_hash' => (new WeakPasswordHasher(['hashType' => 'md5']))->hash('password3'),
+                'blocked' => 0,
+                'last_login' => null,
+                'last_login_err' => null,
+                'num_login_err' => 1,
+                'verified' => '2017-05-30 17:36:00',
+                'password_modified' => '2017-05-30 17:36:00',
+            ],
         ];
 
         parent::init();
