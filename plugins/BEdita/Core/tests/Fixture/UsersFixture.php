@@ -54,7 +54,7 @@ class UsersFixture extends TestFixture
             [
                 'id' => 20,
                 'username' => 'third user',
-                'password_hash' => (new WeakPasswordHasher(['hashType' => 'md5']))->hash('password3'),
+                'password_hash' => (new LegacyPasswordHasher(['hashType' => 'md5']))->hash('password3'),
                 'blocked' => 0,
                 'last_login' => null,
                 'last_login_err' => null,
