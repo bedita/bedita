@@ -15,7 +15,6 @@ declare(strict_types=1);
 namespace BEdita\Core\ORM;
 
 use Cake\ORM\Query\SelectQuery;
-use Cake\ORM\Table;
 
 /**
  * Interface for finder filters.
@@ -25,13 +24,12 @@ use Cake\ORM\Table;
 interface FinderFilterInterface
 {
     /**
-     * Check if a filter is available in the table or in its behaviors.
+     * Check if a filter is available in a table or in its behaviors.
      *
      * @param string $name The name of the filter.
-     * @param \Cake\ORM\Table|null $table The table to look for the filter in.
      * @return bool
      */
-    public function hasFilter(string $name, ?Table $table = null): bool;
+    public function hasFilter(string $name): bool;
 
     /**
      * Call a filter.
@@ -39,8 +37,7 @@ interface FinderFilterInterface
      * @param string $name The name of the filter.
      * @param \Cake\ORM\Query\SelectQuery $query The query to filter.
      * @param mixed $value The value to pass to the filter.
-     * @param \Cake\ORM\Table|null $table The table to look for the filter in.
      * @return \Cake\ORM\Query\SelectQuery
      */
-    public function callFilter(string $name, SelectQuery $query, mixed $value, ?Table $table = null): SelectQuery;
+    public function callFilter(string $name, SelectQuery $query, mixed $value): SelectQuery;
 }
