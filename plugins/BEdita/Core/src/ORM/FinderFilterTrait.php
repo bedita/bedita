@@ -92,7 +92,7 @@ trait FinderFilterTrait
             $implementedFinders = $behaviorInstance->implementedFinders();
             $filterFinders = array_intersect_key(
                 $implementedFinders,
-                array_flip((array)$behaviorInstance->getConfig('filterFinders', array_keys($implementedFinders)))
+                array_flip((array)$behaviorInstance->getConfig('implementedFilters', array_keys($implementedFinders)))
             );
             if (array_key_exists($name, $filterFinders) && method_exists($behaviorInstance, $filterFinders[$name])) {
                 return $this->filtersMap[$mapName] = $behaviorInstance->{$finderName}(...);
