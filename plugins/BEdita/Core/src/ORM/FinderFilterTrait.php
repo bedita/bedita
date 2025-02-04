@@ -44,7 +44,7 @@ trait FinderFilterTrait
      * Check if a filter is available in the table or in its behaviors.
      *
      * @param string $name The name of the filter.
-     * @param \Cake\ORM\Table|null $table The table to look for the filter in. `null` to use the main object
+     * @param \Cake\ORM\Table|null $table The table to look for the filter in. `null` to use `$this` as table.
      * @return bool
      */
     public function hasFilter(string $name, ?Table $table = null): bool
@@ -60,7 +60,7 @@ trait FinderFilterTrait
      * - implemented finder for a loaded behavior eventually filtered by the `filterFinders` configuration
      *
      * @param string $name The name of the finder without the `find` prefix.
-     * @param \Cake\ORM\Table|null $table The table to look for the filter in. `null` to use the main object.
+     * @param \Cake\ORM\Table|null $table The table to look for the filter in. `null` to use `$this` as table.
      * @return \Closure|null
      * @throws \LogicException If the table is not an instance of `Cake\ORM\Table`.
      */
@@ -69,7 +69,7 @@ trait FinderFilterTrait
         $table = $table ?? $this;
         if (!$table instanceof Table) {
             throw new LogicException(sprintf(
-                'Filters are only available for %s instances. Got %s',
+                'Filters are only available for `%s` instances. Got `%s` instead.',
                 Table::class,
                 $this::class
             ));
@@ -112,11 +112,11 @@ trait FinderFilterTrait
      * @return \Cake\ORM\Query\SelectQuery
      * @throws \BadMethodCallException If the filter method is not found.
      */
-    public function callFilter(string $name, SelectQuery $query, mixed $value, ?Table $table = null): SelectQuery
+    public function callFilter(string $name, SelectQuery $query, mixed $value = null, ?Table $table = null): SelectQuery
     {
         $filter = $this->getFilter($name, $table);
         if ($filter === null) {
-            throw new BadMethodCallException(sprintf('Unknown filter method "%s"', $name));
+            throw new BadMethodCallException(sprintf('Unknown filter method `%s`', $name));
         }
 
         return $this->invokeFilter($filter, $query, $value);
