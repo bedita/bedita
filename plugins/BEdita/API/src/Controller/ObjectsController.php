@@ -30,7 +30,7 @@ use BEdita\Core\Model\Action\SaveEntityAction;
 use BEdita\Core\Model\Action\SetRelatedObjectsAction;
 use BEdita\Core\Model\Action\SortRelatedObjectsAction;
 use BEdita\Core\Model\Entity\ObjectType;
-use BEdita\Core\Model\Table\ObjectsTable;
+use BEdita\Core\Model\Enum\DateRangesSortField;
 use BEdita\Core\Model\Table\RolesTable;
 use Cake\Collection\CollectionInterface;
 use Cake\Datasource\EntityInterface;
@@ -642,8 +642,8 @@ class ObjectsController extends ResourcesController
         // Add date ranges special sort field to filter if found
         // It will be used in `ObjectsTable::findDateRanges`
         $sort = str_replace('-', '', $sort);
-        if (in_array($sort, ObjectsTable::DATERANGES_SORT_FIELDS)) {
-            $filter['date_ranges'][$sort] = true;
+        if (in_array($sort, DateRangesSortField::values())) {
+            $filter['date_ranges']['sortableField'] = DateRangesSortField::from($sort);
         }
 
         return $filter;
