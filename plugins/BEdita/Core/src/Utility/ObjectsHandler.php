@@ -107,7 +107,7 @@ class ObjectsHandler
     {
         static::checkEnvironment();
         $objectsTable = TableRegistry::getTableLocator()->get('Objects');
-        $entity = $objectsTable->find('unameId', compact('id'))->firstOrFail();
+        $entity = $objectsTable->find('unameId', id: $id)->firstOrFail();
 
         return $objectsTable->deleteOrFail($entity);
     }

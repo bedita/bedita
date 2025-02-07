@@ -75,7 +75,7 @@ class GetObjectAction extends BaseAction
             if (!empty($assoc)) {
                 $query = $query->contain($assoc);
             }
-            $query = $query->find('type', (array)$this->objectType->id);
+            $query = $query->find('type', value: (array)$this->objectType->id);
         }
         if (!empty($data['lang'])) {
             $query = $query->find('translations', lang: $data['lang']);

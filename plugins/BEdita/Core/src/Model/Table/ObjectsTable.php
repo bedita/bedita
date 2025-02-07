@@ -16,6 +16,7 @@ namespace BEdita\Core\Model\Table;
 
 use BEdita\Core\Exception\LockedResourceException;
 use BEdita\Core\Model\Entity\ObjectEntity;
+use BEdita\Core\Model\Enum\DateRangesSortField;
 use BEdita\Core\Model\Validation\ObjectsValidator;
 use BEdita\Core\Search\SimpleSearchTrait;
 use BEdita\Core\Utility\LoggedUser;
@@ -242,21 +243,36 @@ class ObjectsTable extends Table
      * You can pass a list of allowed object types to this finder:
      *
      * ```
-     * $table->find('type', [1, 'document', 'profiles', 1004]);
+     * $table->find('type', value: [1, 'document', 'profiles', 1004]);
+     * ```
+     *
+     * If `value` named parameter is present it will be used otherwise you can specify the paramters to use.
+     * The following are equivalent:
+     *
+     * ```
+     * // example of equivalent signatures
+     * $table->find('type', value: 1);
+     * $table->find('type', value: ['eq' => 1]);
+     * $table->find('type', eq: 1);
+     *
+     * // other example of equivalent signatures
+     * $table->find('type', value: ['ne' => ['documents', 'profiles']]);
+     * $table->find('type', ne: ['documents', 'profiles']);
      * ```
      *
      * @param \Cake\ORM\Query\SelectQuery $query Query object instance.
-     * @param array $options Array of acceptable object types.
+     * @param array|string|int $args Named arguments. If `value` is present it will be used.
      * @return \Cake\ORM\Query\SelectQuery
      */
-    protected function findType(SelectQuery $query, array $options): SelectQuery
+    public function findType(SelectQuery $query, array|string|int ...$args): SelectQuery
     {
+        $filter = $args['value'] ?? $args;
         $field = $this->aliasField($this->ObjectTypes->getForeignKey());
 
-        return $query->where(function (QueryExpression $exp) use ($field, $options) {
+        return $query->where(function (QueryExpression $exp) use ($field, $filter) {
             $in = [];
             $notIn = [];
-            foreach ($options as $key => $value) {
+            foreach ((array)$filter as $key => $value) {
                 if (!is_int($key) && !in_array($key, ['eq', '=', 'neq', 'ne', '!=', '<>'], true)) {
                     continue;
                 }
@@ -267,8 +283,8 @@ class ObjectsTable extends Table
                     $objectTypeIds = array_merge(
                         $objectTypeIds,
                         $this->ObjectTypes
-                            ->find('children', ['for' => $value->id])
-                            ->find('list', ['valueField' => $this->ObjectTypes->getPrimaryKey()])
+                            ->find('children', for: $value->id)
+                            ->find('list', valueField: $this->ObjectTypes->getPrimaryKey())
                             ->all()
                             ->toList()
                     );
@@ -296,58 +312,67 @@ class ObjectsTable extends Table
      * Find by date range using `DateRanges` table findDate filter
      *
      * @param \Cake\ORM\Query\SelectQuery $query Query object instance.
-     * @param array $options Array of acceptable date range conditions.
+     * @param array|string|null $start_date start date condition.
+     * @param array|string|null $end_date end date condition.
+     * @param string|null $from_date from date condition.
+     * @param string|null $to_date to date condition.
+     * @param \BEdita\Core\Model\Enum\DateRangesSortField|null $sortableField Special sortable field.
      * @return \Cake\ORM\Query\SelectQuery
      */
-    protected function findDateRanges(SelectQuery $query, array $options): SelectQuery
-    {
-        $join = $this->dateRangesSubQueryJoin($query, $options);
-        if (!empty($join)) {
-            return $join;
+    public function findDateRanges(
+        SelectQuery $query,
+        array|string|null $start_date = null,
+        array|string|null $end_date = null,
+        ?string $from_date = null,
+        ?string $to_date = null,
+        ?DateRangesSortField $sortableField = null,
+    ): SelectQuery {
+        $options = array_filter(compact(
+            'start_date',
+            'end_date',
+            'from_date',
+            'to_date',
+        ));
+        if ($sortableField !== null) {
+            return $this->dateRangesSubQueryJoin($query, $sortableField, $options);
         }
 
         return $query->distinct([$this->aliasField($this->getPrimaryKey())])
             ->innerJoinWith('DateRanges', function (SelectQuery $query) use ($options) {
-                return $query->find('dateRanges', $options);
+                return $query->find('dateRanges', ...$options);
             });
     }
 
     /**
-     * Create a date ranges subquery join if a special sort field is set.
+     * Create a date ranges subquery join using special sortable field.
      *
      * @param \Cake\ORM\Query\SelectQuery $query Query object instance.
-     * @param array $options Array of acceptable date range conditions.
+     * @param \BEdita\Core\Model\Enum\DateRangesSortField $minMaxField Special sortable field.
+     * @param array $options Array of date range conditions.
      * @return \Cake\ORM\Query\SelectQuery|null
      */
-    protected function dateRangesSubQueryJoin(SelectQuery $query, array $options): ?SelectQuery
-    {
-        $minMaxField = key(
-            array_intersect_key(
-                $options,
-                array_flip(self::DATERANGES_SORT_FIELDS)
-            )
-        );
-        if (empty($minMaxField)) {
-            return null;
-        }
-        unset($options[$minMaxField]);
+    protected function dateRangesSubQueryJoin(
+        SelectQuery $query,
+        DateRangesSortField $minMaxField,
+        array $options
+    ): ?SelectQuery {
         $finder = 'dateRanges';
         if (empty($options)) {
             $finder = 'all';
         }
-        $subQuery = $this->DateRanges->find($finder, $options)
+        $subQuery = $this->DateRanges->find($finder, ...$options)
             ->select([
                 'date_ranges_object_id' => 'object_id',
-                'date_ranges_min_start_date' => $query->func()->min('start_date'),
-                'date_ranges_max_start_date' => $query->func()->max('start_date'),
-                'date_ranges_min_end_date' => $query->func()->min('end_date'),
-                'date_ranges_max_end_date' => $query->func()->max('end_date'),
+                DateRangesSortField::MIN_START_DATE->value => $query->func()->min('start_date'),
+                DateRangesSortField::MAX_START_DATE->value => $query->func()->max('start_date'),
+                DateRangesSortField::MIN_END_DATE->value => $query->func()->min('end_date'),
+                DateRangesSortField::MAX_END_DATE->value => $query->func()->max('end_date'),
             ])
             ->groupBy('object_id');
 
         return $query->distinct([
                 $this->aliasField($this->getPrimaryKey()),
-                $minMaxField,
+                $minMaxField->value,
             ])
             ->innerJoin(
                 ['DateBoundaries' => $subQuery],
@@ -402,7 +427,7 @@ class ObjectsTable extends Table
      * Finder for objects having a certain `parent` on the tree.
      *
      * @param \Cake\ORM\Query\SelectQuery $query Query object instance.
-     * @param array $options Id or unique name of ancestor
+     * @param string|int $value Id or unique name of ancestor
      * @return \Cake\ORM\Query\SelectQuery
      */
     public function findParent(SelectQuery $query, string|int $parent): SelectQuery

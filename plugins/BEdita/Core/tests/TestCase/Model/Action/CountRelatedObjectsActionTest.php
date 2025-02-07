@@ -392,7 +392,7 @@ class CountRelatedObjectsActionTest extends TestCase
     public function testExecute(array $expected, array $contain, $count): void
     {
         $Documents = $this->getTableLocator()->get('Documents');
-        $entities = $Documents->find('type', ['documents'])
+        $entities = $Documents->find('type', value: ['documents'])
             ->contain($contain)
             ->toArray();
 
@@ -475,7 +475,7 @@ class CountRelatedObjectsActionTest extends TestCase
     public function testNoHydrate(): void
     {
         $Documents = $this->getTableLocator()->get('Documents');
-        $entities = $Documents->find('type', ['documents'])->toArray();
+        $entities = $Documents->find('type', value: ['documents'])->toArray();
         $count = 'test';
 
         $action = new CountRelatedObjectsAction(['hydrate' => false]);

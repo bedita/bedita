@@ -50,7 +50,6 @@ use Psr\SimpleCache\CacheInterface;
  * @method \BEdita\Core\Model\Entity\ObjectType findOrCreate(\Cake\ORM\Query\SelectQuery|callable|array $search, ?callable $callback = null, array $options = [])
  * @mixin \Cake\ORM\Behavior\TreeBehavior
  * @method \BEdita\Core\Model\Entity\ObjectType newEmptyEntity()
- * @method \BEdita\Core\Model\Entity\ObjectType get(mixed $primaryKey, array|string $finder = 'all', \Psr\SimpleCache\CacheInterface|string|null $cache = null, \Closure|string|null $cacheKey = null, mixed ...$args)
  * @method \BEdita\Core\Model\Entity\ObjectType saveOrFail(\Cake\Datasource\EntityInterface $entity, array $options = [])
  * @method \BEdita\Core\Model\Entity\ObjectType[]|\Cake\Datasource\ResultSetInterface<\BEdita\Core\Model\Entity\ObjectType>|false saveMany(iterable $entities, array $options = [])
  * @method \BEdita\Core\Model\Entity\ObjectType[]|\Cake\Datasource\ResultSetInterface<\BEdita\Core\Model\Entity\ObjectType> saveManyOrFail(iterable $entities, array $options = [])

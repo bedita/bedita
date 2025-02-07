@@ -171,7 +171,7 @@ class BuildSearchIndexCommand extends Command
     {
         $table = $this->fetchTable('Objects');
         $query = $table->find()->orderByAsc($table->aliasField('id'))->limit(200);
-        $query = $query->find('type', [$type]);
+        $query = $query->find('type', value: [$type]);
         $id = array_filter(explode(',', (string)$args->getOption('id')));
         if (!empty($id)) {
             $query = $query->where([$table->aliasField('id') . ' IN' => $id]);

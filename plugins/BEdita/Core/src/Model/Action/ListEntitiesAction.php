@@ -99,7 +99,6 @@ class ListEntitiesAction extends BaseAction implements FinderFilterInterface
                 ? $this->Table->hasFilter($variableKey)
                 : $this->hasFilter($variableKey, $this->Table);
 
-
             if ($hasFinder) {
                 $query = $this->Table instanceof FinderFilterInterface
                     ? $this->Table->callFilter($variableKey, $query, $value)

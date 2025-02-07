@@ -108,7 +108,7 @@ class ObjectsDeleteCommand extends Command
     private function objectsIterator(?string $type, array $conditions): iterable
     {
         $table = $this->fetchTable('Objects');
-        $query = empty($type) ? $table->find() : $table->find('type', [$type]);
+        $query = empty($type) ? $table->find() : $table->find('type', value: [$type]);
         $query = $query->where($conditions)->limit(200);
         $lastId = 0;
         while (true) {

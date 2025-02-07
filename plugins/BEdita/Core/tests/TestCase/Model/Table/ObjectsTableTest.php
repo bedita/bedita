@@ -16,6 +16,7 @@ namespace BEdita\Core\Test\TestCase\Model\Table;
 
 use BEdita\Core\Exception\LockedResourceException;
 use BEdita\Core\Model\Entity\ObjectEntity;
+use BEdita\Core\Model\Enum\DateRangesSortField;
 use BEdita\Core\Utility\LoggedUser;
 use Cake\Core\Configure;
 use Cake\Database\Driver\Mysql;
@@ -319,7 +320,7 @@ class ObjectsTableTest extends TestCase
             $this->expectExceptionMessage($expected->getMessage());
         }
 
-        $result = $this->Objects->find('list')->find('type', $types)->toArray();
+        $result = $this->Objects->find('list')->find('type', value: $types)->toArray();
 
         $this->assertEquals($expected, $result);
     }
@@ -341,14 +342,14 @@ class ObjectsTableTest extends TestCase
             'sub1' => [
                 [],
                 [
-                    'date_ranges_min_start_date' => true,
+                    'sortableField' => DateRangesSortField::MIN_START_DATE,
                     'from_date' => '2019-01-01',
                 ],
             ],
             'sub2' => [
                 [9],
                 [
-                    'date_ranges_max_start_date' => true,
+                    'sortableField' => DateRangesSortField::MAX_START_DATE,
                 ],
             ],
         ];
@@ -367,7 +368,7 @@ class ObjectsTableTest extends TestCase
      */
     public function testFindDateRanges(array $expected, array $options)
     {
-        $result = $this->Objects->find('dateRanges', $options)->toArray();
+        $result = $this->Objects->find('dateRanges', ...$options)->toArray();
         $this->assertEquals($expected, Hash::extract($result, '{n}.id'));
     }
 
@@ -424,12 +425,12 @@ class ObjectsTableTest extends TestCase
     public function testFindMine()
     {
         $expected = $this->Objects->find()
-            ->find('list', ['keyField' => 'id', 'valueField' => 'id'])
+            ->find('list', keyField: 'id', valueField: 'id')
             ->where(['created_by' => 1])
             ->toArray();
 
         $result = $this->Objects->find('mine')
-            ->find('list', ['keyField' => 'id', 'valueField' => 'id'])
+            ->find('list', keyField: 'id', valueField: 'id')
             ->toArray();
 
         static::assertEquals($expected, $result);

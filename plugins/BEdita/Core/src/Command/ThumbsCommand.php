@@ -123,7 +123,7 @@ class ThumbsCommand extends Command
         $id = $startAt ?? 0;
         $idField = $table->aliasField('id');
 
-        $query = $table->find('type', ['images'])
+        $query = $table->find('type', value: ['images'])
             ->matching('Streams')
             ->contain('Streams');
         if (!empty($ids)) {

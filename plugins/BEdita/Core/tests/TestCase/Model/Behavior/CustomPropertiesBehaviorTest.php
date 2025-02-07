@@ -344,7 +344,7 @@ class CustomPropertiesBehaviorTest extends TestCase
     {
         $result = TableRegistry::getTableLocator()->get('Objects')
             ->find('list')
-            ->find('type', ['documents'])
+            ->find('type', value: ['documents'])
             ->toArray();
 
         static::assertNotEmpty($result);
