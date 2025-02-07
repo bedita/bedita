@@ -22,7 +22,9 @@ namespace BEdita\API\View;
 class JsonApiFallbackView extends JsonApiView
 {
     /**
-     * @inheritDoc
+     * {@inheritDoc}
+     *
+     * @codeCoverageIgnore
      */
     public static function contentType(): string
     {
