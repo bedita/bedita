@@ -230,7 +230,7 @@ class Table extends CakeTable implements FinderFilterInterface
         }
 
         throw new BadMethodCallException(
-            sprintf('Unknown finder method "%s"', $type)
+            sprintf('Unknown finder method `%s`', $type)
         );
     }
 
@@ -256,7 +256,7 @@ class Table extends CakeTable implements FinderFilterInterface
     /**
      * @inheritDoc
      */
-    public function hasFilter(string $name, ?CakeTable $table = null): bool
+    public function hasFilter(string $name): bool
     {
         $found = $this->privateHasFilter($name);
         if ($found === true) {
@@ -278,7 +278,7 @@ class Table extends CakeTable implements FinderFilterInterface
     /**
      * @inheritDoc
      */
-    public function callFilter(string $name, CakeSelectQuery $query, mixed $value, ?CakeTable $table = null): CakeSelectQuery
+    public function callFilter(string $name, CakeSelectQuery $query, mixed $value): CakeSelectQuery
     {
         $filter = $this->getFilter($name);
         if ($filter !== null) {
@@ -286,21 +286,21 @@ class Table extends CakeTable implements FinderFilterInterface
         }
 
         $inheritedTable = $this->inheritedTable();
-        if ($inheritedTable !== null) {
-            $originalAlias = $inheritedTable->getAlias();
-            $inheritedTable->setAlias($this->getAlias());
-            try {
-                if ($inheritedTable instanceof FinderFilterInterface) {
-                    return $inheritedTable->callFilter($name, $query, $value);
-                }
-
-                return $this->privateCallFilter($name, $query, $value, $inheritedTable);
-            } finally {
-                $inheritedTable->setAlias($originalAlias);
-            }
+        if ($inheritedTable === null) {
+            throw new BadMethodCallException(sprintf('Unknown filter method `%s`', $name));
         }
 
-        throw new BadMethodCallException(sprintf('Unknown filter method "%s"', $name));
+        $originalAlias = $inheritedTable->getAlias();
+        $inheritedTable->setAlias($this->getAlias());
+        try {
+            if ($inheritedTable instanceof FinderFilterInterface) {
+                return $inheritedTable->callFilter($name, $query, $value);
+            }
+
+            return $this->privateCallFilter($name, $query, $value, $inheritedTable);
+        } finally {
+            $inheritedTable->setAlias($originalAlias);
+        }
     }
 
     /**
