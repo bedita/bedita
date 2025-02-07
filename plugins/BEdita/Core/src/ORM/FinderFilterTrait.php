@@ -34,13 +34,6 @@ use ReflectionMethod;
 trait FinderFilterTrait
 {
     /**
-     * Map of filters already resolved.
-     *
-     * @var array
-     */
-    protected array $filtersMap = [];
-
-    /**
      * Check if a filter is available in the table or in its behaviors.
      *
      * @param string $name The name of the filter.
@@ -76,14 +69,9 @@ trait FinderFilterTrait
         }
 
         $name = strtolower($name);
-        $mapName = get_class($table) . '.' . $name;
-        if (array_key_exists($mapName, $this->filtersMap)) {
-            return $this->filtersMap[$mapName];
-        }
-
         $finderName = 'find' . $name;
         if (method_exists($table, $finderName) && (new ReflectionMethod($table, $finderName))->isPublic()) {
-            return $this->filtersMap[$mapName] = $table->{$finderName}(...);
+            return $table->{$finderName}(...);
         }
 
         foreach ($table->behaviors()->loaded() as $behavior) {
@@ -95,7 +83,7 @@ trait FinderFilterTrait
                 array_flip((array)$behaviorInstance->getConfig('implementedFilters', array_keys($implementedFinders)))
             );
             if (array_key_exists($name, $filterFinders) && method_exists($behaviorInstance, $filterFinders[$name])) {
-                return $this->filtersMap[$mapName] = $behaviorInstance->{$finderName}(...);
+                return $behaviorInstance->{$finderName}(...);
             }
         }
 

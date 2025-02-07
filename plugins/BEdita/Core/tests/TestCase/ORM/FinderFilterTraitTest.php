@@ -56,7 +56,6 @@ class FinderFilterTraitTest extends TestCase
             public function initialize(array $config): void
             {
                 $this->setTable('fake_animals');
-                $this->resetFiltersMap();
             }
 
             protected function findProtected(SelectQuery $query): SelectQuery
@@ -92,11 +91,6 @@ class FinderFilterTraitTest extends TestCase
             public function findVariadic(SelectQuery $query, ...$args): SelectQuery
             {
                 return $query->select([$args['value'] => 'name']);
-            }
-
-            public function resetFiltersMap(): void
-            {
-                $this->filtersMap = [];
             }
         };
     }
@@ -142,8 +136,6 @@ class FinderFilterTraitTest extends TestCase
     {
         static::assertFalse($this->Table->hasFilter('protected'));
         static::assertTrue($this->Table->hasFilter('public'));
-        // call it again for coverage purpose (test that filter is cached)
-        static::assertTrue($this->Table->hasFilter('public'));
 
         // Test behavior filters
         $behavior = new class ($this->Table) extends Behavior {
@@ -170,7 +162,6 @@ class FinderFilterTraitTest extends TestCase
         static::assertTrue($this->Table->hasFilter('one'));
         static::assertTrue($this->Table->hasFilter('two'));
 
-        $this->Table->resetFiltersMap();
         $this->Table->getBehavior('Test')->setConfig('implementedFilters', ['one']);
         static::assertTrue($this->Table->hasFilter('one'));
         static::assertFalse($this->Table->hasFilter('two'));
