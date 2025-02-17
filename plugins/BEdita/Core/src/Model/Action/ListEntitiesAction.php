@@ -156,7 +156,7 @@ class ListEntitiesAction extends BaseAction implements FinderFilterInterface
         }
 
         if (!empty($customPropsOptions)) {
-            $query = $query->find('customProp', $customPropsOptions);
+            $query = $query->find('customProp', ...$customPropsOptions);
         }
 
         return $query;
