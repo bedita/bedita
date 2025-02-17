@@ -468,7 +468,7 @@ class ObjectType extends Entity implements JsonApiSerializable, EventDispatcherI
         // Fetch all properties, properties with `is_static` true at the end.
         // This way we can override default property type of a static property.
         $allProperties = $this->getTableLocator()->get('Properties')
-            ->find('objectType', [$this->id])
+            ->find('objectType', for: $this->id)
             ->orderBy(['is_static' => 'ASC'])
             ->toArray();
         /** @var \BEdita\Core\Model\Entity\ObjectEntity $entity */

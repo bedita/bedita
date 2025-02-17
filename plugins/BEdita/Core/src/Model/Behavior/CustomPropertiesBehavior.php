@@ -104,8 +104,8 @@ class CustomPropertiesBehavior extends Behavior
         }
 
         $this->available = TableRegistry::getTableLocator()->get('Properties')
-            ->find('type', ['dynamic'])
-            ->find('objectType', [$objectType->id])
+            ->find('type', propType: 'dynamic')
+            ->find('objectType', for: $objectType->id)
             ->where(['enabled' => true, 'is_static' => false])
             ->all()
             ->indexBy('name')
