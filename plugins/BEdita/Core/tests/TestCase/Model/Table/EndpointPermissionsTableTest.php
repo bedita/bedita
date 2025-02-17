@@ -401,7 +401,7 @@ class EndpointPermissionsTableTest extends TestCase
      */
     public function testFindResource($expected, $options)
     {
-        $query = $this->EndpointPermissions->find('resource', $options);
+        $query = $this->EndpointPermissions->find('resource', ...$options);
         $entity = $query->first();
 
         static::assertEquals(1, $query->count());

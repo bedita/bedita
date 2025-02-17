@@ -216,42 +216,39 @@ class EndpointPermissionsTable extends Table
     /**
      * Find permissions by role, application and endpoint name.
      *
-     * This finder accepts three options:
-     * - `endpoint_name``: the endpoint name
-     * - `role_name`: the role name
-     * - `application_name`: the application name
-     *
      * @param \Cake\ORM\Query\SelectQuery $query Query object instance.
-     * @param array $options Additional options.
+     * @param string|null $endpoint_name The endpoint name.
+     * @param string|null $role_name The role name.
+     * @param string|null $application_name The application name.
      * @return \Cake\ORM\Query\SelectQuery
      */
-    protected function findResource(SelectQuery $query, array $options): SelectQuery
-    {
-        $endpoint = Hash::get($options, 'endpoint_name');
-        $role = Hash::get($options, 'role_name');
-        $application = Hash::get($options, 'application_name');
-
-        if ($endpoint === null) {
+    protected function findResource(
+        SelectQuery $query,
+        ?string $endpoint_name = null,
+        ?string $role_name = null,
+        ?string $application_name = null
+    ): SelectQuery {
+        if ($endpoint_name === null) {
             $query = $query->whereNull('endpoint_id');
         } else {
-            $query = $query->innerJoinWith('Endpoints', function (SelectQuery $query) use ($endpoint) {
-                return $query->where(['Endpoints.name' => $endpoint]);
+            $query = $query->innerJoinWith('Endpoints', function (SelectQuery $query) use ($endpoint_name) {
+                return $query->where(['Endpoints.name' => $endpoint_name]);
             });
         }
 
-        if ($role === null) {
+        if ($role_name === null) {
             $query = $query->whereNull('role_id');
         } else {
-            $query = $query->innerJoinWith('Roles', function (SelectQuery $query) use ($role) {
-                return $query->where(['Roles.name' => $role]);
+            $query = $query->innerJoinWith('Roles', function (SelectQuery $query) use ($role_name) {
+                return $query->where(['Roles.name' => $role_name]);
             });
         }
 
-        if ($application === null) {
+        if ($application_name === null) {
             $query = $query->whereNull('application_id');
         } else {
-            $query = $query->innerJoinWith('Applications', function (SelectQuery $query) use ($application) {
-                return $query->where(['Applications.name' => $application]);
+            $query = $query->innerJoinWith('Applications', function (SelectQuery $query) use ($application_name) {
+                return $query->where(['Applications.name' => $application_name]);
             });
         }
 
