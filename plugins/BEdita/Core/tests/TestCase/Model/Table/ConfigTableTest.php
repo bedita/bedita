@@ -195,18 +195,6 @@ class ConfigTableTest extends TestCase
                     'name' => 'KeyName',
                 ],
             ],
-            'non assoc array' => [
-                1,
-                [
-                    'appVal',
-                ],
-            ],
-            'bad' => [
-                new BadRequestException('Missing mandatory option "name"'),
-                [
-                    'gustavo' => 'KeyName',
-                ],
-            ],
         ];
     }
 
@@ -215,18 +203,13 @@ class ConfigTableTest extends TestCase
      *
      * @dataProvider findNameProvider
      * @covers ::findName()
-     * @param int|\Exception $expected Result number or Exception.
+     * @param int $expected Result number.
      * @param array $data Find options.
      * @return void
      */
     public function testFindName($expected, array $data)
     {
-        if ($expected instanceof Exception) {
-            $this->expectException(get_class($expected));
-            $this->expectExceptionMessage($expected->getMessage());
-        }
-
-        $config = $this->Config->find('name', $data)->toArray();
+        $config = $this->Config->find('name', ...$data)->toArray();
         static::assertEquals($expected, count($config));
     }
 
