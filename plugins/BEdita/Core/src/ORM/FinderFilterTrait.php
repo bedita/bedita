@@ -68,8 +68,7 @@ trait FinderFilterTrait
             ));
         }
 
-        $name = strtolower($name);
-        $finderName = 'find' . $name;
+        $finderName = 'find' . ucfirst($name);
         if (method_exists($table, $finderName) && (new ReflectionMethod($table, $finderName))->isPublic()) {
             return $table->{$finderName}(...);
         }

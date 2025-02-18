@@ -220,12 +220,11 @@ class HistoryBehavior extends Behavior
      * Logged user id is used if no id is present in options array.
      *
      * @param \Cake\ORM\Query\SelectQuery $query Query object instance.
-     * @param array $subjectValue Options containing user id
+     * @param string|int|null $editorId User id
      * @return \Cake\ORM\Query\SelectQuery
      */
-    public function findHistoryEditor(SelectQuery $query, array $subjectValue): SelectQuery
+    public function findHistoryEditor(SelectQuery $query, int|string|null $editorId = null): SelectQuery
     {
-        $editorId = Hash::get($subjectValue, '0');
         if (empty($editorId)) {
             $editorId = LoggedUser::id();
         }
