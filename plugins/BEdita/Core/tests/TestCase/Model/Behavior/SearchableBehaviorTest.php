@@ -76,25 +76,19 @@ class SearchableBehaviorTest extends TestCase
     public static function findQueryProvider(): array
     {
         return [
-            'ok' => [
-                [
-                    2 => 'koala',
-                ],
-                'ala',
-            ],
             'ok with "string" key' => [
                 [
                     2 => 'koala',
                 ],
                 ['string' => 'ala'],
             ],
-            'query with string param not a string' => [
+            'query with string param an empty string' => [
                 new BadFilterException([
                     'title' => 'Invalid data',
                     'detail' => 'query filter requires a non-empty query string',
                 ]),
                 [
-                    'string' => 1,
+                    'string' => '',
                 ],
             ],
         ];
@@ -111,7 +105,7 @@ class SearchableBehaviorTest extends TestCase
      * @covers ::getAdapter()
      * @covers ::getSearchRegistry()
      */
-    public function testFindQuery($expected, $query)
+    public function testFindQuery(array|Exception $expected, array $query): void
     {
         if ($expected instanceof Exception) {
             $this->expectException(get_class($expected));
@@ -125,7 +119,7 @@ class SearchableBehaviorTest extends TestCase
         static::assertTrue($table->hasFinder('query'));
 
         $result = $table
-            ->find('query', subjectValue: (array)$query)
+            ->find('query', ...$query)
             ->find('list')
             ->toArray();
 
@@ -285,7 +279,7 @@ class SearchableBehaviorTest extends TestCase
         } else {
             $table->addBehavior('BEdita/Core.Searchable');
         }
-        $result = $table->find('query', subjectValue: ['string' => 'word'])->toArray();
+        $result = $table->find('query', string: 'word')->toArray();
         $actual = Hash::extract($result, $expectedPath);
         static::assertEquals($expected, $actual);
         Configure::write('Search', $backupConf); // restore original config
@@ -305,7 +299,7 @@ class SearchableBehaviorTest extends TestCase
         Configure::write('Search.adapters.test.scopes', ['foo2_scope']);
         $table = $this->fetchTable('FakeMammals');
         $table->addBehavior('BEdita/Core.Searchable', ['scopes' => ['foo_scope']]);
-        $table->find('query', subjectValue: ['string' => 'ala'])->find('list')->toArray();
+        $table->find('query', string: 'ala')->find('list')->toArray();
     }
 
     /**
