@@ -279,7 +279,7 @@ class ApplicationsTableTest extends TestCase
             ],
             'badMethodException' => [
                 new BadMethodCallException('Required option "apiKey" must be a not empty string'),
-                ['this', 'is', 'not', 'a', 'string'],
+                '',
             ],
         ];
     }
@@ -293,14 +293,14 @@ class ApplicationsTableTest extends TestCase
      * @covers ::findApiKey()
      * @dataProvider findApiKeyProvider()
      */
-    public function testFindApiKey($expected, $apiKey)
+    public function testFindApiKey(int|Exception $expected, string $apiKey): void
     {
         if ($expected instanceof Exception) {
             $this->expectException(get_class($expected));
             $this->expectExceptionMessage($expected->getMessage());
         }
 
-        $count = $this->Applications->find('apiKey', compact('apiKey'))->count();
+        $count = $this->Applications->find('apiKey', apiKey: $apiKey)->count();
 
         static::assertSame($expected, $count);
     }
@@ -316,19 +316,21 @@ class ApplicationsTableTest extends TestCase
             'no secret' => [
                 1,
                 [
-                    'client_id' => API_KEY,
+                    'clientId' => API_KEY,
                 ],
             ],
             'secret' => [
                 2,
                 [
-                    'client_id' => 'abcdef12345',
-                    'client_secret' => 'topsecretstring',
+                    'clientId' => 'abcdef12345',
+                    'clientSecret' => 'topsecretstring',
                 ],
             ],
             'badMethodException' => [
-                new BadMethodCallException('Required option "client_id" must be a not empty string'),
-                [],
+                new BadMethodCallException('Required option "clientId" must be a not empty string'),
+                [
+                    'clientId' => '',
+                ],
             ],
         ];
     }
@@ -342,7 +344,7 @@ class ApplicationsTableTest extends TestCase
      * @dataProvider findCredentialsProvider()
      * @covers ::findCredentials()
      */
-    public function testFindCredentials($expected, $options)
+    public function testFindCredentials(int|Exception $expected, array $options): void
     {
         $app = $this->Applications->get(2);
         $app->set('enabled', true);
@@ -353,7 +355,7 @@ class ApplicationsTableTest extends TestCase
             $this->expectExceptionMessage($expected->getMessage());
         }
 
-        $result = $this->Applications->find('credentials', $options)->first();
+        $result = $this->Applications->find('credentials', ...$options)->first();
 
         static::assertEquals($expected, Hash::get($result, 'id'));
     }
@@ -371,7 +373,7 @@ class ApplicationsTableTest extends TestCase
         $app->set('enabled', true);
         $this->Applications->saveOrFail($app);
 
-        $app = $this->Applications->find('apiKey', compact('apiKey'))->first();
+        $app = $this->Applications->find('apiKey', apiKey: $apiKey)->first();
         $cacheConf = $this->Applications->behaviors()->get('QueryCache')->getConfig('cacheConfig');
         $read = Cache::read(sprintf('app_%s', $apiKey), $cacheConf);
         static::assertNotEmpty($read);

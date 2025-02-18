@@ -24,7 +24,6 @@ use Cake\Event\EventInterface;
 use Cake\ORM\Query\SelectQuery;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
-use Cake\Utility\Hash;
 use Cake\Utility\Security;
 use Cake\Utility\Text;
 use Cake\Validation\Validator;
@@ -39,7 +38,7 @@ use Cake\Validation\Validator;
  * @method \BEdita\Core\Model\Entity\Application patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
  * @method \BEdita\Core\Model\Entity\Application[] patchEntities(iterable $entities, array $data, array $options = [])
  * @method \BEdita\Core\Model\Entity\Application findOrCreate(\Cake\ORM\Query\SelectQuery|callable|array $search, ?callable $callback = null, array $options = [])
- * @method \Cake\ORM\Query queryCache(\Cake\ORM\Query $query, string $key)
+ * @method \Cake\ORM\Query\SelectQuery queryCache(\Cake\ORM\Query $query, string $key)
  * @property \Cake\ORM\Table&\Cake\ORM\Association\HasMany $EndpointPermissions
  * @mixin \Cake\ORM\Behavior\TimestampBehavior
  * @method \BEdita\Core\Model\Entity\Application newEmptyEntity()
@@ -164,46 +163,46 @@ class ApplicationsTable extends Table
      * Find an active application by its API key.
      *
      * @param \Cake\ORM\Query\SelectQuery $query Query object instance.
-     * @param array $options Options array. It requires an `apiKey` key.
+     * @param string $apiKey The api key.
      * @return \Cake\ORM\Query\SelectQuery
      */
-    protected function findApiKey(SelectQuery $query, array $options): SelectQuery
+    protected function findApiKey(SelectQuery $query, string $apiKey): SelectQuery
     {
-        if (empty($options['apiKey']) || !is_string($options['apiKey'])) {
+        if (empty($apiKey)) {
             throw new BadMethodCallException('Required option "apiKey" must be a not empty string');
         }
 
         $query = $query->where([
-            $this->aliasField('api_key') => $options['apiKey'],
+            $this->aliasField('api_key') => $apiKey,
             $this->aliasField('enabled') => true,
         ]);
 
-        return $this->queryCache($query, sprintf('app_%s', $options['apiKey']));
+        return $this->queryCache($query, sprintf('app_%s', $apiKey));
     }
 
     /**
      * Find an active application by client_id and client_secret.
      *
      * @param \Cake\ORM\Query\SelectQuery $query Query object instance.
-     * @param array $options Options array. It requires an `apiKey` key.
+     * @param string $clientId The client id (aka api key).
+     * @param string|null $clientSecret The optional client secret.
      * @return \Cake\ORM\Query\SelectQuery
      */
-    protected function findCredentials(SelectQuery $query, array $options): SelectQuery
+    protected function findCredentials(SelectQuery $query, string $clientId, ?string $clientSecret = null): SelectQuery
     {
-        if (empty($options['client_id'])) {
-            throw new BadMethodCallException('Required option "client_id" must be a not empty string');
+        if (empty($clientId)) {
+            throw new BadMethodCallException('Required option "clientId" must be a not empty string');
         }
 
-        return $query->where(function (QueryExpression $exp) use ($options) {
-            $secret = Hash::get($options, 'client_secret');
-            if ($secret !== null) {
-                $exp = $exp->eq($this->aliasField('client_secret'), $secret);
+        return $query->where(function (QueryExpression $exp) use ($clientId, $clientSecret) {
+            if ($clientSecret !== null) {
+                $exp = $exp->eq($this->aliasField('client_secret'), $clientSecret);
             } else {
                 $exp = $exp->isNull($this->aliasField('client_secret'));
             }
             $exp = $exp->eq($this->aliasField('enabled'), true);
 
-            return $exp->eq($this->aliasField('api_key'), $options['client_id']);
+            return $exp->eq($this->aliasField('api_key'), $clientId);
         });
     }
 
@@ -213,7 +212,7 @@ class ApplicationsTable extends Table
      * @param \Cake\ORM\Query\SelectQuery $query Query object.
      * @return \Cake\ORM\Query\SelectQuery
      */
-    protected function findEnabled(SelectQuery $query): SelectQuery
+    public function findEnabled(SelectQuery $query): SelectQuery
     {
         return $query->where([
             $this->aliasField('enabled') => true,
