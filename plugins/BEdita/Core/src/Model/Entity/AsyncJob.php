@@ -104,7 +104,8 @@ class AsyncJob extends Entity implements JsonApiSerializable, EventDispatcherInt
         }
 
         $service = ServiceRegistry::get($this->service);
-        $this->dispatchEvent('AsyncJob.beforeRun', compact('options'), $service);
+        $entity = $this;
+        $this->dispatchEvent('AsyncJob.beforeRun', compact('entity', 'options'), $service);
 
         return $service->run($this->payload, $options);
     }
