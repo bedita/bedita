@@ -196,6 +196,6 @@ class TranslationsTable extends Table
      */
     protected function findAvailable(SelectQuery $query): SelectQuery
     {
-        return $query->find('statusLevel', [Configure::read('Status.level', 'all')]);
+        return $query->find('statusLevel', level: Configure::read('Status.level', 'all'));
     }
 }

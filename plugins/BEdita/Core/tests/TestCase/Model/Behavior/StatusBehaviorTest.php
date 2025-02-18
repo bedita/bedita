@@ -149,33 +149,25 @@ class StatusBehaviorTest extends TestCase
     public static function findStatusLevelProvider(): array
     {
         return [
-            'too many options' => [
-                new BadFilterException('Invalid options for finder "status"'),
-                [1, 2, 3],
-            ],
-            'invalid array' => [
-                new BadFilterException('Invalid options for finder "status"'),
-                ['gustavo' => 'on'],
-            ],
             'on' => [
                 ['on'],
-                ['on'],
+                'on',
             ],
             'draft' => [
                 ['on', 'draft'],
-                ['draft'],
+                'draft',
             ],
             'off' => [
                 ['on', 'draft', 'off'],
-                ['off'],
+                'off',
             ],
             'all' => [
                 ['on', 'draft', 'off'],
-                ['all'],
+                'all',
             ],
             'invalid level' => [
                 new BadFilterException('Invalid options for finder "status"'),
-                ['invalid level'],
+                'invalid_level',
             ],
         ];
     }
@@ -184,12 +176,12 @@ class StatusBehaviorTest extends TestCase
      * Test `findStatusLevel()`.
      *
      * @param array $expected Expected result.
-     * @param array $options Finder options.
+     * @param string $level Status level.
      * @return void
      * @dataProvider findStatusLevelProvider()
      * @covers ::findStatusLevel()
      */
-    public function testFindStatus($expected, array $options)
+    public function testFindStatus($expected, string $level)
     {
         if ($expected instanceof Exception) {
             $this->expectException(get_class($expected));
@@ -203,7 +195,7 @@ class StatusBehaviorTest extends TestCase
         }
 
         $actual = $this->Objects->find('list')
-            ->find('statusLevel', $options)
+            ->find('statusLevel', level: $level)
             ->toArray();
         ksort($actual);
 

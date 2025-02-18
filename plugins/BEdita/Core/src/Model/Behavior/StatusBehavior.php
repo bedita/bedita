@@ -72,18 +72,13 @@ class StatusBehavior extends Behavior
      * Finder for objects based on status level.
      *
      * @param \Cake\ORM\Query\SelectQuery $query Query object instance.
-     * @param array $options Object status level.
+     * @param string $level The status level.
      * @return \Cake\ORM\Query\SelectQuery
      * @throws \BEdita\Core\Exception\BadFilterException Throws an exception if an invalid set of options is passed to
      *      the finder.
      */
-    public function findStatusLevel(SelectQuery $query, array $options): SelectQuery
+    public function findStatusLevel(SelectQuery $query, string $level): SelectQuery
     {
-        if (empty($options[0])) {
-            throw new BadFilterException(__d('bedita', 'Invalid options for finder "{0}"', 'status'));
-        }
-
-        $level = $options[0];
         $field = $this->getConfigOrFail('field');
         switch ($level) {
             case 'on':
