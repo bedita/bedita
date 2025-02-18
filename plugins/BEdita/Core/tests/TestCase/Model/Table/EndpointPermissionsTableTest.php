@@ -215,7 +215,7 @@ class EndpointPermissionsTableTest extends TestCase
             ],
             'null' => [
                 2,
-                '',
+                [],
             ],
             'auth,home' => [
                 5,
@@ -228,7 +228,7 @@ class EndpointPermissionsTableTest extends TestCase
             ],
             'empty (strict)' => [
                 0,
-                '',
+                [],
                 true,
             ],
         ];
@@ -244,9 +244,9 @@ class EndpointPermissionsTableTest extends TestCase
      * @covers ::findByEndpoint()
      * @dataProvider findByEndpointProvider()
      */
-    public function testFindByEndpoint($expected, $endpointIds, $strict = false)
+    public function testFindByEndpoint(int $expected, array|int $endpointIds, bool $strict = false)
     {
-        $count = $this->EndpointPermissions->find('byEndpoint', compact('endpointIds', 'strict'))->count();
+        $count = $this->EndpointPermissions->find('byEndpoint', endpointIds: $endpointIds, strict: $strict)->count();
 
         static::assertSame($expected, $count);
     }
@@ -269,7 +269,7 @@ class EndpointPermissionsTableTest extends TestCase
             ],
             'null' => [
                 1,
-                '',
+                null,
             ],
             'application one (strict)' => [
                 1,
@@ -278,7 +278,7 @@ class EndpointPermissionsTableTest extends TestCase
             ],
             'empty (strict)' => [
                 0,
-                '',
+                null,
                 true,
             ],
         ];
@@ -288,15 +288,17 @@ class EndpointPermissionsTableTest extends TestCase
      * Test finder by application ID.
      *
      * @param int $expected Expected count.
-     * @param int $applicationId Application id.
+     * @param int|null $applicationId Application id.
      * @param bool $strict Is strict mode enabled?
      * @return void
      * @covers ::findByApplication()
      * @dataProvider findByApplicationProvider()
      */
-    public function testFindByApplication($expected, $applicationId, $strict = false)
+    public function testFindByApplication(int $expected, ?int $applicationId, $strict = false): void
     {
-        $count = $this->EndpointPermissions->find('byApplication', compact('applicationId', 'strict'))->count();
+        $count = $this->EndpointPermissions
+            ->find('byApplication', applicationId: $applicationId, strict: $strict)
+            ->count();
 
         static::assertSame($expected, $count);
     }
@@ -319,7 +321,7 @@ class EndpointPermissionsTableTest extends TestCase
             ],
             'null' => [
                 2,
-                '',
+                [],
             ],
             'first,second' => [
                 5,
@@ -332,7 +334,7 @@ class EndpointPermissionsTableTest extends TestCase
             ],
             'empty (strict)' => [
                 0,
-                '',
+                [],
                 true,
             ],
         ];
@@ -348,9 +350,9 @@ class EndpointPermissionsTableTest extends TestCase
      * @covers ::findByRole()
      * @dataProvider findByRoleProvider()
      */
-    public function testFindByRole($expected, $roleIds, $strict = false)
+    public function testFindByRole(int $expected, array|int $roleIds, bool $strict = false): void
     {
-        $count = $this->EndpointPermissions->find('byRole', compact('roleIds', 'strict'))->count();
+        $count = $this->EndpointPermissions->find('byRole', roleIds: $roleIds, strict: $strict)->count();
 
         static::assertSame($expected, $count);
     }

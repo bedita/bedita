@@ -105,25 +105,24 @@ class EndpointPermissionsTable extends Table
     /**
      * Find permissions by endpoint.
      *
-     * This finder accepts two options:
-     *  - `endpointIds`: an array of Endpoint IDs to filter endpoint permissions by.
-     *  - `strict`: enable strict mode to exclude endpoint permissions applied to all endpoints
+     * This finder accepts two params:
+     *  - `$endpointIds`: an array of Endpoint IDs to filter endpoint permissions by.
+     *  - `$strict`: enable strict mode to exclude endpoint permissions applied to all endpoints
      *      (filter out endpoint permissions with `endpoint_id = NULL`).
      *
      * @param \Cake\ORM\Query\SelectQuery $query Query object instance.
-     * @param array $options Additional options.
+     * @param array|int $endpointIds Array of endpoint IDs.
+     * @param bool $strict Enable strict mode
      * @return \Cake\ORM\Query\SelectQuery
      */
-    protected function findByEndpoint(SelectQuery $query, array $options): SelectQuery
+    protected function findByEndpoint(SelectQuery $query, array|int $endpointIds = [], bool $strict = false): SelectQuery
     {
         $field = $this->aliasField($this->Endpoints->getForeignKey());
-        $ids = array_filter((array)Hash::get($options, 'endpointIds', []));
-        $strict = Hash::get($options, 'strict', false);
 
-        return $query->where(function (QueryExpression $expr) use ($ids, $field, $strict) {
-            return $expr->or(function (QueryExpression $expr) use ($ids, $field, $strict) {
-                if (!empty($ids)) {
-                    $expr = $expr->in($field, $ids);
+        return $query->where(function (QueryExpression $expr) use ($endpointIds, $field, $strict) {
+            return $expr->or(function (QueryExpression $expr) use ($endpointIds, $field, $strict) {
+                if (!empty($endpointIds)) {
+                    $expr = $expr->in($field, (array)$endpointIds);
                 }
                 if (empty($strict)) {
                     $expr = $expr->isNull($field);
@@ -148,19 +147,18 @@ class EndpointPermissionsTable extends Table
      *      (filter out endpoint permissions with `application_id = NULL`).
      *
      * @param \Cake\ORM\Query\SelectQuery $query Query object instance.
-     * @param array $options Additional options.
+     * @param int|null $applicationId The application id.
+     * @param bool $strict Enable strict mode.
      * @return \Cake\ORM\Query\SelectQuery
      */
-    protected function findByApplication(SelectQuery $query, array $options): SelectQuery
+    protected function findByApplication(SelectQuery $query, ?int $applicationId = null, bool $strict = false): SelectQuery
     {
         $field = $this->aliasField($this->Applications->getForeignKey());
-        $id = Hash::get($options, 'applicationId');
-        $strict = Hash::get($options, 'strict', false);
 
-        return $query->where(function (QueryExpression $expr) use ($id, $field, $strict) {
-            return $expr->or(function (QueryExpression $expr) use ($id, $field, $strict) {
-                if (!empty($id)) {
-                    $expr = $expr->eq($field, $id);
+        return $query->where(function (QueryExpression $expr) use ($applicationId, $field, $strict) {
+            return $expr->or(function (QueryExpression $expr) use ($applicationId, $field, $strict) {
+                if (!empty($applicationId)) {
+                    $expr = $expr->eq($field, $applicationId);
                 }
                 if (empty($strict)) {
                     $expr = $expr->isNull($field);
@@ -185,19 +183,18 @@ class EndpointPermissionsTable extends Table
      *      (filter out endpoint permissions with `role_id = NULL`).
      *
      * @param \Cake\ORM\Query\SelectQuery $query Query object instance.
-     * @param array $options Additional options.
+     * @param array|int $roleIds The role ids.
+     * @param bool $strict Enable strict mode.
      * @return \Cake\ORM\Query\SelectQuery
      */
-    protected function findByRole(SelectQuery $query, array $options): SelectQuery
+    protected function findByRole(SelectQuery $query, array|int $roleIds = [], bool $strict = false): SelectQuery
     {
         $field = $this->aliasField($this->Roles->getForeignKey());
-        $ids = array_filter((array)Hash::get($options, 'roleIds', []));
-        $strict = Hash::get($options, 'strict', false);
 
-        return $query->where(function (QueryExpression $expr) use ($ids, $field, $strict) {
-            return $expr->or(function (QueryExpression $expr) use ($ids, $field, $strict) {
-                if (!empty($ids)) {
-                    $expr = $expr->in($field, $ids);
+        return $query->where(function (QueryExpression $expr) use ($roleIds, $field, $strict) {
+            return $expr->or(function (QueryExpression $expr) use ($roleIds, $field, $strict) {
+                if (!empty($roleIds)) {
+                    $expr = $expr->in($field, (array)$roleIds);
                 }
                 if (empty($strict)) {
                     $expr = $expr->isNull($field);
@@ -267,8 +264,8 @@ class EndpointPermissionsTable extends Table
         $endpointIds = array_filter([$endpointId]);
         $key = sprintf('perms_count_%s_%s', $applicationId ?: 'any', $endpointId ?: 'any');
 
-        $query = $this->find('byApplication', compact('applicationId'))
-            ->find('byEndpoint', compact('endpointIds'));
+        $query = $this->find('byApplication', applicationId: $applicationId)
+            ->find('byEndpoint', endpointIds: $endpointIds);
 
         return $this->queryCache($query, $key)
             ->count();
@@ -290,8 +287,8 @@ class EndpointPermissionsTable extends Table
 
         // anonymous user
         if ($user === null) {
-            $query = $this->find('byApplication', compact('applicationId', 'strict'))
-                ->find('byEndpoint', compact('endpointIds', 'strict'));
+            $query = $this->find('byApplication', applicationId: $applicationId, strict: $strict)
+                ->find('byEndpoint', endpointIds: $endpointIds, strict: $strict);
 
             return $this->queryCache($query, $key)
                 ->toArray();
@@ -301,9 +298,9 @@ class EndpointPermissionsTable extends Table
         sort($roleIds);
         $key .= sprintf('_%s', implode('.', $roleIds));
 
-        $query = $this->find('byApplication', compact('applicationId', 'strict'))
-            ->find('byEndpoint', compact('endpointIds', 'strict'))
-            ->find('byRole', compact('roleIds'));
+        $query = $this->find('byApplication', applicationId: $applicationId, strict: $strict)
+            ->find('byEndpoint', endpointIds: $endpointIds, strict: $strict)
+            ->find('byRole', roleIds: $roleIds);
 
         return $this->queryCache($query, $key)
             ->toArray();
