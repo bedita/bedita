@@ -163,27 +163,33 @@ class GeometryBehavior extends Behavior
      *
      * ```php
      * // Find location objects near a given center, either a string with comma separated values or an array.
-     * $table->find('geo', ['center' => '44.4944183,11.3464055']);
-     * $table->find('geo', ['center' => [44.4944183, 11.3464055]]);
+     * $table->find('geo', center: '44.4944183,11.3464055');
+     * $table->find('geo', center: [44.4944183, 11.3464055]);
      *
      * // Find location objects within a radius of 10 kilometers from the given range.
-     * $table->find('geo', ['center' => [44.4944183, 11.3464055], 'radius' => 10000]);
+     * $table->find('geo', center: [44.4944183, 11.3464055], radius: 10000);
      *
      * // Find location objects that are close to a center, but compute distances from another center.
-     * $table->find('geo', ['center' => [44.4944183, 11.3464055], 'from' => [11.3464055, 44.4944183]]);
+     * $table->find('geo', center: [44.4944183, 11.3464055], from: [11.3464055, 44.4944183]);
      * ```
      *
      * @param \Cake\ORM\Query\SelectQuery $query Query object instance.
-     * @param array $options Array of acceptable geo localization conditions.
+     * @param array|string $center Center of the search.
+     * @param array|string|null $from Coordinates on which compute distance from `$center`.
+     * @param string|float|int|null $radius Maximum distance from `$center` to filter results.
      * @return \Cake\ORM\Query\SelectQuery
      * @throws \BEdita\Core\Exception\BadFilterException Throws an exception if value could not be parsed into
      *      valid coordinates, or if GIS SQL functions are not available.
      */
-    public function findGeo(SelectQuery $query, array $options): SelectQuery
-    {
-        $center = static::parseCoordinates(Hash::get($options, 'center'));
-        $distanceCenter = static::parseCoordinates(Hash::get($options, 'from', $center));
-        $radius = filter_var(Hash::get($options, 'radius'), FILTER_VALIDATE_FLOAT, ['options' => ['min_range' => 0]]);
+    public function findGeo(
+        SelectQuery $query,
+        array|string $center,
+        array|string|null $from = null,
+        string|float|int|null $radius = null,
+    ): SelectQuery {
+        $center = static::parseCoordinates($center);
+        $distanceCenter = static::parseCoordinates($from ?? $center);
+        $radius = filter_var($radius, FILTER_VALIDATE_FLOAT, ['options' => ['min_range' => 0]]);
         $field = $this->table()->aliasField($this->getConfig('field'));
 
         if (!$this->checkGeoSupport()) {
