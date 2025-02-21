@@ -121,6 +121,11 @@ class QueueJobTest extends TestCase
                 Processor::REJECT,
                 new RuntimeException('Big big error'),
             ],
+            'requeue' => [
+                Processor::REQUEUE,
+                false,
+                'e533e1cf-b12c-4dbe-8fb7-b25fafbd2f76',
+            ],
         ];
     }
 

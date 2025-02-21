@@ -55,7 +55,7 @@ class AsyncJobsFixture extends TestFixture
             ],
             'scheduled_from' => null,
             'expires' => null,
-            'max_attempts' => 1,
+            'max_attempts' => 2,
             'locked_until' => null,
             'created' => '2017-04-28 19:29:31',
             'modified' => '2017-04-28 19:29:31',
