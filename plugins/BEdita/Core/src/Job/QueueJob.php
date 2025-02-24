@@ -42,6 +42,7 @@ class QueueJob implements JobInterface
         $this->AsyncJobs = $this->fetchTable('AsyncJobs');
         $uuid = $message->getArgument('uuid');
         $this->log(sprintf('Processing job "%s"', $uuid), 'debug');
+        $success = false;
         try {
             $success = $this->run($uuid);
         } catch (RecordNotFoundException $e) {
