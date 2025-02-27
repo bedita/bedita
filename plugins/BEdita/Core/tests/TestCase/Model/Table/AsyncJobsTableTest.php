@@ -18,6 +18,7 @@ use BEdita\Core\Model\Entity\AsyncJob;
 use BEdita\Core\Model\Table\AsyncJobsTable;
 use Cake\Datasource\ConnectionManager;
 use Cake\Datasource\Exception\RecordNotFoundException;
+use Cake\I18n\DateTime;
 use Cake\ORM\TableRegistry;
 use Cake\Queue\QueueManager;
 use Cake\TestSuite\TestCase;
@@ -415,10 +416,20 @@ class AsyncJobsTableTest extends TestCase
             'queue' => 'test',
         ]);
 
-        $entity = $this->AsyncJobs->newEntity(['service' => 'example']);
+        $now = DateTime::now();
+        $scheduledFrom = $now->addHours(1);
+        $expires = $now->addHours(2);
+        $entity = $this->AsyncJobs->newEntity([
+            'service' => 'example',
+            'scheduled_from' => $scheduledFrom,
+            'expires' => $expires,
+        ]);
         $entity = $this->AsyncJobs->saveOrFail($entity);
         $this->assertFileExists($fsQueueFile);
-        $this->assertStringContainsString($entity->get('uuid'), file_get_contents($fsQueueFile));
+        $content = file_get_contents($fsQueueFile);
+        $this->assertStringContainsString($entity->get('uuid'), $content);
+        $this->assertStringContainsString(sprintf('"enqueue.delay":%s', $scheduledFrom->diffInSeconds()), $content);
+        $this->assertStringContainsString(sprintf('"enqueue.expire":%s', $expires->diffInSeconds()), $content);
         QueueManager::drop('default');
     }
 

@@ -142,11 +142,19 @@ class AsyncJobsTable extends Table
         }
 
         $delay = (int)Configure::read('Queue.default.pushDelay', 1);
+        if ($entity->scheduled_from && $entity->scheduled_from->isFuture()) {
+            $delay = $entity->scheduled_from->diffInSeconds();
+        }
+
+        $expires = null;
+        if ($entity->expires && $entity->expires->isFuture()) {
+            $expires = $entity->expires->diffInSeconds();
+        }
 
         QueueManager::push(
             QueueJob::class,
             ['uuid' => $entity->uuid],
-            compact('delay'),
+            compact('delay', 'expires'),
         );
     }
 

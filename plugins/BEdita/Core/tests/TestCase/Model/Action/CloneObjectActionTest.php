@@ -121,6 +121,11 @@ class CloneObjectActionTest extends TestCase
         $this->assertEquals($clone->title, $actual->title);
         $this->assertEquals($clone->status, $actual->status);
         $this->assertEquals('new-title-for-my-clone', $clone->uname);
+        // verify created, modified, created_by, modified_by are reset
+        $this->assertNotSame($clone->created, $original->created);
+        $this->assertNotSame($clone->modified, $original->modified);
+        $this->assertNotSame($clone->created_by, $original->created_by);
+        $this->assertNotSame($clone->modified_by, $original->modified_by);
         // relation test
         $relatedTest = $clone->get('test');
         $originalRelatedTest = $original->get('test');
