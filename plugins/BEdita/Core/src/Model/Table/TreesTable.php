@@ -21,6 +21,7 @@ use Cake\Core\Configure;
 use Cake\Database\Driver\Mysql;
 use Cake\Database\Expression\QueryExpression;
 use Cake\Database\Schema\TableSchemaInterface;
+use Cake\Datasource\EntityInterface;
 use Cake\Event\EventInterface;
 use Cake\Http\Exception\BadRequestException;
 use Cake\ORM\Query;
@@ -28,6 +29,7 @@ use Cake\ORM\Rule\IsUnique;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
+use Cake\Utility\Text;
 use Cake\Validation\Validator;
 
 /**
@@ -129,6 +131,9 @@ class TreesTable extends Table
             ->boolean('canonical');
 
         $validator
+            ->notEmptyString('slug');
+
+        $validator
             ->allowEmptyArray('params', null, static::jsonSchema(null) === true)
             ->requirePresence('params', static::jsonSchema(null) === true ? false : 'create')
             ->add('params', 'valid', [
@@ -168,6 +173,7 @@ class TreesTable extends Table
      */
     public function buildRules(RulesChecker $rules): RulesChecker
     {
+        $rules->add($rules->isUnique(['parent_id', 'slug']));
         $rules->add($rules->existsIn(['object_id'], 'Objects'));
         $rules->add($rules->existsIn(['root_id'], 'RootObjects'));
         $rules->add($rules->existsIn(
@@ -232,6 +238,27 @@ class TreesTable extends Table
         }
 
         return $rule($entity, ['repository' => $this]);
+    }
+
+    /**
+     * Generate unique `slug` if needed.
+     *
+     * @param \Cake\Event\EventInterface $event The event
+     * @param \Cake\Datasource\EntityInterface $entity The entity persisted
+     * @return void
+     */
+    public function beforeRules(EventInterface $event, EntityInterface $entity)
+    {
+        if (empty($entity->get('slug'))) {
+            $object = TableRegistry::getTableLocator()->get('Objects')->get($entity->get('object_id'));
+            $slug = mb_strtolower(Text::slug((string)$object->get('title') ?: $object->get('type')));
+            $slug = Text::truncate($slug, 254 - strlen((string)$entity->get('object_id')));
+            $entity->set('slug', sprintf('%s-%s', $slug, $entity->get('object_id')));
+        } elseif (!empty($entity->get('slug')) && $entity->isDirty('slug')) {
+            $slug = mb_strtolower(Text::slug((string)$entity->get('slug')));
+            $slug = Text::truncate($slug, 255);
+            $entity->set('slug', $slug);
+        }
     }
 
     /**

@@ -244,6 +244,12 @@ return function (RouteBuilder $routes) {
             ['controller' => 'Trees', 'action' => 'index', '_method' => 'GET'],
             ['_name' => 'trees:index']
         );
+        // Tree paths.
+        $routes->connect(
+            '/tree_paths/**',
+            ['controller' => 'TreePaths', 'action' => 'index', '_method' => 'GET'],
+            ['_name' => 'tree_paths:index']
+        );
 
         // Upload file and create object.
         $routes->connect(
