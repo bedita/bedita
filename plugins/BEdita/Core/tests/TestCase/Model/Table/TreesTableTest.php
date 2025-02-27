@@ -20,6 +20,7 @@ use BEdita\Core\Model\Table\TreesTable;
 use BEdita\Core\Utility\LoggedUser;
 use Cake\Core\Configure;
 use Cake\Datasource\Exception\RecordNotFoundException;
+use Cake\Event\Event;
 use Cake\Http\Exception\BadRequestException;
 use Cake\ORM\Association\BelongsTo;
 use Cake\ORM\Association\HasMany;
@@ -208,6 +209,91 @@ class TreesTableTest extends TestCase
         $entity->object_id = $objectId;
         $entity->parent_id = $parentId;
         static::assertEquals($expected, $this->Trees->isPositionUnique($entity));
+    }
+
+    /**
+     * Data provider for `testSlugPopulation()`.
+     *
+     * @return array[]
+     */
+    public function slugPopulationProvider()
+    {
+        return [
+            'no slug' => [
+                'title-example-3',
+                3,
+                '',
+                'title example',
+            ],
+            'no slug or title' => [
+                'documents-3',
+                3,
+                '',
+                '',
+            ],
+            'no slug, title special characters' => [
+                'asd-lol-rofl-3',
+                3,
+                '',
+                'asd@lol.rofl',
+            ],
+            'slug correct' => [
+                'slug-doc',
+                2,
+                'slug-doc',
+                'title example',
+            ],
+            'update no slug' => [
+                'title-example-2',
+                2,
+                '',
+                'title example',
+            ],
+            'update no slug or title' => [
+                'documents-2',
+                2,
+                '',
+                '',
+            ],
+            'update slug special characters' => [
+                'asd-lol-rofl',
+                2,
+                'asd@lol.rofl',
+                'title example',
+            ],
+            'update slug correct' => [
+                'slug-doc',
+                2,
+                'slug-doc',
+                'title example',
+            ],
+        ];
+    }
+
+    /**
+     * Test for slug generation in `beforeRules()`.
+     *
+     * @param $expected
+     * @param $objectId
+     * @param $slug
+     * @param $title
+     * @return void
+     * @dataProvider slugPopulationProvider
+     * @covers ::beforeRules()
+     */
+    public function testSlugPopulation($expected, $objectId, $slug, $title)
+    {
+        $this->fetchTable('Documents')
+            ->updateQuery()
+            ->set('title', $title)
+            ->where(['id' => $objectId])
+            ->execute();
+        $node = $this->Trees->newEntity([
+            'object_id' => $objectId,
+            'slug' => $slug,
+        ]);
+        $this->Trees->beforeRules(new Event('Model.beforeRules'), $node);
+        static::assertEquals($expected, $node->get('slug'));
     }
 
     /**

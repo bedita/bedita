@@ -275,6 +275,109 @@ class FolderTest extends TestCase
     }
 
     /**
+     * Data provider for `testGetSlugPath()`
+     *
+     * @return array
+     */
+    public function getSlugPathProvider()
+    {
+        return [
+            'root' => [
+                [[
+                    'id' => 11,
+                    'menu' => false,
+                    'params' => null,
+                    'slug' => 'root-folder-11',
+                ]],
+                11,
+            ],
+            'subfolder' => [
+                [
+                    [
+                        'id' => 11,
+                        'menu' => false,
+                        'params' => null,
+                        'slug' => 'root-folder-11',
+                    ],
+                    [
+                        'id' => 12,
+                        'menu' => true,
+                        'params' => null,
+                        'slug' => 'sub-folder-12',
+                    ],
+                ],
+                12,
+            ],
+            'object in subfolder' => [
+                [
+                    [
+                        'id' => 11,
+                        'menu' => false,
+                        'params' => null,
+                        'slug' => 'root-folder-11',
+                    ],
+                    [
+                        'id' => 12,
+                        'menu' => true,
+                        'params' => null,
+                        'slug' => 'sub-folder-12',
+                    ],
+                    [
+                        'id' => 4,
+                        'menu' => true,
+                        'params' => null,
+                        'slug' => 'gustavo-supporto-profile-4',
+                    ],
+                ],
+                4,
+            ],
+        ];
+    }
+
+    /**
+     * Test getter for `slug_path`
+     *
+     * @param array $expected The expected slug path parts
+     * @param int $id The folder id
+     * @return void
+     * @dataProvider getSlugPathProvider
+     * @covers ::_getSlugPath()
+     */
+    public function testGetSlugPath($expected, $id)
+    {
+        $folder = $this->Folders->get($id);
+        static::assertEquals($expected, $folder->slug_path);
+    }
+
+    /**
+     * Test that `slug_path` virtual property is null if folder id is empty.
+     *
+     * @return void
+     * @covers ::_getSlugPath()
+     */
+    public function testGetSlugPathNull()
+    {
+        $folder = $this->Folders->newEntity([]);
+        static::assertNull($folder->slug_path);
+    }
+
+    /**
+     * Test getter for `path` throws RuntimeException if folder is orphan.
+     *
+     * @return void
+     * @covers ::_getSlugPath()
+     */
+    public function testGetSlugPathOrphanFolder()
+    {
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessage('Folder "12" is not on the tree.');
+        TableRegistry::getTableLocator()->get('Trees')->deleteAll(['object_id' => 12]);
+        TableRegistry::getTableLocator()->get('Trees')->recover();
+
+        $this->Folders->get(12)->get('slug_path');
+    }
+
+    /**
      * Test empty perms.
      *
      * @return void
