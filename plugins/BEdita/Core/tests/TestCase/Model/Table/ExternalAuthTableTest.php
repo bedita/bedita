@@ -201,7 +201,7 @@ class ExternalAuthTableTest extends TestCase
         static::assertSame($count + 1, $countAfter);
         static::assertNotNull($entity->get('user_id'));
 
-        $newUser = $this->ExternalAuth->Users->get($entity->get('user_id'), ['contain' => 'Roles']);
+        $newUser = $this->ExternalAuth->Users->get($entity->get('user_id'), contain: 'Roles');
 
         static::assertSame(1, $newUser->get('created_by'));
         static::assertSame(1, $newUser->get('modified_by'));
@@ -243,12 +243,12 @@ class ExternalAuthTableTest extends TestCase
     public static function findAuthProviderProvider(): array // Nice name, huh!?
     {
         return [
-            'missing parameter' => [
+            'empty parameter' => [
                 new BadFilterException([
                     'title' => 'Invalid data',
-                    'detail' => '"auth_provider" parameter missing',
+                    'detail' => '"authProvider" can not be empty',
                 ]),
-                null,
+                [],
             ],
             'name' => [
                 [
@@ -327,24 +327,21 @@ class ExternalAuthTableTest extends TestCase
     /**
      * Test finder by auth provider.
      *
-     * @param mixed $expected Expected result.
-     * @param $authProvider
+     * @param array $expected Expected result.
+     * @param mixed $authProvider The auth provider option.
      * @return void
      * @covers ::findAuthProvider()
      * @dataProvider findAuthProviderProvider()
      */
-    public function testFindAuthProvider($expected, $authProvider)
+    public function testFindAuthProvider(mixed $expected, array|string|int $authProvider): void
     {
         if ($expected instanceof Exception) {
             $this->expectException(get_class($expected));
             $this->expectExceptionMessage($expected->getMessage());
         }
 
-        $options = [
-            'auth_provider' => $authProvider,
-        ];
         $result = $this->ExternalAuth
-            ->find('authProvider', $options)
+            ->find('authProvider', authProvider: $authProvider)
             ->enableHydration(false)
             ->toArray();
 
@@ -362,9 +359,9 @@ class ExternalAuthTableTest extends TestCase
             'bad data' => [
                 new BadFilterException([
                     'title' => 'Invalid data',
-                    'detail' => '"user" parameter missing',
+                    'detail' => '"user" can not be empty',
                 ]),
-                null,
+                [],
             ],
             'userId' => [
                 [
@@ -421,21 +418,20 @@ class ExternalAuthTableTest extends TestCase
      * Test finder by user.
      *
      * @param mixed $expected The expected result
-     * @param mixed $user The finder option
+     * @param array|string|int $user The finder option
      * @return void
      * @covers ::findUser()
      * @dataProvider findByUserProvider()
      */
-    public function testFindByUser($expected, $user): void
+    public function testFindByUser(mixed $expected, array|string|int $user): void
     {
         if ($expected instanceof Exception) {
             $this->expectException(get_class($expected));
             $this->expectExceptionMessage($expected->getMessage());
         }
 
-        $options = compact('user');
         $result = $this->ExternalAuth
-            ->find('user', $options)
+            ->find('user', user: $user)
             ->enableHydration(false)
             ->toArray();
 

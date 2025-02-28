@@ -283,7 +283,7 @@ class UsersTable extends Table
         $query = $query->find('loginRoles');
 
         return $query->innerJoinWith('ExternalAuth', function (SelectQuery $query) use ($options) {
-            $query = $query->find('authProvider', $options);
+            $query = $query->find('authProvider', authProvider: Hash::get($options, 'auth_provider'));
             if (!empty($options['username'])) {
                 $query = $query->where(fn (QueryExpression $exp) => $exp->in(
                     $this->ExternalAuth->aliasField('provider_username'),

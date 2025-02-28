@@ -55,7 +55,7 @@ class UserExternalAuthListCommand extends Command
             ->find()
             ->contain(['AuthProviders', 'Users']);
         if ($args->getOption('provider') !== null) {
-            $query = $query->find('authProvider', ['auth_provider' => $args->getOption('provider')]);
+            $query = $query->find('authProvider', authProvider: $args->getOption('provider'));
         }
         $user = $this->getUser($args);
         if ($user !== null) {

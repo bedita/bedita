@@ -152,19 +152,18 @@ class ExternalAuthTable extends Table
      * Find external auth by their auth provider.
      *
      * @param \Cake\ORM\Query\SelectQuery $query Query object instance.
-     * @param array $options Additional options.
+     * @param array|string|int $authProvider Auth provider data.
      * @return \Cake\ORM\Query\SelectQuery
      */
-    protected function findAuthProvider(SelectQuery $query, array $options = []): SelectQuery
+    protected function findAuthProvider(SelectQuery $query, array|string|int $authProvider): SelectQuery
     {
-        if (empty($options['auth_provider'])) {
+        if (empty($authProvider)) {
             throw new BadFilterException([
                 'title' => __d('bedita', 'Invalid data'),
-                'detail' => '"auth_provider" parameter missing',
+                'detail' => '"authProvider" can not be empty',
             ]);
         }
 
-        $authProvider = $options['auth_provider'];
         if (is_string($authProvider)) {
             return $query
                 ->innerJoinWith('AuthProviders', function (SelectQuery $query) use ($authProvider) {
@@ -187,20 +186,19 @@ class ExternalAuthTable extends Table
      * Find enabled external auth by user.
      *
      * @param \Cake\ORM\Query\SelectQuery $query Query object instance.
-     * @param array $options Additional options.
+     * @param array|string|int $user The user data.
      * @return \Cake\ORM\Query\SelectQuery
      * @throws \BEdita\Core\Exception\BadFilterException If missing `$options` data
      */
-    protected function findUser(SelectQuery $query, array $options = []): SelectQuery
+    protected function findUser(SelectQuery $query, array|string|int $user): SelectQuery
     {
-        if (empty($options['user'])) {
+        if (empty($user)) {
             throw new BadFilterException([
                 'title' => __d('bedita', 'Invalid data'),
-                'detail' => '"user" parameter missing',
+                'detail' => '"user" can not be empty',
             ]);
         }
 
-        $user = $options['user'];
         if (!empty($user['id'])) {
             $user = $user['id'];
         }

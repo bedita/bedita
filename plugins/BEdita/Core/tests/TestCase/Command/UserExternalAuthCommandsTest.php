@@ -198,7 +198,7 @@ class UserExternalAuthCommandsTest extends TestCase
 
         /** @var \BEdita\Core\Model\Entity\ExternalAuth|null $auth */
         $auth = $this->fetchTable('ExternalAuth')
-            ->find('authProvider', ['auth_provider' => 'otp'])
+            ->find('authProvider', authProvider: 'otp')
             ->where(['user_id' => 5])
             ->contain(['AuthProviders'])
             ->first();
@@ -224,7 +224,7 @@ class UserExternalAuthCommandsTest extends TestCase
 
         /** @var \BEdita\Core\Model\Entity\ExternalAuth|null $auth */
         $auth = $this->fetchTable('ExternalAuth')
-            ->find('authProvider', ['auth_provider' => 'otp'])
+            ->find('authProvider', authProvider: 'otp')
             ->where(['user_id' => 5])
             ->contain(['AuthProviders'])
             ->first();
