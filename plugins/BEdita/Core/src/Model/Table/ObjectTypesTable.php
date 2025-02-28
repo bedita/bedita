@@ -300,7 +300,9 @@ class ObjectTypesTable extends Table
     {
         if ($entity->isDirty('is_abstract')) {
             if ($entity->get('is_abstract') && $this->objectsExist($entity->get('id'))) {
-                throw new ForbiddenException(__d('bedita', 'Setting as abstract forbidden: objects of this type exist'));
+                throw new ForbiddenException(
+                    __d('bedita', 'Setting as abstract forbidden: objects of this type exist')
+                );
             } elseif (!$entity->get('is_abstract') && $this->childCount($entity) > 0) {
                 throw new ForbiddenException(__d('bedita', 'Setting as not abstract forbidden: subtypes exist'));
             }
@@ -313,7 +315,9 @@ class ObjectTypesTable extends Table
             }
         }
         if ($entity->isDirty('table') && !App::className($entity->get('table'), 'Model/Table', 'Table')) {
-            throw new BadRequestException(__d('bedita', '"{0}" is not a valid model table name', [$entity->get('table')]));
+            throw new BadRequestException(
+                __d('bedita', '"{0}" is not a valid model table name', [$entity->get('table')])
+            );
         }
     }
 
@@ -369,21 +373,17 @@ class ObjectTypesTable extends Table
      * Find object types having a parent by `name` or `id`
      *
      * @param \Cake\ORM\Query\SelectQuery $query Query object.
-     * @param array $options Additional options. The first element containing `id` or `name` is required.
+     * @param string|int $parent The `id` or `name` to look for.
      * @return \Cake\ORM\Query\SelectQuery
      * @throws \BEdita\Core\Exception\BadFilterException When missing required parameters.
      */
-    public function findParent(SelectQuery $query, array $options): SelectQuery
+    public function findParent(SelectQuery $query, string|int $parent): SelectQuery
     {
-        if (empty($options[0])) {
-            throw new BadFilterException(__d('bedita', 'Missing required parameter "{0}"', 'parent'));
-        }
-        $parentId = $options[0];
-        if (!is_numeric($parentId)) {
-            $parentId = $this->get($parentId)->id;
+        if (!is_numeric($parent)) {
+            $parent = $this->get($parent)->id;
         }
 
-        return $query->where([$this->aliasField('parent_id') => $parentId]);
+        return $query->where([$this->aliasField('parent_id') => $parent]);
     }
 
     /**
@@ -403,35 +403,40 @@ class ObjectTypesTable extends Table
      * ```php
      * // Find object types allowed on the "right" side:
      * TableRegistry::getTableLocator()->get('ObjectTypes')
-     *     ->find('byRelation', ['name' => 'my_relation']);
+     *     ->find('byRelation', name: 'my_relation');
      *
      * // Find a list of object type names allowed on the "left" side of the inverse relation:
      * TableRegistry::getTableLocator()->get('ObjectTypes')
-     *     ->find('byRelation', ['name' => 'my_inverse_relation', 'side' => 'left'])
+     *     ->find('byRelation', name: 'my_inverse_relation', side: 'left')
      *     ->find('list')
      *     ->toArray();
      *
      * // Include also descendants of the allowed object types (e.g.: return **Images** whereas **Media** are allowed):
      * TableRegistry::getTableLocator()->get('ObjectTypes')
-     *     ->find('byRelation', ['name' => 'my_relation', 'descendants' => true]);
+     *     ->find('byRelation', name: 'my_relation', descendants: true);
      * ```
      *
      * @param \Cake\ORM\Query\SelectQuery $query Query object.
-     * @param array $options Additional options. The `name` key is required, while `side` is optional
+     * @param string $name Additional options. The `name` key is required, while `side` is optional
      *      and assumed to be `'right'` by default.
+     * @param bool $descendants Whether to include descendants of the allowed object types.
      * @return \Cake\ORM\Query\SelectQuery
-     * @throws \LogicException When missing required parameters.
+     * @throws \LogicException When required parameters is empty.
      */
-    protected function findByRelation(SelectQuery $query, array $options = []): SelectQuery
-    {
-        if (empty($options['name'])) {
+    protected function findByRelation(
+        SelectQuery $query,
+        string $name,
+        string $side = 'right',
+        bool $descendants = false
+    ): SelectQuery {
+        if (empty($name)) {
             throw new LogicException(__d('bedita', 'Missing required parameter "{0}"', 'name'));
         }
-        $name = Inflector::underscore($options['name']);
+        $name = Inflector::underscore($name);
 
         $leftField = 'inverse_name';
         $rightField = 'name';
-        if (!empty($options['side']) && $options['side'] !== 'right') {
+        if ($side !== 'right') {
             $leftField = 'name';
             $rightField = 'inverse_name';
         }
@@ -461,7 +466,7 @@ class ObjectTypesTable extends Table
             });
         };
 
-        if (!empty($options['descendants'])) { // We don't need only explicitly linked object types, but also their descendants!
+        if ($descendants) { // We don't need only explicitly linked object types, but also their descendants!
             // Obtain Nested-Set-Model left and right counters for the explicitly-linked object types, that are obtained
             // using the `$conditionsBuilder` built before.
             $nsmCounters = $this->find()
@@ -506,22 +511,21 @@ class ObjectTypesTable extends Table
      * Finder to get object type starting from object id or uname.
      *
      * @param \Cake\ORM\Query\SelectQuery $query Query object.
-     * @param array $options Additional options. The `id` key is required.
+     * @param string|int $id The `id` or `uname` of the object.
      * @return \Cake\ORM\Query\SelectQuery
-     * @throws \BEdita\Core\Exception\BadFilterException When missing required parameters.
      */
-    protected function findObjectId(SelectQuery $query, array $options = []): SelectQuery
+    public function findObjectId(SelectQuery $query, string|int $id): SelectQuery
     {
-        if (empty($options['id'])) {
+        if (empty($id)) {
             throw new BadFilterException(__d('bedita', 'Missing required parameter "{0}"', 'id'));
         }
 
-        return $query->innerJoinWith('Objects', function (SelectQuery $query) use ($options) {
-            if (!is_numeric($options['id'])) {
-                return $query->where([$this->Objects->aliasField('uname') => $options['id']]);
+        return $query->innerJoinWith('Objects', function (SelectQuery $query) use ($id) {
+            if (!is_numeric($id)) {
+                return $query->where([$this->Objects->aliasField('uname') => $id]);
             }
 
-            return $query->where([$this->Objects->aliasField('id') => intval($options['id'])]);
+            return $query->where([$this->Objects->aliasField('id') => intval($id)]);
         });
     }
 }
