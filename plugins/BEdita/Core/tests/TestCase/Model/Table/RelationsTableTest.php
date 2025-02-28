@@ -162,21 +162,17 @@ class RelationsTableTest extends TestCase
     public static function findByNameProvider(): array
     {
         return [
-            'error' => [
-                new BadFilterException('Missing required parameter "name"'),
-                [],
-            ],
             'name' => [
                 [1],
-                ['name' => 'test'],
+                'test',
             ],
             'inverse name' => [
                 [1],
-                ['name' => 'InverseTest'],
+                'InverseTest',
             ],
             'not found' => [
                 [],
-                ['name' => 'relation_does_not_exist'],
+                'relation_does_not_exist',
             ],
         ];
     }
@@ -184,13 +180,13 @@ class RelationsTableTest extends TestCase
     /**
      * Test finder by relation name.
      *
-     * @param array|\Exception $expected Expected results.
-     * @param array $options Finder options.
+     * @param array $expected Expected results.
+     * @param string $name Relation name.
      * @return void
      * @covers ::findByName()
      * @dataProvider findByNameProvider()
      */
-    public function testFindByName($expected, array $options)
+    public function testFindByName(array $expected, string $name): void
     {
         if ($expected instanceof Exception) {
             $this->expectException(get_class($expected));
@@ -198,7 +194,7 @@ class RelationsTableTest extends TestCase
         }
 
         $result = $this->Relations
-            ->find('byName', $options)
+            ->find('byName', name: $name)
             ->all()
             ->extract('id')
             ->toArray();
