@@ -563,7 +563,7 @@ class TreesTableTest extends TestCase
             $this->expectExceptionMessage($expected->getMessage());
         }
 
-        $path = $this->Trees->find('pathNodes', subjectValue: $objectId)
+        $path = $this->Trees->find('pathNodes', objectId: $objectId)
             ->find('list', keyField: 'id', valueField: 'object_id')
             ->toArray();
 
