@@ -151,16 +151,16 @@ class TranslationsTable extends Table
      * Find translations by object type
      *
      * @param \Cake\ORM\Query\SelectQuery $query Query object instance.
-     * @param array $options Options array.
+     * @param array $objectTypes List of object type ids.or names
      * @return \Cake\ORM\Query\SelectQuery
      * @throws \BEdita\Core\Exception\BadFilterException
      */
-    protected function findType(SelectQuery $query, array $options): SelectQuery
+    public function findType(SelectQuery $query, array $objectTypes): SelectQuery
     {
-        if (empty($options)) {
+        if (empty($objectTypes)) {
             throw new BadFilterException(__d('bedita', 'Missing required parameter "type"'));
         }
-        $typeIds = array_map([$this, 'typeId'], $options);
+        $typeIds = array_map([$this, 'typeId'], $objectTypes);
 
         return $query->innerJoinWith('Objects', function (SelectQuery $query) use ($typeIds) {
             return $query->where(function (QueryExpression $exp) use ($typeIds) {
