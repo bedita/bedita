@@ -132,7 +132,7 @@ class RolesTable extends Table
      * @param \Cake\ORM\Query\SelectQuery $query Query object instance.
      * @return \Cake\ORM\Query\SelectQuery
      */
-    protected function findMine(SelectQuery $query): SelectQuery
+    public function findMine(SelectQuery $query): SelectQuery
     {
         return $query
             ->where(function (QueryExpression $exp) {
