@@ -157,7 +157,7 @@ class ProjectModel
     protected static function properties(): array
     {
         return TableRegistry::getTableLocator()->get('Properties')
-            ->find('type', ['dynamic'])
+            ->find('type', propType: 'dynamic')
             ->orderBy(['name' => 'ASC'])
             ->all()
             ->each(function (EntityInterface $row): void {

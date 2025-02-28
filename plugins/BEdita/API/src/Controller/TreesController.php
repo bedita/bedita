@@ -210,7 +210,7 @@ class TreesController extends AppController
             return [];
         }
 
-        return $this->Trees->find('pathNodes', subjectValue: $parentId)
+        return $this->Trees->find('pathNodes', objectId: $parentId)
             ->find('list', keyField: 'id', valueField: 'object_id')
             ->toArray();
     }

@@ -804,7 +804,7 @@ class FoldersControllerTest extends IntegrationTestCase
 
         // Read `menu` from Trees
         $Trees = TableRegistry::getTableLocator()->get('Trees');
-        $menu = $Trees->find('list', ['valueField' => 'menu'])
+        $menu = $Trees->find('list', valueField: 'menu')
             ->where(['object_id' => $folderId])
             ->first();
         static::assertFalse($menu);
@@ -814,7 +814,7 @@ class FoldersControllerTest extends IntegrationTestCase
         $data['meta']['relation']['menu'] = true;
         $this->patch(sprintf('/folders/%d/relationships/parent', $folderId), json_encode(compact('data')));
         $this->assertResponseCode(200);
-        $menu = $Trees->find('list', ['valueField' => 'menu'])
+        $menu = $Trees->find('list', valueField: 'menu')
             ->where(['object_id' => $folderId])
             ->first();
         static::assertTrue($menu);
@@ -1004,7 +1004,7 @@ class FoldersControllerTest extends IntegrationTestCase
 
         $getTreeList = function () use ($treesTable, $folderTreeNode) {
             return $treesTable
-                ->find('children', ['for' => $folderTreeNode->id])
+                ->find('children', for: $folderTreeNode->id)
                 ->find('treeList')
                 ->toArray();
         };

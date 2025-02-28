@@ -95,7 +95,7 @@ class ObjectsController extends ResourcesController
             $name = $this->request->getParam('relationship');
             $allowedTypes = TableRegistry::getTableLocator()->get('ObjectTypes')
                 ->find('list')
-                ->find('byRelation', compact('name') + ['descendants' => true])
+                ->find('byRelation', name: $name, descendants: true)
                 ->toArray();
 
             $this->setConfig(sprintf('allowedAssociations.%s', $name), $allowedTypes);

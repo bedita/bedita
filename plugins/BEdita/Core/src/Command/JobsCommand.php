@@ -169,7 +169,7 @@ class JobsCommand extends Command
     {
         $this->io->out('=====> <info>Finding pending jobs...</info>');
         $query = $this->table
-            ->find('list', ['valueField' => $this->table->getPrimaryKey()])
+            ->find('list', valueField: $this->table->getPrimaryKey())
             ->find(
                 'priority',
                 priority: $this->args->getOption('min-priority'),
