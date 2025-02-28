@@ -398,7 +398,7 @@ class ObjectsTableTest extends TestCase
         if (!$object) {
             static::fail('Unable to save object');
         }
-        $object = $this->Objects->get($object->id, ['contain' => ['DateRanges']]);
+        $object = $this->Objects->get($object->id, contain: ['DateRanges']);
         static::assertCount(1, $object->date_ranges);
         static::assertEquals(['k' => 'v'], $object->date_ranges[0]['params']);
 
@@ -409,7 +409,7 @@ class ObjectsTableTest extends TestCase
             static::fail('Unable to save object');
         }
 
-        $object = $this->Objects->get($object->id, ['contain' => ['DateRanges']]);
+        $object = $this->Objects->get($object->id, contain: ['DateRanges']);
 
         static::assertCount(1, $object->date_ranges);
         static::assertSame(1, $this->Objects->DateRanges->find()->where(['object_id' => $object->id])->count());
@@ -879,12 +879,12 @@ class ObjectsTableTest extends TestCase
         $this->Objects->Parents->saveOrFail($firstParent);
 
         Configure::write('Status.level', 'off');
-        $object = $this->Objects->get(2, ['contain' => ['Parents']]);
+        $object = $this->Objects->get(2, contain: ['Parents']);
         $childrenIds = Hash::extract($object->parents, '{*}.id');
         static::assertContains($firstParent->id, $childrenIds);
 
         Configure::write('Status.level', 'draft');
-        $object = $this->Objects->get(2, ['contain' => ['Parents']]);
+        $object = $this->Objects->get(2, contain: ['Parents']);
         $childrenIds = Hash::extract($object->parents, '{*}.id');
         static::assertNotContains($firstParent->id, $childrenIds);
     }

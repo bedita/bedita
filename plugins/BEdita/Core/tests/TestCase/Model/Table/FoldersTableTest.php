@@ -286,7 +286,7 @@ class FoldersTableTest extends TestCase
         }
         static::assertTrue((bool)$entity);
 
-        $actual = $this->Folders->get($entity->id, ['contain' => 'Parents']);
+        $actual = $this->Folders->get($entity->id, contain: 'Parents');
         static::assertSame($expected, $actual->parent_id);
 
         if (!empty($data['id'])) {
@@ -357,10 +357,7 @@ class FoldersTableTest extends TestCase
         $restoredDeletedInfo = $this->Folders
             ->find('ancestor', parent: $root->id)
             ->orderBy([$this->Folders->aliasField('id') => 'ASC'])
-            ->find('list', [
-                'keyField' => 'id',
-                'valueField' => 'deleted',
-            ])
+            ->find('list', keyField: 'id', valueField: 'deleted')
             ->toArray();
 
         static::assertSame($startDeletedInfo, $restoredDeletedInfo);
@@ -458,7 +455,7 @@ class FoldersTableTest extends TestCase
      */
     public function testIsFolderRestorableOK()
     {
-        $folder = $this->Folders->get(12, ['contain' => ['Parents']]);
+        $folder = $this->Folders->get(12, contain: ['Parents']);
         static::assertFalse($folder->parent->deleted);
 
         $folder->deleted = true;
@@ -514,12 +511,12 @@ class FoldersTableTest extends TestCase
         $this->Folders->Children->saveOrFail($firstChild);
 
         Configure::write('Status.level', 'off');
-        $folder = $this->Folders->get(11, ['contain' => ['Children']]);
+        $folder = $this->Folders->get(11, contain: ['Children']);
         $childrenIds = Hash::extract($folder->children, '{*}.id');
         static::assertContains($firstChild->id, $childrenIds);
 
         Configure::write('Status.level', 'draft');
-        $folder = $this->Folders->get(11, ['contain' => ['Children']]);
+        $folder = $this->Folders->get(11, contain: ['Children']);
         $childrenIds = Hash::extract($folder->children, '{*}.id');
         static::assertNotContains($firstChild->id, $childrenIds);
     }

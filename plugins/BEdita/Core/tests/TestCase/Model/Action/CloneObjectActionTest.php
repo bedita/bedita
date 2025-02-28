@@ -114,8 +114,8 @@ class CloneObjectActionTest extends TestCase
         $table = $this->fetchTable('Documents');
         $action = new CloneObjectAction(compact('table'));
         $actual = $action(compact('id', 'data'));
-        $original = $table->get($id, ['contain' => ['Test', 'TestSimple', 'TestDefaults', 'Translations']]);
-        $clone = $table->get($actual->id, ['contain' => ['Test', 'TestSimple', 'TestDefaults', 'Translations']]);
+        $original = $table->get($id, contain: ['Test', 'TestSimple', 'TestDefaults', 'Translations']);
+        $clone = $table->get($actual->id, contain: ['Test', 'TestSimple', 'TestDefaults', 'Translations']);
         $this->assertEquals($clone->title, $title);
         $this->assertEquals($clone->status, $status);
         $this->assertEquals($clone->title, $actual->title);
@@ -209,10 +209,10 @@ class CloneObjectActionTest extends TestCase
         $status = 'draft';
         $data = compact('title', 'status');
         $table = $this->fetchTable('Images');
-        $original = $table->get($id, ['contain' => ['Streams']]);
+        $original = $table->get($id, contain: ['Streams']);
         $action = new CloneObjectAction(compact('table'));
         $actual = $action(compact('id', 'data'));
-        $clone = $table->get($actual->id, ['contain' => ['Streams']]);
+        $clone = $table->get($actual->id, contain: ['Streams']);
         $this->assertEquals($clone->title, $title);
         $this->assertEquals($clone->status, $status);
         $this->assertEquals($clone->title, $actual->title);
@@ -437,10 +437,10 @@ class CloneObjectActionTest extends TestCase
         $status = 'draft';
         $data = compact('status');
         $table = $this->fetchTable('Videos');
-        $original = $table->get($id, ['contain' => ['Captions']]);
+        $original = $table->get($id, contain: ['Captions']);
         $action = new CloneObjectAction(compact('table'));
         $actual = $action(compact('id', 'data'));
-        $clone = $table->get($actual->id, ['contain' => ['Captions']]);
+        $clone = $table->get($actual->id, contain: ['Captions']);
         $originalCaptions = $original->get('captions');
         $captions = $clone->get('captions');
         $this->assertCount(1, $captions);
@@ -470,10 +470,10 @@ class CloneObjectActionTest extends TestCase
         $status = 'draft';
         $data = compact('status');
         $table = $this->fetchTable('Events');
-        $original = $table->get($id, ['contain' => ['DateRanges']]);
+        $original = $table->get($id, contain: ['DateRanges']);
         $action = new CloneObjectAction(compact('table'));
         $actual = $action(compact('id', 'data'));
-        $clone = $table->get($actual->id, ['contain' => ['DateRanges']]);
+        $clone = $table->get($actual->id, contain: ['DateRanges']);
         $originalDateRanges = $original->get('date_ranges');
         $dateRanges = $clone->get('date_ranges');
         $this->assertCount(1, $dateRanges);
@@ -485,7 +485,7 @@ class CloneObjectActionTest extends TestCase
         $this->assertEquals($expected->end_date, $actual->end_date);
         $this->assertEquals($expected->params, $actual->params);
         // verify that original is unchanged
-        $original = $table->get($id, ['contain' => ['DateRanges']]);
+        $original = $table->get($id, contain: ['DateRanges']);
         $originalDateRanges = $original->get('date_ranges');
         $this->assertCount(1, $originalDateRanges);
         $this->assertEquals($expected->start_date, $originalDateRanges[0]->start_date);

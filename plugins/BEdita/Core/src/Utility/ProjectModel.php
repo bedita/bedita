@@ -278,7 +278,7 @@ class ProjectModel
         $types = array_keys($categories);
         foreach ($types as $objectType) {
             $names = array_keys((array)Hash::get($categories, $objectType));
-            $found = $table->find('type', [$objectType])->where([$table->aliasField('name') . ' IN' => $names])->toArray();
+            $found = $table->find('type', objectType: $objectType)->where([$table->aliasField('name') . ' IN' => $names])->toArray();
             $found = (array)Hash::extract($found, '{n}.name');
             if (empty($found)) {
                 continue;
