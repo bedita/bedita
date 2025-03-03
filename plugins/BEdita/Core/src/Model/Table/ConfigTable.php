@@ -16,11 +16,9 @@ namespace BEdita\Core\Model\Table;
 
 use BEdita\Core\State\CurrentApplication;
 use Cake\Database\Expression\QueryExpression;
-use Cake\Http\Exception\BadRequestException;
 use Cake\ORM\Query\SelectQuery;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
-use Cake\Utility\Hash;
 use Cake\Validation\Validator;
 
 /**

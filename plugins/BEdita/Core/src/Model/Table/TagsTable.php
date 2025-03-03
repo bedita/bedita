@@ -15,7 +15,6 @@ declare(strict_types=1);
 namespace BEdita\Core\Model\Table;
 
 use ArrayObject;
-use BEdita\Core\Exception\BadFilterException;
 use BEdita\Core\Model\Validation\Validation;
 use BEdita\Core\Search\SimpleSearchTrait;
 use Cake\Collection\CollectionInterface;

@@ -21,7 +21,6 @@ use Cake\Database\Expression\QueryExpression;
 use Cake\Database\Query\SelectQuery as DatabaseSelectQuery;
 use Cake\ORM\Behavior;
 use Cake\ORM\Query\SelectQuery;
-use Cake\Utility\Hash;
 use PDOException;
 
 /**

@@ -16,11 +16,9 @@ namespace BEdita\Core\Test\TestCase\Model\Table;
 
 use BEdita\Core\State\CurrentApplication;
 use Cake\Cache\Cache;
-use Cake\Http\Exception\BadRequestException;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Hash;
-use Exception;
 
 /**
  * {@see \BEdita\Core\Model\Table\ConfigTable} Test Case
