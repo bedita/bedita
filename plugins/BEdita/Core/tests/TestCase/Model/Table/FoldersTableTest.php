@@ -503,7 +503,7 @@ class FoldersTableTest extends TestCase
      */
     public function testChildrenAvailable(): void
     {
-        $folder = $this->Folders->get(11, ['contain' => ['Children']]);
+        $folder = $this->Folders->get(11, contain: ['Children']);
         static::assertNotEmpty($folder->children);
 
         $firstChild = $folder->children[0];

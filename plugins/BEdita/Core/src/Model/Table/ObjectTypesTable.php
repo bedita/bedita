@@ -423,7 +423,7 @@ class ObjectTypesTable extends Table
      * @return \Cake\ORM\Query\SelectQuery
      * @throws \LogicException When required parameters is empty.
      */
-    protected function findByRelation(
+    public function findByRelation(
         SelectQuery $query,
         string $name,
         string $side = 'right',

@@ -316,20 +316,20 @@ class ApplicationsTableTest extends TestCase
             'no secret' => [
                 1,
                 [
-                    'clientId' => API_KEY,
+                    'client_id' => API_KEY,
                 ],
             ],
             'secret' => [
                 2,
                 [
-                    'clientId' => 'abcdef12345',
-                    'clientSecret' => 'topsecretstring',
+                    'client_id' => 'abcdef12345',
+                    'client_secret' => 'topsecretstring',
                 ],
             ],
             'badMethodException' => [
                 new BadMethodCallException('Required option "clientId" must be a not empty string'),
                 [
-                    'clientId' => '',
+                    'client_id' => '',
                 ],
             ],
         ];

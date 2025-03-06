@@ -116,13 +116,13 @@ class AuthenticationTest extends IntegrationTestCase
         $this->configRequest(compact('headers'));
         $this->post('/auth', json_encode(['grant_type' => 'refresh_token']));
 
-        $this->assertResponseCode(403);
+        $this->assertResponseCode(401);
         $this->assertContentType('application/vnd.api+json');
         $this->assertResponseNotEmpty();
         $body = json_decode((string)$this->_response->getBody(), true);
 
         static::assertArrayHasKey('error', $body);
-        static::assertEquals('403', $body['error']['status']);
+        static::assertEquals('401', $body['error']['status']);
     }
 
     /**

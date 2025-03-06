@@ -184,25 +184,28 @@ class ApplicationsTable extends Table
      * Find an active application by client_id and client_secret.
      *
      * @param \Cake\ORM\Query\SelectQuery $query Query object instance.
-     * @param string $clientId The client id (aka api key).
-     * @param string|null $clientSecret The optional client secret.
+     * @param string $client_id The client id (aka api key).
+     * @param string|null $client_secret The optional client secret.
      * @return \Cake\ORM\Query\SelectQuery
      */
-    protected function findCredentials(SelectQuery $query, string $clientId, ?string $clientSecret = null): SelectQuery
-    {
-        if (empty($clientId)) {
+    protected function findCredentials(
+        SelectQuery $query,
+        string $client_id,
+        ?string $client_secret = null
+    ): SelectQuery {
+        if (empty($client_id)) {
             throw new BadMethodCallException('Required option "clientId" must be a not empty string');
         }
 
-        return $query->where(function (QueryExpression $exp) use ($clientId, $clientSecret) {
-            if ($clientSecret !== null) {
-                $exp = $exp->eq($this->aliasField('client_secret'), $clientSecret);
+        return $query->where(function (QueryExpression $exp) use ($client_id, $client_secret) {
+            if ($client_secret !== null) {
+                $exp = $exp->eq($this->aliasField('client_secret'), $client_secret);
             } else {
                 $exp = $exp->isNull($this->aliasField('client_secret'));
             }
             $exp = $exp->eq($this->aliasField('enabled'), true);
 
-            return $exp->eq($this->aliasField('api_key'), $clientId);
+            return $exp->eq($this->aliasField('api_key'), $client_id);
         });
     }
 

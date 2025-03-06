@@ -17,6 +17,7 @@ namespace BEdita\Core\Model\Table;
 use ArrayObject;
 use BEdita\Core\Exception\BadFilterException;
 use BEdita\Core\Exception\ImmutableResourceException;
+use BEdita\Core\Model\Entity\AuthProvider;
 use BEdita\Core\Model\Table\ObjectsBaseTable as Table;
 use BEdita\Core\Model\Validation\UsersValidator;
 use BEdita\Core\Utility\LoggedUser;
@@ -275,13 +276,13 @@ class UsersTable extends Table
      * Find users by their external auth providers.
      *
      * @param \Cake\ORM\Query\SelectQuery $query Query object instance.
-     * @param array|string|int $auth_provider Auth provider data passed to `\BEdita\Core\Model\Table\ExternalAuthTable::findAuthProvider()`.
+     * @param \BEdita\Core\Model\Entity\AuthProvider|array|string|int $auth_provider Auth provider data passed to `\BEdita\Core\Model\Table\ExternalAuthTable::findAuthProvider()`.
      * @param array|string|null $username Provider username.
      * @return \Cake\ORM\Query\SelectQuery
      */
     public function findExternalAuth(
         SelectQuery $query,
-        array|string|int $auth_provider,
+        AuthProvider|array|string|int $auth_provider,
         array|string|null $username = null
     ): SelectQuery {
         $query = $query->find('loginRoles');

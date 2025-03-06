@@ -15,6 +15,7 @@ declare(strict_types=1);
 namespace BEdita\Core\Model\Table;
 
 use BEdita\Core\Exception\BadFilterException;
+use BEdita\Core\Model\Entity\AuthProvider;
 use BEdita\Core\Utility\LoggedUser;
 use Cake\Datasource\EntityInterface;
 use Cake\Event\EventInterface;
@@ -152,10 +153,10 @@ class ExternalAuthTable extends Table
      * Find external auth by their auth provider.
      *
      * @param \Cake\ORM\Query\SelectQuery $query Query object instance.
-     * @param array|string|int $authProvider Auth provider data.
+     * @param \BEdita\Core\Model\Entity\AuthProvider|array|string|int $authProvider Auth provider data.
      * @return \Cake\ORM\Query\SelectQuery
      */
-    protected function findAuthProvider(SelectQuery $query, array|string|int $authProvider): SelectQuery
+    protected function findAuthProvider(SelectQuery $query, AuthProvider|array|string|int $authProvider): SelectQuery
     {
         if (empty($authProvider)) {
             throw new BadFilterException([
@@ -173,7 +174,7 @@ class ExternalAuthTable extends Table
                 });
         }
 
-        if (!empty($authProvider['id'])) {
+        if (!is_int($authProvider) && !empty($authProvider['id'])) {
             $authProvider = $authProvider['id'];
         }
 

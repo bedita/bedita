@@ -39,6 +39,9 @@ class JsonApiPaginator extends NumericPaginator
         'limit' => 20,
         'maxLimit' => 100,
         'allowedParameters' => ['page', 'page_size', 'sort'],
+        'sortableFields' => null,
+        'finder' => 'all',
+        'scope' => null,
     ];
 
     /**
