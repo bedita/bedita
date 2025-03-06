@@ -14,6 +14,7 @@ declare(strict_types=1);
  */
 namespace BEdita\Core\Test\TestCase\Model\Action;
 
+use BEdita\Core\Exception\BadFilterException;
 use BEdita\Core\Model\Action\ListEntitiesAction;
 use BEdita\Core\ORM\Inheritance\Table;
 use Cake\Database\Driver\Mysql;
@@ -22,6 +23,7 @@ use Cake\I18n\DateTime;
 use Cake\ORM\Query\SelectQuery;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
+use Exception;
 
 /**
  * @coversDefaultClass \BEdita\Core\Model\Action\ListEntitiesAction
@@ -45,6 +47,7 @@ class ListEntitiesActionTest extends TestCase
         'plugin.BEdita/Core.Objects',
         'plugin.BEdita/Core.Profiles',
         'plugin.BEdita/Core.Users',
+        'plugin.BEdita/Core.Locations',
         'plugin.BEdita/Core.Media',
         'plugin.BEdita/Core.Streams',
     ];
@@ -205,9 +208,8 @@ class ListEntitiesActionTest extends TestCase
                 ],
                 'FakeMammals',
             ],
-            'finder1' => [
-                [
-                ],
+            'filter finder not found' => [
+                new BadFilterException('Invalid data'),
                 [
                     'byName' => ['name' => 'not_found_relation'],
                 ],
@@ -221,13 +223,28 @@ class ListEntitiesActionTest extends TestCase
                 ],
                 'Users',
             ],
+            'find mine no inheritance' => [
+                [
+                ],
+                [
+                    'mine' => true,
+                ],
+                'News',
+            ],
+            'wrong named argument' => [
+                new BadFilterException('Invalid data'),
+                [
+                    'geo' => ['banana' => 'yeah'],
+                ],
+                'Locations',
+            ],
         ];
     }
 
     /**
      * Test command execution.
      *
-     * @param array $expected Expected results.
+     * @param array|\Exception $expected Expected results.
      * @param mixed $filter Filter.
      * @param string $table Table name.
      * @return void
@@ -236,8 +253,12 @@ class ListEntitiesActionTest extends TestCase
      * @covers ::buildFilter()
      * @covers ::execute()
      */
-    public function testExecute(array $expected, $filter, $table = 'FakeAnimals')
+    public function testExecute(array|Exception $expected, mixed $filter, string $table = 'FakeAnimals'): void
     {
+        if ($expected instanceof Exception) {
+            $this->expectException(get_class($expected));
+            $this->expectExceptionMessage($expected->getMessage());
+        }
         $table = TableRegistry::getTableLocator()->get($table);
         $action = new ListEntitiesAction(compact('table'));
 

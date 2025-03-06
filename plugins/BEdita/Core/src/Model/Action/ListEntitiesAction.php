@@ -21,6 +21,7 @@ use BEdita\Core\ORM\QueryFilterTrait;
 use Cake\ORM\Query\SelectQuery;
 use Cake\ORM\Table;
 use Cake\Utility\Inflector;
+use Error;
 
 /**
  * Command to list entities.
@@ -100,11 +101,20 @@ class ListEntitiesAction extends BaseAction implements FinderFilterInterface
                 : $this->hasFilter($variableKey, $this->Table);
 
             if ($hasFinder) {
-                $query = $this->Table instanceof FinderFilterInterface
-                    ? $this->Table->callFilter($variableKey, $query, $value)
-                    : $this->callFilter($variableKey, $query, $value, $this->Table);
+                try {
+                    $query = $this->Table instanceof FinderFilterInterface
+                        ? $this->Table->callFilter($variableKey, $query, $value)
+                        : $this->callFilter($variableKey, $query, $value, $this->Table);
 
-                continue;
+                    continue;
+                } catch (Error $e) {
+                    if (strpos($e->getMessage(), 'Unknown named parameter') !== false) {
+                        throw new BadFilterException([
+                            'title' => __d('bedita', 'Invalid data'),
+                            'detail' => sprintf('Filter %s error: %s', $key, $e->getMessage()),
+                        ]);
+                    }
+                }
             }
 
             $camelizedKey = Inflector::camelize($key);
