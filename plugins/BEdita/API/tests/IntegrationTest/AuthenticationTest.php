@@ -15,6 +15,7 @@ declare(strict_types=1);
 namespace BEdita\API\Test\IntegrationTest;
 
 use BEdita\API\TestSuite\IntegrationTestCase;
+use BEdita\Core\Utility\LoggedUser;
 use Cake\ORM\Locator\LocatorAwareTrait;
 use Cake\Utility\Hash;
 
@@ -26,6 +27,15 @@ use Cake\Utility\Hash;
 class AuthenticationTest extends IntegrationTestCase
 {
     use LocatorAwareTrait;
+
+    /**
+     * @inheritDoc
+     */
+    public function tearDown(): void
+    {
+        parent::tearDown();
+        LoggedUser::resetUser();
+    }
 
     /**
      * Data provider for `testAuth` method.
