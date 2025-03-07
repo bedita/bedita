@@ -231,6 +231,9 @@ class CloneObjectActionTest extends TestCase
         $this->assertEquals($expected->hash_sha1, $actual->hash_sha1);
         $this->assertEquals($expected->width, $actual->width);
         $this->assertEquals($expected->height, $actual->height);
+
+        // remove stream to delete cloned file
+        $table->Streams->delete($actual);
     }
 
     /**
