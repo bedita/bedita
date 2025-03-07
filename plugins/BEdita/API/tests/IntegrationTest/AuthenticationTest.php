@@ -31,9 +31,9 @@ class AuthenticationTest extends IntegrationTestCase
     /**
      * @inheritDoc
      */
-    public function tearDown(): void
+    public function setUp(): void
     {
-        parent::tearDown();
+        parent::setUp();
         LoggedUser::resetUser();
     }
 
