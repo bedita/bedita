@@ -448,8 +448,8 @@ class TreesTableTest extends TestCase
                 12,
                 'last',
             ],
-            'moveRootDoNothing' => [
-                1,
+            'moveRootAsLastRoot' => [
+                2,
                 11,
                 'last',
             ],
@@ -575,7 +575,7 @@ class TreesTableTest extends TestCase
      *
      * @return array
      */
-    public function jsonSchemaProvider(): array
+    public static function jsonSchemaProvider(): array
     {
         $schema = [
             'type' => 'object',
