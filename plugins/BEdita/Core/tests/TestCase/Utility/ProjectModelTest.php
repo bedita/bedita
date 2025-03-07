@@ -619,7 +619,7 @@ class ProjectModelTest extends TestCase
      *
      * @return array
      */
-    public function categoriesToUpdateProvider(): array
+    public static function categoriesToUpdateProvider(): array
     {
         return [
             'empty' => [
@@ -662,7 +662,7 @@ class ProjectModelTest extends TestCase
      *
      * @return array
      */
-    public function configDiffProvider(): array
+    public static function configDiffProvider(): array
     {
         return [
             'empty' => [

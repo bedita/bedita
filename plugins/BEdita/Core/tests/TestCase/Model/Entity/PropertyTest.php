@@ -182,7 +182,7 @@ class PropertyTest extends TestCase
      *
      * @return array
      */
-    public function setPropertyTypeNameProvider()
+    public static function setPropertyTypeNameProvider()
     {
         return [
             'document' => [

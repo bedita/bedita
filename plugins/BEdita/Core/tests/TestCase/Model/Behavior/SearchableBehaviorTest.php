@@ -131,7 +131,7 @@ class SearchableBehaviorTest extends TestCase
      *
      * @return array
      */
-    public function getAdapterProvider(): array
+    public static function getAdapterProvider(): array
     {
         $newFakeAdapter = fn (array $condition = []) => new class ($condition) extends BaseAdapter {
             protected array $condition;

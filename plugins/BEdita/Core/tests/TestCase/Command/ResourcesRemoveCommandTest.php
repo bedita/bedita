@@ -83,7 +83,7 @@ class ResourcesRemoveCommandTest extends TestCase
      *
      * @return array
      */
-    public function executeProvider(): array
+    public static function executeProvider(): array
     {
         return [
             'remove application (n)' => [
