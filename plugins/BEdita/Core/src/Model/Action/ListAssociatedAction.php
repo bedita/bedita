@@ -298,9 +298,9 @@ class ListAssociatedAction extends BaseAction
      *
      * @param \Cake\ORM\Association $association Association
      * @param  mixed $primaryKey Primary key
-     * @return array
+     * @return \Cake\Database\ExpressionInterface|array<string, 'asc' | 'desc'>
      */
-    protected function sort(Association $association, $primaryKey): array
+    protected function sort(Association $association, $primaryKey)
     {
         if ($association->getName() === 'Children') {
             return (array)TableRegistry::getTableLocator()->get('Folders')->getSort($primaryKey);
