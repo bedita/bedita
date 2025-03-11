@@ -79,18 +79,20 @@ class TreePathsController extends TreesController
     protected function pathDetails(string $path): void
     {
         $pathList = explode('/', $path);
+        $parent = null;
         foreach ($pathList as $p) {
-            if (is_numeric($p)) {
-                $item = $this->objectDetails(['id' => (int)$p]);
-            } else {
-                $item = $this->objectDetails([$this->Objects->getAssociation('TreeNodes')->aliasField('slug') => (string)$p]);
+            $conditions = [$this->Objects->getAssociation('TreeNodes')->aliasField('slug') => (string)$p];
+            if ($parent !== null) {
+                $conditions['parent_id'] = $parent;
             }
+            $item = $this->objectDetails($conditions);
             if (empty($item)) {
                 throw new NotFoundException(__d('bedita', 'Invalid path'));
             }
             $this->pathInfo['ids'][] = $item['id'];
             $this->pathInfo['slugs'][] = $item['slug'];
             $this->pathInfo['types'][] = $item['object_type_id'];
+            $parent = $item['id'];
         }
     }
 
