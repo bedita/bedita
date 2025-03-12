@@ -14,8 +14,6 @@ declare(strict_types=1);
  */
 namespace BEdita\API\Controller;
 
-use Cake\Http\Exception\NotFoundException;
-
 /**
  * Controller for `/tree_paths` endpoint.
  *
@@ -49,7 +47,7 @@ class TreePathsController extends TreesController
         $this->request->allowMethod(['get']);
 
         // populate idList, unameList
-        $this->pathDetails($path);
+        $this->pathInfo = $this->Objects->TreeNodes->getPathInfo($path);
 
         $this->loadTreesNode();
         $parents = $this->parents();
@@ -68,47 +66,5 @@ class TreePathsController extends TreesController
         $this->setSerialize(['entity']);
 
         return null;
-    }
-
-    /**
-     * Populate $pathInfo with path details on ID, uname and type:
-     *
-     * @param string $path Requested object path
-     * @return void
-     */
-    protected function pathDetails(string $path): void
-    {
-        $pathList = explode('/', $path);
-        $parent = null;
-        foreach ($pathList as $p) {
-            $conditions = [$this->Objects->getAssociation('TreeNodes')->aliasField('slug') => (string)$p];
-            if ($parent !== null) {
-                $conditions['parent_id'] = $parent;
-            }
-            $item = $this->objectDetails($conditions);
-            if (empty($item)) {
-                throw new NotFoundException(__d('bedita', 'Invalid path'));
-            }
-            $this->pathInfo['ids'][] = $item['id'];
-            $this->pathInfo['slugs'][] = $item['slug'];
-            $this->pathInfo['types'][] = $item['object_type_id'];
-            $parent = $item['id'];
-        }
-    }
-
-    /**
-     * Get object main fields
-     *
-     * @param array $condition Query conditions
-     * @return string
-     */
-    protected function objectDetails(array $condition): array
-    {
-        return (array)$this->Objects->find('available')
-            ->where($condition)
-            ->select(['id', 'slug' => $this->Objects->getAssociation('TreeNodes')->aliasField('slug'), 'object_type_id'])
-            ->innerJoinWith('TreeNodes')
-            ->disableHydration()
-            ->first();
     }
 }

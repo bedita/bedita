@@ -24,6 +24,7 @@ use Cake\Database\Schema\TableSchemaInterface;
 use Cake\Datasource\EntityInterface;
 use Cake\Event\EventInterface;
 use Cake\Http\Exception\BadRequestException;
+use Cake\Http\Exception\NotFoundException;
 use Cake\ORM\Query;
 use Cake\ORM\Rule\IsUnique;
 use Cake\ORM\RulesChecker;
@@ -390,4 +391,63 @@ class TreesTable extends Table
             )
             ->orderAsc($lft);
     }
+
+    /**
+     * Get object main fields
+     *
+     * @param array $conditions Query conditions
+     * @return array
+     */
+    protected function loadSlugsPath(array $conditions): array
+    {
+        return (array)$this->Objects->find('available')
+            ->where($conditions)
+            ->select([
+                'id',
+                'slug' => $this->Objects->getAssociation('TreeNodes')->aliasField('slug'),
+                'object_type_id',
+            ])
+            ->innerJoinWith('TreeNodes')
+            ->disableHydration()
+            ->first();
+    }
+
+    /**
+     * Get path information with ID, object type, and slug.
+     *
+     * @param string $path Requested object path
+     * @return array Associative array with keys: 'ids', 'slugs', 'types'
+     * @throws \Cake\Http\Exception\NotFoundException If the path is invalid
+     */
+    public function getPathInfo(string $path): array
+    {
+        $pathInfo = [
+            'ids' => [],
+            'slugs' => [],
+            'types' => [],
+        ];
+
+        $pathList = explode('/', $path);
+        $parent = null;
+
+        foreach ($pathList as $p) {
+            $conditions = [$this->Objects->getAssociation('TreeNodes')->aliasField('slug') => (string)$p];
+            if ($parent !== null) {
+                $conditions['parent_id'] = $parent;
+            }
+
+            $item = $this->loadSlugsPath($conditions);
+            if (empty($item)) {
+                throw new NotFoundException(__d('bedita', 'Invalid path'));
+            }
+
+            $pathInfo['ids'][] = $item['id'];
+            $pathInfo['slugs'][] = $item['slug'];
+            $pathInfo['types'][] = $item['object_type_id'];
+            $parent = $item['id'];
+        }
+
+        return $pathInfo;
+    }
+
 }
