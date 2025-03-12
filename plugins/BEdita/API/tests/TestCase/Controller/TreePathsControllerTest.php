@@ -28,6 +28,8 @@ class TreePathsControllerTest extends IntegrationTestCase
      *
      * @return void
      * @covers ::index()
+     * @covers ::objectDetails()
+     * @covers ::pathDetails()
      */
     public function testIndexValidSlugPath(): void
     {
@@ -187,5 +189,67 @@ class TreePathsControllerTest extends IntegrationTestCase
             $response2['data']['meta']['extra']['slug_path'],
             'I percorsi devono essere diversi per lo stesso slug.'
         );
+    }
+
+    /**
+     * Test `pathDetails` with a valid multi-level path.
+     *
+     * @return void
+     * @covers ::pathDetails()
+     */
+    public function testPathDetailsValid(): void
+    {
+        $controller = $this->getMockBuilder(\BEdita\API\Controller\TreePathsController::class)
+            ->disableOriginalConstructor()
+            ->onlyMethods(['objectDetails'])
+            ->getMock();
+
+        $controller->Objects = TableRegistry::getTableLocator()->get('Objects');
+
+        $controller->method('objectDetails')
+            ->willReturnCallback(function ($conditions) {
+                if (isset($conditions['parent_id'])) {
+                    return ['id' => 12, 'slug' => 'sub-folder-12', 'object_type_id' => 2];
+                }
+
+                return ['id' => 11, 'slug' => 'root-folder-11', 'object_type_id' => 1];
+            });
+
+        try {
+            $reflection = new \ReflectionClass($controller);
+            $method = $reflection->getMethod('pathDetails');
+            $method->invoke($controller, 'root-folder-11/sub-folder-12');
+
+            $this->assertTrue(true, 'pathDetails() è stato eseguito senza eccezioni.');
+        } catch (\Throwable $e) {
+            $this->fail('pathDetails() ha generato un\'eccezione: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Test `pathDetails` when an invalid path is given.
+     *
+     * @return void
+     * @covers ::pathDetails()
+     * @throws \ReflectionException
+     */
+    public function testPathDetailsInvalid(): void
+    {
+        $controller = $this->getMockBuilder(\BEdita\API\Controller\TreePathsController::class)
+            ->disableOriginalConstructor()
+            ->onlyMethods(['objectDetails'])
+            ->getMock();
+
+        $controller->Objects = TableRegistry::getTableLocator()->get('Objects');
+
+        $controller->method('objectDetails')
+            ->willReturn([]); // invalid path simulation
+
+        $this->expectException(\Cake\Http\Exception\NotFoundException::class);
+        $this->expectExceptionMessage('Invalid path');
+
+        $reflection = new \ReflectionClass($controller);
+        $method = $reflection->getMethod('pathDetails');
+        $method->invoke($controller, 'non-existent-path');
     }
 }
