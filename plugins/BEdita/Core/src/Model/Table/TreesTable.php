@@ -449,5 +449,4 @@ class TreesTable extends Table
 
         return $pathInfo;
     }
-
 }
