@@ -22,6 +22,7 @@ use Cake\Core\Configure;
 use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\Event\Event;
 use Cake\Http\Exception\BadRequestException;
+use Cake\Http\Exception\NotFoundException;
 use Cake\ORM\Association\BelongsTo;
 use Cake\ORM\Association\HasMany;
 use Cake\ORM\Behavior\TreeBehavior;
@@ -565,6 +566,7 @@ class TreesTableTest extends TestCase
      * @return void
      * @dataProvider findPathNodesProvider()
      * @covers ::findPathNodes()
+     * @covers ::getSchema())
      * @return void
      */
     public function testFindPathNodes($expected, array $options): void
@@ -700,5 +702,101 @@ class TreesTableTest extends TestCase
         } else {
             static::assertStringContainsString($expected, $result);
         }
+    }
+
+    /**
+     * Test `getPathInfo()` with a valid multi-level path.
+     *
+     * @return void
+     * @covers ::getPathInfo()
+     * @covers ::loadSlugsPath()
+     */
+    public function testGetPathInfoValid(): void
+    {
+        $result = $this->Trees->getPathInfo('root-folder-11/sub-folder-12');
+
+        static::assertIsArray($result, 'Result must be an array');
+        static::assertNotEmpty($result, 'Result should not be empty');
+        static::assertEquals([11, 12], $result['ids']);
+        static::assertEquals(['root-folder-11', 'sub-folder-12'], $result['slugs']);
+        static::assertArrayHasKey('types', $result, 'Array should have an `types` property');
+    }
+
+    /**
+     * Test `getPathInfo()` with a deeper valid path.
+     *
+     * @return void
+     * @covers ::getPathInfo()
+     * @covers ::loadSlugsPath()
+     */
+    public function testGetPathInfoDeepValid(): void
+    {
+        $result = $this->Trees->getPathInfo('root-folder-11/sub-folder-12/gustavo-supporto-profile-4');
+
+        static::assertIsArray($result, 'result must be an array');
+        static::assertNotEmpty($result, 'result should not be empty');
+        static::assertEquals([11, 12, 4], $result['ids']);
+        static::assertEquals(
+            ['root-folder-11', 'sub-folder-12', 'gustavo-supporto-profile-4'],
+            $result['slugs']
+        );
+        static::assertArrayHasKey('types', $result, 'array should have an `types` property');
+    }
+
+    /**
+     * Test `getPathInfo()` with a valid alternative root.
+     *
+     * @return void
+     * @covers ::getPathInfo()
+     * @covers ::loadSlugsPath()
+     */
+    public function testGetPathInfoAlternativeRoot(): void
+    {
+        $result = $this->Trees->getPathInfo('another-root-folder-13');
+
+        static::assertIsArray($result, 'result must be an array');
+        static::assertNotEmpty($result, 'result should not be empty');
+        static::assertEquals([13], $result['ids']);
+        static::assertEquals(['another-root-folder-13'], $result['slugs']);
+        static::assertArrayHasKey('types', $result, 'array should have an `types` property');
+    }
+
+    /**
+     * Test `getPathInfo()` with an invalid path.
+     *
+     * @return void
+     * @covers ::getPathInfo()
+     * @covers ::loadSlugsPath()
+     */
+    public function testGetPathInfoInvalid(): void
+    {
+        $this->expectException(NotFoundException::class);
+        $this->Trees->getPathInfo('this-is-not/a-valid-path');
+    }
+
+    /**
+     * Test `getPathInfo()` with a partially valid but non-existent full path.
+     *
+     * @return void
+     * @covers ::getPathInfo()
+     * @covers ::loadSlugsPath()
+     */
+    public function testGetPathInfoPartialInvalid(): void
+    {
+        $this->expectException(NotFoundException::class);
+        $this->Trees->getPathInfo('root-folder-11/waldo');
+    }
+
+    /**
+     * Test `getPathInfo()` with an empty path.
+     *
+     * @return void
+     * @covers ::getPathInfo()
+     * @covers ::loadSlugsPath()
+     */
+    public function testGetPathInfoEmpty(): void
+    {
+        $this->expectException(NotFoundException::class);
+        $this->Trees->getPathInfo('');
     }
 }
