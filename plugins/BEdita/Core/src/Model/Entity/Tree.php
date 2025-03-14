@@ -31,6 +31,7 @@ use Cake\ORM\TableRegistry;
  * @property int $depth_level
  * @property bool $menu
  * @property bool $canonical
+ * @property string $slug
  * @property array|null $params
  * @property int|string $position
  *
@@ -53,6 +54,7 @@ class Tree extends Entity
         'menu' => true,
         'position' => true,
         'canonical' => true,
+        'slug' => true,
         'params' => true,
     ];
 

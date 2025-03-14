@@ -43,7 +43,7 @@ Cache::drop('_bedita_object_types_');
 Cache::setConfig('_bedita_object_types_', ['className' => 'Null']);
 
 if (getenv('DEBUG_LOG_QUERIES')) {
-    ConnectionManager::get('test')->logQueries(true);
+    ConnectionManager::get('test')->enableQueryLogging();
     Log::setConfig('queries', [
         'className' => 'Console',
         'stream' => 'php://stdout',

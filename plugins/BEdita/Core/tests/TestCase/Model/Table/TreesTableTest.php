@@ -20,7 +20,9 @@ use BEdita\Core\Model\Table\TreesTable;
 use BEdita\Core\Utility\LoggedUser;
 use Cake\Core\Configure;
 use Cake\Datasource\Exception\RecordNotFoundException;
+use Cake\Event\Event;
 use Cake\Http\Exception\BadRequestException;
+use Cake\Http\Exception\NotFoundException;
 use Cake\ORM\Association\BelongsTo;
 use Cake\ORM\Association\HasMany;
 use Cake\ORM\Behavior\TreeBehavior;
@@ -208,6 +210,91 @@ class TreesTableTest extends TestCase
         $entity->object_id = $objectId;
         $entity->parent_id = $parentId;
         static::assertEquals($expected, $this->Trees->isPositionUnique($entity));
+    }
+
+    /**
+     * Data provider for `testSlugPopulation()`.
+     *
+     * @return array[]
+     */
+    public function slugPopulationProvider()
+    {
+        return [
+            'no slug' => [
+                'title-example-3',
+                3,
+                '',
+                'title example',
+            ],
+            'no slug or title' => [
+                'documents-3',
+                3,
+                '',
+                '',
+            ],
+            'no slug, title special characters' => [
+                'asd-lol-rofl-3',
+                3,
+                '',
+                'asd@lol.rofl',
+            ],
+            'slug correct' => [
+                'slug-doc',
+                2,
+                'slug-doc',
+                'title example',
+            ],
+            'update no slug' => [
+                'title-example-2',
+                2,
+                '',
+                'title example',
+            ],
+            'update no slug or title' => [
+                'documents-2',
+                2,
+                '',
+                '',
+            ],
+            'update slug special characters' => [
+                'asd-lol-rofl',
+                2,
+                'asd@lol.rofl',
+                'title example',
+            ],
+            'update slug correct' => [
+                'slug-doc',
+                2,
+                'slug-doc',
+                'title example',
+            ],
+        ];
+    }
+
+    /**
+     * Test for slug generation in `beforeRules()`.
+     *
+     * @param $expected
+     * @param $objectId
+     * @param $slug
+     * @param $title
+     * @return void
+     * @dataProvider slugPopulationProvider
+     * @covers ::beforeRules()
+     */
+    public function testSlugPopulation($expected, $objectId, $slug, $title)
+    {
+        $this->fetchTable('Documents')
+            ->updateQuery()
+            ->set('title', $title)
+            ->where(['id' => $objectId])
+            ->execute();
+        $node = $this->Trees->newEntity([
+            'object_id' => $objectId,
+            'slug' => $slug,
+        ]);
+        $this->Trees->beforeRules(new Event('Model.beforeRules'), $node);
+        static::assertEquals($expected, $node->get('slug'));
     }
 
     /**
@@ -479,6 +566,7 @@ class TreesTableTest extends TestCase
      * @return void
      * @dataProvider findPathNodesProvider()
      * @covers ::findPathNodes()
+     * @covers ::getSchema())
      * @return void
      */
     public function testFindPathNodes($expected, array $options): void
@@ -614,5 +702,101 @@ class TreesTableTest extends TestCase
         } else {
             static::assertStringContainsString($expected, $result);
         }
+    }
+
+    /**
+     * Test `getPathInfo()` with a valid multi-level path.
+     *
+     * @return void
+     * @covers ::getPathInfo()
+     * @covers ::loadSlugsPath()
+     */
+    public function testGetPathInfoValid(): void
+    {
+        $result = $this->Trees->getPathInfo('root-folder-11/sub-folder-12');
+
+        static::assertIsArray($result, 'Result must be an array');
+        static::assertNotEmpty($result, 'Result should not be empty');
+        static::assertEquals([11, 12], $result['ids']);
+        static::assertEquals(['root-folder-11', 'sub-folder-12'], $result['slugs']);
+        static::assertArrayHasKey('types', $result, 'Array should have an `types` property');
+    }
+
+    /**
+     * Test `getPathInfo()` with a deeper valid path.
+     *
+     * @return void
+     * @covers ::getPathInfo()
+     * @covers ::loadSlugsPath()
+     */
+    public function testGetPathInfoDeepValid(): void
+    {
+        $result = $this->Trees->getPathInfo('root-folder-11/sub-folder-12/gustavo-supporto-profile-4');
+
+        static::assertIsArray($result, 'result must be an array');
+        static::assertNotEmpty($result, 'result should not be empty');
+        static::assertEquals([11, 12, 4], $result['ids']);
+        static::assertEquals(
+            ['root-folder-11', 'sub-folder-12', 'gustavo-supporto-profile-4'],
+            $result['slugs']
+        );
+        static::assertArrayHasKey('types', $result, 'array should have an `types` property');
+    }
+
+    /**
+     * Test `getPathInfo()` with a valid alternative root.
+     *
+     * @return void
+     * @covers ::getPathInfo()
+     * @covers ::loadSlugsPath()
+     */
+    public function testGetPathInfoAlternativeRoot(): void
+    {
+        $result = $this->Trees->getPathInfo('another-root-folder-13');
+
+        static::assertIsArray($result, 'result must be an array');
+        static::assertNotEmpty($result, 'result should not be empty');
+        static::assertEquals([13], $result['ids']);
+        static::assertEquals(['another-root-folder-13'], $result['slugs']);
+        static::assertArrayHasKey('types', $result, 'array should have an `types` property');
+    }
+
+    /**
+     * Test `getPathInfo()` with an invalid path.
+     *
+     * @return void
+     * @covers ::getPathInfo()
+     * @covers ::loadSlugsPath()
+     */
+    public function testGetPathInfoInvalid(): void
+    {
+        $this->expectException(NotFoundException::class);
+        $this->Trees->getPathInfo('this-is-not/a-valid-path');
+    }
+
+    /**
+     * Test `getPathInfo()` with a partially valid but non-existent full path.
+     *
+     * @return void
+     * @covers ::getPathInfo()
+     * @covers ::loadSlugsPath()
+     */
+    public function testGetPathInfoPartialInvalid(): void
+    {
+        $this->expectException(NotFoundException::class);
+        $this->Trees->getPathInfo('root-folder-11/waldo');
+    }
+
+    /**
+     * Test `getPathInfo()` with an empty path.
+     *
+     * @return void
+     * @covers ::getPathInfo()
+     * @covers ::loadSlugsPath()
+     */
+    public function testGetPathInfoEmpty(): void
+    {
+        $this->expectException(NotFoundException::class);
+        $this->Trees->getPathInfo('');
     }
 }

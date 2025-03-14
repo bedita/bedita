@@ -39,6 +39,7 @@ class TreesFixture extends TestFixture
             'depth_level' => 0,
             'menu' => 0,
             'canonical' => 0,
+            'slug' => 'root-folder-11',
         ],
 
         // sub folder
@@ -52,6 +53,7 @@ class TreesFixture extends TestFixture
             'depth_level' => 1,
             'menu' => 1,
             'canonical' => 1,
+            'slug' => 'sub-folder-12',
         ],
 
         // document in root folder
@@ -65,6 +67,7 @@ class TreesFixture extends TestFixture
             'depth_level' => 1,
             'menu' => 1,
             'canonical' => 1,
+            'slug' => 'title-one-2',
         ],
 
         // profile in sub folder
@@ -78,6 +81,7 @@ class TreesFixture extends TestFixture
             'depth_level' => 2,
             'menu' => 1,
             'canonical' => 1,
+            'slug' => 'gustavo-supporto-profile-4',
         ],
 
         // another root folder
@@ -91,6 +95,7 @@ class TreesFixture extends TestFixture
             'depth_level' => 0,
             'menu' => 1,
             'canonical' => 0,
+            'slug' => 'another-root-folder-13',
         ],
     ];
 }
