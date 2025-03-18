@@ -217,56 +217,48 @@ class TreesTableTest extends TestCase
      *
      * @return array[]
      */
-    public function slugPopulationProvider()
+    public function slugPopulationProvider(): array
     {
         return [
             'no slug' => [
-                'title-example-3',
+                'title-two',
                 3,
                 '',
-                'title example',
             ],
             'no slug or title' => [
-                'documents-3',
+                'title-two',
                 3,
-                '',
                 '',
             ],
             'no slug, title special characters' => [
-                'asd-lol-rofl-3',
+                'title-two',
                 3,
                 '',
-                'asd@lol.rofl',
             ],
             'slug correct' => [
                 'slug-doc',
                 2,
                 'slug-doc',
-                'title example',
             ],
             'update no slug' => [
-                'title-example-2',
+                'title-one',
                 2,
                 '',
-                'title example',
             ],
             'update no slug or title' => [
-                'documents-2',
+                'title-one',
                 2,
-                '',
                 '',
             ],
             'update slug special characters' => [
                 'asd-lol-rofl',
                 2,
                 'asd@lol.rofl',
-                'title example',
             ],
             'update slug correct' => [
                 'slug-doc',
                 2,
                 'slug-doc',
-                'title example',
             ],
         ];
     }
@@ -274,21 +266,15 @@ class TreesTableTest extends TestCase
     /**
      * Test for slug generation in `beforeRules()`.
      *
-     * @param $expected
-     * @param $objectId
-     * @param $slug
-     * @param $title
+     * @param string $expected Expected slug.
+     * @param int $objectId Object ID.
+     * @param string|null $slug Slug set on tree node.
      * @return void
-     * @dataProvider slugPopulationProvider
+     * @dataProvider slugPopulationProvider()
      * @covers ::beforeRules()
      */
-    public function testSlugPopulation($expected, $objectId, $slug, $title)
+    public function testSlugPopulation(string $expected, int $objectId, ?string $slug = null): void
     {
-        $this->fetchTable('Documents')
-            ->updateQuery()
-            ->set('title', $title)
-            ->where(['id' => $objectId])
-            ->execute();
         $node = $this->Trees->newEntity([
             'object_id' => $objectId,
             'slug' => $slug,
