@@ -25,29 +25,6 @@ class TreesAddSlug extends AbstractMigration
                 ],
             )
             ->update();
-
-        $this->getQueryBuilder()
-            ->update('trees')
-            ->set(
-                'slug',
-                $this->getQueryBuilder()
-                    ->select('objects.uname')
-                    ->from('objects')
-                    ->where(
-                        fn (QueryExpression $exp): QueryExpression => $exp
-                            ->equalFields('objects.id', 'trees.object_id')
-                    ),
-            )
-            ->where(fn (QueryExpression $exp): QueryExpression => $exp->isNull('slug'))
-            ->execute();
-
-        $this->table('trees')
-            ->changeColumn('slug', 'string', [
-                'comment' => 'URL-friendly name of an object',
-                'default' => null,
-                'null' => true,
-            ])
-            ->update();
     }
 
     /**
