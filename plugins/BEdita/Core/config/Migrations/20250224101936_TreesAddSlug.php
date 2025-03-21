@@ -2,6 +2,7 @@
 declare(strict_types=1);
 
 use Cake\Database\Expression\QueryExpression;
+use Cake\Database\Query;
 use Migrations\AbstractMigration;
 
 class TreesAddSlug extends AbstractMigration
@@ -26,11 +27,11 @@ class TreesAddSlug extends AbstractMigration
             )
             ->update();
 
-        $this->getQueryBuilder()
+        $this->getQueryBuilder(Query::TYPE_UPDATE)
             ->update('trees')
             ->set(
                 'slug',
-                $this->getQueryBuilder()
+                $this->getQueryBuilder(Query::TYPE_SELECT)
                     ->select('objects.uname')
                     ->from('objects')
                     ->where(
