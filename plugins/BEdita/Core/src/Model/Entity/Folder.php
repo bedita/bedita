@@ -292,7 +292,7 @@ class Folder extends ObjectEntity
      * @return array|null
      * @throws \RuntimeException If folder is not found on tree.
      */
-    protected function _getSlugPath()
+    protected function _getSlugPath(): ?array
     {
         if (!$this->has('id')) {
             return null;
@@ -305,7 +305,7 @@ class Folder extends ObjectEntity
                 ->disableHydration()
                 ->toArray();
         } catch (RecordNotFoundException $previous) {
-            throw new \RuntimeException(__d('bedita', 'Folder "{0}" is not on the tree.', $this->id), 0, $previous);
+            throw new RuntimeException(__d('bedita', 'Folder "{0}" is not on the tree.', $this->id), 0, $previous);
         }
     }
 

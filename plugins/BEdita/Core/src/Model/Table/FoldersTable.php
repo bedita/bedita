@@ -19,6 +19,7 @@ use BEdita\Core\Model\Entity\Folder;
 use Cake\Database\Expression\FunctionExpression;
 use Cake\Database\Expression\OrderClauseExpression;
 use Cake\Database\Expression\QueryExpression;
+use Cake\Database\ExpressionInterface;
 use Cake\Datasource\EntityInterface;
 use Cake\Event\EventInterface;
 use Cake\Log\Log;
@@ -326,7 +327,7 @@ class FoldersTable extends ObjectsTable
      * @param \BEdita\Core\Model\Entity\Folder|string|int $folder The tree object ID
      * @return \Cake\Database\ExpressionInterface|array<string, 'asc' | 'desc'>
      */
-    public function getSort($folder)
+    public function getSort(Folder|string|int $folder): ExpressionInterface|array
     {
         $entity = $folder instanceof Folder ? $folder : $this->get($folder);
         $order = $entity->get('children_order') ?: 'position';

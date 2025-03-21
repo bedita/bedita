@@ -14,6 +14,8 @@ declare(strict_types=1);
  */
 namespace BEdita\API\Controller;
 
+use Cake\Http\Response;
+
 /**
  * Controller for `/tree_paths` endpoint.
  *
@@ -30,7 +32,7 @@ class TreePathsController extends TreesController
      *
      * @var array
      */
-    protected $pathInfo = [
+    protected array $pathInfo = [
         'ids' => [],
         'slugs' => [],
         'types' => [],
@@ -42,7 +44,7 @@ class TreePathsController extends TreesController
      * @param string $path Trees path
      * @return \Cake\Http\Response|null
      */
-    public function index(string $path)
+    public function index(string $path): ?Response
     {
         $this->request->allowMethod(['get']);
 

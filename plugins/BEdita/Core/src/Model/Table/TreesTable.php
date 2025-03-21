@@ -256,7 +256,7 @@ class TreesTable extends Table
      * @param \Cake\Datasource\EntityInterface $entity The entity persisted
      * @return void
      */
-    public function beforeRules(EventInterface $event, EntityInterface $entity)
+    public function beforeRules(EventInterface $event, EntityInterface $entity): void
     {
         if (empty($entity->get('slug'))) {
             $object = TableRegistry::getTableLocator()->get('Objects')->get($entity->get('object_id'));

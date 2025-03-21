@@ -370,7 +370,7 @@ class FolderTest extends TestCase
      */
     public function testGetSlugPathOrphanFolder()
     {
-        $this->expectException(\RuntimeException::class);
+        $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('Folder "12" is not on the tree.');
         TableRegistry::getTableLocator()->get('Trees')->deleteAll(['object_id' => 12]);
         TableRegistry::getTableLocator()->get('Trees')->recover();
