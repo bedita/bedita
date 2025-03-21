@@ -71,6 +71,20 @@ class TreesControllerTest extends IntegrationTestCase
                     'extra' => [
                         'uname_path' => '/root-folder/sub-folder',
                     ],
+                    'slug_path' => [
+                        [
+                            'id' => 11,
+                            'menu' => false,
+                            'params' => null,
+                            'slug' => 'root-folder-11',
+                        ],
+                        [
+                            'id' => 12,
+                            'menu' => true,
+                            'params' => null,
+                            'slug' => 'sub-folder-12',
+                        ],
+                    ],
                 ],
                 'relationships' => [
                     'children' => [

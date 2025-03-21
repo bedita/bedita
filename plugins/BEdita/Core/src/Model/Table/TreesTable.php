@@ -21,13 +21,16 @@ use BEdita\Core\Model\Validation\Validation;
 use Cake\Core\Configure;
 use Cake\Database\Driver\Mysql;
 use Cake\Database\Expression\QueryExpression;
+use Cake\Datasource\EntityInterface;
 use Cake\Event\EventInterface;
 use Cake\Http\Exception\BadRequestException;
+use Cake\Http\Exception\NotFoundException;
 use Cake\ORM\Query\SelectQuery;
 use Cake\ORM\Rule\IsUnique;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
+use Cake\Utility\Text;
 use Cake\Validation\Validator;
 use stdClass;
 
@@ -137,6 +140,9 @@ class TreesTable extends Table
             ->boolean('canonical');
 
         $validator
+            ->notEmptyString('slug');
+
+        $validator
             ->allowEmptyArray('params', null, static::jsonSchema(null) === true)
             ->requirePresence('params', static::jsonSchema(null) === true ? false : 'create')
             ->add('params', 'valid', [
@@ -176,6 +182,7 @@ class TreesTable extends Table
      */
     public function buildRules(RulesChecker $rules): RulesChecker
     {
+        $rules->add($rules->isUnique(['parent_id', 'slug']));
         $rules->add($rules->existsIn(['object_id'], 'Objects'));
         $rules->add($rules->existsIn(['root_id'], 'RootObjects'));
         $rules->add($rules->existsIn(
@@ -240,6 +247,27 @@ class TreesTable extends Table
         }
 
         return $rule($entity, ['repository' => $this]);
+    }
+
+    /**
+     * Generate unique `slug` if needed.
+     *
+     * @param \Cake\Event\EventInterface $event The event
+     * @param \Cake\Datasource\EntityInterface $entity The entity persisted
+     * @return void
+     */
+    public function beforeRules(EventInterface $event, EntityInterface $entity)
+    {
+        if (empty($entity->get('slug'))) {
+            $object = TableRegistry::getTableLocator()->get('Objects')->get($entity->get('object_id'));
+            $slug = mb_strtolower(Text::slug((string)$object->get('title') ?: $object->get('type')));
+            $slug = Text::truncate($slug, 254 - strlen((string)$entity->get('object_id')));
+            $entity->set('slug', sprintf('%s-%s', $slug, $entity->get('object_id')));
+        } elseif (!empty($entity->get('slug')) && $entity->isDirty('slug')) {
+            $slug = mb_strtolower(Text::slug((string)$entity->get('slug')));
+            $slug = Text::truncate($slug, 255);
+            $entity->set('slug', $slug);
+        }
     }
 
     /**
@@ -361,5 +389,63 @@ class TreesTable extends Table
                     ->gte($rgt, $node['tree_right'])
             )
             ->orderByAsc($lft);
+    }
+
+    /**
+     * Get object main fields
+     *
+     * @param array $conditions Query conditions
+     * @return array
+     */
+    protected function loadSlugsPath(array $conditions): array
+    {
+        return (array)$this->Objects->find('available')
+            ->where($conditions)
+            ->select([
+                'id',
+                'slug' => $this->Objects->getAssociation('TreeNodes')->aliasField('slug'),
+                'object_type_id',
+            ])
+            ->innerJoinWith('TreeNodes')
+            ->disableHydration()
+            ->first();
+    }
+
+    /**
+     * Get path information with ID, object type, and slug.
+     *
+     * @param string $path Requested object path
+     * @return array Associative array with keys: 'ids', 'slugs', 'types'
+     * @throws \Cake\Http\Exception\NotFoundException If the path is invalid
+     */
+    public function getPathInfo(string $path): array
+    {
+        $pathInfo = [
+            'ids' => [],
+            'slugs' => [],
+            'types' => [],
+        ];
+
+        $pathList = explode('/', $path);
+        $parent = null;
+
+        foreach ($pathList as $p) {
+            $conditions = [$this->Objects->getAssociation('TreeNodes')->aliasField('slug') => (string)$p];
+            if ($parent !== null) {
+                $conditions['parent_id'] = $parent;
+            }
+
+            $item = $this->loadSlugsPath($conditions);
+            if (empty($item)) {
+                throw new NotFoundException(__d('bedita', 'Invalid path'));
+            }
+
+            $pathInfo['ids'][] = $item['id'];
+            $pathInfo['slugs'][] = $item['slug'];
+            $pathInfo['types'][] = $item['object_type_id'];
+            $parent = $item['id'];
+        }
+
+        return $pathInfo;
     }
 }

@@ -16,9 +16,12 @@ namespace BEdita\Core\Model\Table;
 
 use ArrayObject;
 use BEdita\Core\Model\Entity\Folder;
+use Cake\Database\Expression\FunctionExpression;
+use Cake\Database\Expression\OrderClauseExpression;
 use Cake\Database\Expression\QueryExpression;
 use Cake\Datasource\EntityInterface;
 use Cake\Event\EventInterface;
+use Cake\Log\Log;
 use Cake\ORM\Query\SelectQuery;
 use Cake\ORM\Rule\ValidCount;
 use Cake\ORM\RulesChecker;
@@ -320,25 +323,42 @@ class FoldersTable extends ObjectsTable
      * Get sort by object ID.
      * Default 'Trees.tree_left' => 'asc'
      *
-     * @param int $id The tree object ID
-     * @return array
+     * @param \BEdita\Core\Model\Entity\Folder|string|int $folder The tree object ID
+     * @return \Cake\Database\ExpressionInterface|array<string, 'asc' | 'desc'>
      */
-    public function getSort(int $id): array
+    public function getSort($folder)
     {
-        /** @var \BEdita\Core\Model\Entity\Folder $entity */
-        $entity = $this->get($id);
-        $order = $entity->get('children_order');
-        if (empty($order) || $order === 'position') {
-            return ['Trees.tree_left' => 'asc'];
-        }
-        if ($order === '-position') {
-            return ['Trees.tree_left' => 'desc'];
-        }
-        $sign = substr($order, 0, 1);
-        $direction = $sign === '-' ? 'desc' : 'asc';
-        $field = $sign === '-' ? substr($order, 1) : $order;
-        $key = sprintf('Children.%s', $field);
+        $entity = $folder instanceof Folder ? $folder : $this->get($folder);
+        $order = $entity->get('children_order') ?: 'position';
 
-        return [$key => $direction];
+        [$field, $direction] = substr($order, 0, 1) === '-' ? [substr($order, 1), 'DESC'] : [$order, 'ASC'];
+        switch ($field) {
+            case 'position':
+                return [$this->Children->junction()->aliasField('tree_left') => $direction];
+
+            case 'publish_start':
+                return new OrderClauseExpression(
+                    new FunctionExpression(
+                        'COALESCE',
+                        [
+                            $this->Children->aliasField('publish_start') => 'identifier',
+                            $this->Children->aliasField('created') => 'identifier',
+                        ],
+                        ['timestamp', 'timestamp'],
+                        'timestamp',
+                    ),
+                    $direction,
+                );
+
+            case 'title':
+            case 'created':
+            case 'modified':
+                return [$this->Children->aliasField($field) => $direction];
+
+            default:
+                Log::warning(sprintf('Malformed property `children_order` "%s" for children sorting of folder #%d, defaulting to tree position', $order, $folder->id));
+
+                return [$this->Children->junction()->aliasField('tree_left') => 'ASC'];
+        }
     }
 }

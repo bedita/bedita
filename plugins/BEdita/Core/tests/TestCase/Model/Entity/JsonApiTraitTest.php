@@ -529,6 +529,7 @@ class JsonApiTraitTest extends TestCase
             'menu' => true,
             'canonical' => true,
             'params' => null,
+            'slug' => 'gustavo-supporto-profile-4',
         ];
         static::assertEquals($expected, Hash::get($child, 'meta.relation'));
     }

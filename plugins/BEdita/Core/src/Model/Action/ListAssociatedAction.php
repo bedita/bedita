@@ -299,7 +299,7 @@ class ListAssociatedAction extends BaseAction
      *
      * @param \Cake\ORM\Association $association Association
      * @param mixed $primaryKey Primary key
-     * @return array
+     * @return array<string, 'asc' | 'desc'>
      */
     protected function sort(Association $association, mixed $primaryKey): array
     {

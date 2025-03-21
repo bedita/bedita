@@ -112,6 +112,12 @@ class FoldersControllerTest extends IntegrationTestCase
                         'created_by' => 1,
                         'modified_by' => 1,
                         'path' => '/11',
+                        'slug_path' => [[
+                            'id' => 11,
+                            'menu' => false,
+                            'params' => null,
+                            'slug' => 'root-folder-11',
+                        ]],
                     ],
                     'links' => [
                         'self' => 'http://api.example.com/folders/11',
@@ -160,6 +166,20 @@ class FoldersControllerTest extends IntegrationTestCase
                         'created_by' => 1,
                         'modified_by' => 1,
                         'path' => '/11/12',
+                        'slug_path' => [
+                            [
+                                'id' => 11,
+                                'menu' => false,
+                                'params' => null,
+                                'slug' => 'root-folder-11',
+                            ],
+                            [
+                                'id' => 12,
+                                'menu' => true,
+                                'params' => null,
+                                'slug' => 'sub-folder-12',
+                            ],
+                        ],
                     ],
                     'links' => [
                         'self' => 'http://api.example.com/folders/12',
@@ -208,6 +228,12 @@ class FoldersControllerTest extends IntegrationTestCase
                         'created_by' => 1,
                         'modified_by' => 1,
                         'path' => '/13',
+                        'slug_path' => [[
+                            'id' => 13,
+                            'menu' => true,
+                            'params' => null,
+                            'slug' => 'another-root-folder-13',
+                        ]],
                     ],
                     'links' => [
                         'self' => 'http://api.example.com/folders/13',
@@ -327,6 +353,12 @@ class FoldersControllerTest extends IntegrationTestCase
                     'created_by' => 1,
                     'modified_by' => 1,
                     'path' => '/11',
+                    'slug_path' => [[
+                        'id' => 11,
+                        'menu' => false,
+                        'params' => null,
+                        'slug' => 'root-folder-11',
+                    ]],
                 ],
                 'relationships' => [
                     'children' => [
