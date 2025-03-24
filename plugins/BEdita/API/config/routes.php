@@ -30,6 +30,8 @@ return function (RouteBuilder $routes) {
         ];
         $adminControllers = [
             'applications',
+            'auth_providers',
+            'external_auth',
             'async_jobs',
             'config',
             'endpoints',
