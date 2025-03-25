@@ -222,7 +222,7 @@ class ExternalAuthControllerTest extends IntegrationTestCase
                 'meta' => [
                     'created' => '2018-04-07T12:51:27+00:00',
                     'modified' => '2018-04-07T12:51:27+00:00',
-                ]
+                ],
             ],
         ];
 
