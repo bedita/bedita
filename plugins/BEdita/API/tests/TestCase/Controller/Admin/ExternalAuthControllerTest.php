@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 /**
  * BEdita, API-first content management framework
- * Copyright 2023 ChannelWeb Srl, Chialab Srl
+ * Copyright 2025 ChannelWeb Srl, Chialab Srl
  *
  * This file is part of BEdita: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published
@@ -66,11 +66,13 @@ class ExternalAuthControllerTest extends IntegrationTestCase
                         'auth_provider_id' => 1,
                         'params' => null,
                         'provider_username' => 'first_user',
-                        'created' => '2018-04-07T12:51:27+00:00',
-                        'modified' => '2018-04-07T12:51:27+00:00',
                     ],
                     'links' => [
                         'self' => 'http://api.example.com/admin/external_auth/1',
+                    ],
+                    'meta' => [
+                        'created' => '2018-04-07T12:51:27+00:00',
+                        'modified' => '2018-04-07T12:51:27+00:00',
                     ],
                 ],
                 [
@@ -81,11 +83,13 @@ class ExternalAuthControllerTest extends IntegrationTestCase
                         'auth_provider_id' => 2,
                         'params' => null,
                         'provider_username' => '17fec0fa-068a-4d7c-8283-da91d47cef7d',
-                        'created' => '2018-04-07T12:51:27+00:00',
-                        'modified' => '2018-04-07T12:51:27+00:00',
                     ],
                     'links' => [
                         'self' => 'http://api.example.com/admin/external_auth/2',
+                    ],
+                    'meta' => [
+                        'created' => '2018-04-07T12:51:27+00:00',
+                        'modified' => '2018-04-07T12:51:27+00:00',
                     ],
                 ],
                 [
@@ -96,11 +100,13 @@ class ExternalAuthControllerTest extends IntegrationTestCase
                         'auth_provider_id' => 3,
                         'params' => null,
                         'provider_username' => 'disabled_auth_provider',
-                        'created' => '2020-10-26T17:16:27+00:00',
-                        'modified' => '2020-10-26T17:16:27+00:00',
                     ],
                     'links' => [
                         'self' => 'http://api.example.com/admin/external_auth/3',
+                    ],
+                    'meta' => [
+                        'created' => '2020-10-26T17:16:27+00:00',
+                        'modified' => '2020-10-26T17:16:27+00:00',
                     ],
                 ],
                 [
@@ -111,11 +117,13 @@ class ExternalAuthControllerTest extends IntegrationTestCase
                         'auth_provider_id' => 1,
                         'params' => null,
                         'provider_username' => 'third_user',
-                        'created' => '2018-04-10T12:51:27+00:00',
-                        'modified' => '2018-04-10T12:51:27+00:00',
                     ],
                     'links' => [
                         'self' => 'http://api.example.com/admin/external_auth/4',
+                    ],
+                    'meta' => [
+                        'created' => '2018-04-10T12:51:27+00:00',
+                        'modified' => '2018-04-10T12:51:27+00:00',
                     ],
                 ],
             ],
@@ -210,10 +218,11 @@ class ExternalAuthControllerTest extends IntegrationTestCase
                     'auth_provider_id' => 1,
                     'params' => null,
                     'provider_username' => 'first_user',
+                ],
+                'meta' => [
                     'created' => '2018-04-07T12:51:27+00:00',
                     'modified' => '2018-04-07T12:51:27+00:00',
-                ],
-
+                ]
             ],
         ];
 

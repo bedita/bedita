@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 /**
  * BEdita, API-first content management framework
- * Copyright 2023 ChannelWeb Srl, Chialab Srl
+ * Copyright 2025 ChannelWeb Srl, Chialab Srl
  *
  * This file is part of BEdita: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published
@@ -67,11 +67,13 @@ class AuthProvidersControllerTest extends IntegrationTestCase
                         'url' => 'https://example.com/oauth2',
                         'params' => ['provider_username_field' => 'owner_id'],
                         'enabled' => true,
-                        'created' => '2018-04-07T12:51:27+00:00',
-                        'modified' => '2018-04-07T12:51:27+00:00',
                     ],
                     'links' => [
                         'self' => 'http://api.example.com/admin/auth_providers/1',
+                    ],
+                    'meta' => [
+                        'created' => '2018-04-07T12:51:27+00:00',
+                        'modified' => '2018-04-07T12:51:27+00:00',
                     ],
                 ],
                 [
@@ -83,12 +85,14 @@ class AuthProvidersControllerTest extends IntegrationTestCase
                         'url' => null,
                         'params' => ['status' => 'on'],
                         'enabled' => true,
-                        'created' => '2018-04-07T12:51:27+00:00',
-                        'modified' => '2018-04-07T12:51:27+00:00',
                     ],
                     'links' => [
                         'self' => 'http://api.example.com/admin/auth_providers/2',
                     ],
+                    'meta' => [
+                        'created' => '2018-04-07T12:51:27+00:00',
+                        'modified' => '2018-04-07T12:51:27+00:00',
+                    ]
                 ],
                 [
                     'id' => '3',
@@ -99,11 +103,13 @@ class AuthProvidersControllerTest extends IntegrationTestCase
                         'url' => 'https://out.example.com/oauth2',
                         'params' => ['provider_username_field' => 'owner_id'],
                         'enabled' => false,
-                        'created' => '2018-04-07T12:51:27+00:00',
-                        'modified' => '2018-04-07T12:51:27+00:00',
                     ],
                     'links' => [
                         'self' => 'http://api.example.com/admin/auth_providers/3',
+                    ],
+                    'meta' => [
+                        'created' => '2018-04-07T12:51:27+00:00',
+                        'modified' => '2018-04-07T12:51:27+00:00',
                     ],
                 ],
                 [
@@ -115,11 +121,13 @@ class AuthProvidersControllerTest extends IntegrationTestCase
                         'url' => null,
                         'params' => ['expiry' => '+5 minutes'],
                         'enabled' => true,
-                        'created' => '2018-04-07T12:51:27+00:00',
-                        'modified' => '2018-04-07T12:51:27+00:00',
                     ],
                     'links' => [
                         'self' => 'http://api.example.com/admin/auth_providers/4',
+                    ],
+                    'meta' => [
+                        'created' => '2018-04-07T12:51:27+00:00',
+                        'modified' => '2018-04-07T12:51:27+00:00',
                     ],
                 ],
             ],
@@ -216,10 +224,11 @@ class AuthProvidersControllerTest extends IntegrationTestCase
                     'url' => 'https://example.com/oauth2',
                     'params' => ['provider_username_field' => 'owner_id'],
                     'enabled' => true,
+                ],
+                'meta' => [
                     'created' => '2018-04-07T12:51:27+00:00',
                     'modified' => '2018-04-07T12:51:27+00:00',
                 ],
-
             ],
         ];
 

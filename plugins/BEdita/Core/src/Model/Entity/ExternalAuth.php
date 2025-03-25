@@ -42,5 +42,7 @@ class ExternalAuth extends Entity implements JsonApiSerializable
     protected $_accessible = [
         '*' => true,
         'id' => false,
+        'created' => false,
+        'modified' => false,
     ];
 }

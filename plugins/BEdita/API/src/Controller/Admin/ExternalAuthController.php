@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 /**
  * BEdita, API-first content management framework
- * Copyright 2017 ChannelWeb Srl, Chialab Srl
+ * Copyright 2025 ChannelWeb Srl, Chialab Srl
  *
  * This file is part of BEdita: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published
@@ -18,7 +18,7 @@ namespace BEdita\API\Controller\Admin;
 /**
  * Controller for `/admin/external_auth` endpoint.
  *
- * @since 4.0.0
+ * @since 5.38.0
  * @property \BEdita\Core\Model\Table\ExternalAuth $ExternalAuth
  */
 class ExternalAuthController extends AdminController

@@ -18,7 +18,7 @@ namespace BEdita\API\Controller\Admin;
 /**
  * Controller for `/admin/auth_providers` endpoint.
  *
- * @since 4.0.0
+ * @since 5.38.0
  * @property \BEdita\Core\Model\Table\AuthProviders $AuthProviders
  */
 class AuthProvidersController extends AdminController
