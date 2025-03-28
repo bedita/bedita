@@ -29,7 +29,6 @@ use Cake\ORM\Query\SelectQuery;
 use Cake\ORM\Rule\IsUnique;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
-use Cake\ORM\TableRegistry;
 use Cake\Utility\Text;
 use Cake\Validation\Validator;
 use stdClass;
@@ -37,11 +36,11 @@ use stdClass;
 /**
  * Trees Model
  *
- * @property \Cake\ORM\Association\BelongsTo $Objects
- * @property \Cake\ORM\Association\BelongsTo $ParentObjects
- * @property \Cake\ORM\Association\BelongsTo $RootObjects
- * @property \Cake\ORM\Association\BelongsTo $ParentNode
- * @property \Cake\ORM\Association\HasMany $ChildNodes
+ * @property \Cake\ORM\Association\BelongsTo|\BEdita\Core\Model\Table\ObjectsTable $Objects
+ * @property \Cake\ORM\Association\BelongsTo|\BEdita\Core\Model\Table\ObjectsTable $ParentObjects
+ * @property \Cake\ORM\Association\BelongsTo|\BEdita\Core\Model\Table\ObjectsTable $RootObjects
+ * @property \Cake\ORM\Association\BelongsTo|\BEdita\Core\Model\Table\TreesTable $ParentNode
+ * @property \Cake\ORM\Association\HasMany|\BEdita\Core\Model\Table\TreesTable $ChildNodes
  * @method \BEdita\Core\Model\Entity\Tree get(mixed $primaryKey, array|string $finder = 'all', \Psr\SimpleCache\CacheInterface|string|null $cache = null, \Closure|string|null $cacheKey = null, mixed ...$args)
  * @method \BEdita\Core\Model\Entity\Tree newEntity(array $data, array $options = [])
  * @method \BEdita\Core\Model\Entity\Tree[] newEntities(array $data, array $options = [])
@@ -259,10 +258,7 @@ class TreesTable extends Table
     public function beforeRules(EventInterface $event, EntityInterface $entity): void
     {
         if (empty($entity->get('slug'))) {
-            $object = TableRegistry::getTableLocator()->get('Objects')->get($entity->get('object_id'));
-            $slug = mb_strtolower(Text::slug((string)$object->get('title') ?: $object->get('type')));
-            $slug = Text::truncate($slug, 254 - strlen((string)$entity->get('object_id')));
-            $entity->set('slug', sprintf('%s-%s', $slug, $entity->get('object_id')));
+            $entity->set('slug', $this->Objects->get($entity->get('object_id'))->uname);
         } elseif (!empty($entity->get('slug')) && $entity->isDirty('slug')) {
             $slug = mb_strtolower(Text::slug((string)$entity->get('slug')));
             $slug = Text::truncate($slug, 255);
@@ -347,7 +343,7 @@ class TreesTable extends Table
 
         static $foldersType = null;
         if ($foldersType === null) {
-            $foldersType = TableRegistry::getTableLocator()->get('ObjectTypes')->get('folders')->id;
+            $foldersType = $this->Objects->ObjectTypes->get('folders')->id;
         }
 
         return $this->Objects->exists([

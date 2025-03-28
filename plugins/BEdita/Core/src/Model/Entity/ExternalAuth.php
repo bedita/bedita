@@ -14,6 +14,7 @@ declare(strict_types=1);
  */
 namespace BEdita\Core\Model\Entity;
 
+use BEdita\Core\Utility\JsonApiSerializable;
 use Cake\ORM\Entity;
 
 /**
@@ -30,13 +31,17 @@ use Cake\ORM\Entity;
  * @property \Cake\I18n\DateTime|null $modified
  * @since 4.0.0
  */
-class ExternalAuth extends Entity
+class ExternalAuth extends Entity implements JsonApiSerializable
 {
+    use JsonApiAdminTrait;
+
     /**
      * @inheritDoc
      */
     protected array $_accessible = [
         '*' => true,
         'id' => false,
+        'created' => false,
+        'modified' => false,
     ];
 }

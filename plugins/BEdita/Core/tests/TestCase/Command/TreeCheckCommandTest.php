@@ -144,6 +144,7 @@ class TreeCheckCommandTest extends TestCase
             $this->Trees->newEntity([
                 'object_id' => 12,
                 'parent_id' => null,
+                'slug' => 'foo-bar',
             ]),
             ['checkRules' => false]
         );
@@ -173,6 +174,7 @@ class TreeCheckCommandTest extends TestCase
             $this->Trees->newEntity([
                 'object_id' => 2,
                 'parent_id' => null,
+                'slug' => 'foo-bar',
             ]),
             ['checkRules' => false]
         );
@@ -201,6 +203,7 @@ class TreeCheckCommandTest extends TestCase
             $this->Trees->newEntity([
                 'object_id' => 4,
                 'parent_id' => 2,
+                'slug' => 'foo-bar',
             ]),
             ['checkRules' => false]
         );
@@ -238,6 +241,7 @@ class TreeCheckCommandTest extends TestCase
             $this->Trees->newEntity([
                 'object_id' => 2,
                 'parent_id' => 11,
+                'slug' => 'foo-bar',
             ]),
             ['checkRules' => false]
         );
