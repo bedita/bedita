@@ -40,6 +40,8 @@ class ListAssociatedActionTest extends TestCase
         'plugin.BEdita/Core.FakeTags',
         'plugin.BEdita/Core.FakeArticlesTags',
         'plugin.BEdita/Core.ObjectTypes',
+        'plugin.BEdita/Core.PropertyTypes',
+        'plugin.BEdita/Core.Properties',
         'plugin.BEdita/Core.Relations',
         'plugin.BEdita/Core.RelationTypes',
         'plugin.BEdita/Core.Objects',
@@ -282,5 +284,28 @@ class ListAssociatedActionTest extends TestCase
         $result = json_decode(json_encode($result->toArray()), true);
         static::assertEquals('Sub Folder', $result[0]['title']);
         static::assertEquals('title one', $result[1]['title']);
+    }
+
+    /**
+     * Test `sort` method with publish start sorting, which uses a query function.
+     *
+     * @return void
+     * @covers ::sort()
+     */
+    public function testSortWithPublishStart()
+    {
+        // Set children order
+        $Folders = TableRegistry::getTableLocator()->get('Folders');
+        $folder = $Folders->get(11);
+        $folder->set('children_order', 'publish_start');
+        $Folders->saveOrFail($folder);
+
+        // association Children
+        $association = $Folders->getAssociation('Children');
+        $action = new ListAssociatedAction(compact('association'));
+        $result = $action(['primaryKey' => 11]);
+        $result = json_decode(json_encode($result->toArray()), true);
+        static::assertEquals('title one', $result[0]['title']);
+        static::assertEquals('Sub Folder', $result[1]['title']);
     }
 }
