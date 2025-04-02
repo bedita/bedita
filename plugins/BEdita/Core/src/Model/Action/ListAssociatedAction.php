@@ -16,6 +16,7 @@ namespace BEdita\Core\Model\Action;
 
 use Cake\Collection\CollectionInterface;
 use Cake\Database\Expression\QueryExpression;
+use Cake\Database\ExpressionInterface;
 use Cake\Datasource\EntityInterface;
 use Cake\Datasource\Exception\InvalidPrimaryKeyException;
 use Cake\Datasource\Exception\RecordNotFoundException;
@@ -303,10 +304,14 @@ class ListAssociatedAction extends BaseAction
      */
     protected function sort(Association $association, mixed $primaryKey): array
     {
+        $sort = $association->getSort();
         if ($association->getName() === 'Children') {
-            return (array)TableRegistry::getTableLocator()->get('Folders')->getSort($primaryKey);
+            $sort = TableRegistry::getTableLocator()->get('Folders')->getSort($primaryKey);
+        }
+        if ($sort instanceof ExpressionInterface) {
+            return $sort;
         }
 
-        return (array)$association->getSort();
+        return (array)$sort;
     }
 }
