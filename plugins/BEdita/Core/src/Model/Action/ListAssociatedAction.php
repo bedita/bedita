@@ -300,9 +300,9 @@ class ListAssociatedAction extends BaseAction
      *
      * @param \Cake\ORM\Association $association Association
      * @param mixed $primaryKey Primary key
-     * @return array<string, 'asc' | 'desc'>
+     * @return \Cake\Database\ExpressionInterface|array<string, 'asc' | 'desc'>
      */
-    protected function sort(Association $association, mixed $primaryKey): array
+    protected function sort(Association $association, mixed $primaryKey): array|ExpressionInterface
     {
         $sort = $association->getSort();
         if ($association->getName() === 'Children') {
