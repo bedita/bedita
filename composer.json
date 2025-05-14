@@ -42,6 +42,9 @@
         "dereuromark/cakephp-ide-helper": "^1.17"
     },
     "conflict": {
+        "enqueue/dsn": "!=0.10.19",
+        "enqueue/enqueue": "!=0.10.24",
+        "enqueue/simple-client": "!=0.10.19",
         "symfony/console": "^7",
         "symfony/filesystem": "^7"
     },
