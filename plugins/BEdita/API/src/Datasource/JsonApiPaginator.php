@@ -16,6 +16,8 @@ declare(strict_types=1);
 namespace BEdita\API\Datasource;
 
 use BEdita\Core\Model\Table\ObjectsTable;
+use Cake\Database\Expression\FunctionExpression;
+use Cake\Database\Expression\OrderClauseExpression;
 use Cake\Datasource\Paging\NumericPaginator;
 use Cake\Datasource\QueryInterface;
 use Cake\Datasource\RepositoryInterface;
@@ -91,6 +93,24 @@ class JsonApiPaginator extends NumericPaginator
             unset($options['order']);
             if (in_array($options['sort'], ObjectsTable::DATERANGES_SORT_FIELDS)) {
                 $options['sortableFields'] = [$options['sort']];
+            }
+
+            $sortableFields = $this->getSortableFields($options);
+            $canSortField = fn (string $field): bool => $sortableFields === null || in_array($field, $sortableFields, true);
+            if ($options['sort'] === 'published' && $canSortField('publish_start')) {
+                $options['order'] = new OrderClauseExpression(
+                    new FunctionExpression(
+                        'COALESCE',
+                        [
+                            $object->getAlias() . '.publish_start' => 'identifier',
+                            $object->getAlias() . '.created' => 'identifier',
+                        ],
+                        ['timestamp', 'timestamp'],
+                        'timestamp',
+                    ),
+                    $options['direction'] ?? 'asc',
+                );
+                unset($options['sort'], $options['direction']);
             }
         }
 
