@@ -1060,10 +1060,10 @@ class ObjectsControllerTest extends IntegrationTestCase
     {
         $expected = [
             'links' => [
-                'self' => 'http://api.example.com/documents?sort=published',
+                'self' => 'http://api.example.com/documents?sort=-published',
                 'home' => 'http://api.example.com/home',
-                'first' => 'http://api.example.com/documents?sort=published',
-                'last' => 'http://api.example.com/documents?sort=published',
+                'first' => 'http://api.example.com/documents?sort=-published',
+                'last' => 'http://api.example.com/documents?sort=-published',
                 'prev' => null,
                 'next' => null,
             ],
@@ -1176,7 +1176,7 @@ class ObjectsControllerTest extends IntegrationTestCase
                             'list' => ['one', 'two', 'three'],
                         ],
                         'lang' => 'en',
-                        'publish_start' => '2016-05-13T07:09:23+00:00',
+                        'publish_start' => '2015-01-01T00:00:00+00:00',
                         'publish_end' => '2016-05-13T07:09:23+00:00',
                         'categories' => [
                             ['name' => 'first-cat', 'labels' => ['default' => 'First category'], 'params' => '100', 'label' => 'First category'],
@@ -1250,8 +1250,10 @@ class ObjectsControllerTest extends IntegrationTestCase
             ],
         ];
 
+        $this->fetchTable('Documents')->updateAll(['publish_start' => '2015-01-01 00:00:00'], ['id' => 2]);
+
         $this->configRequestHeaders();
-        $this->get('/documents?sort=published');
+        $this->get('/documents?sort=-published');
         $result = json_decode((string)$this->_response->getBody(), true);
 
         $this->assertResponseCode(200);
