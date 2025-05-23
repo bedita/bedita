@@ -113,9 +113,9 @@ class ExternalAuthTable extends Table
      *
      * @param \Cake\Event\EventInterface $event beforeSave event instance.
      * @param \Cake\Datasource\EntityInterface $entity Entity.
-     * @return bool
+     * @return void
      */
-    public function beforeSave(EventInterface $event, EntityInterface $entity): bool
+    public function beforeSave(EventInterface $event, EntityInterface $entity): void
     {
         if (!$entity->has('user_id')) {
             /** @var \BEdita\Core\Model\Entity\AuthProvider $authProvider*/
@@ -145,7 +145,7 @@ class ExternalAuthTable extends Table
             $entity->set($this->Users->getForeignKey(), $user->id);
         }
 
-        return true;
+        $event->setResult(true);
     }
 
     /**

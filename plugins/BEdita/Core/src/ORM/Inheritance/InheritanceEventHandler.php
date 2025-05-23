@@ -109,15 +109,17 @@ class InheritanceEventHandler implements EventListenerInterface
      * @param \Cake\Event\EventInterface $event Dispatched event.
      * @param \Cake\Datasource\EntityInterface $entity Entity.
      * @param \ArrayObject $options Save options.
-     * @return bool
+     * @return void
      */
-    public function beforeSave(EventInterface $event, EntityInterface $entity, ArrayObject $options): bool
+    public function beforeSave(EventInterface $event, EntityInterface $entity, ArrayObject $options): void
     {
         /** @var \BEdita\Core\ORM\Inheritance\Table $table */
         $table = $event->getSubject();
         $inheritedTable = $table->inheritedTable();
         if ($inheritedTable === null) {
-            return true;
+            $event->setResult(true);
+
+            return;
         }
 
         // Prepare parent entity.
@@ -137,14 +139,14 @@ class InheritanceEventHandler implements EventListenerInterface
 
         if ($inheritedTable->save($parentEntity, $options) === false) {
             $entity->setErrors($parentEntity->getErrors());
+            $event->setResult(false);
 
-            return false;
+            return;
         }
 
         // Copy results from parent entity.
         $this->toDescendant($entity, $parentEntity, $table, $inheritedTable);
-
-        return true;
+        $event->setResult(true);
     }
 
     /**
@@ -208,12 +210,12 @@ class InheritanceEventHandler implements EventListenerInterface
             array_merge(array_keys($entity->toArray()), $entity->getHidden()), // All properties.
             $table->getSchema()->columns() // Remove columns of current table.
         );
-        $parent->set($entity->extract($properties), ['guard' => false]); // Copy properties.
+        $parent->patch($entity->extract($properties), ['guard' => false]); // Copy properties.
         foreach ($properties as $property) {
             $parent->setDirty($property, $entity->isDirty($property));
         }
         if (!$entity->isNew()) {
-            $parent->set(
+            $parent->patch(
                 array_combine(
                     (array)$inheritedTable->getPrimaryKey(),
                     $entity->extract((array)$table->getPrimaryKey())
@@ -245,7 +247,7 @@ class InheritanceEventHandler implements EventListenerInterface
         }
 
         if ($entity->isNew()) {
-            $entity->set(
+            $entity->patch(
                 array_combine(
                     (array)$table->getPrimaryKey(),
                     $parent->extract((array)$inheritedTable->getPrimaryKey())

@@ -187,20 +187,22 @@ class ObjectsTable extends Table
      *
      * @param \Cake\Event\EventInterface $event Dispatched event.
      * @param \Cake\Datasource\EntityInterface $entity Entity being saved.
-     * @return bool
+     * @return void
      */
-    public function beforeSave(EventInterface $event, EntityInterface $entity): bool
+    public function beforeSave(EventInterface $event, EntityInterface $entity): void
     {
         $objectType = $this->ObjectTypes->get($entity->get('type'));
         if ($objectType->get('is_abstract') || !$objectType->get('enabled')) {
             // Cannot save objects of an abstract type.
-            return false;
+            $event->setResult(false);
+
+            return;
         }
         $this->checkStatus($entity);
         $this->checkLangTag($entity);
         $this->checkLocked($entity);
 
-        return true;
+        $event->setResult(true);
     }
 
     /**

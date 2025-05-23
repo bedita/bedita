@@ -71,7 +71,7 @@ class AnalyticsMiddlewareTest extends TestCase
             ],
             'simple' => [
                 function (Event $e, ServerRequestInterface $request, Response $response) {
-                    return 'result';
+                    $e->setResult('result');
                 },
                 ['result'],
             ],

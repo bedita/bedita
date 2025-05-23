@@ -73,15 +73,16 @@ class UserModifiedBehavior extends Behavior
     }
 
     /**
-     * There is only one event handler, it can be configured to be called for any event
+     * There is only one event handler, it can be configured to be called for any event.
+     * Set event result to `true` irrespective of the behavior logic, the save will not be prevented.
      *
      * @param \Cake\Event\EventInterface $event Event instance.
      * @param \Cake\Datasource\EntityInterface $entity Entity instance.
      * @throws \UnexpectedValueException if a field's when value is misdefined
-     * @return bool Returns true irrespective of the behavior logic, the save will not be prevented.
+     * @return void
      * @throws \UnexpectedValueException When the value for an event is not 'always', 'new' or 'existing'
      */
-    public function handleEvent(Event $event, EntityInterface $entity): bool
+    public function handleEvent(Event $event, EntityInterface $entity): void
     {
         $eventName = $event->getName();
         $events = $this->_config['events'];
@@ -103,7 +104,7 @@ class UserModifiedBehavior extends Behavior
             }
         }
 
-        return true;
+        $event->setResult(true);
     }
 
     /**

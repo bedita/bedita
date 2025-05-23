@@ -212,7 +212,7 @@ class SetAssociatedAction extends UpdateAssociatedAction
             return 0;
         }
 
-        $relatedEntity->set(array_combine(
+        $relatedEntity->patch(array_combine(
             $foreignKey,
             $bindingKeyValue
         ));

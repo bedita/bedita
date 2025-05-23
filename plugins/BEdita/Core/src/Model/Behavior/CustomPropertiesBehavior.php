@@ -129,21 +129,23 @@ class CustomPropertiesBehavior extends Behavior
      *
      * @param \Cake\Event\EventInterface $event Fired event.
      * @param \Cake\ORM\Query\SelectQuery $query Query object instance.
-     * @return \Cake\ORM\Query\SelectQuery
+     * @return void
      */
-    public function beforeFind(EventInterface $event, SelectQuery $query): SelectQuery
+    public function beforeFind(EventInterface $event, SelectQuery $query): void
     {
-        return $query->formatResults(
-            function (CollectionInterface $results) {
-                return $results->map(function ($row) {
-                    if (!is_array($row) && !$row instanceof EntityInterface) {
-                        return $row;
-                    }
+        $event->setResult(
+            $query->formatResults(
+                function (CollectionInterface $results) {
+                    return $results->map(function ($row) {
+                        if (!is_array($row) && !$row instanceof EntityInterface) {
+                            return $row;
+                        }
 
-                    return $this->promoteProperties($row);
-                });
-            },
-            SelectQuery::PREPEND
+                        return $this->promoteProperties($row);
+                    });
+                },
+                SelectQuery::PREPEND
+            )
         );
     }
 
@@ -152,16 +154,14 @@ class CustomPropertiesBehavior extends Behavior
      *
      * @param \Cake\Event\EventInterface $event Fired event.
      * @param \Cake\Datasource\EntityInterface $entity Entity.
-     * @return false|null
+     * @return void
      */
-    public function beforeSave(EventInterface $event, EntityInterface $entity): ?false
+    public function beforeSave(EventInterface $event, EntityInterface $entity): void
     {
         $this->demoteProperties($entity);
         if ($entity->hasErrors()) {
-            return false;
+            $event->setResult(false);
         }
-
-        return null;
     }
 
     /**
@@ -206,8 +206,8 @@ class CustomPropertiesBehavior extends Behavior
             return array_merge($entity, $customProps);
         }
 
-        /** @var \Cake\Datasource\EntityInterface $entity */
-        $entity->set($customProps, ['guard' => false])->clean();
+        /** @var \Cake\ORM\Entity $entity */
+        $entity->patch($customProps, ['guard' => false])->clean();
         $readOnlyProps = array_filter(Hash::combine((array)$this->available, '{s}.name', '{s}.read_only'));
         $entity->setAccess(array_keys($readOnlyProps), false);
 

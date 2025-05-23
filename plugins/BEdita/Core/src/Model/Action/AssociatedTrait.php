@@ -192,7 +192,7 @@ trait AssociatedTrait
             $data = [];
         }
 
-        $joinData->set($this->getJunctionExtraFields($source, $target), ['guard' => false]);
+        $joinData->patch($this->getJunctionExtraFields($source, $target), ['guard' => false]);
 
         // ensure that if source was not linked to target through joinData the join entity is marked as new
         // foreign key corresponds to source primary key
@@ -251,7 +251,7 @@ trait AssociatedTrait
             return false;
         }
 
-        $existingJoin->set($this->getJunctionExtraFields($source, $new), ['guard' => false]);
+        $existingJoin->patch($this->getJunctionExtraFields($source, $new), ['guard' => false]);
         $existingJoin = $this->Association->junction()->patchEntity($existingJoin, $data, ['_skipSearchIndex' => true]);
         $errors = $existingJoin->getErrors();
         if (!empty($errors)) {

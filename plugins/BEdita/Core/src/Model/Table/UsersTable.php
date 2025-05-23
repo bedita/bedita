@@ -252,9 +252,9 @@ class UsersTable extends Table
      * @param \Cake\Datasource\EntityInterface $authProvider Auth provider entity.
      * @param string $providerUsername Provider username.
      * @param int $userId Existing user entity id, if null a new user is created.
-     * @return \Cake\Datasource\EntityInterface|bool
+     * @return void
      */
-    public function externalAuthLogin(EventInterface $event, EntityInterface $authProvider, string $providerUsername, ?int $userId = null): EntityInterface|bool
+    public function externalAuthLogin(EventInterface $event, EntityInterface $authProvider, string $providerUsername, ?int $userId = null): void
     {
         $params = $event->getData('params');
         $externalAuth = $this->ExternalAuth->newEntity([
@@ -266,7 +266,7 @@ class UsersTable extends Table
             $externalAuth->set('user_id', $userId);
         }
 
-        return $this->ExternalAuth->saveOrFail($externalAuth);
+        $event->setResult($this->ExternalAuth->saveOrFail($externalAuth));
     }
 
     /**

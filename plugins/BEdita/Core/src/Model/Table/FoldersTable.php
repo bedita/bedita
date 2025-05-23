@@ -166,11 +166,10 @@ class FoldersTable extends ObjectsTable
      * @param \Cake\Datasource\EntityInterface $entity The entity to save
      * @return void
      */
-    public function beforeSave(EventInterface $event, EntityInterface $entity): bool
+    public function beforeSave(EventInterface $event, EntityInterface $entity): void
     {
         $entity->setDirty('parents', false);
-
-        return parent::beforeSave($event, $entity);
+        parent::beforeSave($event, $entity);
     }
 
     /**

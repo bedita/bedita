@@ -58,13 +58,13 @@ class ThumbsCommand extends Command
     public function execute(Arguments $args, ConsoleIo $io)
     {
         $handler = new ImageThumbsHandler();
-        $ids = (array)$args->getMultipleOption('id');
+        $ids = (array)$args->getArrayOption('id');
         $startAt = filter_var(
             $args->getOption('start-at'),
             FILTER_VALIDATE_INT,
             ['options' => ['min_range' => 1], 'flags' => FILTER_NULL_ON_FAILURE],
         );
-        $presets = (array)$args->getMultipleOption('preset') ?: ThumbsCommand::availablePresets();
+        $presets = (array)$args->getArrayOption('preset') ?: ThumbsCommand::availablePresets();
 
         $io->out(sprintf(
             '=====> Operation started at <info>%s</info>, using presets: %s',

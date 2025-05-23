@@ -139,7 +139,7 @@ class OAuth2IdentifierTest extends TestCase
 
         $params = (array)$authProvider->get('params');
         $params['options'] = ['client' => ['adapter' => $mock, 'protocolVersion' => '2']];
-        $authProvider->set(compact('params'));
+        $authProvider->patch(compact('params'));
 
         $identifier = new OAuth2Identifier();
         $identifier->setConfig(compact('authProvider'));
