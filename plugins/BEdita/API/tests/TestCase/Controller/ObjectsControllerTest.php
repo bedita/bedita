@@ -1047,6 +1047,221 @@ class ObjectsControllerTest extends IntegrationTestCase
     }
 
     /**
+     * Test index method.
+     *
+     * @return void
+     * @covers ::index()
+     * @covers ::initialize()
+     * @covers ::addCount()
+     * @covers ::prepareFilter()
+     * @covers ::prepareInclude()
+     */
+    public function testIndexSortPublished(): void
+    {
+        $expected = [
+            'links' => [
+                'self' => 'http://api.example.com/documents?sort=-published',
+                'home' => 'http://api.example.com/home',
+                'first' => 'http://api.example.com/documents?sort=-published',
+                'last' => 'http://api.example.com/documents?sort=-published',
+                'prev' => null,
+                'next' => null,
+            ],
+            'meta' => [
+                'pagination' => [
+                    'count' => 2,
+                    'page' => 1,
+                    'page_count' => 1,
+                    'page_items' => 2,
+                    'page_size' => 20,
+                ],
+                'schema' => [
+                    'documents' => [
+                        '$id' => 'http://api.example.com/model/schema/documents',
+                        'revision' => TestConstants::SCHEMA_REVISIONS['documents'],
+                    ],
+                ],
+            ],
+            'data' => [
+                [
+                    'id' => '3',
+                    'type' => 'documents',
+                    'attributes' => [
+                        'status' => 'draft',
+                        'uname' => 'title-two',
+                        'title' => 'title two',
+                        'description' => 'description here',
+                        'body' => 'body here',
+                        'extra' => null,
+                        'lang' => null,
+                        'publish_start' => null,
+                        'publish_end' => null,
+                        'categories' => [],
+                        'another_title' => null,
+                        'another_description' => null,
+                    ],
+                    'meta' => [
+                        'locked' => false,
+                        'created' => '2016-05-12T07:09:23+00:00',
+                        'modified' => '2016-05-13T08:30:00+00:00',
+                        'published' => null,
+                        'created_by' => 1,
+                        'modified_by' => 5,
+                    ],
+                    'links' => [
+                        'self' => 'http://api.example.com/documents/3',
+                    ],
+                    'relationships' => [
+                        'test' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/documents/3/test',
+                                'self' => 'http://api.example.com/documents/3/relationships/test',
+                            ],
+                        ],
+                        'inverse_test' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/documents/3/inverse_test',
+                                'self' => 'http://api.example.com/documents/3/relationships/inverse_test',
+                            ],
+                        ],
+                        'parents' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/documents/3/parents',
+                                'self' => 'http://api.example.com/documents/3/relationships/parents',
+                            ],
+                        ],
+                        'translations' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/documents/3/translations',
+                                'self' => 'http://api.example.com/documents/3/relationships/translations',
+                            ],
+                        ],
+                        'test_simple' => [
+                            'links' => [
+                                'self' => 'http://api.example.com/documents/3/relationships/test_simple',
+                                'related' => 'http://api.example.com/documents/3/test_simple',
+                            ],
+                        ],
+                        'test_defaults' => [
+                            'links' => [
+                                'self' => 'http://api.example.com/documents/3/relationships/test_defaults',
+                                'related' => 'http://api.example.com/documents/3/test_defaults',
+                            ],
+                        ],
+                        'inverse_test_simple' => [
+                            'links' => [
+                                'self' => 'http://api.example.com/documents/3/relationships/inverse_test_simple',
+                                'related' => 'http://api.example.com/documents/3/inverse_test_simple',
+                            ],
+                        ],
+                        'inverse_test_defaults' => [
+                            'links' => [
+                                'self' => 'http://api.example.com/documents/3/relationships/inverse_test_defaults',
+                                'related' => 'http://api.example.com/documents/3/inverse_test_defaults',
+                            ],
+                        ],
+                    ],
+                ],
+                [
+                    'id' => '2',
+                    'type' => 'documents',
+                    'attributes' => [
+                        'status' => 'on',
+                        'uname' => 'title-one',
+                        'title' => 'title one',
+                        'description' => 'description here',
+                        'body' => 'body here',
+                        'extra' => [
+                            'abstract' => 'abstract here',
+                            'list' => ['one', 'two', 'three'],
+                        ],
+                        'lang' => 'en',
+                        'publish_start' => '2015-01-01T00:00:00+00:00',
+                        'publish_end' => '2016-05-13T07:09:23+00:00',
+                        'categories' => [
+                            ['name' => 'first-cat', 'labels' => ['default' => 'First category'], 'params' => '100', 'label' => 'First category'],
+                            ['name' => 'second-cat', 'labels' => ['default' => 'Second category'], 'params' => null, 'label' => 'Second category'],
+                        ],
+                        'another_title' => null,
+                        'another_description' => null,
+                    ],
+                    'meta' => [
+                        'locked' => true,
+                        'created' => '2016-05-13T07:09:23+00:00',
+                        'modified' => '2016-05-13T07:09:23+00:00',
+                        'published' => '2016-05-13T07:09:23+00:00',
+                        'created_by' => 1,
+                        'modified_by' => 1,
+                    ],
+                    'links' => [
+                        'self' => 'http://api.example.com/documents/2',
+                    ],
+                    'relationships' => [
+                        'test' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/documents/2/test',
+                                'self' => 'http://api.example.com/documents/2/relationships/test',
+                            ],
+                        ],
+                        'inverse_test' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/documents/2/inverse_test',
+                                'self' => 'http://api.example.com/documents/2/relationships/inverse_test',
+                            ],
+                        ],
+                        'parents' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/documents/2/parents',
+                                'self' => 'http://api.example.com/documents/2/relationships/parents',
+                            ],
+                        ],
+                        'translations' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/documents/2/translations',
+                                'self' => 'http://api.example.com/documents/2/relationships/translations',
+                            ],
+                        ],
+                        'test_simple' => [
+                            'links' => [
+                                'self' => 'http://api.example.com/documents/2/relationships/test_simple',
+                                'related' => 'http://api.example.com/documents/2/test_simple',
+                            ],
+                        ],
+                        'test_defaults' => [
+                            'links' => [
+                                'self' => 'http://api.example.com/documents/2/relationships/test_defaults',
+                                'related' => 'http://api.example.com/documents/2/test_defaults',
+                            ],
+                        ],
+                        'inverse_test_simple' => [
+                            'links' => [
+                                'self' => 'http://api.example.com/documents/2/relationships/inverse_test_simple',
+                                'related' => 'http://api.example.com/documents/2/inverse_test_simple',
+                            ],
+                        ],
+                        'inverse_test_defaults' => [
+                            'links' => [
+                                'self' => 'http://api.example.com/documents/2/relationships/inverse_test_defaults',
+                                'related' => 'http://api.example.com/documents/2/inverse_test_defaults',
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+        ];
+
+        $this->fetchTable('Documents')->updateAll(['publish_start' => '2015-01-01 00:00:00'], ['id' => 2]);
+
+        $this->configRequestHeaders();
+        $this->get('/documents?sort=-published');
+        $result = json_decode((string)$this->_response->getBody(), true);
+
+        $this->assertResponseCode(200);
+        $this->assertContentType('application/vnd.api+json');
+        static::assertEquals($expected, $result);
+    }
+
+    /**
      * Test index method on DELETE.
      *
      * @return void

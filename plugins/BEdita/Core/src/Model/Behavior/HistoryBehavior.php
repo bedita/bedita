@@ -49,6 +49,7 @@ class HistoryBehavior extends Behavior
         ],
         'obfuscate' => [
             'password' => '*****',
+            'old_password' => '*****',
         ],
         'resource_type' => 'objects',
         'implementedFinders' => [
