@@ -487,7 +487,7 @@ class UniqueNameBehaviorTest extends TestCase
             static::assertNotEmpty($uname);
             static::assertEquals('uh-la-la', $uname);
 
-            return false;
+            $event->setResult(false);
         });
 
         $Documents->save($entity);

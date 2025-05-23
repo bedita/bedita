@@ -141,7 +141,7 @@ class StreamTest extends TestCase
     {
         /** @var \BEdita\Core\Model\Entity\Stream $stream */
         $stream = $this->Streams->newEmptyEntity();
-        $stream->set($data, ['guard' => false]);
+        $stream->patch($data, ['guard' => false]);
 
         $path = $stream->filesystemPath($filesystem, $subLevels);
 

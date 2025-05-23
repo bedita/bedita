@@ -253,14 +253,14 @@ class InheritanceEventHandlerTest extends TestCase
         $expectedFelines = $this->fakeFelines->find()->count();
 
         $eventDispatched = 0;
-        $this->fakeAnimals->getEventManager()->on('Model.beforeSave', function () use (&$eventDispatched) {
+        $this->fakeAnimals->getEventManager()->on('Model.beforeSave', function (Event $event) use (&$eventDispatched) {
             $eventDispatched++;
 
             /** @var \Cake\Database\Connection $connection */
             $connection = $this->fakeFelines->getConnection();
             static::assertTrue($connection->inTransaction());
 
-            return false; // This table is not meant to store data of your pet!
+            $event->setResult(false); // This table is not meant to store data of your pet!
         });
 
         $feline = $this->fakeFelines->newEmptyEntity();
@@ -473,14 +473,14 @@ class InheritanceEventHandlerTest extends TestCase
         $expectedFelines = $this->fakeFelines->find()->count();
 
         $eventDispatched = 0;
-        $this->fakeAnimals->getEventManager()->on('Model.beforeDelete', function () use (&$eventDispatched) {
+        $this->fakeAnimals->getEventManager()->on('Model.beforeDelete', function (Event $event) use (&$eventDispatched) {
             $eventDispatched++;
 
             /** @var \Cake\Database\Connection $connection */
             $connection = $this->fakeFelines->getConnection();
             static::assertTrue($connection->inTransaction());
 
-            return false;
+            $event->setResult(false);
         });
 
         $feline = $this->fakeFelines->get(1);

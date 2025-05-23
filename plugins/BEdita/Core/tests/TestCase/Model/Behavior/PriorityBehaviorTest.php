@@ -115,7 +115,7 @@ class PriorityBehaviorTest extends TestCase
         $table = TableRegistry::getTableLocator()->get('ObjectRelations');
 
         $entity = $table->newEmptyEntity();
-        $entity->set([
+        $entity->patch([
             'left_id' => 9,
             'relation_id' => 3,
             'right_id' => 10,
@@ -160,7 +160,7 @@ class PriorityBehaviorTest extends TestCase
         static::assertSame(7, $entities[2]->get('right_id'));
         static::assertSame(3, $entities[2]->get('priority'));
 
-        $entities[2]->set(['priority' => 1]);
+        $entities[2]->patch(['priority' => 1]);
         $table->save($entities[2]);
 
         $entities = $table->find()
@@ -209,7 +209,7 @@ class PriorityBehaviorTest extends TestCase
         static::assertSame(7, $entities[2]->get('right_id'));
         static::assertSame(3, $entities[2]->get('priority'));
 
-        $entities[0]->set(['priority' => 3]);
+        $entities[0]->patch(['priority' => 3]);
         $table->save($entities[0]);
 
         $entities = $table->find()
