@@ -130,6 +130,7 @@ class UsersTable extends Table
         $validator = $this->validationDefault($validator);
 
         $validator
+            ->remove('email')
             ->email('email')
             ->add('email', 'unique', ['rule' => 'validateUnique', 'provider' => 'table']);
 
@@ -157,6 +158,7 @@ class UsersTable extends Table
         $validator = $this->validationDefault($validator);
 
         $validator
+            ->remove('email')
             ->email('email')
             ->requirePresence('email')
             ->add('email', 'unique', ['rule' => 'validateUnique', 'provider' => 'table']);

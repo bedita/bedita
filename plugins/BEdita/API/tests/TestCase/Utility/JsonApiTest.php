@@ -808,8 +808,7 @@ class JsonApiTest extends TestCase
             static::assertEquals('on', $item->get('status'));
 
             $item->set('status', 'off');
-
-            return $items;
+            $event->setResult($items);
         });
 
         /** @var \BEdita\Core\Model\Entity\ObjectEntity $document */
@@ -839,8 +838,7 @@ class JsonApiTest extends TestCase
             }
 
             $data = Hash::insert($data, '{n}.meta.after_format', true);
-
-            return $data;
+            $event->setResult($data);
         });
 
         $documents = TableRegistry::getTableLocator()->get('Documents')

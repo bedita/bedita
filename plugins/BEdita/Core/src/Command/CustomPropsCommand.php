@@ -106,7 +106,7 @@ class CustomPropsCommand extends Command
         $count = $err = 0;
         foreach ($this->objectsGenerator($query) as $object) {
             $props = (array)$object->get('custom_props');
-            $object->set($props);
+            $object->patch($props, ['asOriginal' => true]);
             try {
                 $this->Table->saveOrFail($object);
                 $count++;

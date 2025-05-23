@@ -205,7 +205,7 @@ class ResourcesModifyCommandTest extends TestCase
     {
         $this->exec('resources_modify "First app" --type wrong --field description', ['A sample description']);
         $this->assertExitCode(Command::CODE_ERROR);
-        $this->assertErrorContains('`wrong` is not a valid value for `--type`. Please use one of `applications, roles, endpoints`');
+        $this->assertErrorContains('`wrong` is not a valid value for `--type`. Please use one of `applications|roles|endpoints`');
     }
 
     /**

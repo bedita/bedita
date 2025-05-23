@@ -113,9 +113,9 @@ class Relation extends Entity implements JsonApiSerializable
      * Magic setter for params.
      *
      * @param array $params Relation params.
-     * @return array
+     * @return array|null
      */
-    protected function _setParams(array $params): array
+    protected function _setParams(?array $params): ?array
     {
         if (is_array($params) && !empty($params)) {
             $params = array_merge([
