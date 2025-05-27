@@ -165,7 +165,7 @@ class ObjectsController extends ResourcesController
     /**
      * @inheritDoc
      */
-    public function beforeFilter(EventInterface $event)
+    public function beforeFilter(EventInterface $event): void
     {
         if (
             $this->request->getParam('action') === 'relationships'
@@ -178,7 +178,7 @@ class ObjectsController extends ResourcesController
             ));
         }
 
-        return parent::beforeFilter($event);
+        parent::beforeFilter($event);
     }
 
     /**
