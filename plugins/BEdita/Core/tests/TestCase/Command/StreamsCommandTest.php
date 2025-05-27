@@ -106,7 +106,6 @@ class StreamsCommandTest extends TestCase
         $results = $Streams->find('all')->all();
         $data = $results->toList();
         foreach ($data as $entry) {
-            $entry['original_width'] = $entry['width'];
             if (preg_match('/image\//', $entry['mime_type']) && $entry['mime_type'] != 'image/svg+xml') {
                 $this->assertNotNull($entry['width']);
             }
@@ -132,7 +131,7 @@ class StreamsCommandTest extends TestCase
             try {
                 $content = $stream->contents;
                 if ($content !== null) {
-                    $stream->contents = $content;
+                    $stream->set('contents', $content, ['asOriginal' => true]);
                     $Streams->saveOrFail($stream);
                 }
             } catch (Throwable $t) {
