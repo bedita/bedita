@@ -123,7 +123,7 @@ class AuthenticationTest extends IntegrationTestCase
             'Content-Type' => 'application/json',
             'Authorization' => 'Bearer gustavo',
         ];
-        $this->configRequest(compact('headers'));
+        $this->configRequestHeaders('POST', $headers);
         $this->post('/auth', json_encode(['grant_type' => 'refresh_token']));
 
         $this->assertResponseCode(401);
