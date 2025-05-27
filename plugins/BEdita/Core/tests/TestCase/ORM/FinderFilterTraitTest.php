@@ -50,7 +50,7 @@ class FinderFilterTraitTest extends TestCase
     {
         parent::setUp();
 
-        $this->Table = new class () extends Table {
+        $this->Table = new class (['alias' => 'TestFinderFilterTraitTable']) extends Table {
             use FinderFilterTrait;
 
             public function initialize(array $config): void
