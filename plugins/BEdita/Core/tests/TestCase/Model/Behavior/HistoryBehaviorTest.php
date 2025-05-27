@@ -326,11 +326,11 @@ class HistoryBehaviorTest extends TestCase
         return [
             'logged' => [
                 [2],
-                [],
+                null,
             ],
             'options' => [
                 [2],
-                [5],
+                5,
             ],
         ];
     }
@@ -339,17 +339,17 @@ class HistoryBehaviorTest extends TestCase
      * Test `findHistoryEditor` finder.
      *
      * @param array $expected Expected result
-     * @param array $options Filter options
+     * @param int|null $editorId The editor id
      * @return void
      * @dataProvider findHistoryEditorProvider
      * @covers ::findHistoryEditor()
      */
-    public function testFindHistoryEditor(array $expected, array $options): void
+    public function testFindHistoryEditor(array $expected, ?int $editorId): void
     {
         LoggedUser::setUserAdmin();
 
         $result = TableRegistry::getTableLocator()->get('Documents')
-            ->find('historyEditor', subjectValue: $options)
+            ->find('historyEditor', editorId: $editorId)
             ->find('list', keyField: 'id', valueField: 'id')
             ->toArray();
 
