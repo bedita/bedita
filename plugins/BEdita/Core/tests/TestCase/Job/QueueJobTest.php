@@ -17,6 +17,10 @@ namespace BEdita\Core\Test\TestCase\Job;
 use BEdita\Core\Job\JobService;
 use BEdita\Core\Job\QueueJob;
 use BEdita\Core\Job\ServiceRegistry;
+use BEdita\Core\Model\Table\AsyncJobsTable;
+use Cake\Datasource\Exception\RecordNotFoundException;
+use Cake\Event\EventInterface;
+use Cake\Event\EventManager;
 use Cake\Queue\Job\Message;
 use Cake\TestSuite\TestCase;
 use Enqueue\Null\NullConnectionFactory;
@@ -121,6 +125,11 @@ class QueueJobTest extends TestCase
                 Processor::REJECT,
                 new RuntimeException('Big big error'),
             ],
+            'requeue' => [
+                Processor::REQUEUE,
+                false,
+                'e533e1cf-b12c-4dbe-8fb7-b25fafbd2f76',
+            ],
         ];
     }
 
@@ -144,5 +153,37 @@ class QueueJobTest extends TestCase
         $result = $job->execute($message);
 
         static::assertSame($expected, $result);
+    }
+
+    /**
+     * Test the case when the service fails and then the job is missing.
+     *
+     * @return void
+     * @covers ::execute()
+     */
+    public function testServiceFailsThenMissingAsyncJob(): void
+    {
+        ServiceRegistry::set('example', $this->getMockService(false));
+        $message = $this->createMessage(['data' => ['uuid' => self::TEST_UUID]]);
+
+        $count = 0;
+        $callback = function (EventInterface $event) use (&$count) {
+            if (!$event->getSubject() instanceof AsyncJobsTable) {
+                return;
+            }
+
+            // first time is `lock` then `unlock` and finally `get` in `QueueJob::execute`
+            if ($count >= 2) {
+                throw new RecordNotFoundException();
+            }
+            $count++;
+        };
+        EventManager::instance()->on('Model.beforeFind', $callback);
+
+        $job = new QueueJob();
+        $result = $job->execute($message);
+        static::assertEquals(Processor::REJECT, $result);
+
+        EventManager::instance()->off('Model.beforeFind', $callback);
     }
 }

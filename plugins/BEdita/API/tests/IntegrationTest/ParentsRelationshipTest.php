@@ -334,6 +334,7 @@ class ParentsRelationshipTest extends IntegrationTestCase
             'menu' => true,
             'canonical' => true,
             'params' => null,
+            'slug' => 'gustavo-supporto-profile-4',
         ];
         static::assertEquals($expected, Hash::get($result, 'data.0.meta.relation'));
 
@@ -348,6 +349,7 @@ class ParentsRelationshipTest extends IntegrationTestCase
             'menu' => true,
             'canonical' => true,
             'params' => null,
+            'slug' => 'sub-folder-12',
         ];
         static::assertEquals($expected, Hash::get($result, 'data.meta.relation'));
     }

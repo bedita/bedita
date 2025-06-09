@@ -16,6 +16,8 @@ declare(strict_types=1);
 namespace BEdita\API\Test\TestCase\Datasource;
 
 use BEdita\API\Datasource\JsonApiPaginator;
+use Cake\Database\Expression\FunctionExpression;
+use Cake\Database\Expression\OrderClauseExpression;
 use Cake\Http\Exception\BadRequestException;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
@@ -120,6 +122,20 @@ class JsonApiPaginatorTest extends TestCase
             'special' => [
                 ['date_ranges_max_end_date' => 'desc'],
                 '-date_ranges_max_end_date',
+            ],
+            'published desc' => [
+                new OrderClauseExpression(
+                    new FunctionExpression('COALESCE', ['Roles.publish_start' => 'identifier', 'Roles.created' => 'identifier'], ['timestamp', 'timestamp'], 'timestamp'),
+                    'desc',
+                ),
+                '-published',
+            ],
+            'published asc' => [
+                new OrderClauseExpression(
+                    new FunctionExpression('COALESCE', ['Roles.publish_start' => 'identifier', 'Roles.created' => 'identifier'], ['timestamp', 'timestamp'], 'timestamp'),
+                    'asc',
+                ),
+                'published',
             ],
             'multipleFields' => [
                 new BadRequestException('Unsupported sorting field'),

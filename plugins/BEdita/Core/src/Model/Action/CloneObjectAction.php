@@ -22,6 +22,7 @@ use BEdita\Core\Utility\SchemaTools;
 use BEdita\Core\Utility\Text;
 use Cake\Datasource\EntityInterface;
 use Cake\Http\Exception\UnauthorizedException;
+use Cake\ORM\Association\HasMany;
 use Cake\ORM\Locator\LocatorAwareTrait;
 use Cake\Utility\Hash;
 
@@ -92,13 +93,19 @@ class CloneObjectAction extends BaseAction
     public function cloneEntity(ObjectEntity $sourceEntity, array $attributes): EntityInterface
     {
         $schema = $this->Table->getSchema();
-        $reset = SchemaTools::getPrimaryFields($schema, ['count' => 1]) + ['created', 'modified'];
+        $reset = array_merge(
+            SchemaTools::getPrimaryFields($schema, ['count' => 1]),
+            ['created', 'modified', 'created_by', 'modified_by']
+        );
         $unique = SchemaTools::getUniqueFields($schema, ['count' => 1]);
         $nullable = SchemaTools::getNullableFields($schema);
         $schemaInfo = compact('reset', 'unique', 'nullable', 'attributes');
         /** @var \BEdita\Core\Model\Entity\ObjectEntity $entity */
         $entity = $this->Table->newEmptyEntity();
         $entityAttributes = $sourceEntity->getVisible();
+        $entityAttributes = array_filter($entityAttributes, function ($field) {
+            return $field !== 'streams';
+        });
         foreach ($entityAttributes as $field) {
             $this->setEntityField($schemaInfo, $sourceEntity, $entity, $field);
         }
@@ -131,6 +138,23 @@ class CloneObjectAction extends BaseAction
             return $attributes[$field];
         }
         $value = $sourceEntity->get($field);
+        $association = $sourceEntity->getTable()->associations()->getByProperty($field);
+        if ($association instanceof HasMany) {
+            $targetTable = $association->getTarget();
+            $foreignKey = $association->getForeignKey();
+            $foreignKeys = is_array($foreignKey) ? $foreignKey : [$foreignKey];
+            $value = array_map(function ($data) use ($targetTable, $foreignKeys) {
+                unset($data['id']);
+                foreach ($foreignKeys as $foreignKey) {
+                    unset($data[$foreignKey]);
+                }
+
+                return $targetTable->newEntity($data->toArray());
+            }, $value);
+            $entity->set($field, $value);
+
+            return $value;
+        }
         if (!in_array($field, (array)Hash::get($schemaInfo, 'unique'))) {
             $entity->set($field, $value);
 

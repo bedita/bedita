@@ -30,6 +30,8 @@ return function (RouteBuilder $routes) {
         ];
         $adminControllers = [
             'applications',
+            'auth_providers',
+            'external_auth',
             'async_jobs',
             'config',
             'endpoints',
@@ -243,6 +245,12 @@ return function (RouteBuilder $routes) {
             '/trees/**',
             ['controller' => 'Trees', 'action' => 'index', '_method' => 'GET'],
             ['_name' => 'trees:index']
+        );
+        // Tree paths.
+        $routes->connect(
+            '/tree_paths/**',
+            ['controller' => 'TreePaths', 'action' => 'index', '_method' => 'GET'],
+            ['_name' => 'tree_paths:index']
         );
 
         // Upload file and create object.

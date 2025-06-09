@@ -42,9 +42,28 @@ class QueueJob implements JobInterface
         $this->AsyncJobs = $this->fetchTable('AsyncJobs');
         $uuid = $message->getArgument('uuid');
         $this->log(sprintf('Processing job "%s"', $uuid), 'debug');
-        $success = $this->run($uuid);
+        $success = false;
+        try {
+            $success = $this->run($uuid);
+        } catch (RecordNotFoundException $e) {
+            $this->log(sprintf('Could not obtain lock on job "%s"', $uuid), 'warning');
 
-        return $success ? Processor::ACK : Processor::REJECT;
+            return Processor::REJECT;
+        }
+
+        if ($success) {
+            return Processor::ACK;
+        }
+
+        try {
+            $asyncJob = $this->AsyncJobs->get($uuid);
+        } catch (RecordNotFoundException $e) {
+            $this->log(sprintf('Job "%s" not found', $uuid), 'warning');
+
+            return Processor::REJECT;
+        }
+
+        return $asyncJob->max_attempts > 0 ? Processor::REQUEUE : Processor::REJECT;
     }
 
     /**
@@ -55,14 +74,7 @@ class QueueJob implements JobInterface
      */
     protected function run($uuid): bool
     {
-        try {
-            $asyncJob = $this->AsyncJobs->lock($uuid);
-        } catch (RecordNotFoundException $e) {
-            $this->log(sprintf('Could not obtain lock on job "%s"', $uuid), 'warning');
-
-            return false;
-        }
-
+        $asyncJob = $this->AsyncJobs->lock($uuid);
         $success = false;
         $messages = [];
         try {

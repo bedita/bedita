@@ -78,8 +78,12 @@ class CheckFilesystemTaskTest extends TestCase
     public function testExecuteAutodetectOk()
     {
         $user = exec('ps aux | grep -E "[a]pache|[h]ttpd|[_]www|[w]ww-data|[n]ginx" | grep -v root | head -1 | cut -d\\  -f1');
-        if (!$user) {
+        if (!$user || posix_getpwnam($user) === false) {
             static::markTestSkipped('No webserver running');
+        }
+        $u = posix_getpwnam($user);
+        if (empty($u['gid'])) {
+            static::markTestSkipped('No user gid');
         }
 
         mkdir(static::TEMP_DIR);

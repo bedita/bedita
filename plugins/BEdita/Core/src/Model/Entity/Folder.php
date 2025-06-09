@@ -27,6 +27,7 @@ use Cake\Utility\Hash;
  *
  * @property int $parent_id
  * @property string $path
+ * @property array $slug_path
  *
  * @property \BEdita\Core\Model\Entity\Folder|null $parent
  * @property \BEdita\Core\Model\Entity\ObjectEntity[] $children
@@ -45,8 +46,8 @@ class Folder extends ObjectEntity
 
         $this->setAccess('parents', false);
         $this->setHidden(['parents', 'tree_parent_nodes'], true);
-        $this->setVirtual(['path'], true);
-        $this->setAccess('path', false);
+        $this->setVirtual(['path', 'slug_path'], true);
+        $this->setAccess(['path', 'slug_path'], false);
     }
 
     /**
@@ -286,6 +287,29 @@ class Folder extends ObjectEntity
         }
 
         return sprintf('/%s', implode('/', $path));
+    }
+
+    /**
+     * Getter for `slugPath` virtual property.
+     *
+     * @return array|null
+     * @throws \RuntimeException If folder is not found on tree.
+     */
+    protected function _getSlugPath()
+    {
+        if (!$this->has('id')) {
+            return null;
+        }
+
+        try {
+            return TableRegistry::getTableLocator()->get('Trees')
+                ->find('pathNodes', [$this->id])
+                ->select(['id' => 'object_id', 'menu', 'params', 'slug'], true)
+                ->disableHydration()
+                ->toArray();
+        } catch (RecordNotFoundException $previous) {
+            throw new \RuntimeException(__d('bedita', 'Folder "{0}" is not on the tree.', $this->id), 0, $previous);
+        }
     }
 
     /**

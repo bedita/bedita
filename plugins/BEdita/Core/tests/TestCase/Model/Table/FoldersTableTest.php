@@ -18,7 +18,11 @@ namespace BEdita\Core\Test\TestCase\Model\Table;
 use BEdita\Core\Model\Entity\ObjectType;
 use BEdita\Core\Utility\LoggedUser;
 use Cake\Core\Configure;
+use Cake\Database\Expression\FunctionExpression;
+use Cake\Database\Expression\OrderClauseExpression;
 use Cake\Database\Expression\QueryExpression;
+use Cake\Database\ExpressionInterface;
+use Cake\Database\ValueBinder;
 use Cake\ORM\Association\BelongsToMany;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
@@ -539,74 +543,125 @@ class FoldersTableTest extends TestCase
             'Order position Trees.tree_left asc' => [
                 11,
                 'position',
-                ['Trees.tree_left' => 'asc'],
+                ['Trees.tree_left' => 'ASC'],
             ],
             'Order -position Trees.tree_left desc' => [
                 11,
                 '-position',
-                ['Trees.tree_left' => 'desc'],
+                ['Trees.tree_left' => 'DESC'],
             ],
             'Order title Children.title asc' => [
                 11,
                 'title',
-                ['Children.title' => 'asc'],
+                ['Children.title' => 'ASC'],
             ],
             'Order -title Children.title desc' => [
                 11,
                 '-title',
-                ['Children.title' => 'desc'],
+                ['Children.title' => 'DESC'],
             ],
             'Order created Children.created asc' => [
                 11,
                 'created',
-                ['Children.created' => 'asc'],
+                ['Children.created' => 'ASC'],
             ],
             'Order -created Children.created desc' => [
                 11,
                 '-created',
-                ['Children.created' => 'desc'],
+                ['Children.created' => 'DESC'],
             ],
             'Order modified Children.modified asc' => [
                 11,
                 'modified',
-                ['Children.modified' => 'asc'],
+                ['Children.modified' => 'ASC'],
             ],
             'Order -modified Children.modified desc' => [
                 11,
                 '-modified',
-                ['Children.modified' => 'desc'],
+                ['Children.modified' => 'DESC'],
             ],
             'Order publish_start Children.publish_start asc' => [
                 11,
                 'publish_start',
-                ['Children.publish_start' => 'asc'],
+                new OrderClauseExpression(new FunctionExpression('COALESCE', ['Children.publish_start' => 'identifier', 'Children.created' => 'identifier']), 'ASC'),
             ],
             'Order -publish_start Children.publish_start desc' => [
                 11,
                 '-publish_start',
-                ['Children.publish_start' => 'desc'],
+                new OrderClauseExpression(new FunctionExpression('COALESCE', ['Children.publish_start' => 'identifier', 'Children.created' => 'identifier']), 'DESC'),
             ],
             'Default order Trees.tree_left asc' => [
                 11,
                 null,
-                ['Trees.tree_left' => 'asc'],
+                ['Trees.tree_left' => 'ASC'],
             ],
         ];
     }
 
     /**
-     * Test `getSort` method.
+     * Test {@see \BEdita\Core\Model\Table\FoldersTable::getSort()} method.
      *
+     * @param int $id Folder ID.
+     * @param string|null $order Value of `children_order` property.
+     * @param \Cake\Database\ExpressionInterface|array<string, string> Expected order.
      * @return void
      * @dataProvider getSortProvider()
      * @covers ::getSort()
      */
-    public function testGetSort(int $id, ?string $order, array $expected): void
+    public function testGetSort(int $id, ?string $order, $expected): void
     {
         $folder = $this->Folders->get($id);
-        $folder = $this->Folders->patchEntity($folder, ['children_order' => $order]);
-        $this->Folders->save($folder);
+        $folder->set('children_order', $order);
+        $this->Folders->saveOrFail($folder);
+
         $actual = $this->Folders->getSort($id);
-        static::assertSame($expected, $actual);
+
+        if ($expected instanceof ExpressionInterface) {
+            $binder = $this->Folders->selectQuery()->getValueBinder();
+            static::assertInstanceOf(ExpressionInterface::class, $actual);
+            static::assertSame($expected->sql($binder), $actual->sql($binder));
+        } else {
+            static::assertSame($expected, $actual);
+        }
+    }
+
+    /**
+     * Test {@see \BEdita\Core\Model\Table\FoldersTable::getSort()} method reading the order directly from the entity.
+     *
+     * @param int $id Folder ID.
+     * @param string|null $order Value of `children_order` property.
+     * @param \Cake\Database\ExpressionInterface|array<string, string> Expected order.
+     * @return void
+     * @dataProvider getSortProvider()
+     * @covers ::getSort()
+     */
+    public function testGetSortFolder(int $id, ?string $order, $expected): void
+    {
+        $folder = $this->Folders->get($id);
+        $folder->set('children_order', $order);
+
+        $actual = $this->Folders->getSort($folder);
+
+        if ($expected instanceof ExpressionInterface) {
+            static::assertInstanceOf(ExpressionInterface::class, $actual);
+            static::assertSame($expected->sql(new ValueBinder()), $actual->sql(new ValueBinder()));
+        } else {
+            static::assertSame($expected, $actual);
+        }
+    }
+
+    /**
+     * Test {@see \BEdita\Core\Model\Table\FoldersTable::getSort()} method with an invalid field for `children_order`.
+     *
+     * @return void
+     * @covers ::getSort()
+     * @testWith ["invalid_field"]
+     *           ["-uname"]
+     */
+    public function testGetSortInvalidField(string $order): void
+    {
+        $actual = $this->Folders->getSort($this->Folders->newEmptyEntity()->set('children_order', $order));
+
+        static::assertSame(['Trees.tree_left' => 'ASC'], $actual);
     }
 }
