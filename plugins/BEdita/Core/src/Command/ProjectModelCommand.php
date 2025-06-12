@@ -88,6 +88,19 @@ class ProjectModelCommand extends Command
 
             return self::CODE_ERROR;
         }
+        // adjust project config content, if needed
+        if (isset($project['config'])) {
+            $project['config'] = array_map(
+                function ($item) {
+                    if (is_array($item['content'])) {
+                        return ['content' => json_encode($item['content'])];
+                    }
+
+                    return $item;
+                },
+                Hash::get($project, 'config', [])
+            );
+        }
 
         if ($args->getOption('cache-clear')) {
             Cache::clearAll();
