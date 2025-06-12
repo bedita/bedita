@@ -92,11 +92,7 @@ class ProjectModelCommand extends Command
         if (isset($project['config'])) {
             $project['config'] = array_map(
                 function ($item) {
-                    if (is_array($item['content'])) {
-                        return ['content' => json_encode($item['content'])];
-                    }
-
-                    return $item;
+                    return is_array($item['content']) ? ['content' => json_encode($item['content'])] : $item;
                 },
                 Hash::get($project, 'config', [])
             );
