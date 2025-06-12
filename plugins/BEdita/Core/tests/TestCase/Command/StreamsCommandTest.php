@@ -243,7 +243,7 @@ class StreamsCommandTest extends TestCase
             public function update(Stream $stream): bool
             {
                 $this->io = new ConsoleIo(new StubConsoleOutput(), new StubConsoleOutput(), new StubConsoleInput([]));
-                $this->table = new class extends StreamsTable {
+                $this->table = new class (['alias' => 'TestStreamsCommandTable']) extends StreamsTable {
                     public function saveOrFail(EntityInterface $entity, array $options = []): EntityInterface
                     {
                         throw new RecordNotFoundException();

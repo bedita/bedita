@@ -289,7 +289,7 @@ class LoginController extends AppController
 
         /** @var \BEdita\Core\Model\Entity\User|null $user */
         $user = $this->Users
-            ->find('login', compact('conditions', 'contain'))
+            ->find('login', conditions: $conditions, contain: $contain)
             ->first();
         if (empty($user)) {
             throw new UnauthorizedException(__('Request not authorized'));

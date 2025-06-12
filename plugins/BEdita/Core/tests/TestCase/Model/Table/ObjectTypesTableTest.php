@@ -500,7 +500,7 @@ class ObjectTypesTableTest extends TestCase
         return [
             'error' => [
                 new LogicException('Missing required parameter "name"'),
-                [],
+                ['name' => ''],
             ],
             'right' => [
                 ['documents', 'profiles'],
@@ -542,7 +542,7 @@ class ObjectTypesTableTest extends TestCase
      * @covers ::findByRelation()
      * @dataProvider findByRelationProvider()
      */
-    public function testFindByRelation($expected, array $options)
+    public function testFindByRelation(array|Exception $expected, array $options): void
     {
         if ($expected instanceof Exception) {
             $this->expectException(get_class($expected));
@@ -550,7 +550,7 @@ class ObjectTypesTableTest extends TestCase
         }
 
         $result = $this->ObjectTypes
-            ->find('byRelation', $options)
+            ->find('byRelation', ...$options)
             ->find('list')
             ->all()
             ->toList();
@@ -805,21 +805,17 @@ class ObjectTypesTableTest extends TestCase
     public static function findObjectIdProvider(): array
     {
         return [
-            'missingId' => [
-                new BadFilterException('Missing required parameter "id"'),
-                [],
-            ],
             'emptyId' => [
                 new BadFilterException('Missing required parameter "id"'),
-                ['id' => ''],
+                '',
             ],
             'findById' => [
                 'documents',
-                ['id' => 2],
+                2,
             ],
             'findByUname' => [
                 'users',
-                ['id' => 'first-user'],
+                'first-user',
             ],
         ];
     }
@@ -828,19 +824,19 @@ class ObjectTypesTableTest extends TestCase
      * Test custom finder `findObjectId()`
      *
      * @param mixed $expected The expected result.
-     * @param array $options The option passed to finder.
+     * @param array $id The id passed to finder.
      * @return void
      * @covers ::findObjectId
      * @dataProvider findObjectIdProvider
      */
-    public function testFindObjectId($expected, array $options)
+    public function testFindObjectId(mixed $expected, string|int $id): void
     {
         if ($expected instanceof Exception) {
             $this->expectException(get_class($expected));
             $this->expectExceptionMessage($expected->getMessage());
         }
 
-        $type = $this->ObjectTypes->find('objectId', $options)->firstOrFail();
+        $type = $this->ObjectTypes->find('objectId', id: $id)->firstOrFail();
         static::assertEquals($expected, $type->name);
     }
 
@@ -852,17 +848,13 @@ class ObjectTypesTableTest extends TestCase
     public static function findParentProvider(): array
     {
         return [
-            'missing' => [
-                new BadFilterException('Missing required parameter "parent"'),
-                [],
-            ],
             'find id' => [
                 'documents',
-                [1],
+                1,
             ],
             'find by name' => [
                 'files',
-                ['media'],
+                'media',
             ],
         ];
     }
@@ -871,19 +863,19 @@ class ObjectTypesTableTest extends TestCase
      * Test `findParent()` finder method
      *
      * @param mixed $expected The expected result.
-     * @param array $options The option passed to finder.
+     * @param string|int $parent The parent.
      * @return void
      * @covers ::findParent()
      * @dataProvider findParentProvider
      */
-    public function testFindParent($expected, array $options)
+    public function testFindParent($expected, string|int $parent)
     {
         if ($expected instanceof Exception) {
             $this->expectException(get_class($expected));
             $this->expectExceptionMessage($expected->getMessage());
         }
 
-        $type = $this->ObjectTypes->find('parent', $options)->orderBy(['name' => 'ASC'])->firstOrFail();
+        $type = $this->ObjectTypes->find('parent', parent: $parent)->orderBy(['name' => 'ASC'])->firstOrFail();
         static::assertEquals($expected, $type->name);
     }
 }

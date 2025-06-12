@@ -15,6 +15,7 @@ declare(strict_types=1);
 namespace BEdita\API\Test\IntegrationTest;
 
 use BEdita\API\TestSuite\IntegrationTestCase;
+use BEdita\Core\Utility\LoggedUser;
 use Cake\ORM\Locator\LocatorAwareTrait;
 use Cake\Utility\Hash;
 
@@ -26,6 +27,15 @@ use Cake\Utility\Hash;
 class AuthenticationTest extends IntegrationTestCase
 {
     use LocatorAwareTrait;
+
+    /**
+     * @inheritDoc
+     */
+    public function setUp(): void
+    {
+        parent::setUp();
+        LoggedUser::resetUser();
+    }
 
     /**
      * Data provider for `testAuth` method.
@@ -113,16 +123,16 @@ class AuthenticationTest extends IntegrationTestCase
             'Content-Type' => 'application/json',
             'Authorization' => 'Bearer gustavo',
         ];
-        $this->configRequest(compact('headers'));
+        $this->configRequestHeaders('POST', $headers);
         $this->post('/auth', json_encode(['grant_type' => 'refresh_token']));
 
-        $this->assertResponseCode(403);
+        $this->assertResponseCode(401);
         $this->assertContentType('application/vnd.api+json');
         $this->assertResponseNotEmpty();
         $body = json_decode((string)$this->_response->getBody(), true);
 
         static::assertArrayHasKey('error', $body);
-        static::assertEquals('403', $body['error']['status']);
+        static::assertEquals('401', $body['error']['status']);
     }
 
     /**

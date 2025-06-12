@@ -80,7 +80,7 @@ class ListObjectsAction extends BaseAction
         $action = new ListEntitiesAction(['table' => $this->Table]);
         $query = $action->execute(compact('filter', 'contain'));
         if (isset($type)) {
-            $query = $query->find('type', (array)$type);
+            $query = $query->find('type', value: $type);
         }
 
         if (!empty($data['lang'])) {

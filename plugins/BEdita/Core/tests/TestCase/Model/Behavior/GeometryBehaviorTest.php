@@ -119,7 +119,7 @@ class GeometryBehaviorTest extends TestCase
      * Test findGeo finder method.
      *
      * @param array $conditions Date conditions.
-     * @param array|false $numExpected Number of expected results.
+     * @param int $numExpected Number of expected results.
      * @return void
      * @dataProvider findGeoProvider
      * @covers ::findGeo()
@@ -127,13 +127,13 @@ class GeometryBehaviorTest extends TestCase
      * @covers ::getDistanceExpression()
      * @covers ::parseCoordinates()
      */
-    public function testFindGeo($conditions, $numExpected): void
+    public function testFindGeo(array $conditions, int $numExpected): void
     {
         if (!static::$geoSupport) {
             $this->expectException(BadFilterException::class);
         }
 
-        $result = $this->Locations->find('geo', $conditions)->toArray();
+        $result = $this->Locations->find('geo', ...$conditions)->toArray();
 
         if (static::$geoSupport) {
             static::assertEquals($numExpected, count($result));
@@ -150,9 +150,14 @@ class GeometryBehaviorTest extends TestCase
     public static function badGeoProvider(): array
     {
         return [
-            'gustavo' => [
+            'empty center string' => [
                 [
-                    'gustavo' => '44.4944876,11.3464721',
+                    'center' => '',
+                ],
+            ],
+            'empty center array' => [
+                [
+                    'center' => [],
                 ],
             ],
             'not geo' => [
@@ -187,9 +192,9 @@ class GeometryBehaviorTest extends TestCase
      * @covers ::findGeo()
      * @covers ::parseCoordinates()
      */
-    public function testBadGeo($conditions)
+    public function testBadGeo(array $conditions): void
     {
         $this->expectException(BadFilterException::class);
-        $this->Locations->find('geo', $conditions)->toArray();
+        $this->Locations->find('geo', ...$conditions)->toArray();
     }
 }

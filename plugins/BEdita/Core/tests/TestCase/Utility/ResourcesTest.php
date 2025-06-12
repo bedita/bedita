@@ -353,7 +353,7 @@ class ResourcesTest extends TestCase
         }
 
         foreach ($data as $options) {
-            static::assertCount(0, $Table->find('resource', $options));
+            static::assertCount(0, $Table->find('resource', ...$options));
         }
     }
 
@@ -495,7 +495,7 @@ class ResourcesTest extends TestCase
                 ->where(['name IN' => Hash::extract($data, '{n}.name')])
                 ->toArray();
         } else {
-            $resources = $Table->find('resource', $data[0])->toArray();
+            $resources = $Table->find('resource', ...$data[0])->toArray();
         }
 
         static::assertEquals(count($data), count($resources));

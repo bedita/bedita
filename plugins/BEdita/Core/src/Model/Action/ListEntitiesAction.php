@@ -15,18 +15,22 @@ declare(strict_types=1);
 namespace BEdita\Core\Model\Action;
 
 use BEdita\Core\Exception\BadFilterException;
+use BEdita\Core\ORM\FinderFilterInterface;
+use BEdita\Core\ORM\FinderFilterTrait;
 use BEdita\Core\ORM\QueryFilterTrait;
 use Cake\ORM\Query\SelectQuery;
 use Cake\ORM\Table;
 use Cake\Utility\Inflector;
+use Error;
 
 /**
  * Command to list entities.
  *
  * @since 4.0.0
  */
-class ListEntitiesAction extends BaseAction
+class ListEntitiesAction extends BaseAction implements FinderFilterInterface
 {
+    use FinderFilterTrait;
     use QueryFilterTrait;
 
     /**
@@ -82,7 +86,7 @@ class ListEntitiesAction extends BaseAction
     /**
      * Build a filter and return modified query object.
      *
-     * @param \Cake\ORM\Query $query Query object instance.
+     * @param \Cake\ORM\Query\SelectQuery $query Query object instance.
      * @param array $filter Filter data.
      * @return \Cake\ORM\Query\SelectQuery
      * @throws \BEdita\Core\Exception\BadFilterException
@@ -92,15 +96,25 @@ class ListEntitiesAction extends BaseAction
         $customPropsOptions = [];
         foreach ($filter as $key => $value) {
             $variableKey = Inflector::variable($key);
-            if ($this->Table->hasFinder($variableKey)) {
-                // Finder.
-                if ($value === true) {
-                    $value = [];
+            $hasFinder = $this->Table instanceof FinderFilterInterface
+                ? $this->Table->hasFilter($variableKey)
+                : $this->hasFilter($variableKey, $this->Table);
+
+            if ($hasFinder) {
+                try {
+                    $query = $this->Table instanceof FinderFilterInterface
+                        ? $this->Table->callFilter($variableKey, $query, $value)
+                        : $this->callFilter($variableKey, $query, $value, $this->Table);
+
+                    continue;
+                } catch (Error $e) {
+                    if (strpos($e->getMessage(), 'Unknown named parameter') !== false) {
+                        throw new BadFilterException([
+                            'title' => __d('bedita', 'Invalid data'),
+                            'detail' => sprintf('Filter %s error: %s', $key, $e->getMessage()),
+                        ]);
+                    }
                 }
-
-                $query = $query->find($variableKey, (array)$value);
-
-                continue;
             }
 
             $camelizedKey = Inflector::camelize($key);
@@ -152,7 +166,7 @@ class ListEntitiesAction extends BaseAction
         }
 
         if (!empty($customPropsOptions)) {
-            $query = $query->find('customProp', $customPropsOptions);
+            $query = $query->find('customProp', ...$customPropsOptions);
         }
 
         return $query;

@@ -104,8 +104,8 @@ class CustomPropertiesBehavior extends Behavior
         }
 
         $this->available = TableRegistry::getTableLocator()->get('Properties')
-            ->find('type', ['dynamic'])
-            ->find('objectType', [$objectType->id])
+            ->find('type', propType: 'dynamic')
+            ->find('objectType', for: $objectType->id)
             ->where(['enabled' => true, 'is_static' => false])
             ->all()
             ->indexBy('name')
@@ -308,18 +308,26 @@ class CustomPropertiesBehavior extends Behavior
     /**
      * Finder for custom property.
      *
+     * The following are equivalent:
+     * ```
+     * $table->find('customProp', value: ['prop_name' => 'prop_value']);
+     * $table->find('customProp', ...['prop_name' => 'prop_value']);
+     * $table->find('customProp', prop_name: 'prop_value');
+     * ```
+     *
      * @param \Cake\ORM\Query\SelectQuery $query Query object instance.
-     * @param array $options Options.
+     * @param mixed $args Named arguments. If `value` is present it will be used.
      * @return \Cake\ORM\Query\SelectQuery
      * @throws \Cake\Http\Exception\BadRequestException When
      */
-    public function findCustomProp(SelectQuery $query, array $options): SelectQuery
+    public function findCustomProp(SelectQuery $query, mixed ...$args): SelectQuery
     {
         // for now we handle just MySQL
         if (!($query->getConnection()->getDriver() instanceof Mysql)) {
             throw new BadFilterException(__d('bedita', 'customProp finder isn\'t supported for datasource'));
         }
 
+        $options = $args['value'] ?? $args;
         $available = $this->getAvailable();
         $options = array_intersect_key($options, $available);
         if (empty($options)) {

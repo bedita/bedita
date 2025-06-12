@@ -344,7 +344,7 @@ class CustomPropertiesBehaviorTest extends TestCase
     {
         $result = TableRegistry::getTableLocator()->get('Objects')
             ->find('list')
-            ->find('type', ['documents'])
+            ->find('type', value: ['documents'])
             ->toArray();
 
         static::assertNotEmpty($result);
@@ -594,7 +594,7 @@ class CustomPropertiesBehaviorTest extends TestCase
 
         $result = $this->getTableLocator()
             ->get($tableName)
-            ->find('customProp', $options)
+            ->find('customProp', ...$options)
             ->find('list')
             ->orderByAsc('id')
             ->toArray();
@@ -623,14 +623,14 @@ class CustomPropertiesBehaviorTest extends TestCase
         $profile->set('number_of_friends', 10);
         $Profiles->saveOrFail($profile);
 
-        $result = $Profiles->find('customProp', ['number_of_friends' => 10])
+        $result = $Profiles->find('customProp', value: ['number_of_friends' => 10])
             ->find('list')
             ->orderByAsc('id')
             ->toArray();
 
         static::assertEquals([$profile->id], array_keys($result));
 
-        $result = $Profiles->find('customProp', ['number_of_friends' => '10'])
+        $result = $Profiles->find('customProp', number_of_friends: '10')
             ->find('list')
             ->orderByAsc('id')
             ->toArray();

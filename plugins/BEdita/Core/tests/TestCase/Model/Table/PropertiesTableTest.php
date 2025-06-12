@@ -152,20 +152,27 @@ class PropertiesTableTest extends TestCase
         return [
             'objects' => [
                 [],
-                ['objects'],
+                'objects',
             ],
             'documents' => [
                 [
                     'another_title',
                     'another_description',
                 ],
-                ['documents'],
+                'documents',
+            ],
+            'documents by id' => [
+                [
+                    'another_title',
+                    'another_description',
+                ],
+                2,
             ],
             'media' => [
                 [
                     'media_property',
                 ],
-                ['media'],
+                'media',
             ],
             'files' => [
                 [
@@ -174,7 +181,7 @@ class PropertiesTableTest extends TestCase
                     'media_property',
                     'files_property',
                 ],
-                ['files'],
+                'files',
             ],
             'profiles' => [
                 [
@@ -183,22 +190,14 @@ class PropertiesTableTest extends TestCase
                     'number_of_friends',
                     'street_address',
                 ],
-                ['profiles'],
+                'profiles',
             ],
             'users' => [
                 [
                     'another_username',
                     'another_email',
                 ],
-                ['users'],
-            ],
-            'too few' => [
-                new BadFilterException(__d('bedita', 'Missing object type to get properties for')),
-                [],
-            ],
-            'too many' => [
-                new BadFilterException(__d('bedita', 'Missing object type to get properties for')),
-                ['gustavo', 'supporto'],
+                'users',
             ],
         ];
     }
@@ -207,21 +206,15 @@ class PropertiesTableTest extends TestCase
      * Test finder by object type.
      *
      * @param array|\Exception $expected List of expected properties names.
-     * @param array $options Options to be passed to finder.
+     * @param string|int $for Name or id passed to finder.
      * @return void
      * @dataProvider findObjectTypeProvider()
      * @covers ::findObjectType()
      */
-    public function testFindObjectType($expected, array $options)
+    public function testFindObjectType($expected, string|int $for)
     {
-        if ($expected instanceof Exception) {
-            $this->expectException(get_class($expected));
-            $this->expectExceptionCode($expected->getCode());
-            $this->expectExceptionMessage($expected->getMessage());
-        }
-
-        $result = $this->Properties->find('objectType', $options)
-            ->find('type', ['dynamic'])
+        $result = $this->Properties->find('objectType', for: $for)
+            ->find('type', propType: 'dynamic')
             ->all()
             ->extract('name')
             ->toList();
@@ -350,8 +343,8 @@ class PropertiesTableTest extends TestCase
         }
 
         $count = 0;
-        $result = $this->Properties->find('objectType', [$objectType])
-            ->find('type', [$type])
+        $result = $this->Properties->find('objectType', for: $objectType)
+            ->find('type', propType: $type)
             ->where(['enabled' => true])
             ->all()
             ->each(function ($row) use (&$count) {
@@ -419,7 +412,7 @@ class PropertiesTableTest extends TestCase
             'media_property',
         ];
 
-        $result = $this->Properties->find('objectType', ['media'])
+        $result = $this->Properties->find('objectType', for: 'media')
             ->all()
             ->extract('name')
             ->toList();
@@ -444,8 +437,8 @@ class PropertiesTableTest extends TestCase
             'media_property',
         ];
 
-        $result = $this->Properties->find('objectType', ['media'])
-            ->find('type', ['dynamic'])
+        $result = $this->Properties->find('objectType', for: 'media')
+            ->find('type', propType: 'dynamic')
             ->all()
             ->extract('name')
             ->toList();
@@ -470,10 +463,11 @@ class PropertiesTableTest extends TestCase
                     'object_type_name' => 'documents',
                 ],
             ],
-            'no name' => [
-                new BadFilterException('Missing required parameter "name"'),
+            'property with alternative `object`' => [
+                1,
                 [
-                    'object_type_name' => 'documents',
+                    'name' => 'another_title',
+                    'object' => 'documents',
                 ],
             ],
             'no type' => [
@@ -500,7 +494,7 @@ class PropertiesTableTest extends TestCase
             $this->expectException(get_class($expected));
             $this->expectExceptionMessage($expected->getMessage());
         }
-        $query = $this->Properties->find('resource', $options);
+        $query = $this->Properties->find('resource', ...$options);
         $entity = $query->first();
         static::assertEquals(1, $query->count());
         static::assertEquals($expected, $entity->id);

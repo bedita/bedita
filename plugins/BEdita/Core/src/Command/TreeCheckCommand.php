@@ -185,7 +185,7 @@ class TreeCheckCommand extends Command
      */
     protected function getFoldersNotInTree(): SelectQuery
     {
-        return $this->Objects->find('type', ['folders'])
+        return $this->Objects->find('type', value: ['folders'])
             ->select([
                 $this->Objects->aliasField('id'),
                 $this->Objects->aliasField('uname'),
@@ -201,7 +201,7 @@ class TreeCheckCommand extends Command
      */
     protected function getUbiquitousFolders(): SelectQuery
     {
-        return $this->Objects->find('type', ['folders'])
+        return $this->Objects->find('type', value: ['folders'])
             ->select([
                 $this->Objects->aliasField('id'),
                 $this->Objects->aliasField('uname'),
@@ -223,7 +223,7 @@ class TreeCheckCommand extends Command
      */
     protected function getObjectsInRoot(): SelectQuery
     {
-        return $this->Objects->find('type', ['!=' => 'folders'])
+        return $this->Objects->find('type', value: ['!=' => 'folders'])
             ->select([
                 $this->Objects->aliasField('id'),
                 $this->Objects->aliasField('uname'),
@@ -250,7 +250,7 @@ class TreeCheckCommand extends Command
             'foreignKey' => 'parent_id',
         ]);
 
-        return $this->Objects->find('type', ['!=' => 'folders'])
+        return $this->Objects->find('type', ne: 'folders')
             ->select([
                 $this->Objects->aliasField('id'),
                 $this->Objects->aliasField('uname'),
@@ -266,7 +266,7 @@ class TreeCheckCommand extends Command
      */
     protected function getObjectsTwiceInFolder(): SelectQuery
     {
-        return $this->Objects->find('type', ['!=' => 'folders'])
+        return $this->Objects->find('type', ne: 'folders')
             ->select([
                 $this->Objects->aliasField('id'),
                 $this->Objects->aliasField('uname'),

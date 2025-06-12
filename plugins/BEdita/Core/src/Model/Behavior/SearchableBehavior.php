@@ -204,26 +204,19 @@ class SearchableBehavior extends Behavior
      * Finder for query search.
      *
      * @param \Cake\ORM\Query\SelectQuery $query Query object instance.
-     * @param array $subjectValue Options.
+     * @param string $string The text to search.
+     * @param bool $exact Whether to perform an exact search.
      * @return \Cake\ORM\Query\SelectQuery
      */
-    public function findQuery(SelectQuery $query, array $subjectValue): SelectQuery
+    public function findQuery(SelectQuery $query, string $string, bool $exact = false): SelectQuery
     {
-        $subjectValue += [
-            'exact' => false,
-        ];
-
-        $text = $subjectValue['string'] ?? $subjectValue[0] ?? null;
-        if (!isset($text) || !is_string($text)) {
-            // Bad filter options.
+        if (empty($string)) {
             throw new BadFilterException([
                 'title' => __d('bedita', 'Invalid data'),
                 'detail' => 'query filter requires a non-empty query string',
             ]);
         }
 
-        unset($subjectValue[0], $subjectValue['string']);
-
-        return $this->getAdapter()->search($query, $text, $subjectValue);
+        return $this->getAdapter()->search($query, $string, compact('exact'));
     }
 }

@@ -128,7 +128,7 @@ class CurrentApplication
     {
         static::getInstance()->set(
             TableRegistry::getTableLocator()->get('Applications')
-                ->find('apiKey', compact('apiKey'))
+                ->find('apiKey', apiKey: $apiKey)
                 ->firstOrFail()
         );
     }

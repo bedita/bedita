@@ -101,7 +101,7 @@ class CategoriesTableTest extends TestCase
     public function testBeforeFindAssoc()
     {
         $document = TableRegistry::getTableLocator()->get('Documents')
-            ->get(2, ['contain' => ['Categories']])
+            ->get(2, contain: ['Categories'])
             ->toArray();
         $expected = [
             [
@@ -143,25 +143,11 @@ class CategoriesTableTest extends TestCase
         $order = [
             $this->Categories->aliasField('id') => 'ASC',
         ];
-        $categories = $this->Categories->find('type', ['documents'])->orderBy($order)->toArray();
+        $categories = $this->Categories->find('type', objectType: 'documents')->orderBy($order)->toArray();
         static::assertEquals([1, 2, 3, 4], Hash::extract($categories, '{n}.id'));
 
-        $categories = $this->Categories->find('type', ['news'])->orderBy($order)->toArray();
+        $categories = $this->Categories->find('type', objectType: 'news')->orderBy($order)->toArray();
         static::assertEquals([], $categories);
-    }
-
-    /**
-     * Test find categories by type failure
-     *
-     * @return void
-     * @covers ::findType()
-     */
-    public function testFindCategoriesTypeFail(): void
-    {
-        $this->expectException(BadFilterException::class);
-        $this->expectExceptionMessage('Missing required parameter "type"');
-
-        $this->Categories->find('type')->toArray();
     }
 
     /**
@@ -176,12 +162,6 @@ class CategoriesTableTest extends TestCase
                 1,
                 [
                     'name' => 'first-cat',
-                    'object_type_name' => 'documents',
-                ],
-            ],
-            'no name' => [
-                new BadFilterException('Missing required parameter "name"'),
-                [
                     'object_type_name' => 'documents',
                 ],
             ],
@@ -209,7 +189,7 @@ class CategoriesTableTest extends TestCase
             $this->expectException(get_class($expected));
             $this->expectExceptionMessage($expected->getMessage());
         }
-        $query = $this->Categories->find('resource', $options);
+        $query = $this->Categories->find('resource', ...$options);
         $entity = $query->first();
 
         static::assertEquals(1, $query->count());
@@ -225,29 +205,15 @@ class CategoriesTableTest extends TestCase
     public function testFindIds()
     {
         $categories = $this->Categories
-            ->find('ids', ['names' => ['second-cat'], 'typeId' => 2])
+            ->find('ids', names: ['second-cat'], typeId: 2)
             ->toArray();
         static::assertEquals(1, count($categories));
         static::assertEquals(2, $categories[0]['id']);
 
         $categories = $this->Categories
-            ->find('ids', ['names' => ['first-cat', 'second-cat'], 'typeId' => 4])
+            ->find('ids', names: ['first-cat', 'second-cat'], typeId: 4)
             ->toArray();
         static::assertEmpty($categories);
-    }
-
-    /**
-     * Test `findIds` failure.
-     *
-     * @return void
-     * @covers ::findIds()
-     */
-    public function testFindIdsFail()
-    {
-        $this->expectException(BadFilterException::class);
-        $this->expectExceptionMessage('Missing required parameter "typeId"');
-
-        $this->Categories->find('ids', ['names' => ['unnamed']])->toArray();
     }
 
     /**

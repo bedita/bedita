@@ -15,7 +15,6 @@ declare(strict_types=1);
 namespace BEdita\Core\Model\Table;
 
 use ArrayObject;
-use BEdita\Core\Exception\BadFilterException;
 use BEdita\Core\Model\Validation\Validation;
 use BEdita\Core\Search\SimpleSearchTrait;
 use Cake\Collection\CollectionInterface;
@@ -155,21 +154,17 @@ class TagsTable extends Table
      * Find tag IDs by their name.
      *
      * @param \Cake\ORM\Query\SelectQuery $query Query object.
-     * @param array $options Array containing key `names` as a list of strings.
+     * @param array $names List of tag names
      * @return \Cake\ORM\Query\SelectQuery
      */
-    protected function findIds(SelectQuery $query, array $options): SelectQuery
+    protected function findIds(SelectQuery $query, array $names): SelectQuery
     {
-        if (empty($options['names']) || !is_array($options['names'])) {
-            throw new BadFilterException(__d('bedita', 'Missing or wrong required parameter "{0}"', 'names'));
-        }
-
         return $query
             ->find('enabled')
             ->select([$this->aliasField('id'), $this->aliasField('name')])
-            ->where(function (QueryExpression $exp) use ($options): QueryExpression {
+            ->where(function (QueryExpression $exp) use ($names): QueryExpression {
                 return $exp
-                    ->in($this->aliasField('name'), $options['names']);
+                    ->in($this->aliasField('name'), $names);
             });
     }
 }

@@ -12,22 +12,27 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-namespace BEdita\API\View;
+namespace BEdita\Core\Model\Enum;
 
 /**
- * A fallback view class that is used for API response when content negotiation accept `application/json`.
+ * DateRangesSortField enum.
  *
  * @since 6.0.0
  */
-class JsonApiFallbackView extends JsonApiView
+enum DateRangesSortField: string
 {
+    case MIN_START_DATE = 'date_ranges_min_start_date';
+    case MAX_START_DATE = 'date_ranges_max_start_date';
+    case MIN_END_DATE = 'date_ranges_min_end_date';
+    case MAX_END_DATE = 'date_ranges_max_end_date';
+
     /**
-     * {@inheritDoc}
+     * Get all possible values.
      *
-     * @codeCoverageIgnore
+     * @return array<string>
      */
-    public static function contentType(): string
+    public static function values(): array
     {
-        return 'application/json';
+        return array_map(fn (self $case): string => $case->value, self::cases());
     }
 }

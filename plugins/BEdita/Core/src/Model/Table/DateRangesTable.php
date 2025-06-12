@@ -118,42 +118,44 @@ class DateRangesTable extends Table
      * Find objects by date range.
      *
      * Create a query to filter objects using start and end date conditions.
-     * Accepted options are:
-     *   - 'start_date', 'end_date', 'from_date' and 'to_date'
-     *   - when using 'from_date' or 'to_date' dates must be provided
-     *   - when using 'start_date' or 'end_date' mandatory sub-option
+     * Accepted params are:
+     *   - `$start_date`, `$end_date`, `$from_date` and `$to_date`
+     *   - when using `$from_date` or `$to_date` dates must be provided
+     *   - when using $start_date` or `$end_date` mandatory sub-option
      *          must be one of 'gt' (greather than), 'lt' (less than),
      *          'ge' (greater or equal), 'le' (less or equal) with a date
      *
      * Examples
      * ```
      * // find objects with a start date after '2017-03-01'
-     * $table->find('dateRanges', ['start_date' => ['gt' => '2017-03-01']]);
+     * $table->find('dateRanges', start_date: ['gt' => '2017-03-01']);
      *
      * // find objects with an ending date before '2017-05-01 22:00:00'
-     * $table->find('dateRanges', ['end_date' => ['lt' => '2017-05-01 22:00:00']]);
+     * $table->find('dateRanges', end_date: ['lt' => '2017-05-01 22:00:00']);
      *
      * // find objects with valid date ranges from '2018-05-01 22:00:00' onwards
-     * $table->find('dateRanges', ['from_date' => '2018-05-01 22:00:00']);
+     * $table->find('dateRanges', from_date: '2018-05-01 22:00:00');
      *
      * // find objects with valid date ranges until '2018-05-01 22:00:00'
-     * $table->find('dateRanges', [to_date' => '2018-05-01 22:00:00']);
+     * $table->find('dateRanges', to_date: '2018-05-01 22:00:00');
      * ```
      *
      * @param \Cake\ORM\Query\SelectQuery $query Query object instance.
-     * @param array $options Array of acceptable date range conditions.
+     * @param array|string|null $start_date start date condition.
+     * @param array|string|null $end_date end date condition.
+     * @param string|null $from_date from date condition.
+     * @param string|null $to_date to date condition.
      * @return \Cake\ORM\Query\SelectQuery
      * @throws \BEdita\Core\Exception\BadFilterException
      */
-    protected function findDateRanges(SelectQuery $query, array $options): SelectQuery
-    {
-        $allowed = array_flip([
-            'start_date',
-            'end_date',
-            'from_date',
-            'to_date',
-        ]);
-        $options = array_intersect_key($options, $allowed);
+    protected function findDateRanges(
+        SelectQuery $query,
+        array|string|null $start_date = null,
+        array|string|null $end_date = null,
+        ?string $from_date = null,
+        ?string $to_date = null,
+    ): SelectQuery {
+        $options = array_filter(compact('start_date', 'end_date', 'from_date', 'to_date'));
         if (empty($options)) {
             throw new BadFilterException([
                 'title' => __d('bedita', 'Invalid data'),

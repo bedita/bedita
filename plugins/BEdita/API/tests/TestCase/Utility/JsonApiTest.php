@@ -842,7 +842,7 @@ class JsonApiTest extends TestCase
         });
 
         $documents = TableRegistry::getTableLocator()->get('Documents')
-            ->find('type', ['documents'])
+            ->find('type', value: ['documents'])
             ->limit(2)
             ->toArray();
 

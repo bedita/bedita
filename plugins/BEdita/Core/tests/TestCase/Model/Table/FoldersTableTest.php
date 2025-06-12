@@ -286,7 +286,7 @@ class FoldersTableTest extends TestCase
         }
         static::assertTrue((bool)$entity);
 
-        $actual = $this->Folders->get($entity->id, ['contain' => 'Parents']);
+        $actual = $this->Folders->get($entity->id, contain: 'Parents');
         static::assertSame($expected, $actual->parent_id);
 
         if (!empty($data['id'])) {
@@ -329,7 +329,7 @@ class FoldersTableTest extends TestCase
         // get root and trashes it
         $root = $this->Folders->get(13);
         $startDeletedInfo = $this->Folders
-            ->find('ancestor', [$root->id])
+            ->find('ancestor', parent: $root->id)
             ->orderBy([$this->Folders->aliasField('id') => 'ASC'])
             ->find('list', keyField: 'id', valueField: 'deleted')
             ->toArray();
@@ -338,7 +338,7 @@ class FoldersTableTest extends TestCase
         $this->Folders->save($root);
 
         $children = $this->Folders
-            ->find('ancestor', [$root->id])
+            ->find('ancestor', parent: $root->id)
             ->orderBy([$this->Folders->aliasField('id') => 'ASC']);
         foreach ($children as $child) {
             if ($child->type === 'folders') {
@@ -355,12 +355,9 @@ class FoldersTableTest extends TestCase
         $this->Folders->save($root);
 
         $restoredDeletedInfo = $this->Folders
-            ->find('ancestor', [$root->id])
+            ->find('ancestor', parent: $root->id)
             ->orderBy([$this->Folders->aliasField('id') => 'ASC'])
-            ->find('list', [
-                'keyField' => 'id',
-                'valueField' => 'deleted',
-            ])
+            ->find('list', keyField: 'id', valueField: 'deleted')
             ->toArray();
 
         static::assertSame($startDeletedInfo, $restoredDeletedInfo);
@@ -391,7 +388,7 @@ class FoldersTableTest extends TestCase
 
         // get descendants not folders
         $notFoldersIds = $this->Folders
-            ->find('ancestor', [$parentFolder->id])
+            ->find('ancestor', parent: $parentFolder->id)
             ->orderBy([$this->Folders->aliasField('id') => 'ASC'])
             ->find('list', keyField: 'id', valueField: 'id')
             ->where(function (QueryExpression $exp) {
@@ -458,7 +455,7 @@ class FoldersTableTest extends TestCase
      */
     public function testIsFolderRestorableOK()
     {
-        $folder = $this->Folders->get(12, ['contain' => ['Parents']]);
+        $folder = $this->Folders->get(12, contain: ['Parents']);
         static::assertFalse($folder->parent->deleted);
 
         $folder->deleted = true;
@@ -484,7 +481,7 @@ class FoldersTableTest extends TestCase
         $this->Folders->save($parent);
 
         $children = $this->Folders
-            ->find('ancestor', [11])
+            ->find('ancestor', parent: 11)
             ->orderBy([$this->Folders->aliasField('id') => 'ASC'])
             ->where(['object_type_id' => $this->Folders->objectType()->id])
             ->toArray();
@@ -506,7 +503,7 @@ class FoldersTableTest extends TestCase
      */
     public function testChildrenAvailable(): void
     {
-        $folder = $this->Folders->get(11, ['contain' => ['Children']]);
+        $folder = $this->Folders->get(11, contain: ['Children']);
         static::assertNotEmpty($folder->children);
 
         $firstChild = $folder->children[0];
@@ -514,12 +511,12 @@ class FoldersTableTest extends TestCase
         $this->Folders->Children->saveOrFail($firstChild);
 
         Configure::write('Status.level', 'off');
-        $folder = $this->Folders->get(11, ['contain' => ['Children']]);
+        $folder = $this->Folders->get(11, contain: ['Children']);
         $childrenIds = Hash::extract($folder->children, '{*}.id');
         static::assertContains($firstChild->id, $childrenIds);
 
         Configure::write('Status.level', 'draft');
-        $folder = $this->Folders->get(11, ['contain' => ['Children']]);
+        $folder = $this->Folders->get(11, contain: ['Children']);
         $childrenIds = Hash::extract($folder->children, '{*}.id');
         static::assertNotContains($firstChild->id, $childrenIds);
     }

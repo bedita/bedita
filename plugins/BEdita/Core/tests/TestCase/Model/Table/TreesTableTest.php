@@ -448,8 +448,8 @@ class TreesTableTest extends TestCase
                 12,
                 'last',
             ],
-            'moveRootDoNothing' => [
-                1,
+            'moveRootAsLastRoot' => [
+                2,
                 11,
                 'last',
             ],
@@ -563,7 +563,7 @@ class TreesTableTest extends TestCase
             $this->expectExceptionMessage($expected->getMessage());
         }
 
-        $path = $this->Trees->find('pathNodes', subjectValue: $objectId)
+        $path = $this->Trees->find('pathNodes', objectId: $objectId)
             ->find('list', keyField: 'id', valueField: 'object_id')
             ->toArray();
 
@@ -575,7 +575,7 @@ class TreesTableTest extends TestCase
      *
      * @return array
      */
-    public function jsonSchemaProvider(): array
+    public static function jsonSchemaProvider(): array
     {
         $schema = [
             'type' => 'object',

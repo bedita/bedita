@@ -417,7 +417,7 @@ class ResourcesCommandTest extends TestCase
      *
      * @return array
      */
-    public function removeProvider(): array
+    public static function removeProvider(): array
     {
         return [
             'no confirm' => [

@@ -25,7 +25,6 @@ use Cake\Event\EventInterface;
 use Cake\ORM\Query\SelectQuery;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
-use Cake\Utility\Hash;
 use Cake\Validation\Validator;
 
 /**
@@ -197,7 +196,7 @@ class CategoriesTable extends Table
      * @param \Cake\ORM\Query\SelectQuery $query Query object
      * @return \Cake\ORM\Query\SelectQuery
      */
-    protected function findEnabled(SelectQuery $query): SelectQuery
+    public function findEnabled(SelectQuery $query): SelectQuery
     {
         return $query->where([
             $this->aliasField('enabled') => true,
@@ -208,18 +207,14 @@ class CategoriesTable extends Table
      * Find categories by object type name
      *
      * @param \Cake\ORM\Query\SelectQuery $query Query object instance.
-     * @param array $options Options array.
+     * @param string $objectType The object type name.
      * @return \Cake\ORM\Query\SelectQuery
      * @throws \BEdita\Core\Exception\BadFilterException
      */
-    protected function findType(SelectQuery $query, array $options): SelectQuery
+    public function findType(SelectQuery $query, string $objectType): SelectQuery
     {
-        if (empty($options[0])) {
-            throw new BadFilterException(__d('bedita', 'Missing required parameter "{0}"', 'type'));
-        }
-
-        return $query->innerJoinWith('ObjectTypes', function (SelectQuery $query) use ($options) {
-            return $query->where([$this->ObjectTypes->aliasField('name') => $options[0]]);
+        return $query->innerJoinWith('ObjectTypes', function (SelectQuery $query) use ($objectType) {
+            return $query->where([$this->ObjectTypes->aliasField('name') => $objectType]);
         });
     }
 
@@ -227,49 +222,46 @@ class CategoriesTable extends Table
      * Find categories IDs by their name.
      *
      * @param \Cake\ORM\Query\SelectQuery $query Query object.
-     * @param array $options Array containing key `names` as a list of strings, and `typeId` as an integer.
+     * @param array $names List of category names
+     * @param int $typeId Object type id
      * @return \Cake\ORM\Query\SelectQuery
      */
-    protected function findIds(SelectQuery $query, array $options): SelectQuery
+    protected function findIds(SelectQuery $query, array $names, int $typeId): SelectQuery
     {
-        if (empty($options['names']) || !is_array($options['names'])) {
-            throw new BadFilterException(__d('bedita', 'Missing or wrong required parameter "{0}"', 'names'));
-        }
-        if (empty($options['typeId'])) {
-            throw new BadFilterException(__d('bedita', 'Missing required parameter "{0}"', 'typeId'));
-        }
-
         return $query
             ->find('enabled')
             ->select([$this->aliasField('id'), $this->aliasField('name')])
-            ->where(function (QueryExpression $exp) use ($options): QueryExpression {
+            ->where(function (QueryExpression $exp) use ($names, $typeId): QueryExpression {
                 return $exp
-                    ->eq($this->aliasField('object_type_id'), $options['typeId'])
-                    ->in($this->aliasField('name'), $options['names']);
+                    ->eq($this->aliasField('object_type_id'), $typeId)
+                    ->in($this->aliasField('name'), $names);
             });
     }
 
     /**
      * Find category resource by name and object type.
-     * Options array argument MUST contain 'name' and 'object_type_name' keys.
+     * `$object_type_name` or `$object` must be provided.
      *
      * @param \Cake\ORM\Query\SelectQuery $query Query object instance.
-     * @param array $options Options array.
+     * @param string $name The category name
+     * @param string|null $object_type_name The object type name
+     * @param string|null $object The object type name (alternative to `object_type_name`)
      * @return \Cake\ORM\Query\SelectQuery
      * @throws \BEdita\Core\Exception\BadFilterException
      */
-    protected function findResource(SelectQuery $query, array $options): SelectQuery
-    {
-        if (empty($options['name'])) {
-            throw new BadFilterException(__d('bedita', 'Missing required parameter "{0}"', 'name'));
-        }
-        $object = Hash::get($options, 'object_type_name', Hash::get($options, 'object'));
+    protected function findResource(
+        SelectQuery $query,
+        string $name,
+        ?string $object_type_name = null,
+        ?string $object = null
+    ): SelectQuery {
+        $object = $object_type_name ?? $object;
         if (empty($object)) {
             throw new BadFilterException(__d('bedita', 'Missing required parameter "{0}"', 'object_type_name'));
         }
 
-        return $query->find('type', [$object])
-            ->where([$this->aliasField('name') => $options['name']]);
+        return $query->find('type', objectType: $object)
+            ->where([$this->aliasField('name') => $name]);
     }
 
     /**
@@ -278,7 +270,7 @@ class CategoriesTable extends Table
      * @param \Cake\ORM\Query\SelectQuery $query The query.
      * @return \Cake\ORM\Query\SelectQuery
      */
-    protected function findRoots(SelectQuery $query): SelectQuery
+    public function findRoots(SelectQuery $query): SelectQuery
     {
         return $query->where(
             fn (QueryExpression $exp): QueryExpression => $exp->isNull($this->aliasField('parent_id'))

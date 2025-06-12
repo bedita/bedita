@@ -276,7 +276,7 @@ class Folder extends ObjectEntity
 
         try {
             $path = TableRegistry::getTableLocator()->get('Trees')
-                ->find('pathNodes', subjectValue: $this->id)
+                ->find('pathNodes', objectId: $this->id)
                 ->find('list', keyField: 'id', valueField: 'object_id')
                 ->toArray();
         } catch (RecordNotFoundException $previous) {

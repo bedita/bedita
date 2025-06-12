@@ -197,7 +197,7 @@ class TranslationsTableTest extends TestCase
             $this->expectExceptionMessage($expected->getMessage());
         }
 
-        $result = $this->Translations->find('list')->find('type', $types)->toArray();
+        $result = $this->Translations->find('list')->find('type', objectTypes: $types)->toArray();
         $result = array_keys($result);
         sort($result);
 

@@ -356,16 +356,16 @@ class TreesTable extends Table
      * Find path nodes from object id.
      *
      * @param \Cake\ORM\Query\SelectQuery $query Query object instance.
-     * @param int $subjectValue The subject object id.
+     * @param int $objectId The object id.
      * @return \Cake\ORM\Query\SelectQuery
      */
-    protected function findPathNodes(SelectQuery $query, int $subjectValue): SelectQuery
+    protected function findPathNodes(SelectQuery $query, int $objectId): SelectQuery
     {
         $lft = $this->aliasField('tree_left');
         $rgt = $this->aliasField('tree_right');
         $node = $this->find()
             ->select([$lft, $rgt])
-            ->where(['object_id' => $subjectValue])
+            ->where(['object_id' => $objectId])
             ->disableHydration()
             ->firstOrFail();
 

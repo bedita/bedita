@@ -88,13 +88,9 @@ class CategoriesBehavior extends Behavior
     protected function fetchCategories(EntityInterface $entity, EntityInterface $objectType): array
     {
         $data = (array)$entity->get('categories');
-        $options = [
-            'names' => Hash::extract($data, '{n}.name'),
-            'typeId' => (int)$objectType->get('id'),
-        ];
 
         return TableRegistry::getTableLocator()->get('Categories')
-                ->find('ids', $options)
+                ->find('ids', names: Hash::extract($data, '{n}.name'), typeId: (int)$objectType->get('id'))
                 ->toArray();
     }
 

@@ -16,6 +16,7 @@ namespace BEdita\Core\Test\TestCase\Model\Table;
 
 use BEdita\Core\Exception\LockedResourceException;
 use BEdita\Core\Model\Entity\ObjectEntity;
+use BEdita\Core\Model\Enum\DateRangesSortField;
 use BEdita\Core\Utility\LoggedUser;
 use Cake\Core\Configure;
 use Cake\Database\Driver\Mysql;
@@ -319,7 +320,7 @@ class ObjectsTableTest extends TestCase
             $this->expectExceptionMessage($expected->getMessage());
         }
 
-        $result = $this->Objects->find('list')->find('type', $types)->toArray();
+        $result = $this->Objects->find('list')->find('type', value: $types)->toArray();
 
         $this->assertEquals($expected, $result);
     }
@@ -341,14 +342,14 @@ class ObjectsTableTest extends TestCase
             'sub1' => [
                 [],
                 [
-                    'date_ranges_min_start_date' => true,
+                    'sortableField' => DateRangesSortField::MIN_START_DATE,
                     'from_date' => '2019-01-01',
                 ],
             ],
             'sub2' => [
                 [9],
                 [
-                    'date_ranges_max_start_date' => true,
+                    'sortableField' => DateRangesSortField::MAX_START_DATE,
                 ],
             ],
         ];
@@ -367,7 +368,7 @@ class ObjectsTableTest extends TestCase
      */
     public function testFindDateRanges(array $expected, array $options)
     {
-        $result = $this->Objects->find('dateRanges', $options)->toArray();
+        $result = $this->Objects->find('dateRanges', ...$options)->toArray();
         $this->assertEquals($expected, Hash::extract($result, '{n}.id'));
     }
 
@@ -397,7 +398,7 @@ class ObjectsTableTest extends TestCase
         if (!$object) {
             static::fail('Unable to save object');
         }
-        $object = $this->Objects->get($object->id, ['contain' => ['DateRanges']]);
+        $object = $this->Objects->get($object->id, contain: ['DateRanges']);
         static::assertCount(1, $object->date_ranges);
         static::assertEquals(['k' => 'v'], $object->date_ranges[0]['params']);
 
@@ -408,7 +409,7 @@ class ObjectsTableTest extends TestCase
             static::fail('Unable to save object');
         }
 
-        $object = $this->Objects->get($object->id, ['contain' => ['DateRanges']]);
+        $object = $this->Objects->get($object->id, contain: ['DateRanges']);
 
         static::assertCount(1, $object->date_ranges);
         static::assertSame(1, $this->Objects->DateRanges->find()->where(['object_id' => $object->id])->count());
@@ -424,12 +425,12 @@ class ObjectsTableTest extends TestCase
     public function testFindMine()
     {
         $expected = $this->Objects->find()
-            ->find('list', ['keyField' => 'id', 'valueField' => 'id'])
+            ->find('list', keyField: 'id', valueField: 'id')
             ->where(['created_by' => 1])
             ->toArray();
 
         $result = $this->Objects->find('mine')
-            ->find('list', ['keyField' => 'id', 'valueField' => 'id'])
+            ->find('list', keyField: 'id', valueField: 'id')
             ->toArray();
 
         static::assertEquals($expected, $result);
@@ -518,7 +519,7 @@ class ObjectsTableTest extends TestCase
      */
     public function testFindAncestor()
     {
-        $objects = $this->Objects->find('ancestor', [11])
+        $objects = $this->Objects->find('ancestor', parent: 11)
             ->orderBy([$this->Objects->aliasField('id') => 'ASC'])
             ->toArray();
         static::assertNotEmpty($objects);
@@ -534,7 +535,7 @@ class ObjectsTableTest extends TestCase
      */
     public function testFindParent()
     {
-        $objects = $this->Objects->find('parent', [12])->toArray();
+        $objects = $this->Objects->find('parent', parent: 12)->toArray();
         static::assertNotEmpty($objects);
         $ids = Hash::extract($objects, '{n}.id');
         static::assertEquals([4], $ids);
@@ -662,7 +663,7 @@ class ObjectsTableTest extends TestCase
      */
     public function testFindTranslations()
     {
-        $result = $this->Objects->find('translations', ['lang' => 'fr'])
+        $result = $this->Objects->find('translations', lang: 'fr')
             ->where(['Objects.id' => 2])
             ->toArray();
 
@@ -820,7 +821,7 @@ class ObjectsTableTest extends TestCase
     {
         $result = TableRegistry::getTableLocator()
             ->get('Documents')
-            ->find('categories', ['first-cat,second-cat'])
+            ->find('categories', name: 'first-cat,second-cat')
             ->toArray();
         static::assertSame(1, count($result));
     }
@@ -836,7 +837,7 @@ class ObjectsTableTest extends TestCase
     {
         $result = TableRegistry::getTableLocator()
             ->get('Profiles')
-            ->find('tags', ['first-tag'])
+            ->find('tags', name: 'first-tag')
             ->toArray();
         static::assertSame(1, count($result));
     }
@@ -851,13 +852,13 @@ class ObjectsTableTest extends TestCase
     {
         $result = TableRegistry::getTableLocator()
             ->get('Profiles')
-            ->find('unameId', ['gustavo-supporto'])
+            ->find('unameId', id: 'gustavo-supporto')
             ->firstOrFail();
         static::assertSame(4, $result->get('id'));
 
         $result = TableRegistry::getTableLocator()
             ->get('Profiles')
-            ->find('unameId', [4])
+            ->find('unameId', id: 4)
             ->firstOrFail();
         static::assertSame('gustavo-supporto', $result->get('uname'));
     }
@@ -878,12 +879,12 @@ class ObjectsTableTest extends TestCase
         $this->Objects->Parents->saveOrFail($firstParent);
 
         Configure::write('Status.level', 'off');
-        $object = $this->Objects->get(2, ['contain' => ['Parents']]);
+        $object = $this->Objects->get(2, contain: ['Parents']);
         $childrenIds = Hash::extract($object->parents, '{*}.id');
         static::assertContains($firstParent->id, $childrenIds);
 
         Configure::write('Status.level', 'draft');
-        $object = $this->Objects->get(2, ['contain' => ['Parents']]);
+        $object = $this->Objects->get(2, contain: ['Parents']);
         $childrenIds = Hash::extract($object->parents, '{*}.id');
         static::assertNotContains($firstParent->id, $childrenIds);
     }

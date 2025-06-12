@@ -14,7 +14,7 @@ declare(strict_types=1);
  */
 namespace BEdita\API\Datasource;
 
-use BEdita\Core\Model\Table\ObjectsTable;
+use BEdita\Core\Model\Enum\DateRangesSortField;
 use Cake\Database\Expression\FunctionExpression;
 use Cake\Database\Expression\OrderClauseExpression;
 use Cake\Datasource\Paging\NumericPaginator;
@@ -39,6 +39,9 @@ class JsonApiPaginator extends NumericPaginator
         'limit' => 20,
         'maxLimit' => 100,
         'allowedParameters' => ['page', 'page_size', 'sort'],
+        'sortableFields' => null,
+        'finder' => 'all',
+        'scope' => null,
     ];
 
     /**
@@ -90,7 +93,7 @@ class JsonApiPaginator extends NumericPaginator
                 $options['direction'] = 'desc';
             }
             unset($options['order']);
-            if (in_array($options['sort'], ObjectsTable::DATERANGES_SORT_FIELDS)) {
+            if (in_array($options['sort'], DateRangesSortField::values())) {
                 $options['sortableFields'] = [$options['sort']];
             }
 

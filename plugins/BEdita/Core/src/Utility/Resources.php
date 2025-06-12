@@ -195,7 +195,7 @@ class Resources extends ResourcesBase
     protected static function loadEntity(array $item, Table $Table): EntityInterface
     {
         if ($Table->hasFinder('resource')) {
-            return $Table->find('resource', $item)->firstOrFail();
+            return $Table->find('resource', ...$item)->firstOrFail();
         }
 
         return $Table->find()

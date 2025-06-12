@@ -169,11 +169,12 @@ class JobsCommand extends Command
     {
         $this->io->out('=====> <info>Finding pending jobs...</info>');
         $query = $this->table
-            ->find('list', ['valueField' => $this->table->getPrimaryKey()])
-            ->find('priority', [
-                'priority' => $this->args->getOption('min-priority'),
-                'service' => $this->args->getOption('service'),
-            ]);
+            ->find('list', valueField: $this->table->getPrimaryKey())
+            ->find(
+                'priority',
+                priority: $this->args->getOption('min-priority'),
+                service: $this->args->getOption('service')
+            );
         if ($this->args->getOption('limit') !== null) {
             $query = $query->limit((int)$this->args->getOption('limit'));
         }

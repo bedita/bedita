@@ -211,7 +211,7 @@ class AsyncJobsTable extends Table
      * @param \Cake\ORM\Query\SelectQuery $query Query object instance.
      * @return \Cake\ORM\Query\SelectQuery
      */
-    protected function findPending(SelectQuery $query): SelectQuery
+    public function findPending(SelectQuery $query): SelectQuery
     {
         $now = DateTime::now();
 
@@ -246,7 +246,7 @@ class AsyncJobsTable extends Table
      * @param \Cake\ORM\Query\SelectQuery $query Query object instance.
      * @return \Cake\ORM\Query\SelectQuery
      */
-    protected function findFailed(SelectQuery $query): SelectQuery
+    public function findFailed(SelectQuery $query): SelectQuery
     {
         $now = DateTime::now();
 
@@ -274,7 +274,7 @@ class AsyncJobsTable extends Table
      * @param \Cake\ORM\Query\SelectQuery $query Query object instance.
      * @return \Cake\ORM\Query\SelectQuery
      */
-    protected function findCompleted(SelectQuery $query): SelectQuery
+    public function findCompleted(SelectQuery $query): SelectQuery
     {
         return $query->where(
             fn (QueryExpression $exp): QueryExpression => $exp->isNotNull($this->aliasField('completed')),
@@ -289,7 +289,7 @@ class AsyncJobsTable extends Table
      * @param \Cake\ORM\Query\SelectQuery $query Query object instance.
      * @return \Cake\ORM\Query\SelectQuery
      */
-    protected function findIncomplete(SelectQuery $query): SelectQuery
+    public function findIncomplete(SelectQuery $query): SelectQuery
     {
         return $query->where(
             fn (QueryExpression $exp): QueryExpression => $exp->isNull($this->aliasField('completed')),
@@ -303,20 +303,17 @@ class AsyncJobsTable extends Table
      * @param array $options Additional options.
      * @return \Cake\ORM\Query\SelectQuery
      */
-    protected function findPriority(SelectQuery $query, array $options): SelectQuery
+    protected function findPriority(SelectQuery $query, ?int $priority = null, ?string $service = null): SelectQuery
     {
-        $options = array_filter(array_intersect_key($options, array_flip(['priority', 'service'])));
-        if (!empty($options)) {
-            $query = $query->where(function (QueryExpression $exp) use ($options) {
-                if (!empty($options['priority'])) {
-                    $exp->gte($this->aliasField('priority'), $options['priority']);
-                }
-                if (!empty($options['service'])) {
-                    $exp->eq($this->aliasField('service'), $options['service']);
-                }
-
-                return $exp;
-            });
+        if (!empty($priority)) {
+            $query = $query->where(
+                fn (QueryExpression $exp): QueryExpression => $exp->gte($this->aliasField('priority'), $priority)
+            );
+        }
+        if (!empty($service)) {
+            $query = $query->where(
+                fn (QueryExpression $exp): QueryExpression => $exp->eq($this->aliasField('service'), $service)
+            );
         }
 
         return $query

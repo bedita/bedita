@@ -14,7 +14,6 @@ declare(strict_types=1);
  */
 namespace BEdita\Core\Model\Table;
 
-use BEdita\Core\Exception\BadFilterException;
 use BEdita\Core\Model\Validation\Validation;
 use BEdita\Core\ORM\Rule\IsUniqueAmongst;
 use BEdita\Core\Search\SimpleSearchTrait;
@@ -192,15 +191,12 @@ class RelationsTable extends Table
      * Find a relation by its name or inverse name.
      *
      * @param \Cake\ORM\Query\SelectQuery $query Query object.
-     * @param array $options Additional options. The `name` key is required.
+     * @param string $name The `name` of the relation.
      * @return \Cake\ORM\Query\SelectQuery
      */
-    protected function findByName(SelectQuery $query, array $options = []): SelectQuery
+    protected function findByName(SelectQuery $query, string $name): SelectQuery
     {
-        if (empty($options['name'])) {
-            throw new BadFilterException(__d('bedita', 'Missing required parameter "{0}"', 'name'));
-        }
-        $name = Inflector::underscore($options['name']);
+        $name = Inflector::underscore($name);
 
         return $query->where(function (QueryExpression $exp) use ($name) {
             return $exp->or(function (QueryExpression $exp) use ($name) {

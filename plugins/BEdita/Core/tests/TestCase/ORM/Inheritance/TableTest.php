@@ -563,7 +563,7 @@ class TableTest extends TestCase
     public function testCallMissingFinder(): void
     {
         $this->expectException(BadMethodCallException::class);
-        $this->expectExceptionMessage('Unknown finder method "gustavo"');
+        $this->expectExceptionMessage('Unknown finder method `gustavo`');
         $this->fakeMammals->find('gustavo');
     }
 
@@ -600,5 +600,87 @@ class TableTest extends TestCase
 
         static::assertEquals($clone->getEventManager(), $this->fakeMammals->getEventManager());
         static::assertNotSame($clone->getEventManager(), $this->fakeMammals->getEventManager());
+    }
+
+    /**
+     * Test `hasFilter` method.
+     *
+     * @return void
+     * @covers ::hasFilter()
+     */
+    public function testHasFilter(): void
+    {
+        static::assertFalse($this->fakeFelines->hasFilter('children'));
+
+        $this->setupAssociations();
+        static::assertFalse($this->fakeFelines->hasFilter('children'));
+        static::assertFalse($this->fakeMammals->hasFilter('children'));
+
+        $this->fakeFelines->addBehavior('Tree');
+        static::assertTrue($this->fakeFelines->hasFilter('children'));
+        static::assertFalse($this->fakeMammals->hasFilter('children'));
+
+        $this->fakeFelines->removeBehavior('Tree');
+        $this->fakeMammals->addBehavior('Tree');
+        static::assertTrue($this->fakeFelines->hasFilter('children'));
+        static::assertTrue($this->fakeMammals->hasFilter('children'));
+    }
+
+    /**
+     * Test `callFilter` method.
+     *
+     * @return void
+     * @covers ::callFilter()
+     */
+    public function testCallFilter(): void
+    {
+        // test callFilter on a tabel without inheritance
+        $this->fakeFelines->addBehavior('Tree');
+        $queryFelines = $this->fakeFelines->callFilter('children', $this->fakeFelines->find(), ['for' => 1, 'direct' => true]);
+        static::assertInstanceOf(SelectQuery::class, $queryFelines);
+        $this->fakeFelines->removeBehavior('Tree');
+
+        $this->setupAssociations();
+
+        // test callFilter having filter on a table in the middle of the inheritance chain
+        $this->fakeMammals->addBehavior('Tree');
+        $queryFelines = $this->fakeFelines->callFilter('children', $this->fakeFelines->find(), ['for' => 1, 'direct' => true]);
+        static::assertInstanceOf(SelectQuery::class, $queryFelines);
+        $this->fakeMammals->removeBehavior('Tree');
+
+        // test callFilter having filter on the last table of the inheritance chain
+        $this->fakeAnimals->addBehavior('Tree');
+        $animalsAlias = $this->fakeAnimals->getAlias();
+        $mammalsAlias = $this->fakeMammals->getAlias();
+        $felinesAlias = $this->fakeFelines->getAlias();
+        $checkAliases = function () use ($animalsAlias, $mammalsAlias, $felinesAlias) {
+            static::assertSame($felinesAlias, $this->fakeFelines->getAlias());
+            static::assertSame($mammalsAlias, $this->fakeMammals->getAlias());
+            static::assertSame($animalsAlias, $this->fakeAnimals->getAlias());
+        };
+
+        $queryMammals = $this->fakeMammals->callFilter('children', $this->fakeMammals->find(), ['for' => 1, 'direct' => true]);
+        static::assertInstanceOf(SelectQuery::class, $queryMammals);
+        static::assertTextNotContains('FakeAnimals', $queryMammals->sql());
+        $checkAliases();
+
+        $queryFelines = $this->fakeFelines->callFilter('children', $this->fakeFelines->find(), ['for' => 1, 'direct' => true]);
+        static::assertInstanceOf(SelectQuery::class, $queryFelines);
+        static::assertTextNotContains('FakeAnimals', $queryFelines->sql());
+        static::assertTextNotContains('FakeMammals', $queryFelines->sql());
+        $checkAliases();
+    }
+
+    /**
+     * Test `callFilter` method.
+     *
+     * @return void
+     * @covers ::callFilter()
+     */
+    public function testCallMissingFilter(): void
+    {
+        $this->expectException(BadMethodCallException::class);
+        $this->expectExceptionMessage('Unknown filter method `gustavo`');
+        $this->fakeMammals->callFilter('gustavo', $this->fakeMammals->find(), null);
     }
 }

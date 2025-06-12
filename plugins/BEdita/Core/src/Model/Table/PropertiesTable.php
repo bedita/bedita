@@ -27,7 +27,6 @@ use Cake\ORM\Query\SelectQuery;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
-use Cake\Utility\Hash;
 use Cake\Validation\Validation as CakeValidation;
 use Cake\Validation\Validator;
 
@@ -139,7 +138,7 @@ class PropertiesTable extends Table
     {
         $from = $query->clause('from');
         if (empty($from)) {
-            $query->find('type', ['both']);
+            $query->find('type', propType: 'both');
         }
     }
 
@@ -147,17 +146,11 @@ class PropertiesTable extends Table
      * Return properties for an object type, considering inheritance.
      *
      * @param \Cake\ORM\Query\SelectQuery $query Query object instance.
-     * @param array $options Filter options.
+     * @param string|int $for Object type name or id.
      * @return \Cake\ORM\Query\SelectQuery
      */
-    protected function findObjectType(SelectQuery $query, array $options = []): SelectQuery
+    public function findObjectType(SelectQuery $query, string|int $for): SelectQuery
     {
-        $options = array_filter($options);
-        if (count($options) !== 1) {
-            throw new BadFilterException(__d('bedita', 'Missing object type to get properties for'));
-        }
-        $for = reset($options);
-
         return $query
             ->where(function (QueryExpression $exp) use ($for) {
                 return $exp->in(
@@ -170,41 +163,44 @@ class PropertiesTable extends Table
 
     /**
      * Find property resource by name and object type.
-     * Options array argument MUST contain 'name' and 'object_type_name' keys.
+     * `$object_type_name` or `$object` must be provided.
      *
      * @param \Cake\ORM\Query\SelectQuery $query Query object instance.
-     * @param array $options Options array.
+     * @param string $name The property name
+     * @param string|null $object_type_name The object type name
+     * @param string|null $object The object type name (alternative to `object_type_name`)
      * @return \Cake\ORM\Query\SelectQuery
      * @throws \BEdita\Core\Exception\BadFilterException
      */
-    protected function findResource(SelectQuery $query, array $options): SelectQuery
-    {
-        if (empty($options['name'])) {
-            throw new BadFilterException(__d('bedita', 'Missing required parameter "{0}"', 'name'));
-        }
-        $object = Hash::get($options, 'object_type_name', Hash::get($options, 'object'));
+    protected function findResource(
+        SelectQuery $query,
+        string $name,
+        ?string $object_type_name = null,
+        ?string $object = null
+    ): SelectQuery {
+        $object = $object_type_name ?? $object;
         if (empty($object)) {
             throw new BadFilterException(__d('bedita', 'Missing required parameter "{0}"', 'object_type_name'));
         }
 
-        return $this->find('objectType', [$object])
-            ->where([$this->aliasField('name') => $options['name']]);
+        return $query->find('objectType', for: $object)
+            ->where([$this->aliasField('name') => $name]);
     }
 
     /**
      * Find properties by their type (either `'static'`, `'dynamic'` or `'both'`).
      *
      * @param \Cake\ORM\Query\SelectQuery $query Query object instance.
-     * @param array $options Additional options.
+     * @param string $propType The property type between `'static'`, `'dynamic'` or `'both'`.
      * @return \Cake\ORM\Query\SelectQuery
      */
-    protected function findType(SelectQuery $query, array $options): SelectQuery
+    public function findType(SelectQuery $query, string $propType): SelectQuery
     {
-        if (empty($options[0]) || !in_array($options[0], ['static', 'dynamic', 'both'])) {
+        if (!in_array($propType, ['static', 'dynamic', 'both'])) {
             throw new BadFilterException(__d('bedita', 'Invalid options for finder "{0}"', 'type'));
         }
 
-        switch ($options[0]) {
+        switch ($propType) {
             case 'static':
                 $table = TableRegistry::getTableLocator()->get('StaticProperties')
                     ->setAlias($this->getAlias());

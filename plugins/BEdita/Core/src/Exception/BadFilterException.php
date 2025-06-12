@@ -22,6 +22,11 @@ use Cake\Core\Exception\CakeException;
 class BadFilterException extends CakeException
 {
     /**
+     * @inheritDoc
+     */
+    protected string $_messageTemplate = '%s';
+
+    /**
      * {@inheritDoc}
      *
      * Default error code 400

@@ -82,7 +82,7 @@ class ResourcesListCommandTest extends TestCase
      *
      * @return array
      */
-    public function executeProvider(): array
+    public static function executeProvider(): array
     {
         return [
             'applications, no filter' => [

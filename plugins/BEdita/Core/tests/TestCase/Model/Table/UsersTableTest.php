@@ -561,10 +561,10 @@ class UsersTableTest extends TestCase
      * @covers ::findExternalAuth()
      * @dataProvider findExternalAuthProvider()
      */
-    public function testFindExternalAuth($expected, $options)
+    public function testFindExternalAuth(array $expected, array $options): void
     {
         $actual = $this->Users
-            ->find('externalAuth', $options)
+            ->find('externalAuth', ...$options)
             ->find('list')
             ->toArray();
 
@@ -668,14 +668,14 @@ class UsersTableTest extends TestCase
      * @return void
      * @covers ::findMine()
      */
-    public function testFindMine()
+    public function testFindMine(): void
     {
         $expected = [
             1 => 1,
         ];
 
         $result = $this->Users->find('mine')
-            ->find('list', ['keyField' => 'id', 'valueField' => 'id'])
+            ->find('list', keyField: 'id', valueField: 'id')
             ->toArray();
 
         static::assertEquals($expected, $result);
@@ -696,7 +696,7 @@ class UsersTableTest extends TestCase
             20 => 20,
         ];
 
-        $result = $this->Users->find('roles', subjectValue: [1, 'second role'])
+        $result = $this->Users->find('roles', roles: [1, 'second role'])
             ->find('list', keyField: 'id', valueField: 'id')
             ->toArray();
 
@@ -713,7 +713,7 @@ class UsersTableTest extends TestCase
     {
         $this->expectException(BadFilterException::class);
         $this->expectExceptionMessage('Missing required parameter "roles"');
-        $this->Users->find('roles', [])
+        $this->Users->find('roles', roles: [])
             ->toArray();
     }
 

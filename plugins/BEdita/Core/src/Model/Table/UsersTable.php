@@ -17,6 +17,7 @@ namespace BEdita\Core\Model\Table;
 use ArrayObject;
 use BEdita\Core\Exception\BadFilterException;
 use BEdita\Core\Exception\ImmutableResourceException;
+use BEdita\Core\Model\Entity\AuthProvider;
 use BEdita\Core\Model\Table\ObjectsBaseTable as Table;
 use BEdita\Core\Model\Validation\UsersValidator;
 use BEdita\Core\Utility\LoggedUser;
@@ -275,19 +276,23 @@ class UsersTable extends Table
      * Find users by their external auth providers.
      *
      * @param \Cake\ORM\Query\SelectQuery $query Query object instance.
-     * @param array $options Additional options.
+     * @param \BEdita\Core\Model\Entity\AuthProvider|array|string|int $auth_provider Auth provider data passed to `\BEdita\Core\Model\Table\ExternalAuthTable::findAuthProvider()`.
+     * @param array|string|null $username Provider username.
      * @return \Cake\ORM\Query\SelectQuery
      */
-    protected function findExternalAuth(SelectQuery $query, array $options = []): SelectQuery
-    {
+    public function findExternalAuth(
+        SelectQuery $query,
+        AuthProvider|array|string|int $auth_provider,
+        array|string|null $username = null
+    ): SelectQuery {
         $query = $query->find('loginRoles');
 
-        return $query->innerJoinWith('ExternalAuth', function (SelectQuery $query) use ($options) {
-            $query = $query->find('authProvider', $options);
-            if (!empty($options['username'])) {
+        return $query->innerJoinWith('ExternalAuth', function (SelectQuery $query) use ($auth_provider, $username) {
+            $query = $query->find('authProvider', authProvider: $auth_provider);
+            if (!empty($username)) {
                 $query = $query->where(fn (QueryExpression $exp) => $exp->in(
                     $this->ExternalAuth->aliasField('provider_username'),
-                    (array)$options['username'],
+                    (array)$username,
                 ));
             }
 
@@ -299,17 +304,17 @@ class UsersTable extends Table
      * Find users by role name or id.
      *
      * @param \Cake\ORM\Query\SelectQuery $query Query object instance.
-     * @param array $subjectValue Array with role names or ids also as comma separated elements
+     * @param array $roles Array with role names or ids also as comma separated elements
      * @return \Cake\ORM\Query\SelectQuery
      */
-    protected function findRoles(SelectQuery $query, array $subjectValue): SelectQuery
+    public function findRoles(SelectQuery $query, array|string $roles): SelectQuery
     {
-        if (empty($subjectValue)) {
+        if (empty($roles)) {
             throw new BadFilterException(__d('bedita', 'Missing required parameter "{0}"', 'roles'));
         }
 
-        return $query->innerJoinWith('Roles', function (SelectQuery $query) use ($subjectValue) {
-            $items = $this->rolesNamesIds($subjectValue);
+        return $query->innerJoinWith('Roles', function (SelectQuery $query) use ($roles) {
+            $items = $this->rolesNamesIds((array)$roles);
 
             return $query->where(function (QueryExpression $exp) use ($items) {
                 return $exp->or(function (QueryExpression $exp) use ($items) {
@@ -355,7 +360,7 @@ class UsersTable extends Table
      * @param \Cake\ORM\Query\SelectQuery $query Query object instance.
      * @return \Cake\ORM\Query\SelectQuery
      */
-    protected function findMine(SelectQuery $query): SelectQuery
+    public function findMine(SelectQuery $query): SelectQuery
     {
         return $query->where(function (QueryExpression $exp) {
             return $exp->eq($this->aliasField((string)$this->getPrimaryKey()), LoggedUser::id());

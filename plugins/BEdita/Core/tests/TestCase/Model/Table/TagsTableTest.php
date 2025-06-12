@@ -14,7 +14,6 @@ declare(strict_types=1);
  */
 namespace BEdita\Core\Test\TestCase\Model\Table;
 
-use BEdita\Core\Exception\BadFilterException;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Hash;
@@ -136,19 +135,5 @@ class TagsTableTest extends TestCase
 
         $tags = $this->Tags->find('ids', names: ['tag-1', 'tag-2'])->toArray();
         static::assertEmpty($tags);
-    }
-
-    /**
-     * Test `findIds` failure.
-     *
-     * @return void
-     * @covers ::findIds()
-     */
-    public function testFindTagsIdsFail(): void
-    {
-        $this->expectException(BadFilterException::class);
-        $this->expectExceptionMessage('Missing or wrong required parameter "names"');
-
-        $this->Tags->find('ids', names: 42)->toArray();
     }
 }

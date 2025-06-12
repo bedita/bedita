@@ -231,7 +231,7 @@ class FoldersTable extends ObjectsTable
         }
 
         $options['descendants'] = $this
-            ->find('ancestor', [$entity->get('id')])
+            ->find('ancestor', parent: $entity->get('id'))
             ->where([
                 $this->aliasField('object_type_id') => $this->objectType()->id,
             ])
@@ -263,7 +263,7 @@ class FoldersTable extends ObjectsTable
      * @param \Cake\ORM\Query\SelectQuery $query Query object instance.
      * @return \Cake\ORM\Query\SelectQuery
      */
-    protected function findRoots(SelectQuery $query): SelectQuery
+    public function findRoots(SelectQuery $query): SelectQuery
     {
         return $query
             ->innerJoinWith('TreeNodes', function (SelectQuery $query) {
