@@ -91,9 +91,7 @@ class ProjectModelCommand extends Command
         // adjust project config content, if needed
         if (isset($project['config'])) {
             $project['config'] = array_map(
-                function ($item) {
-                    return is_array($item['content']) ? ['content' => json_encode($item['content'])] : $item;
-                },
+                fn ($item) => is_array($item['content']) ? ['content' => json_encode($item['content'])] : $item,
                 Hash::get($project, 'config', [])
             );
         }
