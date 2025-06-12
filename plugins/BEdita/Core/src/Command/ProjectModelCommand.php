@@ -90,10 +90,7 @@ class ProjectModelCommand extends Command
         }
         // adjust project config content, if needed
         if (isset($project['config'])) {
-            $project['config'] = array_map(
-                fn ($item) => is_array($item['content']) ? ['content' => json_encode($item['content'])] : $item,
-                Hash::get($project, 'config', [])
-            );
+            $project['config'] = $this->prepareContent($project['config']);
         }
 
         if ($args->getOption('cache-clear')) {
@@ -132,6 +129,26 @@ class ProjectModelCommand extends Command
         }
 
         return null;
+    }
+
+    /**
+     * Set content to string if is an array, in model data.
+     *
+     * @param array $data Data to prepare.
+     * @return array
+     */
+    protected function prepareContent(array $data): array
+    {
+        return array_map(
+            function ($item) {
+                if (is_array($item['content'])) {
+                    $item['content'] = json_encode($item['content']);
+                }
+
+                return $item;
+            },
+            $data
+        );
     }
 
     /**
