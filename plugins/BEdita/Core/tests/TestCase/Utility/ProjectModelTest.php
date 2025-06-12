@@ -486,7 +486,16 @@ class ProjectModelTest extends TestCase
                 'label' => 'Disabled category',
             ],
         ],
-        'config' => [],
+        'config' => [
+            [
+                'name' => 'sample_config',
+                'description' => 'Sample configuration',
+                'content' => [
+                    'setting1' => 'value1',
+                    'setting2' => 'value2',
+                ],
+            ],
+        ],
     ];
 
     /**
