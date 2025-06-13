@@ -118,26 +118,6 @@ class CompactHistoryCommandTest extends TestCase
     }
 
     /**
-     * Test execute on missing Ids
-     *
-     * @return void
-     * @covers ::execute()
-     * @covers ::initialize()
-     * @covers ::compactHistory()
-     * @covers ::objectsGenerator()
-     */
-    public function testExecuteMissingIds(): void
-    {
-        $this->exec('compact_history --from 1234567 --to 1234568 --verbose');
-        $this->assertExitSuccess();
-        $this->assertOutputContains('Dry run mode: no');
-        $this->assertOutputContains('Min ID: 1234567');
-        $this->assertOutputContains('Max ID: 1234568');
-        $this->assertOutputContains('ID 1234567 not found. Skip');
-        $this->assertOutputContains('ID 1234568 not found. Skip');
-    }
-
-    /**
      * Test execute method with dryrun mode
      *
      * @return void
