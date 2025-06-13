@@ -14,6 +14,7 @@ declare(strict_types=1);
  */
 namespace BEdita\Core\Command;
 
+use BEdita\Core\Model\Table\HistoryTable;
 use Cake\Command\Command;
 use Cake\Console\Arguments;
 use Cake\Console\ConsoleIo;
@@ -24,7 +25,7 @@ use Generator;
 /**
  * CompactHistory command: remove duplicates.
  *
- * @since 4.6.0
+ * @since 5.40.0
  * @property \BEdita\Core\Model\Table\ObjectsTable $Objects
  */
 class CompactHistoryCommand extends Command
@@ -37,9 +38,9 @@ class CompactHistoryCommand extends Command
     /**
      * History table
      *
-     * @var \Cake\ORM\Table
+     * @var \BEdita\Core\Model\Table\HistoryTable
      */
-    public $History;
+    public HistoryTable $History;
 
     /**
      * Dry run mode flag
@@ -53,7 +54,7 @@ class CompactHistoryCommand extends Command
      *
      * @var int
      */
-    public $appId;
+    public int $appId;
 
     /**
      * Page size for queries
@@ -67,14 +68,21 @@ class CompactHistoryCommand extends Command
      *
      * @var int
      */
-    protected $minId;
+    protected int $minId;
 
     /**
      * Max object ID to scan
      *
      * @var int
      */
-    protected $maxId;
+    protected int $maxId;
+
+    /**
+     * Max number of versions to keep for each object
+     *
+     * @var int
+     */
+    protected int $versions;
 
     /**
      * @inheritDoc
@@ -89,6 +97,11 @@ class CompactHistoryCommand extends Command
             ->addOption('to', [
                 'help' => 'Max ID to check',
                 'short' => 't',
+                'required' => false,
+            ])
+            ->addOption('versions', [
+                'help' => 'Max number of versions to keep for each object',
+                'short' => 'k',
                 'required' => false,
             ])
             ->addOption('dryrun', [
@@ -129,17 +142,16 @@ class CompactHistoryCommand extends Command
             $max = $q->select(['max_id' => $q->func()->max('id')])->first()->get('max_id');
             $this->maxId = intval($max);
         }
-        $io->info(sprintf('Min ID: %d - Max ID: %d', $this->minId, $this->maxId));
+        $vstr = '';
+        if ($args->getOption('versions')) {
+            $this->versions = intval($args->getOption('versions'));
+            $vstr = sprintf(' (keep last %d versions)', $this->versions);
+        }
+        $io->info(sprintf('Min ID: %d - Max ID: %d%s', $this->minId, $this->maxId, $vstr));
         $count = $processed = 0;
         $current = $this->minId;
         while ($current <= $this->maxId) {
             $io->verbose(sprintf('Process ID %d', $current));
-            if (!$this->Objects->exists([$this->Objects->aliasField('id') => $current])) {
-                $io->verbose(sprintf('ID %d not found. Skip', $current));
-                $current++;
-
-                continue;
-            }
             if ($this->compactHistory($current, $io)) {
                 $count++;
             }
@@ -161,6 +173,37 @@ class CompactHistoryCommand extends Command
      */
     protected function compactHistory(int $objectId, ConsoleIo $io): bool
     {
+        if (!empty($this->versions)) {
+            $io->verbose(sprintf(':: Keep last %d versions', $this->versions));
+            $items = $this->History
+                ->find()
+                ->where([
+                    $this->History->aliasField('resource_id') => $objectId,
+                    $this->History->aliasField('resource_type') => 'objects',
+                ])
+                ->orderDesc($this->History->aliasField('created'))
+                ->toArray();
+            if (count($items) > $this->versions) {
+                $toDelete = array_slice($items, $this->versions);
+                foreach ($toDelete as $item) {
+                    $io->verbose(sprintf(':: Delete history ID %d', $item->id));
+                    if (!$this->dryrun) {
+                        $this->History->delete($item);
+                    }
+                }
+                $io->verbose(
+                    sprintf(
+                        'Fixed "versions" on resource ID [%d]: removed %d records',
+                        $objectId,
+                        count($toDelete)
+                    )
+                );
+
+                return true;
+            } else {
+                $io->verbose(sprintf(':: No versions to delete for resource ID %d', $objectId));
+            }
+        }
         $query = $this->History
             ->find()
             ->where([
