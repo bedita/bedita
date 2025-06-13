@@ -239,7 +239,7 @@ class AsyncJobsControllerTest extends IntegrationTestCase
                         ],
                         'scheduled_from' => null,
                         'expires' => null,
-                        'max_attempts' => 1,
+                        'max_attempts' => 2,
                         'results' => null,
                     ],
                     'meta' => [

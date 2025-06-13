@@ -414,6 +414,24 @@ class ObjectsFixture extends TestFixture
             'publish_end' => null,
             'custom_props' => ['media_property' => false],
         ],
+        // 20
+        [
+            'object_type_id' => 4,
+            'status' => 'on',
+            'uname' => 'third-user',
+            'locked' => 0,
+            'deleted' => 0,
+            'created' => '2016-05-13 07:09:23',
+            'modified' => '2016-05-13 07:09:23',
+            'published' => null,
+            'title' => 'Mr. third User',
+            'description' => null,
+            'body' => null,
+            'extra' => null,
+            'lang' => 'en',
+            'created_by' => 1,
+            'modified_by' => 1,
+        ],
     ];
 
     /**

@@ -12,6 +12,7 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
+
 namespace BEdita\API\Test\IntegrationTest;
 
 use BEdita\API\TestSuite\IntegrationTestCase;
@@ -65,32 +66,32 @@ class FilterQueryStringTest extends IntegrationTestCase
     {
         return [
             'simple' => [
-               'filter[date_ranges][start_date][gt]=2017-01-01',
-               1,
+                'filter[date_ranges][start_date][gt]=2017-01-01',
+                1,
             ],
             'simple 2' => [
                 'filter[date_ranges][from_date]=2017-01-01T14:00:00',
                 1,
-             ],
-             'simple 3' => [
+            ],
+            'simple 3' => [
                 'filter[date_ranges][from_date]=2017-03-08T21:41:00',
                 0,
-             ],
-             'none' => [
-               'filter[date_ranges][end_date][le]=2017-01-01',
-               0,
+            ],
+            'none' => [
+                'filter[date_ranges][end_date][le]=2017-01-01',
+                0,
             ],
             'none 2' => [
                 'filter[date_ranges][to_date]=2017-01-01',
                 0,
-             ],
-             'combined' => [
-               'filter[date_ranges][start_date][gt]=2017-01-01&filter[date_ranges][end_date][lt]=2017-04-01',
-               1,
+            ],
+            'combined' => [
+                'filter[date_ranges][start_date][gt]=2017-01-01&filter[date_ranges][end_date][lt]=2017-04-01',
+                1,
             ],
             'absurd' => [
-               'filter[date_ranges][start_date][ge]=2018-01-01&filter[date_ranges][end_date][le]=2017-01-01',
-               0,
+                'filter[date_ranges][start_date][ge]=2018-01-01&filter[date_ranges][end_date][le]=2017-01-01',
+                0,
             ],
         ];
     }
@@ -124,16 +125,16 @@ class FilterQueryStringTest extends IntegrationTestCase
     {
         return [
             'simple' => [
-               'filter[geo][center][]=44.4944183&filter[geo][center][]=11.3464055',
-               [
-                   0,
-               ],
+                'filter[geo][center][]=44.4944183&filter[geo][center][]=11.3464055',
+                [
+                    0,
+                ],
             ],
             'array' => [
-               'filter[geo][center]=44.4944183,11.3464055',
-               [
-                   0,
-               ],
+                'filter[geo][center]=44.4944183,11.3464055',
+                [
+                    0,
+                ],
             ],
         ];
     }
@@ -173,20 +174,20 @@ class FilterQueryStringTest extends IntegrationTestCase
     {
         return [
             'simple' => [
-               'filter[geo][center]=44.4944183,11.3464055',
-               '/documents',
+                'filter[geo][center]=44.4944183,11.3464055',
+                '/documents',
             ],
             'bad' => [
-               'filter[cool_filter]=top',
+                'filter[cool_filter]=top',
                 '/events',
             ],
             'banana' => [
-               'filter[geo][banana]=44.4944183,11.3464055',
-               '/locations',
+                'filter[geo][banana]=44.4944183,11.3464055',
+                '/locations',
             ],
             'banana2' => [
-               'filter[date_ranges][banana][gt]=2017-01-01',
-               '/events',
+                'filter[date_ranges][banana][gt]=2017-01-01',
+                '/events',
             ],
         ];
     }
@@ -284,6 +285,7 @@ class FilterQueryStringTest extends IntegrationTestCase
                 '/users?filter[roles]=1',
                 [
                     '1',
+                    '20',
                 ],
             ],
             'filter roles ids' => [
@@ -291,19 +293,22 @@ class FilterQueryStringTest extends IntegrationTestCase
                 [
                     '1',
                     '5',
+                    '20',
                 ],
             ],
             'role name' => [
                 '/users?filter[roles]=first role',
                 [
-                   '1',
+                    '1',
+                    '20',
                 ],
             ],
             'role name (multiple)' => [
                 '/users?filter[roles]=first role,second role',
                 [
-                   '1',
-                   '5',
+                    '1',
+                    '5',
+                    '20',
                 ],
             ],
             'here2' => [
@@ -441,37 +446,39 @@ class FilterQueryStringTest extends IntegrationTestCase
     {
         return [
             'simple' => [
-               'filter[type]=users',
-               [
-                   '1',
-                   '5',
-               ],
+                'filter[type]=users',
+                [
+                    '1',
+                    '5',
+                    '20',
+                ],
             ],
             'exclude' => [
-               'filter[type][ne]=documents',
-               [
-                   '1',
-                   '4',
-                   '5',
-                   '8',
-                   '9',
-                   '10',
-                   '11',
-                   '12',
-                   '13',
-                   '14',
-                   '16',
-                   '17',
-                   '18',
-                   '19',
-               ],
+                'filter[type][ne]=documents',
+                [
+                    '1',
+                    '4',
+                    '5',
+                    '8',
+                    '9',
+                    '10',
+                    '11',
+                    '12',
+                    '13',
+                    '14',
+                    '16',
+                    '17',
+                    '18',
+                    '19',
+                    '20',
+                ],
             ],
             'multi' => [
-               'filter[type][]=events&filter[type][]=locations',
-               [
-                   '8',
-                   '9',
-               ],
+                'filter[type][]=events&filter[type][]=locations',
+                [
+                    '8',
+                    '9',
+                ],
             ],
         ];
     }
@@ -513,22 +520,22 @@ class FilterQueryStringTest extends IntegrationTestCase
                 '/objects',
                 'filter[uname]=title-one',
                 [
-                   '2',
+                    '2',
                 ],
             ],
             'boolean' => [
                 '/model/object_types',
                 'filter[is_abstract]=true',
                 [
-                   '1',
-                   '8',
+                    '1',
+                    '8',
                 ],
             ],
             'users' => [
                 '/users',
                 'filter[email]=second.user@example.com',
                 [
-                   '5',
+                    '5',
                 ],
             ],
             'status' => [
@@ -539,21 +546,19 @@ class FilterQueryStringTest extends IntegrationTestCase
             'emptyRoles' => [
                 '/roles',
                 'filter[name]=gustavo',
-                [
-                ],
+                [],
             ],
             'profileNameNull' => [
                 '/profiles',
                 'filter[name][null]=1',
-                [
-                ],
+                [],
             ],
             'profileNameNotNull' => [
                 '/profiles',
                 'filter[name][null]=0',
                 [
                     '4',
-                 ],
+                ],
             ],
             'config name' => [
                 '/config',
@@ -643,28 +648,27 @@ class FilterQueryStringTest extends IntegrationTestCase
     {
         return [
             'simple' => [
-               'filter[type]=documents',
-               [
-                   '6',
-                   '7',
-               ],
+                'filter[type]=documents',
+                [
+                    '6',
+                    '7',
+                ],
             ],
             'exclude' => [
-               'filter[type][ne]=documents',
-               [
-               ],
+                'filter[type][ne]=documents',
+                [],
             ],
             'query1' => [
-               'filter[query]=one',
-               [
-                   '6',
-               ],
+                'filter[query]=one',
+                [
+                    '6',
+                ],
             ],
             'query2' => [
-               'q=two',
-               [
-                   '7',
-               ],
+                'q=two',
+                [
+                    '7',
+                ],
             ],
         ];
     }
@@ -802,8 +806,7 @@ class FilterQueryStringTest extends IntegrationTestCase
             'disabled' => [
                 '/documents',
                 'filter[categories]=disabled-cat',
-                [
-                ],
+                [],
             ],
             'tags' => [
                 '/profiles',

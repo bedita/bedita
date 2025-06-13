@@ -16,6 +16,8 @@ namespace BEdita\Core\Model\Entity;
 
 use BEdita\Core\Job\ServiceRegistry;
 use BEdita\Core\Utility\JsonApiSerializable;
+use Cake\Event\EventDispatcherInterface;
+use Cake\Event\EventDispatcherTrait;
 use Cake\I18n\FrozenTime;
 use Cake\ORM\Entity;
 
@@ -37,9 +39,10 @@ use Cake\ORM\Entity;
  * @property array $results
  * @since 4.0.0
  */
-class AsyncJob extends Entity implements JsonApiSerializable
+class AsyncJob extends Entity implements JsonApiSerializable, EventDispatcherInterface
 {
     use JsonApiAdminTrait;
+    use EventDispatcherTrait;
 
     /**
      * @inheritDoc
@@ -101,6 +104,8 @@ class AsyncJob extends Entity implements JsonApiSerializable
         }
 
         $service = ServiceRegistry::get($this->service);
+        $entity = $this;
+        $this->dispatchEvent('AsyncJob.beforeRun', compact('entity', 'options'), $service);
 
         return $service->run($this->payload, $options);
     }

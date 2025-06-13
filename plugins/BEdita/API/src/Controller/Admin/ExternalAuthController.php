@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 /**
  * BEdita, API-first content management framework
- * Copyright 2016 ChannelWeb Srl, Chialab Srl
+ * Copyright 2025 ChannelWeb Srl, Chialab Srl
  *
  * This file is part of BEdita: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published
@@ -12,30 +12,19 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-namespace BEdita\Core\Test\Fixture;
 
-use Cake\TestSuite\Fixture\TestFixture;
+namespace BEdita\API\Controller\Admin;
 
 /**
- * Fixture for `roles_users` table.
+ * Controller for `/admin/external_auth` endpoint.
+ *
+ * @since 5.38.0
+ * @property \BEdita\Core\Model\Table\ExternalAuth $ExternalAuth
  */
-class RolesUsersFixture extends TestFixture
+class ExternalAuthController extends AdminController
 {
     /**
      * @inheritDoc
      */
-    public $records = [
-        [
-            'role_id' => 1,
-            'user_id' => 1,
-        ],
-        [
-            'role_id' => 2,
-            'user_id' => 5,
-        ],
-        [
-            'role_id' => 1,
-            'user_id' => 20,
-        ],
-    ];
+    public $defaultTable = 'ExternalAuth';
 }

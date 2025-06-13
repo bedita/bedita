@@ -356,21 +356,21 @@ abstract class BaseApplication extends CakeBaseApplication implements Authentica
             ->each(function (AuthProvider $authProvider) use ($service, $name): void {
                 if ($authProvider->name === $name) {
                     $authenticator = $service->loadAuthenticator(
-                        $authProvider->auth_class,
+                        (string)$authProvider->auth_class,
                         compact('authProvider'),
                     );
                     if ($authenticator instanceof AbstractAuthenticator) {
                         $authenticator->setConfig(
-                            Hash::get($authProvider->params, 'config.authenticator', [])
+                            Hash::get((array)$authProvider->params, 'config.authenticator', [])
                         );
                     }
                     $identifier = $service->loadIdentifier(
-                        $authProvider->auth_class,
+                        (string)$authProvider->auth_class,
                         compact('authProvider'),
                     );
                     if ($identifier instanceof AbstractIdentifier) {
                         $identifier->setConfig(
-                            Hash::get($authProvider->params, 'config.identifier', [])
+                            Hash::get((array)$authProvider->params, 'config.identifier', [])
                         );
                     }
                 }
