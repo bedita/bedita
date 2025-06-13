@@ -220,4 +220,62 @@ class CompactHistoryCommandTest extends TestCase
         $countActual = $table->find()->where(['resource_id' => 1])->count();
         static::assertEquals($countBefore + 1, $countActual);
     }
+
+    /**
+     * Test execute method with versions option
+     *
+     * @return void
+     * @covers ::execute()
+     * @covers ::initialize()
+     * @covers ::compactHistory()
+     * @covers ::objectsGenerator()
+     * @covers ::processHistory()
+     * @covers ::compare()
+     */
+    public function testExecuteVersions(): void
+    {
+        // insert duplicated history records
+        $table = $this->fetchTable('History');
+        $countBefore = $table->find()->where(['resource_id' => 1])->count();
+        $table->save(new History([
+            'resource_id' => 1,
+            'application_id' => 1,
+            'event' => 'create',
+            'data' => json_encode(['foo' => 'bar']),
+        ]));
+        $table->save(new History([
+            'resource_id' => 1,
+            'application_id' => 1,
+            'event' => 'create',
+            'data' => json_encode(['foo2' => 'bar2']),
+        ]));
+        $table->save(new History([
+            'resource_id' => 1,
+            'application_id' => 1,
+            'event' => 'create',
+            'data' => json_encode(['foo2' => 'bar2']),
+        ]));
+        $table->save(new History([
+            'resource_id' => 1,
+            'application_id' => 1,
+            'event' => 'create',
+            'data' => json_encode(['foo' => 'bar']),
+        ]));
+        $table->save(new History([
+            'resource_id' => 1,
+            'application_id' => 1,
+            'event' => 'create',
+            'data' => json_encode(['foo2' => 'bar2']),
+        ]));
+        $table->save(new History([
+            'resource_id' => 1,
+            'application_id' => 1,
+            'event' => 'create',
+            'data' => json_encode(['foo' => 'bar']),
+        ]));
+        $this->exec('compact_history --from 1 --to 1 --versions 2');
+        $this->assertExitSuccess();
+        $this->assertOutputContains('Dry run mode: no');
+        $this->assertOutputContains('Min ID: 1 - Max ID: 1 (keep last 2 versions)');
+    }
 }
