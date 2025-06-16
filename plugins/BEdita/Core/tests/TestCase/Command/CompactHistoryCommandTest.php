@@ -277,5 +277,31 @@ class CompactHistoryCommandTest extends TestCase
         $this->assertExitSuccess();
         $this->assertOutputContains('Dry run mode: no');
         $this->assertOutputContains('Min ID: 1 - Max ID: 1 (keep last 2 versions)');
+        $countActual = $table->find()->where(['resource_id' => 1])->count();
+        static::assertEquals($countBefore + 2, $countActual);
+    }
+
+    /**
+     * Test execute method with no versions to delete
+     *
+     * @return void
+     * @covers ::execute()
+     * @covers ::initialize()
+     * @covers ::compactHistory()
+     * @covers ::objectsGenerator()
+     * @covers ::processHistory()
+     * @covers ::compare()
+     */
+    public function testExecuteNoVersionsToDelete(): void
+    {
+        $table = $this->fetchTable('History');
+        $countBefore = $table->find()->where(['resource_id' => 1])->count();
+        $this->exec('compact_history --from 1 --to 1 --versions 2 --verbose');
+        $this->assertExitSuccess();
+        $this->assertOutputContains('Dry run mode: no');
+        $this->assertOutputContains('Min ID: 1 - Max ID: 1 (keep last 2 versions)');
+        $this->assertOutputContains('No versions to delete for resource ID 1');
+        $countActual = $table->find()->where(['resource_id' => 1])->count();
+        static::assertEquals($countBefore, $countActual);
     }
 }
