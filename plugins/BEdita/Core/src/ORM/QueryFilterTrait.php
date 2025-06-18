@@ -85,15 +85,28 @@ trait QueryFilterTrait
                 }
 
                 $in = [];
+                $nin = [];
                 foreach ($conditions as $operator => $value) {
                     if (is_numeric($operator)) {
                         $in[] = $value;
                         continue;
                     }
-                    $exp = $this->operatorExpression($exp, $operator, $field, $value);
+
+                    switch ($operator) {
+                        case 'nin':
+                            $nin = is_string($value) ? explode(',', $value) : (array)$value;
+                            break;
+
+                        default:
+                            $exp = $this->operatorExpression($exp, $operator, $field, $value);
+                    }
                 }
+
                 if (!empty($in)) {
                     $exp = $exp->in($field, $in);
+                }
+                if (!empty($nin)) {
+                    $exp = $exp->notIn($field, $nin);
                 }
             }
 

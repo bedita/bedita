@@ -168,6 +168,12 @@ class QueryFilterTraitTest extends TestCase
                 ],
                 1,
             ],
+            'ninCatEagle' => [
+                [
+                    'name' => ['nin' => ['cat', 'eagle']],
+                ],
+                1,
+            ],
         ];
     }
 
