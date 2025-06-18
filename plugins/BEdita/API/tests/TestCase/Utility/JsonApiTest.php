@@ -430,10 +430,24 @@ class JsonApiTest extends TestCase
                                 [
                                     'id' => '4',
                                     'type' => 'profiles',
+                                    'meta' => [
+                                        'relation' => [
+                                            'priority' => 1,
+                                            'inv_priority' => 2,
+                                            'params' => null,
+                                        ],
+                                    ],
                                 ],
                                 [
                                     'id' => '3',
                                     'type' => 'documents',
+                                    'meta' => [
+                                        'relation' => [
+                                            'priority' => 2,
+                                            'inv_priority' => 1,
+                                            'params' => null,
+                                        ],
+                                    ],
                                 ],
                             ],
                         ],

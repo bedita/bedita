@@ -314,7 +314,7 @@ trait JsonApiTrait
                 ));
             }
 
-            $data[] = $item->jsonApiSerialize(JsonApiSerializable::JSONAPIOPT_EXCLUDE_ATTRIBUTES | JsonApiSerializable::JSONAPIOPT_EXCLUDE_META | JsonApiSerializable::JSONAPIOPT_EXCLUDE_LINKS | JsonApiSerializable::JSONAPIOPT_EXCLUDE_RELATIONSHIPS);
+            $data[] = $item->jsonApiSerialize(JsonApiSerializable::JSONAPIOPT_EXCLUDE_ATTRIBUTES | JsonApiSerializable::JSONAPIOPT_EXCLUDE_META | JsonApiSerializable::JSONAPIOPT_EXCLUDE_LINKS | JsonApiSerializable::JSONAPIOPT_EXCLUDE_RELATIONSHIPS | JsonApiSerializable::JSONAPIOPT_INCLUDE_JOIN_DATA);
         }
 
         return $single ? $data[0] : $data;
@@ -453,6 +453,8 @@ trait JsonApiTrait
         }
         if (($options & JsonApiSerializable::JSONAPIOPT_EXCLUDE_META) === 0) {
             $meta = $this->getMeta();
+        } elseif (($options & JsonApiSerializable::JSONAPIOPT_INCLUDE_JOIN_DATA) > 0) {
+            $meta = array_filter(['relation' => $this->joinData()]);
         }
         if (($options & JsonApiSerializable::JSONAPIOPT_EXCLUDE_LINKS) === 0) {
             $links = $this->getLinks();

@@ -40,6 +40,13 @@ class JsonApiTraitTest extends TestCase
     public $ObjectTypes;
 
     /**
+     * Helper table.
+     *
+     * @var \BEdita\Core\Model\Table\ObjectsTable
+     */
+    public $Documents;
+
+    /**
      * Fixtures
      *
      * @var array
@@ -76,6 +83,7 @@ class JsonApiTraitTest extends TestCase
 
         $this->Roles = TableRegistry::getTableLocator()->get('Roles');
         $this->ObjectTypes = TableRegistry::getTableLocator()->get('ObjectTypes');
+        $this->Documents = TableRegistry::getTableLocator()->get('Documents');
 
         $this->loadPlugins(['BEdita/API' => ['routes' => true]]);
     }
@@ -276,14 +284,35 @@ class JsonApiTraitTest extends TestCase
                     [
                         'id' => '1',
                         'type' => 'relations',
+                        'meta' => [
+                            'relation' => [
+                                'relation_id' => 1,
+                                'object_type_id' => 2,
+                                'side' => 'left',
+                            ],
+                        ],
                     ],
                     [
                         'id' => '4',
                         'type' => 'relations',
+                        'meta' => [
+                            'relation' => [
+                                'relation_id' => 4,
+                                'object_type_id' => 2,
+                                'side' => 'left',
+                            ],
+                        ],
                     ],
                     [
                         'id' => '5',
                         'type' => 'relations',
+                        'meta' => [
+                            'relation' => [
+                                'relation_id' => 5,
+                                'object_type_id' => 2,
+                                'side' => 'left',
+                            ],
+                        ],
                     ],
                 ],
                 'links' => [
@@ -296,14 +325,35 @@ class JsonApiTraitTest extends TestCase
                     [
                         'id' => '1',
                         'type' => 'relations',
+                        'meta' => [
+                            'relation' => [
+                                'relation_id' => 1,
+                                'object_type_id' => 2,
+                                'side' => 'right',
+                            ],
+                        ],
                     ],
                     [
                         'id' => '4',
                         'type' => 'relations',
+                        'meta' => [
+                            'relation' => [
+                                'relation_id' => 4,
+                                'object_type_id' => 2,
+                                'side' => 'right',
+                            ],
+                        ],
                     ],
                     [
                         'id' => '5',
                         'type' => 'relations',
+                        'meta' => [
+                            'relation' => [
+                                'relation_id' => 5,
+                                'object_type_id' => 2,
+                                'side' => 'right',
+                            ],
+                        ],
                     ],
                 ],
                 'links' => [
@@ -323,7 +373,7 @@ class JsonApiTraitTest extends TestCase
             ],
         ];
 
-        $objectType = $this->ObjectTypes->get(2, ['contain' => ['Parent', 'RightRelations', 'LeftRelations']])->jsonApiSerialize();
+        $objectType = $this->ObjectTypes->get(2, ['contain' => ['Parent', 'RightRelations', 'LeftRelations']])->jsonApiSerialize(JsonApiSerializable::JSONAPIOPT_EXCLUDE_META);
 
         $relationships = $objectType['relationships'];
         $included = $objectType['included'];
@@ -674,6 +724,30 @@ class JsonApiTraitTest extends TestCase
         $role = json_decode(json_encode($role), true);
 
         static::assertEquals($expected, $role);
+    }
+
+    /**
+     * Test that JSON API serializer includes relationships' join data.
+     *
+     * @return void
+     * @covers ::jsonApiSerialize()
+     */
+    public function testSerializeJoinData()
+    {
+        $expected = [
+            'id' => '4',
+            'type' => 'profiles',
+            'meta' => [
+                'relation' => [
+                    'priority' => 1,
+                    'inv_priority' => 1,
+                    'params' => ['name' => 'John'],
+                ],
+            ],
+        ];
+
+        $document = $this->Documents->get(2, ['contain' => ['TestSimple']])->jsonApiSerialize();
+        static::assertEquals($expected, (array)Hash::extract($document, 'relationships.test_simple.data.0'));
     }
 
     /**

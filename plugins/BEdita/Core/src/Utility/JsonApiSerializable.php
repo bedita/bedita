@@ -51,6 +51,11 @@ interface JsonApiSerializable
     public const JSONAPIOPT_EXCLUDE_RELATIONSHIPS = 8;
 
     /**
+     * Tell JSON API serializer to include `relationships` join data from resource.
+     */
+    public const JSONAPIOPT_INCLUDE_JOIN_DATA = 16;
+
+    /**
      * Tell JSON API serializer to exclude all (`attributes`, `meta`, `links`, `relationships`) from resource
      *
      * @var int
