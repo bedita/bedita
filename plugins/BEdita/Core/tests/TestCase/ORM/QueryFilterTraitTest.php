@@ -174,6 +174,18 @@ class QueryFilterTraitTest extends TestCase
                 ],
                 1,
             ],
+            'notInCombined' => [
+                [
+                    'name' => ['eagle', 'bat', 'nin' => ['cat', 'koala'], 'lt' => 'f'],
+                ],
+                1,
+            ],
+            'inCatKoala' => [
+                [
+                    'name' => ['in' => ['cat', 'koala']],
+                ],
+                2,
+            ],
         ];
     }
 
