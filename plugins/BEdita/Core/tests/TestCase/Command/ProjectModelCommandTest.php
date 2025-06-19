@@ -244,10 +244,7 @@ class ProjectModelCommandTest extends TestCase
         $this->assertNull($cmd->modelFileFromFolder());
 
         // CONFIG . DS . 'project-model' exists but empty
-        $folder = CONFIG . DS . 'project-model';
-        if (!is_dir($folder)) {
-            mkdir($folder, 0777, true);
-        }
+        mkdir($folder, 0777, true);
         $this->assertNull($cmd->modelFileFromFolder());
 
         // CONFIG . DS . 'project-model' exists and contains files
