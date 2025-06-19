@@ -155,7 +155,7 @@ class ProjectModelCommand extends Command
     }
 
     /**
-     * Retrieve model file from `project-model` folder.
+     * Build model file from `project-model` folder, putting together all JSON files.
      * If the folder does not exist or is empty, returns null.
      *
      * @return string|null
