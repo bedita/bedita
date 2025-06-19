@@ -3224,10 +3224,24 @@ class ObjectsControllerTest extends IntegrationTestCase
                             [
                                 'id' => '4',
                                 'type' => 'profiles',
+                                'meta' => [
+                                    'relation' => [
+                                        'priority' => 1,
+                                        'inv_priority' => 2,
+                                        'params' => null,
+                                    ],
+                                ],
                             ],
                             [
                                 'id' => '3',
                                 'type' => 'documents',
+                                'meta' => [
+                                    'relation' => [
+                                        'priority' => 2,
+                                        'inv_priority' => 1,
+                                        'params' => null,
+                                    ],
+                                ],
                             ],
                         ],
                     ],
@@ -3438,6 +3452,213 @@ class ObjectsControllerTest extends IntegrationTestCase
 
         $this->configRequestHeaders();
         $this->get('/documents/2?include=test,inverse_test');
+        $result = json_decode((string)$this->_response->getBody(), true);
+
+        $this->assertResponseCode(200);
+        $this->assertContentType('application/vnd.api+json');
+        static::assertEquals($expected, $result);
+    }
+
+    /**
+     * Test that relationships include join data.
+     *
+     * @return void
+     * @coversNothing This is an integration test for {@see \BEdita\Core\Model\Entity\JsonApiTrait::jsonApiSerialize()}
+     */
+    public function testIncludeJoinData()
+    {
+        $expected = [
+            'data' => [
+                'id' => '2',
+                'type' => 'documents',
+                'attributes' => [
+                    'status' => 'on',
+                    'uname' => 'title-one',
+                    'title' => 'title one',
+                    'description' => 'description here',
+                    'body' => 'body here',
+                    'extra' => [
+                        'abstract' => 'abstract here',
+                        'list' => ['one', 'two', 'three'],
+                    ],
+                    'categories' => [
+                        [
+                            'name' => 'first-cat',
+                            'labels' => ['default' => 'First category'],
+                            'params' => '100',
+                            'label' => 'First category',
+                        ],
+                        [
+                            'name' => 'second-cat',
+                            'labels' => ['default' => 'Second category'],
+                            'params' => null,
+                            'label' => 'Second category',
+                        ],
+                    ],
+                    'lang' => 'en',
+                    'publish_start' => '2016-05-13T07:09:23+00:00',
+                    'publish_end' => '2016-05-13T07:09:23+00:00',
+                    'another_title' => null,
+                    'another_description' => null,
+                ],
+                'meta' => [
+                    'locked' => true,
+                    'created_by' => 1,
+                    'modified_by' => 1,
+                    'created' => '2016-05-13T07:09:23+00:00',
+                    'modified' => '2016-05-13T07:09:23+00:00',
+                    'published' => '2016-05-13T07:09:23+00:00',
+                ],
+                'relationships' => [
+                    'test' => [
+                        'links' => [
+                            'self' => 'http://api.example.com/documents/2/relationships/test',
+                            'related' => 'http://api.example.com/documents/2/test',
+                        ],
+                    ],
+                    'inverse_test' => [
+                        'links' => [
+                            'self' => 'http://api.example.com/documents/2/relationships/inverse_test',
+                            'related' => 'http://api.example.com/documents/2/inverse_test',
+                        ],
+                    ],
+                    'parents' => [
+                        'links' => [
+                            'self' => 'http://api.example.com/documents/2/relationships/parents',
+                            'related' => 'http://api.example.com/documents/2/parents',
+                        ],
+                    ],
+                    'translations' => [
+                        'links' => [
+                            'self' => 'http://api.example.com/documents/2/relationships/translations',
+                            'related' => 'http://api.example.com/documents/2/translations',
+                        ],
+                    ],
+                    'test_simple' => [
+                        'links' => [
+                            'self' => 'http://api.example.com/documents/2/relationships/test_simple',
+                            'related' => 'http://api.example.com/documents/2/test_simple',
+                        ],
+                        'data' => [
+                            [
+                                'id' => '4',
+                                'type' => 'profiles',
+                                'meta' => [
+                                    'relation' => [
+                                        'priority' => 1,
+                                        'inv_priority' => 1,
+                                        'params' => ['name' => 'John'],
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ],
+                    'test_defaults' => [
+                        'links' => [
+                            'self' => 'http://api.example.com/documents/2/relationships/test_defaults',
+                            'related' => 'http://api.example.com/documents/2/test_defaults',
+                        ],
+                    ],
+                    'inverse_test_simple' => [
+                        'links' => [
+                            'self' => 'http://api.example.com/documents/2/relationships/inverse_test_simple',
+                            'related' => 'http://api.example.com/documents/2/inverse_test_simple',
+                        ],
+                        'data' => [],
+                    ],
+                    'inverse_test_defaults' => [
+                        'links' => [
+                            'self' => 'http://api.example.com/documents/2/relationships/inverse_test_defaults',
+                            'related' => 'http://api.example.com/documents/2/inverse_test_defaults',
+                        ],
+                    ],
+                ],
+            ],
+            'included' => [
+                [
+                    'id' => '4',
+                    'type' => 'profiles',
+                    'attributes' => [
+                        'status' => 'on',
+                        'uname' => 'gustavo-supporto',
+                        'title' => 'Gustavo Supporto profile',
+                        'description' => 'Some description about Gustavo',
+                        'body' => null,
+                        'extra' => null,
+                        'lang' => 'en',
+                        'publish_start' => null,
+                        'publish_end' => null,
+                    ],
+                    'meta' => [
+                        'locked' => false,
+                        'created' => '2016-05-13T07:09:23+00:00',
+                        'modified' => '2016-05-13T07:09:23+00:00',
+                        'published' => null,
+                        'created_by' => 1,
+                        'modified_by' => 1,
+                        'relation' => [
+                            'priority' => 1,
+                            'inv_priority' => 1,
+                            'params' => ['name' => 'John'],
+                        ],
+                    ],
+                    'links' => [
+                        'self' => 'http://api.example.com/profiles/4',
+                    ],
+                    'relationships' => [
+                        'inverse_test' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/profiles/4/inverse_test',
+                                'self' => 'http://api.example.com/profiles/4/relationships/inverse_test',
+                            ],
+                        ],
+                        'parents' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/profiles/4/parents',
+                                'self' => 'http://api.example.com/profiles/4/relationships/parents',
+                            ],
+                        ],
+                        'translations' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/profiles/4/translations',
+                                'self' => 'http://api.example.com/profiles/4/relationships/translations',
+                            ],
+                        ],
+                        'inverse_test_simple' => [
+                            'links' => [
+                                'self' => 'http://api.example.com/profiles/4/relationships/inverse_test_simple',
+                                'related' => 'http://api.example.com/profiles/4/inverse_test_simple',
+                            ],
+                        ],
+                        'inverse_test_defaults' => [
+                            'links' => [
+                                'self' => 'http://api.example.com/profiles/4/relationships/inverse_test_defaults',
+                                'related' => 'http://api.example.com/profiles/4/inverse_test_defaults',
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+            'meta' => [
+                'schema' => [
+                    'documents' => [
+                        '$id' => 'http://api.example.com/model/schema/documents',
+                        'revision' => TestConstants::SCHEMA_REVISIONS['documents'],
+                    ],
+                    'profiles' => [
+                        '$id' => 'http://api.example.com/model/schema/profiles',
+                        'revision' => TestConstants::SCHEMA_REVISIONS['profiles'],
+                    ],
+                ],
+            ],
+            'links' => [
+                'self' => 'http://api.example.com/documents/2?include=test_simple%2Cinverse_test_simple',
+                'home' => 'http://api.example.com/home',
+            ],
+        ];
+
+        $this->configRequestHeaders();
+        $this->get('/documents/2?include=test_simple,inverse_test_simple');
         $result = json_decode((string)$this->_response->getBody(), true);
 
         $this->assertResponseCode(200);
