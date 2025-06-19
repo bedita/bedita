@@ -75,7 +75,26 @@ class ProjectModelCommand extends Command
      */
     public function execute(Arguments $args, ConsoleIo $io): ?int
     {
-        $file = $this->modelFilePath($args);
+        $file = null;
+        // try to build file from project-model json files, merging them
+        if (file_exists(CONFIG . DS . 'project-model')) {
+            $files = glob(CONFIG . DS . 'project-model' . DS . '*.json');
+            $json = [];
+            foreach ($files as $file) {
+                $basename = basename($file);
+                $name = str_replace('.json', '', $basename);
+                $content = file_get_contents($file);
+                $json[$name] = json_decode($content, true);
+            }
+            if (!empty($json)) {
+                $file = TMP . DS . 'project-model.json';
+                file_put_contents($file, json_encode($json, JSON_PRETTY_PRINT));
+            }
+            unset($json, $files, $basename, $name, $content);
+        }
+        if (empty($file)) {
+            $file = $this->modelFilePath($args);
+        }
         if (!file_exists($file)) {
             $io->error(sprintf('File not found %s', $file));
 
