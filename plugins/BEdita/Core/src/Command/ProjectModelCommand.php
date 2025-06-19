@@ -171,7 +171,7 @@ class ProjectModelCommand extends Command
 
             return null;
         }
-        $file = null;
+        $projectModelFile = null;
         $json = [];
         foreach ($files as $file) {
             $name = str_replace('.json', '', basename($file));
@@ -181,12 +181,12 @@ class ProjectModelCommand extends Command
             }
         }
         if (!empty($json)) {
-            $file = TMP . DS . 'project-model.json';
-            file_put_contents($file, json_encode($json, JSON_PRETTY_PRINT));
+            $projectModelFile = TMP . DS . 'project-model.json';
+            file_put_contents($projectModelFile, json_encode($json, JSON_PRETTY_PRINT));
         }
         unset($json, $files, $name, $content);
 
-        return $file;
+        return $projectModelFile;
     }
 
     /**
