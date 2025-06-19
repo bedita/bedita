@@ -75,24 +75,7 @@ class ProjectModelCommand extends Command
      */
     public function execute(Arguments $args, ConsoleIo $io): ?int
     {
-        $file = null;
-        // try to build file from project-model json files, merging them
-        if (file_exists(CONFIG . DS . 'project-model')) {
-            $files = glob(CONFIG . DS . 'project-model' . DS . '*.json');
-            $json = [];
-            foreach ($files as $file) {
-                $name = str_replace('.json', '', basename($file));
-                $content = file_get_contents($file);
-                if ($content) {
-                    $json[$name] = json_decode($content, true);
-                }
-            }
-            if (!empty($json)) {
-                $file = TMP . DS . 'project-model.json';
-                file_put_contents($file, json_encode($json, JSON_PRETTY_PRINT));
-            }
-            unset($json, $files, $name, $content);
-        }
+        $file = $this->modelFileFromFolder();
         if (empty($file)) {
             $file = $this->modelFilePath($args);
         }
@@ -169,6 +152,41 @@ class ProjectModelCommand extends Command
             },
             $data
         );
+    }
+
+    /**
+     * Retrieve model file from `project-model` folder.
+     * If the folder does not exist or is empty, returns null.
+     *
+     * @return string|null
+     */
+    protected function modelFileFromFolder(): ?string
+    {
+        if (!file_exists(CONFIG . DS . 'project-model')) {
+            return null;
+        }
+        $files = glob(CONFIG . DS . 'project-model' . DS . '*.json');
+        if (empty($files)) {
+            unset($files);
+
+            return null;
+        }
+        $file = null;
+        $json = [];
+        foreach ($files as $file) {
+            $name = str_replace('.json', '', basename($file));
+            $content = file_get_contents($file);
+            if ($content) {
+                $json[$name] = json_decode($content, true);
+            }
+        }
+        if (!empty($json)) {
+            $file = TMP . DS . 'project-model.json';
+            file_put_contents($file, json_encode($json, JSON_PRETTY_PRINT));
+        }
+        unset($json, $files, $name, $content);
+
+        return $file;
     }
 
     /**
