@@ -81,16 +81,17 @@ class ProjectModelCommand extends Command
             $files = glob(CONFIG . DS . 'project-model' . DS . '*.json');
             $json = [];
             foreach ($files as $file) {
-                $basename = basename($file);
-                $name = str_replace('.json', '', $basename);
+                $name = str_replace('.json', '', basename($file));
                 $content = file_get_contents($file);
-                $json[$name] = json_decode($content, true);
+                if ($content) {
+                    $json[$name] = json_decode($content, true);
+                }
             }
             if (!empty($json)) {
                 $file = TMP . DS . 'project-model.json';
                 file_put_contents($file, json_encode($json, JSON_PRETTY_PRINT));
             }
-            unset($json, $files, $basename, $name, $content);
+            unset($json, $files, $name, $content);
         }
         if (empty($file)) {
             $file = $this->modelFilePath($args);
