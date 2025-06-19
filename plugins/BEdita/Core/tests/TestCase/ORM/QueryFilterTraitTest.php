@@ -186,6 +186,13 @@ class QueryFilterTraitTest extends TestCase
                 ],
                 2,
             ],
+            'separateInClausesForEachField' => [
+                [
+                    'name' => ['koala', 'eagle'],
+                    'legs' => [4,5,6,7],
+                ],
+                1,
+            ],
         ];
     }
 
