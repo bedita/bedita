@@ -188,4 +188,35 @@ class ProjectModelCommandTest extends TestCase
         $this->assertOutputContains('Cache cleared');
         $this->assertExitSuccess();
     }
+
+    /**
+     * Test prepareContent method
+     *
+     * @return void
+     * @covers ::prepareContent()
+     */
+    public function testPrepareContent(): void
+    {
+        $cmd = new class () extends ProjectModelCommand
+        {
+            public function prepareContent(array $data): array
+            {
+                return parent::prepareContent($data);
+            }
+        };
+        $data = [
+            [
+                'name' => 'test',
+                'content' => ['sample' => 'something'],
+            ],
+        ];
+        $actual = $cmd->prepareContent($data);
+        $expected = [
+            [
+                'name' => 'test',
+                'content' => '{"sample":"something"}',
+            ],
+        ];
+        $this->assertEquals($expected, $actual);
+    }
 }
