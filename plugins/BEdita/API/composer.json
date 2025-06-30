@@ -24,7 +24,7 @@
         "php": ">=8.3",
         "cakephp/authentication": "^3.2.5",
         "cakephp/authorization": "^3.4.1",
-        "cakephp/cakephp": "5.2.*",
+        "cakephp/cakephp": "~5.2.5",
         "firebase/php-jwt": "^6.9"
     },
     "require-dev": {
