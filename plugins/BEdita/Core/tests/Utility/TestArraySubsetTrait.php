@@ -15,7 +15,7 @@ declare(strict_types=1);
 namespace BEdita\Core\Test\Utility;
 
 /**
- * Trait to add assert
+ * Trait to add `assertArraySubset()` method to test cases.
  */
 trait TestArraySubsetTrait
 {
