@@ -90,8 +90,10 @@ trait QueryFilterTrait
                         $in[] = $value;
                         continue;
                     }
+
                     $exp = $this->operatorExpression($exp, $operator, $field, $value);
                 }
+
                 if (!empty($in)) {
                     $exp = $exp->in($field, $in);
                 }
@@ -148,6 +150,16 @@ trait QueryFilterTrait
             case 'ge':
             case '>=':
                 $exp = $exp->gte($field, $value);
+                break;
+            case 'notin':
+            case 'nin':
+                $values = is_string($value) ? explode(',', $value) : (array)$value;
+                $exp = $exp->notIn($field, $values);
+                break;
+
+            case 'in':
+                $values = is_string($value) ? explode(',', $value) : (array)$value;
+                $exp = $exp->in($field, $values);
                 break;
 
             case 'null':
