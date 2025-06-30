@@ -16,17 +16,17 @@ namespace BEdita\Core\Test\TestCase\Filesystem\Thumbnail;
 
 use BEdita\Core\Filesystem\Thumbnail;
 use BEdita\Core\Filesystem\Thumbnail\AsyncGenerator;
+use BEdita\Core\Test\Utility\TestArraySubsetTrait;
 use Cake\I18n\DateTime;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
-use DMS\PHPUnitExtensions\ArraySubset\ArraySubsetAsserts;
 
 /**
  * @coversDefaultClass \BEdita\Core\Filesystem\Thumbnail\AsyncGenerator
  */
 class AsyncGeneratorTest extends TestCase
 {
-    use ArraySubsetAsserts;
+    use TestArraySubsetTrait;
 
     /**
      * Fixtures.

@@ -22,9 +22,9 @@ use BEdita\API\Controller\AppController;
 use BEdita\API\Policy\EndpointPolicy;
 use BEdita\API\Test\TestConstants;
 use BEdita\API\TestSuite\IntegrationTestCase;
+use BEdita\Core\Test\Utility\TestArraySubsetTrait;
 use Cake\Core\Configure;
 use Cake\Http\ServerRequest;
-use DMS\PHPUnitExtensions\ArraySubset\ArraySubsetAsserts;
 use Exception;
 
 /**
@@ -32,7 +32,7 @@ use Exception;
  */
 class AppControllerTest extends IntegrationTestCase
 {
-    use ArraySubsetAsserts;
+    use TestArraySubsetTrait;
 
     /**
      * Test API meta info header.

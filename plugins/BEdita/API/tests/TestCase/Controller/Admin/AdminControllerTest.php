@@ -15,14 +15,14 @@ declare(strict_types=1);
 namespace BEdita\API\Test\TestCase\Controller\Admin;
 
 use BEdita\API\TestSuite\IntegrationTestCase;
-use DMS\PHPUnitExtensions\ArraySubset\ArraySubsetAsserts;
+use BEdita\Core\Test\Utility\TestArraySubsetTrait;
 
 /**
  * @coversDefaultClass \BEdita\API\Controller\Admin\AdminController
  */
 class AdminControllerTest extends IntegrationTestCase
 {
-    use ArraySubsetAsserts;
+    use TestArraySubsetTrait;
 
     /**
      * Test unauthorized response for unauthenticated calls.
