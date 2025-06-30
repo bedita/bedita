@@ -89,8 +89,10 @@ trait QueryFilterTrait
                         $in[] = $value;
                         continue;
                     }
-                    $exp = $this->operatorExpression($exp, $operator, $field, (string)$value);
+
+                    $exp = $this->operatorExpression($exp, $operator, $field, $value);
                 }
+
                 if (!empty($in)) {
                     $exp = $exp->in($field, $in);
                 }
@@ -109,10 +111,10 @@ trait QueryFilterTrait
      * @param \Cake\Database\Expression\QueryExpression $exp Current query expression
      * @param string $operator Filter operator
      * @param string $field Filter field
-     * @param string $value Filter value
+     * @param mixed $value Filter value
      * @return \Cake\Database\Expression\QueryExpression Operator query expression
      */
-    protected function operatorExpression(QueryExpression $exp, string $operator, string $field, string $value): QueryExpression
+    protected function operatorExpression(QueryExpression $exp, string $operator, string $field, mixed $value): QueryExpression
     {
         switch ($operator) {
             case 'eq':
@@ -147,6 +149,16 @@ trait QueryFilterTrait
             case 'ge':
             case '>=':
                 $exp = $exp->gte($field, $value);
+                break;
+            case 'notin':
+            case 'nin':
+                $values = is_string($value) ? explode(',', $value) : (array)$value;
+                $exp = $exp->notIn($field, $values);
+                break;
+
+            case 'in':
+                $values = is_string($value) ? explode(',', $value) : (array)$value;
+                $exp = $exp->in($field, $values);
                 break;
 
             case 'null':

@@ -167,6 +167,31 @@ class QueryFilterTraitTest extends TestCase
                 ],
                 1,
             ],
+            'ninCatEagle' => [
+                [
+                    'name' => ['nin' => ['cat', 'eagle']],
+                ],
+                1,
+            ],
+            'notInCombined' => [
+                [
+                    'name' => ['eagle', 'bat', 'nin' => ['cat', 'koala'], 'lt' => 'f'],
+                ],
+                1,
+            ],
+            'inCatKoala' => [
+                [
+                    'name' => ['in' => ['cat', 'koala']],
+                ],
+                2,
+            ],
+            'separateInClausesForEachField' => [
+                [
+                    'name' => ['koala', 'eagle'],
+                    'legs' => [4,5,6,7],
+                ],
+                1,
+            ],
         ];
     }
 
