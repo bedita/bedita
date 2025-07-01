@@ -15,10 +15,10 @@ declare(strict_types=1);
 namespace BEdita\Core\Test\TestCase\Model\Behavior;
 
 use BEdita\Core\Model\Entity\ObjectEntity;
+use BEdita\Core\Test\Utility\TestArraySubsetTrait;
 use BEdita\Core\Utility\LoggedUser;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
-use DMS\PHPUnitExtensions\ArraySubset\ArraySubsetAsserts;
 use UnexpectedValueException;
 
 /**
@@ -28,7 +28,7 @@ use UnexpectedValueException;
  */
 class UserModifiedBehaviorTest extends TestCase
 {
-    use ArraySubsetAsserts;
+    use TestArraySubsetTrait;
 
     /**
      * Fixtures

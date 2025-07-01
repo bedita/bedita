@@ -16,11 +16,11 @@ namespace BEdita\Core\Test\TestCase\Model\Table;
 
 use BEdita\Core\Model\Entity\StaticProperty;
 use BEdita\Core\Model\Table\ObjectTypesTable;
+use BEdita\Core\Test\Utility\TestArraySubsetTrait;
 use Cake\Cache\Cache;
 use Cake\Database\Schema\TableSchema;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
-use DMS\PHPUnitExtensions\ArraySubset\ArraySubsetAsserts;
 
 /**
  * {@see \BEdita\Core\Model\Table\StaticPropertiesTable} Test Case
@@ -29,7 +29,7 @@ use DMS\PHPUnitExtensions\ArraySubset\ArraySubsetAsserts;
  */
 class StaticPropertiesTableTest extends TestCase
 {
-    use ArraySubsetAsserts;
+    use TestArraySubsetTrait;
 
     /**
      * Test subject

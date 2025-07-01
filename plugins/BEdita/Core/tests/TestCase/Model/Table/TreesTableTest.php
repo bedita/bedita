@@ -216,7 +216,7 @@ class TreesTableTest extends TestCase
      *
      * @return array[]
      */
-    public function slugPopulationProvider(): array
+    public static function slugPopulationProvider(): array
     {
         return [
             'no slug' => [

@@ -15,15 +15,15 @@ declare(strict_types=1);
 namespace BEdita\API\Test\TestCase\Controller\Admin;
 
 use BEdita\API\TestSuite\IntegrationTestCase;
+use BEdita\Core\Test\Utility\TestArraySubsetTrait;
 use Cake\ORM\TableRegistry;
-use DMS\PHPUnitExtensions\ArraySubset\ArraySubsetAsserts;
 
 /**
  * @coversDefaultClass \BEdita\API\Controller\Admin\EndpointsController
  */
 class EndpointsControllerTest extends IntegrationTestCase
 {
-    use ArraySubsetAsserts;
+    use TestArraySubsetTrait;
 
     /**
      * Test index method.

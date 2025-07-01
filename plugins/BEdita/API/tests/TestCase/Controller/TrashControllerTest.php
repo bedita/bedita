@@ -16,16 +16,16 @@ namespace BEdita\API\Test\TestCase\Controller;
 
 use BEdita\API\Test\TestConstants;
 use BEdita\API\TestSuite\IntegrationTestCase;
+use BEdita\Core\Test\Utility\TestArraySubsetTrait;
 use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\ORM\TableRegistry;
-use DMS\PHPUnitExtensions\ArraySubset\ArraySubsetAsserts;
 
 /**
  * @coversDefaultClass \BEdita\API\Controller\TrashController
  */
 class TrashControllerTest extends IntegrationTestCase
 {
-    use ArraySubsetAsserts;
+    use TestArraySubsetTrait;
 
     /**
      * Objects table instance.

@@ -15,9 +15,9 @@ declare(strict_types=1);
 namespace BEdita\API\Test\TestCase\Controller\Model;
 
 use BEdita\API\TestSuite\IntegrationTestCase;
+use BEdita\Core\Test\Utility\TestArraySubsetTrait;
 use Cake\ORM\TableRegistry;
 use Cake\Utility\Hash;
-use DMS\PHPUnitExtensions\ArraySubset\ArraySubsetAsserts;
 use stdClass;
 
 /**
@@ -25,7 +25,7 @@ use stdClass;
  */
 class RelationsControllerTest extends IntegrationTestCase
 {
-    use ArraySubsetAsserts;
+    use TestArraySubsetTrait;
 
     /**
      * Test index method.

@@ -16,7 +16,7 @@ namespace BEdita\API\Test\TestCase\Controller\Model;
 
 use BEdita\API\Test\TestConstants;
 use BEdita\API\TestSuite\IntegrationTestCase;
-use DMS\PHPUnitExtensions\ArraySubset\ArraySubsetAsserts;
+use BEdita\Core\Test\Utility\TestArraySubsetTrait;
 
 /**
  * {@see \BEdita\API\Controller\Model\SchemaController} Test Case
@@ -25,7 +25,7 @@ use DMS\PHPUnitExtensions\ArraySubset\ArraySubsetAsserts;
  */
 class SchemaControllerTest extends IntegrationTestCase
 {
-    use ArraySubsetAsserts;
+    use TestArraySubsetTrait;
 
     /**
      * Fixtures

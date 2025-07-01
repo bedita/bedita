@@ -15,16 +15,16 @@ declare(strict_types=1);
 namespace BEdita\API\Test\TestCase\Controller\Admin;
 
 use BEdita\API\TestSuite\IntegrationTestCase;
+use BEdita\Core\Test\Utility\TestArraySubsetTrait;
 use Cake\Core\Configure;
 use Cake\ORM\TableRegistry;
-use DMS\PHPUnitExtensions\ArraySubset\ArraySubsetAsserts;
 
 /**
  * @coversDefaultClass \BEdita\API\Controller\Admin\AuthProvidersController
  */
 class AuthProvidersControllerTest extends IntegrationTestCase
 {
-    use ArraySubsetAsserts;
+    use TestArraySubsetTrait;
 
     /**
      * Test `index` method with user not admin.

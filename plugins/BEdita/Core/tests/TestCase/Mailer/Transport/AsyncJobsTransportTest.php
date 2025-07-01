@@ -15,19 +15,19 @@ declare(strict_types=1);
 namespace BEdita\Core\Test\TestCase\Mailer\Transport;
 
 use BEdita\Core\Job\Service\MailService;
+use BEdita\Core\Test\Utility\TestArraySubsetTrait;
 use Cake\Mailer\Mailer;
 use Cake\Mailer\TransportFactory;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Hash;
-use DMS\PHPUnitExtensions\ArraySubset\ArraySubsetAsserts;
 
 /**
  * @coversDefaultClass \BEdita\Core\Mailer\Transport\AsyncJobsTransport
  */
 class AsyncJobsTransportTest extends TestCase
 {
-    use ArraySubsetAsserts;
+    use TestArraySubsetTrait;
 
     /**
      * Fixtures

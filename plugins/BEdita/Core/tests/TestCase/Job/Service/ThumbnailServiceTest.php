@@ -21,7 +21,6 @@ use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Text;
 use Exception;
-use PHPUnit\Framework\MockObject\Rule\InvocationOrder;
 
 /**
  * @coversDefaultClass \BEdita\Core\Job\Service\ThumbnailService
@@ -110,7 +109,7 @@ class ThumbnailServiceTest extends TestCase
         return [
             'ok' => [
                 true,
-                static::once(),
+                fn (self $testCase) => $testCase->once(),
                 [
                     'uuid' => 'e5afe167-7341-458d-a1e6-042e8791b0fe',
                     'generator' => 'test',
@@ -121,7 +120,7 @@ class ThumbnailServiceTest extends TestCase
             ],
             'not found' => [
                 true,
-                static::never(),
+                fn (self $testCase) => $testCase->never(),
                 [
                     'uuid' => Text::uuid(), // This UUID does not exist.
                     'generator' => 'test',
@@ -132,7 +131,7 @@ class ThumbnailServiceTest extends TestCase
             ],
             'error' => [
                 false,
-                static::once(),
+                fn (self $testCase) => $testCase->once(),
                 [
                     'uuid' => 'e5afe167-7341-458d-a1e6-042e8791b0fe',
                     'generator' => 'test',
@@ -149,21 +148,21 @@ class ThumbnailServiceTest extends TestCase
      * Test `run` method.
      *
      * @param bool $expected Expected result.
-     * @param \PHPUnit\Framework\MockObject\Rule\InvocationOrder $count Invocation count of base generator method.
+     * @param callable $count Callable that returns InvokedCountMatcher of base generator method.
      * @param array $payload Async job payload.
      * @param bool $shouldThrow Should the base generator throw an exception when invoked?
      * @return void
      * @dataProvider runProvider()
      * @covers ::run()
      */
-    public function testRun($expected, InvocationOrder $count, array $payload, $shouldThrow = false)
+    public function testRun($expected, callable $count, array $payload, $shouldThrow = false)
     {
         $stream = $this->Streams->find()->where(['uuid' => $payload['uuid']])->first();
 
         $generator = $this->getMockBuilder(ThumbnailGenerator::class)
             ->onlyMethods(['generate'])
             ->getMockForAbstractClass();
-        $method = $generator->expects($count)
+        $method = $generator->expects($count($this))
             ->method('generate')
             ->with($stream, $payload['options']);
         if ($shouldThrow) {

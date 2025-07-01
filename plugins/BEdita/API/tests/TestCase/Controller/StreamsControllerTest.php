@@ -15,16 +15,16 @@ declare(strict_types=1);
 namespace BEdita\API\Test\TestCase\Controller;
 
 use BEdita\API\TestSuite\IntegrationTestCase;
+use BEdita\Core\Test\Utility\TestArraySubsetTrait;
 use BEdita\Core\Test\Utility\TestFilesystemTrait;
 use Cake\Validation\Validation;
-use DMS\PHPUnitExtensions\ArraySubset\ArraySubsetAsserts;
 
 /**
  * @coversDefaultClass \BEdita\API\Controller\StreamsController
  */
 class StreamsControllerTest extends IntegrationTestCase
 {
-    use ArraySubsetAsserts;
+    use TestArraySubsetTrait;
     use TestFilesystemTrait;
 
     /**
