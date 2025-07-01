@@ -280,7 +280,7 @@ class FolderTest extends TestCase
      *
      * @return array
      */
-    public function getSlugPathProvider()
+    public static function getSlugPathProvider()
     {
         return [
             'root' => [
