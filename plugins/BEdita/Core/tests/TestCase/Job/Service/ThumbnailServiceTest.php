@@ -21,7 +21,6 @@ use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Text;
 use Exception;
-use PHPUnit\Framework\MockObject\Rule\InvocationOrder;
 
 /**
  * @coversDefaultClass \BEdita\Core\Job\Service\ThumbnailService
