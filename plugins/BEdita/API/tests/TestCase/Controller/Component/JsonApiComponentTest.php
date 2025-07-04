@@ -28,10 +28,10 @@ use Cake\ORM\TableRegistry;
 use Cake\Routing\Router;
 use Cake\TestSuite\TestCase;
 use Exception;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
-/**
- * @coversDefaultClass \BEdita\API\Controller\Component\JsonApiComponent
- */
+#[CoversClass(JsonApiComponent::class)]
 class JsonApiComponentTest extends TestCase
 {
     /**
@@ -88,9 +88,8 @@ class JsonApiComponentTest extends TestCase
      * @param string $expectedMimeType Expected response MIME Type.
      * @param array $config Component configuration.
      * @return void
-     * @dataProvider initializeProvider
-     * @covers ::initialize()
      */
+    #[DataProvider('initializeProvider')]
     public function testInitialize(string $expectedMimeType, array $config): void
     {
         $component = new JsonApiComponent(new ComponentRegistry(new Controller(new ServerRequest())), $config);
@@ -108,8 +107,6 @@ class JsonApiComponentTest extends TestCase
      * Test component `getLinks()` method.
      *
      * @return void
-     * @covers ::getLinks()
-     * @covers ::getPaginated()
      */
     public function testLinks()
     {
@@ -138,8 +135,6 @@ class JsonApiComponentTest extends TestCase
      * Test `getMeta()` with no pagination data.
      *
      * @return void
-     * @covers ::getMeta()
-     * @covers ::getPaginated()
      */
     public function testGetMetaEmpty(): void
     {
@@ -241,11 +236,8 @@ class JsonApiComponentTest extends TestCase
      * @param array $expectedMeta Expected meta array.
      * @param array $query Request query params.
      * @return void
-     * @dataProvider paginationProvider
-     * @covers ::getLinks()
-     * @covers ::getMeta()
-     * @covers ::getPaginated()
      */
+    #[DataProvider('paginationProvider')]
     public function testPagination(array $expectedLinks, array $expectedMeta, array $query)
     {
         $request = new ServerRequest([
@@ -274,9 +266,8 @@ class JsonApiComponentTest extends TestCase
      * @param array $expectedMeta Expected meta array.
      * @param array $query Request query params.
      * @return void
-     * @dataProvider paginationProvider
-     * @covers ::beforeRender()
      */
+    #[DataProvider('paginationProvider')]
     public function testBeforeRender(array $expectedLinks, array $expectedMeta, array $query)
     {
         $base = [
@@ -312,7 +303,6 @@ class JsonApiComponentTest extends TestCase
      * Test `error()` method.
      *
      * @return void
-     * @covers ::error()
      */
     public function testError()
     {
@@ -375,10 +365,8 @@ class JsonApiComponentTest extends TestCase
      * @param \Excepion|array $expected Exception or expected parsed array.
      * @param string $input Input to be parsed.
      * @return void
-     * @dataProvider beforeFilterProvider
-     * @covers ::beforeFilter()
-     * @covers ::parseInput()
      */
+    #[DataProvider('beforeFilterProvider')]
     public function testParseJsonInput($expected, array $input, array $config = []): void
     {
         if ($expected instanceof Exception) {
@@ -461,10 +449,8 @@ class JsonApiComponentTest extends TestCase
      * @param mixed $types Allowed types.
      * @param array $data Data to be checked.
      * @return void
-     * @dataProvider allowedResourceTypesProvider
-     * @covers ::allowedResourceTypes()
-     * @covers ::startup()
      */
+    #[DataProvider('allowedResourceTypesProvider')]
     public function testAllowedResourceTypes($expected, $types, array $data)
     {
         if (!$expected) {
@@ -521,9 +507,8 @@ class JsonApiComponentTest extends TestCase
      * @param string $accept Value of "Accept" header.
      * @param bool $checkMediaType Is media type check enabled?
      * @return void
-     * @dataProvider checkMediaTypeProvider
-     * @covers ::startup()
      */
+    #[DataProvider('checkMediaTypeProvider')]
     public function testCheckMediaType($expected, $accept, $checkMediaType)
     {
         if ($expected instanceof Exception) {
@@ -596,10 +581,8 @@ class JsonApiComponentTest extends TestCase
      * @param bool $expected Expected success.
      * @param array $data Data to be checked.
      * @return void
-     * @dataProvider allowClientGeneratedIdsProvider
-     * @covers ::allowClientGeneratedIds()
-     * @covers ::startup()
      */
+    #[DataProvider('allowClientGeneratedIdsProvider')]
     public function testAllowClientGeneratedIds($expected, array $data)
     {
         if (!$expected) {

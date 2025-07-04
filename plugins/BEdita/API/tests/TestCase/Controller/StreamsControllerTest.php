@@ -14,14 +14,19 @@ declare(strict_types=1);
  */
 namespace BEdita\API\Test\TestCase\Controller;
 
+use BEdita\API\Controller\StreamsController;
 use BEdita\API\TestSuite\IntegrationTestCase;
 use BEdita\Core\Test\Utility\TestArraySubsetTrait;
 use BEdita\Core\Test\Utility\TestFilesystemTrait;
 use Cake\Validation\Validation;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\CoversNothing;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
- * @coversDefaultClass \BEdita\API\Controller\StreamsController
+ * {@see \BEdita\API\Controller\StreamsController} Test Case
  */
+#[CoversClass(StreamsController::class)]
 class StreamsControllerTest extends IntegrationTestCase
 {
     use TestArraySubsetTrait;
@@ -59,8 +64,6 @@ class StreamsControllerTest extends IntegrationTestCase
      * Test that `GET` requests work.
      *
      * @return void
-     * @covers ::resource()
-     * @covers ::getResourceId()
      */
     public function testGet()
     {
@@ -77,7 +80,6 @@ class StreamsControllerTest extends IntegrationTestCase
      * Test that `PATCH` requests are actually forbidden.
      *
      * @return void
-     * @covers ::resource()
      */
     public function testPatch()
     {
@@ -106,8 +108,6 @@ class StreamsControllerTest extends IntegrationTestCase
      * Test `upload` method.
      *
      * @return void
-     * @covers ::upload()
-     * @covers ::initialize()
      */
     public function testUpload()
     {
@@ -178,9 +178,8 @@ class StreamsControllerTest extends IntegrationTestCase
      * @param string $type Type of object to be linked.
      * @param int $id ID of object to be linked.
      * @return void
-     * @dataProvider linkStreamProvider()
-     * @covers ::initialize()
      */
+    #[DataProvider('linkStreamProvider')]
     public function testLinkStream($expected, $uuid, $type, $id)
     {
         $this->configRequestHeaders('PATCH', $this->getUserAuthHeader());
@@ -194,8 +193,6 @@ class StreamsControllerTest extends IntegrationTestCase
      * Test `download` method.
      *
      * @return void
-     * @covers ::download()
-     * @covers ::viewClasses()
      */
     public function testDownload(): void
     {
@@ -213,8 +210,8 @@ class StreamsControllerTest extends IntegrationTestCase
      * Test content negotiation.
      *
      * @return void
-     * @coversNothing
      */
+    #[CoversNothing]
     public function testContentNegotiation()
     {
         $this->configRequestHeaders('GET', ['Accept' => 'text/plain']);
@@ -230,7 +227,6 @@ class StreamsControllerTest extends IntegrationTestCase
      * Test {@see \BEdita\API\Controller\StreamsController::clone()} action.
      *
      * @return void
-     * @covers ::clone()
      */
     public function testClone(): void
     {

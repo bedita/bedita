@@ -25,12 +25,15 @@ use Cake\Http\ServerRequest;
 use Cake\TestSuite\TestCase;
 use Exception;
 use Firebase\JWT\ExpiredException;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\CoversMethod;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * AuthenticationComponent Test Case
- *
- * @coversDefaultClass \BEdita\API\Controller\Component\AuthenticationComponent
  */
+#[CoversClass(AuthenticationComponent::class)]
+#[CoversMethod(ExpiredTokenException::class, '__construct')]
 class AuthenticationComponentTest extends TestCase
 {
     /**
@@ -66,11 +69,8 @@ class AuthenticationComponentTest extends TestCase
      * @param true|\Exception $expected Expected success.
      * @param \Authorization\Policy\ResultInterface|null $result Authentication result.
      * @return void
-     * @dataProvider checkExpiredTokenProvider
-     * @covers ::checkExpiredToken()
-     * @covers ::initialize()
-     * @covers \BEdita\API\Exception\ExpiredTokenException::__construct()
      */
+    #[DataProvider('checkExpiredTokenProvider')]
     public function testCheckExpiredToken($expected, ?ResultInterface $result): void
     {
         if ($expected instanceof Exception) {

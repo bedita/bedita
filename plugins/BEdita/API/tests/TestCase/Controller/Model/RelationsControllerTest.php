@@ -14,15 +14,18 @@ declare(strict_types=1);
  */
 namespace BEdita\API\Test\TestCase\Controller\Model;
 
+use BEdita\API\Controller\Model\RelationsController;
+use BEdita\API\Error\ExceptionRenderer;
 use BEdita\API\TestSuite\IntegrationTestCase;
 use BEdita\Core\Test\Utility\TestArraySubsetTrait;
 use Cake\ORM\TableRegistry;
 use Cake\Utility\Hash;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\CoversNothing;
 use stdClass;
 
-/**
- * @coversDefaultClass \BEdita\API\Controller\Model\RelationsController
- */
+#[CoversClass(RelationsController::class)]
+#[CoversClass(ExceptionRenderer::class)]
 class RelationsControllerTest extends IntegrationTestCase
 {
     use TestArraySubsetTrait;
@@ -31,9 +34,6 @@ class RelationsControllerTest extends IntegrationTestCase
      * Test index method.
      *
      * @return void
-     * @covers ::index()
-     * @covers ::initialize()
-     * @covers ::prepareInclude()
      */
     public function testIndex()
     {
@@ -256,8 +256,6 @@ class RelationsControllerTest extends IntegrationTestCase
      * Test index method.
      *
      * @return void
-     * @covers ::resource()
-     * @covers ::initialize()
      */
     public function testEmpty()
     {
@@ -297,8 +295,6 @@ class RelationsControllerTest extends IntegrationTestCase
      * Test view method.
      *
      * @return void
-     * @covers ::resource()
-     * @covers ::initialize()
      */
     public function testSingle()
     {
@@ -348,7 +344,6 @@ class RelationsControllerTest extends IntegrationTestCase
      * Test view method with `name` or `inverse_name` as argument.
      *
      * @return void
-     * @covers ::getResourceId()
      */
     public function testSingleName()
     {
@@ -365,9 +360,6 @@ class RelationsControllerTest extends IntegrationTestCase
      * Test view method.
      *
      * @return void
-     * @covers ::resource()
-     * @covers ::initialize()
-     * @covers \BEdita\API\Error\ExceptionRenderer
      */
     public function testMissing()
     {
@@ -400,9 +392,6 @@ class RelationsControllerTest extends IntegrationTestCase
      * Test add method.
      *
      * @return void
-     * @covers ::index()
-     * @covers ::initialize()
-     * @covers ::resourceUrl()
      */
     public function testAdd()
     {
@@ -448,8 +437,6 @@ class RelationsControllerTest extends IntegrationTestCase
      * Test add method with invalid data.
      *
      * @return void
-     * @covers ::index()
-     * @covers ::initialize()
      */
     public function testAddInvalid()
     {
@@ -475,8 +462,6 @@ class RelationsControllerTest extends IntegrationTestCase
      * Test edit method.
      *
      * @return void
-     * @covers ::resource()
-     * @covers ::initialize()
      */
     public function testEdit()
     {
@@ -503,8 +488,6 @@ class RelationsControllerTest extends IntegrationTestCase
      * Test edit method with ID conflict.
      *
      * @return void
-     * @covers ::resource()
-     * @covers ::initialize()
      */
     public function testEditConflict()
     {
@@ -531,8 +514,6 @@ class RelationsControllerTest extends IntegrationTestCase
      * Test delete method.
      *
      * @return void
-     * @covers ::resource()
-     * @covers ::initialize()
      */
     public function testDelete()
     {
@@ -548,10 +529,6 @@ class RelationsControllerTest extends IntegrationTestCase
      * Test related method to list related object types.
      *
      * @return void
-     * @covers ::initialize()
-     * @covers ::related()
-     * @covers ::findAssociation()
-     * @covers ::prepareInclude()
      */
     public function testRelated()
     {
@@ -653,9 +630,9 @@ class RelationsControllerTest extends IntegrationTestCase
     /**
      * Test adding object types to the left and to the right side of a relation
      *
-     * @coversNothing
      * @return void
      */
+    #[CoversNothing]
     public function testPostLeftRightObjectTypes(): void
     {
         // `locations` and `events` to the left
@@ -702,9 +679,9 @@ class RelationsControllerTest extends IntegrationTestCase
     /**
      * Test replacing object types to the left and to the right side of a relation
      *
-     * @coversNothing
      * @return void
      */
+    #[CoversNothing]
     public function testPatchLeftRightObjectTypes(): void
     {
         // `locations` and `events` to the left

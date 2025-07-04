@@ -14,15 +14,20 @@ declare(strict_types=1);
  */
 namespace BEdita\API\Test\TestCase\Controller;
 
+use BEdita\API\Controller\TrashController;
 use BEdita\API\Test\TestConstants;
 use BEdita\API\TestSuite\IntegrationTestCase;
 use BEdita\Core\Test\Utility\TestArraySubsetTrait;
 use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\ORM\TableRegistry;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\CoversNothing;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
- * @coversDefaultClass \BEdita\API\Controller\TrashController
+ * {@see \BEdita\API\Controller\TrashController} Test Case
  */
+#[CoversClass(TrashController::class)]
 class TrashControllerTest extends IntegrationTestCase
 {
     use TestArraySubsetTrait;
@@ -48,8 +53,6 @@ class TrashControllerTest extends IntegrationTestCase
      * Test index method.
      *
      * @return void
-     * @covers ::index()
-     * @covers ::initialize()
      */
     public function testIndex()
     {
@@ -150,8 +153,6 @@ class TrashControllerTest extends IntegrationTestCase
      * Test index method.
      *
      * @return void
-     * @covers ::index()
-     * @covers ::initialize()
      */
     public function testEmpty()
     {
@@ -197,8 +198,6 @@ class TrashControllerTest extends IntegrationTestCase
      * Test view method.
      *
      * @return void
-     * @covers ::view()
-     * @covers ::initialize()
      */
     public function testSingle()
     {
@@ -292,10 +291,8 @@ class TrashControllerTest extends IntegrationTestCase
      * Test delete restore method.
      *
      * @return void
-     * @dataProvider restoreProvider
-     * @covers ::restore()
-     * @covers ::initialize()
      */
+    #[DataProvider('restoreProvider')]
     public function testRestore($expected, $id, $data)
     {
         $this->configRequestHeaders('PATCH', $this->getUserAuthHeader());
@@ -316,8 +313,6 @@ class TrashControllerTest extends IntegrationTestCase
      * Test delete method.
      *
      * @return void
-     * @covers ::delete()
-     * @covers ::initialize()
      */
     public function testDelete()
     {
@@ -347,8 +342,6 @@ class TrashControllerTest extends IntegrationTestCase
      * Test delete many method.
      *
      * @return void
-     * @covers ::index()
-     * @covers ::initialize()
      */
     public function testDeleteMany(): void
     {
@@ -372,8 +365,6 @@ class TrashControllerTest extends IntegrationTestCase
      * Test view method.
      *
      * @return void
-     * @covers ::view()
-     * @covers ::initialize()
      */
     public function testMissing()
     {
@@ -406,8 +397,8 @@ class TrashControllerTest extends IntegrationTestCase
      * Test trash view on locked & deleted object.
      *
      * @return void
-     * @coversNothing
      */
+    #[CoversNothing]
     public function testLockedView()
     {
         $this->configRequestHeaders();
@@ -419,8 +410,8 @@ class TrashControllerTest extends IntegrationTestCase
      * Test trash restore on locked & deleted object.
      *
      * @return void
-     * @coversNothing
      */
+    #[CoversNothing]
     public function testLockedRestore()
     {
         $this->configRequestHeaders('PATCH', $this->getUserAuthHeader());
@@ -436,8 +427,8 @@ class TrashControllerTest extends IntegrationTestCase
      * Test trash delete on locked & deleted object.
      *
      * @return void
-     * @coversNothing
      */
+    #[CoversNothing]
     public function testLockedDelete()
     {
         $this->configRequestHeaders('DELETE', $this->getUserAuthHeader());

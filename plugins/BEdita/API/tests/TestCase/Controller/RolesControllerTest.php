@@ -14,14 +14,17 @@ declare(strict_types=1);
  */
 namespace BEdita\API\Test\TestCase\Controller;
 
+use BEdita\API\Controller\RolesController;
 use BEdita\API\Test\TestConstants;
 use BEdita\API\TestSuite\IntegrationTestCase;
 use BEdita\Core\Test\Utility\TestArraySubsetTrait;
 use Cake\ORM\TableRegistry;
+use PHPUnit\Framework\Attributes\CoversClass;
 
 /**
- * @coversDefaultClass \BEdita\API\Controller\RolesController
+ * {@see \BEdita\API\Controller\RolesController} Test Case
  */
+#[CoversClass(RolesController::class)]
 class RolesControllerTest extends IntegrationTestCase
 {
     use TestArraySubsetTrait;
@@ -30,8 +33,6 @@ class RolesControllerTest extends IntegrationTestCase
      * Test index method.
      *
      * @return void
-     * @covers ::index()
-     * @covers ::initialize()
      */
     public function testIndex()
     {
@@ -126,8 +127,6 @@ class RolesControllerTest extends IntegrationTestCase
      * Test index method.
      *
      * @return void
-     * @covers ::resource()
-     * @covers ::initialize()
      */
     public function testEmpty()
     {
@@ -168,8 +167,6 @@ class RolesControllerTest extends IntegrationTestCase
      * Test view method.
      *
      * @return void
-     * @covers ::resource()
-     * @covers ::initialize()
      */
     public function testSingle()
     {
@@ -223,7 +220,6 @@ class RolesControllerTest extends IntegrationTestCase
      * Test view method with name as argument.
      *
      * @return void
-     * @covers ::getResourceId()
      */
     public function testSingleName()
     {
@@ -236,8 +232,6 @@ class RolesControllerTest extends IntegrationTestCase
      * Test view method.
      *
      * @return void
-     * @covers ::resource()
-     * @covers ::initialize()
      */
     public function testMissing()
     {
@@ -270,9 +264,6 @@ class RolesControllerTest extends IntegrationTestCase
      * Test add method.
      *
      * @return void
-     * @covers ::index()
-     * @covers ::initialize()
-     * @covers ::resourceUrl()
      */
     public function testAdd()
     {
@@ -298,8 +289,6 @@ class RolesControllerTest extends IntegrationTestCase
      * Test add method with invalid data.
      *
      * @return void
-     * @covers ::index()
-     * @covers ::initialize()
      */
     public function testAddInvalid()
     {
@@ -324,8 +313,6 @@ class RolesControllerTest extends IntegrationTestCase
      * Test edit method.
      *
      * @return void
-     * @covers ::resource()
-     * @covers ::initialize()
      */
     public function testEdit()
     {
@@ -349,8 +336,6 @@ class RolesControllerTest extends IntegrationTestCase
      * Test edit method with ID conflict.
      *
      * @return void
-     * @covers ::resource()
-     * @covers ::initialize()
      */
     public function testEditConflict()
     {
@@ -375,8 +360,6 @@ class RolesControllerTest extends IntegrationTestCase
      * Test edit method with invalid data.
      *
      * @return void
-     * @covers ::resource()
-     * @covers ::initialize()
      */
     public function testEditInvalid()
     {
@@ -400,8 +383,6 @@ class RolesControllerTest extends IntegrationTestCase
      * Test delete method.
      *
      * @return void
-     * @covers ::resource()
-     * @covers ::initialize()
      */
     public function testDelete()
     {
@@ -424,10 +405,6 @@ class RolesControllerTest extends IntegrationTestCase
      * Test related method to list related objects.
      *
      * @return void
-     * @covers ::initialize()
-     * @covers ::related()
-     * @covers ::findAssociation()
-     * @covers ::getAvailableUrl()
      */
     public function testRelated()
     {

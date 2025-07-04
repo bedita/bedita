@@ -26,10 +26,13 @@ use BEdita\Core\Test\Utility\TestArraySubsetTrait;
 use Cake\Core\Configure;
 use Cake\Http\ServerRequest;
 use Exception;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
- * @coversDefaultClass \BEdita\API\Controller\AppController
+ * {@see \BEdita\API\Controller\AppController} Test Case
  */
+#[CoversClass(AppController::class)]
 class AppControllerTest extends IntegrationTestCase
 {
     use TestArraySubsetTrait;
@@ -38,7 +41,6 @@ class AppControllerTest extends IntegrationTestCase
      * Test API meta info header.
      *
      * @return void
-     * @covers ::initialize()
      */
     public function testMetaInfo()
     {
@@ -79,9 +81,8 @@ class AppControllerTest extends IntegrationTestCase
      * @param true|\Exception $expected Expected success.
      * @param string $method Request method.
      * @return void
-     * @dataProvider isIdentityRequiredProvider
-     * @covers ::isIdentityRequired()
      */
+    #[DataProvider('isIdentityRequiredProvider')]
     public function testIsIdentityRequired($expected, $method): void
     {
         if ($expected instanceof Exception) {
@@ -115,7 +116,6 @@ class AppControllerTest extends IntegrationTestCase
      * Test included resources.
      *
      * @return void
-     * @covers ::prepareInclude()
      */
     public function testInclude()
     {
@@ -390,9 +390,8 @@ class AppControllerTest extends IntegrationTestCase
      * @param string $expectedErrorTitle Expected error message.
      * @param mixed $include `include` query parameter.
      * @return void
-     * @dataProvider includeErrorProvider()
-     * @covers ::prepareInclude()
      */
+    #[DataProvider('includeErrorProvider')]
     public function testIncludeError($expectedStatus, $expectedErrorTitle, $include)
     {
         $expected = [
@@ -414,7 +413,6 @@ class AppControllerTest extends IntegrationTestCase
      * Test that no resources are included unless asked.
      *
      * @return void
-     * @covers ::prepareInclude()
      */
     public function testIncludeEmpty()
     {

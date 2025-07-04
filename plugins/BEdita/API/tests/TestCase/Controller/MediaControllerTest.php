@@ -14,6 +14,7 @@ declare(strict_types=1);
  */
 namespace BEdita\API\Test\TestCase\Controller;
 
+use BEdita\API\Controller\MediaController;
 use BEdita\API\Datasource\JsonApiPaginator;
 use BEdita\API\Test\TestConstants;
 use BEdita\API\TestSuite\IntegrationTestCase;
@@ -21,10 +22,14 @@ use BEdita\Core\Filesystem\Thumbnail;
 use BEdita\Core\Test\Utility\TestFilesystemTrait;
 use Cake\Core\Configure;
 use Cake\Utility\Hash;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\CoversNothing;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
- * @coversDefaultClass \BEdita\Api\Controller\MediaController
+ * {@see \BEdita\API\Controller\MediaController} Test Case
  */
+#[CoversClass(MediaController::class)]
 class MediaControllerTest extends IntegrationTestCase
 {
     use TestFilesystemTrait;
@@ -183,11 +188,8 @@ class MediaControllerTest extends IntegrationTestCase
      * @param int|int[]|string $id List of IDs.
      * @param array $query Query options.
      * @return void
-     * @dataProvider thumbsProvider()
-     * @covers ::thumbs()
-     * @covers ::getIds()
-     * @covers ::fetchProviderThumbs()
      */
+    #[DataProvider('thumbsProvider')]
     public function testThumbs($expected, $id, array $query = [])
     {
         $path = '/media/thumbs';
@@ -214,8 +216,6 @@ class MediaControllerTest extends IntegrationTestCase
      * Test `thumbs` method when media IDs are passed both as query string and in path.
      *
      * @return void
-     * @covers ::thumbs()
-     * @covers ::getIds()
      */
     public function testThumbsBothIds()
     {
@@ -231,8 +231,6 @@ class MediaControllerTest extends IntegrationTestCase
      * Test thumbnails generation when number of IDs exceeds pagination limits.
      *
      * @return void
-     * @covers ::thumbs()
-     * @covers ::getIds()
      */
     public function testThumbsTooManyIds()
     {
@@ -248,9 +246,6 @@ class MediaControllerTest extends IntegrationTestCase
      * Test `thumbs` method when no media IDs are passed.
      *
      * @return void
-     * @covers ::thumbs()
-     * @covers ::getIds()
-     * @covers ::getAvailableIds()
      */
     public function testThumbsNoIds()
     {
@@ -266,7 +261,6 @@ class MediaControllerTest extends IntegrationTestCase
      * Test available IDs.
      *
      * @return void
-     * @covers ::getAvailableIds()
      */
     public function testAvailableIds()
     {
@@ -304,7 +298,6 @@ class MediaControllerTest extends IntegrationTestCase
      * Test `thumbs` method with provider thumbnails.
      *
      * @return void
-     * @covers ::fetchProviderThumbs()
      */
     public function testProviderThumbs()
     {
@@ -347,8 +340,8 @@ class MediaControllerTest extends IntegrationTestCase
      * Test index method.
      *
      * @return void
-     * @coversNothing
      */
+    #[CoversNothing]
     public function testIndex()
     {
         $expected = [
@@ -958,8 +951,8 @@ class MediaControllerTest extends IntegrationTestCase
      * Test single view method.
      *
      * @return void
-     * @coversNothing
      */
+    #[CoversNothing]
     public function testSingleView()
     {
         $expected = [

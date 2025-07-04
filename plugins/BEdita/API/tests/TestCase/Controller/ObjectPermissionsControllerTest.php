@@ -14,11 +14,15 @@ declare(strict_types=1);
  */
 namespace BEdita\API\Test\TestCase\Controller;
 
+use BEdita\API\Controller\ObjectPermissionsController;
 use BEdita\API\TestSuite\IntegrationTestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\CoversNothing;
 
 /**
- * @coversDefaultClass \BEdita\API\Controller\ObjectPermissionsController
+ * {@see \BEdita\API\Controller\ObjectPermissionsController} Test Case
  */
+#[CoversClass(ObjectPermissionsController::class)]
 class ObjectPermissionsControllerTest extends IntegrationTestCase
 {
     /**
@@ -34,8 +38,8 @@ class ObjectPermissionsControllerTest extends IntegrationTestCase
      * Test index method.
      *
      * @return void
-     * @coversNothing
      */
+    #[CoversNothing]
     public function testIndex(): void
     {
         $expected = [
@@ -88,8 +92,8 @@ class ObjectPermissionsControllerTest extends IntegrationTestCase
      * Test view method.
      *
      * @return void
-     * @coversNothing
      */
+    #[CoversNothing]
     public function testSingle(): void
     {
         $expected = [
@@ -124,8 +128,8 @@ class ObjectPermissionsControllerTest extends IntegrationTestCase
      * Test add method.
      *
      * @return void
-     * @coversNothing
      */
+    #[CoversNothing]
     public function testAdd(): void
     {
         $data = [
@@ -150,7 +154,6 @@ class ObjectPermissionsControllerTest extends IntegrationTestCase
      * Test edit method.
      *
      * @return void
-     * @covers ::initialize()
      */
     public function testEdit(): void
     {
@@ -173,8 +176,8 @@ class ObjectPermissionsControllerTest extends IntegrationTestCase
      * Test delete method.
      *
      * @return void
-     * @coversNothing
      */
+    #[CoversNothing]
     public function testDelete(): void
     {
         $this->configRequestHeaders('DELETE', $this->getUserAuthHeader());

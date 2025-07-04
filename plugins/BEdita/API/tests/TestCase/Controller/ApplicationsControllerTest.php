@@ -14,19 +14,21 @@ declare(strict_types=1);
  */
 namespace BEdita\API\Test\TestCase\Controller;
 
+use BEdita\API\Controller\ApplicationsController;
 use BEdita\API\Test\TestConstants;
 use BEdita\API\TestSuite\IntegrationTestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
 
 /**
- * @coversDefaultClass \BEdita\API\Controller\ApplicationsController
+ * {@see \BEdita\API\Controller\ApplicationsController} Test Case
  */
+#[CoversClass(ApplicationsController::class)]
 class ApplicationsControllerTest extends IntegrationTestCase
 {
     /**
      * Test index method.
      *
      * @return void
-     * @covers ::index()
      */
     public function testIndex()
     {

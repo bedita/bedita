@@ -17,20 +17,19 @@ namespace BEdita\API\Test\TestCase\Authenticator;
 use BEdita\API\Authenticator\DynamicFormAuthenticator;
 use Cake\Http\ServerRequest;
 use Cake\TestSuite\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
 use Psr\Http\Message\ServerRequestInterface;
 
 /**
  * {@see \BEdita\API\Authenticator\DynamicFormAuthenticator} Test Case.
- *
- * @coversDefaultClass \BEdita\API\Authenticator\DynamicFormAuthenticator
  */
+#[CoversClass(DynamicFormAuthenticator::class)]
 class DynamicFormAuthenticatorTest extends TestCase
 {
     /**
      * Test `_getData` method
      *
      * @return void
-     * @covers ::_getData()
      */
     public function testGetData(): void
     {

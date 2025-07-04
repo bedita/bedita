@@ -14,13 +14,16 @@ declare(strict_types=1);
  */
 namespace BEdita\API\Test\TestCase\Controller;
 
+use BEdita\API\Controller\AsyncJobsController;
 use BEdita\API\TestSuite\IntegrationTestCase;
 use BEdita\Core\Test\Utility\TestArraySubsetTrait;
 use Cake\ORM\TableRegistry;
+use PHPUnit\Framework\Attributes\CoversClass;
 
 /**
- * @coversDefaultClass \BEdita\API\Controller\AsyncJobsController
+ * {@see \BEdita\API\Controller\AsyncJobsController} Test Case.
  */
+#[CoversClass(AsyncJobsController::class)]
 class AsyncJobsControllerTest extends IntegrationTestCase
 {
     use TestArraySubsetTrait;
@@ -29,7 +32,6 @@ class AsyncJobsControllerTest extends IntegrationTestCase
      * Test index method on GET.
      *
      * @return void
-     * @covers ::initialize()
      */
     public function testIndex(): void
     {
@@ -269,7 +271,6 @@ class AsyncJobsControllerTest extends IntegrationTestCase
      * Test index method on POST.
      *
      * @return void
-     * @covers ::initialize()
      */
     public function testAdd(): void
     {
@@ -295,7 +296,6 @@ class AsyncJobsControllerTest extends IntegrationTestCase
      * Test method not allowed exception on patch
      *
      * @return void
-     * @covers ::initialize()
      */
     public function testPatch(): void
     {
@@ -328,7 +328,6 @@ class AsyncJobsControllerTest extends IntegrationTestCase
      * Test method not allowed exception on delete
      *
      * @return void
-     * @covers ::initialize()
      */
     public function testDelete(): void
     {

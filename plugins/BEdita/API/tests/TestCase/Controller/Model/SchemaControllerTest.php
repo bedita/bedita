@@ -14,15 +14,18 @@ declare(strict_types=1);
  */
 namespace BEdita\API\Test\TestCase\Controller\Model;
 
+use BEdita\API\Controller\Model\SchemaController;
 use BEdita\API\Test\TestConstants;
 use BEdita\API\TestSuite\IntegrationTestCase;
 use BEdita\Core\Test\Utility\TestArraySubsetTrait;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\CoversNothing;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * {@see \BEdita\API\Controller\Model\SchemaController} Test Case
- *
- * @coversDefaultClass \BEdita\API\Controller\Model\SchemaController
  */
+#[CoversClass(SchemaController::class)]
 class SchemaControllerTest extends IntegrationTestCase
 {
     use TestArraySubsetTrait;
@@ -67,10 +70,8 @@ class SchemaControllerTest extends IntegrationTestCase
      * @param string $type Type name
      * @param string $accept Accept request header
      * @return void
-     * @covers ::jsonSchema()
-     * @covers ::initialize()
-     * @dataProvider jsonSchemaProvider
      */
+    #[DataProvider('jsonSchemaProvider')]
     public function testJsonSchema($type, $accept = '')
     {
         $expected = [
@@ -93,8 +94,6 @@ class SchemaControllerTest extends IntegrationTestCase
      * Test `jsonSchema` method with an abstract object type.
      *
      * @return void
-     * @covers ::jsonSchema()
-     * @covers ::initialize()
      */
     public function testJsonSchemaAbstractType()
     {
@@ -111,8 +110,8 @@ class SchemaControllerTest extends IntegrationTestCase
      * Test `jsonSchema` method on a disabled object type.
      *
      * @return void
-     * @coversNothing
      */
+    #[CoversNothing]
     public function testJsonSchemaDisabled()
     {
         $this->configRequestHeaders('GET');
@@ -128,7 +127,6 @@ class SchemaControllerTest extends IntegrationTestCase
      * Test ETag response header and Not Modified response.
      *
      * @return void
-     * @covers ::jsonSchema()
      */
     public function testETag()
     {

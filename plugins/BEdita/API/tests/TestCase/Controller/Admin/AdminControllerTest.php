@@ -14,12 +14,15 @@ declare(strict_types=1);
  */
 namespace BEdita\API\Test\TestCase\Controller\Admin;
 
+use BEdita\API\Controller\Admin\AdminController;
 use BEdita\API\TestSuite\IntegrationTestCase;
 use BEdita\Core\Test\Utility\TestArraySubsetTrait;
+use PHPUnit\Framework\Attributes\CoversClass;
 
 /**
  * @coversDefaultClass \BEdita\API\Controller\Admin\AdminController
  */
+#[CoversClass(AdminController::class)]
 class AdminControllerTest extends IntegrationTestCase
 {
     use TestArraySubsetTrait;
@@ -28,7 +31,6 @@ class AdminControllerTest extends IntegrationTestCase
      * Test unauthorized response for unauthenticated calls.
      *
      * @return void
-     * @covers ::initialize()
      */
     public function testUnauthenticated()
     {
@@ -61,7 +63,6 @@ class AdminControllerTest extends IntegrationTestCase
      * Test unauthorized response for non-admin users.
      *
      * @return void
-     * @covers ::initialize()
      */
     public function testUnauthorized()
     {

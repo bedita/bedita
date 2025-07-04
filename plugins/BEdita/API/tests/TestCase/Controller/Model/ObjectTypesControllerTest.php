@@ -14,14 +14,14 @@ declare(strict_types=1);
  */
 namespace BEdita\API\Test\TestCase\Controller\Model;
 
+use BEdita\API\Controller\Model\ObjectTypesController;
 use BEdita\API\TestSuite\IntegrationTestCase;
 use BEdita\Core\Test\Utility\TestArraySubsetTrait;
 use Cake\ORM\TableRegistry;
 use Cake\Utility\Hash;
+use PHPUnit\Framework\Attributes\CoversClass;
 
-/**
- * @coversDefaultClass \BEdita\API\Controller\Model\ObjectTypesController
- */
+#[CoversClass(ObjectTypesController::class)]
 class ObjectTypesControllerTest extends IntegrationTestCase
 {
     use TestArraySubsetTrait;
@@ -40,9 +40,6 @@ class ObjectTypesControllerTest extends IntegrationTestCase
      * Test index method.
      *
      * @return void
-     * @covers ::index()
-     * @covers ::initialize()
-     * @covers ::prepareInclude()
      */
     public function testIndex()
     {
@@ -681,8 +678,6 @@ class ObjectTypesControllerTest extends IntegrationTestCase
      * Test index method.
      *
      * @return void
-     * @covers ::resource()
-     * @covers ::initialize()
      */
     public function testEmpty()
     {
@@ -730,8 +725,6 @@ class ObjectTypesControllerTest extends IntegrationTestCase
      * Test view method.
      *
      * @return void
-     * @covers ::resource()
-     * @covers ::initialize()
      */
     public function testSingle()
     {
@@ -815,8 +808,6 @@ class ObjectTypesControllerTest extends IntegrationTestCase
      * Test view method.
      *
      * @return void
-     * @covers ::resource()
-     * @covers ::initialize()
      */
     public function testMissing()
     {
@@ -849,9 +840,6 @@ class ObjectTypesControllerTest extends IntegrationTestCase
      * Test add method.
      *
      * @return void
-     * @covers ::index()
-     * @covers ::initialize()
-     * @covers ::resourceUrl()
      */
     public function testAdd()
     {
@@ -879,8 +867,6 @@ class ObjectTypesControllerTest extends IntegrationTestCase
      * Test add method with invalid data.
      *
      * @return void
-     * @covers ::index()
-     * @covers ::initialize()
      */
     public function testAddMissing()
     {
@@ -904,8 +890,6 @@ class ObjectTypesControllerTest extends IntegrationTestCase
      * Test with reserve words.
      *
      * @return void
-     * @covers ::index()
-     * @covers ::initialize()
      */
     public function testReserved()
     {
@@ -930,8 +914,6 @@ class ObjectTypesControllerTest extends IntegrationTestCase
      * Test failure with same `name` and `singular`.
      *
      * @return void
-     * @covers ::index()
-     * @covers ::initialize()
      */
     public function testNameSingular()
     {
@@ -956,8 +938,6 @@ class ObjectTypesControllerTest extends IntegrationTestCase
      * Test edit method.
      *
      * @return void
-     * @covers ::resource()
-     * @covers ::initialize()
      */
     public function testEdit()
     {
@@ -989,8 +969,6 @@ class ObjectTypesControllerTest extends IntegrationTestCase
      * Test edit method with no change data.
      *
      * @return void
-     * @covers ::resource()
-     * @covers ::initialize()
      */
     public function testEditNoChange()
     {
@@ -1014,8 +992,6 @@ class ObjectTypesControllerTest extends IntegrationTestCase
      * Test edit method with ID conflict.
      *
      * @return void
-     * @covers ::resource()
-     * @covers ::initialize()
      */
     public function testEditConflict()
     {
@@ -1040,8 +1016,6 @@ class ObjectTypesControllerTest extends IntegrationTestCase
      * Test delete method.
      *
      * @return void
-     * @covers ::resource()
-     * @covers ::initialize()
      */
     public function testDelete()
     {

@@ -14,13 +14,16 @@ declare(strict_types=1);
  */
 namespace BEdita\API\Test\TestCase\Controller;
 
+use BEdita\API\Controller\UploadController;
 use BEdita\API\TestSuite\IntegrationTestCase;
 use BEdita\Core\Test\Utility\TestFilesystemTrait;
 use Cake\ORM\TableRegistry;
+use PHPUnit\Framework\Attributes\CoversClass;
 
 /**
- * @coversDefaultClass \BEdita\API\Controller\UploadController
+ * {@see \BEdita\API\Controller\UploadController} Test Case
  */
+#[CoversClass(UploadController::class)]
 class UploadControllerTest extends IntegrationTestCase
 {
     use TestFilesystemTrait;
@@ -54,8 +57,6 @@ class UploadControllerTest extends IntegrationTestCase
      * Test `upload` method.
      *
      * @return void
-     * @covers ::upload()
-     * @covers ::initialize()
      */
     public function testUpload()
     {
@@ -90,7 +91,6 @@ class UploadControllerTest extends IntegrationTestCase
      * Test `upload` failure.
      *
      * @return void
-     * @covers ::upload()
      */
     public function testUploadFail()
     {

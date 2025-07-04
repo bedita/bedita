@@ -14,13 +14,16 @@ declare(strict_types=1);
  */
 namespace BEdita\API\Test\TestCase\Controller;
 
+use BEdita\API\Controller\ResourcesController;
 use BEdita\API\TestSuite\IntegrationTestCase;
 use BEdita\Core\Test\Utility\TestArraySubsetTrait;
 use Cake\Event\EventManager;
+use PHPUnit\Framework\Attributes\CoversClass;
 
 /**
- * @coversDefaultClass \BEdita\API\Controller\ResourcesController
+ * {@see \BEdita\API\Controller\ResourcesController} Test Case
  */
+#[CoversClass(ResourcesController::class)]
 class ResourcesControllerTest extends IntegrationTestCase
 {
     use TestArraySubsetTrait;
@@ -29,12 +32,6 @@ class ResourcesControllerTest extends IntegrationTestCase
      * Test relationships method to list existing relationships.
      *
      * @return void
-     * @covers ::initialize()
-     * @covers ::relationships()
-     * @covers ::findAssociation()
-     * @covers ::getAvailableUrl()
-     * @covers ::setRelationshipsAllowedMethods()
-     * @covers ::getAssociatedAction()
      */
     public function testListAssociations()
     {
@@ -140,11 +137,6 @@ class ResourcesControllerTest extends IntegrationTestCase
      * Test relationships method to list existing relationships.
      *
      * @return void
-     * @covers ::initialize()
-     * @covers ::relationships()
-     * @covers ::findAssociation()
-     * @covers ::setRelationshipsAllowedMethods()
-     * @covers ::getAssociatedAction()
      */
     public function testListAssociationsNotFound()
     {
@@ -159,10 +151,6 @@ class ResourcesControllerTest extends IntegrationTestCase
      * Test relationships method to add new relationships.
      *
      * @return void
-     * @covers ::initialize()
-     * @covers ::relationships()
-     * @covers ::findAssociation()
-     * @covers ::setRelationshipsAllowedMethods()
      */
     public function testAddAssociations()
     {
@@ -193,10 +181,6 @@ class ResourcesControllerTest extends IntegrationTestCase
      * Test relationships method to add new relationships.
      *
      * @return void
-     * @covers ::initialize()
-     * @covers ::relationships()
-     * @covers ::findAssociation()
-     * @covers ::setRelationshipsAllowedMethods()
      */
     public function testAddAssociationsDuplicateEntry()
     {
@@ -231,10 +215,6 @@ class ResourcesControllerTest extends IntegrationTestCase
      * Test relationships method to add new relationships.
      *
      * @return void
-     * @covers ::initialize()
-     * @covers ::relationships()
-     * @covers ::findAssociation()
-     * @covers ::setRelationshipsAllowedMethods()
      */
     public function testAddAssociationsNoContent()
     {
@@ -256,10 +236,6 @@ class ResourcesControllerTest extends IntegrationTestCase
      * Test relationships method to delete existing relationships.
      *
      * @return void
-     * @covers ::initialize()
-     * @covers ::relationships()
-     * @covers ::findAssociation()
-     * @covers ::setRelationshipsAllowedMethods()
      */
     public function testDeleteAssociations()
     {
@@ -331,10 +307,6 @@ class ResourcesControllerTest extends IntegrationTestCase
      * Test relationships method to delete existing relationships.
      *
      * @return void
-     * @covers ::initialize()
-     * @covers ::relationships()
-     * @covers ::findAssociation()
-     * @covers ::setRelationshipsAllowedMethods()
      */
     public function testDeleteAssociationsNoContent()
     {
@@ -377,7 +349,6 @@ class ResourcesControllerTest extends IntegrationTestCase
      * Test delete method
      *
      * @return void
-     * @covers ::index()
      */
     public function testDeleteMulti(): void
     {
@@ -401,7 +372,6 @@ class ResourcesControllerTest extends IntegrationTestCase
      * Test index method on DELETE with internal error.
      *
      * @return void
-     * @covers ::index()
      */
     public function testIndexDeleteException(): void
     {
@@ -427,10 +397,6 @@ class ResourcesControllerTest extends IntegrationTestCase
      * Test relationships method to replace existing relationships.
      *
      * @return void
-     * @covers ::initialize()
-     * @covers ::relationships()
-     * @covers ::findAssociation()
-     * @covers ::setRelationshipsAllowedMethods()
      */
     public function testSetAssociations()
     {
@@ -461,10 +427,6 @@ class ResourcesControllerTest extends IntegrationTestCase
      * Test relationships method to replace existing relationships.
      *
      * @return void
-     * @covers ::initialize()
-     * @covers ::relationships()
-     * @covers ::findAssociation()
-     * @covers ::setRelationshipsAllowedMethods()
      */
     public function testSetAssociationsFailure()
     {
@@ -485,10 +447,6 @@ class ResourcesControllerTest extends IntegrationTestCase
      * Test relationships method to replace existing relationships.
      *
      * @return void
-     * @covers ::initialize()
-     * @covers ::relationships()
-     * @covers ::findAssociation()
-     * @covers ::setRelationshipsAllowedMethods()
      */
     public function testSetAssociationsEmpty()
     {
@@ -506,10 +464,6 @@ class ResourcesControllerTest extends IntegrationTestCase
      * Test relationships method to replace existing relationships.
      *
      * @return void
-     * @covers ::initialize()
-     * @covers ::relationships()
-     * @covers ::findAssociation()
-     * @covers ::setRelationshipsAllowedMethods()
      */
     public function testSetAssociationsEmptyFailure()
     {
@@ -525,10 +479,6 @@ class ResourcesControllerTest extends IntegrationTestCase
      * Test relationships method to replace existing relationships.
      *
      * @return void
-     * @covers ::initialize()
-     * @covers ::relationships()
-     * @covers ::findAssociation()
-     * @covers ::setRelationshipsAllowedMethods()
      */
     public function testSetAssociationsNoContent()
     {
@@ -554,10 +504,6 @@ class ResourcesControllerTest extends IntegrationTestCase
      * Test relationships method to update relationships with a non-existing object ID.
      *
      * @return void
-     * @covers ::initialize()
-     * @covers ::relationships()
-     * @covers ::findAssociation()
-     * @covers ::setRelationshipsAllowedMethods()
      */
     public function testUpdateAssociationsMissingId()
     {
@@ -587,10 +533,6 @@ class ResourcesControllerTest extends IntegrationTestCase
      * Test relationships method with a non-existing association.
      *
      * @return void
-     * @covers ::initialize()
-     * @covers ::relationships()
-     * @covers ::findAssociation()
-     * @covers ::setRelationshipsAllowedMethods()
      */
     public function testWrongAssociation()
     {
@@ -613,10 +555,6 @@ class ResourcesControllerTest extends IntegrationTestCase
      * Test relationships method to update relationships with a wrong type.
      *
      * @return void
-     * @covers ::initialize()
-     * @covers ::relationships()
-     * @covers ::findAssociation()
-     * @covers ::setRelationshipsAllowedMethods()
      */
     public function testUpdateAssociationsUnsupportedType()
     {
