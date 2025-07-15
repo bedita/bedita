@@ -98,6 +98,12 @@ class RelatedObjectsTest extends IntegrationTestCase
         $this->assertEquals('users', $type, 'Expected related user type to be "users"');
     }
 
+    /**
+     * Test related objects via 'include' filter.
+     *
+     * @return void
+     * @coversNothing
+     */
     public function testIncluded(): void
     {
         $this->createUserProfileRelation();
