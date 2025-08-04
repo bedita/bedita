@@ -232,7 +232,23 @@ class ResourcesTest extends TestCase
      *
      * @covers ::create()
      */
-    public function testCreateInvalidName(): void
+    public function testCreateInvalidCategory(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Invalid resource data: {"name":{"regex":"The provided value is invalid"}}');
+        Resources::create('categories', [
+            [
+                'name' => 'società',
+            ],
+        ]);
+    }
+
+    /**
+     * Test `create` method with invalid name.
+     *
+     * @covers ::create()
+     */
+    public function testCreateInvalidRole(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Invalid resource data: {"name":{"regex":"The provided value is invalid"}}');
