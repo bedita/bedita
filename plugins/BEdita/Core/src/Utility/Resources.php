@@ -19,6 +19,7 @@ use Cake\Datasource\EntityInterface;
 use Cake\Http\Exception\BadRequestException;
 use Cake\ORM\Table;
 use Cake\Utility\Hash;
+use InvalidArgumentException;
 
 /**
  * Utility class to resources creation/update/removal in migrations, shell scripts and similar scenarios
@@ -127,6 +128,12 @@ class Resources extends ResourcesBase
             $resource = $Table->newEmptyEntity();
             $defaults = (array)Hash::get(static::$defaults, $type);
             $item = array_merge($defaults, $item);
+            $resource = $Table->newEntity($item);
+            if ($resource->hasErrors()) {
+                throw new InvalidArgumentException(
+                    __('Invalid resource data') . ': ' . json_encode($resource->getErrors())
+                );
+            }
             foreach ($item as $k => $v) {
                 $resource->set($k, $v);
             }
