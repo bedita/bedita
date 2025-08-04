@@ -128,13 +128,13 @@ class Resources extends ResourcesBase
             $defaults = (array)Hash::get(static::$defaults, $type);
             $item = array_merge($defaults, $item);
             $resource = $Table->newEntity($item);
-            foreach ($item as $k => $v) {
-                $resource->set($k, $v);
-            }
             if ($resource->hasErrors()) {
                 throw new InvalidArgumentException(
                     __('Invalid resource data') . ': ' . json_encode($resource->getErrors())
                 );
+            }
+            foreach ($item as $k => $v) {
+                $resource->set($k, $v);
             }
             $result[] = $Table->saveOrFail($resource, static::$defaults['save']);
         }
