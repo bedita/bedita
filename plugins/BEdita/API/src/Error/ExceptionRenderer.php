@@ -36,19 +36,6 @@ use Throwable;
 class ExceptionRenderer extends WebExceptionRenderer
 {
     /**
-     * Additional exception codes
-     *
-     * @var array
-     */
-    protected array $additionalHttpCodes = [
-        BadFilterException::class => 400,
-        LockedResourceException::class => 403,
-        ImmutableResourceException::class => 403,
-        InvalidDataException::class => 400,
-        UserExistsException::class => 400,
-    ];
-
-    /**
      * {@inheritDoc}
      *
      * @codeCoverageIgnore
@@ -60,8 +47,6 @@ class ExceptionRenderer extends WebExceptionRenderer
         ServerRequest::addDetector('html', [
             'accept' => ['text/html', 'application/xhtml+xml', 'application/xhtml', 'text/xhtml'],
         ]);
-
-        $this->exceptionHttpCodes += $this->additionalHttpCodes;
     }
 
     /**
