@@ -29,12 +29,13 @@ use Cake\Http\Exception\UnauthorizedException;
 use Cake\Http\ServerRequest;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Hash;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * {@see \BEdita\API\Middleware\LoggedUserMiddleware} Test Case
- *
- * @coversDefaultClass \BEdita\API\Middleware\LoggedUserMiddleware
  */
+#[CoversClass(LoggedUserMiddleware::class)]
 class LoggedUserMiddlewareTest extends TestCase
 {
     use TestAuthHelperTrait;
@@ -85,7 +86,6 @@ class LoggedUserMiddlewareTest extends TestCase
      * Test that no user was set without authentication service.
      *
      * @return void
-     * @covers ::process()
      */
     public function testInvalidService(): void
     {
@@ -102,7 +102,6 @@ class LoggedUserMiddlewareTest extends TestCase
      * Test that no user was set with empty identity.
      *
      * @return void
-     * @covers ::process()
      */
     public function testEmptyIdentity(): void
     {
@@ -133,9 +132,8 @@ class LoggedUserMiddlewareTest extends TestCase
      *
      * @param string $path The path to check.
      * @return void
-     * @covers ::process()
-     * @dataProvider unauthorizedProvider
      */
+    #[DataProvider('unauthorizedProvider')]
     public function testUnauthorized(string $path): void
     {
         $this->expectExceptionObject(new UnauthorizedException('Login request not successful'));
@@ -190,12 +188,8 @@ class LoggedUserMiddlewareTest extends TestCase
      * @param int|null $expected The expected user id
      * @param array|\ArrayObject|\BEdita\Core\Model\Entity\User $identityData The identity data.
      * @return void
-     * @covers ::process()
-     * @covers ::checkLoggedUser()
-     * @covers ::setupLoggedUser
-     * @covers ::checkPayload()
-     * @dataProvider setupLoggedUserProvider
      */
+    #[DataProvider('setupLoggedUserProvider')]
     public function testSetupLoggedUser($expected, $identityData): void
     {
         $identity = new Identity($identityData);
@@ -214,10 +208,6 @@ class LoggedUserMiddlewareTest extends TestCase
      * then a `\Cake\Http\Exception\UnauthorizedException` is thrown.
      *
      * @return void
-     * @covers ::process()
-     * @covers ::checkLoggedUser()
-     * @covers ::setupLoggedUser
-     * @covers ::checkPayload()
      */
     public function testUserRefreshTokenFail(): void
     {

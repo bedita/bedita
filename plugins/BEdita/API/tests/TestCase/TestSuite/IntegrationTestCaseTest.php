@@ -18,12 +18,13 @@ use BEdita\API\TestSuite\IntegrationTestCase;
 use BEdita\Core\State\CurrentApplication;
 use BEdita\Core\Utility\LoggedUser;
 use Cake\Event\EventManager;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * {@see \BEdita\API\TestSuite\IntegrationTestCase} Test Case
- *
- * @coversDefaultClass \BEdita\API\TestSuite\IntegrationTestCase
  */
+#[CoversClass(IntegrationTestCase::class)]
 class IntegrationTestCaseTest extends IntegrationTestCase
 {
     /**
@@ -113,10 +114,8 @@ class IntegrationTestCaseTest extends IntegrationTestCase
      * @param array $expected Expected results.
      * @param array $fixtures Class fixtures.
      * @return void
-     * @dataProvider authFixturesProvider
-     * @covers ::__construct()
-     * @covers ::addAuthFixtures()
      */
+    #[DataProvider('authFixturesProvider')]
     public function testAuthFixtures(array $expected, array $fixtures)
     {
         $mock = $this->getMockBuilder(IntegrationTestCase::class)
@@ -134,7 +133,6 @@ class IntegrationTestCaseTest extends IntegrationTestCase
      * Test setUp
      *
      * @return void
-     * @covers ::setUp()
      */
     public function testSetUp()
     {
@@ -155,7 +153,6 @@ class IntegrationTestCaseTest extends IntegrationTestCase
      * Test tearDown
      *
      * @return void
-     * @covers ::tearDown()
      */
     public function testTearDown()
     {
@@ -170,7 +167,6 @@ class IntegrationTestCaseTest extends IntegrationTestCase
      * Test getUserAuthHeader
      *
      * @return void
-     * @covers ::getUserAuthHeader()
      */
     public function testGetUserAuthHeader()
     {
@@ -183,7 +179,6 @@ class IntegrationTestCaseTest extends IntegrationTestCase
      * Test authUser
      *
      * @return void
-     * @covers ::authUser()
      */
     public function testAuthUser()
     {
@@ -255,9 +250,8 @@ class IntegrationTestCaseTest extends IntegrationTestCase
      * @param string $method The request method
      * @param array $options The optional headers
      * @return void
-     * @dataProvider headersProvider
-     * @covers ::configRequestHeaders()
      */
+    #[DataProvider('headersProvider')]
     public function testConfigRequestHeaders($expected, $method, array $options = [])
     {
         $this->configRequestHeaders($method, $options);

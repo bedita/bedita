@@ -25,10 +25,13 @@ use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Hash;
 use InvalidArgumentException;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
- * @coversDefaultClass \BEdita\API\Utility\JsonApi
+ * {@see \BEdita\Core\Utility\JsonApi} Test Case
  */
+#[CoversClass(JsonApi::class)]
 class JsonApiTest extends TestCase
 {
     /**
@@ -520,11 +523,8 @@ class JsonApiTest extends TestCase
      * @param callable $items A callable that returns the items to be converted.
      * @param int $options Format data options
      * @return void
-     * @dataProvider formatDataProvider
-     * @covers ::formatData()
-     * @covers ::metaSchema()
-     * @covers ::dispatchEvent()
      */
+    #[DataProvider('formatDataProvider')]
     public function testFormatData($expected, callable $items, $options = 0)
     {
         if ($expected === false) {
@@ -648,10 +648,8 @@ class JsonApiTest extends TestCase
      * @param array|bool $expected Expected result. If `false`, an exception is expected.
      * @param array $items Items to be parsed.
      * @return void
-     * @dataProvider parseDataProvider
-     * @covers ::parseData
-     * @covers ::parseItem
      */
+    #[DataProvider('parseDataProvider')]
     public function testParseData($expected, array $items)
     {
         if ($expected === false) {
@@ -667,7 +665,6 @@ class JsonApiTest extends TestCase
      * Test generation of relationships links.
      *
      * @return void
-     * @covers ::formatData
      */
     public function testFallbackLinks()
     {
@@ -794,9 +791,8 @@ class JsonApiTest extends TestCase
      * Test `schemaInfo` method
      *
      * @return void
-     * @covers ::schemaInfo
-     * @dataProvider schemaInfoProvider
      */
+    #[DataProvider('schemaInfoProvider')]
     public function testSchemaInfo($type, $expected)
     {
         $result = JsonApi::schemaInfo($type);
@@ -807,8 +803,6 @@ class JsonApiTest extends TestCase
      * Test `JsonApi.beforeFormatData` event.
      *
      * @return void
-     * @covers ::formatData()
-     * @covers ::dispatchEvent()
      */
     public function testBeforeFormatEvent(): void
     {
@@ -837,8 +831,6 @@ class JsonApiTest extends TestCase
      * Test `JsonApi.afterFormatData` event.
      *
      * @return void
-     * @covers ::formatData()
-     * @covers ::dispatchEvent()
      */
     public function testAfterFormatDataEvent(): void
     {
@@ -870,7 +862,6 @@ class JsonApiTest extends TestCase
      * Test that an exception was raised if some item was not serializable.
      *
      * @return void
-     * @covers ::formatData()
      */
     public function testNotJsonSerializable(): void
     {

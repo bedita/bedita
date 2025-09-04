@@ -30,13 +30,14 @@ use Cake\ORM\Locator\LocatorAwareTrait;
 use Cake\TestSuite\TestCase;
 use Exception;
 use Laminas\Diactoros\Uri;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Psr\Http\Message\UriInterface;
 
 /**
  * {@see \BEdita\API\Policy\EndpointPolicy} Test Case.
- *
- * @coversDefaultClass \BEdita\API\Policy\EndpointPolicy
  */
+#[CoversClass(EndpointPolicy::class)]
 class EndpointPolicyTest extends TestCase
 {
     use LocatorAwareTrait;
@@ -142,12 +143,8 @@ class EndpointPolicyTest extends TestCase
      * @param string $requestMethod Request method.
      * @param string|null $attribute Request attribute to set.
      * @return void
-     * @dataProvider canAccessProvider()
-     * @covers ::canAccess()
-     * @covers ::checkPermissions()
-     * @covers ::getUser()
-     * @covers ::isAuthorized()
      */
+    #[DataProvider('canAccessProvider')]
     public function testCanAccess(
         $expected,
         UriInterface $uri,
@@ -179,8 +176,6 @@ class EndpointPolicyTest extends TestCase
      * Test default permissive behavior.
      *
      * @return void
-     * @covers ::canAccess()
-     * @covers ::checkPermissions()
      */
     public function testAllowByDefault()
     {
@@ -205,8 +200,6 @@ class EndpointPolicyTest extends TestCase
      * Test default permissive behavior on an unknown endpoint.
      *
      * @return void
-     * @covers ::canAccess()
-     * @covers ::checkPermissions()
      */
     public function testAllowByDefaultUnknownEndpoint()
     {
@@ -231,8 +224,6 @@ class EndpointPolicyTest extends TestCase
      * Test default block of anonymous writes on an endpoint unless explicitly allowed.
      *
      * @return void
-     * @covers ::canAccess()
-     * @covers ::checkPermissions()
      */
     public function testBlockAnonymousWritesByDefault()
     {
@@ -255,7 +246,6 @@ class EndpointPolicyTest extends TestCase
      * Test default block of anonymous actions.
      *
      * @return void
-     * @covers ::canAccess()
      */
     public function testBlockUnloggedByDefault()
     {

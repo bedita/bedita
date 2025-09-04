@@ -29,12 +29,13 @@ use Cake\Http\ServerRequest;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Hash;
 use Exception;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * {@see \BEdita\API\Middleware\ApplicationMiddleware} Test Case
- *
- * @coversDefaultClass \BEdita\API\Middleware\ApplicationMiddleware
  */
+#[CoversClass(ApplicationMiddleware::class)]
 class ApplicationMiddlewareTest extends TestCase
 {
     use TestAuthHelperTrait;
@@ -79,7 +80,6 @@ class ApplicationMiddlewareTest extends TestCase
      * Test what happens with no authentication service.
      *
      * @return void
-     * @covers ::process()
      */
     public function testInvalidService(): void
     {
@@ -97,7 +97,6 @@ class ApplicationMiddlewareTest extends TestCase
      * then middleware set it as current app (client credentials flow).
      *
      * @return void
-     * @covers ::process()
      */
     public function testApplicationAsIdentity(): void
     {
@@ -151,13 +150,8 @@ class ApplicationMiddlewareTest extends TestCase
      * @param \Authentication\Authenticator\AbstractAuthenticator|null $authProvider Authenticator used for extract identity from JWT
      * @param bool $refreshToken If it is expected a refresh token request
      * @return void
-     * @covers ::process()
-     * @covers ::readPayload()
-     * @covers ::readApplication()
-     * @covers ::setupFromPayload()
-     * @covers ::applicationFromPayload()
-     * @dataProvider appFromJWTProvider
      */
+    #[DataProvider('appFromJWTProvider')]
     public function testAppFromJWT(int $expected, array $user, ?AbstractAuthenticator $authProvider, bool $refreshToken): void
     {
         $expectedApp = $this->fetchTable('Applications')->find()->where(['id' => $expected])->firstOrFail();
@@ -195,11 +189,6 @@ class ApplicationMiddlewareTest extends TestCase
      * an `\Cake\Http\Exception\UnauthorizedException` is thrown.
      *
      * @return void
-     * @covers ::process()
-     * @covers ::readPayload()
-     * @covers ::readApplication()
-     * @covers ::setupFromPayload()
-     * @covers ::applicationFromPayload()
      */
     public function testAppDisabledDuringUserRefreshToken(): void
     {
@@ -235,12 +224,6 @@ class ApplicationMiddlewareTest extends TestCase
      * then a `\Cake\Http\Exception\ForbiddenException` is thrown
      *
      * @return void
-     * @covers ::process()
-     * @covers ::readPayload()
-     * @covers ::readApplication()
-     * @covers ::setupFromPayload()
-     * @covers ::applicationFromApiKey()
-     * @covers ::fetchApiKey()
      */
     public function testFailToDecodeJwtAndMissingApiKey(): void
     {
@@ -297,14 +280,8 @@ class ApplicationMiddlewareTest extends TestCase
      * @param string $apiKey The API key
      * @param array $config The middleware conf
      * @return void
-     * @covers ::process()
-     * @covers ::readPayload()
-     * @covers ::readApplication()
-     * @covers ::setupFromPayload()
-     * @covers ::applicationFromApiKey()
-     * @covers ::fetchApiKey()
-     * @dataProvider setFromApiKeyProvider
      */
+    #[DataProvider('setFromApiKeyProvider')]
     public function testSetAppFromApiKey($expected, ?string $apiKey, array $config = []): void
     {
         if ($expected instanceof Exception) {

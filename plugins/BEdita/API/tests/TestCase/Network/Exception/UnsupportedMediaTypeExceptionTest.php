@@ -16,10 +16,12 @@ namespace BEdita\API\Test\TestCase\Network\Exception;
 
 use BEdita\API\Network\Exception\UnsupportedMediaTypeException;
 use Cake\TestSuite\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
 
 /**
- * @covers \BEdita\API\Network\Exception\UnsupportedMediaTypeException
+ * {@see \BEdita\API\Network\Exception\UnsupportedMediaTypeException} Test Case
  */
+#[CoversClass(UnsupportedMediaTypeException::class)]
 class UnsupportedMediaTypeExceptionTest extends TestCase
 {
     /**

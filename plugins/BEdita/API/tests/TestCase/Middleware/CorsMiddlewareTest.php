@@ -18,12 +18,13 @@ use BEdita\API\Middleware\CorsMiddleware;
 use BEdita\API\Test\Utility\TestRequestHandler;
 use Cake\Http\ServerRequestFactory;
 use Cake\TestSuite\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * {@see \BEdita\API\Middleware\CorsMiddleware} Test Case
- *
- * @covers \BEdita\API\Middleware\CorsMiddleware
  */
+#[CoversClass(CorsMiddleware::class)]
 class CorsMiddlewareTest extends TestCase
 {
     /**
@@ -315,9 +316,8 @@ class CorsMiddlewareTest extends TestCase
      * @param array $server The server vars (see $_SERVER)
      * @param array $corsConfig The specific CORS conf applied
      * @return void
-     * @dataProvider corsProvider
-     * @covers \BEdita\API\Middleware\CorsMiddleware
      */
+    #[DataProvider('corsProvider')]
     public function testCors($expectedStatus, $expectedCorsHeaders, $server, $corsConfig)
     {
         $request = ServerRequestFactory::fromGlobals($server);

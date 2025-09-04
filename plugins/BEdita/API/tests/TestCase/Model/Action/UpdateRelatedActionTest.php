@@ -27,10 +27,13 @@ use Cake\TestSuite\TestCase;
 use Cake\Utility\Hash;
 use Cake\Utility\Text;
 use Exception;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
- * @covers \BEdita\API\Model\Action\UpdateRelatedAction
+ * {@see \BEdita\API\Model\Action\UpdateRelatedAction} Test Case
  */
+#[CoversClass(UpdateRelatedAction::class)]
 class UpdateRelatedActionTest extends TestCase
 {
     /**
@@ -152,8 +155,8 @@ class UpdateRelatedActionTest extends TestCase
      * @param int $id Entity ID to update relations for.
      * @param int|int[]|null $data Related entity(-ies).
      * @return void
-     * @dataProvider invocationProvider()
      */
+    #[DataProvider('invocationProvider')]
     public function testInvocation($expected, string $table, string $association, int $id, $data): void
     {
         if ($expected instanceof Exception) {

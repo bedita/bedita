@@ -32,10 +32,13 @@ use Cake\Utility\Hash;
 use Cake\Utility\Inflector;
 use Exception;
 use InvalidArgumentException;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
- * @covers \BEdita\API\Model\Action\UpdateAssociatedAction
+ * {@see \BEdita\API\Model\Action\UpdateAssociatedAction} Test Case
  */
+#[CoversClass(UpdateAssociatedAction::class)]
 class UpdateAssociatedActionTest extends TestCase
 {
     /**
@@ -230,8 +233,8 @@ class UpdateAssociatedActionTest extends TestCase
      * @param int $id Entity ID to update relations for.
      * @param int|int[]|null $data Related entity(-ies).
      * @return void
-     * @dataProvider invocationProvider()
      */
+    #[DataProvider('invocationProvider')]
     public function testInvocation($expected, $table, $association, $id, $data)
     {
         if ($expected instanceof Exception) {
@@ -630,8 +633,8 @@ class UpdateAssociatedActionTest extends TestCase
      * @param int $primaryKey Left entity ID.
      * @param array $body Request body.
      * @return void
-     * @dataProvider prepareMetaProvider()
      */
+    #[DataProvider('prepareMetaProvider')]
     public function testPrepareMeta($expectedResult, $expectedParams, $associationName, $primaryKey, $body): void
     {
         $Documents = $this->fetchTable('Documents');

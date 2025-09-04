@@ -17,25 +17,23 @@ namespace BEdita\API\Test\TestCase\Identifier;
 use Authentication\Identifier\Resolver\ResolverInterface;
 use BEdita\API\Identifier\JwtSubjectIdentifier;
 use Cake\TestSuite\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
 
 /**
  * {@see \BEdita\API\Identifier\JwtSubjectIdentifier} Test Case.
- *
- * @coversDefaultClass \BEdita\API\Identifier\JwtSubjectIdentifier
  */
+#[CoversClass(JwtSubjectIdentifier::class)]
 class JwtSubjectIdentifierTest extends TestCase
 {
     /**
      * Test `identify` method
      *
      * @return void
-     * @covers ::identify()
      */
     public function testIdentify(): void
     {
         $resolver = $this->getMockBuilder(ResolverInterface::class)
             ->onlyMethods(['find'])
-            // ->addMethods(['setConfig'])
             ->getMock();
 
         $resolver->method('find')

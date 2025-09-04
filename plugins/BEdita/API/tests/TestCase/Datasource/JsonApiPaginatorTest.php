@@ -22,10 +22,13 @@ use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Hash;
 use Exception;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
- * @coversDefaultClass \BEdita\API\Datasource\JsonApiPaginator
+ * {@see \BEdita\API\Datasource\JsonApiPaginator} Test Case
  */
+#[CoversClass(JsonApiPaginator::class)]
 class JsonApiPaginatorTest extends TestCase
 {
     /**
@@ -97,9 +100,8 @@ class JsonApiPaginatorTest extends TestCase
      * @param array $expected Expected result.
      * @param array $options Paginator options.
      * @return void
-     * @dataProvider checkLimitProvider()
-     * @covers ::checkLimit()
      */
+    #[DataProvider('checkLimitProvider')]
     public function testCheckLimit(array $expected, array $options)
     {
         $paginator = new JsonApiPaginator();
@@ -167,9 +169,8 @@ class JsonApiPaginatorTest extends TestCase
      * @param array|\Exception $expected Expected result.
      * @param string|null $sort `sort` query parameter in request.
      * @return void
-     * @dataProvider validateSortProvider()
-     * @covers ::validateSort()
      */
+    #[DataProvider('validateSortProvider')]
     public function testValidateSort($expected, $sort = null)
     {
         if ($expected instanceof Exception) {
@@ -188,8 +189,6 @@ class JsonApiPaginatorTest extends TestCase
 
     /**
      * Test `paginate()` method.
-     *
-     * @covers ::paginate()
      */
     public function testPaginate()
     {

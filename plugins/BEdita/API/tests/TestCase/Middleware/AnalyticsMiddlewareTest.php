@@ -22,21 +22,20 @@ use Cake\Http\Response;
 use Cake\Http\ServerRequestFactory;
 use Cake\Log\Log;
 use Cake\TestSuite\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Psr\Http\Message\ServerRequestInterface;
 
 /**
  * {@see \BEdita\API\Middleware\AnalyticsMiddleware} Test Case
- *
- * @coversDefaultClass \BEdita\API\Middleware\AnalyticsMiddleware
  */
+#[CoversClass(AnalyticsMiddleware::class)]
 class AnalyticsMiddlewareTest extends TestCase
 {
     /**
      * Test `process` method response
      *
      * @return void
-     * @covers ::process()
-     * @covers ::__construct()
      */
     public function testAnalytics()
     {
@@ -82,9 +81,8 @@ class AnalyticsMiddlewareTest extends TestCase
      * Test callback methods
      *
      * @return void
-     * @dataProvider customProvider
-     * @covers ::readCustomData()
      */
+    #[DataProvider('customProvider')]
     public function testCustomData($callback, $expected)
     {
         EventManager::instance()->on('Analytics.custom', $callback);
@@ -131,9 +129,8 @@ class AnalyticsMiddlewareTest extends TestCase
      * Test getAppErrorCode() method
      *
      * @return void
-     * @dataProvider errorCodeProvider
-     * @covers ::getAppErrorCode()
      */
+    #[DataProvider('errorCodeProvider')]
     public function testAppErrorCode($body, $status, $expected)
     {
         $request = ServerRequestFactory::fromGlobals();

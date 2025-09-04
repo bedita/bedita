@@ -18,12 +18,13 @@ use BEdita\API\Identifier\OAuth2Identifier;
 use Cake\Http\Client\Adapter\Stream;
 use Cake\Http\Client\Response;
 use Cake\TestSuite\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * {@see \BEdita\API\Identifier\OAuth2Identifier} Test Case.
- *
- * @coversDefaultClass \BEdita\API\Identifier\OAuth2Identifier
  */
+#[CoversClass(OAuth2Identifier::class)]
 class OAuth2IdentifierTest extends TestCase
 {
     /**
@@ -121,10 +122,8 @@ class OAuth2IdentifierTest extends TestCase
      * @param array $credentials Request.
      * @param array $oauthResponse OAuth2 server response.
      * @return void
-     * @dataProvider identifyProvider
-     * @covers ::identify()
-     * @covers ::getOAuth2Response()
      */
+    #[DataProvider('identifyProvider')]
     public function testIdentify(?array $expected, array $credentials, array $oauthResponse = []): void
     {
         $authProvider = $this->fetchTable('AuthProviders')->find()
@@ -156,7 +155,6 @@ class OAuth2IdentifierTest extends TestCase
      * Test `identify` method with callback.
      *
      * @return void
-     * @covers ::identify()
      */
     public function testIdentifyWithCallback(): void
     {

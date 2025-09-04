@@ -22,12 +22,13 @@ use BEdita\API\Policy\ObjectPolicy;
 use BEdita\Core\Utility\LoggedUser;
 use Cake\ORM\Query\SelectQuery;
 use Cake\TestSuite\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * {@see \BEdita\API\Policy\ObjectPolicy} Test Case.
- *
- * @coversDefaultClass \BEdita\API\Policy\ObjectPolicy
  */
+#[CoversClass(ObjectPolicy::class)]
 class ObjectPolicyTest extends TestCase
 {
     protected array $fixtures = [
@@ -75,9 +76,8 @@ class ObjectPolicyTest extends TestCase
      * @param null|true $expected The expected result
      * @param array|null $user The user data
      * @return void
-     * @covers ::before()
-     * @dataProvider beforeProvider
      */
+    #[DataProvider('beforeProvider')]
     public function testBefore($expected, ?array $user): void
     {
         $identity = null;
@@ -146,10 +146,8 @@ class ObjectPolicyTest extends TestCase
      * @param int $id The object id
      * @param array $user The user data
      * @return void
-     * @covers ::canUpdate()
-     * @covers ::extractRolesNames
-     * @dataProvider canUpdateProvider
      */
+    #[DataProvider('canUpdateProvider')]
     public function testCanUpdate(bool $expected, $id, array $user): void
     {
         $objectTypesTable = $this->fetchTable('ObjectTypes');
@@ -238,9 +236,8 @@ class ObjectPolicyTest extends TestCase
      * @param int $childrenId The children id to test
      * @param array $user The user data
      * @return void
-     * @covers ::canUpdateParents()
-     * @dataProvider canUpdateParentsProvider
      */
+    #[DataProvider('canUpdateParentsProvider')]
     public function testCanUpdateParents(bool $expected, bool $enableFoldersPerms, $childrenId, array $user): void
     {
         $objectTypesTable = $this->fetchTable('ObjectTypes');
