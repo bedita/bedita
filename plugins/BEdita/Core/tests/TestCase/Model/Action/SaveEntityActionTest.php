@@ -21,12 +21,12 @@ use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use Cake\Validation\Validator;
+use PHPUnit\Framework\Attributes\CoversClass;
 
 /**
  * {@see \BEdita\Core\Model\Action\SaveEntityAction} Test Case
- *
- * @coversDefaultClass \BEdita\Core\Model\Action\SaveEntityAction
  */
+#[CoversClass(SaveEntityAction::class)]
 class SaveEntityActionTest extends TestCase
 {
     /**
@@ -42,8 +42,6 @@ class SaveEntityActionTest extends TestCase
      * Test command execution.
      *
      * @return void
-     * @covers ::initialize()
-     * @covers ::execute()
      */
     public function testExecute()
     {
@@ -66,8 +64,6 @@ class SaveEntityActionTest extends TestCase
      * Test command execution with validation errors.
      *
      * @return void
-     * @covers ::initialize()
-     * @covers ::execute()
      */
     public function testExecuteValitationErrors()
     {
@@ -93,8 +89,6 @@ class SaveEntityActionTest extends TestCase
      * Test command execution with save error.
      *
      * @return void
-     * @covers ::initialize()
-     * @covers ::execute()
      */
     public function testExecuteSaveErrors()
     {

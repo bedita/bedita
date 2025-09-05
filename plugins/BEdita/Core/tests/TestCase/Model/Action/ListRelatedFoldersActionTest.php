@@ -15,15 +15,20 @@ declare(strict_types=1);
 namespace BEdita\Core\Test\TestCase\Model\Action;
 
 use BEdita\Core\Model\Action\ListRelatedFoldersAction;
+use BEdita\Core\Model\Action\ListRelatedObjectsAction;
 use BEdita\Core\Model\Entity\Folder;
 use Cake\ORM\Query\SelectQuery;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Hash;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\CoversMethod;
 
 /**
- * @coversDefaultClass \BEdita\Core\Model\Action\ListRelatedFoldersAction
+ * {@see \BEdita\Core\Model\Action\ListRelatedFoldersAction} Test Case
  */
+#[CoversClass(ListRelatedFoldersAction::class)]
+#[CoversMethod(ListRelatedObjectsAction::class, 'initialize')]
 class ListRelatedFoldersActionTest extends TestCase
 {
     /**
@@ -44,7 +49,6 @@ class ListRelatedFoldersActionTest extends TestCase
      * Test execute for `Parents` association.
      *
      * @return void
-     * @covers ::execute()
      */
     public function testExecuteParents()
     {
@@ -59,8 +63,6 @@ class ListRelatedFoldersActionTest extends TestCase
      * Test execute for `Children` association.
      *
      * @return void
-     * @covers ::execute()
-     * @covers \BEdita\Core\Model\Action\ListRelatedObjectsAction::initialize()
      */
     public function testExecuteChildren()
     {

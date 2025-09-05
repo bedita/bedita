@@ -16,7 +16,9 @@ namespace BEdita\Core\Test\TestCase\Model\Action;
 
 use ArrayObject;
 use BEdita\Core\Exception\InvalidDataException;
+use BEdita\Core\Model\Action\AssociatedTrait;
 use BEdita\Core\Model\Action\SetAssociatedAction;
+use BEdita\Core\Model\Action\UpdateAssociatedAction;
 use Cake\Core\Exception\CakeException;
 use Cake\Event\Event;
 use Cake\ORM\Association\BelongsToMany;
@@ -27,12 +29,17 @@ use Cake\TestSuite\TestCase;
 use Cake\Utility\Inflector;
 use Exception;
 use InvalidArgumentException;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
- * @covers \BEdita\Core\Model\Action\SetAssociatedAction
- * @covers \BEdita\Core\Model\Action\UpdateAssociatedAction
- * @covers \BEdita\Core\Model\Action\AssociatedTrait
+ * {@see \BEdita\Core\Model\Action\SetAssociatedAction} Test Case
+ * {@see \BEdita\Core\Model\Action\UpdateAssociatedAction} Test Case
+ * {@see \BEdita\Core\Model\Action\AssociatedTrait} Test Case
  */
+#[CoversClass(SetAssociatedAction::class)]
+#[CoversClass(UpdateAssociatedAction::class)]
+#[CoversClass(AssociatedTrait::class)]
 class SetAssociatedActionTest extends TestCase
 {
     /**
@@ -189,8 +196,8 @@ class SetAssociatedActionTest extends TestCase
      * @param int $entity Entity to update relations for.
      * @param int|int[]|null $related Related entity(-ies).
      * @return void
-     * @dataProvider invocationProvider()
      */
+    #[DataProvider('invocationProvider')]
     public function testInvocation($expected, $table, $association, $entity, $related)
     {
         if ($expected instanceof Exception) {
@@ -331,8 +338,8 @@ class SetAssociatedActionTest extends TestCase
      * @param int $source Source entity ID.
      * @param int $target Target entity ID.
      * @return void
-     * @dataProvider invocationWithValidationErrorsProvider()
      */
+    #[DataProvider('invocationWithValidationErrorsProvider')]
     public function testInvocationWithValidationErrors($source, $target)
     {
         $this->expectException(InvalidDataException::class);
@@ -399,8 +406,8 @@ class SetAssociatedActionTest extends TestCase
      * @param int $tagId Tag entity id.
      * @param bool $joinDataAsEntity It says if join data is to treat as entity.
      * @return void
-     * @dataProvider joinDataProvider()
      */
+    #[DataProvider('joinDataProvider')]
     public function testInvocationOKWithJoinData($articleId, $tagId, $joinDataAsEntity)
     {
         $expected = 'Coffee please!';

@@ -20,12 +20,12 @@ use Cake\Core\Configure;
 use Cake\Mailer\Mailer;
 use Cake\TestSuite\TestCase;
 use LogicException;
+use PHPUnit\Framework\Attributes\CoversClass;
 
 /**
  * {@see \BEdita\Core\Mailer\UserMailerTrait} Test Case.
- *
- * @coversDefaultClass \BEdita\Core\Mailer\UserMailerTrait
  */
+#[CoversClass(UserMailerTrait::class)]
 class UserMailerTraitTest extends TestCase
 {
     use UserMailerTrait;
@@ -34,7 +34,6 @@ class UserMailerTraitTest extends TestCase
      * Test `getUserMailer` failure.
      *
      * @return void
-     * @covers ::getUserMailer()
      */
     public function testGetUserMailerFailure(): void
     {
@@ -50,7 +49,6 @@ class UserMailerTraitTest extends TestCase
      * Test `getUserMailer`
      *
      * @return void
-     * @covers ::getUserMailer()
      */
     public function testGetUserMailer(): void
     {

@@ -18,10 +18,12 @@ use BEdita\Core\Model\Action\GetEntityAction;
 use BEdita\Core\ORM\Inheritance\Table;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
 
 /**
- * @covers \BEdita\Core\Model\Action\GetEntityAction
+ * {@see \BEdita\Core\Model\Action\GetEntityAction} Test Case
  */
+#[CoversClass(GetEntityAction::class)]
 class GetEntityActionTest extends TestCase
 {
     /**

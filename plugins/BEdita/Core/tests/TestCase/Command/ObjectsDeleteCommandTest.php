@@ -14,16 +14,17 @@ declare(strict_types=1);
  */
 namespace BEdita\Core\Test\TestCase\Command;
 
+use BEdita\Core\Command\ObjectsDeleteCommand;
 use Cake\Console\TestSuite\ConsoleIntegrationTestTrait;
 use Cake\Event\EventManager;
 use Cake\TestSuite\TestCase;
 use Exception;
+use PHPUnit\Framework\Attributes\CoversClass;
 
 /**
  * {@see BEdita\Core\Command\ObjectsDeleteCommand} Test Case
- *
- * @coversDefaultClass \BEdita\Core\Command\ObjectsDeleteCommand
  */
+#[CoversClass(ObjectsDeleteCommand::class)]
 class ObjectsDeleteCommandTest extends TestCase
 {
     use ConsoleIntegrationTestTrait;
@@ -51,7 +52,6 @@ class ObjectsDeleteCommandTest extends TestCase
      * Test buildOptionParser method
      *
      * @return void
-     * @covers ::buildOptionParser()
      */
     public function testBuildOptionParser()
     {
@@ -64,9 +64,6 @@ class ObjectsDeleteCommandTest extends TestCase
      * Test `execute` method
      *
      * @return void
-     * @covers ::execute()
-     * @covers ::objectsIterator()
-     * @covers ::deleteObject()
      */
     public function testExecute(): void
     {
@@ -81,9 +78,6 @@ class ObjectsDeleteCommandTest extends TestCase
      * Test `execute` method
      *
      * @return void
-     * @covers ::execute()
-     * @covers ::objectsIterator()
-     * @covers ::deleteObject()
      */
     public function testExecuteSince(): void
     {
@@ -98,8 +92,6 @@ class ObjectsDeleteCommandTest extends TestCase
      * Test `execute` method
      *
      * @return void
-     * @covers ::objectsIterator()
-     * @covers ::deleteObject()
      */
     public function testExecuteError(): void
     {
@@ -134,9 +126,6 @@ class ObjectsDeleteCommandTest extends TestCase
      * Test `execute` method
      *
      * @return void
-     * @covers ::execute()
-     * @covers ::objectsIterator()
-     * @covers ::deleteObject()
      */
     public function testDeleteMedia(): void
     {

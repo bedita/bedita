@@ -18,10 +18,12 @@ use BEdita\Core\Model\Action\DeleteObjectsAction;
 use BEdita\Core\Utility\LoggedUser;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
 
 /**
- * @covers \BEdita\Core\Model\Action\DeleteObjectsAction
+ * {@see \BEdita\Core\Model\Action\DeleteObjectsAction} Test Case
  */
+#[CoversClass(DeleteObjectsAction::class)]
 class DeleteObjectsActionTest extends TestCase
 {
     /**

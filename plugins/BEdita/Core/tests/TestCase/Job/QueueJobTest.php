@@ -27,13 +27,14 @@ use Enqueue\Null\NullConnectionFactory;
 use Enqueue\Null\NullMessage;
 use Exception;
 use Interop\Queue\Processor;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 use RuntimeException;
 
 /**
  * {@see \BEdita\Core\Job\QueueJob} Test Case
- *
- * @coversDefaultClass \BEdita\Core\Job\QueueJob
  */
+#[CoversClass(QueueJob::class)]
 class QueueJobTest extends TestCase
 {
     /**
@@ -142,10 +143,8 @@ class QueueJobTest extends TestCase
      * @param bool|\Exception $return Service return value
      * @param string $uuid Job UUID
      * @return void
-     * @dataProvider executeProvider
-     * @covers ::execute()
-     * @covers ::run()
      */
+    #[DataProvider('executeProvider')]
     public function testExecute(string $expected, $return, string $uuid = self::TEST_UUID): void
     {
         ServiceRegistry::set('example', $this->getMockService($return));
@@ -161,7 +160,6 @@ class QueueJobTest extends TestCase
      * Test the case when the service fails and then the job is missing.
      *
      * @return void
-     * @covers ::execute()
      */
     public function testServiceFailsThenMissingAsyncJob(): void
     {

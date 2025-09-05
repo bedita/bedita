@@ -19,14 +19,15 @@ use BEdita\Core\Model\Action\SignupUserAction;
 use Cake\Core\Configure;
 use Cake\ORM\Table;
 use Cake\TestSuite\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 use RuntimeException;
 use Throwable;
 
 /**
  *  {@see \BEdita\Core\Model\Action\ActionTrait} Test Case
- *
- * @coversDefaultClass \BEdita\Core\Model\Action\ActionTrait
  */
+#[CoversClass(ActionTrait::class)]
 class ActionTraitTest extends TestCase
 {
     use ActionTrait;
@@ -101,14 +102,13 @@ class ActionTraitTest extends TestCase
     /**
      * Test `createAction` method
      *
-     * @return void
      * @param string|\Exception $expected Expected result
      * @param string $class Class name
      * @param array $options Class options
      * @param string $prefix Class prefix
-     * @dataProvider createActionProvider
-     * @covers ::createAction()
+     * @return void
      */
+    #[DataProvider('createActionProvider')]
     public function testCreateAction($expected, string $class, array $options = [], string $prefix = 'BEdita/Core')
     {
         if ($expected instanceof Throwable) {

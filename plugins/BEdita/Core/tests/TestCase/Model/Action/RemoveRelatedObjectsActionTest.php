@@ -15,19 +15,27 @@ declare(strict_types=1);
 namespace BEdita\Core\Test\TestCase\Model\Action;
 
 use ArrayObject;
+use BEdita\Core\Model\Action\AssociatedTrait;
 use BEdita\Core\Model\Action\RemoveRelatedObjectsAction;
+use BEdita\Core\Model\Action\UpdateRelatedObjectsAction;
 use Cake\Event\Event;
 use Cake\ORM\Query\SelectQuery;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Inflector;
 use Exception;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\CoversMethod;
+use PHPUnit\Framework\Attributes\DataProvider;
 use RuntimeException;
 
 /**
- * @covers \BEdita\Core\Model\Action\RemoveRelatedObjectsAction
- * @covers \BEdita\Core\Model\Action\AssociatedTrait
+ * {@see \BEdita\Core\Model\Action\RemoveRelatedObjectsAction} Test Case
+ * {@see \BEdita\Core\Model\Action\AssociatedTrait} Test Case
  */
+#[CoversClass(RemoveRelatedObjectsAction::class)]
+#[CoversClass(AssociatedTrait::class)]
+#[CoversMethod(UpdateRelatedObjectsAction::class, 'prepareData')]
 class RemoveRelatedObjectsActionTest extends TestCase
 {
     /**
@@ -107,9 +115,8 @@ class RemoveRelatedObjectsActionTest extends TestCase
      * @param int $entity Entity to update relations for.
      * @param int|int[]|null $related Related entity(-ies).
      * @return void
-     * @dataProvider invocationProvider()
-     * @covers \BEdita\Core\Model\Action\UpdateRelatedObjectsAction::prepareData()
      */
+    #[DataProvider('invocationProvider')]
     public function testInvocation($expected, $table, $association, $entity, $related)
     {
         if ($expected instanceof Exception) {

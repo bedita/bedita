@@ -14,17 +14,19 @@ declare(strict_types=1);
  */
 namespace BEdita\Core\Test\TestCase\Command;
 
+use BEdita\Core\Command\ResourcesListCommand;
 use BEdita\Core\Job\ServiceRegistry;
 use Cake\Command\Command;
 use Cake\Console\TestSuite\ConsoleIntegrationTestTrait;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Inflector;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * {@see BEdita\Core\Command\ResourcesListCommand} Test Case
- *
- * @coversDefaultClass \BEdita\Core\Command\ResourcesListCommand
  */
+#[CoversClass(ResourcesListCommand::class)]
 class ResourcesListCommandTest extends TestCase
 {
     use ConsoleIntegrationTestTrait;
@@ -64,8 +66,6 @@ class ResourcesListCommandTest extends TestCase
      * Test buildOptionParser method
      *
      * @return void
-     * @covers ::buildOptionParser()
-     * @covers ::getDescription()
      */
     public function testBuildOptionParser()
     {
@@ -135,9 +135,8 @@ class ResourcesListCommandTest extends TestCase
      * @param string $resourceFilter Resource ID.
      * @param string $expected Expected output.
      * @return void
-     * @covers ::execute()
-     * @dataProvider executeProvider()
      */
+    #[DataProvider('executeProvider')]
     public function testExecute(string $resourceType, string $resourceFilter, string $expected): void
     {
         $tableName = Inflector::camelize($resourceType);
@@ -158,7 +157,6 @@ class ResourcesListCommandTest extends TestCase
      * Test list resource with wrong type
      *
      * @return void
-     * @covers ::execute()
      */
     public function testExecuteWrongType(): void
     {

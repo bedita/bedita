@@ -24,10 +24,13 @@ use Cake\ORM\Query\SelectQuery;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use Exception;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
- * @coversDefaultClass \BEdita\Core\Model\Action\ListEntitiesAction
+ * {@see \BEdita\Core\Model\Action\ListEntitiesAction} Test Case
  */
+#[CoversClass(ListEntitiesAction::class)]
 class ListEntitiesActionTest extends TestCase
 {
     /**
@@ -107,9 +110,8 @@ class ListEntitiesActionTest extends TestCase
      * @param array $expected Expected result.
      * @param string $filter Filter to be parsed
      * @return void
-     * @dataProvider parseFilterProvider()
-     * @covers ::parseFilter()
      */
+    #[DataProvider('parseFilterProvider')]
     public function testParseFilter(array $expected, $filter)
     {
         $result = ListEntitiesAction::parseFilter($filter);
@@ -248,11 +250,8 @@ class ListEntitiesActionTest extends TestCase
      * @param mixed $filter Filter.
      * @param string $table Table name.
      * @return void
-     * @dataProvider executeProvider()
-     * @covers ::initialize()
-     * @covers ::buildFilter()
-     * @covers ::execute()
      */
+    #[DataProvider('executeProvider')]
     public function testExecute(array|Exception $expected, mixed $filter, string $table = 'FakeAnimals'): void
     {
         if ($expected instanceof Exception) {
@@ -272,9 +271,6 @@ class ListEntitiesActionTest extends TestCase
      * Test command execution with custom prop filter.
      *
      * @return void
-     * @covers ::initialize()
-     * @covers ::buildFilter()
-     * @covers ::execute()
      */
     public function testFilterCustomProp(): void
     {
@@ -295,9 +291,6 @@ class ListEntitiesActionTest extends TestCase
      * Test command execution with contained entities.
      *
      * @return void
-     * @covers ::initialize()
-     * @covers ::buildFilter()
-     * @covers ::execute()
      */
     public function testExecuteContain()
     {
@@ -352,8 +345,6 @@ class ListEntitiesActionTest extends TestCase
      * Test filter error.
      *
      * @return void
-     * @covers ::buildFilter()
-     * @covers ::execute()
      */
     public function testBadFilter()
     {

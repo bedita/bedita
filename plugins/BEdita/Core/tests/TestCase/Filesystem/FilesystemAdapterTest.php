@@ -17,17 +17,19 @@ namespace BEdita\Core\Test\TestCase\Filesystem;
 use BEdita\Core\Filesystem\FilesystemAdapter;
 use Cake\TestSuite\TestCase;
 use League\Flysystem\FilesystemAdapter as LeagueFilesystemAdapter;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
- * @coversDefaultClass \BEdita\Core\Filesystem\FilesystemAdapter
+ * {@see \BEdita\Core\Filesystem\FilesystemAdapter} Test Case
  */
+#[CoversClass(FilesystemAdapter::class)]
 class FilesystemAdapterTest extends TestCase
 {
     /**
      * Test class initialization.
      *
      * @return void
-     * @covers ::initialize()
      */
     public function testInitialize()
     {
@@ -62,7 +64,6 @@ class FilesystemAdapterTest extends TestCase
      * Test inner adapter getter.
      *
      * @return void
-     * @covers ::getInnerAdapter()
      */
     public function testGetInnerAdapter(): void
     {
@@ -129,9 +130,8 @@ class FilesystemAdapterTest extends TestCase
      * @param string $baseUrl Base URL.
      * @param string $path Object path.
      * @return void
-     * @dataProvider getPublicUrlProvider()
-     * @covers ::getPublicUrl()
      */
+    #[DataProvider('getPublicUrlProvider')]
     public function testGetPublicUrl($expected, $baseUrl, $path)
     {
         $leagueAdapter = $this->getMockBuilder(LeagueFilesystemAdapter::class)->getMock();
@@ -159,7 +159,6 @@ class FilesystemAdapterTest extends TestCase
      * Test getter for default visibility.
      *
      * @return void
-     * @covers ::getVisibility()
      */
     public function testGetVisibility()
     {

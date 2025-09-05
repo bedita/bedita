@@ -14,15 +14,16 @@ declare(strict_types=1);
  */
 namespace BEdita\Core\Test\TestCase\Command;
 
+use BEdita\Core\Command\ThumbsCommand;
 use Cake\Console\TestSuite\ConsoleIntegrationTestTrait;
 use Cake\Core\Configure;
 use Cake\TestSuite\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
 
 /**
  * {@see BEdita\Core\Command\ThumbsCommand} Test Case
- *
- * @coversDefaultClass \BEdita\Core\Command\ThumbsCommand
  */
+#[CoversClass(ThumbsCommand::class)]
 class ThumbsCommandTest extends TestCase
 {
     use ConsoleIntegrationTestTrait;
@@ -68,7 +69,6 @@ class ThumbsCommandTest extends TestCase
      * Test buildOptionParser method
      *
      * @return void
-     * @covers ::buildOptionParser()
      */
     public function testBuildOptionParser()
     {
@@ -80,9 +80,6 @@ class ThumbsCommandTest extends TestCase
      * Test `execute` method
      *
      * @return void
-     * @covers ::execute()
-     * @covers ::availablePresets()
-     * @covers ::imagesIterator()
      */
     public function testExecute(): void
     {
@@ -96,9 +93,6 @@ class ThumbsCommandTest extends TestCase
      * Test `execute` method with `--id` option
      *
      * @return void
-     * @covers ::execute()
-     * @covers ::availablePresets()
-     * @covers ::imagesIterator()
      */
     public function testExecuteId(): void
     {

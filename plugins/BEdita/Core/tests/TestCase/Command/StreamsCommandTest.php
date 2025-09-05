@@ -28,13 +28,14 @@ use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\ORM\Query\SelectQuery;
 use Cake\TestSuite\TestCase;
 use Generator;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Throwable;
 
 /**
  * {@see BEdita\Core\Command\StreamsCommand} Test Case
- *
- * @coversDefaultClass \BEdita\Core\Command\StreamsCommand
  */
+#[CoversClass(StreamsCommand::class)]
 class StreamsCommandTest extends TestCase
 {
     use ConsoleIntegrationTestTrait;
@@ -75,7 +76,6 @@ class StreamsCommandTest extends TestCase
      * Test buildOptionParser method
      *
      * @return void
-     * @covers ::buildOptionParser()
      */
     public function testBuildOptionParser(): void
     {
@@ -89,10 +89,6 @@ class StreamsCommandTest extends TestCase
      * Test `refreshMetadata` method
      *
      * @return void
-     * @covers ::execute()
-     * @covers ::refreshMetadata()
-     * @covers ::updateStreamMetadata()
-     * @covers ::streamsGenerator()
      */
     public function testRefreshMetadata(): void
     {
@@ -116,10 +112,6 @@ class StreamsCommandTest extends TestCase
      * Test `refreshMetadata` method with --force option
      *
      * @return void
-     * @covers ::execute()
-     * @covers ::refreshMetadata()
-     * @covers ::updateStreamMetadata()
-     * @covers ::streamsGenerator()
      */
     public function testRefreshMetadataForce(): void
     {
@@ -180,10 +172,8 @@ class StreamsCommandTest extends TestCase
      * @param int $expected Expected number of removed streams
      * @param int $days The days.
      * @return void
-     * @dataProvider removeOrphansProvider()
-     * @covers ::execute()
-     * @covers ::removeOrphans()
      */
+    #[DataProvider('removeOrphansProvider')]
     public function testRemoveOrphans(int $expected, int $days): void
     {
         /** \BEdita\Core\Model\Table\StreamsTable $Streams */

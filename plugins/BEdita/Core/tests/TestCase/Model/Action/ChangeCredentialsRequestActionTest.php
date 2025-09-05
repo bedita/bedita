@@ -23,12 +23,12 @@ use Cake\Event\Event;
 use Cake\Event\EventManager;
 use Cake\Mailer\TransportFactory;
 use Cake\TestSuite\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
 
 /**
  * {@see \BEdita\Core\Model\Action\ChangeCredentialsRequestAction} Test Case
- *
- * @covers \BEdita\Core\Model\Action\ChangeCredentialsRequestAction
  */
+#[CoversClass(ChangeCredentialsRequestAction::class)]
 class ChangeCredentialsRequestActionTest extends TestCase
 {
     /**

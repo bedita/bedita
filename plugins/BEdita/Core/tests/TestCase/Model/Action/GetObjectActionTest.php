@@ -20,10 +20,12 @@ use Cake\Datasource\Exception\InvalidPrimaryKeyException;
 use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
 
 /**
- * @covers \BEdita\Core\Model\Action\GetObjectAction
+ * {@see \BEdita\Core\Model\Action\GetObjectAction} Test Case
  */
+#[CoversClass(GetObjectAction::class)]
 class GetObjectActionTest extends TestCase
 {
     /**

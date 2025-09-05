@@ -21,13 +21,14 @@ use BEdita\Core\Utility\LoggedUser;
 use Cake\Http\Exception\UnauthorizedException;
 use Cake\TestSuite\TestCase;
 use Exception;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 use RuntimeException;
 
 /**
  * {@see \BEdita\Core\Model\Action\CloneObjectAction} Test Case
- *
- * @coversDefaultClass \BEdita\Core\Model\Action\CloneObjectAction
  */
+#[CoversClass(CloneObjectAction::class)]
 class CloneObjectActionTest extends TestCase
 {
     use TestFilesystemTrait;
@@ -96,12 +97,6 @@ class CloneObjectActionTest extends TestCase
      * Test clone a document with relationships and translations.
      *
      * @return void
-     * @covers ::initialize()
-     * @covers ::execute()
-     * @covers ::cloneEntity()
-     * @covers ::setEntityField()
-     * @covers ::cloneRelationships()
-     * @covers ::cloneTranslations()
      */
     public function testClone(): void
     {
@@ -193,12 +188,6 @@ class CloneObjectActionTest extends TestCase
      * Test clone a media.
      *
      * @return void
-     * @covers ::initialize()
-     * @covers ::execute()
-     * @covers ::cloneEntity()
-     * @covers ::setEntityField()
-     * @covers ::cloneStreams()
-     * @covers ::cloneStream()
      */
     public function testCloneMedia(): void
     {
@@ -264,9 +253,8 @@ class CloneObjectActionTest extends TestCase
      * @param int $expectedCountLeft Expected count of left relationships
      * @param int $expectedCountRight Expected count of right relationships
      * @return void
-     * @covers ::cloneRelationships()
-     * @dataProvider cloneRelationshipsProvider()
      */
+    #[DataProvider('cloneRelationshipsProvider')]
     public function testCloneRelationships(int $sourceId, int $expectedCountLeft, int $expectedCountRight): void
     {
         $source = $this->fetchTable('Objects')->get($sourceId);
@@ -304,9 +292,8 @@ class CloneObjectActionTest extends TestCase
      * @param int $sourceId Source object ID
      * @param int $expectedCount Expected count of translations
      * @return void
-     * @covers ::cloneTranslations()
-     * @dataProvider cloneTranslationsProvider()
      */
+    #[DataProvider('cloneTranslationsProvider')]
     public function testCloneTranslations(int $sourceId, int $expectedCount): void
     {
         $source = $this->fetchTable('Objects')->get($sourceId);
@@ -321,7 +308,6 @@ class CloneObjectActionTest extends TestCase
      * Test clone unauthorized exception.
      *
      * @return void
-     * @covers ::initialize()
      */
     public function testUnauthorizedException(): void
     {
@@ -400,9 +386,8 @@ class CloneObjectActionTest extends TestCase
      * Test `setEntityField` method.
      *
      * @return void
-     * @covers ::setEntityField()
-     * @dataProvider setEntityFieldProvider()
      */
+    #[DataProvider('setEntityFieldProvider')]
     public function testSetEntityField(array $schemaInfo, ObjectEntity $sourceEntity, ObjectEntity $entity, string $field, $expected): void
     {
         if ($expected instanceof Exception) {
@@ -431,9 +416,6 @@ class CloneObjectActionTest extends TestCase
      * Test clone object with captions.
      *
      * @return void
-     * @covers ::initialize()
-     * @covers ::execute()
-     * @covers ::cloneEntity()
      */
     public function testCloneObjectWithCaptions(): void
     {
@@ -463,10 +445,6 @@ class CloneObjectActionTest extends TestCase
      * Test clone object with date ranges.
      *
      * @return void
-     * @covers ::initialize()
-     * @covers ::execute()
-     * @covers ::cloneEntity()
-     * @covers ::setEntityField()
      */
     public function testCloneObjectWithDateRanges(): void
     {

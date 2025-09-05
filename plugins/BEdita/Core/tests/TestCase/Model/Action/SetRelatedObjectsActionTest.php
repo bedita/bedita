@@ -15,7 +15,9 @@ declare(strict_types=1);
 namespace BEdita\Core\Test\TestCase\Model\Action;
 
 use ArrayObject;
+use BEdita\Core\Model\Action\AssociatedTrait;
 use BEdita\Core\Model\Action\SetRelatedObjectsAction;
+use BEdita\Core\Model\Action\UpdateRelatedObjectsAction;
 use BEdita\Core\ORM\Association\RelatedTo;
 use BEdita\Core\Utility\LoggedUser;
 use Cake\Database\Expression\QueryExpression;
@@ -25,12 +27,17 @@ use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Inflector;
 use Exception;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
- * @covers \BEdita\Core\Model\Action\SetRelatedObjectsAction
- * @covers \BEdita\Core\Model\Action\UpdateRelatedObjectsAction
- * @covers \BEdita\Core\Model\Action\AssociatedTrait
+ * {@see \BEdita\Core\Model\Action\SetRelatedObjectsAction} Test Case
+ * {@see \BEdita\Core\Model\Action\UpdateRelatedObjectsAction} Test Case
+ * {@see \BEdita\Core\Model\Action\AssociatedTrait} Test Case
  */
+#[CoversClass(SetRelatedObjectsAction::class)]
+#[CoversClass(UpdateRelatedObjectsAction::class)]
+#[CoversClass(AssociatedTrait::class)]
 class SetRelatedObjectsActionTest extends TestCase
 {
     /**
@@ -177,8 +184,8 @@ class SetRelatedObjectsActionTest extends TestCase
      * @param int $id Entity to update relations for.
      * @param int[] $related Related entity(-ies).
      * @return void
-     * @dataProvider invocationProvider()
      */
+    #[DataProvider('invocationProvider')]
     public function testInvocation($expected, $objectType, $relation, $id, array $related)
     {
         if ($expected instanceof Exception) {

@@ -14,18 +14,19 @@ declare(strict_types=1);
  */
 namespace BEdita\Core\Test\TestCase\Migration;
 
+use BEdita\Core\Migration\ResourcesMigration;
 use BEdita\Core\Test\TestCase\Migration\Migrations\TestAdd;
 use BEdita\Core\Test\TestCase\Migration\Migrations\TestColumns;
 use BEdita\Core\Test\TestCase\Migration\Migrations\TestMissing;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
 use RuntimeException;
 
 /**
  * {@see BEdita\Core\State\ResourcesMigration} Test Case
- *
- * @coversDefaultClass \BEdita\Core\Migration\ResourcesMigration
  */
+#[CoversClass(ResourcesMigration::class)]
 class ResourcesMigrationTest extends TestCase
 {
     /**
@@ -45,9 +46,7 @@ class ResourcesMigrationTest extends TestCase
     /**
      * Test `up` method.
      *
-     * @covers ::up()
-     * @covers ::readData()
-     * @covers ::executeMigration()
+     * @return void
      */
     public function testUp(): void
     {
@@ -62,8 +61,7 @@ class ResourcesMigrationTest extends TestCase
     /**
      * Test `down` method.
      *
-     * @covers ::down()
-     * @covers ::readData()
+     * @return void
      */
     public function testDown(): void
     {
@@ -82,7 +80,7 @@ class ResourcesMigrationTest extends TestCase
     /**
      * Test missing data file.
      *
-     * @covers ::readData()
+     * @return void
      */
     public function testMissing(): void
     {
@@ -96,12 +94,7 @@ class ResourcesMigrationTest extends TestCase
     /**
      * Test columns migration.
      *
-     * @covers ::tableColumnsActions()
-     * @covers ::updateColumns()
-     * @covers ::columnAction()
-     * @covers ::migrationTable()
-     * @covers ::getColumnType()
-     * @covers ::getColumnOptions()
+     * @return void
      */
     public function testColumnsUp(): void
     {
@@ -161,12 +154,7 @@ class ResourcesMigrationTest extends TestCase
     /**
      * Test columns rollback.
      *
-     * @covers ::tableColumnsActions()
-     * @covers ::updateColumns()
-     * @covers ::columnAction()
-     * @covers ::migrationTable()
-     * @covers ::getColumnType()
-     * @covers ::getColumnOptions()
+     * @return void
      */
     public function testColumnsDown(): void
     {

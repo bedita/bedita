@@ -14,25 +14,37 @@ declare(strict_types=1);
  */
 namespace BEdita\Core\Test\TestCase\Command;
 
-use AllowDynamicProperties;
 use BEdita\Core\Command\TreeCheckCommand;
+use BEdita\Core\Model\Table\CategoriesTable;
+use BEdita\Core\Model\Table\TreesTable;
 use Cake\Console\TestSuite\ConsoleIntegrationTestTrait;
 use Cake\Database\Driver\Mysql;
 use Cake\ORM\Locator\LocatorAwareTrait;
 use Cake\TestSuite\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
 
 /**
  * {@see \BEdita\Core\Command\TreeCheckCommand} Test Case.
- *
- * @property \BEdita\Core\Model\Table\TreesTable $Trees
- * @property \BEdita\Core\Model\Table\CategoriesTable $Categories
- * @covers \BEdita\Core\Command\TreeCheckCommand
  */
-#[AllowDynamicProperties]
+#[CoversClass(TreeCheckCommand::class)]
 class TreeCheckCommandTest extends TestCase
 {
     use ConsoleIntegrationTestTrait;
     use LocatorAwareTrait;
+
+    /**
+     * Trees instance
+     *
+     * @var \BEdita\Core\Model\Table\TreesTable
+     */
+    protected TreesTable $Trees;
+
+    /**
+     * Categories instance
+     *
+     * @var \BEdita\Core\Model\Table\CategoriesTable
+     */
+    protected CategoriesTable $Categories;
 
     /**
      * Fixtures

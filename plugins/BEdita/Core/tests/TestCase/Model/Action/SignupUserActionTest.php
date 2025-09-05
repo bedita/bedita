@@ -30,10 +30,13 @@ use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Hash;
 use Exception;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
- * @covers \BEdita\Core\Model\Action\SignupUserAction
+ * {@see \BEdita\Core\Model\Action\SignupUserAction} Test Case
  */
+#[CoversClass(SignupUserAction::class)]
 class SignupUserActionTest extends TestCase
 {
     /**
@@ -191,8 +194,8 @@ class SignupUserActionTest extends TestCase
      * @param bool|\Exception $expected Expected result.
      * @param array $data Action data.
      * @return void
-     * @dataProvider executeProvider
      */
+    #[DataProvider('executeProvider')]
     public function testExecute($expected, array $data)
     {
         $eventDispatched = 0;
@@ -319,8 +322,8 @@ class SignupUserActionTest extends TestCase
      * @param array|\Exception $expected Expected result.
      * @param array $data Action data.
      * @return void
-     * @dataProvider executeExtAuthProvider
      */
+    #[DataProvider('executeExtAuthProvider')]
     public function testExecuteExtAuth($expected, array $data, array $oauthResponse)
     {
         if ($expected instanceof Exception) {
@@ -728,9 +731,9 @@ class SignupUserActionTest extends TestCase
      * @param bool|\Exception $expected Expected result.
      * @param array $data Action data.
      * @param array $config Signup configuration.
-     * @dataProvider rolesProvider
      * @return void
      */
+    #[DataProvider('rolesProvider')]
     public function testRoles($expected, array $data, array $config = [])
     {
         Configure::write('Signup', $config);

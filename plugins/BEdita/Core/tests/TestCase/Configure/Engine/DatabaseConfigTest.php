@@ -19,12 +19,14 @@ use Cake\Cache\Cache;
 use Cake\Core\Configure;
 use Cake\Database\Exception\DatabaseException;
 use Cake\TestSuite\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\CoversNothing;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * {@see \BEdita\Core\Configure\Engine\DatabaseConfig} Test Case
- *
- * @coversDefaultClass \BEdita\Core\Configure\Engine\DatabaseConfig
  */
+#[CoversClass(DatabaseConfig::class)]
 class DatabaseConfigTest extends TestCase
 {
     /**
@@ -71,8 +73,6 @@ class DatabaseConfigTest extends TestCase
      * Test read method
      *
      * @return void
-     * @covers ::read()
-     * @covers ::valueFromString()
      */
     public function testRead(): void
     {
@@ -100,8 +100,6 @@ class DatabaseConfigTest extends TestCase
      * Test read method with application id
      *
      * @return void
-     * @covers ::read()
-     * @covers ::__construct()
      */
     public function testReadAppId(): void
     {
@@ -158,10 +156,8 @@ class DatabaseConfigTest extends TestCase
      * @param string $context Config group context.
      * @param array $data Config data array.
      * @return void
-     * @dataProvider configProvider
-     * @covers ::dump()
-     * @covers ::valueToString()
      */
+    #[DataProvider('configProvider')]
     public function testDump($expected, $context, $data): void
     {
         if (!$expected) {
@@ -183,8 +179,8 @@ class DatabaseConfigTest extends TestCase
      * Test read method using Configure class
      *
      * @return void
-     * @coversNothing
      */
+    #[CoversNothing]
     public function testReadByConfigure(): void
     {
         Configure::config('test-database', $this->DatabaseConfig);
@@ -202,9 +198,9 @@ class DatabaseConfigTest extends TestCase
      * @param string $context Config group context.
      * @param array $data Config data array.
      * @return void
-     * @dataProvider configProvider
-     * @coversNothing
      */
+    #[DataProvider('configProvider')]
+    #[CoversNothing]
     public function testDumpByConfigureClass($expected, $context, $data): void
     {
         Configure::config('test-database', $this->DatabaseConfig);

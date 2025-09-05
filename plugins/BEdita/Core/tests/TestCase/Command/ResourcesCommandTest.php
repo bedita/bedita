@@ -14,18 +14,20 @@ declare(strict_types=1);
  */
 namespace BEdita\Core\Test\TestCase\Command;
 
+use BEdita\Core\Command\ResourcesCommand;
 use BEdita\Core\Job\ServiceRegistry;
 use BEdita\Core\Model\Entity\EndpointPermission;
 use Cake\Command\Command;
 use Cake\Console\TestSuite\ConsoleIntegrationTestTrait;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Inflector;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * {@see BEdita\Core\Command\ResourcesCommand} Test Case
- *
- * @coversDefaultClass \BEdita\Core\Command\ResourcesCommand
  */
+#[CoversClass(ResourcesCommand::class)]
 class ResourcesCommandTest extends TestCase
 {
     use ConsoleIntegrationTestTrait;
@@ -65,8 +67,6 @@ class ResourcesCommandTest extends TestCase
      * Test buildOptionParser method
      *
      * @return void
-     * @covers ::buildOptionParser()
-     * @covers ::getDescription()
      */
     public function testBuildOptionParser(): void
     {
@@ -86,9 +86,6 @@ class ResourcesCommandTest extends TestCase
      * Test execute on `resources --help`
      *
      * @return void
-     * @covers ::buildOptionParser()
-     * @covers ::execute()
-     * @covers ::getDescription()
      */
     public function testHelp(): void
     {
@@ -108,7 +105,6 @@ class ResourcesCommandTest extends TestCase
      * Test add resource
      *
      * @return void
-     * @covers ::execute()
      */
     public function testAddResource(): void
     {
@@ -159,9 +155,8 @@ class ResourcesCommandTest extends TestCase
      * @param string $name Resource name.
      * @param string $description Resource description.
      * @return void
-     * @dataProvider addProvider()
-     * @covers ::execute()
      */
+    #[DataProvider('addProvider')]
     public function testAddDefault($expected, $type, $name, $description = ''): void
     {
         $input = array_filter(
@@ -218,9 +213,8 @@ class ResourcesCommandTest extends TestCase
      * @param string $read Read permission
      * @param string $write Write permission
      * @return void
-     * @dataProvider addPermissionProvider
-     * @covers ::execute()
      */
+    #[DataProvider('addPermissionProvider')]
     public function testAddPermission($application, $endpoint, $role, $read, $write): void
     {
         $this->exec('resources add -t endpoint_permissions', [$application, $endpoint, $role, $read, $write]);
@@ -241,7 +235,6 @@ class ResourcesCommandTest extends TestCase
      * Test edit resource
      *
      * @return void
-     * @covers ::execute()
      */
     public function testEditResource(): void
     {
@@ -289,9 +282,8 @@ class ResourcesCommandTest extends TestCase
      * @param string $field Field to be updated.
      * @param mixed|null $value New field value.
      * @return void
-     * @dataProvider editProvider
-     * @covers ::execute()
      */
+    #[DataProvider('editProvider')]
     public function testEdit($type, $resId, $field, $value = null): void
     {
         $table = $this->fetchTable(Inflector::camelize($type));
@@ -324,7 +316,6 @@ class ResourcesCommandTest extends TestCase
      * Test edit failure
      *
      * @return void
-     * @covers ::execute()
      */
     public function testEditFail(): void
     {
@@ -337,7 +328,6 @@ class ResourcesCommandTest extends TestCase
      * Test list resources
      *
      * @return void
-     * @covers ::execute()
      */
     public function testListResources(): void
     {
@@ -378,9 +368,8 @@ class ResourcesCommandTest extends TestCase
      * @param int $expected Expected count.
      * @param string $type Resource type.
      * @return void
-     * @dataProvider listProvider()
-     * @covers ::execute()
      */
+    #[DataProvider('listProvider')]
     public function testList($expected, $type): void
     {
         $this->exec(sprintf('resources ls -t %s', $type));
@@ -394,7 +383,6 @@ class ResourcesCommandTest extends TestCase
      * Test remove resource
      *
      * @return void
-     * @covers ::execute()
      */
     public function testRmResource(): void
     {
@@ -445,9 +433,8 @@ class ResourcesCommandTest extends TestCase
      * @param int|string $id Resource ID or name.
      * @param string $answer Given answer (y/n).
      * @return void
-     * @dataProvider removeProvider()
-     * @covers ::execute()
      */
+    #[DataProvider('removeProvider')]
     public function testRemove($expected, $id, $answer): void
     {
         $countBefore = $this->fetchTable('Applications')->find()->count();
@@ -470,7 +457,6 @@ class ResourcesCommandTest extends TestCase
      * Test error on missing subcommand
      *
      * @return void
-     * @covers ::execute()
      */
     public function testNoSubcommand(): void
     {

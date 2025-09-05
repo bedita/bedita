@@ -14,17 +14,19 @@ declare(strict_types=1);
  */
 namespace BEdita\Core\Test\TestCase\Command;
 
+use BEdita\Core\Command\ResourcesModifyCommand;
 use BEdita\Core\Job\ServiceRegistry;
 use Cake\Command\Command;
 use Cake\Console\TestSuite\ConsoleIntegrationTestTrait;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Inflector;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * {@see BEdita\Core\Command\ResourcesModifyCommand} Test Case
- *
- * @coversDefaultClass \BEdita\Core\Command\ResourcesModifyCommand
  */
+#[CoversClass(ResourcesModifyCommand::class)]
 class ResourcesModifyCommandTest extends TestCase
 {
     use ConsoleIntegrationTestTrait;
@@ -64,8 +66,6 @@ class ResourcesModifyCommandTest extends TestCase
      * Test buildOptionParser method
      *
      * @return void
-     * @covers ::buildOptionParser()
-     * @covers ::getDescription()
      */
     public function testBuildOptionParser()
     {
@@ -143,9 +143,8 @@ class ResourcesModifyCommandTest extends TestCase
      * @param array $input Input data.
      * @param array $expectedResource Expected resource data.
      * @return void
-     * @covers ::execute()
-     * @dataProvider executeProvider()
      */
+    #[DataProvider('executeProvider')]
     public function testExecute(string $resourceId, string $resourceType, string $resourceField, array $input, array $expectedResource): void
     {
         $tableName = Inflector::camelize($resourceType);
@@ -173,7 +172,6 @@ class ResourcesModifyCommandTest extends TestCase
      * Test modify resource with missing type required options
      *
      * @return void
-     * @covers ::execute()
      */
     public function testExecuteEmptyType(): void
     {
@@ -186,7 +184,6 @@ class ResourcesModifyCommandTest extends TestCase
      * Test modify resource with missing field required options
      *
      * @return void
-     * @covers ::execute()
      */
     public function testExecuteEmptyField(): void
     {
@@ -199,7 +196,6 @@ class ResourcesModifyCommandTest extends TestCase
      * Test modify resource with wrong type
      *
      * @return void
-     * @covers ::execute()
      */
     public function testExecuteWrongType(): void
     {
@@ -212,7 +208,6 @@ class ResourcesModifyCommandTest extends TestCase
      * Test modify resource with wrong field
      *
      * @return void
-     * @covers ::execute()
      */
     public function testExecuteWrongField(): void
     {
@@ -225,7 +220,6 @@ class ResourcesModifyCommandTest extends TestCase
      * Test modify resource not found
      *
      * @return void
-     * @covers ::execute()
      */
     public function testExecuteResourceNotFound(): void
     {

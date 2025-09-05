@@ -23,10 +23,13 @@ use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use Exception;
 use League\Flysystem\StorageAttributes;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
- * @coversDefaultClass \BEdita\Core\Filesystem\Thumbnail\GlideGenerator
+ * {@see \BEdita\Core\Filesystem\Thumbnail\GlideGenerator} Test Case
  */
+#[CoversClass(GlideGenerator::class)]
 class GlideGeneratorTest extends TestCase
 {
     use TestFilesystemTrait;
@@ -123,11 +126,8 @@ class GlideGeneratorTest extends TestCase
      * @param string $uuid Stream UUID.
      * @param array $options Thumbnail options.
      * @return void
-     * @dataProvider getUrlProvider()
-     * @covers ::getUrl()
-     * @covers ::getFilename()
-     * @covers ::isSvg()
      */
+    #[DataProvider('getUrlProvider')]
     public function testGetUrl($expected, $uuid, array $options = [])
     {
         if ($expected instanceof Exception) {
@@ -176,10 +176,8 @@ class GlideGeneratorTest extends TestCase
      * @param string $uuid Stream UUID.
      * @param array $options Thumbnail options.
      * @return void
-     * @dataProvider getExtensionThumb()
-     * @covers ::getUrl()
-     * @covers ::getFilename()
      */
+    #[DataProvider('getExtensionThumb')]
     public function testExtensionFile($expected, $uuid, array $options = [])
     {
         $stream = $this->Streams->get($uuid);
@@ -241,14 +239,8 @@ class GlideGeneratorTest extends TestCase
      * @param string $uuid Stream UUID.
      * @param array $options Thumbnail options.
      * @return void
-     * @dataProvider generateProvider()
-     * @covers ::generate()
-     * @covers ::getFilename()
-     * @covers ::getGlideApi()
-     * @covers ::makeThumbnail()
-     * @covers ::checkImageResolution()
-     * @covers ::isSvg()
      */
+    #[DataProvider('generateProvider')]
     public function testGenerate($expected, $uuid, array $options = [])
     {
         if ($expected instanceof Exception) {
@@ -295,11 +287,8 @@ class GlideGeneratorTest extends TestCase
      * @param string $uuid Stream UUID.
      * @param array $options Thumbnail options.
      * @return void
-     * @dataProvider existsProvider()
-     * @covers ::exists()
-     * @covers ::getFilename()
-     * @covers ::isSvg()
      */
+    #[DataProvider('existsProvider')]
     public function testExists($expected, $uuid, array $options = [])
     {
         $stream = $this->Streams->get($uuid);
@@ -313,7 +302,6 @@ class GlideGeneratorTest extends TestCase
      * Test deletion of thumbnails.
      *
      * @return void
-     * @covers ::delete()
      */
     public function testDelete()
     {

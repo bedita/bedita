@@ -19,12 +19,13 @@ use Cake\Datasource\ConnectionManager;
 use Cake\TestSuite\TestCase;
 use Exception;
 use InvalidArgumentException;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * {@see \BEdita\Core\Database\Type\BoolType} Test Case
- *
- * @coversDefaultClass \BEdita\Core\Database\Type\BoolType
  */
+#[CoversClass(BoolType::class)]
 class BoolTypeTest extends TestCase
 {
     /**
@@ -88,9 +89,8 @@ class BoolTypeTest extends TestCase
      * @param mixed $input Input data to be marshaled.
      * @param mixed $expected Expected result
      * @return void
-     * @dataProvider toDatabaseProvider
-     * @covers ::toDatabase()
      */
+    #[DataProvider('toDatabaseProvider')]
     public function testToDatabase($input, $expected)
     {
         if ($expected instanceof Exception) {

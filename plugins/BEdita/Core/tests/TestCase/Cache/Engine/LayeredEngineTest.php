@@ -14,17 +14,18 @@ declare(strict_types=1);
  */
 namespace BEdita\Core\Test\TestCase\Cache\Engine;
 
+use BEdita\Core\Cache\Engine\LayeredEngine;
 use Cake\Cache\Cache;
 use Exception;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use stdClass;
 use TypeError;
 
 /**
  * {@see \BEdita\Core\Cache\Engine\LayeredEngine} Test Case
- *
- * @coversDefaultClass \BEdita\Core\Cache\Engine\LayeredEngine
  */
+#[CoversClass(LayeredEngine::class)]
 class LayeredEngineTest extends TestCase
 {
     /**
@@ -80,9 +81,7 @@ class LayeredEngineTest extends TestCase
      * Test cache init.
      * Covers persistent engine config with prefix.
      *
-     * @throws Exception
-     * @covers ::init()
-     * @covers ::getEngineInstance()
+     * @return void
      */
     public function testInit(): void
     {
@@ -98,7 +97,7 @@ class LayeredEngineTest extends TestCase
     /**
      * Test using an alias for persistent cache.
      *
-     * @covers ::getEngineInstance()
+     * @return void
      */
     public function testPersistentAlias(): void
     {
@@ -118,7 +117,7 @@ class LayeredEngineTest extends TestCase
     /**
      * Test using a bad persistent config.
      *
-     * @covers ::getEngineInstance()
+     * @return void
      */
     public function testPersistentBadConfig(): void
     {
@@ -133,7 +132,7 @@ class LayeredEngineTest extends TestCase
     /**
      * Test using an nonexistent alias for persistent cache.
      *
-     * @covers ::getEngineInstance()
+     * @return void
      */
     public function testPersistentMissingAlias(): void
     {
@@ -149,7 +148,7 @@ class LayeredEngineTest extends TestCase
     /**
      * Test using the engine as persistent engine of itself.
      *
-     * @covers ::getEngineInstance()
+     * @return void
      */
     public function testPersistentRecursive(): void
     {
@@ -164,7 +163,7 @@ class LayeredEngineTest extends TestCase
     /**
      * Test using an alias to wrong object type as persistent engine.
      *
-     * @covers ::getEngineInstance()
+     * @return void
      */
     public function testPersistentWrongObject(): void
     {
@@ -181,8 +180,7 @@ class LayeredEngineTest extends TestCase
     /**
      * Test cache write and read.
      *
-     * @covers ::set()
-     * @covers ::read()
+     * @return void
      */
     public function testWriteAndRead(): void
     {
@@ -198,7 +196,7 @@ class LayeredEngineTest extends TestCase
     /**
      * Test cache read, with miss in memory engine.
      *
-     * @covers ::read()
+     * @return void
      */
     public function testMemoryCacheMiss(): void
     {
@@ -218,7 +216,7 @@ class LayeredEngineTest extends TestCase
     /**
      * Test cache increment.
      *
-     * @covers ::increment()
+     * @return void
      */
     public function testIncrement(): void
     {
@@ -243,7 +241,7 @@ class LayeredEngineTest extends TestCase
     /**
      * Test cache decrement.
      *
-     * @covers ::decrement()
+     * @return void
      */
     public function testDecrement(): void
     {
@@ -268,7 +266,7 @@ class LayeredEngineTest extends TestCase
     /**
      * Test cache delete.
      *
-     * @covers ::delete()
+     * @return void
      */
     public function testDelete(): void
     {
@@ -287,7 +285,7 @@ class LayeredEngineTest extends TestCase
     /**
      * Test cache clear.
      *
-     * @covers ::clear()
+     * @return void
      */
     public function testClear(): void
     {

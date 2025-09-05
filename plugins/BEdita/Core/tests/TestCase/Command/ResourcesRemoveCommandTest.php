@@ -14,17 +14,19 @@ declare(strict_types=1);
  */
 namespace BEdita\Core\Test\TestCase\Command;
 
+use BEdita\Core\Command\ResourcesRemoveCommand;
 use BEdita\Core\Job\ServiceRegistry;
 use Cake\Command\Command;
 use Cake\Console\TestSuite\ConsoleIntegrationTestTrait;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Inflector;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * {@see BEdita\Core\Command\ResourcesRemoveCommand} Test Case
- *
- * @coversDefaultClass \BEdita\Core\Command\ResourcesRemoveCommand
  */
+#[CoversClass(ResourcesRemoveCommand::class)]
 class ResourcesRemoveCommandTest extends TestCase
 {
     use ConsoleIntegrationTestTrait;
@@ -64,8 +66,6 @@ class ResourcesRemoveCommandTest extends TestCase
      * Test buildOptionParser method
      *
      * @return void
-     * @covers ::buildOptionParser()
-     * @covers ::getDescription()
      */
     public function testBuildOptionParser()
     {
@@ -145,9 +145,8 @@ class ResourcesRemoveCommandTest extends TestCase
      * @param array $input Input data.
      * @param int $expectedCountDiff Expected resource count difference.
      * @return void
-     * @covers ::execute()
-     * @dataProvider executeProvider()
      */
+    #[DataProvider('executeProvider')]
     public function testExecute(string $resourceId, string $resourceType, array $input, int $expectedCountDiff): void
     {
         $tableName = Inflector::camelize($resourceType);
@@ -173,7 +172,6 @@ class ResourcesRemoveCommandTest extends TestCase
      * Test remove resource with wrong type
      *
      * @return void
-     * @covers ::execute()
      */
     public function testExecuteWrongType(): void
     {
@@ -186,7 +184,6 @@ class ResourcesRemoveCommandTest extends TestCase
      * Test remove resource not found
      *
      * @return void
-     * @covers ::execute()
      */
     public function testExecuteResourceNotFound(): void
     {

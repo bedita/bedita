@@ -28,10 +28,13 @@ use Cake\I18n\DateTime;
 use Cake\Mailer\TransportFactory;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
- * @covers \BEdita\Core\Model\Action\SignupUserActivationAction
+ * {@see \BEdita\Core\Model\Action\SignupUserActivationAction} Test Case
  */
+#[CoversClass(SignupUserActivationAction::class)]
 class SignupUserActivationActionTest extends TestCase
 {
     /**
@@ -127,8 +130,8 @@ class SignupUserActivationActionTest extends TestCase
      * @param \Exception $expected The exception expected
      * @param array $data The data given to action
      * @return void
-     * @dataProvider executeFailureProvider
      */
+    #[DataProvider('executeFailureProvider')]
     public function testExecuteFailure($expected, $data)
     {
         $this->expectException(get_class($expected));
