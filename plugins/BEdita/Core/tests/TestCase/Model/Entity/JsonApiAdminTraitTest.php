@@ -14,15 +14,16 @@ declare(strict_types=1);
  */
 namespace BEdita\Core\Test\TestCase\Model\Entity;
 
+use BEdita\Core\Model\Entity\JsonApiAdminTrait;
 use BEdita\Core\Model\Table\ApplicationsTable;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
+use PHPUnit\Framework\Attributes\CoversTrait;
 
 /**
  *  {@see \BEdita\Core\Model\Entity\JsonApiAdminTrait} Test Case
- *
- * @coversDefaultClass \BEdita\Core\Model\Entity\JsonApiAdminTrait
  */
+#[CoversTrait(JsonApiAdminTrait::class)]
 class JsonApiAdminTraitTest extends TestCase
 {
     /**
@@ -67,7 +68,6 @@ class JsonApiAdminTraitTest extends TestCase
      * Test getter for meta.
      *
      * @return void
-     * @covers ::getLinks()
      */
     public function testGetLinks()
     {

@@ -16,16 +16,22 @@ namespace BEdita\Core\Test\TestCase\Model\Table;
 
 use BEdita\Core\Model\Entity\Stream;
 use BEdita\Core\Model\Table\ObjectsTable;
+use BEdita\Core\Model\Table\StreamsTable;
 use BEdita\Core\Test\Utility\TestFilesystemTrait;
 use Cake\ORM\Association\BelongsTo;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Hash;
 use Cake\Utility\Text;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\CoversNothing;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\TestWith;
 
 /**
- * @coversDefaultClass \BEdita\Core\Model\Table\StreamsTable
+ * {@see \BEdita\Core\Model\Table\StreamsTable} Test Case
  */
+#[CoversClass(StreamsTable::class)]
 class StreamsTableTest extends TestCase
 {
     use TestFilesystemTrait;
@@ -74,8 +80,8 @@ class StreamsTableTest extends TestCase
      * Test initialization.
      *
      * @return void
-     * @coversNothing
      */
+    #[CoversNothing]
     public function testInitialization()
     {
         static::assertEquals('streams', $this->Streams->getTable());
@@ -132,9 +138,9 @@ class StreamsTableTest extends TestCase
      * @param array $data Data to be validated.
      * @param string|bool $uuid UUID of stream to patch.
      * @return void
-     * @dataProvider validationProvider()
-     * @coversNothing
      */
+    #[DataProvider('validationProvider')]
+    #[CoversNothing]
     public function testValidation($expected, array $data, $uuid = false)
     {
         $stream = $this->Streams->newEmptyEntity();
@@ -164,7 +170,6 @@ class StreamsTableTest extends TestCase
      * Test before save event handler.
      *
      * @return void
-     * @covers ::beforeSave()
      */
     public function testBeforeSave()
     {
@@ -189,7 +194,6 @@ class StreamsTableTest extends TestCase
      * Test before save event handler with a custom UUID.
      *
      * @return void
-     * @covers ::beforeSave()
      */
     public function testBeforeSaveWithUuid()
     {
@@ -218,7 +222,6 @@ class StreamsTableTest extends TestCase
      * Test after save event.
      *
      * @return void
-     * @covers ::afterDelete()
      */
     public function testAfterDelete()
     {
@@ -232,7 +235,6 @@ class StreamsTableTest extends TestCase
      * Test before save event handler with an already persisted entity.
      *
      * @return void
-     * @covers ::beforeSave()
      */
     public function testBeforeSaveNotNew()
     {
@@ -259,11 +261,8 @@ class StreamsTableTest extends TestCase
      *
      * @param string $uuid UUID of the Stream to clone.
      * @return void
-     * @testWith    ["e5afe167-7341-458d-a1e6-042e8791b0fe"]
-     *              ["9e58fa47-db64-4479-a0ab-88a706180d59"]
-     *              ["6aceb0eb-bd30-4f60-ac74-273083b921b6"]
-     * @covers ::clone()
      */
+    #[TestWith(['e5afe167-7341-458d-a1e6-042e8791b0fe', '9e58fa47-db64-4479-a0ab-88a706180d59', '6aceb0eb-bd30-4f60-ac74-273083b921b6'])]
     public function testClone(string $uuid): void
     {
         $src = $this->Streams->get($uuid);

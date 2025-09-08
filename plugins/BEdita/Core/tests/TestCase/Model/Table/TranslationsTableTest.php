@@ -15,16 +15,21 @@ declare(strict_types=1);
 namespace BEdita\Core\Test\TestCase\Model\Table;
 
 use BEdita\Core\Exception\BadFilterException;
+use BEdita\Core\Model\Table\TranslationsTable;
 use Cake\Core\Configure;
 use Cake\ORM\Association\BelongsTo;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Hash;
 use Exception;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\CoversNothing;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
- * @coversDefaultClass \BEdita\Core\Model\Table\TranslationsTable
+ * {@see \BEdita\Core\Model\Table\TranslationsTable} Test Case
  */
+#[CoversClass(TranslationsTable::class)]
 class TranslationsTableTest extends TestCase
 {
     /**
@@ -73,8 +78,8 @@ class TranslationsTableTest extends TestCase
      * Test initialization.
      *
      * @return void
-     * @coversNothing
      */
+    #[CoversNothing]
     public function testInitialize()
     {
         static::assertInstanceOf(BelongsTo::class, $this->Translations->Objects);
@@ -136,9 +141,9 @@ class TranslationsTableTest extends TestCase
      * @param string[] $expected Expected errors.
      * @param array $data Data.
      * @return void
-     * @dataProvider validationProvider()
-     * @coversNothing
      */
+    #[DataProvider('validationProvider')]
+    #[CoversNothing]
     public function testValidation(array $expected, array $data)
     {
         $entity = $this->Translations->newEmptyEntity();
@@ -185,10 +190,8 @@ class TranslationsTableTest extends TestCase
      * @param array|\Exception $expected Expected results.
      * @param string $type Type to filter for.
      * @return void
-     * @dataProvider findTypeProvider
-     * @covers ::findType()
-     * @covers ::typeId()
      */
+    #[DataProvider('findTypeProvider')]
     public function testFindType($expected, array $types): void
     {
         if ($expected instanceof Exception) {
@@ -232,9 +235,8 @@ class TranslationsTableTest extends TestCase
      * @param int $expected Expected results.
      * @param string $statusLevel Configuration to write.
      * @return void
-     * @dataProvider findAvailableProvider()
-     * @covers ::findAvailable()
      */
+    #[DataProvider('findAvailableProvider')]
     public function testFindAvailable(int $expected, ?string $statusLevel = null): void
     {
         if (!empty($statusLevel)) {

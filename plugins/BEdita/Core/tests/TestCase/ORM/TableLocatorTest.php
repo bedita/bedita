@@ -18,10 +18,13 @@ use BEdita\Core\Model\Table\ObjectsTable;
 use BEdita\Core\ORM\Locator\TableLocator;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
- * @coversDefaultClass \BEdita\Core\ORM\Locator\TableLocator
+ * {@see \BEdita\Core\ORM\Locator\TableLocator} Test Case
  */
+#[CoversClass(TableLocator::class)]
 class TableLocatorTest extends TestCase
 {
     /**
@@ -109,9 +112,8 @@ class TableLocatorTest extends TestCase
      * @param string $alias Table alias.
      * @param array $options Table options.
      * @return void
-     * @dataProvider getClassNameProvider()
-     * @covers ::_getClassName()
      */
+    #[DataProvider('getClassNameProvider')]
     public function testGetClassName($expected, $alias, array $options = [])
     {
         $result = $this->TableLocator->get($alias, $options);

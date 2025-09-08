@@ -17,10 +17,14 @@ namespace BEdita\Core\Test\TestCase\Model\Validation;
 use BEdita\Core\Model\Validation\ObjectsValidator;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Hash;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\CoversNothing;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
- * @coversDefaultClass \BEdita\Core\Model\Validation\ObjectsValidator
+ * {@see \BEdita\Core\Model\Validation\ObjectsValidator} Test Case
  */
+#[CoversClass(ObjectsValidator::class)]
 class ObjectsValidatorTest extends TestCase
 {
     /**
@@ -102,9 +106,9 @@ class ObjectsValidatorTest extends TestCase
      * @param array $data Data being validated.
      * @param bool $newRecord Is this a new record?
      * @return void
-     * @dataProvider validationProvider()
-     * @coversNothing
      */
+    #[DataProvider('validationProvider')]
+    #[CoversNothing]
     public function testValidation(array $expected, array $data, $newRecord = true): void
     {
         $validator = new ObjectsValidator();
@@ -119,7 +123,6 @@ class ObjectsValidatorTest extends TestCase
      * Test not numeric validation.
      *
      * @return void
-     * @covers ::notNumeric()
      */
     public function testNotNumeric(): void
     {

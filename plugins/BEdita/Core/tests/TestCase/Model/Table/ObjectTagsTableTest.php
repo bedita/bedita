@@ -14,14 +14,19 @@ declare(strict_types=1);
  */
 namespace BEdita\Core\Test\TestCase\Model\Table;
 
+use BEdita\Core\Model\Table\ObjectCategoriesTable;
+use BEdita\Core\Model\Table\ObjectTagsTable;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\CoversMethod;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * {@see \BEdita\Core\Model\Table\ObjectTagsTable} Test Case
- *
- * @coversDefaultClass \BEdita\Core\Model\Table\ObjectTagsTable
  */
+#[CoversClass(ObjectTagsTable::class)]
+#[CoversMethod(ObjectCategoriesTable::class, 'buildRules')]
 class ObjectTagsTableTest extends TestCase
 {
     /**
@@ -106,9 +111,8 @@ class ObjectTagsTableTest extends TestCase
      * @param bool $expected Expected result.
      * @param array $data Data to be validated.
      * @return void
-     * @dataProvider buildRulesProvider
-     * @covers \BEdita\Core\Model\Table\ObjectCategoriesTable::buildRules()
      */
+    #[DataProvider('buildRulesProvider')]
     public function testBuildRules($expected, array $data)
     {
         $entity = $this->ObjectTags->newEntity($data, ['validate' => false]);

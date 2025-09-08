@@ -18,12 +18,12 @@ use BEdita\Core\Model\Entity\Tree;
 use BEdita\Core\Model\Table\TreesTable;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
 
 /**
  * {@see \BEdita\Core\Model\Entity\Tree} Test Case
- *
- * @coversDefaultClass \BEdita\Core\Model\Entity\Tree
  */
+#[CoversClass(Tree::class)]
 class TreeTest extends TestCase
 {
     /**
@@ -75,7 +75,6 @@ class TreeTest extends TestCase
      * Test setter for `parent_id`
      *
      * @return void
-     * @covers ::_setParentId()
      */
     public function testSetParentId()
     {
@@ -98,7 +97,6 @@ class TreeTest extends TestCase
      * Test setter for `parent_object`
      *
      * @return void
-     * @covers ::_setParentObject()
      */
     public function testSetParentObject()
     {

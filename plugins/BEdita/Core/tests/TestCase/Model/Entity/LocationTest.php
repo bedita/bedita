@@ -14,13 +14,16 @@ declare(strict_types=1);
  */
 namespace BEdita\Core\Test\TestCase\Model\Entity;
 
+use BEdita\Core\Model\Entity\Location;
 use BEdita\Core\Model\Table\LocationsTable;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
 
 /**
- * @coversDefaultClass \BEdita\Core\Model\Entity\Location
+ * {@see \BEdita\Core\Model\Entity\Location} Test Case
  */
+#[CoversClass(Location::class)]
 class LocationTest extends TestCase
 {
     /**
@@ -57,7 +60,6 @@ class LocationTest extends TestCase
      * Test accessible properties.
      *
      * @return void
-     * @covers ::__construct()
      */
     public function testGetMeta()
     {

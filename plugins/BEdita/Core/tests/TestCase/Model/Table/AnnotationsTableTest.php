@@ -14,6 +14,7 @@ declare(strict_types=1);
  */
 namespace BEdita\Core\Test\TestCase\Model\Table;
 
+use BEdita\Core\Model\Table\AnnotationsTable;
 use BEdita\Core\Utility\LoggedUser;
 use Cake\Http\Exception\ForbiddenException;
 use Cake\ORM\Association\BelongsTo;
@@ -21,12 +22,14 @@ use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Hash;
 use Exception;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\CoversNothing;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * {@see \BEdita\Core\Model\Table\AnnotationsTable} Test Case
- *
- * @coversDefaultClass \BEdita\Core\Model\Table\AnnotationsTable
  */
+#[CoversClass(AnnotationsTable::class)]
 class AnnotationsTableTest extends TestCase
 {
     /**
@@ -75,7 +78,6 @@ class AnnotationsTableTest extends TestCase
      * Test initialization.
      *
      * @return void
-     * @covers ::initialize()
      */
     public function testInitialize()
     {
@@ -123,9 +125,9 @@ class AnnotationsTableTest extends TestCase
      * @param string[] $expected Expected errors.
      * @param array $data Data.
      * @return void
-     * @dataProvider validationProvider()
-     * @coversNothing
      */
+    #[DataProvider('validationProvider')]
+    #[CoversNothing]
     public function testValidation(array $expected, array $data)
     {
         $entity = $this->Annotations->newEmptyEntity();
@@ -174,9 +176,8 @@ class AnnotationsTableTest extends TestCase
      * @param array $data Save input data.
      * @param int $id Annotation id.
      * @return void
-     * @dataProvider beforeSaveProvider
-     * @covers ::beforeSave()
      */
+    #[DataProvider('beforeSaveProvider')]
     public function testBeforeSave($expected, array $data, $id = null)
     {
         LoggedUser::setUser(['id' => 5]);
@@ -199,7 +200,7 @@ class AnnotationsTableTest extends TestCase
     /**
      * Test `beforeDelete` method.
      *
-     * @covers ::beforeDelete()
+     * @return void
      */
     public function testBeforeDelete()
     {
@@ -212,7 +213,7 @@ class AnnotationsTableTest extends TestCase
     /**
      * Test `beforeDelete` failure.
      *
-     * @covers ::beforeDelete()
+     * @return void
      */
     public function testBeforeDeleteFailure()
     {

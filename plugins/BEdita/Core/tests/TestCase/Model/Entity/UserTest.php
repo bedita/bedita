@@ -22,12 +22,12 @@ use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Hash;
 use InvalidArgumentException;
+use PHPUnit\Framework\Attributes\CoversClass;
 
 /**
  * {@see \BEdita\Core\Model\Entity\User} Test Case
- *
- * @coversDefaultClass \BEdita\Core\Model\Entity\User
  */
+#[CoversClass(User::class)]
 class UserTest extends TestCase
 {
     /**
@@ -81,7 +81,6 @@ class UserTest extends TestCase
      * Test accessible properties.
      *
      * @return void
-     * @covers ::__construct()
      */
     public function testAccessible()
     {
@@ -106,7 +105,6 @@ class UserTest extends TestCase
      * Test hidden properties.
      *
      * @return void
-     * @covers ::__construct()
      */
     public function testHidden()
     {
@@ -123,7 +121,6 @@ class UserTest extends TestCase
      * Test setter method for `password`.
      *
      * @return void
-     * @covers ::_setPassword()
      */
     public function testSetPassword()
     {
@@ -146,7 +143,6 @@ class UserTest extends TestCase
      * Test setter method for `password_hash`.
      *
      * @return void
-     * @covers ::_setPasswordHash()
      */
     public function testSetPasswordHash()
     {
@@ -171,8 +167,6 @@ class UserTest extends TestCase
      * Test getter for JSON API meta fields.
      *
      * @return void
-     * @covers ::getMeta()
-     * @covers ::getExternalAuthMeta()
      */
     public function testGetMeta(): void
     {
@@ -190,8 +184,6 @@ class UserTest extends TestCase
      * Test that external_auth is null for entity withoud id.
      *
      * @return void
-     * @covers ::getMeta()
-     * @covers ::getExternalAuthMeta()
      */
     public function testGetMetaMissingUserId(): void
     {

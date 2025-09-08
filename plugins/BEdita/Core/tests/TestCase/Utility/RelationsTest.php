@@ -19,12 +19,12 @@ use Cake\Http\Exception\BadRequestException;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Hash;
+use PHPUnit\Framework\Attributes\CoversClass;
 
 /**
  * {@see \BEdita\Core\Utility\Relations} Test Case
- *
- * @coversDefaultClass \BEdita\Core\Utility\Relations
  */
+#[CoversClass(Relations::class)]
 class RelationsTest extends TestCase
 {
     /**
@@ -58,9 +58,7 @@ class RelationsTest extends TestCase
     /**
      * Test `create` method.
      *
-     * @covers ::create()
-     * @covers ::validate()
-     * @covers ::addTypes()
+     * @return void
      */
     public function testCreate()
     {
@@ -74,8 +72,7 @@ class RelationsTest extends TestCase
     /**
      * Test `remove` method.
      *
-     * @covers ::remove()
-     * @covers ::removeTypes()
+     * @return void
      */
     public function testRemove()
     {
@@ -89,7 +86,7 @@ class RelationsTest extends TestCase
     /**
      * Test `addRelationType` method.
      *
-     * @covers ::addRelationType()
+     * @return void
      */
     public function testAddRelationType()
     {
@@ -107,7 +104,7 @@ class RelationsTest extends TestCase
     /**
      * Test `removeRelationType` method.
      *
-     * @covers ::removeRelationType()
+     * @return void
      */
     public function testRemoveRelationType()
     {
@@ -125,7 +122,7 @@ class RelationsTest extends TestCase
     /**
      * Test `validate` failure.
      *
-     * @covers ::validate()
+     * @return void
      */
     public function testValidate()
     {
@@ -139,8 +136,7 @@ class RelationsTest extends TestCase
     /**
      * Test `update` method.
      *
-     * @covers ::update()
-     * @covers ::updateTypes()
+     * @return void
      */
     public function testUpdate()
     {

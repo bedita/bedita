@@ -19,12 +19,13 @@ use BEdita\Core\Model\Table\RolesTable;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use InvalidArgumentException;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\CoversNothing;
 
 /**
  * {@see \BEdita\Core\Model\Entity\Role} Test Case
- *
- * @coversDefaultClass \BEdita\Core\Model\Entity\Role
  */
+#[CoversClass(Role::class)]
 class RoleTest extends TestCase
 {
     /**
@@ -67,8 +68,8 @@ class RoleTest extends TestCase
      * Test accessible properties.
      *
      * @return void
-     * @coversNothing
      */
+    #[CoversNothing]
     public function testAccessible()
     {
         $role = $this->Roles->get(1);

@@ -15,13 +15,17 @@ declare(strict_types=1);
 namespace BEdita\Core\Test\TestCase\Model\Behavior;
 
 use BEdita\Core\Filesystem\FilesystemRegistry;
+use BEdita\Core\Model\Behavior\UploadableBehavior;
 use BEdita\Core\Test\Utility\TestFilesystemTrait;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
- * @coversDefaultClass \BEdita\Core\Model\Behavior\UploadableBehavior
+ * {@see \BEdita\Core\Model\Behavior\UploadableBehavior} Test Case
  */
+#[CoversClass(UploadableBehavior::class)]
 class UploadableBehaviorTest extends TestCase
 {
     use TestFilesystemTrait;
@@ -131,12 +135,8 @@ class UploadableBehaviorTest extends TestCase
      * @param array $expected Expected files on filesystem and their contents.
      * @param array $data Data to patch entity with.
      * @return void
-     * @dataProvider afterSaveProvider()
-     * @covers ::afterSave()
-     * @covers ::processUpload()
-     * @covers ::setVisibility()
-     * @covers ::write()
      */
+    #[DataProvider('afterSaveProvider')]
     public function testAfterSave(array $expected, array $data): void
     {
         $manager = FilesystemRegistry::getMountManager();
@@ -165,8 +165,6 @@ class UploadableBehaviorTest extends TestCase
      * Test file management after the entity is delete.
      *
      * @return void
-     * @covers ::afterDelete()
-     * @covers ::processDelete()
      */
     public function testAfterDelete(): void
     {
@@ -184,7 +182,6 @@ class UploadableBehaviorTest extends TestCase
      * Test [@see \BEdita\Core\Model\Behavior\UploadableBehavior::copyFiles()} method..
      *
      * @return void
-     * @covers ::copyFiles()
      */
     public function testCopyFiles(): void
     {

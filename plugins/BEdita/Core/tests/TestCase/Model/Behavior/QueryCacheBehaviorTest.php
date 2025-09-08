@@ -14,21 +14,27 @@ declare(strict_types=1);
  */
 namespace BEdita\Core\Test\TestCase\Model\Behavior;
 
-use AllowDynamicProperties;
+use BEdita\Core\Model\Behavior\QueryCacheBehavior;
+use BEdita\Core\Model\Table\ConfigTable;
 use Cake\Cache\Cache;
 use Cake\ORM\Locator\LocatorAwareTrait;
 use Cake\TestSuite\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
 
 /**
  * {@see \BEdita\Core\Model\Behavior\QueryCacheBehavior} Test Case
- *
- * @property \BEdita\Core\Model\Table\ConfigTable $Config
- * @coversDefaultClass \BEdita\Core\Model\Behavior\QueryCacheBehavior
  */
-#[AllowDynamicProperties]
+#[CoversClass(QueryCacheBehavior::class)]
 class QueryCacheBehaviorTest extends TestCase
 {
     use LocatorAwareTrait;
+
+    /**
+     * ConfigTable instance.
+     *
+     * @var \BEdita\Core\Model\Table\ConfigTable
+     */
+    protected ConfigTable $Config;
 
     /**
      * Fixtures
@@ -44,8 +50,6 @@ class QueryCacheBehaviorTest extends TestCase
      * Test `afterDelete` method
      *
      * @return void
-     * @covers ::afterDelete()
-     * @covers ::queryCache()
      */
     public function testAfterDelete(): void
     {
@@ -66,7 +70,6 @@ class QueryCacheBehaviorTest extends TestCase
      * Test `afterSave` method
      *
      * @return void
-     * @covers ::afterSave()
      */
     public function testAfterSave(): void
     {

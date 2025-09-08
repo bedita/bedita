@@ -16,18 +16,21 @@ namespace BEdita\Core\Test\TestCase\Model\Table;
 
 use BEdita\Core\Exception\ImmutableResourceException;
 use BEdita\Core\Model\Table\ObjectTypesTable;
+use BEdita\Core\Model\Table\PropertyTypesTable;
 use Cake\Cache\Cache;
 use Cake\Http\Exception\ForbiddenException;
 use Cake\ORM\Association\HasMany;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use Cake\Validation\Validator;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\CoversNothing;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * {@see \BEdita\Core\Model\Table\PropertyTypesTable} Test Case
- *
- * @coversDefaultClass \BEdita\Core\Model\Table\PropertyTypesTable
  */
+#[CoversClass(PropertyTypesTable::class)]
 class PropertyTypesTableTest extends TestCase
 {
     /**
@@ -88,8 +91,8 @@ class PropertyTypesTableTest extends TestCase
      * Test initialization.
      *
      * @return void
-     * @coversNothing
      */
+    #[CoversNothing]
     public function testInitialization()
     {
         static::assertEquals('property_types', $this->PropertyTypes->getTable());
@@ -132,9 +135,9 @@ class PropertyTypesTableTest extends TestCase
      * @param bool $expected Expected result.
      * @param array $data Data to be validated.
      * @return void
-     * @dataProvider validationProvider
-     * @coversNothing
      */
+    #[DataProvider('validationProvider')]
+    #[CoversNothing]
     public function testValidation($expected, array $data)
     {
         $PropertyTypes = $this->PropertyTypes->newEntity($data);
@@ -152,7 +155,6 @@ class PropertyTypesTableTest extends TestCase
      * Test after save callback.
      *
      * @return void
-     * @covers ::afterSave()
      */
     public function testInvalidateCacheAfterSave()
     {
@@ -171,7 +173,6 @@ class PropertyTypesTableTest extends TestCase
      * Test after delete callback.
      *
      * @return void
-     * @covers ::afterDelete()
      */
     public function testInvalidateCacheAfterDelete()
     {
@@ -189,7 +190,6 @@ class PropertyTypesTableTest extends TestCase
      * Test that an exception is raised when attempting to delete a property type in use.
      *
      * @return void
-     * @covers ::beforeDelete()
      */
     public function testBeforeDeleteInUse()
     {
@@ -205,7 +205,6 @@ class PropertyTypesTableTest extends TestCase
      * Test that no exception is raised when attempting to delete a property type not in use.
      *
      * @return void
-     * @covers ::beforeDelete()
      */
     public function testBeforeDeleteOk()
     {
@@ -283,9 +282,8 @@ class PropertyTypesTableTest extends TestCase
      * @param string $table Table name.
      * @param string $overrideType Column type to override.
      * @return void
-     * @dataProvider detectProvider()
-     * @covers ::detect()
      */
+    #[DataProvider('detectProvider')]
     public function testDetect($expected, $name, $table, $overrideType = null)
     {
         $table = TableRegistry::getTableLocator()->get($table);
@@ -305,7 +303,6 @@ class PropertyTypesTableTest extends TestCase
      * Test that an exception is raised when attempting to change a core property type.
      *
      * @return void
-     * @covers ::beforeSave()
      */
     public function testBeforeSaveForbidden()
     {
@@ -321,7 +318,6 @@ class PropertyTypesTableTest extends TestCase
      * Test that no exception is raised when attempting to change a non core property type.
      *
      * @return void
-     * @covers ::beforeSave()
      */
     public function testBeforeSaveOk()
     {

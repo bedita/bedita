@@ -21,10 +21,13 @@ use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use Exception;
 use LogicException;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
- * @coversDefaultClass \BEdita\Core\Model\Entity\DateRange
+ * {@see \BEdita\Core\Model\Entity\DateRange} Test Case
  */
+#[CoversClass(DateRange::class)]
 class DateRangeTest extends TestCase
 {
     /**
@@ -183,9 +186,8 @@ class DateRangeTest extends TestCase
      * @param array $dateRange1 Date Range 1.
      * @param array $dateRange2 Date Range 2.
      * @return void
-     * @covers ::isBefore()
-     * @dataProvider isBeforeProvider()
      */
+    #[DataProvider('isBeforeProvider')]
     public function testIsBefore($expected, array $dateRange1, array $dateRange2)
     {
         $dateRange1 = $this->DateRanges->newEntity($dateRange1);
@@ -324,9 +326,8 @@ class DateRangeTest extends TestCase
      * @param array $dateRange1 Date Range 1.
      * @param array $dateRange2 Date Range 2.
      * @return void
-     * @covers ::isAfter()
-     * @dataProvider isAfterProvider()
      */
+    #[DataProvider('isAfterProvider')]
     public function testIsAfter($expected, array $dateRange1, array $dateRange2)
     {
         $dateRange1 = $this->DateRanges->newEntity($dateRange1);
@@ -434,9 +435,8 @@ class DateRangeTest extends TestCase
      * @param array $expected Expected result.
      * @param array $dateRanges Date Ranges.
      * @return void
-     * @covers ::normalize()
-     * @dataProvider normalizeProvider()
      */
+    #[DataProvider('normalizeProvider')]
     public function testNormalize(array $expected, array $dateRanges)
     {
         $expected = $this->DateRanges->newEntities($expected);
@@ -460,7 +460,6 @@ class DateRangeTest extends TestCase
      * Test case for union method.
      *
      * @return void
-     * @covers ::union()
      */
     public function testUnion()
     {
@@ -638,9 +637,8 @@ class DateRangeTest extends TestCase
      * @param array $dateRanges1 Date Ranges.
      * @param array $dateRanges2 Date Ranges.
      * @return void
-     * @covers ::diff()
-     * @dataProvider diffProvider()
      */
+    #[DataProvider('diffProvider')]
     public function testDiff(array $expected, array $dateRanges1, array $dateRanges2)
     {
         $expected = $this->DateRanges->newEntities($expected);
@@ -715,9 +713,8 @@ class DateRangeTest extends TestCase
      * @param array $dateRanges Date Ranges.
      * @param bool $marshal Should entities be marshalled first?
      * @return void
-     * @covers ::checkWellFormed()
-     * @dataProvider checkWellFormedProvider()
      */
+    #[DataProvider('checkWellFormedProvider')]
     public function testCheckWellFormed($expected, array $dateRanges, $marshal = true)
     {
         if ($expected instanceof Exception) {

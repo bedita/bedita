@@ -14,15 +14,19 @@ declare(strict_types=1);
  */
 namespace BEdita\Core\Test\TestCase\Model\Behavior;
 
+use BEdita\Core\Model\Behavior\HistoryBehavior;
 use BEdita\Core\Utility\LoggedUser;
 use Cake\Core\Configure;
 use Cake\I18n\DateTime;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
- * @coversDefaultClass \BEdita\Core\Model\Behavior\HistoryBehavior
+ * {@see \BEdita\Core\Model\Behavior\HistoryBehavior} Test Case
  */
+#[CoversClass(HistoryBehavior::class)]
 class HistoryBehaviorTest extends TestCase
 {
     /**
@@ -70,7 +74,7 @@ class HistoryBehaviorTest extends TestCase
     /**
      * Test `initialize` method
      *
-     * @covers ::initialize()
+     * @return void
      */
     public function testInitialize()
     {
@@ -96,7 +100,7 @@ class HistoryBehaviorTest extends TestCase
     /**
      * Test `beforeMarshal` method
      *
-     * @covers ::beforeMarshal()
+     * @return void
      */
     public function testBeforeMarshal()
     {
@@ -116,7 +120,7 @@ class HistoryBehaviorTest extends TestCase
     /**
      * Test `beforeSave` method
      *
-     * @covers ::beforeSave()
+     * @return void
      */
     public function testBeforeSave()
     {
@@ -145,9 +149,7 @@ class HistoryBehaviorTest extends TestCase
     /**
      * Test `afterSave` method
      *
-     * @covers ::afterSave()
-     * @covers ::historyEntity()
-     * @covers ::entityUserAction()
+     * @return void
      */
     public function testAfterSave()
     {
@@ -188,7 +190,7 @@ class HistoryBehaviorTest extends TestCase
     /**
      * Test `trash` and `restore` user actions
      *
-     * @covers ::entityUserAction()
+     * @return void
      */
     public function testTrashRestore()
     {
@@ -219,7 +221,7 @@ class HistoryBehaviorTest extends TestCase
     /**
      * Test `create` user action
      *
-     * @covers ::entityUserAction()
+     * @return void
      */
     public function testCreate()
     {
@@ -245,9 +247,7 @@ class HistoryBehaviorTest extends TestCase
     /**
      * Test `afterDelete` method
      *
-     * @covers ::afterDelete()
-     * @covers ::historyEntity()
-     * @covers ::entityUserAction()
+     * @return void
      */
     public function testAfterDelete()
     {
@@ -280,7 +280,7 @@ class HistoryBehaviorTest extends TestCase
     /**
      * Test `afterDelete` with empty table
      *
-     * @covers ::afterDelete()
+     * @return void
      */
     public function testAfterDeleteEmpty()
     {
@@ -299,7 +299,7 @@ class HistoryBehaviorTest extends TestCase
     /**
      * Test `afterSave` with empty table
      *
-     * @covers ::afterSave()
+     * @return void
      */
     public function testAfterSaveEmpty()
     {
@@ -341,9 +341,8 @@ class HistoryBehaviorTest extends TestCase
      * @param array $expected Expected result
      * @param int|null $editorId The editor id
      * @return void
-     * @dataProvider findHistoryEditorProvider
-     * @covers ::findHistoryEditor()
      */
+    #[DataProvider('findHistoryEditorProvider')]
     public function testFindHistoryEditor(array $expected, ?int $editorId): void
     {
         LoggedUser::setUserAdmin();

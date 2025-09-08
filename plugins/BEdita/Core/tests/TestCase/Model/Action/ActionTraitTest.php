@@ -19,7 +19,7 @@ use BEdita\Core\Model\Action\SignupUserAction;
 use Cake\Core\Configure;
 use Cake\ORM\Table;
 use Cake\TestSuite\TestCase;
-use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\CoversTrait;
 use PHPUnit\Framework\Attributes\DataProvider;
 use RuntimeException;
 use Throwable;
@@ -27,7 +27,7 @@ use Throwable;
 /**
  *  {@see \BEdita\Core\Model\Action\ActionTrait} Test Case
  */
-#[CoversClass(ActionTrait::class)]
+#[CoversTrait(ActionTrait::class)]
 class ActionTraitTest extends TestCase
 {
     use ActionTrait;

@@ -17,11 +17,15 @@ namespace BEdita\Core\Test\TestCase\Model\Validation;
 use BEdita\Core\Model\Validation\LocationsValidator;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Hash;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\CoversNothing;
+use PHPUnit\Framework\Attributes\DataProvider;
 use stdClass;
 
 /**
- * @coversDefaultClass \BEdita\Core\Model\Validation\LocationsValidator
+ * {@see \BEdita\Core\Model\Validation\LocationsValidator} Test Case
  */
+#[CoversClass(LocationsValidator::class)]
 class LocationsValidatorTest extends TestCase
 {
     /**
@@ -104,9 +108,9 @@ class LocationsValidatorTest extends TestCase
      * @param array $data Data being validated.
      * @param bool $newRecord Is this a new record?
      * @return void
-     * @dataProvider validationProvider()
-     * @coversNothing
      */
+    #[DataProvider('validationProvider')]
+    #[CoversNothing]
     public function testValidation(array $expected, array $data, $newRecord = true)
     {
         $validator = new LocationsValidator();
@@ -154,9 +158,8 @@ class LocationsValidatorTest extends TestCase
      * @param string|true $expected Expected result.
      * @param mixed $value Value being validated.
      * @return void
-     * @dataProvider checkWktProvider()
-     * @covers ::checkWkt()
      */
+    #[DataProvider('checkWktProvider')]
     public function testCheckWkt($expected, $value)
     {
         $result = LocationsValidator::checkWkt($value);
@@ -206,9 +209,8 @@ class LocationsValidatorTest extends TestCase
      * @param string|true $expected Expected result.
      * @param mixed $value Value being validated.
      * @return void
-     * @dataProvider checkCoordinatesProvider()
-     * @covers ::checkCoordinates()
      */
+    #[DataProvider('checkCoordinatesProvider')]
     public function testCheckCoordinates($expected, $value)
     {
         $result = LocationsValidator::checkCoordinates($value);

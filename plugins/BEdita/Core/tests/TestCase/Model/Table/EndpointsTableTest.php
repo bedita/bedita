@@ -14,17 +14,20 @@ declare(strict_types=1);
  */
 namespace BEdita\Core\Test\TestCase\Model\Table;
 
+use BEdita\Core\Model\Table\EndpointsTable;
 use Cake\Cache\Cache;
 use Cake\Http\Exception\NotFoundException;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use Exception;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\CoversNothing;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
- * BEdita\Core\Model\Table\EndpointsTable Test Case
- *
- * @coversDefaultClass \BEdita\Core\Model\Table\EndpointsTable
+ * {@see BEdita\Core\Model\Table\EndpointsTable} Test Case
  */
+#[CoversClass(EndpointsTable::class)]
 class EndpointsTableTest extends TestCase
 {
     /**
@@ -73,7 +76,6 @@ class EndpointsTableTest extends TestCase
      * Test initialize method
      *
      * @return void
-     * @covers ::initialize()
      */
     public function testInitialize()
     {
@@ -121,9 +123,9 @@ class EndpointsTableTest extends TestCase
      * @param bool $expected Expected result.
      * @param array $data Data to be validated.
      * @return void
-     * @dataProvider validationProvider
-     * @coversNothing
      */
+    #[DataProvider('validationProvider')]
+    #[CoversNothing]
     public function testValidation($expected, array $data)
     {
         $endpoint = $this->Endpoints->newEntity($data);
@@ -165,9 +167,9 @@ class EndpointsTableTest extends TestCase
      * @param bool $expected Expected result.
      * @param array $data Data to be validated.
      * @return void
-     * @dataProvider buildRulesProvider
-     * @coversNothing
      */
+    #[DataProvider('buildRulesProvider')]
+    #[CoversNothing]
     public function testBuildRules($expected, array $data)
     {
         $endpoint = $this->Endpoints->newEntity($data, ['validate' => false]);
@@ -212,9 +214,8 @@ class EndpointsTableTest extends TestCase
      * @param mixed $expected Expected endpoint ID, null, or exception.
      * @param string $path Request path.
      * @return void
-     * @dataProvider fetchIdProvider()
-     * @covers ::fetchId()
      */
+    #[DataProvider('fetchIdProvider')]
     public function testFetchId($expected, string $path): void
     {
         $cacheConf = $this->Endpoints->behaviors()->get('QueryCache')->getConfig('cacheConfig');

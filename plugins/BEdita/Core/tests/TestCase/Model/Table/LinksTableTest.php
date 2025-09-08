@@ -14,15 +14,17 @@ declare(strict_types=1);
  */
 namespace BEdita\Core\Test\TestCase\Model\Table;
 
+use BEdita\Core\Model\Table\LinksTable;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Hash;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * {@see \BEdita\Core\Model\Table\LinksTable} Test Case
- *
- * @coversDefaultClass \BEdita\Core\Model\Table\LinksTable
  */
+#[CoversClass(LinksTable::class)]
 class LinksTableTest extends TestCase
 {
     /**
@@ -71,10 +73,8 @@ class LinksTableTest extends TestCase
      * @param string[] $expected Expected errors.
      * @param array $data Data.
      * @return void
-     * @dataProvider validationProvider()
-     * @covers ::initialize()
-     * @covers ::validationDefault()
      */
+    #[DataProvider('validationProvider')]
     public function testValidation(array $expected, array $data)
     {
         $this->Links = TableRegistry::getTableLocator()->get('Links');

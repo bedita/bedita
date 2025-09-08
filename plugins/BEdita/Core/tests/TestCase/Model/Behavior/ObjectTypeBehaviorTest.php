@@ -14,13 +14,17 @@ declare(strict_types=1);
  */
 namespace BEdita\Core\Test\TestCase\Model\Behavior;
 
+use BEdita\Core\Model\Behavior\ObjectTypeBehavior;
 use BEdita\Core\Model\Entity\ObjectType;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
- * @coversDefaultClass \BEdita\Core\Model\Behavior\ObjectTypeBehavior
+ * {@see \BEdita\Core\Model\Behavior\ObjectTypeBehavior} Test Case
  */
+#[CoversClass(ObjectTypeBehavior::class)]
 class ObjectTypeBehaviorTest extends TestCase
 {
     /**
@@ -67,9 +71,8 @@ class ObjectTypeBehaviorTest extends TestCase
      * @param string $table Table.
      * @param int|string|null $objectType Object type being set.
      * @return void
-     * @dataProvider objectTypeProvider()
-     * @covers ::objectType()
      */
+    #[DataProvider('objectTypeProvider')]
     public function testObjectType($expected, $table, $objectType = null)
     {
         $table = TableRegistry::getTableLocator()->get($table);

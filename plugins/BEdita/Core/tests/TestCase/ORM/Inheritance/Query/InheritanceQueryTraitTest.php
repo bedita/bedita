@@ -14,15 +14,16 @@ declare(strict_types=1);
  */
 namespace BEdita\Core\Test\TestCase\ORM\Inheritance\Query;
 
+use BEdita\Core\ORM\Inheritance\Query\InheritanceQueryTrait;
 use BEdita\Core\ORM\Inheritance\Query\SelectQuery;
 use BEdita\Core\Test\TestCase\ORM\Inheritance\FakeAnimalsTrait;
 use Cake\TestSuite\TestCase;
+use PHPUnit\Framework\Attributes\CoversTrait;
 
 /**
  * {@see \BEdita\Core\ORM\Inheritance\Query\InheritanceQueryTrait} Test Case
- *
- * @coversDefaultClass \BEdita\Core\ORM\Inheritance\Query\InheritanceQueryTrait
  */
+#[CoversTrait(InheritanceQueryTrait::class)]
 class InheritanceQueryTraitTest extends TestCase
 {
     use FakeAnimalsTrait;
@@ -44,7 +45,6 @@ class InheritanceQueryTraitTest extends TestCase
      * Test adding default types of inherited columns to type map.
      *
      * @return void
-     * @covers ::addDefaultTypes()
      */
     public function testAddDefaultTypes(): void
     {

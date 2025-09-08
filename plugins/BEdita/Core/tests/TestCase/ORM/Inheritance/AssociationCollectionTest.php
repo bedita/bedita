@@ -20,12 +20,13 @@ use BEdita\Core\ORM\Inheritance\Table;
 use Cake\ORM\Association;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Inflector;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * {@see \BEdita\Core\ORM\Inheritance\AssociationCollection} Test Case
- *
- * @coversDefaultClass \BEdita\Core\ORM\Inheritance\AssociationCollection
  */
+#[CoversClass(AssociationCollection::class)]
 class AssociationCollectionTest extends TestCase
 {
     use FakeAnimalsTrait;
@@ -51,7 +52,6 @@ class AssociationCollectionTest extends TestCase
      * Test constructor.
      *
      * @return void
-     * @covers ::__construct()
      */
     public function testConstruct()
     {
@@ -91,12 +91,8 @@ class AssociationCollectionTest extends TestCase
      * @param string|null $expected Expected alias, or `null`.
      * @param string $alias Alias to search for.
      * @return void
-     * @dataProvider getProvider()
-     * @covers ::get()
-     * @covers ::has()
-     * @covers ::inheritAssociation()
-     * @covers ::inheritedAssociations()
      */
+    #[DataProvider('getProvider')]
     public function testGetHas($expected, $alias)
     {
         $collection = new AssociationCollection($this->fakeMammals);
@@ -120,11 +116,8 @@ class AssociationCollectionTest extends TestCase
      * @param string|null $expected Expected alias, or `null`.
      * @param string $alias Property to search for.
      * @return void
-     * @dataProvider getProvider()
-     * @covers ::getByProperty()
-     * @covers ::inheritAssociation()
-     * @covers ::inheritedAssociations()
      */
+    #[DataProvider('getProvider')]
     public function testGetByProperty($expected, $alias)
     {
         $collection = new AssociationCollection($this->fakeMammals);
@@ -143,8 +136,6 @@ class AssociationCollectionTest extends TestCase
      * Test getter of association keys.
      *
      * @return void
-     * @covers ::keys()
-     * @covers ::inheritedAssociations()
      */
     public function testKeys()
     {
@@ -160,8 +151,6 @@ class AssociationCollectionTest extends TestCase
      * Test getter of associations by type.
      *
      * @return void
-     * @covers ::getByType()
-     * @covers ::inheritedAssociations()
      */
     public function testGetByType()
     {
@@ -182,7 +171,6 @@ class AssociationCollectionTest extends TestCase
      * Test removal of association.
      *
      * @return void
-     * @covers ::remove()
      */
     public function testRemove()
     {
@@ -196,7 +184,6 @@ class AssociationCollectionTest extends TestCase
      * Test removal of inherited association.
      *
      * @return void
-     * @covers ::remove()
      */
     public function testRemoveInner()
     {
@@ -213,7 +200,6 @@ class AssociationCollectionTest extends TestCase
      * Test removal of association without cascading.
      *
      * @return void
-     * @covers ::remove()
      */
     public function testRemoveNoCascade()
     {
@@ -230,7 +216,6 @@ class AssociationCollectionTest extends TestCase
      * Test removal of all associations.
      *
      * @return void
-     * @covers ::removeAll()
      */
     public function testRemoveAll()
     {
@@ -245,7 +230,6 @@ class AssociationCollectionTest extends TestCase
      * Test cascading deletes to all associations with proper handling of callbacks.
      *
      * @return void
-     * @covers ::cascadeDelete()
      */
     public function testCascadeDelete()
     {
@@ -264,7 +248,6 @@ class AssociationCollectionTest extends TestCase
      * Test empty inherited associations.
      *
      * @return void
-     * @covers ::inheritedAssociations()
      */
     public function testInheritedAssociationsEmpty()
     {
@@ -299,9 +282,8 @@ class AssociationCollectionTest extends TestCase
      * @param array $expected The expected associations keys
      * @param bool $isAbstract If the `RelatedTo` refers to abstract source
      * @return void
-     * @dataProvider inheritedAssociationsRelatedToProvider
-     * @covers ::inheritedAssociations()
      */
+    #[DataProvider('inheritedAssociationsRelatedToProvider')]
     public function testInheritedAssociationsRelatedTo($expected, $isAbstract)
     {
         $relatedToMock = $this->getMockBuilder(RelatedTo::class)
@@ -323,7 +305,6 @@ class AssociationCollectionTest extends TestCase
      * also if are removed from main table
      *
      * @return void
-     * @covers ::inheritedAssociations()
      */
     public function testNotRemoveAssociationFromInhertedTable()
     {
@@ -351,7 +332,6 @@ class AssociationCollectionTest extends TestCase
      * Test get iterator contains own and inherited associations.
      *
      * @return void
-     * @covers ::getIterator()
      */
     public function testGetIterator()
     {
@@ -372,7 +352,6 @@ class AssociationCollectionTest extends TestCase
      * Test clone hook.
      *
      * @return void
-     * @covers ::__clone()
      */
     public function testClone()
     {

@@ -14,16 +14,17 @@ declare(strict_types=1);
  */
 namespace BEdita\Core\Test\TestCase\Model\Behavior;
 
+use BEdita\Core\Model\Behavior\RelationsBehavior;
 use BEdita\Core\Model\Entity\Relation;
 use Cake\ORM\Association\BelongsToMany;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
 
 /**
  * {@see \BEdita\Core\Model\Behavior\RelationsBehavior} Test Case
- *
- * @coversDefaultClass \BEdita\Core\Model\Behavior\RelationsBehavior
  */
+#[CoversClass(RelationsBehavior::class)]
 class RelationsBehaviorTest extends TestCase
 {
     /**
@@ -44,10 +45,6 @@ class RelationsBehaviorTest extends TestCase
      * Test initial setup
      *
      * @return void
-     * @covers ::initialize()
-     * @covers ::objectType()
-     * @covers ::setupRelations()
-     * @covers ::relatedTo()
      */
     public function testInitialization()
     {
@@ -113,7 +110,6 @@ class RelationsBehaviorTest extends TestCase
      * Test that no error occurs on an unknown object type, and no associations are set up.
      *
      * @return void
-     * @covers ::setupRelations()
      */
     public function testUnknownObjectType()
     {
@@ -130,7 +126,6 @@ class RelationsBehaviorTest extends TestCase
      * Test getter of relations.
      *
      * @return void
-     * @covers ::getRelations()
      */
     public function testGetRelations()
     {

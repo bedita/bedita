@@ -14,17 +14,20 @@ declare(strict_types=1);
  */
 namespace BEdita\Core\Test\TestCase\Model\Table;
 
+use BEdita\Core\Model\Table\ConfigTable;
 use BEdita\Core\State\CurrentApplication;
 use Cake\Cache\Cache;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Hash;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\CoversNothing;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * {@see \BEdita\Core\Model\Table\ConfigTable} Test Case
- *
- * @coversDefaultClass \BEdita\Core\Model\Table\ConfigTable
  */
+#[CoversClass(ConfigTable::class)]
 class ConfigTableTest extends TestCase
 {
     /**
@@ -67,8 +70,8 @@ class ConfigTableTest extends TestCase
      * Test initialization.
      *
      * @return void
-     * @coversNothing
      */
+    #[CoversNothing]
     public function testInitialization()
     {
         $this->assertEquals('config', $this->Config->getTable());
@@ -115,9 +118,9 @@ class ConfigTableTest extends TestCase
      * @param bool $expected Expected result.
      * @param array $data Data to be validated.
      * @return void
-     * @dataProvider validationProvider
-     * @coversNothing
      */
+    #[DataProvider('validationProvider')]
+    #[CoversNothing]
     public function testValidation($expected, array $data)
     {
         $config = $this->Config->newEntity($data);
@@ -135,7 +138,6 @@ class ConfigTableTest extends TestCase
      * Test `mine` finder
      *
      * @return void
-     * @covers ::findMine()
      */
     public function testFindMine()
     {
@@ -199,12 +201,11 @@ class ConfigTableTest extends TestCase
     /**
      * Test `name` finder
      *
-     * @dataProvider findNameProvider
-     * @covers ::findName()
      * @param int $expected Result number.
      * @param array $data Find options.
      * @return void
      */
+    #[DataProvider('findNameProvider')]
     public function testFindName($expected, array $data)
     {
         $config = $this->Config->find('name', ...$data)->toArray();
@@ -247,9 +248,8 @@ class ConfigTableTest extends TestCase
      * @param int|null $appId Application ID.
      * @param string|null $context Context key.
      * @return void
-     * @dataProvider fetchConfigProvider
-     * @covers ::fetchConfig()
      */
+    #[DataProvider('fetchConfigProvider')]
     public function testFetchConfig(array $expected, ?int $appId, ?string $context): void
     {
         $cacheConf = $this->Config->behaviors()->get('QueryCache')->getConfig('cacheConfig');

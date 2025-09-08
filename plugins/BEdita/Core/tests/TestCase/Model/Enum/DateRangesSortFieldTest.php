@@ -16,19 +16,18 @@ namespace BEdita\Core\Test\TestCase\Model;
 
 use BEdita\Core\Model\Enum\DateRangesSortField;
 use Cake\TestSuite\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
 
 /**
  * {@see BEdita\Core\Model\Enum\DateRangesSortField} Test Case
- *
- * @coversDefaultClass \BEdita\Core\Model\Enum\DateRangesSortField
  */
+#[CoversClass(DateRangesSortField::class)]
 class DateRangesSortFieldTest extends TestCase
 {
     /**
      * Test that enum cases are correctly defined.
      *
      * @return void
-     * @covers ::values()
      */
     public function testValues(): void
     {

@@ -21,13 +21,15 @@ use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Hash;
 use Iterator;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\CoversNothing;
+use PHPUnit\Framework\Attributes\DataProvider;
 use stdClass;
 
 /**
  * {@see \BEdita\Core\Model\Entity\ObjectType} Test Case
- *
- * @coversDefaultClass \BEdita\Core\Model\Entity\ObjectType
  */
+#[CoversClass(ObjectType::class)]
 class ObjectTypeTest extends TestCase
 {
     /**
@@ -81,8 +83,8 @@ class ObjectTypeTest extends TestCase
      * Test accessible properties.
      *
      * @return void
-     * @coversNothing
      */
+    #[CoversNothing]
     public function testAccessible()
     {
         $objectType = $this->ObjectTypes->get(1);
@@ -101,8 +103,8 @@ class ObjectTypeTest extends TestCase
      * Test virtual properties.
      *
      * @return void
-     * @coversNothing
      */
+    #[CoversNothing]
     public function testVirtual()
     {
         $expected = [
@@ -128,7 +130,6 @@ class ObjectTypeTest extends TestCase
      * Test setter method for `name`.
      *
      * @return void
-     * @covers ::_setName()
      */
     public function testSetName()
     {
@@ -158,10 +159,8 @@ class ObjectTypeTest extends TestCase
      * @param string $name Object type name.
      * @param string|null $singular Object type singular name.
      * @return void
-     * @dataProvider getSetSingularProvider
-     * @covers ::_getSingular()
-     * @covers ::_setSingular()
      */
+    #[DataProvider('getSetSingularProvider')]
     public function testGetSetSingular($expected, $name, $singular)
     {
         $data = compact('name', 'singular');
@@ -174,7 +173,6 @@ class ObjectTypeTest extends TestCase
      * Test getter method for `alias`.
      *
      * @return void
-     * @covers ::_getAlias()
      */
     public function testGetAlias()
     {
@@ -207,10 +205,8 @@ class ObjectTypeTest extends TestCase
      * @param string $expectedModel Expected model.
      * @param string|null $table Object type table.
      * @return void
-     * @dataProvider getSetTableProvider
-     * @covers ::_getTable()
-     * @covers ::_setTable()
      */
+    #[DataProvider('getSetTableProvider')]
     public function testGetSetTable($expected, $expectedPlugin, $expectedModel, $table)
     {
         $data = compact('table');
@@ -262,9 +258,8 @@ class ObjectTypeTest extends TestCase
      * @param string $name Object type name to get relations for.
      * @param string $side Side to get relations for.
      * @return void
-     * @dataProvider getRelationsByNameProvider()
-     * @covers ::getRelations()
      */
+    #[DataProvider('getRelationsByNameProvider')]
     public function testGetRelationsByName($expected, $name, $side = 'both')
     {
         $objectType = $this->ObjectTypes->get($name);
@@ -279,7 +274,6 @@ class ObjectTypeTest extends TestCase
      * Test getter for relations.
      *
      * @return void
-     * @covers ::_getRelations()
      */
     public function testGetRelations()
     {
@@ -299,7 +293,6 @@ class ObjectTypeTest extends TestCase
      * Test getter for relations when associations haven't been loaded.
      *
      * @return void
-     * @covers ::_getRelations()
      */
     public function testGetRelationsAssociationsNotLoaded()
     {
@@ -316,7 +309,6 @@ class ObjectTypeTest extends TestCase
      * Test that `relations` association was removed serializing entity
      *
      * @return void
-     * @covers ::listAssociations()
      */
     public function testListAssociations()
     {
@@ -365,9 +357,8 @@ class ObjectTypeTest extends TestCase
      * @param string|null $expected Expected parent.
      * @param callable $subject Function that is expected to return an {@see ObjectType} entity.
      * @return void
-     * @dataProvider getParentProvider()
-     * @covers ::getParent()
      */
+    #[DataProvider('getParentProvider')]
     public function testGetParent(?string $expected, callable $subject): void
     {
         /** @var ObjectType $objectType */
@@ -431,10 +422,8 @@ class ObjectTypeTest extends TestCase
      * @param string $newParent New parent name to set.
      * @param string|null $setExpected Parent name set expected result.
      * @return void
-     * @dataProvider getSetParentNameProvider
-     * @covers ::_getParentName()
-     * @covers ::_setParentName()
      */
+    #[DataProvider('getSetParentNameProvider')]
     public function testGetSetParentName($name, $getExpected, $newParent, $setExpected)
     {
         $objectType = $this->ObjectTypes->get($name);
@@ -448,7 +437,6 @@ class ObjectTypeTest extends TestCase
      * Test set failure if `parent_name` is not `enabled`.
      *
      * @return void
-     * @covers ::_setParentName()
      */
     public function testSetParentNameDisabled()
     {
@@ -1079,13 +1067,8 @@ class ObjectTypeTest extends TestCase
      * @param mixed $expected Expected result.
      * @param string $name Object type name.
      * @return void
-     * @dataProvider getSchemaProvider()
-     * @covers ::_getSchema()
-     * @covers ::objectTypeRelations()
-     * @covers ::translatableProperty()
-     * @covers ::accessMode()
-     * @covers ::associationProperties()
      */
+    #[DataProvider('getSchemaProvider')]
     public function testGetSchema($expected, $name): void
     {
         $objectType = $this->ObjectTypes->get($name);
@@ -1102,7 +1085,6 @@ class ObjectTypeTest extends TestCase
     /**
      * Test `readOnly` property in schema.
      *
-     * @covers ::accessMode()
      * @return void
      */
     public function testReadOnlyProp(): void
@@ -1118,9 +1100,8 @@ class ObjectTypeTest extends TestCase
      * @param mixed $expected Expected result.
      * @param string $name Object type name.
      * @return void
-     * @dataProvider getSchemaProvider()
-     * @covers ::_getSchema()
      */
+    #[DataProvider('getSchemaProvider')]
     public function testGetSchemaModified($expected, string $name): void
     {
         $objectType = $this->ObjectTypes->get($name);
@@ -1155,9 +1136,8 @@ class ObjectTypeTest extends TestCase
      * @param mixed $expected Expected result.
      * @param string $name Object type name.
      * @return void
-     * @dataProvider getSchemaProvider()
-     * @covers ::_getSchema()
      */
+    #[DataProvider('getSchemaProvider')]
     public function testGetSchemaNotModified($expected, string $name): void
     {
         $objectType = $this->ObjectTypes->get($name);
@@ -1190,9 +1170,8 @@ class ObjectTypeTest extends TestCase
      * @param mixed $expected Expected result.
      * @param string $name Object type name.
      * @return void
-     * @dataProvider getSchemaProvider()
-     * @covers ::_getSchema()
      */
+    #[DataProvider('getSchemaProvider')]
     public function testGetSchemaStopped($expected, string $name): void
     {
         $objectType = $this->ObjectTypes->get($name);
@@ -1220,7 +1199,6 @@ class ObjectTypeTest extends TestCase
      * Test getter for `schema` when properties have not been loaded.
      *
      * @return void
-     * @covers ::_getSchema()
      */
     public function testGetSchemaNoProperties()
     {
@@ -1236,7 +1214,6 @@ class ObjectTypeTest extends TestCase
      * Test getter for disabled `schema`.
      *
      * @return void
-     * @covers ::_getSchema()
      */
     public function testGetSchemaDisabled()
     {
@@ -1249,8 +1226,6 @@ class ObjectTypeTest extends TestCase
      * Test getter for `schema` whith hidden properties.
      *
      * @return void
-     * @covers ::_getSchema()
-     * @covers ::objectTypeProperties()
      */
     public function testGetSchemaHiddenProperties(): void
     {
@@ -1270,7 +1245,6 @@ class ObjectTypeTest extends TestCase
      * Test `objectTypeProperties` method whith required properties.
      *
      * @return void
-     * @covers ::objectTypeProperties()
      */
     public function testGetSchemaRequired(): void
     {
@@ -1283,7 +1257,6 @@ class ObjectTypeTest extends TestCase
     /** Test static properties override in `schema`.
      *
      * @return void
-     * @covers ::_getSchema()
      */
     public function testSchemaOverride()
     {
@@ -1345,9 +1318,8 @@ class ObjectTypeTest extends TestCase
      * @param string[] $expected Expected chain.
      * @param string $name Test subject.
      * @return void
-     * @dataProvider getFullInheritanceChainProvider()
-     * @covers ::getFullInheritanceChain
      */
+    #[DataProvider('getFullInheritanceChainProvider')]
     public function testGetFullInheritanceChain(array $expected, string $name): void
     {
         $objectType = $this->ObjectTypes->get($name);
@@ -1392,9 +1364,8 @@ class ObjectTypeTest extends TestCase
      * @param string $descendantName Descendant object type name.
      * @param string $ancestorName Ancestor object type name.
      * @return void
-     * @dataProvider isDescendantOfProvider()
-     * @covers ::isDescendantOf()
      */
+    #[DataProvider('isDescendantOfProvider')]
     public function testIsDescendantOf(bool $expected, string $descendantName, string $ancestorName): void
     {
         $descendant = $this->ObjectTypes->get($descendantName);
@@ -1426,9 +1397,8 @@ class ObjectTypeTest extends TestCase
      * @param string|null $expected Expected result.
      * @param ObjectType[]|string[] $names Object type names.
      * @return void
-     * @dataProvider getClosestCommonAncestorProvider()
-     * @covers ::getClosestCommonAncestor()
      */
+    #[DataProvider('getClosestCommonAncestorProvider')]
     public function testGetClosestCommonAncestor(?string $expected, array $names): void
     {
         $objectTypes = array_map(
@@ -1455,7 +1425,6 @@ class ObjectTypeTest extends TestCase
      * Test `addAssoc()`
      *
      * @return void
-     * @covers ::addAssoc()
      */
     public function testAddAssoc(): void
     {
@@ -1470,7 +1439,6 @@ class ObjectTypeTest extends TestCase
      * Test `hasAssoc()`
      *
      * @return void
-     * @covers ::hasAssoc()
      */
     public function testHasAssoc(): void
     {
@@ -1485,7 +1453,6 @@ class ObjectTypeTest extends TestCase
      * Test `removeAssoc()`
      *
      * @return void
-     * @covers ::removeAssoc()
      */
     public function testRemoveAssoc(): void
     {

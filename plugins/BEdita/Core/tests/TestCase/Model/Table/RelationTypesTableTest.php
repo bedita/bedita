@@ -15,13 +15,18 @@ declare(strict_types=1);
 namespace BEdita\Core\Test\TestCase\Model\Table;
 
 use BEdita\Core\Model\Table\ObjectTypesTable;
+use BEdita\Core\Model\Table\RelationTypesTable;
 use Cake\Cache\Cache;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\CoversNothing;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
- * @coversDefaultClass \BEdita\Core\Model\Table\RelationTypesTable
+ * {@see \BEdita\Core\Model\Table\RelationTypesTable} Test Case
  */
+#[CoversClass(RelationTypesTable::class)]
 class RelationTypesTableTest extends TestCase
 {
     /**
@@ -114,9 +119,9 @@ class RelationTypesTableTest extends TestCase
      * @param bool $expected Expected result.
      * @param array $data Data to be validated.
      * @return void
-     * @dataProvider validationProvider
-     * @coversNothing
      */
+    #[DataProvider('validationProvider')]
+    #[CoversNothing]
     public function testValidation($expected, array $data)
     {
         $objectType = $this->RelationTypes->newEmptyEntity();
@@ -130,7 +135,6 @@ class RelationTypesTableTest extends TestCase
      * Test after save callback.
      *
      * @return void
-     * @covers ::afterSave()
      */
     public function testInvalidateCacheAfterSave()
     {
@@ -159,7 +163,6 @@ class RelationTypesTableTest extends TestCase
      * Test after delete callback.
      *
      * @return void
-     * @covers ::afterDelete()
      */
     public function testInvalidateCacheAfterDelete()
     {

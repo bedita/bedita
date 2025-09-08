@@ -26,12 +26,14 @@ use Cake\I18n\DateTime;
 use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\CoversNothing;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * {@see \BEdita\Core\ORM\Inheritance\Table} Test Case
- *
- * @coversDefaultClass \BEdita\Core\ORM\Inheritance\Table
  */
+#[CoversClass(Table::class)]
 class TableTest extends TestCase
 {
     use FakeAnimalsTrait;
@@ -52,7 +54,6 @@ class TableTest extends TestCase
      * Test marshaller
      *
      * @return void
-     * @covers ::marshaller()
      */
     public function testMarshaller(): void
     {
@@ -63,7 +64,6 @@ class TableTest extends TestCase
      * Test that the query factory is correctly set up.
      *
      * @return void
-     * @covers ::__construct()
      */
     public function testUseInheritanceQueryFactory(): void
     {
@@ -78,7 +78,6 @@ class TableTest extends TestCase
      * Test inheritance setup.
      *
      * @return void
-     * @covers ::extensionOf()
      */
     public function testExtensionOf(): void
     {
@@ -92,8 +91,6 @@ class TableTest extends TestCase
      * Test inherited tables
      *
      * @return void
-     * @covers ::inheritedTable()
-     * @covers ::inheritedTables()
      */
     public function testInheritedTables(): void
     {
@@ -119,7 +116,6 @@ class TableTest extends TestCase
      * Test method to find common inheritance tables.
      *
      * @return void
-     * @covers ::commonInheritance()
      */
     public function testCommonInheritance(): void
     {
@@ -139,7 +135,6 @@ class TableTest extends TestCase
      * Test inherited tables
      *
      * @return void
-     * @covers ::isTableInherited()
      */
     public function testIsTableInherited(): void
     {
@@ -157,8 +152,8 @@ class TableTest extends TestCase
      * testBasicFindWithoutInheritance
      *
      * @return void
-     * @coversNothing
      */
+    #[CoversNothing]
     public function testBasicFindWithoutInheritance(): void
     {
         // find felines
@@ -180,8 +175,8 @@ class TableTest extends TestCase
      * testBasicFindWithInheritance
      *
      * @return void
-     * @coversNothing
      */
+    #[CoversNothing]
     public function testBasicFindWithInheritance(): void
     {
         $this->setupAssociations();
@@ -255,8 +250,8 @@ class TableTest extends TestCase
      * Test find using contain
      *
      * @return void
-     * @coversNothing
      */
+    #[CoversNothing]
     public function testContainFind(): void
     {
         $this->setupAssociations();
@@ -331,9 +326,9 @@ class TableTest extends TestCase
      * @param array $expected Expected result.
      * @param array $select Select clause.
      * @return void
-     * @dataProvider selectProvider
-     * @coversNothing
      */
+    #[DataProvider('selectProvider')]
+    #[CoversNothing]
     public function testSelect($expected, $select): void
     {
         $this->setupAssociations();
@@ -371,8 +366,8 @@ class TableTest extends TestCase
      * testClauses
      *
      * @return void
-     * @coversNothing
      */
+    #[CoversNothing]
     public function testClauses(): void
     {
         $this->setupAssociations();
@@ -474,9 +469,9 @@ class TableTest extends TestCase
      * @param array $listParams Options for `find('list')`.
      * @param array $order Order clause.
      * @return void
-     * @dataProvider findListProvider
-     * @coversNothing
      */
+    #[DataProvider('findListProvider')]
+    #[CoversNothing]
     public function testFindList($expected, $listParams, $order): void
     {
         $this->setupAssociations();
@@ -505,7 +500,6 @@ class TableTest extends TestCase
      * Test `hasFinder` method.
      *
      * @return void
-     * @covers ::hasFinder()
      */
     public function testHasFinder(): void
     {
@@ -526,7 +520,6 @@ class TableTest extends TestCase
      * Test `callFinder` method.
      *
      * @return void
-     * @covers ::callFinder()
      */
     public function testCallFinder(): void
     {
@@ -558,7 +551,6 @@ class TableTest extends TestCase
      * Test `callFinder` method.
      *
      * @return void
-     * @covers ::callFinder()
      */
     public function testCallMissingFinder(): void
     {
@@ -571,7 +563,6 @@ class TableTest extends TestCase
      * Test `hasField` method.
      *
      * @return void
-     * @covers ::hasField()
      */
     public function testHasField(): void
     {
@@ -586,7 +577,6 @@ class TableTest extends TestCase
      * Test cloning of a table.
      *
      * @return void
-     * @covers ::__clone()
      */
     public function testClone(): void
     {
@@ -606,7 +596,6 @@ class TableTest extends TestCase
      * Test `hasFilter` method.
      *
      * @return void
-     * @covers ::hasFilter()
      */
     public function testHasFilter(): void
     {
@@ -630,7 +619,6 @@ class TableTest extends TestCase
      * Test `callFilter` method.
      *
      * @return void
-     * @covers ::callFilter()
      */
     public function testCallFilter(): void
     {
@@ -675,7 +663,6 @@ class TableTest extends TestCase
      * Test `callFilter` method.
      *
      * @return void
-     * @covers ::callFilter()
      */
     public function testCallMissingFilter(): void
     {

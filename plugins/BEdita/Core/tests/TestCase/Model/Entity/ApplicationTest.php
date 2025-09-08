@@ -19,12 +19,13 @@ use BEdita\Core\Model\Table\ApplicationsTable;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use InvalidArgumentException;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\CoversNothing;
 
 /**
  * {@see \BEdita\Core\Model\Entity\Application} Test Case
- *
- * @coversDefaultClass \BEdita\Core\Model\Entity\Application
  */
+#[CoversClass(Application::class)]
 class ApplicationTest extends TestCase
 {
     /**
@@ -67,8 +68,8 @@ class ApplicationTest extends TestCase
      * Test accessible properties.
      *
      * @return void
-     * @coversNothing
      */
+    #[CoversNothing]
     public function testAccessible()
     {
         $application = $this->Applications->get(1);

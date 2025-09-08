@@ -20,12 +20,14 @@ use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Hash;
 use InvalidArgumentException;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\CoversNothing;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * {@see \BEdita\Core\Model\Entity\ObjectEntity} Test Case
- *
- * @coversDefaultClass \BEdita\Core\Model\Entity\ObjectEntity
  */
+#[CoversClass(ObjectEntity::class)]
 class ObjectEntityTest extends TestCase
 {
     /**
@@ -86,8 +88,8 @@ class ObjectEntityTest extends TestCase
      * Test accessible properties.
      *
      * @return void
-     * @coversNothing
      */
+    #[CoversNothing]
     public function testAccessible()
     {
         $object = $this->Objects->get(1);
@@ -159,10 +161,8 @@ class ObjectEntityTest extends TestCase
      * @param mixed $objectTypeId Object type ID.
      * @param array $options Configuration options for entity.
      * @return void
-     * @covers ::_getType()
-     * @covers ::loadObjectType()
-     * @dataProvider getTypeProvider()
      */
+    #[DataProvider('getTypeProvider')]
     public function testGetType($expected, $objectTypeId, $options = [])
     {
         $entity = new ObjectEntity([], $options);
@@ -222,10 +222,8 @@ class ObjectEntityTest extends TestCase
      * @param array $expectedVisible Expected result.
      * @param int $objectTypeId Object type ID.
      * @return void
-     * @covers ::getVisible()
-     * @covers ::loadObjectType()
-     * @dataProvider visiblePropertiesProvider()
      */
+    #[DataProvider('visiblePropertiesProvider')]
     public function testVisibleProperties($properties, array $expectedVisible, $objectTypeId)
     {
         $entity = new ObjectEntity();
@@ -243,8 +241,6 @@ class ObjectEntityTest extends TestCase
      * Test that an object type with `Permissions` association has `perms` as visible properties.
      *
      * @return void
-     * @covers ::getVisible()
-     * @covers ::loadObjectType()
      */
     public function testVisiblePropertiesWithPermissions(): void
     {
@@ -284,9 +280,8 @@ class ObjectEntityTest extends TestCase
      * @param string|null $expected Expected object type ID.
      * @param mixed $type Type.
      * @return void
-     * @covers ::_setType()
-     * @dataProvider setTypeProvider()
      */
+    #[DataProvider('setTypeProvider')]
     public function testSetType($expected, $type)
     {
         $entity = new ObjectEntity();
@@ -301,7 +296,6 @@ class ObjectEntityTest extends TestCase
      * Test getter for table.
      *
      * @return void
-     * @covers ::getTable()
      */
     public function testGetTable()
     {
@@ -318,7 +312,6 @@ class ObjectEntityTest extends TestCase
      * Test getter for JSON API type.
      *
      * @return void
-     * @covers ::getType()
      */
     public function testGetTypeJsonApi()
     {
@@ -335,7 +328,6 @@ class ObjectEntityTest extends TestCase
      * Test getter for JSON API meta fields.
      *
      * @return void
-     * @covers ::getMeta()
      */
     public function testGetMeta()
     {
@@ -353,7 +345,6 @@ class ObjectEntityTest extends TestCase
      * Test magic getter for JSON API links.
      *
      * @return void
-     * @covers ::getLinks()
      */
     public function testGetLinks()
     {
@@ -375,7 +366,6 @@ class ObjectEntityTest extends TestCase
      * Test magic getter for JSON API links.
      *
      * @return void
-     * @covers ::getLinks()
      */
     public function testGetLinksDeleted()
     {
@@ -398,8 +388,6 @@ class ObjectEntityTest extends TestCase
      * Test inline associations extra.
      *
      * @return void
-     * @covers ::setExtraInlineAssociations()
-     * @covers ::listAssociations()
      */
     public function testExtraInlineAssociations(): void
     {
@@ -434,8 +422,6 @@ class ObjectEntityTest extends TestCase
      * Test magic getter for JSON API relations.
      *
      * @return void
-     * @covers ::listAssociations()
-     * @covers ::getRelationships()
      */
     public function testGetRelationships()
     {
@@ -464,8 +450,6 @@ class ObjectEntityTest extends TestCase
      * Test magic getter for JSON API relations for relation roles
      *
      * @return void
-     * @covers ::listAssociations()
-     * @covers ::getRelationships()
      */
     public function testGetRelationshipsUsersRoles()
     {
@@ -510,8 +494,6 @@ class ObjectEntityTest extends TestCase
      * Test magic getter for JSON API relations.
      *
      * @return void
-     * @covers ::listAssociations()
-     * @covers ::getRelationships()
      */
     public function testGetRelationshipsOfAssociated()
     {
@@ -538,8 +520,6 @@ class ObjectEntityTest extends TestCase
      * the relationships returned will be those of specific type.
      *
      * @return void
-     * @covers ::listAssociations()
-     * @covers ::getRelationships()
      */
     public function testGetRelationshipsFromObjects()
     {
@@ -563,8 +543,6 @@ class ObjectEntityTest extends TestCase
      * Test magic getter for JSON API relations.
      *
      * @return void
-     * @covers ::listAssociations()
-     * @covers ::getRelationships()
      */
     public function testGetRelationshipsDeleted()
     {
@@ -580,7 +558,6 @@ class ObjectEntityTest extends TestCase
      * Test magic getter for JSON API relations.
      *
      * @return void
-     * @covers ::getRelationships()
      */
     public function testGetRelationshipsIncluded()
     {
@@ -599,7 +576,6 @@ class ObjectEntityTest extends TestCase
      * Test magic getter for JSON API relations with single entity `included`
      *
      * @return void
-     * @covers ::getRelationships()
      */
     public function testGetRelationshipsSingleIncluded()
     {
@@ -618,7 +594,6 @@ class ObjectEntityTest extends TestCase
      * Test relationship count.
      *
      * @return void
-     * @covers ::getRelationships()
      */
     public function testGetRelationshipsCount(): void
     {
@@ -635,7 +610,6 @@ class ObjectEntityTest extends TestCase
     /**
      * Test `hasProperty` method
      *
-     * @covers ::hasProperty()
      * @return void
      */
     public function testHasProperty()
@@ -659,8 +633,6 @@ class ObjectEntityTest extends TestCase
      * Test methods using internal `notTranslatable` array
      *
      * @return void
-     * @covers ::addNotTranslatable()
-     * @covers ::isFieldTranslatable()
      */
     public function testTranslatable(): void
     {
@@ -679,8 +651,6 @@ class ObjectEntityTest extends TestCase
      * without Permission association return `null`.
      *
      * @return void
-     * @covers ::loadObjectType()
-     * @covers ::_getPerms()
      */
     public function testGetPermsWithoutPermissionsAssociation(): void
     {
@@ -719,10 +689,8 @@ class ObjectEntityTest extends TestCase
      * @param array $expected The expected result
      * @param int $documentId The document id
      * @return void
-     * @covers ::loadObjectType()
-     * @covers ::_getPerms()
-     * @dataProvider getPermissionsProvider
      */
+    #[DataProvider('getPermissionsProvider')]
     public function testGetPerms(array $expected, int $documentId): void
     {
         $document = $this->Objects->ObjectTypes->get('document');

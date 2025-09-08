@@ -15,6 +15,7 @@ declare(strict_types=1);
 namespace BEdita\Core\Test\TestCase\Model\Behavior;
 
 use BEdita\Core\Exception\BadFilterException;
+use BEdita\Core\Model\Behavior\CustomPropertiesBehavior;
 use BEdita\Core\Test\Utility\TestFilesystemTrait;
 use Cake\Collection\CollectionInterface;
 use Cake\Database\Driver\Mysql;
@@ -23,12 +24,13 @@ use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use Exception;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * {@see \BEdita\Core\Model\Behavior\CustomPropertiesBehavior} Test Case
- *
- * @coversDefaultClass \BEdita\Core\Model\Behavior\CustomPropertiesBehavior
  */
+#[CoversClass(CustomPropertiesBehavior::class)]
 class CustomPropertiesBehaviorTest extends TestCase
 {
     use TestFilesystemTrait;
@@ -76,7 +78,6 @@ class CustomPropertiesBehaviorTest extends TestCase
      * Test initialization.
      *
      * @return void
-     * @covers ::initialize()
      */
     public function testInitialize()
     {
@@ -139,10 +140,8 @@ class CustomPropertiesBehaviorTest extends TestCase
      * @param array $expected Expected result.
      * @param string $tableName Table name.
      * @return void
-     * @covers ::getAvailable()
-     * @covers ::objectType()
-     * @dataProvider getAvailableProvider
      */
+    #[DataProvider('getAvailableProvider')]
     public function testGetAvailable(array $expected, $tableName)
     {
         $table = TableRegistry::getTableLocator()->get($tableName);
@@ -164,8 +163,6 @@ class CustomPropertiesBehaviorTest extends TestCase
      * Test get available properties for related object.
      *
      * @return void
-     * @covers ::getAvailable()
-     * @covers ::objectType()
      */
     public function testGetAvailableRelatedObject(): void
     {
@@ -188,7 +185,6 @@ class CustomPropertiesBehaviorTest extends TestCase
      * Test get available when no object type is found
      *
      * @return void
-     * @covers ::getAvailable()
      */
     public function testGetAvailableTypeNotFound()
     {
@@ -204,7 +200,6 @@ class CustomPropertiesBehaviorTest extends TestCase
      * Test empty custom properties
      *
      * @return void
-     * @covers ::getAvailable()
      */
     public function testEmpty()
     {
@@ -217,7 +212,6 @@ class CustomPropertiesBehaviorTest extends TestCase
      * Test get available properties
      *
      * @return void
-     * @covers ::getDefaultValues()
      */
     public function testDefaultValues()
     {
@@ -266,12 +260,8 @@ class CustomPropertiesBehaviorTest extends TestCase
      * @param string $table Table.
      * @param bool $hydrate Should hydration be enabled?
      * @return void
-     * @dataProvider beforeFindProvider()
-     * @covers ::beforeFind()
-     * @covers ::promoteProperties()
-     * @covers ::setupCustomProps()
-     * @covers ::isFieldSet()
      */
+    #[DataProvider('beforeFindProvider')]
     public function testBeforeFind(array $expectedProperties, $id, $table, $hydrate = true)
     {
         $result = TableRegistry::getTableLocator()->get($table)->find()
@@ -293,7 +283,6 @@ class CustomPropertiesBehaviorTest extends TestCase
      * Test that formatter is prepended to other formatters that may be attached to the Query object.
      *
      * @return void
-     * @covers ::beforeFind()
      */
     public function testBeforeFindFormatterPrepended()
     {
@@ -335,10 +324,6 @@ class CustomPropertiesBehaviorTest extends TestCase
      * Test that no errors are triggered if results aren't neither entities nor arrays.
      *
      * @return void
-     * @covers ::beforeFind()
-     * @covers ::promoteProperties()
-     * @covers ::setupCustomProps()
-     * @covers ::isFieldSet()
      */
     public function testBeforeFindOtherType()
     {
@@ -429,11 +414,8 @@ class CustomPropertiesBehaviorTest extends TestCase
      * @param int $id Entity ID.
      * @param string $table Table.
      * @return void
-     * @dataProvider beforeSaveProvider()
-     * @covers ::beforeSave()
-     * @covers ::demoteProperties()
-     * @covers ::formatValue()
      */
+    #[DataProvider('beforeSaveProvider')]
     public function testBeforeSave(array $expected, array $data, $id, $table): void
     {
         $table = TableRegistry::getTableLocator()->get($table);
@@ -459,8 +441,6 @@ class CustomPropertiesBehaviorTest extends TestCase
      * Test validation error on custom properties.
      *
      * @return void
-     * @covers ::beforeSave()
-     * @covers ::demoteProperties()
      */
     public function testValidationFail(): void
     {
@@ -478,7 +458,6 @@ class CustomPropertiesBehaviorTest extends TestCase
      * Test validation error on not nullable property.
      *
      * @return void
-     * @covers ::demoteProperties()
      */
     public function testValidationNewFail(): void
     {
@@ -498,10 +477,6 @@ class CustomPropertiesBehaviorTest extends TestCase
      * Test that custom properties are not dirty getting object.
      *
      * @return void
-     * @covers ::beforeFind()
-     * @covers ::promoteProperties()
-     * @covers ::setupCustomProps()
-     * @covers ::isFieldSet()
      */
     public function testCustomPropertyNotDirty(): void
     {
@@ -578,9 +553,8 @@ class CustomPropertiesBehaviorTest extends TestCase
      * @param string $tableName The table name
      * @param array $options Options for finder
      * @return void
-     * @covers ::findCustomProp()
-     * @dataProvider findCustomPropProvider
      */
+    #[DataProvider('findCustomPropProvider')]
     public function testFindCustomProp($expected, string $tableName, array $options): void
     {
         $connection = ConnectionManager::get('default');
@@ -608,7 +582,6 @@ class CustomPropertiesBehaviorTest extends TestCase
      * Test custom prop finder for integer property.
      *
      * @return void
-     * @covers ::findCustomProp()
      */
     public function testFindCustomPropInteger(): void
     {

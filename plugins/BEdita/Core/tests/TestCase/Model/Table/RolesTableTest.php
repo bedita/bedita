@@ -19,12 +19,14 @@ use BEdita\Core\Model\Table\RolesTable;
 use BEdita\Core\Utility\LoggedUser;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\CoversNothing;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * {@see \BEdita\Core\Model\Table\RolesTable} Test Case
- *
- * @coversDefaultClass \BEdita\Core\Model\Table\RolesTable
  */
+#[CoversClass(RolesTable::class)]
 class RolesTableTest extends TestCase
 {
     /**
@@ -79,8 +81,8 @@ class RolesTableTest extends TestCase
      * Test initialization.
      *
      * @return void
-     * @coversNothing
      */
+    #[CoversNothing]
     public function testInitialization()
     {
         $this->assertEquals('roles', $this->Roles->getTable());
@@ -122,9 +124,9 @@ class RolesTableTest extends TestCase
      * @param bool $expected Expected result.
      * @param array $data Data to be validated.
      * @return void
-     * @dataProvider validationProvider
-     * @coversNothing
      */
+    #[DataProvider('validationProvider')]
+    #[CoversNothing]
     public function testValidation($expected, array $data)
     {
         $role = $this->Roles->newEmptyEntity();
@@ -143,7 +145,6 @@ class RolesTableTest extends TestCase
      * Test finder for my objects.
      *
      * @return void
-     * @covers ::findMine()
      */
     public function testFindMine()
     {
@@ -161,7 +162,7 @@ class RolesTableTest extends TestCase
     /**
      * Test delete admin role
      *
-     * @covers ::beforeDelete
+     * @return void
      */
     public function testDeleteAdminRole()
     {
@@ -175,7 +176,7 @@ class RolesTableTest extends TestCase
     /**
      * Test delete second role
      *
-     * @covers ::beforeDelete
+     * @return void
      */
     public function testDeleteSecondRole()
     {

@@ -16,6 +16,7 @@ namespace BEdita\Core\Test\TestCase\Model\Table;
 
 use BEdita\Core\Exception\BadFilterException;
 use BEdita\Core\Model\Table\ObjectTypesTable;
+use BEdita\Core\ORM\Rule\IsUniqueAmongst;
 use Cake\Cache\Cache;
 use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\Http\Exception\BadRequestException;
@@ -26,12 +27,15 @@ use Cake\TestSuite\TestCase;
 use Cake\Utility\Hash;
 use Exception;
 use LogicException;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\CoversNothing;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * {@see \BEdita\Core\Model\Table\ObjectTypesTable} Test Case
- *
- * @coversDefaultClass \BEdita\Core\Model\Table\ObjectTypesTable
  */
+#[CoversClass(ObjectTypesTable::class)]
+#[CoversClass(IsUniqueAmongst::class)]
 class ObjectTypesTableTest extends TestCase
 {
     /**
@@ -90,8 +94,8 @@ class ObjectTypesTableTest extends TestCase
      * Test initialization.
      *
      * @return void
-     * @coversNothing
      */
+    #[CoversNothing]
     public function testInitialization(): void
     {
         static::assertEquals('object_types', $this->ObjectTypes->getTable());
@@ -218,9 +222,8 @@ class ObjectTypesTableTest extends TestCase
      * @param bool $expected Expected result.
      * @param array $data Data to be validated.
      * @return void
-     * @dataProvider validationProvider
-     * @covers \BEdita\Core\ORM\Rule\IsUniqueAmongst
      */
+    #[DataProvider('validationProvider')]
     public function testValidation($expected, array $data): void
     {
         $objectType = $this->ObjectTypes->newEmptyEntity();
@@ -403,9 +406,8 @@ class ObjectTypesTableTest extends TestCase
      * @param array|false $expected Expected result.
      * @param string|int $primaryKey Primary key.
      * @return void
-     * @dataProvider getProvider
-     * @covers ::get()
      */
+    #[DataProvider('getProvider')]
     public function testGet($expected, $primaryKey)
     {
         if ($expected instanceof Exception) {
@@ -438,7 +440,6 @@ class ObjectTypesTableTest extends TestCase
      * Test after save callback.
      *
      * @return void
-     * @covers ::afterSave()
      */
     public function testInvalidateCacheAfterSave()
     {
@@ -466,7 +467,6 @@ class ObjectTypesTableTest extends TestCase
      * Test after delete callback.
      *
      * @return void
-     * @covers ::afterDelete()
      */
     public function testInvalidateCacheAfterDelete()
     {
@@ -539,9 +539,8 @@ class ObjectTypesTableTest extends TestCase
      * @param array|\Exception $expected Expected results.
      * @param array $options Finder options.
      * @return void
-     * @covers ::findByRelation()
-     * @dataProvider findByRelationProvider()
      */
+    #[DataProvider('findByRelationProvider')]
     public function testFindByRelation(array|Exception $expected, array $options): void
     {
         if ($expected instanceof Exception) {
@@ -564,7 +563,6 @@ class ObjectTypesTableTest extends TestCase
      * Test findContainRelations custom finder.
      *
      * @return void
-     * @covers ::findContainRelations()
      */
     public function testFindContainRelations()
     {
@@ -606,9 +604,8 @@ class ObjectTypesTableTest extends TestCase
      *
      * @param array $data Entity data.
      * @return void
-     * @dataProvider modelRulesProvider
-     * @covers ::beforeRules()
      */
+    #[DataProvider('modelRulesProvider')]
     public function testDefaultModelRules(array $data)
     {
         $objectType = $this->ObjectTypes->newEmptyEntity();
@@ -653,10 +650,8 @@ class ObjectTypesTableTest extends TestCase
      * @param string $typeName Object type name to delete
      * @param mixed $expected Expected result: exception or boolean
      * @return void
-     * @dataProvider beforeDeleteProvider
-     * @covers ::beforeDelete()
-     * @covers ::beforeRules()
      */
+    #[DataProvider('beforeDeleteProvider')]
     public function testBeforeDelete($typeName, $expected)
     {
         if ($expected instanceof Exception) {
@@ -672,7 +667,6 @@ class ObjectTypesTableTest extends TestCase
      * Test delete failure when `Objects of this type exist`
      *
      * @return void
-     * @covers ::beforeDelete()
      */
     public function testDeleteWithObjects()
     {
@@ -707,7 +701,6 @@ class ObjectTypesTableTest extends TestCase
      * Test `parent_name` change with existing objects
      *
      * @return void
-     * @covers ::beforeRules()
      */
     public function testChangeParent()
     {
@@ -778,10 +771,8 @@ class ObjectTypesTableTest extends TestCase
      * @param array $data Data to save
      * @param mixed $expected Expected result: exception or boolean
      * @return void
-     * @dataProvider beforeSaveProvider
-     * @covers ::beforeSave()
-     * @covers ::objectsExist()
      */
+    #[DataProvider('beforeSaveProvider')]
     public function testBeforeSave($data, $expected)
     {
         if ($expected instanceof Exception) {
@@ -826,9 +817,8 @@ class ObjectTypesTableTest extends TestCase
      * @param mixed $expected The expected result.
      * @param array $id The id passed to finder.
      * @return void
-     * @covers ::findObjectId
-     * @dataProvider findObjectIdProvider
      */
+    #[DataProvider('findObjectIdProvider')]
     public function testFindObjectId(mixed $expected, string|int $id): void
     {
         if ($expected instanceof Exception) {
@@ -865,9 +855,8 @@ class ObjectTypesTableTest extends TestCase
      * @param mixed $expected The expected result.
      * @param string|int $parent The parent.
      * @return void
-     * @covers ::findParent()
-     * @dataProvider findParentProvider
      */
+    #[DataProvider('findParentProvider')]
     public function testFindParent($expected, string|int $parent)
     {
         if ($expected instanceof Exception) {

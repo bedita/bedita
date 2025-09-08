@@ -24,13 +24,16 @@ use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use Exception;
 use InvalidArgumentException;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\CoversNothing;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * {@see \BEdita\Core\Model\Entity\EndpointPermission} Test Case
  *
- * @coversDefaultClass \BEdita\Core\Model\Entity\EndpointPermission
  * @since 4.0.0
  */
+#[CoversClass(EndpointPermission::class)]
 class EndpointPermissionTest extends TestCase
 {
     /**
@@ -77,8 +80,8 @@ class EndpointPermissionTest extends TestCase
      * Test accessible properties.
      *
      * @return void
-     * @coversNothing
      */
+    #[CoversNothing]
     public function testAccessible()
     {
         $endpointPermission = $this->EndpointPermissions->get(1);
@@ -116,9 +119,8 @@ class EndpointPermissionTest extends TestCase
      * @param int $expected Encoded value.
      * @param string|bool $decoded Decoded value.
      * @return void
-     * @covers ::encode()
-     * @dataProvider encodeProvider()
      */
+    #[DataProvider('encodeProvider')]
     public function testEncode($expected, $decoded)
     {
         $encoded = EndpointPermission::encode($decoded);
@@ -148,9 +150,8 @@ class EndpointPermissionTest extends TestCase
      * @param string|bool $expected Decoded value.
      * @param int $encoded Encoded value.
      * @return void
-     * @covers ::decode()
-     * @dataProvider decodeProvider()
      */
+    #[DataProvider('decodeProvider')]
     public function testDecode($expected, $encoded)
     {
         $decoded = EndpointPermission::decode($encoded);
@@ -218,9 +219,8 @@ class EndpointPermissionTest extends TestCase
      * @param mixed $permission Permission to set.
      * @param int $initial Initial value.
      * @return void
-     * @covers ::_setPermission()
-     * @dataProvider setPermissionProvider()
      */
+    #[DataProvider('setPermissionProvider')]
     public function testSetPermission($expected, $permission, $initial = 0)
     {
         $entity = new EndpointPermission([
@@ -269,10 +269,9 @@ class EndpointPermissionTest extends TestCase
      *
      * @param array $expected Expected decoded values.
      * @param int $permission Permission.
-     * @covers ::_getRead()
-     * @covers ::_getWrite()
-     * @dataProvider getReadWriteProvider()
+     * @return void
      */
+    #[DataProvider('getReadWriteProvider')]
     public function testGetReadWrite(array $expected, $permission)
     {
         $entity = new EndpointPermission(compact('permission'));
@@ -323,9 +322,8 @@ class EndpointPermissionTest extends TestCase
      * @param int $permission Initial permission value.
      * @param string|bool|null $expected Expected read permission value (if `null`, same as `$read`).
      * @return void
-     * @covers ::_setRead()
-     * @dataProvider setReadWriteProvider()
      */
+    #[DataProvider('setReadWriteProvider')]
     public function testSetRead($read, $permission = 0, $expected = null)
     {
         if ($expected === null) {
@@ -347,9 +345,8 @@ class EndpointPermissionTest extends TestCase
      * @param int $permission Initial permission value.
      * @param string|bool|null $expected Expected write permission value (if `null`, same as `$write`).
      * @return void
-     * @covers ::_setWrite()
-     * @dataProvider setReadWriteProvider()
      */
+    #[DataProvider('setReadWriteProvider')]
     public function testSetWrite($write, $permission = 0, $expected = null)
     {
         if ($expected === null) {
@@ -393,9 +390,8 @@ class EndpointPermissionTest extends TestCase
      * @param mixed $expected The expected data
      * @param string $name The endpoint name
      * @return void
-     * @covers ::_setEndpointName()
-     * @dataProvider setEndpointNameProvider()
      */
+    #[DataProvider('setEndpointNameProvider')]
     public function testSetEndpointName($expected, ?string $name): void
     {
         if ($expected instanceof Exception) {
@@ -447,9 +443,8 @@ class EndpointPermissionTest extends TestCase
      * @param mixed $expected The expected data
      * @param string $name The role name
      * @return void
-     * @covers ::_setRoleName()
-     * @dataProvider setRoleNameProvider()
      */
+    #[DataProvider('setRoleNameProvider')]
     public function testSetRoleName($expected, ?string $name): void
     {
         if ($expected instanceof Exception) {
@@ -501,9 +496,8 @@ class EndpointPermissionTest extends TestCase
      * @param mixed $expected The expected data
      * @param string $name The application name
      * @return void
-     * @covers ::_setApplicationName()
-     * @dataProvider setApplicationNameProvider()
      */
+    #[DataProvider('setApplicationNameProvider')]
     public function testSetApplicationName($expected, ?string $name): void
     {
         if ($expected instanceof Exception) {

@@ -17,19 +17,18 @@ namespace BEdita\Core\Test\TestCase\Utility;
 use BEdita\Core\Utility\Database;
 use Cake\Datasource\ConnectionManager;
 use Cake\TestSuite\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
 
 /**
- * \BEdita\Core\Utility\Database Test Case
- *
- * @coversDefaultClass \BEdita\Core\Utility\Database
+ * {@see \BEdita\Core\Utility\Database} Test Case
  */
+#[CoversClass(Database::class)]
 class DatabaseTest extends TestCase
 {
     /**
      * Test basicInfo method
      *
      * @return void
-     * @covers ::basicInfo()
      */
     public function testBasicInfo(): void
     {
@@ -55,7 +54,6 @@ class DatabaseTest extends TestCase
      * Test connectionTest method
      *
      * @return void
-     * @covers ::connectionTest()
      */
     public function testConnectionTest(): void
     {

@@ -15,6 +15,7 @@ declare(strict_types=1);
 namespace BEdita\Core\Test\TestCase\Model\Table;
 
 use BEdita\Core\Model\Entity\ObjectType;
+use BEdita\Core\Model\Table\FoldersTable;
 use BEdita\Core\Utility\LoggedUser;
 use Cake\Core\Configure;
 use Cake\Database\Expression\FunctionExpression;
@@ -26,12 +27,15 @@ use Cake\ORM\Association\BelongsToMany;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Hash;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\CoversNothing;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\TestWith;
 
 /**
- * BEdita\Core\Model\Table\FoldersTable Test Case
- *
- * @coversDefaultClass \BEdita\Core\Model\Table\FoldersTable
+ * {@see BEdita\Core\Model\Table\FoldersTable} Test Case
  */
+#[CoversClass(FoldersTable::class)]
 class FoldersTableTest extends TestCase
 {
     /**
@@ -90,8 +94,8 @@ class FoldersTableTest extends TestCase
      * Test initialize method
      *
      * @return void
-     * @coversNothing
      */
+    #[CoversNothing]
     public function testInitialize()
     {
         $this->assertEquals('objects', $this->Folders->getTable());
@@ -106,7 +110,6 @@ class FoldersTableTest extends TestCase
      * For example when is used as Parents association on `objectsTable`
      *
      * @return void
-     * @covers ::initialize()
      */
     public function testInitializeObjectType(): void
     {
@@ -153,9 +156,8 @@ class FoldersTableTest extends TestCase
      * Test hasAtMostOneParent method
      *
      * @return void
-     * @dataProvider hasAtMostOneParentProvider()
-     * @covers ::hasAtMostOneParent()
      */
+    #[DataProvider('hasAtMostOneParentProvider')]
     public function testHasAtMostOneParent($expected, $parents)
     {
         $entity = $this->Folders->newEntity(['parents' => $parents], [
@@ -259,11 +261,8 @@ class FoldersTableTest extends TestCase
      * @param mixed $expected The expected result
      * @param array $data The data to save
      * @return void
-     * @dataProvider saveProvider
-     * @covers ::beforeSave()
-     * @covers ::afterSave()
-     * @covers ::updateChildrenDeletedField()
      */
+    #[DataProvider('saveProvider')]
     public function testSave($expected, $data)
     {
         $trees = TableRegistry::getTableLocator()->get('Trees');
@@ -299,7 +298,7 @@ class FoldersTableTest extends TestCase
     /**
      * Test `findRoots()`
      *
-     * @covers ::findRoots()
+     * @return void
      */
     public function testFindRoots()
     {
@@ -316,7 +315,6 @@ class FoldersTableTest extends TestCase
      * Test also that restoring the folder restores subfolders too.
      *
      * @return void
-     * @covers ::updateChildrenDeletedField()
      */
     public function testSoftDeleteAndRestore()
     {
@@ -367,8 +365,6 @@ class FoldersTableTest extends TestCase
      * Test that deleting a folder all its subfolders (descendants) are deleted too.
      *
      * @return void
-     * @covers ::beforeDelete()
-     * @covers ::afterDelete()
      */
     public function testDeleteFolder()
     {
@@ -428,7 +424,6 @@ class FoldersTableTest extends TestCase
      * Test `isFolderRestorable()` in case of no check on parents.
      *
      * @return void
-     * @covers ::isFolderRestorable()
      */
     public function testIsFolderRestorableNoCheckOnParents()
     {
@@ -451,7 +446,6 @@ class FoldersTableTest extends TestCase
      * trying to resume a folder deleted with parent not deleted.
      *
      * @return void
-     * @covers ::isFolderRestorable()
      */
     public function testIsFolderRestorableOK()
     {
@@ -471,7 +465,6 @@ class FoldersTableTest extends TestCase
      * trying to resume a folder deleted with parent deleted.
      *
      * @return void
-     * @covers ::isFolderRestorable()
      */
     public function testIsFolderRestorableKO()
     {
@@ -499,8 +492,8 @@ class FoldersTableTest extends TestCase
      * Test that only available children are returned.
      *
      * @return void
-     * @coversNothing
      */
+    #[CoversNothing]
     public function testChildrenAvailable(): void
     {
         $folder = $this->Folders->get(11, contain: ['Children']);
@@ -594,9 +587,8 @@ class FoldersTableTest extends TestCase
      * @param string|null $order Value of `children_order` property.
      * @param \Cake\Database\ExpressionInterface|array<string, string> Expected order.
      * @return void
-     * @dataProvider getSortProvider()
-     * @covers ::getSort()
      */
+    #[DataProvider('getSortProvider')]
     public function testGetSort(int $id, ?string $order, $expected): void
     {
         $folder = $this->Folders->get($id);
@@ -621,9 +613,8 @@ class FoldersTableTest extends TestCase
      * @param string|null $order Value of `children_order` property.
      * @param \Cake\Database\ExpressionInterface|array<string, string> Expected order.
      * @return void
-     * @dataProvider getSortProvider()
-     * @covers ::getSort()
      */
+    #[DataProvider('getSortProvider')]
     public function testGetSortFolder(int $id, ?string $order, $expected): void
     {
         $folder = $this->Folders->get($id);
@@ -643,10 +634,8 @@ class FoldersTableTest extends TestCase
      * Test {@see \BEdita\Core\Model\Table\FoldersTable::getSort()} method with an invalid field for `children_order`.
      *
      * @return void
-     * @covers ::getSort()
-     * @testWith ["invalid_field"]
-     *           ["-uname"]
      */
+    #[TestWith(['invalid_field'], '-uname')]
     public function testGetSortInvalidField(string $order): void
     {
         $actual = $this->Folders->getSort($this->Folders->newEmptyEntity()->set('children_order', $order));

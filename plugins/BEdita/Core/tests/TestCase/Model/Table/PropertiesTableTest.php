@@ -17,16 +17,19 @@ namespace BEdita\Core\Test\TestCase\Model\Table;
 use BEdita\Core\Exception\BadFilterException;
 use BEdita\Core\Model\Entity\Property;
 use BEdita\Core\Model\Entity\StaticProperty;
+use BEdita\Core\Model\Table\PropertiesTable;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use Cake\Validation\Validation;
 use Exception;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\CoversNothing;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * {@see \BEdita\Core\Model\Table\PropertiesTable} Test Case
- *
- * @coversDefaultClass \BEdita\Core\Model\Table\PropertiesTable
  */
+#[CoversClass(PropertiesTable::class)]
 class PropertiesTableTest extends TestCase
 {
     /**
@@ -78,8 +81,8 @@ class PropertiesTableTest extends TestCase
      * Test initialization.
      *
      * @return void
-     * @coversNothing
      */
+    #[CoversNothing]
     public function testInitialization()
     {
         static::assertEquals('properties', $this->Properties->getTable());
@@ -122,9 +125,9 @@ class PropertiesTableTest extends TestCase
      * @param bool $expected Expected result.
      * @param array $data Data to be validated.
      * @return void
-     * @dataProvider validationProvider
-     * @coversNothing
      */
+    #[DataProvider('validationProvider')]
+    #[CoversNothing]
     public function testValidation($expected, array $data)
     {
         $property = $this->Properties->newEmptyEntity();
@@ -208,9 +211,8 @@ class PropertiesTableTest extends TestCase
      * @param array|\Exception $expected List of expected properties names.
      * @param string|int $for Name or id passed to finder.
      * @return void
-     * @dataProvider findObjectTypeProvider()
-     * @covers ::findObjectType()
      */
+    #[DataProvider('findObjectTypeProvider')]
     public function testFindObjectType($expected, string|int $for)
     {
         $result = $this->Properties->find('objectType', for: $for)
@@ -331,9 +333,8 @@ class PropertiesTableTest extends TestCase
      * @param string $objectType Object type to find properties for
      * @param string $type Type of properties to be returned.
      * @return void
-     * @dataProvider findTypeProvider()
-     * @covers ::findType()
      */
+    #[DataProvider('findTypeProvider')]
     public function testFindType($expected, $objectType, $type = 'both')
     {
         if ($expected instanceof Exception) {
@@ -374,7 +375,6 @@ class PropertiesTableTest extends TestCase
      * Test that by default both static and custom properties are returned.
      *
      * @return void
-     * @covers ::beforeFind()
      */
     public function testBeforeFindDefault()
     {
@@ -428,7 +428,6 @@ class PropertiesTableTest extends TestCase
      * Test that default options do not overwrite user-defined options.
      *
      * @return void
-     * @covers ::beforeFind()
      */
     public function testBeforeFindDoNotOverwrite()
     {
@@ -485,9 +484,8 @@ class PropertiesTableTest extends TestCase
      * @param int $expected The value expected
      * @param array $options The options for the finder
      * @return void
-     * @covers ::findResource()
-     * @dataProvider findResourceProvider()
      */
+    #[DataProvider('findResourceProvider')]
     public function testFindResource($expected, $options)
     {
         if ($expected instanceof Exception) {

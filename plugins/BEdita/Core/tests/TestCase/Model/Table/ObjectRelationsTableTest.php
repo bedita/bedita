@@ -18,10 +18,14 @@ use BEdita\Core\Model\Table\ObjectRelationsTable;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Hash;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\CoversNothing;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
- * @coversDefaultClass \BEdita\Core\Model\Table\ObjectRelationsTable
+ * {@see \BEdita\Core\Model\Table\ObjectRelationsTable} Test Case
  */
+#[CoversClass(ObjectRelationsTable::class)]
 class ObjectRelationsTableTest extends TestCase
 {
     /**
@@ -152,9 +156,9 @@ class ObjectRelationsTableTest extends TestCase
      * @param object|null $jsonSchema JSON Schema.
      * @param bool $isNew Should entity be treated as new?
      * @return void
-     * @dataProvider validationProvider()
-     * @coversNothing
      */
+    #[DataProvider('validationProvider')]
+    #[CoversNothing]
     public function testValidation($expected, array $data, $jsonSchema = null, $isNew = true)
     {
         if ($jsonSchema) {
@@ -260,9 +264,8 @@ class ObjectRelationsTableTest extends TestCase
      * @param mixed $value Value being validated.
      * @param object $jsonSchema JSON Schema.
      * @return void
-     * @dataProvider jsonSchemaProvider()
-     * @covers ::jsonSchema()
      */
+    #[DataProvider('jsonSchemaProvider')]
     public function testJsonSchema($expected, $value, $jsonSchema)
     {
         if (!is_object($jsonSchema)) {

@@ -14,13 +14,14 @@ declare(strict_types=1);
  */
 namespace BEdita\Core\Test\TestCase\Model\Entity;
 
+use BEdita\Core\Model\Entity\Tag;
 use Cake\TestSuite\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
 
 /**
  *  {@see \BEdita\Core\Model\Entity\Tag} Test Case
- *
- * @coversDefaultClass \BEdita\Core\Model\Entity\Tag
  */
+#[CoversClass(Tag::class)]
 class TagTest extends TestCase
 {
     /**
@@ -36,7 +37,6 @@ class TagTest extends TestCase
      * Test `_getLabel` methods.
      *
      * @return void
-     * @covers ::_getLabel()
      */
     public function testGetLabel(): void
     {
@@ -48,8 +48,6 @@ class TagTest extends TestCase
      * Test `_setLabel` methods.
      *
      * @return void
-     * @covers ::_getLabel()
-     * @covers ::_setLabel()
      */
     public function testSetLabel(): void
     {

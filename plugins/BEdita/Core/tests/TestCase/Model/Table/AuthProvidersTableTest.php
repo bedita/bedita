@@ -14,15 +14,18 @@ declare(strict_types=1);
  */
 namespace BEdita\Core\Test\TestCase\Model\Table;
 
+use BEdita\Core\Model\Table\AuthProvidersTable;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Hash;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\CoversNothing;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * {@see \BEdita\Core\Model\Table\AuthProvidersTable} Test Case
- *
- * @coversDefaultClass \BEdita\Core\Model\Table\AuthProvidersTable
  */
+#[CoversClass(AuthProvidersTable::class)]
 class AuthProvidersTableTest extends TestCase
 {
     /**
@@ -65,8 +68,8 @@ class AuthProvidersTableTest extends TestCase
      * Test initialization.
      *
      * @return void
-     * @coversNothing
      */
+    #[CoversNothing]
     public function testInitialization()
     {
         $schema = $this->AuthProviders->getSchema();
@@ -135,9 +138,9 @@ class AuthProvidersTableTest extends TestCase
      * @param string[] $expected Expected validation errors.
      * @param array $data Data to be validated.
      * @return void
-     * @dataProvider validationProvider
-     * @coversNothing
      */
+    #[DataProvider('validationProvider')]
+    #[CoversNothing]
     public function testValidation(array $expected, array $data): void
     {
         $authProvider = $this->AuthProviders->newEmptyEntity();
@@ -157,7 +160,6 @@ class AuthProvidersTableTest extends TestCase
      * Test `findEnabled` method.
      *
      * @return void
-     * @covers ::findEnabled()
      */
     public function testFindEnabled()
     {

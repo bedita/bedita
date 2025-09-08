@@ -25,12 +25,15 @@ use Cake\Utility\Text;
 use Exception;
 use InvalidArgumentException;
 use Laminas\Diactoros\Stream;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Psr\Http\Message\StreamInterface;
 use stdClass;
 
 /**
- * @coversDefaultClass \BEdita\Core\Model\Entity\Stream
+ * {@see \BEdita\Core\Model\Entity\Stream} Test Case
  */
+#[CoversClass(EntityStream::class)]
 class StreamTest extends TestCase
 {
     use TestFilesystemTrait;
@@ -134,9 +137,8 @@ class StreamTest extends TestCase
      * @param string $filesystem Filesystem name.
      * @param int $subLevels Number of sub-levels.
      * @return void
-     * @dataProvider filesystemPathProvider()
-     * @covers ::filesystemPath()
      */
+    #[DataProvider('filesystemPathProvider')]
     public function testFilesystemPath(string $expected, array $data, string $filesystem = 'default', int $subLevels = 0): void
     {
         /** @var \BEdita\Core\Model\Entity\Stream $stream */
@@ -152,7 +154,6 @@ class StreamTest extends TestCase
      * Test getter of contents.
      *
      * @return void
-     * @covers ::_getContents()
      */
     public function testGetContents()
     {
@@ -170,7 +171,6 @@ class StreamTest extends TestCase
      * Test getter of contents for a missing file.
      *
      * @return void
-     * @covers ::_getContents()
      */
     public function testGetContentsFileNotReadable()
     {
@@ -185,7 +185,6 @@ class StreamTest extends TestCase
      * Test getter of contents for a file not uploaded.
      *
      * @return void
-     * @covers ::_getContents()
      */
     public function testGetContentsNotUploaded()
     {
@@ -265,10 +264,8 @@ class StreamTest extends TestCase
      * @param \Exception|string $expected Expected stream contents.
      * @param mixed $contents Contents.
      * @return void
-     * @dataProvider setContentsProvider()
-     * @covers ::_setContents()
-     * @covers ::createStream()
      */
+    #[DataProvider('setContentsProvider')]
     public function testSetContents($expected, $contents)
     {
         if ($expected instanceof Exception) {
@@ -313,9 +310,8 @@ class StreamTest extends TestCase
      * @param string|null $expected Expected result.
      * @param string $uuid UUID of stream to test.
      * @return void
-     * @dataProvider getUrlProvider()
-     * @covers ::_getUrl()
      */
+    #[DataProvider('getUrlProvider')]
     public function testGetUrl($expected, $uuid)
     {
         $stream = $this->Streams->get($uuid);
@@ -332,7 +328,6 @@ class StreamTest extends TestCase
      * Test URL getter with private url.
      *
      * @return void
-     * @covers ::_getUrl()
      */
     public function testGetUrlPrivate()
     {
@@ -345,6 +340,7 @@ class StreamTest extends TestCase
      * Read data from image if is possible
      *
      * @param \BEdita\Core\Model\Entity\Stream $stream Stream entity.
+     * @return void
      */
 
     public function readDataFromImage($stream): void
@@ -372,8 +368,7 @@ class StreamTest extends TestCase
     /**
      * Test read exif data
      *
-     * @covers ::readFileMetadata()
-     * @covers ::createStream()
+     * @return void
      */
     public function testReadFileMetadata()
     {
@@ -396,8 +391,7 @@ class StreamTest extends TestCase
     /**
      * Test failed read exif data
      *
-     * @covers ::readFileMetadata()
-     * @covers ::createStream()
+     * @return void
      */
     public function testFailedReadFileMetadata()
     {

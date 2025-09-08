@@ -14,15 +14,16 @@ declare(strict_types=1);
  */
 namespace BEdita\Core\Test\TestCase\Model\Table;
 
+use BEdita\Core\Model\Table\TagsTable;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Hash;
+use PHPUnit\Framework\Attributes\CoversClass;
 
 /**
  * {@see \BEdita\Core\Model\Table\TagsTable} Test Case
- *
- * @coversDefaultClass \BEdita\Core\Model\Table\TagsTable
  */
+#[CoversClass(TagsTable::class)]
 class TagsTableTest extends TestCase
 {
     /**
@@ -71,7 +72,6 @@ class TagsTableTest extends TestCase
      * Test `beforeFind` method
      *
      * @return void
-     * @covers ::beforeFind()
      */
     public function testBeforeFindPrimary(): void
     {
@@ -91,7 +91,6 @@ class TagsTableTest extends TestCase
      * Test `beforeFind` method in case of association
      *
      * @return void
-     * @covers ::beforeFind()
      */
     public function testBeforeFindAssoc(): void
     {
@@ -113,7 +112,6 @@ class TagsTableTest extends TestCase
      * Test `findEnabled` method
      *
      * @return void
-     * @covers ::findEnabled()
      */
     public function testFindEnabled(): void
     {
@@ -125,7 +123,6 @@ class TagsTableTest extends TestCase
      * Test `findIds` method
      *
      * @return void
-     * @covers ::findIds()
      */
     public function testFindIds(): void
     {

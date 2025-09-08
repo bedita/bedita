@@ -14,16 +14,18 @@ declare(strict_types=1);
  */
 namespace BEdita\Core\Test\TestCase\ORM\Inheritance\Query;
 
+use BEdita\Core\ORM\Inheritance\Query\SelectQuery;
 use BEdita\Core\Test\TestCase\ORM\Inheritance\FakeAnimalsTrait;
 use Cake\Database\ValueBinder;
 use Cake\ORM\Query\SelectQuery as CakeSelectQuery;
 use Cake\TestSuite\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * {@see \BEdita\Core\ORM\Inheritance\Query\SelectQuery} Test Case
- *
- * @coversDefaultClass \BEdita\Core\ORM\Inheritance\Query\SelectQuery
  */
+#[CoversClass(SelectQuery::class)]
 class SelectQueryTest extends TestCase
 {
     use FakeAnimalsTrait;
@@ -76,9 +78,8 @@ class SelectQueryTest extends TestCase
      * @param string[] $select Fields to explicitly select.
      * @param bool $autoFields Is auto-fields enabled?
      * @return void
-     * @covers ::_addDefaultFields()
-     * @dataProvider addDefaultFieldsProvider()
      */
+    #[DataProvider('addDefaultFieldsProvider')]
     public function testAddDefaultFields(array $expected, array $select, bool $autoFields): void
     {
         $query = $this->fakeFelines->find()
@@ -97,9 +98,7 @@ class SelectQueryTest extends TestCase
     /**
      * Test builder for CTI sub-query.
      *
-     * @covers ::_transformQuery()
-     * @covers ::getInheritanceSubQuery()
-     * @covers ::subQueryAliasFields()
+     * @return void
      */
     public function testTransformQuery(): void
     {

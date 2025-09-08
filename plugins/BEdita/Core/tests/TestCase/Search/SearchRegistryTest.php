@@ -23,12 +23,15 @@ use Cake\ORM\Query\SelectQuery;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Hash;
 use Exception;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 use RuntimeException;
 use stdClass;
 
 /**
- * @coversDefaultClass \BEdita\Core\Search\SearchRegistry
+ * {@see \BEdita\Core\Search\SearchRegistry} Test Case
  */
+#[CoversClass(SearchRegistry::class)]
 class SearchRegistryTest extends TestCase
 {
     /**
@@ -109,11 +112,8 @@ class SearchRegistryTest extends TestCase
      * @param string $name Adapter name
      * @param array $config Adapter configuration
      * @return void
-     * @covers ::_create()
-     * @covers ::_resolveClassName()
-     * @covers ::_throwMissingClassError()
-     * @dataProvider loadProvider()
      */
+    #[DataProvider('loadProvider')]
     public function testLoad($expected, string $name, array $config): void
     {
         if ($expected instanceof Exception) {

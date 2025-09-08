@@ -15,16 +15,19 @@ declare(strict_types=1);
 namespace BEdita\Core\Test\TestCase\Model\Table;
 
 use BEdita\Core\Exception\ImmutableResourceException;
+use BEdita\Core\Model\Table\RolesUsersTable;
 use BEdita\Core\Utility\LoggedUser;
 use Cake\Http\Exception\ForbiddenException;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\CoversNothing;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * {@see \BEdita\Core\Model\Table\RolesUsersTable} Test Case
- *
- * @coversDefaultClass \BEdita\Core\Model\Table\RolesUsersTable
  */
+#[CoversClass(RolesUsersTable::class)]
 class RolesUsersTableTest extends TestCase
 {
     /**
@@ -101,9 +104,9 @@ class RolesUsersTableTest extends TestCase
      * @param bool $expected Expected result.
      * @param array $data Data to be validated.
      * @return void
-     * @dataProvider validationProvider()
-     * @coversNothing
      */
+    #[DataProvider('validationProvider')]
+    #[CoversNothing]
     public function testValidation($expected, array $data)
     {
         LoggedUser::setUserAdmin();
@@ -117,7 +120,7 @@ class RolesUsersTableTest extends TestCase
     /**
      * Test delete admin role association
      *
-     * @covers ::beforeDelete
+     * @return void
      */
     public function testDeleteAdminRole()
     {
@@ -131,8 +134,7 @@ class RolesUsersTableTest extends TestCase
     /**
      * Test delete admin role association
      *
-     * @covers ::beforeDelete
-     * @covers ::canHandle()
+     * @return void
      */
     public function testDeleteAdminRoleForbidden()
     {
@@ -147,7 +149,7 @@ class RolesUsersTableTest extends TestCase
     /**
      * Test delete second role association
      *
-     * @covers ::beforeDelete
+     * @return void
      */
     public function testDeleteSecondRole()
     {
@@ -161,8 +163,6 @@ class RolesUsersTableTest extends TestCase
      * Test modify admin role association
      *
      * @return void
-     * @covers ::beforeSave()
-     * @covers ::canHandle()
      */
     public function testModifyAdminRole()
     {
@@ -180,8 +180,6 @@ class RolesUsersTableTest extends TestCase
      * Test modify admin role association
      *
      * @return void
-     * @covers ::beforeSave()
-     * @covers ::canHandle()
      */
     public function testModifyAdminRoleForbidden()
     {

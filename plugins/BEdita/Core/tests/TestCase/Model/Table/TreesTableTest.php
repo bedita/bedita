@@ -28,13 +28,15 @@ use Cake\ORM\Behavior\TreeBehavior;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use Exception;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\CoversNothing;
+use PHPUnit\Framework\Attributes\DataProvider;
 use RuntimeException;
 
 /**
- * BEdita\Core\Model\Table\TreesTable Test Case
- *
- * @coversDefaultClass \BEdita\Core\Model\Table\TreesTable
+ * {@see \BEdita\Core\Model\Table\TreesTable} Test Case
  */
+#[CoversClass(TreesTable::class)]
 class TreesTableTest extends TestCase
 {
     /**
@@ -92,8 +94,8 @@ class TreesTableTest extends TestCase
      * Test initialize method
      *
      * @return void
-     * @coversNothing
      */
+    #[CoversNothing]
     public function testInitialize()
     {
         static::assertInstanceOf(BelongsTo::class, $this->Trees->Objects);
@@ -144,10 +146,8 @@ class TreesTableTest extends TestCase
      * @param int|null $parentId The parent id
      * @param int|null $objectId The object id
      * @return void
-     * @dataProvider isParentValidProvider
-     * @covers ::isParentValid()
-     * @covers ::isFolder()
      */
+    #[DataProvider('isParentValidProvider')]
     public function testIsParentValid($expected, $parentId, $objectId = null)
     {
         $entity = $this->Trees->newEmptyEntity();
@@ -196,10 +196,8 @@ class TreesTableTest extends TestCase
      * @param int|null $objectId Object ID.
      * @param int|null $parentId Parent ID.
      * @return void
-     * @dataProvider isPositionUniqueProvider
-     * @covers ::isPositionUnique()
-     * @covers ::isFolder()
      */
+    #[DataProvider('isPositionUniqueProvider')]
     public function testIsPositionUnique($expected, $objectId, $parentId)
     {
         $this->Trees->deleteAll(['object_id' => 13]);
@@ -269,9 +267,8 @@ class TreesTableTest extends TestCase
      * @param int $objectId Object ID.
      * @param string|null $slug Slug set on tree node.
      * @return void
-     * @dataProvider slugPopulationProvider()
-     * @covers ::beforeRules()
      */
+    #[DataProvider('slugPopulationProvider')]
     public function testSlugPopulation(string $expected, int $objectId, ?string $slug = null): void
     {
         $node = $this->Trees->newEntity([
@@ -308,9 +305,8 @@ class TreesTableTest extends TestCase
      * @param int $rootExpected Expected root ID.
      * @param int|null $parentId Parent ID.
      * @return void
-     * @dataProvider changeRootProvider
-     * @covers ::afterSave()
      */
+    #[DataProvider('changeRootProvider')]
     public function testChangeRoot($rootExpected, $parentId)
     {
         $node = $this->Trees->get(2);
@@ -334,7 +330,6 @@ class TreesTableTest extends TestCase
      * Test `afterSave` on new item
      *
      * @return void
-     * @covers ::afterSave()
      */
     public function testAfterSaveNew()
     {
@@ -353,8 +348,8 @@ class TreesTableTest extends TestCase
      * Test that moving a parent as child fails.
      *
      * @return void
-     * @coversNothing
      */
+    #[CoversNothing]
     public function testMoveParentAsChild()
     {
         $this->expectException(RuntimeException::class);
@@ -409,10 +404,8 @@ class TreesTableTest extends TestCase
      * @param int $objectId Object ID.
      * @param bool $primary Is this a "primary" delete operation?
      * @return void
-     * @dataProvider deleteOrphanedProvider()
-     * @covers ::beforeDelete()
-     * @covers ::isFolder()
      */
+    #[DataProvider('deleteOrphanedProvider')]
     public function testDeleteOrphaned($expected, $objectId, $primary = true)
     {
         if ($expected instanceof Exception) {
@@ -468,9 +461,8 @@ class TreesTableTest extends TestCase
      * @param int $objectId Object ID.
      * @param int|string $position Position.
      * @return void
-     * @dataProvider setPositionProvider()
-     * @covers ::afterSave()
      */
+    #[DataProvider('setPositionProvider')]
     public function testSetPosition($expected, $objectId, $position)
     {
         if ($expected instanceof Exception) {
@@ -494,7 +486,7 @@ class TreesTableTest extends TestCase
     /**
      * Test set canonical `true`
      *
-     * @covers ::afterSave()
+     * @return void
      */
     public function testSetCanonical()
     {
@@ -507,7 +499,6 @@ class TreesTableTest extends TestCase
             ]
         );
         $entity = $this->Trees->saveOrFail($entity);
-        static::assertTrue((bool)$entity);
 
         $entity = $this->Trees->get($entity->get('id'));
         static::assertFalse($entity->get('canonical'));
@@ -550,11 +541,8 @@ class TreesTableTest extends TestCase
      * @param array|\Exception $expected Expected array path or exception.
      * @param int $objectId The object id.
      * @return void
-     * @dataProvider findPathNodesProvider()
-     * @covers ::findPathNodes()
-     * @covers ::getSchema())
-     * @return void
      */
+    #[DataProvider('findPathNodesProvider')]
     public function testFindPathNodes($expected, int $objectId): void
     {
         if ($expected instanceof Exception) {
@@ -672,9 +660,8 @@ class TreesTableTest extends TestCase
      * @param array|null $value Value being validated.
      * @param array|null $schema JSON schema.
      * @return void
-     * @dataProvider jsonSchemaProvider()
-     * @covers ::jsonSchema()
      */
+    #[DataProvider('jsonSchemaProvider')]
     public function testJsonSchema($expected, ?array $value, ?array $schema): void
     {
         Configure::write('ChildrenParams', $schema);
@@ -691,8 +678,6 @@ class TreesTableTest extends TestCase
      * Test `getPathInfo()` with a valid multi-level path.
      *
      * @return void
-     * @covers ::getPathInfo()
-     * @covers ::loadSlugsPath()
      */
     public function testGetPathInfoValid(): void
     {
@@ -709,8 +694,6 @@ class TreesTableTest extends TestCase
      * Test `getPathInfo()` with a deeper valid path.
      *
      * @return void
-     * @covers ::getPathInfo()
-     * @covers ::loadSlugsPath()
      */
     public function testGetPathInfoDeepValid(): void
     {
@@ -730,8 +713,6 @@ class TreesTableTest extends TestCase
      * Test `getPathInfo()` with a valid alternative root.
      *
      * @return void
-     * @covers ::getPathInfo()
-     * @covers ::loadSlugsPath()
      */
     public function testGetPathInfoAlternativeRoot(): void
     {
@@ -748,8 +729,6 @@ class TreesTableTest extends TestCase
      * Test `getPathInfo()` with an invalid path.
      *
      * @return void
-     * @covers ::getPathInfo()
-     * @covers ::loadSlugsPath()
      */
     public function testGetPathInfoInvalid(): void
     {
@@ -761,8 +740,6 @@ class TreesTableTest extends TestCase
      * Test `getPathInfo()` with a partially valid but non-existent full path.
      *
      * @return void
-     * @covers ::getPathInfo()
-     * @covers ::loadSlugsPath()
      */
     public function testGetPathInfoPartialInvalid(): void
     {
@@ -774,8 +751,6 @@ class TreesTableTest extends TestCase
      * Test `getPathInfo()` with an empty path.
      *
      * @return void
-     * @covers ::getPathInfo()
-     * @covers ::loadSlugsPath()
      */
     public function testGetPathInfoEmpty(): void
     {

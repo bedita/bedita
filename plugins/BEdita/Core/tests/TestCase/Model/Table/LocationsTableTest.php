@@ -14,15 +14,18 @@ declare(strict_types=1);
  */
 namespace BEdita\Core\Test\TestCase\Model\Table;
 
+use BEdita\Core\Model\Table\LocationsTable;
 use BEdita\Core\Utility\LoggedUser;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\CoversNothing;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * {@see \BEdita\Core\Model\Table\LocationsTable} Test Case
- *
- * @coversDefaultClass \BEdita\Core\Model\Table\LocationsTable
  */
+#[CoversClass(LocationsTable::class)]
 class LocationsTableTest extends TestCase
 {
     /**
@@ -116,9 +119,9 @@ class LocationsTableTest extends TestCase
      * @param bool $changed
      * @param array $data
      * @return void
-     * @dataProvider saveProvider
-     * @coversNothing
      */
+    #[DataProvider('saveProvider')]
+    #[CoversNothing]
     public function testSave(bool $changed, array $data)
     {
         $entity = $this->Locations->newEntity($data);

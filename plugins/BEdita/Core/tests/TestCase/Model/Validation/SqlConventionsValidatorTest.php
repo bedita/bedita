@@ -19,10 +19,13 @@ use BEdita\Core\Model\Validation\SqlConventionsValidator;
 use Cake\Database\Schema\TableSchema;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Hash;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
- * @covers \BEdita\Core\Model\Validation\SqlConventionsValidator
+ * {@see \BEdita\Core\Model\Validation\SqlConventionsValidator} Test Case
  */
+#[CoversClass(SqlConventionsValidator::class)]
 class SqlConventionsValidatorTest extends TestCase
 {
     /**
@@ -154,8 +157,8 @@ class SqlConventionsValidatorTest extends TestCase
      * @param mixed $symbol Symbol being validated.
      * @param array $context Additional validation context.
      * @return void
-     * @dataProvider validationProvider()
      */
+    #[DataProvider('validationProvider')]
     public function testValidation(array $expected, $symbol, array $context = []): void
     {
         $validator = new SqlConventionsValidator();

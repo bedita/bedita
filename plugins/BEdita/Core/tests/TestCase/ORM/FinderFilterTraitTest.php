@@ -21,12 +21,13 @@ use Cake\ORM\Query\SelectQuery;
 use Cake\ORM\Table;
 use Cake\TestSuite\TestCase;
 use LogicException;
+use PHPUnit\Framework\Attributes\CoversTrait;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * {@see BEdita\Core\ORM\FinderFilterTrait} Test Case
- *
- * @coversDefaultClass \BEdita\Core\ORM\FinderFilterTrait
  */
+#[CoversTrait(FinderFilterTrait::class)]
 class FinderFilterTraitTest extends TestCase
 {
     /**
@@ -108,8 +109,6 @@ class FinderFilterTraitTest extends TestCase
      * Test that `hasFilter` method throws an exception if called on a class that is not a Table instance.
      *
      * @return void
-     * @covers ::hasFilter()
-     * @covers ::getFilter()
      */
     public function testHasFilterNoTableInstance(): void
     {
@@ -129,8 +128,6 @@ class FinderFilterTraitTest extends TestCase
      * Test that `hasFilter` method returns true if a filter is available in the Table.
      *
      * @return void
-     * @covers ::hasFilter()
-     * @covers ::getFilter()
      */
     public function testHasFinderTable(): void
     {
@@ -209,11 +206,8 @@ class FinderFilterTraitTest extends TestCase
      * Test `callFilter()` method.
      *
      * @return void
-     * @covers ::callFilter()
-     * @covers ::getFilter()
-     * @covers ::invokeFilter()
-     * @dataProvider callFilterProvider
      */
+    #[DataProvider('callFilterProvider')]
     public function testCallFilter(BadMethodCallException|array $expected, string $filterName, array|string|null $value = null): void
     {
         if ($expected instanceof BadMethodCallException) {
