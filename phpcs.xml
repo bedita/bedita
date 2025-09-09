@@ -8,10 +8,15 @@
     <config name="installed_paths" value="../../cakephp/cakephp-codesniffer"/>
 
     <rule ref="CakePHP"/>
+    <exclude-pattern>config/Migrations/</exclude-pattern>
+    <exclude-pattern>config/Seeds/</exclude-pattern>
+    <file>config/</file>
     <file>src/</file>
     <file>tests/</file>
+    <file>plugins/BEdita/API/config/</file>
     <file>plugins/BEdita/API/src/</file>
     <file>plugins/BEdita/API/tests/</file>
+    <file>plugins/BEdita/Core/config/</file>
     <file>plugins/BEdita/Core/src/</file>
     <file>plugins/BEdita/Core/tests/</file>
 </ruleset>
