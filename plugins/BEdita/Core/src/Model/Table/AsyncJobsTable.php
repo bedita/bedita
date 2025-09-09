@@ -215,23 +215,23 @@ class AsyncJobsTable extends Table
     {
         $now = DateTime::now();
 
-        return $query->where(fn (QueryExpression $exp): QueryExpression => $exp->and([
+        return $query->where(fn(QueryExpression $exp): QueryExpression => $exp->and([
             $exp->or(
-                fn (QueryExpression $exp): QueryExpression => $exp
+                fn(QueryExpression $exp): QueryExpression => $exp
                     ->isNull($this->aliasField('scheduled_from'))
                     ->lte($this->aliasField('scheduled_from'), $now),
             ),
             $exp->or(
-                fn (QueryExpression $exp): QueryExpression => $exp
+                fn(QueryExpression $exp): QueryExpression => $exp
                     ->isNull($this->aliasField('expires'))
                     ->gte($this->aliasField('expires'), $now),
             ),
             $exp->or(
-                fn (QueryExpression $exp): QueryExpression => $exp
+                fn(QueryExpression $exp): QueryExpression => $exp
                     ->isNull($this->aliasField('locked_until'))
                     ->lt($this->aliasField('locked_until'), $now),
             ),
-            fn (QueryExpression $exp): QueryExpression => $exp
+            fn(QueryExpression $exp): QueryExpression => $exp
                 ->gt($this->aliasField('max_attempts'), 0)
                 ->isNull($this->aliasField('completed')),
         ]));
@@ -250,14 +250,14 @@ class AsyncJobsTable extends Table
     {
         $now = DateTime::now();
 
-        return $query->where(fn (QueryExpression $exp): QueryExpression => $exp->and([
-            fn (QueryExpression $exp): QueryExpression => $exp->isNull($this->aliasField('completed')),
+        return $query->where(fn(QueryExpression $exp): QueryExpression => $exp->and([
+            fn(QueryExpression $exp): QueryExpression => $exp->isNull($this->aliasField('completed')),
             $exp->or([
-                fn (QueryExpression $exp): QueryExpression => $exp->lt($this->aliasField('expires'), $now),
+                fn(QueryExpression $exp): QueryExpression => $exp->lt($this->aliasField('expires'), $now),
                 $exp->and([
-                    fn (QueryExpression $exp): QueryExpression => $exp->eq($this->aliasField('max_attempts'), 0),
+                    fn(QueryExpression $exp): QueryExpression => $exp->eq($this->aliasField('max_attempts'), 0),
                     $exp->or(
-                        fn (QueryExpression $exp): QueryExpression => $exp
+                        fn(QueryExpression $exp): QueryExpression => $exp
                             ->isNull($this->aliasField('locked_until'))
                             ->lt($this->aliasField('locked_until'), $now),
                     ),
@@ -277,7 +277,7 @@ class AsyncJobsTable extends Table
     public function findCompleted(SelectQuery $query): SelectQuery
     {
         return $query->where(
-            fn (QueryExpression $exp): QueryExpression => $exp->isNotNull($this->aliasField('completed')),
+            fn(QueryExpression $exp): QueryExpression => $exp->isNotNull($this->aliasField('completed')),
         );
     }
 
@@ -292,7 +292,7 @@ class AsyncJobsTable extends Table
     public function findIncomplete(SelectQuery $query): SelectQuery
     {
         return $query->where(
-            fn (QueryExpression $exp): QueryExpression => $exp->isNull($this->aliasField('completed')),
+            fn(QueryExpression $exp): QueryExpression => $exp->isNull($this->aliasField('completed')),
         );
     }
 
@@ -307,12 +307,12 @@ class AsyncJobsTable extends Table
     {
         if (!empty($priority)) {
             $query = $query->where(
-                fn (QueryExpression $exp): QueryExpression => $exp->gte($this->aliasField('priority'), $priority)
+                fn(QueryExpression $exp): QueryExpression => $exp->gte($this->aliasField('priority'), $priority),
             );
         }
         if (!empty($service)) {
             $query = $query->where(
-                fn (QueryExpression $exp): QueryExpression => $exp->eq($this->aliasField('service'), $service)
+                fn(QueryExpression $exp): QueryExpression => $exp->eq($this->aliasField('service'), $service),
             );
         }
 

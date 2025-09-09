@@ -361,7 +361,7 @@ abstract class BaseApplication extends CakeBaseApplication implements Authentica
                     );
                     if ($authenticator instanceof AbstractAuthenticator) {
                         $authenticator->setConfig(
-                            Hash::get((array)$authProvider->params, 'config.authenticator', [])
+                            Hash::get((array)$authProvider->params, 'config.authenticator', []),
                         );
                     }
                     $identifier = $service->loadIdentifier(
@@ -370,7 +370,7 @@ abstract class BaseApplication extends CakeBaseApplication implements Authentica
                     );
                     if ($identifier instanceof AbstractIdentifier) {
                         $identifier->setConfig(
-                            Hash::get((array)$authProvider->params, 'config.identifier', [])
+                            Hash::get((array)$authProvider->params, 'config.identifier', []),
                         );
                     }
                 }

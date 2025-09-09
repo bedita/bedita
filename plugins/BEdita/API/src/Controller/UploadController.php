@@ -51,7 +51,7 @@ class UploadController extends ObjectsController
             throw new ForbiddenException(__d(
                 'bedita',
                 'You are not allowed to upload streams on "{0}"',
-                $this->objectType->get('name')
+                $this->objectType->get('name'),
             ));
         }
 

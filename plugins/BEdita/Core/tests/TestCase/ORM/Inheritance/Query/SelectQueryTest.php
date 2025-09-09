@@ -139,7 +139,7 @@ class SelectQueryTest extends TestCase
             $exp = $joins[$alias]['conditions'];
             static::assertSame(
                 $alias . '.id = fake_felines.id',
-                $exp->sql(new ValueBinder())
+                $exp->sql(new ValueBinder()),
             );
         }
     }

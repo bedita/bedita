@@ -89,7 +89,7 @@ class AsyncGeneratorTest extends TestCase
         $this->originalRegistry = Thumbnail::getRegistry();
         $this->originalConfig = array_combine(
             $keys,
-            array_map([Thumbnail::class, 'getConfig'], $keys)
+            array_map([Thumbnail::class, 'getConfig'], $keys),
         );
 
         Thumbnail::setRegistry(null);

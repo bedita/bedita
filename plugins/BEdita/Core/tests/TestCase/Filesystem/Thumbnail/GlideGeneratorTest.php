@@ -328,7 +328,7 @@ class GlideGeneratorTest extends TestCase
             function (StorageAttributes $object) {
                 return str_replace('thumbnails://', '', $object->path());
             },
-            FilesystemRegistry::getMountManager()->listContents('thumbnails://')->toArray()
+            FilesystemRegistry::getMountManager()->listContents('thumbnails://')->toArray(),
         );
     }
 }

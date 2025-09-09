@@ -255,7 +255,7 @@ class Relations extends ResourcesBase
             empty($data['right']) || !is_array($data['right'])
         ) {
             throw new BadRequestException(
-                __d('bedita', 'Missing left/right relation types')
+                __d('bedita', 'Missing left/right relation types'),
             );
         }
     }

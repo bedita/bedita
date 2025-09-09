@@ -100,7 +100,7 @@ class StreamsControllerTest extends IntegrationTestCase
 
         $this->assertResponseContains(__d(
             'bedita',
-            'You are not allowed to update existing streams, please delete and re-upload'
+            'You are not allowed to update existing streams, please delete and re-upload',
         ));
     }
 

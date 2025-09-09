@@ -98,7 +98,7 @@ class JsonApiPaginator extends NumericPaginator
             }
 
             $sortableFields = $options['sortableFields'] ?? null;
-            $canSortField = fn (string $field): bool => $sortableFields === null || in_array($field, $sortableFields, true);
+            $canSortField = fn(string $field): bool => $sortableFields === null || in_array($field, $sortableFields, true);
             if ($options['sort'] === 'published' && $canSortField('publish_start')) {
                 $options['order'] = new OrderClauseExpression(
                     new FunctionExpression(

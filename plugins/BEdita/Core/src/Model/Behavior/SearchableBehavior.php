@@ -73,7 +73,7 @@ class SearchableBehavior extends Behavior
 
         if ($operationName !== null && !is_string($operationName)) {
             throw new UnexpectedValueException(
-                sprintf('Operation name must be string or null, got %s', gettype($operationName))
+                sprintf('Operation name must be string or null, got %s', gettype($operationName)),
             );
         }
 

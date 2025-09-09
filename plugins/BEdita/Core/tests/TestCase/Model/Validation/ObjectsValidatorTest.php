@@ -139,7 +139,7 @@ class ObjectsValidatorTest extends TestCase
                     'notNumeric' => 'The provided value must be NOT numeric',
                 ],
             ],
-            $errors
+            $errors,
         );
         $errors = $validator->validate(['id' => 1000, 'fake_field' => '22'], false);
         $this->assertEmpty($errors);

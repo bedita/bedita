@@ -113,7 +113,7 @@ class ProfilesTable extends Table
         $title = trim(sprintf(
             '%s %s',
             (string)Hash::get($entity, 'name'),
-            (string)Hash::get($entity, 'surname')
+            (string)Hash::get($entity, 'surname'),
         ));
         if (empty($title) && !empty($entity->get('company_name'))) {
             $title = (string)$entity->get('company_name');

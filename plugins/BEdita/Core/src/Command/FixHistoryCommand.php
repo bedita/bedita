@@ -174,7 +174,7 @@ class FixHistoryCommand extends Command
             $action,
             $object->id,
             $object->title,
-            $object->type
+            $object->type,
         );
         $io->info($msg);
     }
@@ -262,7 +262,7 @@ class FixHistoryCommand extends Command
 
         return $query->leftJoin(
             [$this->History->getAlias() => $this->History->getTable()],
-            $this->joinConditions($query, $created)
+            $this->joinConditions($query, $created),
         )->where(function (QueryExpression $exp, SelectQuery $q) use ($from, $to) {
             return $exp->and([
                 $q->expr()->between($this->Objects->aliasField('id'), $from, $to),
@@ -296,7 +296,7 @@ class FixHistoryCommand extends Command
             $query->expr()->eq($idField, new IdentifierExpression($this->Objects->aliasField('id'))),
             $query->expr()->equalFields(
                 $this->History->aliasField('user_id'),
-                $this->Objects->aliasField($userField)
+                $this->Objects->aliasField($userField),
             ),
         ];
         if ($created) {

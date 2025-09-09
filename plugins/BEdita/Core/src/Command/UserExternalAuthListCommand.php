@@ -61,7 +61,7 @@ class UserExternalAuthListCommand extends Command
         if ($user !== null) {
             $query = $query->innerJoinWith(
                 'Users',
-                fn (SelectQuery $q): SelectQuery => $q->where(['Users.id' => $user->id]),
+                fn(SelectQuery $q): SelectQuery => $q->where(['Users.id' => $user->id]),
             );
         }
 

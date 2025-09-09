@@ -96,7 +96,7 @@ class RemoveRelatedObjectsActionTest extends TestCase
             ],
             'removingParent' => [
                 new RuntimeException(
-                    'Unable to remove existing links with association of type "Cake\ORM\Association\BelongsTo"'
+                    'Unable to remove existing links with association of type "Cake\ORM\Association\BelongsTo"',
                 ),
                 'Folders',
                 'Parents',
@@ -179,7 +179,7 @@ class RemoveRelatedObjectsActionTest extends TestCase
                         return $query->where([
                             $association->getSource()->aliasField($association->getSource()->getPrimaryKey()) => $entity->id,
                         ]);
-                    }
+                    },
                 )
                 ->count();
         }

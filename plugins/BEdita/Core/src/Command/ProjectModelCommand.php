@@ -108,7 +108,7 @@ class ProjectModelCommand extends Command
                     $this->remove(
                         $key,
                         (array)Hash::extract($diff, sprintf('remove.%s', $key)),
-                        $io
+                        $io,
                     );
                 }
             }
@@ -147,7 +147,7 @@ class ProjectModelCommand extends Command
 
                 return $item;
             },
-            $data
+            $data,
         );
     }
 

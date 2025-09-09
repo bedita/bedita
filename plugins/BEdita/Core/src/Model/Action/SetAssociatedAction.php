@@ -59,7 +59,7 @@ class SetAssociatedAction extends UpdateAssociatedAction
                 ) {
                     throw new InvalidDataException(
                         __d('bedita', 'Error linking entities'),
-                        (array)$relatedEntity->get('_joinData')->getErrors()
+                        (array)$relatedEntity->get('_joinData')->getErrors(),
                     );
                 }
             }
@@ -200,12 +200,12 @@ class SetAssociatedAction extends UpdateAssociatedAction
         $this->Association->getTarget()->updateAll(
             array_combine(
                 $foreignKey,
-                array_fill(0, count($foreignKey), null)
+                array_fill(0, count($foreignKey), null),
             ),
             array_combine(
                 $foreignKey,
-                $bindingKeyValue
-            )
+                $bindingKeyValue,
+            ),
         );
 
         if ($relatedEntity === null) {
@@ -214,7 +214,7 @@ class SetAssociatedAction extends UpdateAssociatedAction
 
         $relatedEntity->patch(array_combine(
             $foreignKey,
-            $bindingKeyValue
+            $bindingKeyValue,
         ));
 
         if ($this->Association->getTarget()->save($relatedEntity, ['_skipSearchIndex' => true]) === false) {

@@ -121,7 +121,7 @@ class SetAssociatedActionTest extends TestCase
             ],
             'unsupportedMultipleEntities' => [
                 new InvalidArgumentException(
-                    'Unable to link multiple entities'
+                    'Unable to link multiple entities',
                 ),
                 'FakeArticles',
                 'FakeAnimals',
@@ -263,7 +263,7 @@ class SetAssociatedActionTest extends TestCase
                         return $query->where([
                             $association->getSource()->aliasField($association->getSource()->getPrimaryKey()) => $entity->id,
                         ]);
-                    }
+                    },
                 )
                 ->count();
         }
@@ -295,7 +295,7 @@ class SetAssociatedActionTest extends TestCase
                 [
                     'errorField' => 'gustavo',
                     'message' => 'This is a sample error',
-                ]
+                ],
             );
 
             $entity = $table->get(1);

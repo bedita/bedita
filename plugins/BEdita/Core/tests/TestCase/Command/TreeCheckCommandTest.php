@@ -128,7 +128,7 @@ class TreeCheckCommandTest extends TestCase
             $this->Trees->find()
                 ->where(['object_id' => 12])
                 ->firstOrFail(),
-            ['checkRules' => false, '_primary' => false]
+            ['checkRules' => false, '_primary' => false],
         );
 
         $this->exec(sprintf('%s --verbose', TreeCheckCommand::defaultName()));
@@ -158,7 +158,7 @@ class TreeCheckCommandTest extends TestCase
                 'parent_id' => null,
                 'slug' => 'foo-bar',
             ]),
-            ['checkRules' => false]
+            ['checkRules' => false],
         );
 
         $this->exec(sprintf('%s --verbose', TreeCheckCommand::defaultName()));
@@ -188,7 +188,7 @@ class TreeCheckCommandTest extends TestCase
                 'parent_id' => null,
                 'slug' => 'foo-bar',
             ]),
-            ['checkRules' => false]
+            ['checkRules' => false],
         );
 
         $this->exec(sprintf('%s --verbose', TreeCheckCommand::defaultName()));
@@ -217,7 +217,7 @@ class TreeCheckCommandTest extends TestCase
                 'parent_id' => 2,
                 'slug' => 'foo-bar',
             ]),
-            ['checkRules' => false]
+            ['checkRules' => false],
         );
 
         $this->exec(sprintf('%s --verbose', TreeCheckCommand::defaultName()));
@@ -247,7 +247,7 @@ class TreeCheckCommandTest extends TestCase
         }
 
         $this->Trees->getConnection()->execute(
-            sprintf('DROP INDEX %s ON %s', 'trees_objectparent_uq', $this->Trees->getTable())
+            sprintf('DROP INDEX %s ON %s', 'trees_objectparent_uq', $this->Trees->getTable()),
         );
         $this->Trees->saveOrFail(
             $this->Trees->newEntity([
@@ -255,7 +255,7 @@ class TreeCheckCommandTest extends TestCase
                 'parent_id' => 11,
                 'slug' => 'foo-bar',
             ]),
-            ['checkRules' => false]
+            ['checkRules' => false],
         );
 
         $this->exec(sprintf('%s --verbose', TreeCheckCommand::defaultName()));

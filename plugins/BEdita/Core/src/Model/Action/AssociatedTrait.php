@@ -45,7 +45,7 @@ trait AssociatedTrait
                 function ($found, $field) use ($candidate, $needle) {
                     return $found && $candidate->get($field) === $needle->get($field);
                 },
-                true
+                true,
             );
 
             if ($found) {
@@ -70,7 +70,7 @@ trait AssociatedTrait
                 $setA,
                 function (EntityInterface $item) use ($setB) {
                     return $this->findMatchingEntity($item, $setB) !== null;
-                }
+                },
             );
         }
 
@@ -91,7 +91,7 @@ trait AssociatedTrait
                 $setA,
                 function (EntityInterface $item) use ($setB) {
                     return $this->findMatchingEntity($item, $setB) === null;
-                }
+                },
             );
         }
 
@@ -118,7 +118,7 @@ trait AssociatedTrait
                 $idxB = array_search($originalB, $original);
 
                 return $idxA - $idxB;
-            }
+            },
         );
 
         return $array;
@@ -162,11 +162,11 @@ trait AssociatedTrait
 
         $extraFields += array_combine(
             (array)$this->Association->getForeignKey(),
-            $source->extract((array)$this->Association->getSource()->getPrimaryKey())
+            $source->extract((array)$this->Association->getSource()->getPrimaryKey()),
         );
         $extraFields += array_combine(
             (array)$this->Association->getTargetForeignKey(),
-            $target->extract((array)$this->Association->getTarget()->getPrimaryKey())
+            $target->extract((array)$this->Association->getTarget()->getPrimaryKey()),
         );
 
         return $extraFields;
@@ -238,7 +238,7 @@ trait AssociatedTrait
         }
         $newJoin = array_diff_key(
             $newJoin,
-            array_flip([$this->Association->getForeignKey(), $this->Association->getTargetForeignKey()])
+            array_flip([$this->Association->getForeignKey(), $this->Association->getTargetForeignKey()]),
         );
 
         $data = [];
@@ -279,7 +279,7 @@ trait AssociatedTrait
             function (EntityInterface $target) use ($source) {
                 return $this->hydrateLink($source, $target);
             },
-            $this->difference($targetEntities, $existing)
+            $this->difference($targetEntities, $existing),
         );
         $changed = array_filter(
             array_map(
@@ -288,8 +288,8 @@ trait AssociatedTrait
 
                     return $this->patchLink($source, $existing, $relatedEntity);
                 },
-                $kept
-            )
+                $kept,
+            ),
         );
         $affected = $diff = array_merge($added, $changed);
 

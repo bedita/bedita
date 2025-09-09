@@ -101,8 +101,8 @@ class StreamsController extends ResourcesController
                         'controller' => $this->name,
                         'id' => $data->get('uuid'),
                     ],
-                    true
-                )
+                    true,
+                ),
             );
     }
 
@@ -129,8 +129,8 @@ class StreamsController extends ResourcesController
                         'controller' => $this->name,
                         'id' => $data->get('uuid'),
                     ],
-                    true
-                )
+                    true,
+                ),
             );
     }
 
@@ -167,7 +167,7 @@ class StreamsController extends ResourcesController
         if ($this->request->is('patch')) {
             throw new ForbiddenException(__d(
                 'bedita',
-                'You are not allowed to update existing streams, please delete and re-upload'
+                'You are not allowed to update existing streams, please delete and re-upload',
             ));
         }
 

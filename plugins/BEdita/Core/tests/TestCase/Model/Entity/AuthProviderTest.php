@@ -142,7 +142,7 @@ class AuthProviderTest extends TestCase
         $roles = Hash::combine(
             $authProvider->getRoles(),
             '{n}.id',
-            '{n}.name'
+            '{n}.name',
         );
 
         static::assertEquals($expected, $roles);

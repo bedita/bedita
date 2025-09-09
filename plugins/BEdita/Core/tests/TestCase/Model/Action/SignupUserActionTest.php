@@ -147,7 +147,7 @@ class SignupUserActionTest extends TestCase
             'missing activation_url' => [
                 new InvalidDataException(
                     'Invalid data',
-                    ['activation_url' => ['_required' => 'This field is required']]
+                    ['activation_url' => ['_required' => 'This field is required']],
                 ),
                 [
                     'data' => [
@@ -160,7 +160,7 @@ class SignupUserActionTest extends TestCase
             'activation url invalid' => [
                 new InvalidDataException(
                     'Invalid data',
-                    ['activation_url' => ['customUrl' => 'The provided value is invalid']]
+                    ['activation_url' => ['customUrl' => 'The provided value is invalid']],
                 ),
                 [
                     'data' => [
@@ -174,7 +174,7 @@ class SignupUserActionTest extends TestCase
             'activation url invalid 2' => [
                 new InvalidDataException(
                     'Invalid data',
-                    ['activation_url' => ['customUrl' => 'The provided value is invalid']]
+                    ['activation_url' => ['customUrl' => 'The provided value is invalid']],
                 ),
                 [
                     'data' => [
@@ -598,7 +598,7 @@ class SignupUserActionTest extends TestCase
                         'roles' => [
                             'validateRoles' => 'Roles are not allowed on signup',
                         ],
-                    ]
+                    ],
                 ),
                 [
                     'data' => [
@@ -620,7 +620,7 @@ class SignupUserActionTest extends TestCase
                         'roles' => [
                             'validateRoles' => 'first role not allowed on signup',
                         ],
-                    ]
+                    ],
                 ),
                 [
                     'data' => [
@@ -659,7 +659,7 @@ class SignupUserActionTest extends TestCase
                         'roles' => [
                             '_required' => 'This field is required',
                         ],
-                    ]
+                    ],
                 ),
                 [
                     'data' => [
@@ -682,7 +682,7 @@ class SignupUserActionTest extends TestCase
                         'roles' => [
                             '_empty' => 'This field cannot be left empty',
                         ],
-                    ]
+                    ],
                 ),
                 [
                     'data' => [
@@ -706,7 +706,7 @@ class SignupUserActionTest extends TestCase
                         'roles' => [
                             'validateRoles' => 'third_role, fourth_role not allowed on signup',
                         ],
-                    ]
+                    ],
                 ),
                 [
                     'data' => [

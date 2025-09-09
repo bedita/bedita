@@ -152,7 +152,7 @@ class UpdateAssociatedActionTest extends TestCase
             ],
             'unsupportedMultipleEntities' => [
                 new InvalidArgumentException(
-                    'Unable to link multiple entities'
+                    'Unable to link multiple entities',
                 ),
                 'FakeArticles',
                 'FakeAnimals',
@@ -267,7 +267,7 @@ class UpdateAssociatedActionTest extends TestCase
                         return $query->where([
                             $association->getSource()->aliasField($association->getSource()->getPrimaryKey()) => $id,
                         ]);
-                    }
+                    },
                 )
                 ->count();
         }
@@ -653,9 +653,9 @@ class UpdateAssociatedActionTest extends TestCase
 
         // $entity = $Documents->get($primaryKey, ['contain' => [$associationName]]);
         $entity = $Documents->find()
-            ->where(fn (QueryExpression $exp): QueryExpression => $exp
+            ->where(fn(QueryExpression $exp): QueryExpression => $exp
                 ->eq('id', $primaryKey))
-            ->contain([$associationName => fn (SelectQuery $q): SelectQuery => $q->where(['right_id' => $body[0]['id']])])
+            ->contain([$associationName => fn(SelectQuery $q): SelectQuery => $q->where(['right_id' => $body[0]['id']])])
             ->first();
         $actualParams = Hash::get(
             (array)$entity->get(Inflector::underscore($associationName)),

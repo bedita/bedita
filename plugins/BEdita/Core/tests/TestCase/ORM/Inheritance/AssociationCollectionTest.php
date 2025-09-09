@@ -161,7 +161,7 @@ class AssociationCollectionTest extends TestCase
             function (Association $association) {
                 return $association->getAlias();
             },
-            $collection->getByType('HasMany')
+            $collection->getByType('HasMany'),
         );
 
         static::assertSame($expected, $aliases);

@@ -116,7 +116,7 @@ class CustomPropsCommand extends Command
                     $type,
                     $object->get('title'),
                     $object->id,
-                    $ex->getMessage()
+                    $ex->getMessage(),
                 );
                 $this->log($msg, 'error');
                 $err++;

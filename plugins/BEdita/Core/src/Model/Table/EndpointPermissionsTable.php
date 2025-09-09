@@ -223,7 +223,7 @@ class EndpointPermissionsTable extends Table
         SelectQuery $query,
         ?string $endpoint_name = null,
         ?string $role_name = null,
-        ?string $application_name = null
+        ?string $application_name = null,
     ): SelectQuery {
         if ($endpoint_name === null) {
             $query = $query->whereNull('endpoint_id');

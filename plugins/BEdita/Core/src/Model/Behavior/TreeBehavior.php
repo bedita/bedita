@@ -214,13 +214,13 @@ class TreeBehavior extends CakeTreeBehavior
                 function (QueryExpression $exp) use ($pk, $childAlias): QueryExpression {
                     return $exp
                         ->equalFields($pk, sprintf('%s.%s', $childAlias, $this->getConfigOrFail('parent')));
-                }
+                },
             )
             ->groupBy([$pk, $left])
             ->having(function (QueryExpression $exp, Query $query) use ($childAlias, $left): QueryExpression {
                 return $exp->notEq(
                     new ComparisonExpression($left, 1, null, '+'),
-                    $query->func()->min(sprintf('%s.%s', $childAlias, $this->getConfigOrFail('left')))
+                    $query->func()->min(sprintf('%s.%s', $childAlias, $this->getConfigOrFail('left'))),
                 );
             });
         if ($exists($query)) {
@@ -234,13 +234,13 @@ class TreeBehavior extends CakeTreeBehavior
                 function (QueryExpression $exp) use ($pk, $childAlias): QueryExpression {
                     return $exp
                         ->equalFields($pk, sprintf('%s.%s', $childAlias, $this->getConfigOrFail('parent')));
-                }
+                },
             )
             ->groupBy([$pk, $right])
             ->having(function (QueryExpression $exp, Query $query) use ($childAlias, $right): QueryExpression {
                 return $exp->notEq(
                     new ComparisonExpression($right, 1, null, '-'),
-                    $query->func()->max(sprintf('%s.%s', $childAlias, $this->getConfigOrFail('right')))
+                    $query->func()->max(sprintf('%s.%s', $childAlias, $this->getConfigOrFail('right'))),
                 );
             });
         if ($exists($query)) {
@@ -264,13 +264,13 @@ class TreeBehavior extends CakeTreeBehavior
                         }))
                         ->gte($left, new IdentifierExpression(sprintf('%s.%s', $siblingAlias, $this->getConfigOrFail('left'))))
                         ->notEq($pk, new IdentifierExpression(sprintf('%s.%s', $siblingAlias, $table->getPrimaryKey())));
-                }
+                },
             )
             ->groupBy([$pk, $left])
             ->having(function (QueryExpression $exp, Query $query) use ($siblingAlias, $left): QueryExpression {
                 return $exp->notEq(
                     new ComparisonExpression($left, 1, null, '-'),
-                    $query->func()->max(sprintf('%s.%s', $siblingAlias, $this->getConfigOrFail('right')))
+                    $query->func()->max(sprintf('%s.%s', $siblingAlias, $this->getConfigOrFail('right'))),
                 );
             });
         if ($exists($query)) {

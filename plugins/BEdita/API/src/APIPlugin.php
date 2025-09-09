@@ -73,7 +73,7 @@ class APIPlugin extends BasePlugin
             $this->log(sprintf(
                 'ExceptionRenderer used is %s. BEdita/API should use %s.',
                 $exceptionRenderer,
-                ExceptionRenderer::class
+                ExceptionRenderer::class,
             ), LogLevel::INFO);
         }
 
@@ -100,7 +100,7 @@ class APIPlugin extends BasePlugin
             // ```
             ->insertBefore(
                 ErrorHandlerMiddleware::class,
-                new CorsMiddleware(Configure::read('CORS'))
+                new CorsMiddleware(Configure::read('CORS')),
             );
     }
 }

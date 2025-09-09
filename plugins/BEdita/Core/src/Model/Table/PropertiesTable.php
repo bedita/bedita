@@ -156,7 +156,7 @@ class PropertiesTable extends Table
                 return $exp->in(
                     $this->aliasField($this->ObjectTypes->getForeignKey()),
                     $this->ObjectTypes->find('path', for: $for)
-                        ->select([$this->ObjectTypes->aliasField($this->ObjectTypes->getBindingKey())])
+                        ->select([$this->ObjectTypes->aliasField($this->ObjectTypes->getBindingKey())]),
                 );
             });
     }
@@ -176,7 +176,7 @@ class PropertiesTable extends Table
         SelectQuery $query,
         string $name,
         ?string $object_type_name = null,
-        ?string $object = null
+        ?string $object = null,
     ): SelectQuery {
         $object = $object_type_name ?? $object;
         if (empty($object)) {
@@ -219,7 +219,7 @@ class PropertiesTable extends Table
                 // Build CTE sub-query.
                 $select = array_combine( // Use column name as column alias (`SELECT status AS status, title AS title, ...`).
                     $this->getSchema()->columns(),
-                    $this->getSchema()->columns()
+                    $this->getSchema()->columns(),
                 );
                 $select[$this->getPrimaryKey()] = $query->func()->concat([
                     '',
@@ -231,7 +231,7 @@ class PropertiesTable extends Table
                     ->unionAll(
                         (new DatabaseSelectQuery($this->getConnection()))
                             ->select($select)
-                            ->from($table->getTable())
+                            ->from($table->getTable()),
                     );
         }
 

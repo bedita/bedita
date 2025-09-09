@@ -207,7 +207,7 @@ class ApplicationMiddleware implements MiddlewareInterface
 
         $apiKey = (string)Hash::get(
             $request->getQueryParams(),
-            $this->getConfig('apiKey.query')
+            $this->getConfig('apiKey.query'),
         );
 
         if (!empty($apiKey)) {

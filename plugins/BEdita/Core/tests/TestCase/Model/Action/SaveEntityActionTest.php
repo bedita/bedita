@@ -73,7 +73,7 @@ class SaveEntityActionTest extends TestCase
             $table::DEFAULT_VALIDATOR,
             (new Validator())
                 ->requirePresence('name')
-                ->greaterThan('legs', 2)
+                ->greaterThan('legs', 2),
         );
         $action = new SaveEntityAction(compact('table'));
 

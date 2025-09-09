@@ -410,7 +410,7 @@ class FolderTest extends TestCase
             ],
             [
                 'accessibleFields' => ['created_by' => true],
-            ]
+            ],
         );
 
         $this->Folders->Permissions->saveManyOrFail($entities);

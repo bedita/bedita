@@ -134,7 +134,7 @@ class InheritanceEventHandler implements EventListenerInterface
         $options = ['atomic' => false, '_inherited' => true] + $options->getArrayCopy();
         $options['associated'] = array_diff_key(
             $options['associated'],
-            array_flip(array_diff($table->associations()->keys(), $inheritedTable->associations()->keys()))
+            array_flip(array_diff($table->associations()->keys(), $inheritedTable->associations()->keys())),
         );
 
         if ($inheritedTable->save($parentEntity, $options) === false) {
@@ -208,7 +208,7 @@ class InheritanceEventHandler implements EventListenerInterface
     {
         $properties = array_diff(
             array_merge(array_keys($entity->toArray()), $entity->getHidden()), // All properties.
-            $table->getSchema()->columns() // Remove columns of current table.
+            $table->getSchema()->columns(), // Remove columns of current table.
         );
         $parent->patch($entity->extract($properties), ['guard' => false]); // Copy properties.
         foreach ($properties as $property) {
@@ -218,9 +218,9 @@ class InheritanceEventHandler implements EventListenerInterface
             $parent->patch(
                 array_combine(
                     (array)$inheritedTable->getPrimaryKey(),
-                    $entity->extract((array)$table->getPrimaryKey())
+                    $entity->extract((array)$table->getPrimaryKey()),
                 ),
-                ['guard' => false]
+                ['guard' => false],
             );
         }
 
@@ -250,9 +250,9 @@ class InheritanceEventHandler implements EventListenerInterface
             $entity->patch(
                 array_combine(
                     (array)$table->getPrimaryKey(),
-                    $parent->extract((array)$inheritedTable->getPrimaryKey())
+                    $parent->extract((array)$inheritedTable->getPrimaryKey()),
                 ),
-                ['guard' => false]
+                ['guard' => false],
             );
         }
 

@@ -74,7 +74,7 @@ class ThumbnailServiceTest extends TestCase
         $this->originalRegistry = Thumbnail::getRegistry();
         $this->originalConfig = array_combine(
             $keys,
-            array_map([Thumbnail::class, 'getConfig'], $keys)
+            array_map([Thumbnail::class, 'getConfig'], $keys),
         );
 
         Thumbnail::setRegistry(null);
@@ -112,7 +112,7 @@ class ThumbnailServiceTest extends TestCase
         return [
             'ok' => [
                 true,
-                fn (self $testCase) => $testCase->once(),
+                fn(self $testCase) => $testCase->once(),
                 [
                     'uuid' => 'e5afe167-7341-458d-a1e6-042e8791b0fe',
                     'generator' => 'test',
@@ -123,7 +123,7 @@ class ThumbnailServiceTest extends TestCase
             ],
             'not found' => [
                 true,
-                fn (self $testCase) => $testCase->never(),
+                fn(self $testCase) => $testCase->never(),
                 [
                     'uuid' => Text::uuid(), // This UUID does not exist.
                     'generator' => 'test',
@@ -134,7 +134,7 @@ class ThumbnailServiceTest extends TestCase
             ],
             'error' => [
                 false,
-                fn (self $testCase) => $testCase->once(),
+                fn(self $testCase) => $testCase->once(),
                 [
                     'uuid' => 'e5afe167-7341-458d-a1e6-042e8791b0fe',
                     'generator' => 'test',

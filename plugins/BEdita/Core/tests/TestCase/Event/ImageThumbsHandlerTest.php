@@ -74,14 +74,14 @@ class ImageThumbsHandlerTest extends TestCase
             ],
             'noImages' => [
                 [
-                    'entity' => static fn (self $testCase) => $testCase->getMockBuilder(Stream::class)->getMock(),
+                    'entity' => static fn(self $testCase) => $testCase->getMockBuilder(Stream::class)->getMock(),
                     'relatedEntities' => [],
                 ],
                 false,
             ],
             'stream and images' => [
                 [
-                    'entity' => static fn (self $testCase) => $testCase->getMockBuilder(Stream::class)->getMock(),
+                    'entity' => static fn(self $testCase) => $testCase->getMockBuilder(Stream::class)->getMock(),
                     'relatedEntities' => static function (self $testCase) {
                         $image = $testCase->getMockBuilder(ObjectEntity::class)
                             ->onlyMethods(['get'])
@@ -115,8 +115,8 @@ class ImageThumbsHandlerTest extends TestCase
         };
 
         $data = array_map(
-            fn ($value) => is_callable($value) ? $value($this) : $value,
-            $data
+            fn($value) => is_callable($value) ? $value($this) : $value,
+            $data,
         );
 
         $event = new Event('Associated.afterSave', $this, $data);

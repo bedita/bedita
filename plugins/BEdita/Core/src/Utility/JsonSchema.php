@@ -57,7 +57,7 @@ class JsonSchema
             function () use ($type) {
                 return static::addRevision(static::typeSchema($type));
             },
-            ObjectTypesTable::CACHE_CONFIG
+            ObjectTypesTable::CACHE_CONFIG,
         );
 
         if (!is_array($schema)) {
@@ -137,7 +137,7 @@ class JsonSchema
 
                 return $schema['revision'];
             },
-            ObjectTypesTable::CACHE_CONFIG
+            ObjectTypesTable::CACHE_CONFIG,
         );
     }
 

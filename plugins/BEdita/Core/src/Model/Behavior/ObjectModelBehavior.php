@@ -67,7 +67,7 @@ class ObjectModelBehavior extends Behavior
                      * @param string|\BEdita\Core\Model\Entity\ObjectType $ot Object type.
                      * @return string
                      */
-                    fn ($ot): string => is_string($ot) ? $ot : $ot->name
+                    fn($ot): string => is_string($ot) ? $ot : $ot->name,
                 )
                 ->toList(),
         ]);

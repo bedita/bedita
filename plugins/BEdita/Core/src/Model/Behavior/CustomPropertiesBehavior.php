@@ -144,8 +144,8 @@ class CustomPropertiesBehavior extends Behavior
                         return $this->promoteProperties($row);
                     });
                 },
-                SelectQuery::PREPEND
-            )
+                SelectQuery::PREPEND,
+            ),
         );
     }
 
@@ -353,15 +353,15 @@ class CustomPropertiesBehavior extends Behavior
                             [
                                 new FunctionExpression(
                                     'JSON_EXTRACT',
-                                    [$field => 'identifier', sprintf('$.%s', $key)]
+                                    [$field => 'identifier', sprintf('$.%s', $key)],
                                 ),
-                            ]
+                            ],
                         ),
-                        new FunctionExpression('JSON_UNQUOTE', [json_encode($value)]) // trick to normalize values compared
+                        new FunctionExpression('JSON_UNQUOTE', [json_encode($value)]), // trick to normalize values compared
                     );
                 },
                 array_keys($options),
-                $options
+                $options,
             ));
         });
     }

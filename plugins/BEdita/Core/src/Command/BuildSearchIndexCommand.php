@@ -150,8 +150,8 @@ class BuildSearchIndexCommand extends Command
                     '> ID %s [%s] [Adapter: %s]',
                     $entity->id,
                     $entity->uname,
-                    get_class($adapter)
-                )
+                    get_class($adapter),
+                ),
             );
             $adapter->indexResource($entity, 'edit');
             $indexed++;
@@ -187,7 +187,7 @@ class BuildSearchIndexCommand extends Command
         $lastId = 0;
         while (true) {
             $q = clone $query;
-            $q = $q->where(fn (QueryExpression $exp): QueryExpression => $exp->gt($table->aliasField('id'), $lastId));
+            $q = $q->where(fn(QueryExpression $exp): QueryExpression => $exp->gt($table->aliasField('id'), $lastId));
             $results = $q->all();
             if ($results->isEmpty()) {
                 break;

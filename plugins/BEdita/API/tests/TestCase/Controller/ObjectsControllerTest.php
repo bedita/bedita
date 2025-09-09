@@ -1283,7 +1283,7 @@ class ObjectsControllerTest extends IntegrationTestCase
                     'id' => 13,
                     'type' => 'folders',
                 ],
-            ])
+            ]),
         );
     }
 
@@ -1975,7 +1975,7 @@ class ObjectsControllerTest extends IntegrationTestCase
             ],
             [
                 'accessibleFields' => ['created_by' => true],
-            ]
+            ],
         );
 
         $ObjectPermissions->saveOrFail($entity);
@@ -2065,7 +2065,7 @@ class ObjectsControllerTest extends IntegrationTestCase
             ],
             [
                 'accessibleFields' => ['created_by' => true],
-            ]
+            ],
         );
         $ObjectPermissions->saveOrFail($entity);
 
@@ -2093,7 +2093,7 @@ class ObjectsControllerTest extends IntegrationTestCase
                 'next' => null,
                 'available' => sprintf(
                     'http://api.example.com/objects?%s',
-                    http_build_query(['filter' => ['type' => ['documents']]])
+                    http_build_query(['filter' => ['type' => ['documents']]]),
                 ),
             ],
             'data' => [
@@ -2241,7 +2241,7 @@ class ObjectsControllerTest extends IntegrationTestCase
                 'next' => null,
                 'available' => sprintf(
                     'http://api.example.com/objects?%s',
-                    http_build_query(['filter' => ['type' => ['documents', 'profiles']]])
+                    http_build_query(['filter' => ['type' => ['documents', 'profiles']]]),
                 ),
             ],
             'data' => [
@@ -3641,7 +3641,7 @@ class ObjectsControllerTest extends IntegrationTestCase
 
         $this->assertResponseContains(__d(
             'bedita',
-            'You are not authorized to manage an object relationship to streams, please update stream relationship to objects instead'
+            'You are not authorized to manage an object relationship to streams, please update stream relationship to objects instead',
         ));
     }
 
@@ -3892,7 +3892,7 @@ class ObjectsControllerTest extends IntegrationTestCase
 
         $header = $this->getUserAuthHeader(
             Hash::get($user, 'username'),
-            Hash::get($user, 'password')
+            Hash::get($user, 'password'),
         );
         $this->configRequestHeaders('PATCH', $header);
         $this->patch("/documents/$id", json_encode(compact('data')));
@@ -3959,7 +3959,7 @@ class ObjectsControllerTest extends IntegrationTestCase
             ],
             [
                 'accessibleFields' => ['created_by' => true],
-            ]
+            ],
         );
 
         $ObjectPermissions->saveOrFail($entity);
@@ -4003,7 +4003,7 @@ class ObjectsControllerTest extends IntegrationTestCase
             ],
             [
                 'accessibleFields' => ['created_by' => true],
-            ]
+            ],
         );
 
         $ObjectPermissions->saveOrFail($entity);

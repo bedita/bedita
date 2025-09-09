@@ -248,7 +248,7 @@ class ObjectEntity extends Entity implements JsonApiSerializable
                     'relationship' => $relationship,
                     'id' => $this->getId(),
                 ],
-                true
+                true,
             );
             $related = Router::url(
                 [
@@ -257,7 +257,7 @@ class ObjectEntity extends Entity implements JsonApiSerializable
                     'relationship' => $relationship,
                     'related_id' => $this->getId(),
                 ],
-                true
+                true,
             );
 
             if ($this->has($relationship) && $this->get($relationship) !== null) {

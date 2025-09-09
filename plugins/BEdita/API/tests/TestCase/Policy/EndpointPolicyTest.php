@@ -150,7 +150,7 @@ class EndpointPolicyTest extends TestCase
         UriInterface $uri,
         ?IdentityInterface $identity,
         $requestMethod = 'GET',
-        ?string $attribute = null
+        ?string $attribute = null,
     ) {
         if ($expected instanceof Exception) {
             $this->expectException(get_class($expected));

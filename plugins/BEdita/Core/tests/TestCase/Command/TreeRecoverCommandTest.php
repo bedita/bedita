@@ -104,7 +104,7 @@ class TreeRecoverCommandTest extends TestCase
                 'tree_left' => new ComparisonExpression('id', 2, 'integer', '*'),
                 'tree_right' => new ComparisonExpression(new ComparisonExpression('id', 2, 'integer', '*'), 1, 'integer', '+'),
             ],
-            []
+            [],
         );
     }
 

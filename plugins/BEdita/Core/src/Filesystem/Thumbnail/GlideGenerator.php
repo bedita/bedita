@@ -69,7 +69,7 @@ class GlideGenerator extends ThumbnailGenerator
             '%s/%s.%s',
             $base,
             $options,
-            (string)$ext
+            (string)$ext,
         );
     }
 
@@ -90,7 +90,7 @@ class GlideGenerator extends ThumbnailGenerator
                 new SizeManipulator($this->getConfig('maxThumbSize', 1 << 22)), // 2048 * 2048 === 2^11 * 2^11 === 2^22
                 new BlurManipulator(),
                 new EncodeManipulator(),
-            ]
+            ],
         );
     }
 

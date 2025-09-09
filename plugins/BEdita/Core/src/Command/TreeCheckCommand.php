@@ -301,7 +301,7 @@ class TreeCheckCommand extends Command
             ->where(function (QueryExpression $exp): QueryExpression {
                 return $exp->notEq(
                     $this->Objects->TreeNodes->aliasField('parent_id'),
-                    new IdentifierExpression($this->Objects->TreeNodes->ParentNode->aliasField('object_id'))
+                    new IdentifierExpression($this->Objects->TreeNodes->ParentNode->aliasField('object_id')),
                 );
             });
     }
@@ -326,7 +326,7 @@ class TreeCheckCommand extends Command
                     $query->func()->coalesce([
                         $this->Objects->TreeNodes->ParentNode->aliasField('root_id') => 'identifier',
                         $this->Objects->TreeNodes->aliasField('object_id') => 'identifier',
-                    ])
+                    ]),
                 );
             });
     }
@@ -357,8 +357,8 @@ class TreeCheckCommand extends Command
                     $this->Objects->ObjectTypes->get($entity['object_type_id'])->get('singular'),
                     $entity['uname'],
                     $entity['id'],
-                    $message
-                )
+                    $message,
+                ),
             );
         });
     }

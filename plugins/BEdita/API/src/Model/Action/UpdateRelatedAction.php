@@ -57,7 +57,7 @@ class UpdateRelatedAction extends UpdateAssociatedAction
             array_unique(Hash::extract($data, '{*}.id')),
             function (string $id): bool {
                 return !is_numeric($id);
-            }
+            },
         );
         if (empty($nonNumericIds)) {
             // Nothing to do.
@@ -88,12 +88,12 @@ class UpdateRelatedAction extends UpdateAssociatedAction
                     throw new RecordNotFoundException(
                         sprintf(
                             'Record not found in table "%s"',
-                            Hash::get($item, 'type', $table->getTable())
-                        )
+                            Hash::get($item, 'type', $table->getTable()),
+                        ),
                     );
                 }
                 $item['id'] = $map[$id];
-            }
+            },
         );
 
         return $data;

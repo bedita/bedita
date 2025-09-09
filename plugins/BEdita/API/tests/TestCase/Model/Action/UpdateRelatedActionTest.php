@@ -186,7 +186,7 @@ class UpdateRelatedActionTest extends TestCase
                 $association->getSource()
                     ->get($id, contain: [$association->getName()])
                     ->get($association->getProperty()),
-                '{*}.id'
+                '{*}.id',
             );
         }
 

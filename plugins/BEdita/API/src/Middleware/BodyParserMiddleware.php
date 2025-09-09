@@ -34,13 +34,13 @@ class BodyParserMiddleware extends CakeBodyParserMiddleware
         if ($options['json']) {
             $this->addParser(
                 ['application/vnd.api+json'],
-                Closure::fromCallable([$this, 'decodeJson'])
+                Closure::fromCallable([$this, 'decodeJson']),
             );
         }
         if ($options['form']) {
             $this->addParser(
                 ['application/x-www-form-urlencoded'],
-                Closure::fromCallable([$this, 'decodeForm'])
+                Closure::fromCallable([$this, 'decodeForm']),
             );
         }
     }

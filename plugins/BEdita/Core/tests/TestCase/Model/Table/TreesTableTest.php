@@ -339,7 +339,7 @@ class TreesTableTest extends TestCase
                 'parent_id' => 12,
                 'root_id' => 11,
                 'parent_node_id' => 2,
-            ]
+            ],
         );
         static::assertTrue((bool)$this->Trees->save($entity));
     }
@@ -496,7 +496,7 @@ class TreesTableTest extends TestCase
                 'parent_id' => 12,
                 'root_id' => 11,
                 'parent_node_id' => 2,
-            ]
+            ],
         );
         $entity = $this->Trees->saveOrFail($entity);
 
@@ -704,7 +704,7 @@ class TreesTableTest extends TestCase
         static::assertEquals([11, 12, 4], $result['ids']);
         static::assertEquals(
             ['root-folder-11', 'sub-folder-12', 'gustavo-supporto-profile-4'],
-            $result['slugs']
+            $result['slugs'],
         );
         static::assertArrayHasKey('types', $result, 'array should have an `types` property');
     }

@@ -190,7 +190,7 @@ class PropertyTypesTable extends Table
                     ->indexBy('name')
                     ->toArray();
             },
-            ObjectTypesTable::CACHE_CONFIG
+            ObjectTypesTable::CACHE_CONFIG,
         );
 
         // Check if there is a property type whose name matches column name.

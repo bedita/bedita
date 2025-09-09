@@ -102,7 +102,7 @@ class MetadataTest extends IntegrationTestCase
         static::assertEquals(
             DateTime::now()->timestamp,
             DateTime::parse($body['data']['meta']['modified'])->getTimestamp(),
-            '`modified` field not updated'
+            '`modified` field not updated',
         );
         static::assertEqualsWithDelta(DateTime::now()->timestamp, DateTime::parse($body['data']['meta']['modified'])->getTimestamp(), 5, '`modified` field not updated');
         static::assertSame(5, $body['data']['meta']['modified_by'], '`modified_by` field not updated');

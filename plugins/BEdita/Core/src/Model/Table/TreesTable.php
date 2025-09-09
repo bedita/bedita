@@ -187,12 +187,12 @@ class TreesTable extends Table
         $rules->add($rules->existsIn(
             ['parent_id'],
             'ParentObjects',
-            ['allowNullableNulls' => true]
+            ['allowNullableNulls' => true],
         ));
         $rules->add($rules->existsIn(
             ['parent_node_id'],
             'ParentNode',
-            ['allowNullableNulls' => true]
+            ['allowNullableNulls' => true],
         ));
 
         $rules->add(
@@ -201,7 +201,7 @@ class TreesTable extends Table
             [
                 'errorField' => 'parent_id',
                 'message' => __d('bedita', 'parent_id must be null or corresponding to a folder'),
-            ]
+            ],
         );
 
         $rules->add(
@@ -210,7 +210,7 @@ class TreesTable extends Table
             [
                 'errorField' => 'object_id',
                 'message' => __d('bedita', 'Folders cannot be made ubiquitous, other objects cannot appear twice in the same folder'),
-            ]
+            ],
         );
 
         return $rules;
@@ -288,7 +288,7 @@ class TreesTable extends Table
                 [
                     'object_id' => $entity->object_id,
                     'id !=' => $entity->id,
-                ]
+                ],
             );
         }
 
@@ -303,7 +303,7 @@ class TreesTable extends Table
                 'tree_left >' => $entity->tree_left,
                 'tree_right <' => $entity->tree_right,
                 'root_id !=' => $entity->root_id,
-            ]
+            ],
         );
     }
 
@@ -380,9 +380,9 @@ class TreesTable extends Table
 
         return $query
             ->where(
-                fn (QueryExpression $exp): QueryExpression => $exp
+                fn(QueryExpression $exp): QueryExpression => $exp
                     ->lte($lft, $node['tree_left'])
-                    ->gte($rgt, $node['tree_right'])
+                    ->gte($rgt, $node['tree_right']),
             )
             ->orderByAsc($lft);
     }

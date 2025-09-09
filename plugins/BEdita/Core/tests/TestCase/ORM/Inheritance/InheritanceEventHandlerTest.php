@@ -359,9 +359,9 @@ class InheritanceEventHandlerTest extends TestCase
                             return false;
                         },
                         sprintf('%sFailure', $table->getAlias()),
-                        $options
+                        $options,
                     );
-                }
+                },
             );
         }
 
@@ -393,7 +393,7 @@ class InheritanceEventHandlerTest extends TestCase
                 $eventDispatchedFelines++;
                 static::assertArrayNotHasKey('_inherited', $options);
                 static::assertTrue($options['atomic']);
-            }
+            },
         );
 
         // Inherited table
@@ -404,7 +404,7 @@ class InheritanceEventHandlerTest extends TestCase
                 static::assertArrayHasKey('_inherited', $options);
                 static::assertTrue($options['_inherited']);
                 static::assertFalse($options['atomic']);
-            }
+            },
         );
 
         // Inherited table
@@ -415,7 +415,7 @@ class InheritanceEventHandlerTest extends TestCase
                 static::assertArrayHasKey('_inherited', $options);
                 static::assertTrue($options['_inherited']);
                 static::assertFalse($options['atomic']);
-            }
+            },
         );
 
         $feline = $this->fakeFelines->newEntity([
@@ -523,7 +523,7 @@ class InheritanceEventHandlerTest extends TestCase
                 foreach ($cleanProps as $prop) {
                     static::assertFalse($entity->isDirty($prop));
                 }
-            }
+            },
         );
 
         $feline = $this->fakeFelines->save($feline);

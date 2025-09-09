@@ -326,7 +326,7 @@ class UserExternalAuthCommandsTest extends TestCase
             ->toArray();
 
         static::assertLessThan(count($before), count($after));
-        static::assertNotContains('uuid', array_map(fn (ExternalAuth $auth): string => $auth->auth_provider->name, $after));
+        static::assertNotContains('uuid', array_map(fn(ExternalAuth $auth): string => $auth->auth_provider->name, $after));
     }
 
     /**
@@ -357,7 +357,7 @@ class UserExternalAuthCommandsTest extends TestCase
             ->toArray();
 
         static::assertLessThan(count($before), count($after));
-        static::assertNotContains('uuid', array_map(fn (ExternalAuth $auth): string => $auth->auth_provider->name, $after));
+        static::assertNotContains('uuid', array_map(fn(ExternalAuth $auth): string => $auth->auth_provider->name, $after));
     }
 
     /**

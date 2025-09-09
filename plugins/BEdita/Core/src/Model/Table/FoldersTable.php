@@ -91,7 +91,7 @@ class FoldersTable extends ObjectsTable
             [
                 'errorField' => 'parents',
                 'message' => __d('bedita', 'Folder can have at most one existing parent.'),
-            ]
+            ],
         );
 
         $rules->add(
@@ -100,7 +100,7 @@ class FoldersTable extends ObjectsTable
             [
                 'errorField' => 'deleted',
                 'message' => __d('bedita', 'Folder can be restored only if its ancestors are not deleted.'),
-            ]
+            ],
         );
 
         return $rules;
@@ -315,7 +315,7 @@ class FoldersTable extends ObjectsTable
                 'id IN' => $descendantsToUpdate,
                 'object_type_id' => $this->objectType()->id,
                 'deleted IS NOT' => $folder->deleted,
-            ]
+            ],
         );
     }
 

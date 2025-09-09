@@ -37,7 +37,7 @@ class I18nTest extends IntegrationTestCase
                 'languages' => [
                     'en' => 'English',
                 ],
-            ]
+            ],
         );
 
         $data = [

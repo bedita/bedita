@@ -101,7 +101,7 @@ class ResourcesRemoveCommand extends Command
         $res = $this->io->askChoice(
             sprintf('You are REMOVING "%s" with name or id "%s" - are you sure?', $type, $id),
             ['y', 'n'],
-            'n'
+            'n',
         );
         if ($res !== 'y') {
             $this->io->info('No action performed');

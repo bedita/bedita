@@ -375,7 +375,7 @@ class AssociatedEntitiesTest extends IntegrationTestCase
             ],
             [
                 'accessibleFields' => ['created_by' => true],
-            ]
+            ],
         );
 
         $ObjectPermissions->saveOrFail($entity);

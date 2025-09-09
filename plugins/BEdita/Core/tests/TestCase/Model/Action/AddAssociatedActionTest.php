@@ -113,7 +113,7 @@ class AddAssociatedActionTest extends TestCase
             ],
             'belongsTo' => [
                 new RuntimeException(
-                    'Unable to add additional links with association of type "Cake\ORM\Association\BelongsTo"'
+                    'Unable to add additional links with association of type "Cake\ORM\Association\BelongsTo"',
                 ),
                 'FakeArticles',
                 'FakeAnimals',
@@ -196,7 +196,7 @@ class AddAssociatedActionTest extends TestCase
                         return $query->where([
                             $association->getSource()->aliasField($association->getSource()->getPrimaryKey()) => $entity->id,
                         ]);
-                    }
+                    },
                 )
                 ->count();
         }
@@ -228,7 +228,7 @@ class AddAssociatedActionTest extends TestCase
                 [
                     'errorField' => 'gustavo',
                     'message' => 'This is a sample error',
-                ]
+                ],
             );
 
             $entity = $table->get(1);
@@ -278,7 +278,7 @@ class AddAssociatedActionTest extends TestCase
 
                 return $relatedEntity;
             },
-            [1, 2]
+            [1, 2],
         );
 
         $result = $action(compact('entity', 'relatedEntities'));
@@ -287,7 +287,7 @@ class AddAssociatedActionTest extends TestCase
             ->find(
                 'list',
                 keyField: $association->getTargetForeignKey(),
-                valueField: 'fake_params'
+                valueField: 'fake_params',
             )
             ->toArray();
 

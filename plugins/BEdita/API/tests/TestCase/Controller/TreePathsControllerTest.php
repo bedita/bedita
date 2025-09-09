@@ -179,13 +179,13 @@ class TreePathsControllerTest extends IntegrationTestCase
         static::assertNotEquals(
             $response1['data']['id'],
             $response2['data']['id'],
-            'Object IDS must be different even if they have the same slug'
+            'Object IDS must be different even if they have the same slug',
         );
 
         static::assertNotEquals(
             $response1['data']['meta']['extra']['slug_path'],
             $response2['data']['meta']['extra']['slug_path'],
-            'Paths must me different for the same slug.'
+            'Paths must me different for the same slug.',
         );
     }
 }

@@ -1117,7 +1117,7 @@ class ObjectTypeTest extends TestCase
                 static::assertEquals($expected, Hash::remove($schema, 'properties.{*}.description'));
 
                 return ['foo'];
-            }
+            },
         );
 
         $schema = $objectType->schema;
@@ -1151,7 +1151,7 @@ class ObjectTypeTest extends TestCase
                 static::assertSame($objectType, $event->getSubject());
                 static::assertSame($objectType, $ot);
                 static::assertEquals($expected, Hash::remove($schema, 'properties.{*}.description'));
-            }
+            },
         );
 
         $schema = $objectType->schema;
@@ -1187,7 +1187,7 @@ class ObjectTypeTest extends TestCase
                 static::assertEquals($expected, Hash::remove($schema, 'properties.{*}.description'));
 
                 $event->stopPropagation();
-            }
+            },
         );
 
         $schema = $objectType->schema;
@@ -1409,7 +1409,7 @@ class ObjectTypeTest extends TestCase
 
                 return $name;
             },
-            $names
+            $names,
         );
 
         $actual = ObjectType::getClosestCommonAncestor(...$objectTypes);

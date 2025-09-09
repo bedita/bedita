@@ -104,7 +104,7 @@ class LayeredEngineTest extends TestCase
         Cache::setConfig('test-layered-persistent-alias', ['className' => 'Array']);
         Cache::setConfig('test-layered-alias', array_merge(
             $this->defaultConfig,
-            ['persistent' => 'test-layered-persistent-alias']
+            ['persistent' => 'test-layered-persistent-alias'],
         ));
 
         $result = Cache::write('secret', 42, 'test-layered-persistent-alias');
@@ -124,7 +124,7 @@ class LayeredEngineTest extends TestCase
         static::expectException(TypeError::class);
         Cache::setConfig('test-layered-bad-persistent', array_merge(
             $this->defaultConfig,
-            ['persistent' => 1]
+            ['persistent' => 1],
         ));
         Cache::clear('test-layered-bad-persistent');
     }
@@ -140,7 +140,7 @@ class LayeredEngineTest extends TestCase
         static::expectExceptionMessage("Cache engine alias 'test-layered-persistent-missing' is not defined");
         Cache::setConfig('test-layered-missing-alias', array_merge(
             $this->defaultConfig,
-            ['persistent' => 'test-layered-persistent-missing']
+            ['persistent' => 'test-layered-persistent-missing'],
         ));
         Cache::clear('test-layered-missing-alias');
     }
@@ -155,7 +155,7 @@ class LayeredEngineTest extends TestCase
         static::expectException(Exception::class);
         Cache::setConfig('test-layered-recursive', array_merge(
             $this->defaultConfig,
-            ['persistent' => 'test-layered-recursive']
+            ['persistent' => 'test-layered-recursive'],
         ));
         Cache::clear('test-layered-recursive');
     }
@@ -172,7 +172,7 @@ class LayeredEngineTest extends TestCase
         Cache::getRegistry()->set('test-layered-persistent-wrong', new stdClass());
         Cache::setConfig('test-layered-wrong-object', array_merge(
             $this->defaultConfig,
-            ['persistent' => 'test-layered-persistent-wrong']
+            ['persistent' => 'test-layered-persistent-wrong'],
         ));
         Cache::clear('test-layered-wrong-object');
     }
@@ -203,7 +203,7 @@ class LayeredEngineTest extends TestCase
         Cache::setConfig('test-layered-persistent-miss', ['className' => 'Array']);
         Cache::setConfig('test-layered-miss', array_merge(
             $this->defaultConfig,
-            ['persistent' => 'test-layered-persistent-miss']
+            ['persistent' => 'test-layered-persistent-miss'],
         ));
 
         $result = Cache::write('secret', 42, 'test-layered-persistent-miss');

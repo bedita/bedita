@@ -173,7 +173,7 @@ class UserTest extends TestCase
         $user = $this->Users->get(5);
         $user = $user->jsonApiSerialize(
             JsonApiSerializable::JSONAPIOPT_EXCLUDE_LINKS |
-            JsonApiSerializable::JSONAPIOPT_EXCLUDE_RELATIONSHIPS
+            JsonApiSerializable::JSONAPIOPT_EXCLUDE_RELATIONSHIPS,
         );
 
         static::assertArrayHasKey('external_auth', $user['meta']);
@@ -192,7 +192,7 @@ class UserTest extends TestCase
         $user->created_by = 1;
         $user = $user->jsonApiSerialize(
             JsonApiSerializable::JSONAPIOPT_EXCLUDE_LINKS |
-            JsonApiSerializable::JSONAPIOPT_EXCLUDE_RELATIONSHIPS
+            JsonApiSerializable::JSONAPIOPT_EXCLUDE_RELATIONSHIPS,
         );
 
         static::assertArrayHasKey('external_auth', $user['meta']);

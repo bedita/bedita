@@ -316,7 +316,7 @@ class TreesControllerTest extends IntegrationTestCase
                     'type' => 'folders',
                     'id' => '12',
                 ],
-            ])
+            ]),
         );
         $this->assertResponseCode(200);
 

@@ -163,7 +163,7 @@ class ResourcesCommandTest extends TestCase
             [$name, $description],
             function ($val) {
                 return !is_null($val);
-            }
+            },
         );
         $this->exec(sprintf('resources add -t %s', $type), $input);
 
@@ -298,7 +298,7 @@ class ResourcesCommandTest extends TestCase
             [$value],
             function ($val) {
                 return !is_null($val);
-            }
+            },
         );
         $this->exec(sprintf('resources edit -t %s -f %s "%s"', $type, $field, $resId), $input);
 

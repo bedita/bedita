@@ -84,7 +84,7 @@ abstract class ResourcesMigration extends AbstractMigration
         $columnActions = $this->tableColumnsActions($data);
         // first perform column removal
         $removeColumns = array_filter(
-            array_intersect_key($columnActions, ['remove' => ''])
+            array_intersect_key($columnActions, ['remove' => '']),
         );
         $this->updateColumns($removeColumns);
         unset($columnActions['remove']);
@@ -92,7 +92,7 @@ abstract class ResourcesMigration extends AbstractMigration
         // then perform resources operations
         Resources::save(
             $data,
-            ['connection' => $this->getConnection()]
+            ['connection' => $this->getConnection()],
         );
         // finally columns creation + change
         $this->updateColumns($columnActions);
@@ -152,7 +152,7 @@ abstract class ResourcesMigration extends AbstractMigration
                 $items,
                 function ($item) use ($action): void {
                     $this->columnAction($action, $item);
-                }
+                },
             );
         }
     }

@@ -97,7 +97,7 @@ class Folder extends ObjectEntity
                         'Trees.object_id' => 'integer',
                         'Trees.tree_left' => 'integer',
                         'Trees.tree_right' => 'integer',
-                    ]
+                    ],
                 )
                 ->orderBy(['Trees.tree_left' => 'DESC'])
                 ->toArray();

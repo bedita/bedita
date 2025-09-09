@@ -146,7 +146,7 @@ class Property extends Entity implements JsonApiSerializable
                     ->indexBy('name')
                     ->toArray();
             },
-            ObjectTypesTable::CACHE_CONFIG
+            ObjectTypesTable::CACHE_CONFIG,
         );
 
         if (empty($propertyTypes[$propertyType])) {

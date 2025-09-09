@@ -258,7 +258,7 @@ class ObjectPolicyTest extends TestCase
             ],
             [
                 'accessibleFields' => ['created_by' => true],
-            ]
+            ],
         );
 
         $ObjectPermissions->saveOrFail($entity);

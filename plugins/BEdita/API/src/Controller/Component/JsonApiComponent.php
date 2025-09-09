@@ -81,7 +81,7 @@ class JsonApiComponent extends Component
                 JsonApiFallbackView::class,
                 JsonApiNegotiationRequiredView::class,
             ],
-            $this->getController()->viewClasses()
+            $this->getController()->viewClasses(),
         );
 
         $this->getController()
@@ -126,7 +126,7 @@ class JsonApiComponent extends Component
             throw new BadRequestException(
                 __d('bedita', 'Bad JSON API input'),
                 400,
-                $e
+                $e,
             );
         }
     }
@@ -320,7 +320,7 @@ class JsonApiComponent extends Component
         if ($this->getConfig('checkMediaType') && trim($controller->getRequest()->getHeaderLine('accept')) !== self::CONTENT_TYPE) {
             // http://jsonapi.org/format/#content-negotiation-servers
             throw new UnsupportedMediaTypeException(
-                __d('bedita', 'Bad request content type "{0}"', $controller->getRequest()->getHeaderLine('Accept'))
+                __d('bedita', 'Bad request content type "{0}"', $controller->getRequest()->getHeaderLine('Accept')),
             );
         }
 

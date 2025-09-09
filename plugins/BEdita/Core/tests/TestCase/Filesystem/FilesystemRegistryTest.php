@@ -101,7 +101,7 @@ class FilesystemRegistryTest extends TestCase
             ],
             'bad instance' => [
                 new RuntimeException(
-                    sprintf('Filesystem adapters must use %s as a base class.', FilesystemAdapter::class)
+                    sprintf('Filesystem adapters must use %s as a base class.', FilesystemAdapter::class),
                 ),
                 'Bad',
                 [

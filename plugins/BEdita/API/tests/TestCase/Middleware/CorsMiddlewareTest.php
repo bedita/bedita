@@ -339,7 +339,7 @@ class CorsMiddlewareTest extends TestCase
             foreach ($expectedCorsHeaders as $header => $value) {
                 $this->assertEquals(
                     $value,
-                    $response->getHeaderLine($header)
+                    $response->getHeaderLine($header),
                 );
             }
         }

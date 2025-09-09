@@ -52,7 +52,7 @@ class JsonApi
         JsonApiSerializable|SelectQuery|CollectionInterface|PaginatedInterface|array|null $items,
         int $options = 0,
         array $fields = [],
-        array &$included = []
+        array &$included = [],
     ): ?array {
         if ($items instanceof SelectQuery) {
             $items = $items->all()->toList();
@@ -85,7 +85,7 @@ class JsonApi
                 throw new InvalidArgumentException(sprintf(
                     'Objects must implement "%s", got "%s" instead',
                     JsonApiSerializable::class,
-                    is_object($item) ? get_class($item) : gettype($item)
+                    is_object($item) ? get_class($item) : gettype($item),
                 ));
             }
 
@@ -175,7 +175,7 @@ class JsonApi
                     '_name' => 'api:model:schema',
                     'type' => $type,
                 ],
-                true
+                true,
             ),
             'revision' => $revision,
         ];

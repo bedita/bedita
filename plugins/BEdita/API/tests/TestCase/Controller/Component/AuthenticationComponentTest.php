@@ -57,7 +57,7 @@ class AuthenticationComponentTest extends TestCase
                 new Result(
                     null,
                     ResultInterface::FAILURE_CREDENTIALS_INVALID,
-                    ['exception' => new ExpiredException()]
+                    ['exception' => new ExpiredException()],
                 ),
             ],
         ];

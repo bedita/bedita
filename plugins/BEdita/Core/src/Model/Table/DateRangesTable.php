@@ -169,7 +169,7 @@ class DateRangesTable extends Table
         // filter on `start_date` and `end_date` fields
         $options = array_combine(
             array_map([$this, 'aliasField'], array_keys($options)),
-            array_values($options)
+            array_values($options),
         );
 
         return $this->fieldsFilter($query, (array)$options);
@@ -238,7 +238,7 @@ class DateRangesTable extends Table
                     $this->aliasField('start_date') => 'identifier',
                 ]),
                 $from,
-                'datetime'
+                'datetime',
             );
         });
     }
@@ -259,7 +259,7 @@ class DateRangesTable extends Table
                     $this->aliasField('start_date') => 'identifier',
                 ]),
                 $to,
-                'datetime'
+                'datetime',
             );
         });
     }
@@ -283,7 +283,7 @@ class DateRangesTable extends Table
                         $this->aliasField('start_date') => 'identifier',
                     ]),
                     $from,
-                    'datetime'
+                    'datetime',
                 );
         });
     }

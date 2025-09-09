@@ -248,7 +248,7 @@ class ListAssociatedActionTest extends TestCase
 
             public function eagerLoader(array $options): Closure
             {
-                return fn () => null;
+                return fn() => null;
             }
 
             public function cascadeDelete(EntityInterface $entity, array $options = []): bool

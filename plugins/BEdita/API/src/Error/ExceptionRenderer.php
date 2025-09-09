@@ -14,11 +14,6 @@ declare(strict_types=1);
  */
 namespace BEdita\API\Error;
 
-use BEdita\Core\Exception\BadFilterException;
-use BEdita\Core\Exception\ImmutableResourceException;
-use BEdita\Core\Exception\InvalidDataException;
-use BEdita\Core\Exception\LockedResourceException;
-use BEdita\Core\Exception\UserExistsException;
 use Cake\Core\Configure;
 use Cake\Core\Exception\CakeException;
 use Cake\Error\Renderer\WebExceptionRenderer;
@@ -125,8 +120,8 @@ class ExceptionRenderer extends WebExceptionRenderer
                         return sprintf('[%s]: %s', $key, $val);
                     },
                     array_keys($d),
-                    array_values($d)
-                )
+                    array_values($d),
+                ),
             );
         }
 

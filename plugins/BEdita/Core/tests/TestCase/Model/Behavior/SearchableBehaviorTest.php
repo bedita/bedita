@@ -132,7 +132,7 @@ class SearchableBehaviorTest extends TestCase
      */
     public static function getAdapterProvider(): array
     {
-        $newFakeAdapter = fn (array $condition = []) => new class ($condition) extends BaseAdapter {
+        $newFakeAdapter = fn(array $condition = []) => new class ($condition) extends BaseAdapter {
             protected array $condition;
 
             public function __construct(array $condition)
@@ -306,7 +306,7 @@ class SearchableBehaviorTest extends TestCase
      */
     public function testAfterSaveDelete(): void
     {
-        $newAdapter = fn () => new class extends BaseAdapter {
+        $newAdapter = fn() => new class extends BaseAdapter {
             public $initializedCount = 0;
             public $afterDeleteCount = 0;
             public $afterSaveCount = 0;
@@ -383,7 +383,7 @@ class SearchableBehaviorTest extends TestCase
      */
     public function testAfterSaveDeleteScopes(): void
     {
-        $newAdapter = fn () => new class extends BaseAdapter {
+        $newAdapter = fn() => new class extends BaseAdapter {
             public $initializedCount = 0;
             public $afterDeleteCount = 0;
             public $afterSaveCount = 0;
