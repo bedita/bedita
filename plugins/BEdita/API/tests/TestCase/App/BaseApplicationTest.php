@@ -249,6 +249,7 @@ class BaseApplicationTest extends TestCase
             'url' => 'auth',
         ];
         $request = new ServerRequest(array_merge($defaultConf, $config));
+        /** @var \Authentication\AuthenticationService $service */
         $service = $app->getAuthenticationService($request);
 
         static::assertInstanceOf(AuthenticationService::class, $service);
@@ -256,7 +257,8 @@ class BaseApplicationTest extends TestCase
 
         static::assertTrue($service->authenticators()->has($expected[0]));
         if (!empty($expected[1])) {
-            static::assertTrue($service->identifiers()->has($expected[1]));
+            $authenticator = $service->authenticators()->get($expected[0]);
+            static::assertTrue($authenticator->getIdentifier()->has($expected[1]));
         }
     }
 
@@ -306,11 +308,13 @@ class BaseApplicationTest extends TestCase
             ],
         ];
         $request = new ServerRequest($config);
+        /** @var \Authentication\AuthenticationService $service */
         $service = $app->getAuthenticationService($request);
 
         static::assertInstanceOf(AuthenticationService::class, $service);
         static::assertNotNull($service);
         static::assertTrue($service->authenticators()->has($expected[0]));
-        static::assertTrue($service->identifiers()->has($expected[1]));
+        $authenticator = $service->authenticators()->get($expected[0]);
+        static::assertTrue($authenticator->getIdentifier()->has($expected[1]));
     }
 }
