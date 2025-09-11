@@ -19,11 +19,14 @@ use Cake\Core\Configure;
 use Cake\I18n\DateTime;
 use Cake\ORM\TableRegistry;
 use Cake\Utility\Hash;
+use PHPUnit\Framework\Attributes\CoversNothing;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * Integration test for `Publish.checkDate` configuration
  * using `publish_start` and `publish_date` values.
  */
+#[CoversNothing]
 class PublishStartEndTest extends IntegrationTestCase
 {
     /**
@@ -54,9 +57,8 @@ class PublishStartEndTest extends IntegrationTestCase
      * @param bool $config The `Publish.checkDate` config
      * @param string $url The test URL
      * @return void
-     * @dataProvider listProvider
-     * @coversNothing
      */
+    #[DataProvider('listProvider')]
     public function testListObjects($expected, $config, $url): void
     {
         Configure::write('Publish.checkDate', $config);
@@ -118,9 +120,8 @@ class PublishStartEndTest extends IntegrationTestCase
      * @param bool $config The `Publish.checkDate` config
      * @param array $data The fields data
      * @return void
-     * @dataProvider singleProvider
-     * @coversNothing
      */
+    #[DataProvider('singleProvider')]
     public function testSingleObject($expected, $config, array $data): void
     {
         Configure::write('Publish.checkDate', $config);

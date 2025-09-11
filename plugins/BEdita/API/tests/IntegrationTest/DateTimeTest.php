@@ -16,12 +16,13 @@ namespace BEdita\API\Test\IntegrationTest;
 
 use BEdita\API\TestSuite\IntegrationTestCase;
 use Cake\Utility\Hash;
+use PHPUnit\Framework\Attributes\CoversNothing;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * Test date & datetime input/output
- *
- * @coversNothing
  */
+#[CoversNothing]
 class DateTimeTest extends IntegrationTestCase
 {
     /**
@@ -141,10 +142,9 @@ class DateTimeTest extends IntegrationTestCase
      *
      * @param array $expected Extected result
      * @param array $input Input data
-     * @dataProvider dateTimeInputProvider
      * @return void
-     * @coversNothing
      */
+    #[DataProvider('dateTimeInputProvider')]
     public function testDateTimeInput($expected, $input)
     {
         $data = [

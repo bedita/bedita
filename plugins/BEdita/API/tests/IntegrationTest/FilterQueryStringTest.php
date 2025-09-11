@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\API\Test\IntegrationTest;
 
 use BEdita\API\TestSuite\IntegrationTestCase;
@@ -20,12 +19,13 @@ use Cake\Database\Driver\Postgres;
 use Cake\Datasource\ConnectionManager;
 use Cake\ORM\TableRegistry;
 use Cake\Utility\Hash;
+use PHPUnit\Framework\Attributes\CoversNothing;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * Test Query String `filter`.
- *
- * @coversNothing
  */
+#[CoversNothing]
 class FilterQueryStringTest extends IntegrationTestCase
 {
     /**
@@ -103,9 +103,8 @@ class FilterQueryStringTest extends IntegrationTestCase
      * @param $expected int Number of objects id expected in response
      * @param $endpoint string Endpoint to use
      * @return void
-     * @dataProvider filterDateProvider
-     * @coversNothing
      */
+    #[DataProvider('filterDateProvider')]
     public function testFilterDate($query, $expected, $endpoint = '/events')
     {
         $this->configRequestHeaders();
@@ -145,9 +144,9 @@ class FilterQueryStringTest extends IntegrationTestCase
      * @param $query string URL with query filter string
      * @param $expected array Distance expected in response for every item
      * @param $endpoint string Endpoint to use
-     * @dataProvider filterGeoProvider
-     * @coversNothing
+     * @return void
      */
+    #[DataProvider('filterGeoProvider')]
     public function testFilterGeo($query, $expected, $endpoint = '/locations')
     {
         $this->configRequestHeaders();
@@ -198,9 +197,8 @@ class FilterQueryStringTest extends IntegrationTestCase
      * @param $query string URL with query filter string
      * @param $endpoint string Endpoint to use
      * @return void
-     * @dataProvider badFilterProvider
-     * @coversNothing
      */
+    #[DataProvider('badFilterProvider')]
     public function testBadFilter($query, $endpoint)
     {
         $this->configRequestHeaders();
@@ -213,7 +211,6 @@ class FilterQueryStringTest extends IntegrationTestCase
      * Test finder of object types by relation.
      *
      * @return void
-     * @coversNothing
      */
     public function testFindByRelation()
     {
@@ -234,7 +231,6 @@ class FilterQueryStringTest extends IntegrationTestCase
      * Test finder of object types by parent name.
      *
      * @return void
-     * @coversNothing
      */
     public function testFindParent()
     {
@@ -380,13 +376,12 @@ class FilterQueryStringTest extends IntegrationTestCase
     /**
      * Test finder of objects by search string using `filter[query]` or `q`.
      *
-     * @return void
      * @param string $url Url string.
      * @param array $expected Expected result.
      * @param bool $caseInsensitive Whether test case relies on case-insensitive comparison.
-     * @dataProvider searchFilterProvider
-     * @coversNothing
+     * @return void
      */
+    #[DataProvider('searchFilterProvider')]
     public function testSearchFilter($url, $expected, bool $caseInsensitive = false)
     {
         if ($caseInsensitive && ConnectionManager::get('default')->getDriver() instanceof Postgres) {
@@ -409,7 +404,7 @@ class FilterQueryStringTest extends IntegrationTestCase
     /**
      * Test search users by username.
      *
-     * @coversNothing
+     * @return void
      */
     public function testSearchUsername()
     {
@@ -489,9 +484,8 @@ class FilterQueryStringTest extends IntegrationTestCase
      * @param string $query Query string.
      * @param array $expected Expected result.
      * @return void
-     * @dataProvider typeFilterProvider
-     * @coversNothing
      */
+    #[DataProvider('typeFilterProvider')]
     public function testTypeFilter($query, $expected)
     {
         $this->configRequestHeaders();
@@ -577,9 +571,8 @@ class FilterQueryStringTest extends IntegrationTestCase
      * @param string $query Query string.
      * @param array $expected Expected results ids.
      * @return void
-     * @dataProvider fieldsFilterProvider
-     * @coversNothing
      */
+    #[DataProvider('fieldsFilterProvider')]
     public function testFieldsFilter($endpoint, $query, $expected)
     {
         $this->configRequestHeaders();
@@ -599,7 +592,7 @@ class FilterQueryStringTest extends IntegrationTestCase
     /**
      * Test `/folders?filter[mine]`.
      *
-     * @coversNothing
+     * @return void
      */
     public function testMineFilter()
     {
@@ -617,7 +610,7 @@ class FilterQueryStringTest extends IntegrationTestCase
     /**
      * Test `/folders?filter[history_editor]`.
      *
-     * @coversNothing
+     * @return void
      */
     public function testHistoryEditorFilter()
     {
@@ -679,9 +672,8 @@ class FilterQueryStringTest extends IntegrationTestCase
      * @param string $query Query string.
      * @param array $expected Expected result.
      * @return void
-     * @dataProvider trashFilterProvider
-     * @coversNothing
      */
+    #[DataProvider('trashFilterProvider')]
     public function testTrashFilter($query, $expected)
     {
         $this->configRequestHeaders();
@@ -747,9 +739,8 @@ class FilterQueryStringTest extends IntegrationTestCase
      * @param string $query Query string.
      * @param array $expected Expected result.
      * @return void
-     * @dataProvider parentAncestorFilterProvider
-     * @coversNothing
      */
+    #[DataProvider('parentAncestorFilterProvider')]
     public function testParentAncestorFilter($endpoint, $query, $expected)
     {
         $this->configRequestHeaders();
@@ -766,7 +757,7 @@ class FilterQueryStringTest extends IntegrationTestCase
     /**
      * Test `/folders?filter[roots]`.
      *
-     * @coversNothing
+     * @return void
      */
     public function testRootsFilter()
     {
@@ -825,9 +816,8 @@ class FilterQueryStringTest extends IntegrationTestCase
      * @param string $query Query string.
      * @param array $expected Expected result.
      * @return void
-     * @dataProvider categoriesTagsProvider
-     * @coversNothing
      */
+    #[DataProvider('categoriesTagsProvider')]
     public function testCategoriesTags($endpoint, $query, $expected)
     {
         $this->configRequestHeaders();
@@ -845,7 +835,6 @@ class FilterQueryStringTest extends IntegrationTestCase
      * Test `/model/categories?filter[type]={type}`.
      *
      * @return void
-     * @coversNothing
      */
     public function testCategoriesTypeFilter(): void
     {
@@ -888,9 +877,8 @@ class FilterQueryStringTest extends IntegrationTestCase
      * @param array $expected Expected result
      * @param string $url Request URL
      * @return void
-     * @dataProvider relatedFilterProvider
-     * @coversNothing
      */
+    #[DataProvider('relatedFilterProvider')]
     public function testRelatedFilter(array $expected, string $url): void
     {
         $this->configRequestHeaders();

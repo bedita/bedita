@@ -16,10 +16,13 @@ namespace BEdita\API\Test\IntegrationTest;
 
 use BEdita\API\TestSuite\IntegrationTestCase;
 use Cake\Core\Configure;
+use PHPUnit\Framework\Attributes\CoversNothing;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * Test `DefaultValues` config upon object creation
  */
+#[CoversNothing]
 class DefaultValuesTest extends IntegrationTestCase
 {
     /**
@@ -93,9 +96,8 @@ class DefaultValuesTest extends IntegrationTestCase
      * @param array $attributes Object attributes.
      * @param array $config DefaultValues config.
      * @return void
-     * @dataProvider createProvider
-     * @coversNothing
      */
+    #[DataProvider('createProvider')]
     public function testCreate(array $expected, string $type, array $attributes, array $config): void
     {
         Configure::write('DefaultValues', $config);

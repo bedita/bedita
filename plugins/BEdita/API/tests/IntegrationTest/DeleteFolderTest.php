@@ -17,17 +17,18 @@ namespace BEdita\API\Test\IntegrationTest;
 use BEdita\API\TestSuite\IntegrationTestCase;
 use Cake\ORM\TableRegistry;
 use Cake\Utility\Hash;
+use PHPUnit\Framework\Attributes\CoversNothing;
 
 /**
  * Test delete/restore operations on folders
  */
+#[CoversNothing]
 class DeleteFolderTest extends IntegrationTestCase
 {
     /**
      * Test that restoring a folder is allowed only if no ancestors are deleted.
      *
      * @return void
-     * @coversNothing
      */
     public function testRestoreFolder()
     {

@@ -16,10 +16,13 @@ namespace BEdita\API\Test\IntegrationTest;
 
 use BEdita\API\TestSuite\IntegrationTestCase;
 use Cake\Utility\Hash;
+use PHPUnit\Framework\Attributes\CoversNothing;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * Test Query String `sort`
  */
+#[CoversNothing]
 class SortQueryStringTest extends IntegrationTestCase
 {
     /**
@@ -79,9 +82,8 @@ class SortQueryStringTest extends IntegrationTestCase
      * @param string $endpoint The object type
      * @param string $sort The field on which sort
      * @return void
-     * @dataProvider sortProvider
-     * @coversNothing
      */
+    #[DataProvider('sortProvider')]
     public function testSort($expected, $endpoint, $sort)
     {
         $sortedFields = [];

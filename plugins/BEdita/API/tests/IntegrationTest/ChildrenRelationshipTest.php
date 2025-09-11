@@ -18,12 +18,12 @@ use BEdita\API\TestSuite\IntegrationTestCase;
 use Cake\Core\Configure;
 use Cake\ORM\TableRegistry;
 use Cake\Utility\Hash;
+use PHPUnit\Framework\Attributes\CoversNothing;
 
 /**
  * Test operations on `children` relationships.
- *
- * @coversNothing
  */
+#[CoversNothing]
 class ChildrenRelationshipTest extends IntegrationTestCase
 {
     /**
@@ -57,7 +57,6 @@ class ChildrenRelationshipTest extends IntegrationTestCase
      * Test that moving children already on tree is consistent.
      *
      * @return void
-     * @coversNothing
      */
     public function testMoveChildrenToCustomPosition()
     {
@@ -168,7 +167,6 @@ class ChildrenRelationshipTest extends IntegrationTestCase
      * Test `meta.relation` content in GET `children` response
      *
      * @return void
-     * @coversNothing
      */
     public function testChildrenMeta()
     {
