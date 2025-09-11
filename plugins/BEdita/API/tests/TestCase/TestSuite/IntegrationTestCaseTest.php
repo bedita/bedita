@@ -118,15 +118,18 @@ class IntegrationTestCaseTest extends IntegrationTestCase
     #[DataProvider('authFixturesProvider')]
     public function testAuthFixtures(array $expected, array $fixtures)
     {
-        $mock = $this->getMockBuilder(IntegrationTestCase::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $intTestCase = new class ('IntegrationTestCase') extends IntegrationTestCase {
+            public function setupFixtures(): void
+            {
+                $this->addAuthFixtures();
+            }
+        };
 
         foreach ($fixtures as $f) {
-            $mock->addFixture($f);
+            $intTestCase->addFixture($f);
         }
-        $mock->__construct('integrationTest');
-        static::assertEquals($expected, $mock->fixtures);
+        $intTestCase->setupFixtures();
+        static::assertEquals($expected, $intTestCase->getFixtures());
     }
 
     /**
