@@ -20,7 +20,6 @@ use Cake\Core\Configure;
 use Cake\Database\Exception\DatabaseException;
 use Cake\TestSuite\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\Attributes\CoversNothing;
 use PHPUnit\Framework\Attributes\DataProvider;
 
 /**

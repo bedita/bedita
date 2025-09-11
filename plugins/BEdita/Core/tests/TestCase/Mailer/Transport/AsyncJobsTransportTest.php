@@ -23,7 +23,6 @@ use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Hash;
 use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\Attributes\CoversNothing;
 
 /**
  * {@see \BEdita\Core\Mailer\Transport\AsyncJobsTransport} Test Case

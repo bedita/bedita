@@ -20,7 +20,6 @@ use BEdita\API\TestSuite\IntegrationTestCase;
 use BEdita\Core\Test\Utility\TestArraySubsetTrait;
 use Cake\ORM\TableRegistry;
 use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\Attributes\CoversNothing;
 
 /**
  * {@see \BEdita\API\Controller\UsersController} Test Case

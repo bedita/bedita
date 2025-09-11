@@ -17,7 +17,6 @@ namespace BEdita\API\Test\TestCase\Controller\Model;
 use BEdita\API\Controller\Model\ProjectController;
 use BEdita\API\TestSuite\IntegrationTestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\Attributes\CoversNothing;
 
 /**
  * {@see \BEdita\API\Controller\Model\ProjectController} Test Case

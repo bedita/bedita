@@ -20,7 +20,6 @@ use BEdita\Core\Test\Utility\TestArraySubsetTrait;
 use BEdita\Core\Test\Utility\TestFilesystemTrait;
 use Cake\Validation\Validation;
 use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\Attributes\CoversNothing;
 use PHPUnit\Framework\Attributes\DataProvider;
 
 /**

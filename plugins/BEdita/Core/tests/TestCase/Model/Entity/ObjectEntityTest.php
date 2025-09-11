@@ -21,7 +21,6 @@ use Cake\TestSuite\TestCase;
 use Cake\Utility\Hash;
 use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\Attributes\CoversNothing;
 use PHPUnit\Framework\Attributes\DataProvider;
 
 /**

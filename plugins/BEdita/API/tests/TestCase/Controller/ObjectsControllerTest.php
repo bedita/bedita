@@ -24,7 +24,6 @@ use Cake\Http\ServerRequest;
 use Cake\ORM\TableRegistry;
 use Cake\Utility\Hash;
 use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\Attributes\CoversNothing;
 use PHPUnit\Framework\Attributes\DataProvider;
 
 /**

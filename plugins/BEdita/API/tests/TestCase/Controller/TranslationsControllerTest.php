@@ -19,7 +19,6 @@ use BEdita\API\Test\TestConstants;
 use BEdita\API\TestSuite\IntegrationTestCase;
 use Cake\ORM\TableRegistry;
 use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\Attributes\CoversNothing;
 
 /**
  * {@see \BEdita\API\Controller\TranslationsController} Test Case

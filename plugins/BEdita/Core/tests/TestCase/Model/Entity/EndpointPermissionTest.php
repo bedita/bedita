@@ -25,7 +25,6 @@ use Cake\TestSuite\TestCase;
 use Exception;
 use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\Attributes\CoversNothing;
 use PHPUnit\Framework\Attributes\DataProvider;
 
 /**

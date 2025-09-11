@@ -17,7 +17,6 @@ namespace BEdita\API\Test\TestCase\Controller;
 use BEdita\API\Controller\ObjectPermissionsController;
 use BEdita\API\TestSuite\IntegrationTestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\Attributes\CoversNothing;
 
 /**
  * {@see \BEdita\API\Controller\ObjectPermissionsController} Test Case

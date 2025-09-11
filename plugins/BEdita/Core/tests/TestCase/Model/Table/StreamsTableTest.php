@@ -24,7 +24,6 @@ use Cake\TestSuite\TestCase;
 use Cake\Utility\Hash;
 use Cake\Utility\Text;
 use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\Attributes\CoversNothing;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\TestWith;
 

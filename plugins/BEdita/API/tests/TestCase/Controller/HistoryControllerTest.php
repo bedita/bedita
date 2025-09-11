@@ -18,7 +18,6 @@ use BEdita\API\Controller\HistoryController;
 use BEdita\API\Test\TestConstants;
 use BEdita\API\TestSuite\IntegrationTestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\Attributes\CoversNothing;
 
 /**
  * {@see \BEdita\API\Controller\HistoryController} Test Case

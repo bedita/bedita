@@ -19,7 +19,6 @@ use BEdita\Core\Model\Table\ConfigTable;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\Attributes\CoversNothing;
 
 /**
  * {@see \BEdita\Core\Model\Entity\Config} Test Case

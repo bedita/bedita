@@ -18,7 +18,6 @@ use BEdita\Core\Model\Validation\LocationsValidator;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Hash;
 use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\Attributes\CoversNothing;
 use PHPUnit\Framework\Attributes\DataProvider;
 use stdClass;
 

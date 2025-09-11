@@ -23,7 +23,6 @@ use BEdita\Core\Test\Utility\TestFilesystemTrait;
 use Cake\Core\Configure;
 use Cake\Utility\Hash;
 use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\Attributes\CoversNothing;
 use PHPUnit\Framework\Attributes\DataProvider;
 
 /**

@@ -25,7 +25,6 @@ use League\Flysystem\DirectoryListing;
 use League\Flysystem\MountManager;
 use League\Flysystem\UnableToResolveFilesystemMount;
 use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\Attributes\CoversNothing;
 use PHPUnit\Framework\Attributes\DataProvider;
 use RuntimeException;
 use stdClass;
