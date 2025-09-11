@@ -74,7 +74,6 @@ class ExternalAuthTest extends TestCase
      *
      * @return void
      */
-    #[CoversNothing]
     public function testAccessible()
     {
         $externalAuth = $this->ExternalAuth->get(1);

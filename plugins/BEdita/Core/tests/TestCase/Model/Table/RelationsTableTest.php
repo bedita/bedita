@@ -144,7 +144,6 @@ class RelationsTableTest extends TestCase
      * @return void
      */
     #[DataProvider('validationProvider')]
-    #[CoversNothing]
     public function testValidation($expected, array $data)
     {
         if (empty($data['id'])) {

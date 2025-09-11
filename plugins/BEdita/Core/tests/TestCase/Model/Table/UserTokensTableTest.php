@@ -78,7 +78,6 @@ class UserTokensTableTest extends TestCase
      *
      * @return void
      */
-    #[CoversNothing]
     public function testInitialization()
     {
         $this->assertEquals('user_tokens', $this->UserTokens->getTable());

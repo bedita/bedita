@@ -68,7 +68,6 @@ class RelationTest extends TestCase
      *
      * @return void
      */
-    #[CoversNothing]
     public function testAccessible()
     {
         $relation = $this->Relations->get(1);

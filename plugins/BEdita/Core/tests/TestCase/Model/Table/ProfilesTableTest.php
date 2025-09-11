@@ -90,7 +90,6 @@ class ProfilesTableTest extends TestCase
      *
      * @return void
      */
-    #[CoversNothing]
     public function testInitialize()
     {
         $this->assertEquals('profiles', $this->Profiles->getTable());
@@ -142,7 +141,6 @@ class ProfilesTableTest extends TestCase
      * @return void
      */
     #[DataProvider('saveProvider')]
-    #[CoversNothing]
     public function testSave(bool $changed, array $data)
     {
         $entity = $this->Profiles->newEntity($data);
@@ -192,7 +190,6 @@ class ProfilesTableTest extends TestCase
      * @return void
      */
     #[DataProvider('validationProvider')]
-    #[CoversNothing]
     public function testValidation($expected, array $data)
     {
         $profile = $this->Profiles->newEntity($data);
@@ -212,7 +209,6 @@ class ProfilesTableTest extends TestCase
      *
      * @return void
      */
-    #[CoversNothing]
     public function testFind()
     {
         $expectedProperties = [

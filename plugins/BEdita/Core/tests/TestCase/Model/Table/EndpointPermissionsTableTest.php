@@ -137,7 +137,6 @@ class EndpointPermissionsTableTest extends TestCase
      * @return void
      */
     #[DataProvider('validationProvider')]
-    #[CoversNothing]
     public function testValidation($expected, array $data)
     {
         $endpointPermission = $this->EndpointPermissions->newEntity($data);
@@ -192,7 +191,6 @@ class EndpointPermissionsTableTest extends TestCase
      * @return void
      */
     #[DataProvider('buildRulesProvider')]
-    #[CoversNothing]
     public function testBuildRules($expected, array $data)
     {
         $endpointPermission = $this->EndpointPermissions->newEntity($data, ['validate' => false]);

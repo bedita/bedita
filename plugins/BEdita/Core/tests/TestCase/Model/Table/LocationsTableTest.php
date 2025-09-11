@@ -121,7 +121,6 @@ class LocationsTableTest extends TestCase
      * @return void
      */
     #[DataProvider('saveProvider')]
-    #[CoversNothing]
     public function testSave(bool $changed, array $data)
     {
         $entity = $this->Locations->newEntity($data);

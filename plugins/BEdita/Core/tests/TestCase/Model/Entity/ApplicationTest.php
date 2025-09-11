@@ -69,7 +69,6 @@ class ApplicationTest extends TestCase
      *
      * @return void
      */
-    #[CoversNothing]
     public function testAccessible()
     {
         $application = $this->Applications->get(1);

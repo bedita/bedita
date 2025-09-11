@@ -79,7 +79,6 @@ class TranslationsTableTest extends TestCase
      *
      * @return void
      */
-    #[CoversNothing]
     public function testInitialize()
     {
         static::assertInstanceOf(BelongsTo::class, $this->Translations->Objects);
@@ -143,7 +142,6 @@ class TranslationsTableTest extends TestCase
      * @return void
      */
     #[DataProvider('validationProvider')]
-    #[CoversNothing]
     public function testValidation(array $expected, array $data)
     {
         $entity = $this->Translations->newEmptyEntity();

@@ -174,7 +174,6 @@ class ObjectsHandlerTest extends TestCase
      *
      * @return void
      */
-    #[CoversNothing]
     public function testCustomPropsSave()
     {
         $data = [

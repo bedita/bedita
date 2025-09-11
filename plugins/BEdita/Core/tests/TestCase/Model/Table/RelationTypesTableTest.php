@@ -121,7 +121,6 @@ class RelationTypesTableTest extends TestCase
      * @return void
      */
     #[DataProvider('validationProvider')]
-    #[CoversNothing]
     public function testValidation($expected, array $data)
     {
         $objectType = $this->RelationTypes->newEmptyEntity();

@@ -77,7 +77,6 @@ class ProfileTest extends TestCase
      *
      * @return void
      */
-    #[CoversNothing]
     public function testAccessible()
     {
         $profile = $this->Profiles->get(4);

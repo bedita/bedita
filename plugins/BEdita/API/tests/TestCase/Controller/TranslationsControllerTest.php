@@ -32,7 +32,6 @@ class TranslationsControllerTest extends IntegrationTestCase
      *
      * @return void
      */
-    #[CoversNothing]
     public function testIndex()
     {
         $expected = [
@@ -202,7 +201,6 @@ class TranslationsControllerTest extends IntegrationTestCase
      *
      * @return void
      */
-    #[CoversNothing]
     public function testSingle()
     {
         $expected = [
@@ -258,7 +256,6 @@ class TranslationsControllerTest extends IntegrationTestCase
      *
      * @return void
      */
-    #[CoversNothing]
     public function testAdd()
     {
         $data = [
@@ -288,7 +285,6 @@ class TranslationsControllerTest extends IntegrationTestCase
      *
      * @return void
      */
-    #[CoversNothing]
     public function testEdit()
     {
         $data = [
@@ -313,7 +309,6 @@ class TranslationsControllerTest extends IntegrationTestCase
      *
      * @return void
      */
-    #[CoversNothing]
     public function testDelete()
     {
         // delete translation 2

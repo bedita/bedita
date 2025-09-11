@@ -507,7 +507,6 @@ class ProjectControllerTest extends IntegrationTestCase
      *
      * @return void
      */
-    #[CoversNothing]
     public function testContentNegotiation(): void
     {
         $this->configRequestHeaders();

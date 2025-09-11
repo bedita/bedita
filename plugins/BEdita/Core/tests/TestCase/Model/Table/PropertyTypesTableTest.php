@@ -92,7 +92,6 @@ class PropertyTypesTableTest extends TestCase
      *
      * @return void
      */
-    #[CoversNothing]
     public function testInitialization()
     {
         static::assertEquals('property_types', $this->PropertyTypes->getTable());
@@ -137,7 +136,6 @@ class PropertyTypesTableTest extends TestCase
      * @return void
      */
     #[DataProvider('validationProvider')]
-    #[CoversNothing]
     public function testValidation($expected, array $data)
     {
         $PropertyTypes = $this->PropertyTypes->newEntity($data);

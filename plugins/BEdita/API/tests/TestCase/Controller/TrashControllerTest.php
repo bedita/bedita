@@ -398,7 +398,6 @@ class TrashControllerTest extends IntegrationTestCase
      *
      * @return void
      */
-    #[CoversNothing]
     public function testLockedView()
     {
         $this->configRequestHeaders();
@@ -411,7 +410,6 @@ class TrashControllerTest extends IntegrationTestCase
      *
      * @return void
      */
-    #[CoversNothing]
     public function testLockedRestore()
     {
         $this->configRequestHeaders('PATCH', $this->getUserAuthHeader());
@@ -428,7 +426,6 @@ class TrashControllerTest extends IntegrationTestCase
      *
      * @return void
      */
-    #[CoversNothing]
     public function testLockedDelete()
     {
         $this->configRequestHeaders('DELETE', $this->getUserAuthHeader());

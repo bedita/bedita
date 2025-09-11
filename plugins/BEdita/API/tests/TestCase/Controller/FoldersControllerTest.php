@@ -66,7 +66,6 @@ class FoldersControllerTest extends IntegrationTestCase
      *
      * @return void
      */
-    #[CoversNothing]
     public function testIndex()
     {
         $expected = [
@@ -281,7 +280,6 @@ class FoldersControllerTest extends IntegrationTestCase
      *
      * @return void
      */
-    #[CoversNothing]
     public function testEmpty()
     {
         $expected = [
@@ -327,7 +325,6 @@ class FoldersControllerTest extends IntegrationTestCase
      *
      * @return void
      */
-    #[CoversNothing]
     public function testSingle()
     {
         $expected = [
@@ -410,7 +407,6 @@ class FoldersControllerTest extends IntegrationTestCase
      *
      * @return void
      */
-    #[CoversNothing]
     public function testMissing()
     {
         $expected = [
@@ -443,7 +439,6 @@ class FoldersControllerTest extends IntegrationTestCase
      *
      * @return void
      */
-    #[CoversNothing]
     public function testAdd()
     {
         $data = [
@@ -469,7 +464,6 @@ class FoldersControllerTest extends IntegrationTestCase
      *
      * @return void
      */
-    #[CoversNothing]
     public function testEdit()
     {
         $data = [
@@ -499,7 +493,6 @@ class FoldersControllerTest extends IntegrationTestCase
      *
      * @return void
      */
-    #[CoversNothing]
     public function testDelete()
     {
         $foldersTable = TableRegistry::getTableLocator()->get('Folders');
@@ -726,7 +719,6 @@ class FoldersControllerTest extends IntegrationTestCase
      *
      * @return void
      */
-    #[CoversNothing]
     public function testSetParent()
     {
         $this->configRequestHeaders('PATCH', $this->getUserAuthHeader());
@@ -760,7 +752,6 @@ class FoldersControllerTest extends IntegrationTestCase
      *
      * @return void
      */
-    #[CoversNothing]
     public function testPatchParentMeta()
     {
         // create new folder and set parent
@@ -848,7 +839,6 @@ class FoldersControllerTest extends IntegrationTestCase
      *
      * @return void
      */
-    #[CoversNothing]
     public function testDeletedChildren()
     {
         // add a deleted object to folder and verify it's not listed in `childrens`
@@ -875,7 +865,6 @@ class FoldersControllerTest extends IntegrationTestCase
      *
      * @return void
      */
-    #[CoversNothing]
     public function testIncludeChildren()
     {
         $this->configRequestHeaders();
@@ -892,7 +881,6 @@ class FoldersControllerTest extends IntegrationTestCase
      *
      * @return void
      */
-    #[CoversNothing]
     public function testIncludeParent()
     {
         $this->configRequestHeaders();
@@ -922,7 +910,6 @@ class FoldersControllerTest extends IntegrationTestCase
      * @param int|null $id Folder ID to get.
      * @return void
      */
-    #[CoversNothing]
     #[DataProvider('getOrphanFolderProvider')]
     public function testGetOrphanFolder($id = null)
     {
@@ -976,7 +963,6 @@ class FoldersControllerTest extends IntegrationTestCase
      * @param int|null $parentId the new parent
      * @return void
      */
-    #[CoversNothing]
     #[DataProvider('moveFolderProvider')]
     public function testMoveFolder($folderId, $parentId): void
     {
@@ -1038,7 +1024,6 @@ class FoldersControllerTest extends IntegrationTestCase
      *
      * @return void
      */
-    #[CoversNothing]
     public function testSetChildrenPosition()
     {
         $this->configRequestHeaders('POST', $this->getUserAuthHeader());
@@ -1101,7 +1086,6 @@ class FoldersControllerTest extends IntegrationTestCase
      * @param int|string $position Desired position.
      * @return void
      */
-    #[CoversNothing]
     #[DataProvider('setChildrenPositionInvalidProvider')]
     public function testSetChildrenPositionInvalid($expected, $position)
     {
@@ -1134,7 +1118,6 @@ class FoldersControllerTest extends IntegrationTestCase
      *
      * @return void
      */
-    #[CoversNothing]
     public function testUpdateChildPosition()
     {
         $this->configRequestHeaders('POST', $this->getUserAuthHeader());

@@ -41,7 +41,6 @@ class AnnotationsControllerTest extends IntegrationTestCase
      *
      * @return void
      */
-    #[CoversNothing]
     public function testIndex(): void
     {
         $expected = [
@@ -130,7 +129,6 @@ class AnnotationsControllerTest extends IntegrationTestCase
      *
      * @return void
      */
-    #[CoversNothing]
     public function testSingle()
     {
         $expected = [
@@ -176,7 +174,6 @@ class AnnotationsControllerTest extends IntegrationTestCase
      *
      * @return void
      */
-    #[CoversNothing]
     public function testAdd()
     {
         $data = [
@@ -202,7 +199,6 @@ class AnnotationsControllerTest extends IntegrationTestCase
      *
      * @return void
      */
-    #[CoversNothing]
     public function testEdit()
     {
         $data = [
@@ -225,7 +221,6 @@ class AnnotationsControllerTest extends IntegrationTestCase
      *
      * @return void
      */
-    #[CoversNothing]
     public function testDelete()
     {
         // delete annotation 1

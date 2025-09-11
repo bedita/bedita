@@ -180,7 +180,6 @@ class DatabaseConfigTest extends TestCase
      *
      * @return void
      */
-    #[CoversNothing]
     public function testReadByConfigure(): void
     {
         Configure::config('test-database', $this->DatabaseConfig);
@@ -200,7 +199,6 @@ class DatabaseConfigTest extends TestCase
      * @return void
      */
     #[DataProvider('configProvider')]
-    #[CoversNothing]
     public function testDumpByConfigureClass($expected, $context, $data): void
     {
         Configure::config('test-database', $this->DatabaseConfig);

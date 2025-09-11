@@ -39,7 +39,6 @@ class ObjectPermissionsControllerTest extends IntegrationTestCase
      *
      * @return void
      */
-    #[CoversNothing]
     public function testIndex(): void
     {
         $expected = [
@@ -93,7 +92,6 @@ class ObjectPermissionsControllerTest extends IntegrationTestCase
      *
      * @return void
      */
-    #[CoversNothing]
     public function testSingle(): void
     {
         $expected = [
@@ -129,7 +127,6 @@ class ObjectPermissionsControllerTest extends IntegrationTestCase
      *
      * @return void
      */
-    #[CoversNothing]
     public function testAdd(): void
     {
         $data = [
@@ -177,7 +174,6 @@ class ObjectPermissionsControllerTest extends IntegrationTestCase
      *
      * @return void
      */
-    #[CoversNothing]
     public function testDelete(): void
     {
         $this->configRequestHeaders('DELETE', $this->getUserAuthHeader());

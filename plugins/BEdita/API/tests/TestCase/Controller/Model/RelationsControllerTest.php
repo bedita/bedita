@@ -632,7 +632,6 @@ class RelationsControllerTest extends IntegrationTestCase
      *
      * @return void
      */
-    #[CoversNothing]
     public function testPostLeftRightObjectTypes(): void
     {
         // `locations` and `events` to the left
@@ -681,7 +680,6 @@ class RelationsControllerTest extends IntegrationTestCase
      *
      * @return void
      */
-    #[CoversNothing]
     public function testPatchLeftRightObjectTypes(): void
     {
         // `locations` and `events` to the left

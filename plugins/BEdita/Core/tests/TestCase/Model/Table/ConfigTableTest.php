@@ -71,7 +71,6 @@ class ConfigTableTest extends TestCase
      *
      * @return void
      */
-    #[CoversNothing]
     public function testInitialization()
     {
         $this->assertEquals('config', $this->Config->getTable());
@@ -120,7 +119,6 @@ class ConfigTableTest extends TestCase
      * @return void
      */
     #[DataProvider('validationProvider')]
-    #[CoversNothing]
     public function testValidation($expected, array $data)
     {
         $config = $this->Config->newEntity($data);

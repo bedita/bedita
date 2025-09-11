@@ -106,7 +106,6 @@ class RolesUsersTableTest extends TestCase
      * @return void
      */
     #[DataProvider('validationProvider')]
-    #[CoversNothing]
     public function testValidation($expected, array $data)
     {
         LoggedUser::setUserAdmin();

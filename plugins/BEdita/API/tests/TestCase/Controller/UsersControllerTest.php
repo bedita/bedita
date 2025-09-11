@@ -759,7 +759,6 @@ class UsersControllerTest extends IntegrationTestCase
      *
      * @return void
      */
-    #[CoversNothing]
     public function testEmptyEmail()
     {
         $data = [

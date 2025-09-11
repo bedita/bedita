@@ -211,7 +211,6 @@ class StreamsControllerTest extends IntegrationTestCase
      *
      * @return void
      */
-    #[CoversNothing]
     public function testContentNegotiation()
     {
         $this->configRequestHeaders('GET', ['Accept' => 'text/plain']);

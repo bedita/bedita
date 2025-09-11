@@ -206,7 +206,6 @@ class ExceptionRendererTest extends TestCase
      * @return void
      */
     #[DataProvider('renderJsonProvider')]
-    #[CoversNothing]
     public function testRenderJson($accept, $config, $unloadPlugin = false)
     {
         Configure::write($config);

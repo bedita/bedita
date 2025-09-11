@@ -84,7 +84,6 @@ class ObjectTypeTest extends TestCase
      *
      * @return void
      */
-    #[CoversNothing]
     public function testAccessible()
     {
         $objectType = $this->ObjectTypes->get(1);
@@ -104,7 +103,6 @@ class ObjectTypeTest extends TestCase
      *
      * @return void
      */
-    #[CoversNothing]
     public function testVirtual()
     {
         $expected = [

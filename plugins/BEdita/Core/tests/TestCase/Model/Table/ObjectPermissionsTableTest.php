@@ -82,7 +82,6 @@ class ObjectPermissionsTableTest extends TestCase
      *
      * @return void
      */
-    #[CoversNothing]
     public function testInitialize()
     {
         $this->assertEquals('object_permissions', $this->ObjectPermissions->getTable());
@@ -138,7 +137,6 @@ class ObjectPermissionsTableTest extends TestCase
      * @return void
      */
     #[DataProvider('buildRulesProvider')]
-    #[CoversNothing]
     public function testBuildRules($expected, array $data): void
     {
         $entity = $this->ObjectPermissions->newEntity($data, ['accessibleFields' => ['created_by' => true]]);

@@ -127,7 +127,6 @@ class AnnotationsTableTest extends TestCase
      * @return void
      */
     #[DataProvider('validationProvider')]
-    #[CoversNothing]
     public function testValidation(array $expected, array $data)
     {
         $entity = $this->Annotations->newEmptyEntity();

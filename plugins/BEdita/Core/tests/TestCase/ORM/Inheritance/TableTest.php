@@ -153,7 +153,6 @@ class TableTest extends TestCase
      *
      * @return void
      */
-    #[CoversNothing]
     public function testBasicFindWithoutInheritance(): void
     {
         // find felines
@@ -176,7 +175,6 @@ class TableTest extends TestCase
      *
      * @return void
      */
-    #[CoversNothing]
     public function testBasicFindWithInheritance(): void
     {
         $this->setupAssociations();
@@ -251,7 +249,6 @@ class TableTest extends TestCase
      *
      * @return void
      */
-    #[CoversNothing]
     public function testContainFind(): void
     {
         $this->setupAssociations();
@@ -328,7 +325,6 @@ class TableTest extends TestCase
      * @return void
      */
     #[DataProvider('selectProvider')]
-    #[CoversNothing]
     public function testSelect($expected, $select): void
     {
         $this->setupAssociations();
@@ -367,7 +363,6 @@ class TableTest extends TestCase
      *
      * @return void
      */
-    #[CoversNothing]
     public function testClauses(): void
     {
         $this->setupAssociations();
@@ -471,7 +466,6 @@ class TableTest extends TestCase
      * @return void
      */
     #[DataProvider('findListProvider')]
-    #[CoversNothing]
     public function testFindList($expected, $listParams, $order): void
     {
         $this->setupAssociations();

@@ -341,7 +341,6 @@ class MediaControllerTest extends IntegrationTestCase
      *
      * @return void
      */
-    #[CoversNothing]
     public function testIndex()
     {
         $expected = [
@@ -952,7 +951,6 @@ class MediaControllerTest extends IntegrationTestCase
      *
      * @return void
      */
-    #[CoversNothing]
     public function testSingleView()
     {
         $expected = [

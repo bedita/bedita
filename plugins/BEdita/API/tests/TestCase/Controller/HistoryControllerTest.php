@@ -173,7 +173,6 @@ class HistoryControllerTest extends IntegrationTestCase
      *
      * @return void
      */
-    #[CoversNothing]
     public function testUser()
     {
         $expected = [
@@ -380,7 +379,6 @@ class HistoryControllerTest extends IntegrationTestCase
      *
      * @return void
      */
-    #[CoversNothing]
     public function testInclude()
     {
         $expected = [

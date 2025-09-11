@@ -169,7 +169,6 @@ class ApplicationsTableTest extends TestCase
      * @return void
      */
     #[DataProvider('validationProvider')]
-    #[CoversNothing]
     public function testValidation($expected, array $data)
     {
         $application = $this->Applications->newEntity($data);
@@ -361,7 +360,6 @@ class ApplicationsTableTest extends TestCase
      *
      * @return void
      */
-    #[CoversNothing]
     public function testAfterDelete(): void
     {
         $app = $this->Applications->get(2);
@@ -385,7 +383,6 @@ class ApplicationsTableTest extends TestCase
      *
      * @return void
      */
-    #[CoversNothing]
     public function testAfterSave(): void
     {
         $app = $this->Applications->find('apiKey', apiKey: API_KEY)->first();

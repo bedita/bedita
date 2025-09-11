@@ -99,7 +99,6 @@ class UsersTableTest extends TestCase
      *
      * @return void
      */
-    #[CoversNothing]
     public function testInitialization()
     {
         $this->assertEquals('users', $this->Users->getTable());
@@ -154,7 +153,6 @@ class UsersTableTest extends TestCase
      * @return void
      */
     #[DataProvider('saveProvider')]
-    #[CoversNothing]
     public function testSave(bool $changed, array $data)
     {
         $entity = $this->Users->newEntity($data);
@@ -202,7 +200,6 @@ class UsersTableTest extends TestCase
      * @return void
      */
     #[DataProvider('validationProvider')]
-    #[CoversNothing]
     public function testValidation($expected, array $data)
     {
         $user = $this->Users->newEmptyEntity();
@@ -399,7 +396,6 @@ class UsersTableTest extends TestCase
      *
      * @return void
      */
-    #[CoversNothing]
     public function testDeleted()
     {
         $user = $this->Users->get(5);
@@ -789,7 +785,6 @@ class UsersTableTest extends TestCase
      * @return void
      */
     #[DataProvider('customPropsCreateProvider')]
-    #[CoversNothing]
     public function testCustomPropsCreate(array $data)
     {
         $user = $this->Users->newEmptyEntity();
@@ -808,7 +803,6 @@ class UsersTableTest extends TestCase
      *
      * @return void
      */
-    #[CoversNothing]
     public function testValidateUniqueEmail()
     {
         // with a user email in use -> save is not allowed

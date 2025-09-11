@@ -141,7 +141,6 @@ class AsyncJobsTransportTest extends TestCase
      *
      * @return void
      */
-    #[CoversNothing]
     public function testAsyncSend()
     {
         $expected = [

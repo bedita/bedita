@@ -78,7 +78,6 @@ class EndpointTest extends TestCase
      *
      * @return void
      */
-    #[CoversNothing]
     public function testAccessible()
     {
         $endpoint = $this->Endpoints->get(1);

@@ -682,7 +682,6 @@ class LoginControllerTest extends IntegrationTestCase
      *
      * @return void.
      */
-    #[CoversNothing]
     public function testDeletedLogin()
     {
         $this->configRequestHeaders('DELETE', $this->getUserAuthHeader());
@@ -708,7 +707,6 @@ class LoginControllerTest extends IntegrationTestCase
      *
      * @return void.
      */
-    #[CoversNothing]
     public function testBlockedLogin()
     {
         $usersTable = TableRegistry::getTableLocator()->get('Users');
@@ -760,7 +758,6 @@ class LoginControllerTest extends IntegrationTestCase
      * @param string $status User `status`
      * @return void.
      */
-    #[CoversNothing]
     #[DataProvider('statusProvider')]
     public function testStatus($expected, $status)
     {

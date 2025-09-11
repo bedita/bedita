@@ -141,7 +141,6 @@ class ObjectsTableTest extends TestCase
      * @return void
      */
     #[DataProvider('saveProvider')]
-    #[CoversNothing]
     public function testSave(bool $changed, array $data)
     {
         $entity = $this->Objects->newEntity($data);
@@ -205,7 +204,6 @@ class ObjectsTableTest extends TestCase
      * @return void
      */
     #[DataProvider('validationProvider')]
-    #[CoversNothing]
     public function testValidation($expected, array $data)
     {
         $object = $this->Objects->newEntity($data);
@@ -376,7 +374,6 @@ class ObjectsTableTest extends TestCase
      *
      * @return void
      */
-    #[CoversNothing]
     public function testSaveDateRanges()
     {
         $object = $this->Objects->newEmptyEntity();
@@ -439,7 +436,6 @@ class ObjectsTableTest extends TestCase
      *
      * @return void
      */
-    #[CoversNothing]
     public function testEmoji()
     {
         $object = $this->Objects->get(1);
@@ -606,7 +602,6 @@ class ObjectsTableTest extends TestCase
                     'id' => 2,
                     'status' => 'off',
                 ],
-                'on',
             ],
             'allowed' => [
                 true,
@@ -850,7 +845,6 @@ class ObjectsTableTest extends TestCase
      *
      * @return void
      */
-    #[CoversNothing]
     public function testParentsAvailable(): void
     {
         $object = $this->Objects->get(2, contain: ['Parents']);

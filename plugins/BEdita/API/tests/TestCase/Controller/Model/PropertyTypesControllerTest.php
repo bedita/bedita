@@ -673,7 +673,6 @@ class PropertyTypesControllerTest extends IntegrationTestCase
      *
      * @return void
      */
-    #[CoversNothing]
     public function testEditFailure()
     {
         $data = [

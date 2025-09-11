@@ -489,7 +489,6 @@ class UniqueNameBehaviorTest extends TestCase
      *
      * @return void
      */
-    #[CoversNothing]
     public function testUniqueNameMaxLen()
     {
         $Documents = $this->fetchTable('Documents');

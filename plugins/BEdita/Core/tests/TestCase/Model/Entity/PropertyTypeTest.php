@@ -67,7 +67,6 @@ class PropertyTypeTest extends TestCase
      *
      * @return void
      */
-    #[CoversNothing]
     public function testEntity()
     {
         $propertyType = $this->PropertyTypes->get(1);

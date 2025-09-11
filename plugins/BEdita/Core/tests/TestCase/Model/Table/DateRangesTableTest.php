@@ -70,7 +70,6 @@ class DateRangesTableTest extends TestCase
      *
      * @return void
      */
-    #[CoversNothing]
     public function testMarshal(): void
     {
         $dateRange = $this->DateRanges->newEntity([

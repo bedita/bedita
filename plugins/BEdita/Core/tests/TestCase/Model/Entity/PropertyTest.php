@@ -81,7 +81,6 @@ class PropertyTest extends TestCase
      *
      * @return void
      */
-    #[CoversNothing]
     public function testAccessible()
     {
         $property = $this->Properties->get(1);

@@ -158,7 +158,6 @@ class ObjectRelationsTableTest extends TestCase
      * @return void
      */
     #[DataProvider('validationProvider')]
-    #[CoversNothing]
     public function testValidation($expected, array $data, $jsonSchema = null, $isNew = true)
     {
         if ($jsonSchema) {

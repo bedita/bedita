@@ -82,7 +82,6 @@ class RolesTableTest extends TestCase
      *
      * @return void
      */
-    #[CoversNothing]
     public function testInitialization()
     {
         $this->assertEquals('roles', $this->Roles->getTable());
@@ -126,7 +125,6 @@ class RolesTableTest extends TestCase
      * @return void
      */
     #[DataProvider('validationProvider')]
-    #[CoversNothing]
     public function testValidation($expected, array $data)
     {
         $role = $this->Roles->newEmptyEntity();

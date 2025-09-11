@@ -72,7 +72,6 @@ class AuthProviderTest extends TestCase
      *
      * @return void
      */
-    #[CoversNothing]
     public function testAccessible()
     {
         $authProvider = $this->AuthProviders->get(1);

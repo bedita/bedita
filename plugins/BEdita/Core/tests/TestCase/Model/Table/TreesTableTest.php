@@ -95,7 +95,6 @@ class TreesTableTest extends TestCase
      *
      * @return void
      */
-    #[CoversNothing]
     public function testInitialize()
     {
         static::assertInstanceOf(BelongsTo::class, $this->Trees->Objects);
@@ -349,7 +348,6 @@ class TreesTableTest extends TestCase
      *
      * @return void
      */
-    #[CoversNothing]
     public function testMoveParentAsChild()
     {
         $this->expectException(RuntimeException::class);

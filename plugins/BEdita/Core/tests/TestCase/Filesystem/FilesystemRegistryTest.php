@@ -51,7 +51,6 @@ class FilesystemRegistryTest extends TestCase
      *
      * @return void
      */
-    #[CoversNothing]
     public function testStaticConfiguration()
     {
         $expected = [

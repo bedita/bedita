@@ -3042,7 +3042,6 @@ class ObjectsControllerTest extends IntegrationTestCase
      * @param array $data Request data.
      * @return void
      */
-    #[CoversNothing]
     #[DataProvider('missingAuthProvider')]
     public function testMissingAuth($expected, $method, $endpoint, array $data = [])
     {
@@ -3357,7 +3356,6 @@ class ObjectsControllerTest extends IntegrationTestCase
      *
      * @return void
      */
-    #[CoversNothing]
     public function testIncludeJoinData()
     {
         $expected = [

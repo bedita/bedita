@@ -81,7 +81,6 @@ class StreamsTableTest extends TestCase
      *
      * @return void
      */
-    #[CoversNothing]
     public function testInitialization()
     {
         static::assertEquals('streams', $this->Streams->getTable());
@@ -140,7 +139,6 @@ class StreamsTableTest extends TestCase
      * @return void
      */
     #[DataProvider('validationProvider')]
-    #[CoversNothing]
     public function testValidation($expected, array $data, $uuid = false)
     {
         $stream = $this->Streams->newEmptyEntity();

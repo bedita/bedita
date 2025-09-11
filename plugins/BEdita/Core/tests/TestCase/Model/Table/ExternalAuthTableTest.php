@@ -88,7 +88,6 @@ class ExternalAuthTableTest extends TestCase
      *
      * @return void
      */
-    #[CoversNothing]
     public function testInitialization()
     {
         $schema = $this->ExternalAuth->getSchema();
@@ -149,7 +148,6 @@ class ExternalAuthTableTest extends TestCase
      * @return void
      */
     #[DataProvider('validationProvider')]
-    #[CoversNothing]
     public function testValidation($expected, array $data)
     {
         $externalAuth = $this->ExternalAuth->newEmptyEntity();

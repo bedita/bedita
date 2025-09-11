@@ -95,7 +95,6 @@ class ObjectTypesTableTest extends TestCase
      *
      * @return void
      */
-    #[CoversNothing]
     public function testInitialization(): void
     {
         static::assertEquals('object_types', $this->ObjectTypes->getTable());

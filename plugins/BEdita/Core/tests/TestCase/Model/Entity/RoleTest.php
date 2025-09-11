@@ -69,7 +69,6 @@ class RoleTest extends TestCase
      *
      * @return void
      */
-    #[CoversNothing]
     public function testAccessible()
     {
         $role = $this->Roles->get(1);

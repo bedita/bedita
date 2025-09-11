@@ -108,7 +108,6 @@ class ObjectsValidatorTest extends TestCase
      * @return void
      */
     #[DataProvider('validationProvider')]
-    #[CoversNothing]
     public function testValidation(array $expected, array $data, $newRecord = true): void
     {
         $validator = new ObjectsValidator();

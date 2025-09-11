@@ -111,7 +111,6 @@ class SchemaControllerTest extends IntegrationTestCase
      *
      * @return void
      */
-    #[CoversNothing]
     public function testJsonSchemaDisabled()
     {
         $this->configRequestHeaders('GET');

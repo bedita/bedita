@@ -292,7 +292,6 @@ class ListRelatedObjectsActionTest extends TestCase
      *
      * @return void
      */
-    #[CoversNothing]
     public function testDeleted(): void
     {
         // set Document 3 `deleted`

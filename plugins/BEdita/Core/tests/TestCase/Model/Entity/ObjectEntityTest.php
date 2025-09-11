@@ -89,7 +89,6 @@ class ObjectEntityTest extends TestCase
      *
      * @return void
      */
-    #[CoversNothing]
     public function testAccessible()
     {
         $object = $this->Objects->get(1);

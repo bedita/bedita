@@ -69,7 +69,6 @@ class AuthProvidersTableTest extends TestCase
      *
      * @return void
      */
-    #[CoversNothing]
     public function testInitialization()
     {
         $schema = $this->AuthProviders->getSchema();
@@ -140,7 +139,6 @@ class AuthProvidersTableTest extends TestCase
      * @return void
      */
     #[DataProvider('validationProvider')]
-    #[CoversNothing]
     public function testValidation(array $expected, array $data): void
     {
         $authProvider = $this->AuthProviders->newEmptyEntity();

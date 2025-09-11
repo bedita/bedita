@@ -81,7 +81,6 @@ class EndpointPermissionTest extends TestCase
      *
      * @return void
      */
-    #[CoversNothing]
     public function testAccessible()
     {
         $endpointPermission = $this->EndpointPermissions->get(1);

@@ -125,7 +125,6 @@ class EndpointsTableTest extends TestCase
      * @return void
      */
     #[DataProvider('validationProvider')]
-    #[CoversNothing]
     public function testValidation($expected, array $data)
     {
         $endpoint = $this->Endpoints->newEntity($data);
@@ -169,7 +168,6 @@ class EndpointsTableTest extends TestCase
      * @return void
      */
     #[DataProvider('buildRulesProvider')]
-    #[CoversNothing]
     public function testBuildRules($expected, array $data)
     {
         $endpoint = $this->Endpoints->newEntity($data, ['validate' => false]);

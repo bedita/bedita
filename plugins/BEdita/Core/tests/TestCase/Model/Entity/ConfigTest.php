@@ -68,7 +68,6 @@ class ConfigTest extends TestCase
      *
      * @return void
      */
-    #[CoversNothing]
     public function testEntity()
     {
         $config = $this->Config->findByName('Name2')->firstOrFail();

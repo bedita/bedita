@@ -95,7 +95,6 @@ class FoldersTableTest extends TestCase
      *
      * @return void
      */
-    #[CoversNothing]
     public function testInitialize()
     {
         $this->assertEquals('objects', $this->Folders->getTable());
@@ -493,7 +492,6 @@ class FoldersTableTest extends TestCase
      *
      * @return void
      */
-    #[CoversNothing]
     public function testChildrenAvailable(): void
     {
         $folder = $this->Folders->get(11, contain: ['Children']);

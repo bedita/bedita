@@ -134,7 +134,6 @@ class MediaTableTest extends TestCase
      * @return void
      */
     #[DataProvider('saveProvider')]
-    #[CoversNothing]
     public function testSave(bool $changed, array $data)
     {
         $entity = $this->Media->newEntity($data);
