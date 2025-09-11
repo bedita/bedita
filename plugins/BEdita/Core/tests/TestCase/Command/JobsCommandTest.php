@@ -15,11 +15,11 @@ declare(strict_types=1);
 namespace BEdita\Core\Test\TestCase\Command;
 
 use BadMethodCallException;
+use BEdita\Core\Command\JobsCommand;
 use BEdita\Core\Job\JobService;
 use BEdita\Core\Job\ServiceRegistry;
 use Cake\Command\Command;
 use Cake\Console\TestSuite\ConsoleIntegrationTestTrait;
-use Cake\Queue\Command\JobCommand;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Text;
 use Exception;
@@ -28,7 +28,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
 /**
  * {@see BEdita\Core\Command\JobsCommand} Test Case
  */
-#[CoversClass(JobCommand::class)]
+#[CoversClass(JobsCommand::class)]
 class JobsCommandTest extends TestCase
 {
     use ConsoleIntegrationTestTrait;

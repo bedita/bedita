@@ -17,19 +17,18 @@ namespace BEdita\App\Test\TestCase;
 use BEdita\App\Application;
 use Cake\Core\Configure;
 use Cake\TestSuite\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
 
 /**
  * {@see BEdita\App\Application} Test Case
- *
- * @coversDefaultClass \BEdita\App\Application
  */
+#[CoversClass(Application::class)]
 class ApplicationTest extends TestCase
 {
     /**
      * Test `bootstrap` method
      *
      * @return void
-     * @covers ::bootstrap()
      */
     public function testBootstrap()
     {
@@ -45,7 +44,6 @@ class ApplicationTest extends TestCase
      * Test `bootstrapCli` method
      *
      * @return void
-     * @covers ::bootstrapCli()
      */
     public function testBootstrapCli()
     {

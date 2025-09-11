@@ -26,6 +26,7 @@ use Cake\Utility\Inflector;
 use Exception;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\CoversMethod;
+use PHPUnit\Framework\Attributes\CoversTrait;
 use PHPUnit\Framework\Attributes\DataProvider;
 use RuntimeException;
 
@@ -34,7 +35,7 @@ use RuntimeException;
  * {@see \BEdita\Core\Model\Action\AssociatedTrait} Test Case
  */
 #[CoversClass(RemoveRelatedObjectsAction::class)]
-#[CoversClass(AssociatedTrait::class)]
+#[CoversTrait(AssociatedTrait::class)]
 #[CoversMethod(UpdateRelatedObjectsAction::class, 'prepareData')]
 class RemoveRelatedObjectsActionTest extends TestCase
 {

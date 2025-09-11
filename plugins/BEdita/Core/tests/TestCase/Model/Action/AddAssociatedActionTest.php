@@ -27,6 +27,7 @@ use Cake\TestSuite\TestCase;
 use Cake\Utility\Inflector;
 use Exception;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\CoversTrait;
 use PHPUnit\Framework\Attributes\DataProvider;
 use RuntimeException;
 
@@ -37,7 +38,7 @@ use RuntimeException;
  */
 #[CoversClass(AddAssociatedAction::class)]
 #[CoversClass(UpdateAssociatedAction::class)]
-#[CoversClass(AssociatedTrait::class)]
+#[CoversTrait(AssociatedTrait::class)]
 class AddAssociatedActionTest extends TestCase
 {
     /**

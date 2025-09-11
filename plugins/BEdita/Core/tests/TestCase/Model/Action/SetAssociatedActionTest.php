@@ -30,6 +30,7 @@ use Cake\Utility\Inflector;
 use Exception;
 use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\CoversTrait;
 use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
@@ -39,7 +40,7 @@ use PHPUnit\Framework\Attributes\DataProvider;
  */
 #[CoversClass(SetAssociatedAction::class)]
 #[CoversClass(UpdateAssociatedAction::class)]
-#[CoversClass(AssociatedTrait::class)]
+#[CoversTrait(AssociatedTrait::class)]
 class SetAssociatedActionTest extends TestCase
 {
     /**

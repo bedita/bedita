@@ -21,6 +21,7 @@ use BEdita\Core\ORM\Inheritance\Query\DeleteQuery;
 use BEdita\Core\ORM\Inheritance\Query\InsertQuery;
 use BEdita\Core\ORM\Inheritance\Query\SelectQuery;
 use BEdita\Core\ORM\Inheritance\Query\UpdateQuery;
+use BEdita\Core\ORM\Inheritance\Table as InheritanceTable;
 use Cake\Datasource\EntityInterface;
 use Cake\I18n\DateTime;
 use Cake\ORM\Table;
@@ -32,7 +33,7 @@ use PHPUnit\Framework\Attributes\DataProvider;
 /**
  * {@see \BEdita\Core\ORM\Inheritance\Table} Test Case
  */
-#[CoversClass(Table::class)]
+#[CoversClass(InheritanceTable::class)]
 class TableTest extends TestCase
 {
     use FakeAnimalsTrait;
