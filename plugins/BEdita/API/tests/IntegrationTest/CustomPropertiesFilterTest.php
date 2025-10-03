@@ -17,6 +17,7 @@ namespace BEdita\API\Test\IntegrationTest;
 use BEdita\API\TestSuite\IntegrationTestCase;
 use BEdita\Core\Test\Utility\TestFilesystemTrait;
 use Cake\Database\Driver\Mysql;
+use Cake\Database\Driver\Postgres;
 use Cake\Datasource\ConnectionManager;
 use Cake\Utility\Hash;
 
@@ -41,7 +42,8 @@ class CustomPropertiesFilterTest extends IntegrationTestCase
     {
         parent::setUp();
 
-        $this->skipUnless(ConnectionManager::get('default')->getDriver() instanceof Mysql);
+        $driver = ConnectionManager::get('default')->getDriver();
+        $this->skipUnless(($driver instanceof Mysql) || ($driver instanceof Postgres));
         $this->filesystemSetup();
     }
 

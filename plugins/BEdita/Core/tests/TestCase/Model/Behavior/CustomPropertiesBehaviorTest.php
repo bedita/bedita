@@ -19,6 +19,7 @@ use BEdita\Core\Exception\BadFilterException;
 use BEdita\Core\Test\Utility\TestFilesystemTrait;
 use Cake\Collection\CollectionInterface;
 use Cake\Database\Driver\Mysql;
+use Cake\Database\Driver\Postgres;
 use Cake\Datasource\ConnectionManager;
 use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
@@ -584,7 +585,8 @@ class CustomPropertiesBehaviorTest extends TestCase
     public function testFindCustomProp($expected, string $tableName, array $options): void
     {
         $connection = ConnectionManager::get('default');
-        if (!$connection->getDriver() instanceof Mysql) {
+        $driver = $connection->getDriver();
+        if (!($driver instanceof Mysql) && !($driver instanceof Postgres)) {
             $this->expectException(BadFilterException::class);
             $this->expectExceptionMessage('customProp finder isn\'t supported for datasource');
         } elseif ($expected instanceof \Exception) {
@@ -613,7 +615,8 @@ class CustomPropertiesBehaviorTest extends TestCase
     public function testFindCustomPropInteger(): void
     {
         $connection = ConnectionManager::get('default');
-        if (!$connection->getDriver() instanceof Mysql) {
+        $driver = $connection->getDriver();
+        if (!($driver instanceof Mysql) && !($driver instanceof Postgres)) {
             $this->expectException(BadFilterException::class);
             $this->expectExceptionMessage('customProp finder isn\'t supported for datasource');
         }
