@@ -20,6 +20,7 @@ use BEdita\Core\Model\Entity\ObjectEntity;
 use BEdita\Core\Model\Validation\Validation;
 use Cake\Collection\CollectionInterface;
 use Cake\Database\Driver\Mysql;
+use Cake\Database\Driver\Postgres;
 use Cake\Database\Expression\FunctionExpression;
 use Cake\Database\Expression\QueryExpression;
 use Cake\Datasource\EntityInterface;
@@ -309,9 +310,10 @@ class CustomPropertiesBehavior extends Behavior
      */
     public function findCustomProp(Query $query, array $options): Query
     {
-        // for now we handle just MySQL
-        if (!($query->getConnection()->getDriver() instanceof Mysql)) {
-            throw new BadFilterException(__d('bedita', 'customProp finder isn\'t supported for datasource'));
+        $driver = $query->getConnection()->getDriver();
+        // Check if driver is supported
+        if (!($driver instanceof Mysql) && !($driver instanceof Postgres)) {
+            throw new BadFilterException(__d('bedita', 'customProp finder isn\'t supported for this datasource'));
         }
 
         $available = $this->getAvailable();
@@ -328,23 +330,44 @@ class CustomPropertiesBehavior extends Behavior
         }
         unset($value);
 
-        return $query->where(function (QueryExpression $exp, Query $query) use ($options) {
+        return $query->where(function (QueryExpression $exp, Query $query) use ($options, $driver) {
             $field = $this->table()->aliasField($this->getConfig('field'));
 
             return $exp->and(array_map(
-                function ($key, $value) use ($field, $query) {
-                    return $query->expr()->eq(
-                        new FunctionExpression(
-                            'JSON_UNQUOTE',
-                            [
-                                new FunctionExpression(
-                                    'JSON_EXTRACT',
-                                    [$field => 'identifier', sprintf('$.%s', $key)]
-                                ),
-                            ]
-                        ),
-                        new FunctionExpression('JSON_UNQUOTE', [json_encode($value)]) // trick to normalize values compared
-                    );
+                function ($key, $value) use ($field, $query, $driver) {
+                    if ($driver instanceof Mysql) {
+                        // MySQL syntax using JSON_EXTRACT and JSON_UNQUOTE
+                        return $query->expr()->eq(
+                            new FunctionExpression(
+                                'JSON_UNQUOTE',
+                                [
+                                    new FunctionExpression(
+                                        'JSON_EXTRACT',
+                                        [$field => 'identifier', sprintf('$.%s', $key)]
+                                    ),
+                                ]
+                            ),
+                            new FunctionExpression('JSON_UNQUOTE', [json_encode($value)]) // trick to normalize values compared
+                        );
+                    } else {
+                        // PostgreSQL syntax with native JSON column using ->> operator
+                        // For PostgreSQL's ->> operator, we need to handle value formatting correctly
+                        if (is_string($value)) {
+                            $compareValue = $value; // For strings, compare directly without JSON encoding quotes
+                        } elseif (is_bool($value)) {
+                            $compareValue = $value ? 'true' : 'false'; // Boolean values as strings
+                        } elseif (is_null($value)) {
+                            $compareValue = 'null'; // Null as string
+                        } else {
+                            $compareValue = (string)$value; // Numbers and other scalars as strings
+                        }
+
+                        // Use ->> operator directly on JSON column
+                        return $query->expr()->eq(
+                            sprintf('%s->>%s', $field, $query->getConnection()->quote($key)),
+                            $compareValue
+                        );
+                    }
                 },
                 array_keys($options),
                 $options
