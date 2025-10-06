@@ -352,19 +352,10 @@ class CustomPropertiesBehavior extends Behavior
                     } else {
                         // PostgreSQL syntax with native JSON column using ->> operator
                         // For PostgreSQL's ->> operator, we need to handle value formatting correctly
-                        if (is_string($value)) {
-                            $compareValue = $value; // For strings, compare directly without JSON encoding quotes
-                        } elseif (is_bool($value)) {
-                            $compareValue = $value ? 'true' : 'false'; // Boolean values as strings
-                        } elseif (is_null($value)) {
-                            $compareValue = 'null'; // Null as string
-                        } else {
-                            $compareValue = (string)$value; // Numbers and other scalars as strings
-                        }
-
-                        // Use ->> operator directly on JSON column
+                        $compareValue = is_string($value) ? $value : json_encode($value); // Use json_encode to handle formatting
                         [$key, $type] = $query->getConnection()->cast($key, 'string');
 
+                        // Use ->> operator directly on JSON column
                         return $query->expr()->eq(
                             sprintf('%s->>%s', $field, $query->getConnection()->getDriver()->quote($key, $type)),
                             $compareValue
