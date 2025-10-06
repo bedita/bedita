@@ -588,7 +588,7 @@ class CustomPropertiesBehaviorTest extends TestCase
         $driver = $connection->getDriver();
         if (!($driver instanceof Mysql) && !($driver instanceof Postgres)) {
             $this->expectException(BadFilterException::class);
-            $this->expectExceptionMessage('customProp finder isn\'t supported for datasource');
+            $this->expectExceptionMessage('customProp finder isn\'t supported for this datasource');
         } elseif ($expected instanceof \Exception) {
             $this->expectException(get_class($expected));
             $this->expectExceptionMessage($expected->getMessage());
@@ -618,7 +618,7 @@ class CustomPropertiesBehaviorTest extends TestCase
         $driver = $connection->getDriver();
         if (!($driver instanceof Mysql) && !($driver instanceof Postgres)) {
             $this->expectException(BadFilterException::class);
-            $this->expectExceptionMessage('customProp finder isn\'t supported for datasource');
+            $this->expectExceptionMessage('customProp finder isn\'t supported for this datasource');
         }
 
         $Profiles = $this->getTableLocator()->get('Profiles');
