@@ -134,7 +134,13 @@ class BeditaCommand extends Command
             ])
             ->addOptions([
                 // check_schema
-                'connection' => ['required' => false, 'short' => 'c'],
+                'connection' => [
+                    'help' => 'Connection name to use.',
+                    'short' => 'c',
+                    'required' => false,
+                    'default' => 'default',
+                    'choices' => ConnectionManager::configured(),
+                ],
                 'ignore-migration-status' => ['required' => false],
                 // check_filesystem
                 'httpd-user' => ['required' => false],

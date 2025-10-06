@@ -20,6 +20,7 @@ use Cake\Command\Command;
 use Cake\Console\Arguments;
 use Cake\Console\ConsoleIo;
 use Cake\Console\ConsoleOptionParser;
+use Cake\Datasource\ConnectionManager;
 use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\ORM\Exception\PersistenceFailedException;
 use Cake\ORM\Locator\LocatorAwareTrait;
@@ -78,6 +79,13 @@ class SetupAdminUserCommand extends Command
         return $parser
             ->setDescription([
                 'Setup admin user.',
+            ])
+            ->addOption('connection', [
+                'help' => 'Connection name to use.',
+                'short' => 'c',
+                'required' => false,
+                'default' => 'default',
+                'choices' => ConnectionManager::configured(),
             ])
             ->addOption('admin-overwrite', [
                 'help' => 'Overwrite current default admin user, if it has already been configured. Useful for unattended runs.',
