@@ -364,6 +364,7 @@ class CustomPropertiesBehavior extends Behavior
 
                         // Use ->> operator directly on JSON column
                         [$key, $type] = $query->getConnection()->cast($key, 'string');
+
                         return $query->expr()->eq(
                             sprintf('%s->>%s', $field, $query->getConnection()->getDriver()->quote($key, $type)),
                             $compareValue
