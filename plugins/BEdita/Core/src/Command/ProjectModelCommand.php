@@ -167,7 +167,6 @@ class ProjectModelCommand extends Command
         }
         $files = glob(CONFIG . DS . 'project-model' . DS . '*.json');
         if (empty($files)) {
-
             return null;
         }
         $projectModelFile = null;
