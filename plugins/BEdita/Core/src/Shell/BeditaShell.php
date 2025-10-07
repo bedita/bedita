@@ -29,7 +29,7 @@ use Cake\ORM\Locator\LocatorInterface;
  *  - check instance
  *
  * @since 4.0.0
- * @deprecated version 5.35.0 Use `BEdita/Core.Command/BeditaCommand` instead
+ * @deprecated version 5.35.0 Use `BEdita\Core\Command\BeditaCommand` instead
  * @property \BEdita\Core\Shell\Task\CheckApiKeyTask $CheckApiKey
  * @property \BEdita\Core\Shell\Task\CheckFilesystemTask $CheckFilesystem
  * @property \BEdita\Core\Shell\Task\CheckSchemaTask $CheckSchema

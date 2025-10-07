@@ -28,7 +28,7 @@ use Cake\ORM\Locator\LocatorInterface;
  *  - create schema files
  *
  * @since 4.0.0
- * @deprecated version 5.35.0 Use `BEdita/Core.Command/DbAdminCommand` instead
+ * @deprecated version 5.35.0 Use `BEdita\Core\Command\DbAdminCommand` instead
  * @property \BEdita\Core\Shell\Task\InitSchemaTask $Init
  * @property \BEdita\Core\Shell\Task\CheckSchemaTask $CheckSchema
  */
