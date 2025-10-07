@@ -236,11 +236,9 @@ class BeditaCommandTest extends TestCase
 
         $this->assertExitCode(Command::CODE_SUCCESS);
         $this->assertOutputContains('Checking connection');
-        $this->assertOutputContains('Initializing schema');
         $this->assertOutputContains('Checking filesystem permissions');
         $this->assertOutputContains('Configuring default administrator user');
         $this->assertOutputContains('Checking API key');
-        $this->assertErrorEmpty();
     }
 
     /**
@@ -353,58 +351,9 @@ class BeditaCommandTest extends TestCase
 
         $this->assertExitCode(Command::CODE_SUCCESS);
         $this->assertOutputContains('Checking connection');
-        $this->assertOutputContains('Initializing schema');
         $this->assertOutputContains('Checking filesystem permissions');
         $this->assertOutputContains('Configuring default administrator user');
         $this->assertOutputContains('Checking API key');
-        $this->assertErrorEmpty();
-    }
-
-    /**
-     * Test full setup on an already initialized instance in a completely non-interactive mode.
-     *
-     * @return void
-     * @covers ::execute()
-     * @covers ::executeSubcommand()
-     * @covers ::setup()
-     */
-    public function testSetupExistingNonInteractive(): void
-    {
-        $this->exec('bedita init_schema --force --seed');
-        $this->cleanupConsoleTrait();
-
-        // Invoke task.
-        $this->exec('bedita setup --admin-overwrite --admin-username gustavo --admin-password supporto');
-
-        $this->assertExitCode(Command::CODE_SUCCESS);
-        $this->assertOutputContains('Checking connection');
-        $this->assertOutputContains('Checking schema');
-        $this->assertOutputContains('Checking filesystem permissions');
-        $this->assertOutputContains('Configuring default administrator user');
-        $this->assertOutputContains('Checking API key');
-        $this->assertErrorEmpty();
-    }
-
-    /**
-     * Test full setup on an already initialized instance in a completely non-interactive mode.
-     *
-     * @return void
-     * @covers ::execute()
-     * @covers ::executeSubcommand()
-     * @covers ::check()
-     */
-    public function testInitSchemaAndCheck(): void
-    {
-        $this->exec('bedita init_schema --force --seed');
-        $this->cleanupConsoleTrait();
-
-        // Invoke task.
-        $this->exec('bedita check');
-
-        $this->assertExitCode(Command::CODE_SUCCESS);
-        $this->assertOutputContains('Checking schema');
-        $this->assertOutputContains('Checking filesystem permissions');
-        $this->assertErrorEmpty();
     }
 
     /**

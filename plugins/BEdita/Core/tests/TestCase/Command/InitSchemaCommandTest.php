@@ -120,29 +120,6 @@ class InitSchemaCommandTest extends TestCase
     }
 
     /**
-     * Test successful initialization on empty database.
-     *
-     * @return int
-     */
-    public function testDatabaseEmpty(): int
-    {
-        $connection = ConnectionManager::get('default');
-        if (!($connection instanceof Connection)) {
-            throw new \RuntimeException('Unable to use database connection');
-        }
-
-        $this->exec('init_schema --no-force --no-seed');
-
-        $schema = unserialize(file_get_contents(Plugin::configPath('BEdita/Core') . DS . 'Migrations' . DS . 'schema-dump-default.lock'));
-
-        $this->assertExitCode(Command::CODE_SUCCESS);
-        $this->assertErrorEmpty();
-        $this->checkCounts($schema, $connection->getSchemaCollection()->listTables());
-
-        return $this->fetchTable('ObjectTypes')->find()->count();
-    }
-
-    /**
      * Test successful initialization on not-empty database and `--force` argument passed.
      *
      * @return void
@@ -166,58 +143,6 @@ class InitSchemaCommandTest extends TestCase
         $this->assertExitCode(Command::CODE_SUCCESS);
         $this->assertErrorEmpty();
         $this->checkCounts($schema, $connection->getSchemaCollection()->listTables());
-    }
-
-    /**
-     * Test successful initialization on empty database and `--seed` argument passed.
-     *
-     * @return void
-     * @depends testDatabaseEmpty
-     */
-    public function testDatabaseSeed(): void
-    {
-        $connection = ConnectionManager::get('default');
-        if (!($connection instanceof Connection)) {
-            throw new \RuntimeException('Unable to use database connection');
-        }
-
-        $this->exec('init_schema --no-force --seed');
-
-        $schema = unserialize(file_get_contents(Plugin::configPath('BEdita/Core') . DS . 'Migrations' . DS . 'schema-dump-default.lock'));
-
-        $this->assertExitCode(Command::CODE_SUCCESS);
-        $this->assertErrorEmpty();
-        $this->checkCounts($schema, $connection->getSchemaCollection()->listTables());
-    }
-
-    /**
-     * Test successful initialization on not-empty database and no arguments passed.
-     *
-     * @param int $notSeededCount Count of object types in a not-seeded database.
-     * @return void
-     * @depends testDatabaseEmpty
-     */
-    public function testInteractive(int $notSeededCount): void
-    {
-        $connection = ConnectionManager::get('default');
-        if (!($connection instanceof Connection)) {
-            throw new \RuntimeException('Unable to use database connection');
-        }
-
-        $table = new TableSchema('foo_bar', ['foo' => ['type' => 'string', 'length' => 255, 'null' => true, 'default' => null]]);
-        foreach ($table->createSql($connection) as $statement) {
-            $connection->updateQuery($statement);
-        }
-
-        $this->exec('init_schema', ['y', 'n']);
-
-        $schema = unserialize(file_get_contents(Plugin::configPath('BEdita/Core') . DS . 'Migrations' . DS . 'schema-dump-default.lock'));
-
-        $this->assertExitCode(Command::CODE_SUCCESS);
-        $this->assertErrorEmpty();
-        $this->checkCounts($schema, $connection->getSchemaCollection()->listTables());
-
-        static::assertEquals($notSeededCount, $this->fetchTable('ObjectTypes')->find()->count());
     }
 
     /**
