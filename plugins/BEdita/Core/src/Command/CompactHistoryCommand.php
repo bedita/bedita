@@ -169,6 +169,7 @@ class CompactHistoryCommand extends Command
      * Compact history records per object
      *
      * @param int $objectId The object ID
+     * @param \Cake\Console\ConsoleIo $io Console IO
      * @return bool
      */
     protected function compactHistory(int $objectId, ConsoleIo $io): bool
