@@ -162,12 +162,11 @@ class ProjectModelCommand extends Command
      */
     protected function modelFileFromFolder(): ?string
     {
-        if (!file_exists(CONFIG . DS . 'project-model')) {
+        if (!is_dir(CONFIG . DS . 'project-model')) {
             return null;
         }
         $files = glob(CONFIG . DS . 'project-model' . DS . '*.json');
         if (empty($files)) {
-            unset($files);
 
             return null;
         }
@@ -177,14 +176,13 @@ class ProjectModelCommand extends Command
             $name = str_replace('.json', '', basename($file));
             $content = file_get_contents($file);
             if ($content) {
-                $json[$name] = json_decode($content, true);
+                $json[$name] = (array)json_decode($content, true);
             }
         }
         if (!empty($json)) {
             $projectModelFile = TMP . DS . 'project-model.json';
             file_put_contents($projectModelFile, json_encode($json, JSON_PRETTY_PRINT));
         }
-        unset($json, $files, $name, $content);
 
         return $projectModelFile;
     }
