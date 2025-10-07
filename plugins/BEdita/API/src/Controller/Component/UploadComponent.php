@@ -18,7 +18,9 @@ use BEdita\Core\Model\Action\GetEntityAction;
 use BEdita\Core\Model\Action\SaveEntityAction;
 use Cake\Controller\Component;
 use Cake\Datasource\EntityInterface;
+use Cake\Event\Event;
 use Cake\Event\EventInterface;
+use Cake\Event\EventManager;
 use Cake\ORM\Locator\LocatorAwareTrait;
 use Laminas\Diactoros\Stream;
 
@@ -80,6 +82,7 @@ class UploadComponent extends Component
         $private = filter_var($request->getQuery('private_url', false), FILTER_VALIDATE_BOOLEAN);
         $entity->set('private_url', $private);
         $data = $action(compact('entity', 'data'));
+        EventManager::instance()->dispatch(new Event('Thumbnails.update', $this, ['data' => $data]));
         $action = new GetEntityAction(['table' => $this->Streams]);
 
         return $action(['primaryKey' => $data->get($this->Streams->getPrimaryKey())]);

@@ -42,6 +42,7 @@ class ImageThumbsHandlerTest extends TestCase
         'plugin.BEdita/Core.Objects',
         'plugin.BEdita/Core.Profiles',
         'plugin.BEdita/Core.Users',
+        'plugin.BEdita/Core.Streams',
     ];
 
     /**
@@ -53,8 +54,10 @@ class ImageThumbsHandlerTest extends TestCase
     public function testImplementedEvents(): void
     {
         static::assertCount(0, EventManager::instance()->listeners('Associated.afterSave'));
+        static::assertCount(0, EventManager::instance()->listeners('Thumbnails.update'));
         EventManager::instance()->on(new ImageThumbsHandler());
         static::assertCount(1, EventManager::instance()->listeners('Associated.afterSave'));
+        static::assertCount(1, EventManager::instance()->listeners('Thumbnails.update'));
     }
 
     /**
@@ -154,5 +157,76 @@ class ImageThumbsHandlerTest extends TestCase
         Thumbnail::drop('test');
         Configure::delete('Thumbnails.allowAny');
         LoggedUser::resetUser();
+    }
+
+    /**
+     * Data provider for `testThumbnailsUpdate` test case.
+     *
+     * @return array
+     */
+    public function thumbnailsUpdateProvider(): array
+    {
+        $streamWithObjectId = $this->getMockBuilder(Stream::class)
+            ->onlyMethods(['get'])
+            ->getMock();
+        $streamWithObjectId->method('get')->willReturn(999);
+
+        return [
+            'noStream' => [
+                [
+                    'data' => null,
+                ],
+                false,
+                false,
+            ],
+            'noImages' => [
+                [
+                    'data' => $this->getMockBuilder('BEdita\Core\Model\Entity\Stream')->getMock(),
+                ],
+                false,
+                false,
+            ],
+            'stream, but image not found' => [
+                [
+                    'data' => $streamWithObjectId,
+                ],
+                false,
+                false,
+            ],
+            'stream and images' => [
+                [
+                    'data' => [],
+                ],
+                true,
+                true,
+            ],
+        ];
+    }
+
+    /**
+     * Test `thumbnailsUpdate` method
+     *
+     * @param array $data Event data.
+     * @param bool $updateThumbsIsCalled If `updateThumbs` method is called.
+     * @param bool $useValidStream If to use a stream with object id or not.
+     * @return void
+     * @dataProvider thumbnailsUpdateProvider()
+     * @covers ::thumbnailsUpdate()
+     */
+    public function testThumbnailsUpdate(array $data, bool $updateThumbsIsCalled, bool $useValidStream): void
+    {
+        $handler = new class extends ImageThumbsHandler {
+            public $called = false;
+            public function updateThumbs(ObjectEntity $image, Stream $stream, array $presets): void
+            {
+                $this->called = true;
+            }
+        };
+        if ($useValidStream) {
+            $data['data'] = $this->fetchTable('Streams')->get('7ffcb45e-4cc1-492e-9775-74ee6999503f');
+        }
+        $event = new Event('Thumbnails.update', $this, $data);
+        $handler->thumbnailsUpdate($event);
+        static::assertEquals($updateThumbsIsCalled, $handler->called);
     }
 }
