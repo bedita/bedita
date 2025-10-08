@@ -15,9 +15,11 @@ declare(strict_types=1);
 
 namespace BEdita\Core\Shell;
 
+use Cake\Console\ConsoleIo;
 use Cake\Console\ConsoleOptionParser;
 use Cake\Console\Shell;
 use Cake\Datasource\ConnectionManager;
+use Cake\ORM\Locator\LocatorInterface;
 
 /**
  * Shell to manage instance at a system level
@@ -27,6 +29,7 @@ use Cake\Datasource\ConnectionManager;
  *  - check instance
  *
  * @since 4.0.0
+ * @deprecated version 5.35.0 Use `BEdita\Core\Command\BeditaCommand` instead
  * @property \BEdita\Core\Shell\Task\CheckApiKeyTask $CheckApiKey
  * @property \BEdita\Core\Shell\Task\CheckFilesystemTask $CheckFilesystem
  * @property \BEdita\Core\Shell\Task\CheckSchemaTask $CheckSchema
@@ -53,9 +56,20 @@ class BeditaShell extends Shell /* @phpstan-ignore-line */
      *
      * @codeCoverageIgnore
      */
+    public function __construct(?ConsoleIo $io = null, ?LocatorInterface $locator = null)
+    {
+        deprecationWarning('"BeditaShell" should not be used. Use `BEdita\Core\Command\BeditaCommand` instead.');
+        parent::__construct($io, $locator);
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @codeCoverageIgnore
+     */
     public function getOptionParser(): ConsoleOptionParser
     {
-        $parser = parent::getOptionParser(); /* @phpstan-ignore-line */
+        $parser = parent::getOptionParser();
 
         $parser->addSubcommand('setup', [
             'help' => 'Setup new instance.',

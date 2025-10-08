@@ -1,0 +1,370 @@
+<?php
+declare(strict_types=1);
+
+/**
+ * BEdita, API-first content management framework
+ * Copyright 2024 ChannelWeb Srl, Chialab Srl
+ *
+ * This file is part of BEdita: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
+ */
+
+namespace BEdita\Core\Command;
+
+use Cake\Command\Command;
+use Cake\Console\Arguments;
+use Cake\Console\ConsoleIo;
+use Cake\Console\ConsoleOptionParser;
+use Cake\Database\Connection;
+use Cake\Database\Exception\MissingConnectionException;
+use Cake\Datasource\ConnectionManager;
+use Cake\Filesystem\File;
+use Cake\ORM\Locator\LocatorAwareTrait;
+use Cake\ORM\TableRegistry;
+use Cake\Utility\Hash;
+
+/**
+ * SetupConnection command.
+ */
+class SetupConnectionCommand extends Command
+{
+    use LocatorAwareTrait;
+
+    /**
+     * Console arguments
+     *
+     * @var \Cake\Console\Arguments
+     */
+    protected $args;
+
+    /**
+     * Console IO
+     *
+     * @var \Cake\Console\ConsoleIo
+     */
+    protected $io;
+
+    /**
+     * {@inheritDoc}
+     *
+     * @codeCoverageIgnore
+     */
+    public function __construct()
+    {
+        $this->setName('cake setup_connection');
+        parent::__construct();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function buildOptionParser(ConsoleOptionParser $parser): ConsoleOptionParser
+    {
+        return $parser
+            ->setDescription([
+                'Setup database connection.',
+            ])
+            ->addOption('config-file', [
+                'help' => 'Configuration file where updated connection config will be saved.',
+                'required' => false,
+                'default' => CONFIG . 'app_local.php',
+            ])
+            ->addOption('connection', [
+                'help' => 'Connection name to use.',
+                'short' => 'c',
+                'required' => false,
+                'default' => 'default',
+                'choices' => ConnectionManager::configured(),
+            ])
+            ->addOption('connection-driver', [
+                'help' => 'Driver to use for new connection. Useful for unattended runs.',
+                'required' => false,
+                'choices' => ['Mysql', 'Postgres', 'Sqlite'],
+            ])
+            ->addOption('connection-host', [
+                'help' => 'Database host for new connection. Useful for unattended runs.',
+                'required' => false,
+            ])
+            ->addOption('connection-port', [
+                'help' => 'Database port for new connection. Useful for unattended runs.',
+                'required' => false,
+            ])
+            ->addOption('connection-database', [
+                'help' => 'Database name (or path for SQLite) for new connection. Useful for unattended runs.',
+                'required' => false,
+            ])
+            ->addOption('connection-username', [
+                'help' => 'Database username for new connection. Useful for unattended runs.',
+                'required' => false,
+            ])
+            ->addOption('connection-password', [
+                'help' => 'Database password for new connection. Useful for unattended runs.',
+                'required' => false,
+            ])
+            ->addOption('connection-password-empty', [
+                'help' => 'Use empty password for new connection. Useful for unattended runs.',
+                'boolean' => true,
+            ]);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public static function getDescription(): string
+    {
+        return 'Setup connection';
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function execute(Arguments $args, ConsoleIo $io): int
+    {
+        $this->args = $args;
+        $this->io = $io;
+
+        $connectionName = $this->args->getOption('connection');
+        $connection = ConnectionManager::get($connectionName);
+        if (!($connection instanceof Connection)) {
+            $this->io->abort('Invalid connection object');
+        }
+
+        // Check if connection has already been configured, and assert we're able to connect.
+        if ($this->isConnectionConfigured($connection)) {
+            $this->io->verbose('=====> <info>Connection has already been configured</info>');
+
+            $this->checkCanConnect($connection);
+
+            $this->io->out('=====> <success>Connection is still ok. Relax...</success>');
+
+            return static::CODE_SUCCESS;
+        }
+        $this->io->verbose('=====> <info>Connection hasn\'t been configured yet</info>');
+
+        // Ask user for connection params, check ability to connect, and save config to file.
+        $newConnection = $this->readConnectionParams($connection);
+        $this->checkCanConnect($newConnection);
+        $this->saveConnectionConfig($newConnection);
+
+        // Clean up things.
+        $this->io->verbose('=====> Replacing old connection and flushing models');
+        ConnectionManager::drop($connectionName);
+        ConnectionManager::setConfig($connectionName, ['className' => Connection::class] + $newConnection->config());
+        TableRegistry::getTableLocator()->clear();
+
+        $this->io->out('=====> <success>Connection is ok. It\'s time to start using BEdita!</success>');
+
+        return static::CODE_SUCCESS;
+    }
+
+    /**
+     * Check if a connection has been properly configured.
+     *
+     * @param \Cake\Database\Connection $connection Connection instance.
+     * @return bool
+     */
+    protected function isConnectionConfigured(Connection $connection): bool
+    {
+        static $original = [
+            'host' => '__BE4_DB_HOST__',
+            'port' => '__BE4_DB_PORT__',
+            'database' => '__BE4_DB_DATABASE__',
+            'username' => '__BE4_DB_USERNAME__',
+            'password' => '__BE4_DB_PASSWORD__',
+        ];
+
+        $config = $connection->config();
+        foreach ($original as $field => $originalValue) {
+            if (isset($config[$field]) && $config[$field] === $originalValue) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * Check if a connection is able to connect.
+     *
+     * @param \Cake\Database\Connection $connection Connection instance.
+     * @return void
+     */
+    protected function checkCanConnect(Connection $connection): void
+    {
+        $this->io->verbose('=====> Checking ability to connect... ', 0);
+        try {
+            $connection->getDriver()->connect();
+
+            $this->io->verbose('<info>DONE</info>');
+        } catch (MissingConnectionException $e) {
+            $this->io->verbose('<error>FAIL</error>');
+            $this->io->out('=====> <error>Connection failed</error>');
+            $this->io->abort($e->getMessage());
+        }
+    }
+
+    /**
+     * Read connection parameters from interactive input.
+     *
+     * @param \Cake\Database\Connection $connection Connection instance.
+     * @return \Cake\Database\Connection
+     */
+    protected function readConnectionParams(Connection $connection): Connection
+    {
+        $config = array_fill_keys(['host', 'port', 'database', 'username', 'password'], '');
+        $config += $connection->config();
+
+        // Database driver.
+        $driver = null;
+        if (!$this->args->getOption('connection-driver')) {
+            $driver = $this->io->askChoice('Enter database driver:', ['Mysql', 'Postgres', 'Sqlite'], 'Mysql');
+        } else {
+            $driver = $this->args->getOption('connection-driver');
+        }
+        $config['driver'] = sprintf('Cake\Database\Driver\%s', $driver);
+
+        if ($driver === 'Sqlite') {
+            // Database path.
+            $database = null;
+            if (!$this->args->getOption('connection-database')) {
+                $database = $this->io->ask('Enter database path:', TMP . 'bedita.sqlite');
+            } else {
+                $database = $this->args->getOption('connection-database');
+            }
+            $config['database'] = $database;
+
+            return new Connection($config);
+        }
+
+        // Database host.
+        $host = null;
+        if (!$this->args->getOption('connection-host')) {
+            $host = $this->io->ask('Enter database host:', 'localhost');
+        } else {
+            $host = $this->args->getOption('connection-host');
+        }
+        $config['host'] = $host;
+
+        // Database port.
+        $port = null;
+        if (!$this->args->getOption('connection-port')) {
+            $port = $this->io->ask('Enter database port:', $driver === 'Mysql' ? '3306' : '5432');
+        } else {
+            $port = $this->args->getOption('connection-port');
+        }
+        $config['port'] = $port;
+
+        // Database name.
+        $databasename = null;
+        if (!$this->args->getOption('connection-database')) {
+            $databasename = $this->io->ask('Enter database name:', 'bedita');
+        } else {
+            $databasename = $this->args->getOption('connection-database');
+        }
+        $config['database'] = $databasename;
+
+        // Database username.
+        $databaseusername = null;
+        if (!$this->args->getOption('connection-username')) {
+            $databaseusername = $this->io->ask('Enter username to connect to database:');
+        } else {
+            $databaseusername = $this->args->getOption('connection-username');
+        }
+        $config['username'] = $databaseusername;
+
+        // Database password.
+        $databasepassword = null;
+        if ($this->args->getOption('connection-password-empty')) {
+            $databasepassword = '';
+        } elseif (!$this->args->getOption('connection-password')) {
+            $this->io->quiet('=====> <warning>Typing will NOT be hidden!</warning> Please do not enter really sensitive data here.');
+            $databasepassword = $this->io->ask('Enter password to connect to database:');
+        } else {
+            $databasepassword = $this->args->getOption('connection-password');
+        }
+        $config['password'] = $databasepassword;
+
+        return new Connection($config);
+    }
+
+    /**
+     * Save new connection configuration to file.
+     *
+     * @param \Cake\Database\Connection $connection Connection instance.
+     * @return void
+     */
+    protected function saveConnectionConfig(Connection $connection): void
+    {
+        $file = new File($this->args->getOption('config-file')); /* @phpstan-ignore-line */
+        if (!$file->exists() || !$file->readable() || !$file->writable()) {
+            $this->io->abort('Unable to read from or write to configuration file');
+        }
+
+        $config = $connection->config();
+        $replace = [
+            'Cake\Database\Driver\Mysql' => Hash::get($config, 'driver', ''),
+            '__BE4_DB_HOST__' => Hash::get($config, 'host', ''),
+            '__BE4_DB_PORT__' => Hash::get($config, 'port', ''),
+            '__BE4_DB_DATABASE__' => Hash::get($config, 'database', ''),
+            '__BE4_DB_USERNAME__' => Hash::get($config, 'username', ''),
+            '__BE4_DB_PASSWORD__' => Hash::get($config, 'password', ''),
+        ];
+        $replace = array_map( // Escape special characters.
+            function ($value) {
+                return str_replace(['\'', '\\'], ['\\\'', '\\\\'], $value);
+            },
+            $replace
+        );
+
+        // Replace placeholders in current file's content.
+        $contents = str_replace(
+            array_keys($replace),
+            array_values($replace),
+            $file->read()
+        );
+
+        // Open process to validate PHP syntax, and attach pipes to stdin, stdout and stderr.
+        $this->io->verbose('=====> Validating updated configuration syntax before persisting changes... ', 0);
+        $process = proc_open(
+            '/usr/bin/env php -l',
+            [
+                0 => ['pipe', 'r'], // stdin (read-end on the process' side)
+                1 => ['pipe', 'w'], // stdout (write-end on the process' side)
+                2 => ['pipe', 'w'], // stderr (write-end on the process' side)
+            ],
+            $pipes // This array will contain the pipes as asked.
+        );
+        if (!is_resource($process)) {
+            $this->io->verbose('<error>FAIL</error>');
+            $this->io->abort('Could not validate configuration syntax');
+        }
+
+        // Write the file contents to the pipe that is connected to the process' stdin.
+        fwrite($pipes[0], $contents);
+        fclose($pipes[0]);
+
+        // Read pipes for the sake of it. We don't actually need their contents, but exit code might be wrong otherwise.
+        stream_get_contents($pipes[1]);
+        stream_get_contents($pipes[2]);
+
+        // Check exit code (should be 0 if syntax is valid).
+        $exitCode = proc_close($process);
+        if ($exitCode !== 0) {
+            $this->io->verbose('<error>FAIL</error>');
+            $this->io->abort('Updated configuration file has invalid syntax');
+        }
+        $this->io->verbose('<info>DONE</info>');
+
+        // Write changes to disk.
+        if (!$file->write($contents)) {
+            $this->io->abort('Could not update configuration file');
+        }
+        $this->io->out('=====> <success>Configuration saved</success>');
+
+        $file->close();
+    }
+}

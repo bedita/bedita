@@ -15,9 +15,11 @@ declare(strict_types=1);
 namespace BEdita\Core\Shell;
 
 use Cake\Cache\Cache;
+use Cake\Console\ConsoleIo;
 use Cake\Console\ConsoleOptionParser;
 use Cake\Console\Shell;
 use Cake\Datasource\ConnectionManager;
+use Cake\ORM\Locator\LocatorInterface;
 
 /**
  * Database related shell commands like:
@@ -26,6 +28,7 @@ use Cake\Datasource\ConnectionManager;
  *  - create schema files
  *
  * @since 4.0.0
+ * @deprecated version 5.35.0 Use `BEdita\Core\Command\DbAdminCommand` instead
  * @property \BEdita\Core\Shell\Task\InitSchemaTask $Init
  * @property \BEdita\Core\Shell\Task\CheckSchemaTask $CheckSchema
  */
@@ -48,7 +51,7 @@ class DbAdminShell extends Shell /* @phpstan-ignore-line */
     {
         Cache::disable();
 
-        parent::startup(); /* @phpstan-ignore-line */
+        parent::startup();
     }
 
     /**
@@ -58,7 +61,7 @@ class DbAdminShell extends Shell /* @phpstan-ignore-line */
      */
     protected function _welcome(): void
     {
-        parent::_welcome(); /* @phpstan-ignore-line */
+        parent::_welcome();
 
         if ($this->param('connection')) {
             $info = ConnectionManager::get($this->param('connection'))->config();
@@ -79,9 +82,20 @@ class DbAdminShell extends Shell /* @phpstan-ignore-line */
      *
      * @codeCoverageIgnore
      */
+    public function __construct(?ConsoleIo $io = null, ?LocatorInterface $locator = null)
+    {
+        deprecationWarning('"DbAdminShell" should not be used. Use `BEdita\Core\Command\DbAdminCommand` instead.');
+        parent::__construct($io, $locator);
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @codeCoverageIgnore
+     */
     public function getOptionParser(): ConsoleOptionParser
     {
-        $parser = parent::getOptionParser(); /* @phpstan-ignore-line */
+        $parser = parent::getOptionParser();
         $parser
             ->addSubcommand('init', [
                 'help' => 'Initialize a new BEdita 4 database instance.',
