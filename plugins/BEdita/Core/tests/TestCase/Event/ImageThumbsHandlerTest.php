@@ -43,6 +43,7 @@ class ImageThumbsHandlerTest extends TestCase
         'plugin.BEdita/Core.Profiles',
         'plugin.BEdita/Core.Users',
         'plugin.BEdita/Core.Streams',
+        'plugin.BEdita/Core.Media',
     ];
 
     /**
@@ -174,28 +175,28 @@ class ImageThumbsHandlerTest extends TestCase
         return [
             'noStream' => [
                 [
-                    'data' => null,
+                    'stream' => null,
                 ],
                 false,
                 false,
             ],
             'noImages' => [
                 [
-                    'data' => $this->getMockBuilder('BEdita\Core\Model\Entity\Stream')->getMock(),
+                    'stream' => $this->getMockBuilder('BEdita\Core\Model\Entity\Stream')->getMock(),
                 ],
                 false,
                 false,
             ],
             'stream, but image not found' => [
                 [
-                    'data' => $streamWithObjectId,
+                    'stream' => $streamWithObjectId,
                 ],
                 false,
                 false,
             ],
             'stream and images' => [
                 [
-                    'data' => [],
+                    'stream' => [],
                 ],
                 true,
                 true,
@@ -223,7 +224,7 @@ class ImageThumbsHandlerTest extends TestCase
             }
         };
         if ($useValidStream) {
-            $data['data'] = $this->fetchTable('Streams')->get('7ffcb45e-4cc1-492e-9775-74ee6999503f');
+            $data['stream'] = $this->fetchTable('Streams')->get('7ffcb45e-4cc1-492e-9775-74ee6999503f');
         }
         $event = new Event('Thumbnails.update', $this, $data);
         $handler->thumbnailsUpdate($event);
