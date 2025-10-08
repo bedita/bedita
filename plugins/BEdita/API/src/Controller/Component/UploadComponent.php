@@ -22,6 +22,7 @@ use Cake\Event\Event;
 use Cake\Event\EventInterface;
 use Cake\Event\EventManager;
 use Cake\ORM\Locator\LocatorAwareTrait;
+use Exception;
 use Laminas\Diactoros\Stream;
 
 /**
@@ -81,10 +82,27 @@ class UploadComponent extends Component
         $entity->set('object_id', $objectId);
         $private = filter_var($request->getQuery('private_url', false), FILTER_VALIDATE_BOOLEAN);
         $entity->set('private_url', $private);
-        $data = $action(compact('entity', 'data'));
-        EventManager::instance()->dispatch(new Event('Thumbnails.update', $this, ['data' => $data]));
+        $stream = $action(compact('entity', 'data'));
+        $this->dispatchThumbnailsEvent($stream);
         $action = new GetEntityAction(['table' => $this->Streams]);
 
-        return $action(['primaryKey' => $data->get($this->Streams->getPrimaryKey())]);
+        return $action(['primaryKey' => $stream->get($this->Streams->getPrimaryKey())]);
+    }
+
+    /**
+     * Dispatch Thumbnails.update event to create/update thumbnails for uploaded image.
+     *
+     * @param \Cake\Datasource\EntityInterface $stream Stream entity.
+     * @return void
+     * @codeCoverageIgnore
+     */
+    protected function dispatchThumbnailsEvent(EntityInterface $stream): void
+    {
+        try {
+            EventManager::instance()->dispatch(new Event('Thumbnails.update', $this, ['stream' => $stream]));
+        } catch (Exception $e) {
+            // Log exception but do not block upload
+            $this->log($e->getMessage(), 'error');
+        }
     }
 }

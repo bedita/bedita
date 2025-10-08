@@ -74,7 +74,7 @@ class ImageThumbsHandler implements EventListenerInterface
      */
     public function thumbnailsUpdate(Event $event): void
     {
-        $stream = $event->getData('data');
+        $stream = $event->getData('stream');
         if (!$stream instanceof Stream) {
             return;
         }
@@ -82,7 +82,7 @@ class ImageThumbsHandler implements EventListenerInterface
         if (!$objectId) {
             return;
         }
-        $image = $this->fetchTable('Objects')
+        $image = $this->fetchTable('Images')
             ->find('type', ['images'])
             ->where(['id' => $objectId])
             ->first();
