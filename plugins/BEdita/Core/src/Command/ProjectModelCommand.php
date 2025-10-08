@@ -75,7 +75,10 @@ class ProjectModelCommand extends Command
      */
     public function execute(Arguments $args, ConsoleIo $io): ?int
     {
-        $file = $this->modelFilePath($args);
+        $file = $this->modelFileFromFolder();
+        if (empty($file)) {
+            $file = $this->modelFilePath($args);
+        }
         if (!file_exists($file)) {
             $io->error(sprintf('File not found %s', $file));
 
@@ -149,6 +152,38 @@ class ProjectModelCommand extends Command
             },
             $data
         );
+    }
+
+    /**
+     * Build model file from `project-model` folder, putting together all JSON files.
+     * If the folder does not exist or is empty, returns null.
+     *
+     * @return string|null
+     */
+    protected function modelFileFromFolder(): ?string
+    {
+        if (!is_dir(CONFIG . DS . 'project-model')) {
+            return null;
+        }
+        $files = glob(CONFIG . DS . 'project-model' . DS . '*.json');
+        if (empty($files)) {
+            return null;
+        }
+        $projectModelFile = null;
+        $json = [];
+        foreach ($files as $file) {
+            $name = str_replace('.json', '', basename($file));
+            $content = file_get_contents($file);
+            if ($content) {
+                $json[$name] = (array)json_decode($content, true);
+            }
+        }
+        if (!empty($json)) {
+            $projectModelFile = TMP . DS . 'project-model.json';
+            file_put_contents($projectModelFile, json_encode($json, JSON_PRETTY_PRINT));
+        }
+
+        return $projectModelFile;
     }
 
     /**
