@@ -74,24 +74,58 @@ class ImageThumbsHandlerTest extends TestCase
         $image->method('get')->willReturn('images');
 
         return [
-            'noStream' => [
+            'no presets' => [
+                [
+                    'entity' => $this->getMockBuilder('BEdita\Core\Model\Entity\Stream')->getMock(),
+                ],
+                [],
+                false,
+            ],
+            'presets, noStream' => [
                 [
                     'entity' => null,
                 ],
+                [
+                    'default' => [
+                        'w' => 768,
+                    ],
+                    'sm' => [
+                        'generator' => 'async',
+                        'w' => 640,
+                    ],
+                ],
                 false,
             ],
-            'noImages' => [
+            'presets, noImages' => [
                 [
                     'entity' => $this->getMockBuilder('BEdita\Core\Model\Entity\Stream')->getMock(),
                     'relatedEntities' => [],
                 ],
+                [
+                    'default' => [
+                        'w' => 768,
+                    ],
+                    'sm' => [
+                        'generator' => 'async',
+                        'w' => 640,
+                    ],
+                ],
                 false,
             ],
-            'stream and images' => [
+            'presets, stream and images' => [
                 [
                     'entity' => $this->getMockBuilder('BEdita\Core\Model\Entity\Stream')->getMock(),
                     'relatedEntities' => [
                         $image,
+                    ],
+                ],
+                [
+                    'default' => [
+                        'w' => 768,
+                    ],
+                    'sm' => [
+                        'generator' => 'async',
+                        'w' => 640,
                     ],
                 ],
                 true,
@@ -103,13 +137,15 @@ class ImageThumbsHandlerTest extends TestCase
      * Test `afterSaveAssociated` method
      *
      * @param array $data Event data.
+     * @param array $presets Presets to set.
      * @param bool $updateThumbsIsCalled If `updateThumbs` method is called.
      * @return void
      * @dataProvider afterSaveAssociatedProvider
      * @covers ::afterSaveAssociated()
      */
-    public function testAfterSaveAssociated(array $data, bool $updateThumbsIsCalled): void
+    public function testAfterSaveAssociated(array $data, array $presets, bool $updateThumbsIsCalled): void
     {
+        Configure::write('Thumbnails.presets', $presets);
         $handler = new class extends ImageThumbsHandler {
             public $called = false;
             public function updateThumbs(ObjectEntity $image, Stream $stream, array $presets): void
@@ -173,30 +209,74 @@ class ImageThumbsHandlerTest extends TestCase
         $streamWithObjectId->method('get')->willReturn(999);
 
         return [
-            'noStream' => [
-                [
-                    'stream' => null,
-                ],
-                false,
-                false,
-            ],
-            'noImages' => [
+            'empty presets' => [
                 [
                     'stream' => $this->getMockBuilder('BEdita\Core\Model\Entity\Stream')->getMock(),
                 ],
+                [],
                 false,
                 false,
             ],
-            'stream, but image not found' => [
+            'presets, but no stream' => [
                 [
-                    'stream' => $streamWithObjectId,
+                    'stream' => null,
+                ],
+                [
+                    'default' => [
+                        'w' => 768,
+                    ],
+                    'sm' => [
+                        'generator' => 'async',
+                        'w' => 640,
+                    ],
                 ],
                 false,
                 false,
             ],
-            'stream and images' => [
+            'presets, stream, no image' => [
+                [
+                    'stream' => $this->getMockBuilder('BEdita\Core\Model\Entity\Stream')->getMock(),
+                ],
+                [
+                    'default' => [
+                        'w' => 768,
+                    ],
+                    'sm' => [
+                        'generator' => 'async',
+                        'w' => 640,
+                    ],
+                ],
+                false,
+                false,
+            ],
+            'presets, stream, but image not found' => [
+                [
+                    'stream' => $streamWithObjectId,
+                ],
+                [
+                    'default' => [
+                        'w' => 768,
+                    ],
+                    'sm' => [
+                        'generator' => 'async',
+                        'w' => 640,
+                    ],
+                ],
+                false,
+                false,
+            ],
+            'presets, stream and images' => [
                 [
                     'stream' => [],
+                ],
+                [
+                    'default' => [
+                        'w' => 768,
+                    ],
+                    'sm' => [
+                        'generator' => 'async',
+                        'w' => 640,
+                    ],
                 ],
                 true,
                 true,
@@ -208,14 +288,16 @@ class ImageThumbsHandlerTest extends TestCase
      * Test `thumbnailsUpdate` method
      *
      * @param array $data Event data.
+     * @param array $presets Presets to set.
      * @param bool $updateThumbsIsCalled If `updateThumbs` method is called.
      * @param bool $useValidStream If to use a stream with object id or not.
      * @return void
      * @dataProvider thumbnailsUpdateProvider()
      * @covers ::thumbnailsUpdate()
      */
-    public function testThumbnailsUpdate(array $data, bool $updateThumbsIsCalled, bool $useValidStream): void
+    public function testThumbnailsUpdate(array $data, array $presets, bool $updateThumbsIsCalled, bool $useValidStream): void
     {
+        Configure::write('Thumbnails.presets', $presets);
         $handler = new class extends ImageThumbsHandler {
             public $called = false;
             public function updateThumbs(ObjectEntity $image, Stream $stream, array $presets): void
