@@ -5,8 +5,6 @@
     <arg value="p" />
     <arg name="extensions" value="php"/>
 
-    <config name="installed_paths" value="../../cakephp/cakephp-codesniffer"/>
-
     <rule ref="CakePHP"/>
     <exclude-pattern>config/Migrations/</exclude-pattern>
     <exclude-pattern>config/Seeds/</exclude-pattern>
