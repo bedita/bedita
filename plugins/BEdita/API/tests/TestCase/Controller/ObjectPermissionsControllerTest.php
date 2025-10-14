@@ -15,6 +15,8 @@ declare(strict_types=1);
 namespace BEdita\API\Test\TestCase\Controller;
 
 use BEdita\API\TestSuite\IntegrationTestCase;
+use Cake\Database\Driver\Postgres;
+use Cake\Datasource\ConnectionManager;
 
 /**
  * @coversDefaultClass \BEdita\API\Controller\ObjectPermissionsController
@@ -81,6 +83,13 @@ class ObjectPermissionsControllerTest extends IntegrationTestCase
 
         $this->assertResponseCode(200);
         $this->assertContentType('application/vnd.api+json');
+        // our dear PostgreSQL resets sequences on delete
+        $connection = ConnectionManager::get('default');
+        if (!$connection->getDriver() instanceof Postgres) {
+            $expected['data'][0]['id'] = '1';
+            $expected['data'][0]['links']['self'] = 'http://api.example.com/object_permissions/1';
+        }
+
         static::assertEquals($expected, $result);
     }
 
