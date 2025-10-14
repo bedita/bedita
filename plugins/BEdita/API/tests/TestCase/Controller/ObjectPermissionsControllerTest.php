@@ -58,7 +58,7 @@ class ObjectPermissionsControllerTest extends IntegrationTestCase
             ],
             'data' => [
                 [
-                    'id' => '1',
+                    'id' => '2', // another test created a record with id 1 then dropped it
                     'type' => 'object_permissions',
                     'attributes' => [
                         'object_id' => 2,
@@ -69,7 +69,7 @@ class ObjectPermissionsControllerTest extends IntegrationTestCase
                         'created' => '2023-03-29T15:08:00+00:00',
                     ],
                     'links' => [
-                        'self' => 'http://api.example.com/object_permissions/1',
+                        'self' => 'http://api.example.com/object_permissions/2',
                     ],
                 ],
             ],

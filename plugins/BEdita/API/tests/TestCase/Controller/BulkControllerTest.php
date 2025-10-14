@@ -144,6 +144,14 @@ class BulkControllerTest extends IntegrationTestCase
             ],
         ]));
         $this->assertResponseCode(200);
+
+        // restore object type
+        $objectTypeEntity->associations = [];
+        $objectTypesTable->saveOrFail($objectTypeEntity);
+
+        // delete object permissions
+        $ObjectPermissions->delete($entity);
+
         // check response content
         $response = (array)json_decode((string)$this->_response->getBody(), true);
         $this->assertArrayHasKey('saved', $response);
@@ -152,13 +160,6 @@ class BulkControllerTest extends IntegrationTestCase
         $this->assertCount(1, Hash::get($response, 'errors'));
         $this->assertEquals(3, Hash::get($response, 'errors.0.id'));
         $this->assertEquals('User cannot save "documents" 3', Hash::get($response, 'errors.0.message'));
-
-        // restore object type
-        $objectTypeEntity->associations = [];
-        $objectTypesTable->saveOrFail($objectTypeEntity);
-
-        // delete object permissions
-        $ObjectPermissions->delete($entity);
     }
 
     /**
