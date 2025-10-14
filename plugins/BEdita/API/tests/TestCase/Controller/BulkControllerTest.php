@@ -72,9 +72,10 @@ class BulkControllerTest extends IntegrationTestCase
      */
     public function testEdit(): void
     {
-        // admin
+        // test: admin
         $this->performCheck('first user', 'password1');
-        // non admin
+
+        // test: non admin
         $this->performCheck('second user', 'password2');
 
         // insert more data in endpoints and endpoints permissions to make the test more meaningful
@@ -96,6 +97,65 @@ class BulkControllerTest extends IntegrationTestCase
         $endpointPermissionsTable->saveOrFail($endpointPermission);
 
         $this->performCheck('second user', 'password2');
+    }
+
+    /**
+     * Test index method on POST /bulk/edit with object having perms that do not allow current user to edit it.
+     *
+     * @return void
+     * @covers ::index()
+     * @covers ::edit()
+     * @covers ::canSave()
+     */
+    public function testEditObjectWithPerms(): void
+    {
+        // set perms roles admin on object id 3
+        $objectTypesTable = $this->fetchTable('ObjectTypes');
+        $objectTypeEntity = $objectTypesTable->get('documents');
+        $objectTypeEntity->associations = ['Permissions'];
+        $objectTypesTable->saveOrFail($objectTypeEntity);
+
+        // add object permissions
+        $ObjectPermissions = $this->fetchTable('ObjectPermissions');
+        $entity = $ObjectPermissions->newEntity(
+            [
+                'object_id' => 3,
+                'role_id' => 1,
+                'created_by' => 1,
+            ],
+            [
+                'accessibleFields' => ['created_by' => true],
+            ]
+        );
+        $ObjectPermissions->saveOrFail($entity);
+        $objectsTable = $this->fetchTable('Objects');
+        $o1 = $objectsTable->get(3);
+        $perms = $o1->get('perms') ?? [];
+        $this->assertEquals(['first role'], $perms['roles']);
+
+        // try to edit object 3 with user that is not admin
+        $authHeader = $this->getUserAuthHeader();
+        $authHeader['Content-Type'] = 'application/json';
+        $this->configRequestHeaders('POST', $this->getUserAuthHeader('second user', 'password2'));
+        $this->post('/bulk/edit', json_encode([
+            'ids' => [3],
+            'data' => [
+                'status' => 'off',
+            ],
+        ]));
+        $this->assertResponseCode(200);
+        // check response content
+        $response = (array)json_decode((string)$this->_response->getBody(), true);
+        $this->assertArrayHasKey('saved', $response);
+        $this->assertArrayHasKey('errors', $response);
+        $this->assertCount(0, Hash::get($response, 'saved'));
+        $this->assertCount(1, Hash::get($response, 'errors'));
+        $this->assertEquals(3, Hash::get($response, 'errors.0.id'));
+        $this->assertEquals('User cannot save "documents" 3', Hash::get($response, 'errors.0.message'));
+
+        // restore object type
+        $objectTypeEntity->associations = [];
+        $objectTypesTable->saveOrFail($objectTypeEntity);
     }
 
     /**

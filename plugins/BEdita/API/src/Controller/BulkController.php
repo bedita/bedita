@@ -16,6 +16,8 @@ declare(strict_types=1);
 namespace BEdita\API\Controller;
 
 use BEdita\API\Policy\EndpointPolicy;
+use BEdita\API\Policy\ObjectPolicy;
+use BEdita\Core\Model\Entity\ObjectEntity;
 use BEdita\Core\Model\Table\RolesTable;
 use Cake\Http\Exception\MethodNotAllowedException;
 use Cake\Http\Response;
@@ -80,8 +82,8 @@ class BulkController extends JsonBaseController
                 $connection->transactional(function () use ($id, $payload, $objectsTable, &$saved) {
                     $entity = $objectsTable->get($id);
                     $type = $entity->get('type');
-                    if (!$this->canSave($type)) {
-                        throw new MethodNotAllowedException(sprintf('User cannot save type %s', $type));
+                    if (!$this->canSave($entity)) {
+                        throw new MethodNotAllowedException(sprintf('User cannot save "%s" %s', $type, $id));
                     }
                     $typesTable = $this->fetchTable(Inflector::camelize($type));
                     $entity = $typesTable->get($id);
@@ -106,16 +108,23 @@ class BulkController extends JsonBaseController
     /**
      * Check if current user can save entities of given type.
      *
-     * @param string $type Object type
+     * @param \BEdita\Core\Model\Entity\ObjectEntity $entity The entity to check
      * @return bool
      */
-    protected function canSave(string $type): bool
+    protected function canSave(ObjectEntity $entity): bool
     {
         $roles = (array)$this->Authentication->getIdentityData('roles');
         if (in_array(RolesTable::ADMIN_ROLE, (array)Hash::extract($roles, '{n}.id'))) {
             return true;
         }
-        $endpointId = $this->fetchTable('Endpoints')->fetchId(sprintf('/%s', $type));
+        /** @var \Authorization\IdentityInterface $user */
+        $user = $this->Authentication->getIdentity();
+        $policy = new ObjectPolicy();
+        if (!$policy->canUpdate($user, $entity)) {
+            return false;
+        }
+
+        $endpointId = $this->fetchTable('Endpoints')->fetchId(sprintf('/%s', $entity->get('type')));
         if ($endpointId === null) {
             return true;
         }
