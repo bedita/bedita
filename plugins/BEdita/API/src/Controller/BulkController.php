@@ -51,7 +51,7 @@ class BulkController extends JsonBaseController
      */
     public function index(?string $operation): Response
     {
-        $this->request->allowMethod(['patch', 'post']);
+        $this->request->allowMethod(['post']);
         if (!in_array($operation, $this->allowedOperations, true)) {
             throw new MethodNotAllowedException(sprintf('Operation %s not allowed', $operation));
         }
