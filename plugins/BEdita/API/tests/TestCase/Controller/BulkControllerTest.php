@@ -56,6 +56,10 @@ class BulkControllerTest extends IntegrationTestCase
         $this->configRequestHeaders('GET', $this->getUserAuthHeader());
         $this->get('/bulk/edit');
         $this->assertResponseCode(405);
+
+        $this->configRequestHeaders('POST', $this->getUserAuthHeader());
+        $this->post('/bulk/something');
+        $this->assertResponseCode(405);
     }
 
     /**
