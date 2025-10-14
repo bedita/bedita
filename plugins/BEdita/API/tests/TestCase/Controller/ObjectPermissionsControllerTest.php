@@ -85,7 +85,7 @@ class ObjectPermissionsControllerTest extends IntegrationTestCase
         $this->assertContentType('application/vnd.api+json');
         // our dear PostgreSQL resets sequences on delete
         $connection = ConnectionManager::get('default');
-        if (!$connection->getDriver() instanceof Postgres) {
+        if ($connection->getDriver() instanceof Postgres) {
             $expected['data'][0]['id'] = '1';
             $expected['data'][0]['links']['self'] = 'http://api.example.com/object_permissions/1';
         }
