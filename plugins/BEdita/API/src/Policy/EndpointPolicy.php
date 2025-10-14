@@ -146,7 +146,7 @@ class EndpointPolicy implements RequestPolicyInterface
      * @param bool $readRequest Read request flag.
      * @return bool|string
      */
-    protected function checkPermissions(array $permissions, bool $readRequest)
+    public function checkPermissions(array $permissions, bool $readRequest)
     {
         $shift = EndpointPermission::PERM_READ;
         if (!$readRequest) {

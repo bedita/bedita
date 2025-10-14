@@ -68,8 +68,44 @@ class BulkControllerTest extends IntegrationTestCase
      * @return void
      * @covers ::index()
      * @covers ::edit()
+     * @covers ::canSave()
      */
     public function testEdit(): void
+    {
+        // admin
+        $this->performCheck('first user', 'password1');
+        // non admin
+        $this->performCheck('second user', 'password2');
+
+        // insert more data in endpoints and endpoints permissions to make the test more meaningful
+        // insert into endpoint a record for /documents
+        $endpointsTable = $this->fetchTable('Endpoints');
+        $endpoint = $endpointsTable->newEntity([
+            'name' => 'documents',
+            'object_type_id' => 2,
+            'enabled' => true,
+        ]);
+        $endpointsTable->saveOrFail($endpoint);
+        // insert into endpoint_permissions a record for the just created endpoint
+        $endpointPermissionsTable = $this->fetchTable('EndpointPermissions');
+        $endpointPermission = $endpointPermissionsTable->newEntity([
+            'endpoint_id' => $endpoint->get('id'),
+            'role_id' => 2, // second role
+            'permission' => 15, // 1111
+        ]);
+        $endpointPermissionsTable->saveOrFail($endpointPermission);
+
+        $this->performCheck('second user', 'password2');
+    }
+
+    /**
+     * Perform the actual check
+     *
+     * @param string $user User name
+     * @param string $password User password
+     * @return void
+     */
+    protected function performCheck(string $user, string $password): void
     {
         // object 2 is locked, status cannot be changed
         $o1 = $this->fetchTable('Objects')->get(2);
@@ -80,7 +116,7 @@ class BulkControllerTest extends IntegrationTestCase
         $this->assertEquals('draft', $secondOriginalStatus);
         $authHeader = $this->getUserAuthHeader();
         $authHeader['Content-Type'] = 'application/json';
-        $this->configRequestHeaders('POST', $authHeader);
+        $this->configRequestHeaders('POST', $this->getUserAuthHeader($user, $password));
         $this->post('/bulk/edit', json_encode([
             'ids' => [2, 3],
             'data' => [
@@ -106,7 +142,7 @@ class BulkControllerTest extends IntegrationTestCase
         // restore objects status
         $authHeader = $this->getUserAuthHeader();
         $authHeader['Content-Type'] = 'application/json';
-        $this->configRequestHeaders('POST', $authHeader);
+        $this->configRequestHeaders('POST', $this->getUserAuthHeader($user, $password));
         $this->post('/bulk/edit', json_encode([
             'ids' => [3],
             'data' => [

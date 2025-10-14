@@ -15,8 +15,11 @@ declare(strict_types=1);
 
 namespace BEdita\API\Controller;
 
+use BEdita\API\Policy\EndpointPolicy;
+use BEdita\Core\Model\Table\RolesTable;
 use Cake\Http\Exception\MethodNotAllowedException;
 use Cake\Http\Response;
+use Cake\Utility\Hash;
 use Cake\Utility\Inflector;
 use Throwable;
 
@@ -77,6 +80,9 @@ class BulkController extends JsonBaseController
                 $connection->transactional(function () use ($id, $payload, $objectsTable, &$saved) {
                     $entity = $objectsTable->get($id);
                     $type = $entity->get('type');
+                    if (!$this->canSave($type)) {
+                        throw new MethodNotAllowedException(sprintf('User cannot save type %s', $type));
+                    }
                     $typesTable = $this->fetchTable(Inflector::camelize($type));
                     $entity = $typesTable->get($id);
                     $entity = $typesTable->patchEntity($entity, $payload);
@@ -95,5 +101,28 @@ class BulkController extends JsonBaseController
         $this->setSerialize(['data']);
 
         return $this->response->withStringBody(json_encode($data));
+    }
+
+    /**
+     * Check if current user can save entities of given type.
+     *
+     * @param string $type Object type
+     * @return bool
+     */
+    protected function canSave(string $type): bool
+    {
+        $roles = (array)$this->Authentication->getIdentityData('roles');
+        if (in_array(RolesTable::ADMIN_ROLE, (array)Hash::extract($roles, '{n}.id'))) {
+            return true;
+        }
+        $endpointId = $this->fetchTable('Endpoints')->fetchId(sprintf('/%s', $type));
+        if ($endpointId === null) {
+            return true;
+        }
+        $user = compact('roles');
+        $permissions = $this->fetchTable('EndpointPermissions')->fetchPermissions($endpointId, $user, false);
+        $policy = new EndpointPolicy();
+
+        return $policy->checkPermissions($permissions, false);
     }
 }
