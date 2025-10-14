@@ -156,6 +156,9 @@ class BulkControllerTest extends IntegrationTestCase
         // restore object type
         $objectTypeEntity->associations = [];
         $objectTypesTable->saveOrFail($objectTypeEntity);
+
+        // delete object permissions
+        $ObjectPermissions->delete($entity);
     }
 
     /**
