@@ -12228,10 +12228,7 @@
 									"try {",
 									"    responseJSON = JSON.parse(responseBody); ",
 									"    tests[\"Status code is 200\"] = responseCode.code === 200;",
-                                    "    tests[\"Content-Type is correct\"] = postman.getResponseHeader(\"Content-Type\") === 'application/json';",
-									"    if (responseJSON && responseJSON.data && responseJSON.data.id) {",
-									"        postman.setEnvironmentVariable(\"objectId\", responseJSON.data.id);",
-									"    }",
+									"    tests[\"Content-Type is correct\"] = postman.getResponseHeader(\"Content-Type\") === 'application/json';",
 									"} catch (e) {",
 									"    tests[\"Error in parsing response\"] = e;",
 									"}"
@@ -12264,7 +12261,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"data\": {\n        \"attributes\": {\n            \"status\": \"on\"\n        },\n        \"objects\": [\n            {\"type\": \"profiles\", \"id\": 15694},\n            {\"type\": \"profiles\", \"id\": 15693}\n        ] \n    }\n}"
+							"raw": "{\n    \"data\": {\n        \"attributes\": {\n            \"status\": \"on\"\n        },\n        \"objects\": {\n            \"events\": [15810],\n            \"profiles\": [15694, 15693]\n        }\n    }\n}"
 						},
 						"url": {
 							"raw": "{{be4Url}}/bulk/edit",

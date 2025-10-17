@@ -64,9 +64,9 @@ class BulkController extends JsonBaseController
      *         "attributes": {
      *             "title": "New title"
      *         },
-     *         "objects": [
-     *            {"id": 100, "type": "documents"},
-     *            {"id": 101, "type": "events"}
+     *         "objects": {
+     *            "documents": [100],
+     *            "events": [101]
      *         ]
      *     }
      * }
@@ -79,14 +79,10 @@ class BulkController extends JsonBaseController
         /** @var \Authorization\IdentityInterface $user */
         $user = $this->Authentication->getIdentity();
         $data = $this->request->getData('data');
-        $objects = Hash::get($data, 'objects', []);
+        $map = Hash::get($data, 'objects', []);
         $payload = (array)$data['attributes'];
         $saved = [];
         $errors = [];
-        $map = [];
-        foreach ($objects as $item) {
-            $map[$item['type']][] = $item['id'];
-        }
         $types = array_keys($map);
         foreach ($types as $type) {
             if (!$this->canAccessEndpoint($user, $type)) {

@@ -143,7 +143,7 @@ class BulkControllerTest extends IntegrationTestCase
                     'status' => 'off',
                 ],
                 'objects' => [
-                    ['id' => 3, 'type' => 'documents'],
+                    $o1->get('type') => [$o1->get('id')],
                 ],
             ],
         ]));
@@ -186,15 +186,15 @@ class BulkControllerTest extends IntegrationTestCase
         $authHeader = $this->getUserAuthHeader();
         $authHeader['Content-Type'] = 'application/json';
         $this->configRequestHeaders('POST', $this->getUserAuthHeader($user, $password));
+        $map = [];
+        $map[$o1->get('type')][] = $o1->get('id');
+        $map[$o2->get('type')][] = $o2->get('id');
         $this->post('/bulk/edit', json_encode([
             'data' => [
                 'attributes' => [
                     'status' => 'off',
                 ],
-                'objects' => [
-                    ['id' => 2, 'type' => $o1->get('type')],
-                    ['id' => 3, 'type' => $o2->get('type')],
-                ],
+                'objects' => $map,
             ],
         ]));
         $this->assertResponseCode(200);
@@ -224,7 +224,7 @@ class BulkControllerTest extends IntegrationTestCase
                     'status' => 'draft',
                 ],
                 'objects' => [
-                    ['id' => 3, 'type' => $o2->get('type')],
+                    $o2->get('type') => [$o2->get('id')],
                 ],
             ],
         ]));
