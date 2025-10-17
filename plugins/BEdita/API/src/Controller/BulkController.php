@@ -15,12 +15,12 @@ declare(strict_types=1);
 
 namespace BEdita\API\Controller;
 
+use Authorization\IdentityInterface;
 use BEdita\API\Policy\EndpointPolicy;
-use BEdita\API\Policy\ObjectPolicy;
-use BEdita\Core\Model\Entity\ObjectEntity;
-use BEdita\Core\Model\Table\RolesTable;
+use BEdita\Core\Model\Action\ListObjectsAction;
 use Cake\Http\Exception\MethodNotAllowedException;
 use Cake\Http\Response;
+use Cake\Http\ServerRequest;
 use Cake\Utility\Hash;
 use Cake\Utility\Inflector;
 use Throwable;
@@ -40,15 +40,6 @@ class BulkController extends JsonBaseController
     protected array $allowedOperations = ['edit'];
 
     /**
-     * {@inheritDoc}
-     *
-     * @codeCoverageIgnore
-     */
-    protected function checkAcceptable(): void
-    {
-    }
-
-    /**
      * Perform bulk operations
      *
      * @param string|null $operation Operation to perform
@@ -66,72 +57,111 @@ class BulkController extends JsonBaseController
 
     /**
      * Edit multiple resources
+     * Payload is like:
+     * ```json
+     * {
+     *     "data": {
+     *         "attributes": {
+     *             "title": "New title"
+     *         },
+     *         "objects": [
+     *            {"id": 100, "type": "documents"},
+     *            {"id": 101, "type": "events"}
+     *         ]
+     *     }
+     * }
+     * ```
      *
      * @return \Cake\Http\Response
      */
     protected function edit(): Response
     {
-        $ids = (array)$this->request->getData('ids');
-        $payload = (array)$this->request->getData('data');
-        $objectsTable = $this->fetchTable('Objects');
+        /** @var \Authorization\IdentityInterface $user */
+        $user = $this->Authentication->getIdentity();
+        $data = $this->request->getData('data');
+        $objects = Hash::get($data, 'objects', []);
+        $payload = (array)$data['attributes'];
         $saved = [];
         $errors = [];
-        foreach ($ids as $id) {
-            try {
-                $connection = $objectsTable->getConnection();
-                $connection->transactional(function () use ($id, $payload, $objectsTable, &$saved) {
-                    $entity = $objectsTable->get($id);
-                    $type = $entity->get('type');
-                    if (!$this->canSave($entity)) {
-                        throw new MethodNotAllowedException(sprintf('User cannot save "%s" %s', $type, $id));
+        $map = [];
+        foreach ($objects as $item) {
+            $map[$item['type']][] = $item['id'];
+        }
+        $types = array_keys($map);
+        foreach ($types as $type) {
+            if (!$this->canAccessEndpoint($user, $type)) {
+                foreach ($map[$type] as $id) {
+                    $errors[] = [
+                        'id' => (int)$id,
+                        'message' => sprintf('User cannot access "%s" endpoint', $type),
+                    ];
+                }
+                unset($map[$type]);
+                continue;
+            }
+            $typesTable = $this->fetchTable(Inflector::camelize($type));
+            $action = new ListObjectsAction(['table' => $typesTable, 'objectType' => $type]);
+            $query = $action();
+            $entities = $query
+                ->where([sprintf('%s.id IN', $typesTable->getAlias()) => $map[$type]])
+                ->all()
+                ->toArray();
+            foreach ($entities as $entity) {
+                try {
+                    if (!$user->can('update', $entity)) {
+                        throw new MethodNotAllowedException(sprintf('User cannot save "%s" %s', $type, $entity->get('id')));
                     }
-                    $typesTable = $this->fetchTable(Inflector::camelize($type));
-                    $entity = $typesTable->get($id);
-                    $entity = $typesTable->patchEntity($entity, $payload);
-                    $typesTable->saveOrFail($entity);
-                    $saved[] = (int)$id;
-                });
-            } catch (Throwable $e) {
-                $errors[] = [
-                    'id' => (int)$id,
-                    'message' => $e->getMessage(),
-                ];
+                    $typesTable->getConnection()->transactional(function () use ($entity, $payload, $typesTable, &$saved) {
+                        $entity = $typesTable->patchEntity($entity, $payload);
+                        $typesTable->saveOrFail($entity);
+                        $saved[] = $entity->get('id');
+                    });
+                } catch (Throwable $e) {
+                    $errors[] = [
+                        'id' => $entity->get('id'),
+                        'message' => $e->getMessage(),
+                    ];
+                }
             }
         }
-        $data = compact('errors', 'saved');
-        $this->set($data);
+        $responseData = [
+            'saved' => $saved,
+            'errors' => $errors,
+        ];
+        $this->set('data', $responseData);
         $this->setSerialize(['data']);
 
-        return $this->response->withStringBody(json_encode($data));
+        return $this->response->withStringBody(json_encode(['data' => $responseData]));
     }
 
     /**
-     * Check if current user can save entities of given type.
+     * Check if endpoint is accessible.
      *
-     * @param \BEdita\Core\Model\Entity\ObjectEntity $entity The entity to check
+     * @param \Authorization\IdentityInterface|null $user The user identity.
+     * @param string $type Object type
      * @return bool
      */
-    protected function canSave(ObjectEntity $entity): bool
+    protected function canAccessEndpoint(?IdentityInterface $user, string $type): bool
     {
-        $roles = (array)$this->Authentication->getIdentityData('roles');
-        if (in_array(RolesTable::ADMIN_ROLE, (array)Hash::extract($roles, '{n}.id'))) {
-            return true;
-        }
-        /** @var \Authorization\IdentityInterface $user */
-        $user = $this->Authentication->getIdentity();
-        $policy = new ObjectPolicy();
-        if (!$policy->canUpdate($user, $entity)) {
-            return false;
-        }
-
-        $endpointId = $this->fetchTable('Endpoints')->fetchId(sprintf('/%s', $entity->get('type')));
-        if ($endpointId === null) {
-            return true;
-        }
-        $user = compact('roles');
-        $permissions = $this->fetchTable('EndpointPermissions')->fetchPermissions($endpointId, $user, false);
+        $request = new ServerRequest([
+            'environment' => [
+                'REQUEST_METHOD' => 'PATCH',
+                'REQUEST_URI' => '/' . $type,
+            ],
+            'url' => '/' . $type,
+        ]);
         $policy = new EndpointPolicy();
 
-        return $policy->checkPermissions($permissions, false);
+        return $policy->canAccess($user, $request);
+
+        // $endpointId = $this->fetchTable('Endpoints')->fetchId(sprintf('/%s', $type));
+        // if ($endpointId === null) {
+        //     return true;
+        // }
+        // $user = compact('roles');
+        // $permissions = $this->fetchTable('EndpointPermissions')->fetchPermissions($endpointId, $user, false);
+        // $policy = new EndpointPolicy();
+
+        // return $policy->checkPermissions($permissions, false);
     }
 }

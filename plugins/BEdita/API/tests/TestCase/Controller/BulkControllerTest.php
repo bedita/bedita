@@ -68,7 +68,7 @@ class BulkControllerTest extends IntegrationTestCase
      * @return void
      * @covers ::index()
      * @covers ::edit()
-     * @covers ::canSave()
+     * @covers ::canAccessEndpoint()
      */
     public function testEdit(): void
     {
@@ -105,7 +105,7 @@ class BulkControllerTest extends IntegrationTestCase
      * @return void
      * @covers ::index()
      * @covers ::edit()
-     * @covers ::canSave()
+     * @covers ::canAccessEndpoint()
      */
     public function testEditObjectWithPerms(): void
     {
@@ -138,9 +138,13 @@ class BulkControllerTest extends IntegrationTestCase
         $authHeader['Content-Type'] = 'application/json';
         $this->configRequestHeaders('POST', $this->getUserAuthHeader('second user', 'password2'));
         $this->post('/bulk/edit', json_encode([
-            'ids' => [3],
             'data' => [
-                'status' => 'off',
+                'attributes' => [
+                    'status' => 'off',
+                ],
+                'objects' => [
+                    ['id' => 3, 'type' => 'documents'],
+                ],
             ],
         ]));
         $this->assertResponseCode(200);
@@ -154,6 +158,7 @@ class BulkControllerTest extends IntegrationTestCase
 
         // check response content
         $response = (array)json_decode((string)$this->_response->getBody(), true);
+        $response = (array)Hash::get($response, 'data');
         $this->assertArrayHasKey('saved', $response);
         $this->assertArrayHasKey('errors', $response);
         $this->assertCount(0, Hash::get($response, 'saved'));
@@ -182,14 +187,20 @@ class BulkControllerTest extends IntegrationTestCase
         $authHeader['Content-Type'] = 'application/json';
         $this->configRequestHeaders('POST', $this->getUserAuthHeader($user, $password));
         $this->post('/bulk/edit', json_encode([
-            'ids' => [2, 3],
             'data' => [
-                'status' => 'off',
+                'attributes' => [
+                    'status' => 'off',
+                ],
+                'objects' => [
+                    ['id' => 2, 'type' => $o1->get('type')],
+                    ['id' => 3, 'type' => $o2->get('type')],
+                ],
             ],
         ]));
         $this->assertResponseCode(200);
         // check response content
         $response = (array)json_decode((string)$this->_response->getBody(), true);
+        $response = (array)Hash::get($response, 'data');
         $this->assertArrayHasKey('saved', $response);
         $this->assertArrayHasKey('errors', $response);
         $this->assertEquals([3], Hash::get($response, 'saved'));
@@ -208,9 +219,13 @@ class BulkControllerTest extends IntegrationTestCase
         $authHeader['Content-Type'] = 'application/json';
         $this->configRequestHeaders('POST', $this->getUserAuthHeader($user, $password));
         $this->post('/bulk/edit', json_encode([
-            'ids' => [3],
             'data' => [
-                'status' => 'draft',
+                'attributes' => [
+                    'status' => 'draft',
+                ],
+                'objects' => [
+                    ['id' => 3, 'type' => $o2->get('type')],
+                ],
             ],
         ]));
         $this->assertResponseCode(200);

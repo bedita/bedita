@@ -12228,7 +12228,7 @@
 									"try {",
 									"    responseJSON = JSON.parse(responseBody); ",
 									"    tests[\"Status code is 200\"] = responseCode.code === 200;",
-									"    tests[\"Content-Type is correct\"] = postman.getResponseHeader(\"Content-Type\") === 'application/json';",
+                                    "    tests[\"Content-Type is correct\"] = postman.getResponseHeader(\"Content-Type\") === 'application/json';",
 									"    if (responseJSON && responseJSON.data && responseJSON.data.id) {",
 									"        postman.setEnvironmentVariable(\"objectId\", responseJSON.data.id);",
 									"    }",
@@ -12245,7 +12245,7 @@
 						"header": [
 							{
 								"key": "Accept",
-								"value": "application/vnd.api+json"
+								"value": "application/json"
 							},
 							{
 								"key": "Content-Type",
@@ -12264,7 +12264,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"ids\": [1,2,3],\n    \"data\": {\n        \"status\": \"on\"\n    }\n}"
+							"raw": "{\n    \"data\": {\n        \"attributes\": {\n            \"status\": \"on\"\n        },\n        \"objects\": [\n            {\"type\": \"profiles\", \"id\": 15694},\n            {\"type\": \"profiles\", \"id\": 15693}\n        ] \n    }\n}"
 						},
 						"url": {
 							"raw": "{{be4Url}}/bulk/edit",
