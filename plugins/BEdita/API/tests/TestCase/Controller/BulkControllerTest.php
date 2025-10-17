@@ -44,6 +44,13 @@ class BulkControllerTest extends IntegrationTestCase
     protected $originalEndpointPermissions = [];
 
     /**
+     * Backup of original object permissions
+     *
+     * @var array
+     */
+    protected $originalObjectPermissions = [];
+
+    /**
      * Set up method
      *
      * @return void
@@ -55,6 +62,10 @@ class BulkControllerTest extends IntegrationTestCase
         // Backup original endpoint permissions
         $endpointPermissionsTable = $this->fetchTable('EndpointPermissions');
         $this->originalEndpointPermissions = $endpointPermissionsTable->find()->toArray();
+
+        // Backup original object permissions
+        $objectPermissionsTable = $this->fetchTable('ObjectPermissions');
+        $this->originalObjectPermissions = $objectPermissionsTable->find()->toArray();
     }
 
     /**
@@ -71,6 +82,14 @@ class BulkControllerTest extends IntegrationTestCase
         foreach ($this->originalEndpointPermissions as $permission) {
             $entity = $endpointPermissionsTable->newEntity($permission->toArray());
             $endpointPermissionsTable->saveOrFail($entity);
+        }
+
+        // restore object permissions table
+        $objectPermissionsTable = $this->fetchTable('ObjectPermissions');
+        $objectPermissionsTable->deleteAll([]);
+        foreach ($this->originalObjectPermissions as $permission) {
+            $entity = $objectPermissionsTable->newEntity($permission->toArray());
+            $objectPermissionsTable->saveOrFail($entity);
         }
 
         parent::tearDown();
