@@ -17,6 +17,7 @@ namespace BEdita\API\Test\TestCase\Controller;
 
 use BEdita\API\TestSuite\IntegrationTestCase;
 use BEdita\Core\State\CurrentApplication;
+use BEdita\Core\Utility\LoggedUser;
 use Cake\Utility\Hash;
 
 /**
@@ -34,6 +35,46 @@ class BulkControllerTest extends IntegrationTestCase
         'plugin.BEdita/Core.Endpoints',
         'plugin.BEdita/Core.EndpointPermissions',
     ];
+
+    /**
+     * Backup of original endpoint permissions
+     *
+     * @var array
+     */
+    protected $originalEndpointPermissions = [];
+
+    /**
+     * Set up method
+     *
+     * @return void
+     */
+    public function setUp(): void
+    {
+        parent::setUp();
+
+        // Backup original endpoint permissions
+        $endpointPermissionsTable = $this->fetchTable('EndpointPermissions');
+        $this->originalEndpointPermissions = $endpointPermissionsTable->find()->toArray();
+    }
+
+    /**
+     * Tear down method
+     *
+     * @return void
+     */
+    public function tearDown(): void
+    {
+        // Restore original endpoint permissions
+        $endpointPermissionsTable = $this->fetchTable('EndpointPermissions');
+        $endpointPermissionsTable->deleteAll([]);
+
+        foreach ($this->originalEndpointPermissions as $permission) {
+            $entity = $endpointPermissionsTable->newEntity($permission->toArray());
+            $endpointPermissionsTable->saveOrFail($entity);
+        }
+
+        parent::tearDown();
+    }
 
     /**
      * Test index method on GET /bulk.
@@ -92,81 +133,72 @@ class BulkControllerTest extends IntegrationTestCase
      */
     public function testEditEndpointAccessFalse(): void
     {
-        // Start a transaction for complete rollback at the end
-        $connection = $this->fetchTable('EndpointPermissions')->getConnection();
-        $connection->begin();
+        // insert into endpoint a record for /documents
+        $endpointsTable = $this->fetchTable('Endpoints');
+        $endpoint = $endpointsTable->newEntity([
+            'name' => 'documents',
+            'object_type_id' => 2,
+            'enabled' => true,
+        ]);
+        $endpointsTable->saveOrFail($endpoint);
+        $endpointId = $endpoint->get('id');
 
-        try {
-            // insert into endpoint a record for /documents
-            $endpointsTable = $this->fetchTable('Endpoints');
-            $endpoint = $endpointsTable->newEntity([
-                'name' => 'documents',
-                'object_type_id' => 2,
-                'enabled' => true,
-            ]);
-            $endpointsTable->saveOrFail($endpoint);
-            $endpointId = $endpoint->get('id');
+        // Clear any existing permissions for this endpoint to ensure clean test
+        $endpointPermissionsTable = $this->fetchTable('EndpointPermissions');
+        $endpointPermissionsTable->deleteAll([]);
 
-            // Clear any existing permissions for this endpoint to ensure clean test
-            $endpointPermissionsTable = $this->fetchTable('EndpointPermissions');
-            $endpointPermissionsTable->deleteAll([]);
+        // Insert ONLY ONE blocking permission for the specific endpoint and role
+        $endpointPermission = $endpointPermissionsTable->newEntity([
+            'application_id' => CurrentApplication::getApplicationId(),
+            'endpoint_id' => $endpointId,
+            'role_id' => 2, // second role
+            'permission' => 0, // block
+        ]);
+        $endpointPermissionsTable->saveOrFail($endpointPermission);
 
-            // Insert ONLY ONE blocking permission for the specific endpoint and role
-            $endpointPermission = $endpointPermissionsTable->newEntity([
-                'application_id' => CurrentApplication::getApplicationId(),
+        // Verify that we have exactly one permission for this endpoint
+        $permissionCount = $endpointPermissionsTable->find()
+            ->where([
                 'endpoint_id' => $endpointId,
-                'role_id' => 2, // second role
-                'permission' => 0, // block
-            ]);
-            $endpointPermissionsTable->saveOrFail($endpointPermission);
+                'application_id' => CurrentApplication::getApplicationId(),
+                'role_id' => 2,
+            ])
+            ->count();
+        $this->assertEquals(1, $permissionCount, 'Should have exactly one permission for this endpoint');
 
-            // Verify that we have exactly one permission for this endpoint
-            $permissionCount = $endpointPermissionsTable->find()
-                ->where([
-                    'endpoint_id' => $endpointId,
-                    'application_id' => CurrentApplication::getApplicationId(),
-                    'role_id' => 2,
-                ])
-                ->count();
-            $this->assertEquals(1, $permissionCount, 'Should have exactly one permission for this endpoint');
+        // Verify the permission value is 0 (block)
+        $permission = $endpointPermissionsTable->find()
+            ->where([
+                'endpoint_id' => $endpointId,
+                'application_id' => CurrentApplication::getApplicationId(),
+                'role_id' => 2,
+            ])
+            ->first();
+        $this->assertEquals(0, $permission->get('permission'), 'Permission should be 0 (block)');
 
-            // Verify the permission value is 0 (block)
-            $permission = $endpointPermissionsTable->find()
-                ->where([
-                    'endpoint_id' => $endpointId,
-                    'application_id' => CurrentApplication::getApplicationId(),
-                    'role_id' => 2,
-                ])
-                ->first();
-            $this->assertEquals(0, $permission->get('permission'), 'Permission should be 0 (block)');
-
-            // try to edit object 3 with user that is not admin
-            $this->configRequestHeaders('POST', $this->getUserAuthHeader('second user', 'password2'));
-            $this->post('/bulk/edit', json_encode([
-                'data' => [
-                    'attributes' => [
-                        'status' => 'off',
-                    ],
-                    'objects' => [
-                        'documents' => [3],
-                    ],
+        // try to edit object 3 with user that is not admin
+        $this->configRequestHeaders('POST', $this->getUserAuthHeader('second user', 'password2'));
+        $this->post('/bulk/edit', json_encode([
+            'data' => [
+                'attributes' => [
+                    'status' => 'off',
                 ],
-            ]));
-            $this->assertResponseCode(200);
+                'objects' => [
+                    'documents' => [3],
+                ],
+            ],
+        ]));
+        $this->assertResponseCode(200);
 
-            // check response content
-            $response = (array)json_decode((string)$this->_response->getBody(), true);
-            $response = (array)Hash::get($response, 'data');
-            $this->assertArrayHasKey('saved', $response);
-            $this->assertArrayHasKey('errors', $response);
-            $this->assertCount(0, Hash::get($response, 'saved'));
-            $this->assertCount(1, Hash::get($response, 'errors'));
-            $this->assertEquals(3, Hash::get($response, 'errors.0.id'));
-            $this->assertEquals('User cannot access "documents" endpoint', Hash::get($response, 'errors.0.message'));
-        } finally {
-            // Always rollback the transaction to restore original state
-            $connection->rollback();
-        }
+        // check response content
+        $response = (array)json_decode((string)$this->_response->getBody(), true);
+        $response = (array)Hash::get($response, 'data');
+        $this->assertArrayHasKey('saved', $response);
+        $this->assertArrayHasKey('errors', $response);
+        $this->assertCount(0, Hash::get($response, 'saved'));
+        $this->assertCount(1, Hash::get($response, 'errors'));
+        $this->assertEquals(3, Hash::get($response, 'errors.0.id'));
+        $this->assertEquals('User cannot access "documents" endpoint', Hash::get($response, 'errors.0.message'));
     }
 
     /**
@@ -179,71 +211,70 @@ class BulkControllerTest extends IntegrationTestCase
      */
     public function testEditObjectWithPerms(): void
     {
-        // Start a transaction for complete rollback at the end
-        $connection = $this->fetchTable('ObjectPermissions')->getConnection();
-        $connection->begin();
+        LoggedUser::setUserAdmin();
 
-        try {
-            // set perms roles admin on object id 3
-            $objectTypesTable = $this->fetchTable('ObjectTypes');
-            $objectTypeEntity = $objectTypesTable->get('documents');
-            $objectTypeEntity->associations = ['Permissions'];
-            $objectTypesTable->saveOrFail($objectTypeEntity);
+        // Create a temporary object type with permissions enabled
+        $objectTypesTable = $this->fetchTable('ObjectTypes');
+        $tempObjectType = $objectTypesTable->newEntity([
+            'name' => 'dummies',
+            'singular' => 'dummy',
+            'plugin' => 'BEdita/Core',
+            'model' => 'Objects',
+            'associations' => ['Permissions'], // Enable permissions for this type
+            'enabled' => true,
+        ]);
+        $objectTypesTable->saveOrFail($tempObjectType);
 
-            // add object permissions
-            $ObjectPermissions = $this->fetchTable('ObjectPermissions');
-            $entity = $ObjectPermissions->newEntity(
-                [
-                    'object_id' => 3,
-                    'role_id' => 1,
-                    'created_by' => 1,
+        // Create a test object of this type
+        $objectsTable = $this->fetchTable('dummies');
+        $testObject = $objectsTable->newEntity([
+            'status' => 'draft',
+            'title' => 'Test Object with Permissions',
+        ]);
+        $objectsTable->saveOrFail($testObject);
+
+        // Add object permissions - only role 1 can access
+        $ObjectPermissions = $this->fetchTable('ObjectPermissions');
+        $entity = $ObjectPermissions->newEntity(
+            [
+                'object_id' => $testObject->get('id'),
+                'role_id' => 1, // first role only
+                'created_by' => 1,
+            ],
+            [
+                'accessibleFields' => ['created_by' => true],
+            ]
+        );
+        $ObjectPermissions->saveOrFail($entity);
+
+        // Verify permissions are set
+        $testObject = $objectsTable->get($testObject->get('id'));
+        $perms = $testObject->get('perms') ?? [];
+        $this->assertEquals(['first role'], $perms['roles']);
+
+        // Try to edit with user that doesn't have permissions (second user, role 2)
+        $this->configRequestHeaders('POST', $this->getUserAuthHeader('second user', 'password2'));
+        $this->post('/bulk/edit', json_encode([
+            'data' => [
+                'attributes' => [
+                    'status' => 'off',
                 ],
-                [
-                    'accessibleFields' => ['created_by' => true],
-                ]
-            );
-            $ObjectPermissions->saveOrFail($entity);
-            $objectsTable = $this->fetchTable('Objects');
-            $o1 = $objectsTable->get(3);
-            $perms = $o1->get('perms') ?? [];
-            $this->assertEquals(['first role'], $perms['roles']);
-
-            // try to edit object 3 with user that is not admin
-            $authHeader = $this->getUserAuthHeader();
-            $authHeader['Content-Type'] = 'application/json';
-            $this->configRequestHeaders('POST', $this->getUserAuthHeader('second user', 'password2'));
-            $this->post('/bulk/edit', json_encode([
-                'data' => [
-                    'attributes' => [
-                        'status' => 'off',
-                    ],
-                    'objects' => [
-                        $o1->get('type') => [$o1->get('id')],
-                    ],
+                'objects' => [
+                    $tempObjectType->get('name') => [$testObject->get('id')],
                 ],
-            ]));
-            $this->assertResponseCode(200);
+            ],
+        ]));
+        $this->assertResponseCode(200);
 
-            // restore object type
-            $objectTypeEntity->associations = [];
-            $objectTypesTable->saveOrFail($objectTypeEntity);
-
-            // delete object permissions
-            $ObjectPermissions->delete($entity);
-
-            // check response content
-            $response = (array)json_decode((string)$this->_response->getBody(), true);
-            $response = (array)Hash::get($response, 'data');
-            $this->assertArrayHasKey('saved', $response);
-            $this->assertArrayHasKey('errors', $response);
-            $this->assertCount(0, Hash::get($response, 'saved'));
-            $this->assertCount(1, Hash::get($response, 'errors'));
-            $this->assertEquals(3, Hash::get($response, 'errors.0.id'));
-            $this->assertEquals('User cannot save "documents" 3', Hash::get($response, 'errors.0.message'));
-        } finally {
-            // Always rollback the transaction to restore original state
-            $connection->rollback();
-        }
+        // check response content
+        $response = (array)json_decode((string)$this->_response->getBody(), true);
+        $response = (array)Hash::get($response, 'data');
+        $this->assertArrayHasKey('saved', $response);
+        $this->assertArrayHasKey('errors', $response);
+        $this->assertCount(0, Hash::get($response, 'saved'));
+        $this->assertCount(1, Hash::get($response, 'errors'));
+        $this->assertEquals($testObject->get('id'), Hash::get($response, 'errors.0.id'));
+        $this->assertEquals('User cannot save "' . $tempObjectType->get('name') . '" ' . $testObject->get('id'), Hash::get($response, 'errors.0.message'));
     }
 
     /**
@@ -262,8 +293,6 @@ class BulkControllerTest extends IntegrationTestCase
         $o2 = $this->fetchTable('Objects')->get(3);
         $secondOriginalStatus = $o2->get('status');
         $this->assertEquals('draft', $secondOriginalStatus);
-        $authHeader = $this->getUserAuthHeader();
-        $authHeader['Content-Type'] = 'application/json';
         $this->configRequestHeaders('POST', $this->getUserAuthHeader($user, $password));
         $map = [];
         $map[$o1->get('type')][] = $o1->get('id');
@@ -293,9 +322,6 @@ class BulkControllerTest extends IntegrationTestCase
         $o2 = $this->fetchTable('Objects')->get(3);
         $secondStatus = $o2->get('status');
         $this->assertEquals('off', $secondStatus);
-        // restore objects status
-        $authHeader = $this->getUserAuthHeader();
-        $authHeader['Content-Type'] = 'application/json';
         $this->configRequestHeaders('POST', $this->getUserAuthHeader($user, $password));
         $this->post('/bulk/edit', json_encode([
             'data' => [
