@@ -88,22 +88,24 @@ class BulkController extends JsonBaseController
         foreach ($types as $type) {
             $objectType = $ObjectTypes->get($type);
             if ($objectType->get('is_abstract') || !$objectType->get('enabled')) {
-                foreach ($map[$type] as $id) {
-                    $errors[] = [
+                $errors = array_merge($errors, array_map(
+                    fn($id) => [
                         'id' => (int)$id,
                         'message' => sprintf('Abstract type endpoint "%s" cannot be used for bulk edit', $type),
-                    ];
-                }
+                    ],
+                    $map[$type]
+                ));
                 unset($map[$type]);
                 continue;
             }
             if (!$this->canAccessEndpoint($user, $type)) {
-                foreach ($map[$type] as $id) {
-                    $errors[] = [
+                $errors = array_merge($errors, array_map(
+                    fn($id) => [
                         'id' => (int)$id,
                         'message' => sprintf('User cannot access "%s" endpoint', $type),
-                    ];
-                }
+                    ],
+                    $map[$type]
+                ));
                 unset($map[$type]);
                 continue;
             }
