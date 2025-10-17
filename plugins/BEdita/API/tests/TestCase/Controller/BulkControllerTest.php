@@ -173,7 +173,7 @@ class BulkControllerTest extends IntegrationTestCase
         $this->assertCount(0, Hash::get($response, 'saved'));
         $this->assertCount(1, Hash::get($response, 'errors'));
         $this->assertEquals(1, Hash::get($response, 'errors.0.id'));
-        $this->assertEquals('Abstract type endpoint "objects" cannot be used for bulk edit', Hash::get($response, 'errors.0.message'));
+        $this->assertEquals('Endpoint "objects" cannot be used for bulk edit: abstract or disabled', Hash::get($response, 'errors.0.message'));
     }
 
     /**

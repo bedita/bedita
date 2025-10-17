@@ -91,7 +91,7 @@ class BulkController extends JsonBaseController
                 $errors = array_merge($errors, array_map(
                     fn($id) => [
                         'id' => (int)$id,
-                        'message' => sprintf('Abstract type endpoint "%s" cannot be used for bulk edit', $type),
+                        'message' => sprintf('Endpoint "%s" cannot be used for bulk edit: abstract or disabled', $type),
                     ],
                     $map[$type]
                 ));
