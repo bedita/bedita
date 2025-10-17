@@ -15,8 +15,6 @@ declare(strict_types=1);
 namespace BEdita\API\Test\TestCase\Controller;
 
 use BEdita\API\TestSuite\IntegrationTestCase;
-use Cake\Database\Driver\Postgres;
-use Cake\Datasource\ConnectionManager;
 
 /**
  * @coversDefaultClass \BEdita\API\Controller\ObjectPermissionsController
@@ -60,7 +58,7 @@ class ObjectPermissionsControllerTest extends IntegrationTestCase
             ],
             'data' => [
                 [
-                    'id' => '2', // another test created a record with id 1 then dropped it
+                    'id' => '1',
                     'type' => 'object_permissions',
                     'attributes' => [
                         'object_id' => 2,
@@ -71,7 +69,7 @@ class ObjectPermissionsControllerTest extends IntegrationTestCase
                         'created' => '2023-03-29T15:08:00+00:00',
                     ],
                     'links' => [
-                        'self' => 'http://api.example.com/object_permissions/2',
+                        'self' => 'http://api.example.com/object_permissions/1',
                     ],
                 ],
             ],
@@ -83,13 +81,6 @@ class ObjectPermissionsControllerTest extends IntegrationTestCase
 
         $this->assertResponseCode(200);
         $this->assertContentType('application/vnd.api+json');
-        // our dear PostgreSQL resets sequences on delete
-        $connection = ConnectionManager::get('default');
-        if ($connection->getDriver() instanceof Postgres) {
-            $expected['data'][0]['id'] = '1';
-            $expected['data'][0]['links']['self'] = 'http://api.example.com/object_permissions/1';
-        }
-
         static::assertEquals($expected, $result);
     }
 
