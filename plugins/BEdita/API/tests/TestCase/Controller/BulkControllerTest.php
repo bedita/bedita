@@ -16,6 +16,7 @@ declare(strict_types=1);
 namespace BEdita\API\Test\TestCase\Controller;
 
 use BEdita\API\TestSuite\IntegrationTestCase;
+use BEdita\Core\State\CurrentApplication;
 use Cake\Utility\Hash;
 
 /**
@@ -30,6 +31,8 @@ class BulkControllerTest extends IntegrationTestCase
      */
     protected $fixtures = [
         'plugin.BEdita/Core.Objects',
+        'plugin.BEdita/Core.Endpoints',
+        'plugin.BEdita/Core.EndpointPermissions',
     ];
 
     /**
@@ -77,26 +80,93 @@ class BulkControllerTest extends IntegrationTestCase
 
         // test: non admin
         $this->performCheck('second user', 'password2');
+    }
 
-        // insert more data in endpoints and endpoints permissions to make the test more meaningful
-        // insert into endpoint a record for /documents
-        $endpointsTable = $this->fetchTable('Endpoints');
-        $endpoint = $endpointsTable->newEntity([
-            'name' => 'documents',
-            'object_type_id' => 2,
-            'enabled' => true,
-        ]);
-        $endpointsTable->saveOrFail($endpoint);
-        // insert into endpoint_permissions a record for the just created endpoint
-        $endpointPermissionsTable = $this->fetchTable('EndpointPermissions');
-        $endpointPermission = $endpointPermissionsTable->newEntity([
-            'endpoint_id' => $endpoint->get('id'),
-            'role_id' => 2, // second role
-            'permission' => 15, // 1111
-        ]);
-        $endpointPermissionsTable->saveOrFail($endpointPermission);
+    /**
+     * Test index method on POST /bulk/edit with endpoint access not allowed for current user.
+     *
+     * @return void
+     * @covers ::index()
+     * @covers ::edit()
+     * @covers ::canAccessEndpoint()
+     */
+    public function testEditEndpointAccessFalse(): void
+    {
+        // Start a transaction for complete rollback at the end
+        $connection = $this->fetchTable('EndpointPermissions')->getConnection();
+        $connection->begin();
 
-        $this->performCheck('second user', 'password2');
+        try {
+            // insert into endpoint a record for /documents
+            $endpointsTable = $this->fetchTable('Endpoints');
+            $endpoint = $endpointsTable->newEntity([
+                'name' => 'documents',
+                'object_type_id' => 2,
+                'enabled' => true,
+            ]);
+            $endpointsTable->saveOrFail($endpoint);
+            $endpointId = $endpoint->get('id');
+
+            // Clear any existing permissions for this endpoint to ensure clean test
+            $endpointPermissionsTable = $this->fetchTable('EndpointPermissions');
+            $endpointPermissionsTable->deleteAll([]);
+
+            // Insert ONLY ONE blocking permission for the specific endpoint and role
+            $endpointPermission = $endpointPermissionsTable->newEntity([
+                'application_id' => CurrentApplication::getApplicationId(),
+                'endpoint_id' => $endpointId,
+                'role_id' => 2, // second role
+                'permission' => 0, // block
+            ]);
+            $endpointPermissionsTable->saveOrFail($endpointPermission);
+
+            // Verify that we have exactly one permission for this endpoint
+            $permissionCount = $endpointPermissionsTable->find()
+                ->where([
+                    'endpoint_id' => $endpointId,
+                    'application_id' => CurrentApplication::getApplicationId(),
+                    'role_id' => 2,
+                ])
+                ->count();
+            $this->assertEquals(1, $permissionCount, 'Should have exactly one permission for this endpoint');
+
+            // Verify the permission value is 0 (block)
+            $permission = $endpointPermissionsTable->find()
+                ->where([
+                    'endpoint_id' => $endpointId,
+                    'application_id' => CurrentApplication::getApplicationId(),
+                    'role_id' => 2,
+                ])
+                ->first();
+            $this->assertEquals(0, $permission->get('permission'), 'Permission should be 0 (block)');
+
+            // try to edit object 3 with user that is not admin
+            $this->configRequestHeaders('POST', $this->getUserAuthHeader('second user', 'password2'));
+            $this->post('/bulk/edit', json_encode([
+                'data' => [
+                    'attributes' => [
+                        'status' => 'off',
+                    ],
+                    'objects' => [
+                        'documents' => [3],
+                    ],
+                ],
+            ]));
+            $this->assertResponseCode(200);
+
+            // check response content
+            $response = (array)json_decode((string)$this->_response->getBody(), true);
+            $response = (array)Hash::get($response, 'data');
+            $this->assertArrayHasKey('saved', $response);
+            $this->assertArrayHasKey('errors', $response);
+            $this->assertCount(0, Hash::get($response, 'saved'));
+            $this->assertCount(1, Hash::get($response, 'errors'));
+            $this->assertEquals(3, Hash::get($response, 'errors.0.id'));
+            $this->assertEquals('User cannot access "documents" endpoint', Hash::get($response, 'errors.0.message'));
+        } finally {
+            // Always rollback the transaction to restore original state
+            $connection->rollback();
+        }
     }
 
     /**

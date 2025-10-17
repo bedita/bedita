@@ -139,15 +139,18 @@ class BulkController extends JsonBaseController
      */
     protected function canAccessEndpoint(?IdentityInterface $user, string $type): bool
     {
-        $request = new ServerRequest([
-            'environment' => [
-                'REQUEST_METHOD' => 'PATCH',
-                'REQUEST_URI' => '/' . $type,
-            ],
-            'url' => '/' . $type,
-        ]);
-        $policy = new EndpointPolicy();
+        try {
+            $policy = new EndpointPolicy();
 
-        return $policy->canAccess($user, $request);
+            return $policy->canAccess($user, new ServerRequest([
+                'environment' => [
+                    'REQUEST_METHOD' => 'PATCH',
+                    'REQUEST_URI' => '/' . $type,
+                ],
+                'url' => '/' . $type,
+            ]));
+        } catch (Throwable $e) {
+            return false;
+        }
     }
 }
