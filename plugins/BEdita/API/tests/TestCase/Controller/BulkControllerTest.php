@@ -143,6 +143,40 @@ class BulkControllerTest extends IntegrationTestCase
     }
 
     /**
+     * Test index method on POST /bulk/edit with abstract type in payload.
+     *
+     * @return void
+     * @covers ::index()
+     * @covers ::edit()
+     */
+    public function testEditAbstractType(): void
+    {
+        // try to edit object 1 of abstract type 'objects'
+        $this->configRequestHeaders('POST', $this->getUserAuthHeader('first user', 'password1'));
+        $this->post('/bulk/edit', json_encode([
+            'data' => [
+                'attributes' => [
+                    'status' => 'off',
+                ],
+                'objects' => [
+                    'objects' => [1],
+                ],
+            ],
+        ]));
+        $this->assertResponseCode(200);
+
+        // check response content
+        $response = (array)json_decode((string)$this->_response->getBody(), true);
+        $response = (array)Hash::get($response, 'data');
+        $this->assertArrayHasKey('saved', $response);
+        $this->assertArrayHasKey('errors', $response);
+        $this->assertCount(0, Hash::get($response, 'saved'));
+        $this->assertCount(1, Hash::get($response, 'errors'));
+        $this->assertEquals(1, Hash::get($response, 'errors.0.id'));
+        $this->assertEquals('Abstract type endpoint "objects" cannot be used for bulk edit', Hash::get($response, 'errors.0.message'));
+    }
+
+    /**
      * Test index method on POST /bulk/edit with endpoint access not allowed for current user.
      *
      * @return void
