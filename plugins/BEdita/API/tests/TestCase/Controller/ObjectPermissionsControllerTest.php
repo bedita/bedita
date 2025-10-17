@@ -15,6 +15,8 @@ declare(strict_types=1);
 namespace BEdita\API\Test\TestCase\Controller;
 
 use BEdita\API\TestSuite\IntegrationTestCase;
+use Cake\Database\Driver\Postgres;
+use Cake\Datasource\ConnectionManager;
 
 /**
  * @coversDefaultClass \BEdita\API\Controller\ObjectPermissionsController
@@ -38,6 +40,11 @@ class ObjectPermissionsControllerTest extends IntegrationTestCase
      */
     public function testIndex(): void
     {
+        $expectedId = '2';
+        // if database is postgresql, expectedId is 1
+        if (ConnectionManager::get('default')->getDriver() instanceof Postgres) {
+            $expectedId = '1';
+        }
         $expected = [
             'links' => [
                 'self' => 'http://api.example.com/object_permissions',
@@ -58,7 +65,7 @@ class ObjectPermissionsControllerTest extends IntegrationTestCase
             ],
             'data' => [
                 [
-                    'id' => '1',
+                    'id' => $expectedId,
                     'type' => 'object_permissions',
                     'attributes' => [
                         'object_id' => 2,
@@ -69,7 +76,7 @@ class ObjectPermissionsControllerTest extends IntegrationTestCase
                         'created' => '2023-03-29T15:08:00+00:00',
                     ],
                     'links' => [
-                        'self' => 'http://api.example.com/object_permissions/1',
+                        'self' => 'http://api.example.com/object_permissions/' . $expectedId,
                     ],
                 ],
             ],
