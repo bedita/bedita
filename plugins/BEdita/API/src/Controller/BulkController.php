@@ -153,15 +153,5 @@ class BulkController extends JsonBaseController
         $policy = new EndpointPolicy();
 
         return $policy->canAccess($user, $request);
-
-        // $endpointId = $this->fetchTable('Endpoints')->fetchId(sprintf('/%s', $type));
-        // if ($endpointId === null) {
-        //     return true;
-        // }
-        // $user = compact('roles');
-        // $permissions = $this->fetchTable('EndpointPermissions')->fetchPermissions($endpointId, $user, false);
-        // $policy = new EndpointPolicy();
-
-        // return $policy->checkPermissions($permissions, false);
     }
 }
