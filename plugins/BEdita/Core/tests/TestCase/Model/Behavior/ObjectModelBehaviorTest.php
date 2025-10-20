@@ -14,21 +14,27 @@ declare(strict_types=1);
  */
 namespace BEdita\Core\Test\TestCase\Model\Behavior;
 
-use AllowDynamicProperties;
+use BEdita\Core\Model\Behavior\ObjectModelBehavior;
+use BEdita\Core\Model\Table\ObjectsTable;
 use Cake\ORM\Locator\LocatorAwareTrait;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Hash;
+use PHPUnit\Framework\Attributes\CoversClass;
 
 /**
  * {@see \BEdita\Core\Model\Behavior\ObjectModelBehavior} Test Case
- *
- * @property \BEdita\Core\Model\Table\ObjectsTable $Documents
- * @coversDefaultClass \BEdita\Core\Model\Behavior\ObjectModelBehavior
  */
-#[AllowDynamicProperties]
+#[CoversClass(ObjectModelBehavior::class)]
 class ObjectModelBehaviorTest extends TestCase
 {
     use LocatorAwareTrait;
+
+    /**
+     * Instance of Documents table
+     *
+     * @var \BEdita\Core\Model\Table\ObjectsTable
+     */
+    protected ObjectsTable $Documents;
 
     /**
      * Fixtures
@@ -52,7 +58,7 @@ class ObjectModelBehaviorTest extends TestCase
     /**
      * Test `initialize` method.
      *
-     * @covers ::initialize()
+     * @return void
      */
     public function testInitialize(): void
     {
@@ -67,7 +73,7 @@ class ObjectModelBehaviorTest extends TestCase
     /**
      * Test `addRelated` method.
      *
-     * @covers ::addRelated()
+     * @return void
      */
     public function testAddRelated(): void
     {
@@ -85,7 +91,7 @@ class ObjectModelBehaviorTest extends TestCase
     /**
      * Test `replaceRelated` method.
      *
-     * @covers ::replaceRelated()
+     * @return void
      */
     public function testReplaceRelated(): void
     {
@@ -102,7 +108,7 @@ class ObjectModelBehaviorTest extends TestCase
     /**
      * Test `removeRelated` method.
      *
-     * @covers ::removeRelated()
+     * @return void
      */
     public function testRemoveRelated(): void
     {

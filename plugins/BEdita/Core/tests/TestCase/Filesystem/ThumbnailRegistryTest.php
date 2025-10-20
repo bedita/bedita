@@ -20,20 +20,20 @@ use BEdita\Core\Filesystem\ThumbnailRegistry;
 use BEdita\Core\Model\Entity\Stream;
 use BEdita\Core\Test\TestCase\Filesystem\Thumbnail\TestGenerator;
 use Cake\TestSuite\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
 use RuntimeException;
 use stdClass;
 
 /**
- * @coversDefaultClass \BEdita\Core\Filesystem\ThumbnailRegistry
+ * {@see \BEdita\Core\Filesystem\ThumbnailRegistry} Test Case
  */
+#[CoversClass(ThumbnailRegistry::class)]
 class ThumbnailRegistryTest extends TestCase
 {
     /**
      * Test load when everything goes just fine.
      *
      * @return void
-     * @covers ::_create()
-     * @covers ::_resolveClassName()
      */
     public function testLoad()
     {
@@ -55,8 +55,6 @@ class ThumbnailRegistryTest extends TestCase
      * Test `_create` method when generator is not an instance of the expected class.
      *
      * @return void
-     * @covers ::_create()
-     * @covers ::_resolveClassName()
      */
     public function testLoadNotAGenerator()
     {
@@ -73,8 +71,6 @@ class ThumbnailRegistryTest extends TestCase
      * Test `_create` method when generator initialization fails.
      *
      * @return void
-     * @covers ::_create()
-     * @covers ::_resolveClassName()
      */
     public function testLoadNotInitialized()
     {
@@ -119,7 +115,6 @@ class ThumbnailRegistryTest extends TestCase
      * Test `_throwMissingClassError` method.
      *
      * @return void
-     * @covers ::_throwMissingClassError()
      */
     public function testLoadMissingClass()
     {

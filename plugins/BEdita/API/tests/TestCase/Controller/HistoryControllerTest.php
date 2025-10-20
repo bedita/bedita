@@ -14,20 +14,21 @@ declare(strict_types=1);
  */
 namespace BEdita\API\Test\TestCase\Controller;
 
+use BEdita\API\Controller\HistoryController;
 use BEdita\API\Test\TestConstants;
 use BEdita\API\TestSuite\IntegrationTestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
 
 /**
- * @coversDefaultClass \BEdita\API\Controller\HistoryController
+ * {@see \BEdita\API\Controller\HistoryController} Test Case
  */
+#[CoversClass(HistoryController::class)]
 class HistoryControllerTest extends IntegrationTestCase
 {
     /**
      * Test index method.
      *
      * @return void
-     * @covers ::index()
-     * @covers ::initialize()
      */
     public function testIndex()
     {
@@ -134,7 +135,6 @@ class HistoryControllerTest extends IntegrationTestCase
      * Test empty view method.
      *
      * @return void
-     * @covers ::index()
      */
     public function testEmpty()
     {
@@ -171,7 +171,6 @@ class HistoryControllerTest extends IntegrationTestCase
      * Test `user_id` filter method.
      *
      * @return void
-     * @coversNothing
      */
     public function testUser()
     {
@@ -245,9 +244,6 @@ class HistoryControllerTest extends IntegrationTestCase
      * Test `related` method.
      *
      * @return void
-     * @covers ::initialize()
-     * @covers ::related()
-     * @covers ::getAvailableUrl()
      */
     public function testRelated()
     {
@@ -365,7 +361,6 @@ class HistoryControllerTest extends IntegrationTestCase
      * Test `setRelationshipsAllowedMethods` method.
      *
      * @return void
-     * @covers ::setRelationshipsAllowedMethods()
      */
     public function testSetRelationshipsAllowedMethods()
     {
@@ -382,7 +377,6 @@ class HistoryControllerTest extends IntegrationTestCase
      * Test `include` method.
      *
      * @return void
-     * @coversNothing
      */
     public function testInclude()
     {

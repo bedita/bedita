@@ -53,7 +53,7 @@ class OAuth2Identifier extends AbstractIdentifier
             $providerResponse = $this->getOAuth2Response(
                 $authProvider->get('url'),
                 $credentials['access_token'],
-                $options
+                $options,
             );
 
             if (!$authProvider->checkAuthorization($providerResponse, $credentials['provider_username'])) {

@@ -14,14 +14,15 @@ declare(strict_types=1);
  */
 namespace BEdita\Core\Test\TestCase\Model\Table;
 
+use BEdita\Core\Model\Table\CaptionsTable;
 use Cake\ORM\Association\BelongsTo;
 use Cake\TestSuite\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
 
 /**
  * {@see \BEdita\Core\Model\Table\CaptionsTable} Test Case
- *
- * @coversDefaultClass \BEdita\Core\Model\Table\CaptionsTable
  */
+#[CoversClass(CaptionsTable::class)]
 class CaptionsTableTest extends TestCase
 {
     /**
@@ -69,7 +70,6 @@ class CaptionsTableTest extends TestCase
      * Test initialization.
      *
      * @return void
-     * @covers ::initialize()
      */
     public function testInitialize()
     {
@@ -80,7 +80,6 @@ class CaptionsTableTest extends TestCase
      * Test validationDefault method
      *
      * @return void
-     * @uses \BEdita\Core\Model\Table\CaptionsTable::validationDefault()
      */
     public function testValidationDefault(): void
     {
@@ -91,7 +90,6 @@ class CaptionsTableTest extends TestCase
      * Test buildRules method
      *
      * @return void
-     * @uses \BEdita\Core\Model\Table\CaptionsTable::buildRules()
      */
     public function testBuildRules(): void
     {

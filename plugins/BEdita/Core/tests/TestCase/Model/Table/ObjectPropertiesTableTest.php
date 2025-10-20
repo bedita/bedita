@@ -14,11 +14,14 @@ declare(strict_types=1);
  */
 namespace BEdita\Core\Test\TestCase\Model\Table;
 
+use BEdita\Core\Model\Table\ObjectPropertiesTable;
 use Cake\TestSuite\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
 
 /**
- * BEdita\Core\Model\Table\ObjectPropertiesTable Test Case
+ * {@see BEdita\Core\Model\Table\ObjectPropertiesTable} Test Case
  */
+#[CoversClass(ObjectPropertiesTable::class)]
 class ObjectPropertiesTableTest extends TestCase
 {
     /**

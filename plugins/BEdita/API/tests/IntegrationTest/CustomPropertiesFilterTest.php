@@ -19,10 +19,13 @@ use BEdita\Core\Test\Utility\TestFilesystemTrait;
 use Cake\Database\Driver\Mysql;
 use Cake\Datasource\ConnectionManager;
 use Cake\Utility\Hash;
+use PHPUnit\Framework\Attributes\CoversNothing;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * Test filter on custom properties
  */
+#[CoversNothing]
 class CustomPropertiesFilterTest extends IntegrationTestCase
 {
     use TestFilesystemTrait;
@@ -96,9 +99,8 @@ class CustomPropertiesFilterTest extends IntegrationTestCase
      * @param array $expected The expected result
      * @param string $url Url
      * @return void
-     * @dataProvider filterProvider
-     * @coversNothing
      */
+    #[DataProvider('filterProvider')]
     public function testFilter(array $expected, $url): void
     {
         $this->configRequestHeaders();
@@ -117,7 +119,6 @@ class CustomPropertiesFilterTest extends IntegrationTestCase
      * Test that multi filter works.
      *
      * @return void
-     * @coversNothing
      */
     public function testMultiFilter(): void
     {

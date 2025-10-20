@@ -14,16 +14,17 @@ declare(strict_types=1);
  */
 namespace BEdita\Core\Test\TestCase\Command;
 
+use BEdita\Core\Command\ObjectsHistoryCommand;
 use Cake\Console\TestSuite\ConsoleIntegrationTestTrait;
 use Cake\Event\EventManager;
 use Cake\TestSuite\TestCase;
 use Exception;
+use PHPUnit\Framework\Attributes\CoversClass;
 
 /**
  * {@see BEdita\Core\Command\ObjectsHistoryCommand} Test Case
- *
- * @coversDefaultClass \BEdita\Core\Command\ObjectsHistoryCommand
  */
+#[CoversClass(ObjectsHistoryCommand::class)]
 class ObjectsHistoryCommandTest extends TestCase
 {
     use ConsoleIntegrationTestTrait;
@@ -47,7 +48,6 @@ class ObjectsHistoryCommandTest extends TestCase
      * Test buildOptionParser method
      *
      * @return void
-     * @covers ::buildOptionParser()
      */
     public function testBuildOptionParser(): void
     {
@@ -67,10 +67,6 @@ class ObjectsHistoryCommandTest extends TestCase
      * Test `execute` method
      *
      * @return void
-     * @covers ::execute()
-     * @covers ::read()
-     * @covers ::fetchQuery()
-     * @covers ::historyIterator()
      */
     public function testExecute(): void
     {
@@ -85,10 +81,6 @@ class ObjectsHistoryCommandTest extends TestCase
      * Test `execute` method, by types
      *
      * @return void
-     * @covers ::execute()
-     * @covers ::read()
-     * @covers ::fetchQuery()
-     * @covers ::historyIterator()
      */
     public function testExecuteByTypes(): void
     {
@@ -103,10 +95,6 @@ class ObjectsHistoryCommandTest extends TestCase
      * Test `delete` method, with exception
      *
      * @return void
-     * @covers ::execute()
-     * @covers ::delete()
-     * @covers ::fetchQuery()
-     * @covers ::historyIterator()
      */
     public function testDeleteWithException(): void
     {
@@ -130,10 +118,6 @@ class ObjectsHistoryCommandTest extends TestCase
      * Test `delete` method, with no exception
      *
      * @return void
-     * @covers ::execute()
-     * @covers ::delete()
-     * @covers ::fetchQuery()
-     * @covers ::historyIterator()
      */
     public function testDeleteWithNoException(): void
     {

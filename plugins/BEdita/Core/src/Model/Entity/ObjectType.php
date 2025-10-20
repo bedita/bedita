@@ -445,7 +445,7 @@ class ObjectType extends Entity implements JsonApiSerializable, EventDispatcherI
                 function ($t) {
                     return $t->get('name');
                 },
-                (array)$relation->get($relTypes)
+                (array)$relation->get($relTypes),
             );
             sort($types);
             $res[$relation->get($name)] = [
@@ -586,7 +586,7 @@ class ObjectType extends Entity implements JsonApiSerializable, EventDispatcherI
                 function (bool $store, ObjectType $item) use ($commonAncestor): bool {
                     return $store && $item->isDescendantOf($commonAncestor);
                 },
-                true
+                true,
             );
             if ($isCommonAncestor) {
                 return $commonAncestor;

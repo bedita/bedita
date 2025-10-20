@@ -47,7 +47,7 @@ trait SimpleSearchTrait
                 }
 
                 $event->getSubject()->setConfig($config, null, false);
-            }
+            },
         );
     }
 }

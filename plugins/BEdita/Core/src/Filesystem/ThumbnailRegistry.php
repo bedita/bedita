@@ -67,13 +67,13 @@ class ThumbnailRegistry extends ObjectRegistry
 
         if (!($instance instanceof ThumbnailGenerator)) {
             throw new RuntimeException(
-                sprintf('Thumbnail generators must use %s as a base class.', ThumbnailGenerator::class)
+                sprintf('Thumbnail generators must use %s as a base class.', ThumbnailGenerator::class),
             );
         }
 
         if (!$instance->initialize($config)) {
             throw new RuntimeException(
-                sprintf('Thumbnail generator %s is not properly configured.', get_class($instance))
+                sprintf('Thumbnail generator %s is not properly configured.', get_class($instance)),
             );
         }
 

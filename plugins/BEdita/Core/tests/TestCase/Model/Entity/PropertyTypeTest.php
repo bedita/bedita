@@ -14,15 +14,16 @@ declare(strict_types=1);
  */
 namespace BEdita\Core\Test\TestCase\Model\Entity;
 
+use BEdita\Core\Model\Entity\PropertyType;
 use BEdita\Core\Model\Table\PropertyTypesTable;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
 
 /**
  * {@see \BEdita\Core\Model\Entity\PropertyType} Test Case
- *
- * @coversDefaultClass \BEdita\Core\Model\Entity\PropertyType
  */
+#[CoversClass(PropertyType::class)]
 class PropertyTypeTest extends TestCase
 {
     /**
@@ -64,7 +65,6 @@ class PropertyTypeTest extends TestCase
      * Test entity
      *
      * @return void
-     * @coversNothing
      */
     public function testEntity()
     {

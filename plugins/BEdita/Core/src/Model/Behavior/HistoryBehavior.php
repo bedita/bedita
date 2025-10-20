@@ -114,7 +114,7 @@ class HistoryBehavior extends Behavior
         $this->changed = array_diff_key($this->changed, array_flip($exclude));
         $obfuscate = array_intersect_key(
             (array)$this->getConfig('obfuscate'),
-            $this->changed
+            $this->changed,
         );
         $this->changed = array_merge($this->changed, $obfuscate);
     }
@@ -245,7 +245,7 @@ class HistoryBehavior extends Behavior
 
         return $query->innerJoin(
             ['HistoryItems' => $subQuery],
-            $query->expr()->eq($field, new IdentifierExpression($this->table()->aliasField('id')))
+            $query->expr()->eq($field, new IdentifierExpression($this->table()->aliasField('id'))),
         );
     }
 }

@@ -14,21 +14,20 @@ declare(strict_types=1);
  */
 namespace BEdita\API\Test\TestCase\Controller\Model;
 
+use BEdita\API\Controller\Model\ProjectController;
 use BEdita\API\TestSuite\IntegrationTestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
 
 /**
  * {@see \BEdita\API\Controller\Model\ProjectController} Test Case
- *
- * @coversDefaultClass \BEdita\API\Controller\Model\ProjectController
  */
+#[CoversClass(ProjectController::class)]
 class ProjectControllerTest extends IntegrationTestCase
 {
     /**
      * Test `index()` method.
      *
      * @return void
-     * @covers ::index()
-     * @covers ::initialize()
      */
     public function testIndex(): void
     {
@@ -506,7 +505,6 @@ class ProjectControllerTest extends IntegrationTestCase
      * Test content negotiation.
      *
      * @return void
-     * @coversNothing
      */
     public function testContentNegotiation(): void
     {

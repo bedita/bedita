@@ -46,7 +46,7 @@ class StaticProperty extends Property
                 'markClean' => true,
                 'guard' => false,
                 'source' => $property->getSource(),
-            ]
+            ],
         );
     }
 

@@ -285,7 +285,7 @@ class ObjectsTable extends Table
                             ->find('children', for: $value->id)
                             ->find('list', valueField: $this->ObjectTypes->getPrimaryKey())
                             ->all()
-                            ->toList()
+                            ->toList(),
                     );
                 }
 
@@ -353,7 +353,7 @@ class ObjectsTable extends Table
     protected function dateRangesSubQueryJoin(
         SelectQuery $query,
         DateRangesSortField $minMaxField,
-        array $options
+        array $options,
     ): ?SelectQuery {
         $finder = 'dateRanges';
         if (empty($options)) {
@@ -375,7 +375,7 @@ class ObjectsTable extends Table
             ])
             ->innerJoin(
                 ['DateBoundaries' => $subQuery],
-                ['DateBoundaries.date_ranges_object_id = ' . $this->aliasField($this->getPrimaryKey())]
+                ['DateBoundaries.date_ranges_object_id = ' . $this->aliasField($this->getPrimaryKey())],
             );
     }
 
@@ -417,7 +417,7 @@ class ObjectsTable extends Table
                         return $exp
                             ->gt($this->TreeNodes->aliasField('tree_left'), $parentNode->get('tree_left'))
                             ->lt($this->TreeNodes->aliasField('tree_right'), $parentNode->get('tree_right'));
-                    })
+                    }),
             );
         });
     }

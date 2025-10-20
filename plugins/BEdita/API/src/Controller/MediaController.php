@@ -56,9 +56,9 @@ class MediaController extends ObjectsController
                     function ($id) use ($validateOptions) {
                         return filter_var(trim($id), FILTER_VALIDATE_INT, ['options' => $validateOptions]);
                     },
-                    $ids
-                )
-            )
+                    $ids,
+                ),
+            ),
         );
 
         $maxLimit = Hash::get($this->paginate, 'maxLimit');

@@ -23,12 +23,13 @@ use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Hash;
 use Exception;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * {@see \BEdita\Core\Model\Table\ApplicationsTable} Test Case
- *
- * @coversDefaultClass \BEdita\Core\Model\Table\ApplicationsTable
  */
+#[CoversClass(ApplicationsTable::class)]
 class ApplicationsTableTest extends TestCase
 {
     /**
@@ -88,7 +89,6 @@ class ApplicationsTableTest extends TestCase
      * Test initialize method
      *
      * @return void
-     * @covers ::initialize()
      */
     public function testInitialize()
     {
@@ -166,9 +166,8 @@ class ApplicationsTableTest extends TestCase
      * @param bool $expected Expected result.
      * @param array $data Data to be validated.
      * @return void
-     * @dataProvider validationProvider
-     * @coversNothing
      */
+    #[DataProvider('validationProvider')]
     public function testValidation($expected, array $data)
     {
         $application = $this->Applications->newEntity($data);
@@ -213,11 +212,8 @@ class ApplicationsTableTest extends TestCase
      * @param string $apiKey The api key to set. Empty to leave unchanged on update or auto generation on create
      * @param bool $update If the operation is an update or create
      * @return void
-     * @covers ::beforeSave()
-     * @covers ::beforeDelete()
-     * @covers ::generateApiKey()
-     * @dataProvider apiKeyGenerationProvider
      */
+    #[DataProvider('apiKeyGenerationProvider')]
     public function testApiKeyGeneration($apiKey, $update)
     {
         if ($update) {
@@ -290,9 +286,8 @@ class ApplicationsTableTest extends TestCase
      * @param int|\Exception $expected Expected count.
      * @param string $apiKey API key.
      * @return void
-     * @covers ::findApiKey()
-     * @dataProvider findApiKeyProvider()
      */
+    #[DataProvider('findApiKeyProvider')]
     public function testFindApiKey(int|Exception $expected, string $apiKey): void
     {
         if ($expected instanceof Exception) {
@@ -341,9 +336,8 @@ class ApplicationsTableTest extends TestCase
      * @param int|\Exception $expected Expected count.
      * @param array $options Finder options.
      * @return void
-     * @dataProvider findCredentialsProvider()
-     * @covers ::findCredentials()
      */
+    #[DataProvider('findCredentialsProvider')]
     public function testFindCredentials(int|Exception $expected, array $options): void
     {
         $app = $this->Applications->get(2);
@@ -364,7 +358,6 @@ class ApplicationsTableTest extends TestCase
      * Test `afterDelete` method
      *
      * @return void
-     * @coversNothing
      */
     public function testAfterDelete(): void
     {
@@ -388,7 +381,6 @@ class ApplicationsTableTest extends TestCase
      * Test `afterSave` method
      *
      * @return void
-     * @coversNothing
      */
     public function testAfterSave(): void
     {
@@ -409,7 +401,6 @@ class ApplicationsTableTest extends TestCase
      * Test exception removing default application
      *
      * @return void
-     * @covers ::beforeDelete()
      */
     public function testDeleteDefaultApplication()
     {
@@ -424,7 +415,6 @@ class ApplicationsTableTest extends TestCase
      * Test exception removing current application
      *
      * @return void
-     * @covers ::beforeDelete()
      */
     public function testDeleteCurrentApplication()
     {
@@ -440,7 +430,6 @@ class ApplicationsTableTest extends TestCase
      * Test exception disabling default application
      *
      * @return void
-     * @covers ::beforeSave()
      */
     public function testDisableDefaultApplication()
     {
@@ -456,7 +445,6 @@ class ApplicationsTableTest extends TestCase
      * Test exception disabling current application in use
      *
      * @return void
-     * @covers ::beforeSave()
      */
     public function testDisableCurrentApplication()
     {
@@ -475,7 +463,6 @@ class ApplicationsTableTest extends TestCase
      * Test `findEnabled` method
      *
      * @return void
-     * @covers ::findEnabled()
      */
     public function testFindEnabled()
     {

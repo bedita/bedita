@@ -243,7 +243,7 @@ class Resources extends ResourcesBase
         foreach ($resources as $action => $params) {
             if (!is_string($action) || !in_array($action, ['create', 'remove', 'update'])) {
                 throw new BadRequestException(
-                    __d('bedita', 'Save action "{0}" not allowed', $action)
+                    __d('bedita', 'Save action "{0}" not allowed', $action),
                 );
             }
             $params = (array)$params;
@@ -271,7 +271,7 @@ class Resources extends ResourcesBase
             !in_array($type, array_keys(static::$otherTypesMap))
         ) {
             throw new BadRequestException(
-                __d('bedita', 'Resource type "{0}" not supported', $type)
+                __d('bedita', 'Resource type "{0}" not supported', $type),
             );
         }
         $useOther = in_array($type, array_keys(static::$otherTypesMap));
@@ -299,7 +299,7 @@ class Resources extends ResourcesBase
         $condition = array_filter(array_intersect_key($item, $keys));
         if (empty($condition)) {
             throw new BadRequestException(
-                __d('bedita', 'Missing mandatory fields "id" or "name"')
+                __d('bedita', 'Missing mandatory fields "id" or "name"'),
             );
         }
 

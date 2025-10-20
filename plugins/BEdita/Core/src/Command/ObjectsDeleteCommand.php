@@ -113,7 +113,7 @@ class ObjectsDeleteCommand extends Command
         $lastId = 0;
         while (true) {
             $q = clone $query;
-            $q = $q->where(fn (QueryExpression $exp): QueryExpression => $exp->gt($table->aliasField('id'), $lastId));
+            $q = $q->where(fn(QueryExpression $exp): QueryExpression => $exp->gt($table->aliasField('id'), $lastId));
             $results = $q->orderByAsc($table->aliasField('id'))->all();
             if ($results->isEmpty()) {
                 break;

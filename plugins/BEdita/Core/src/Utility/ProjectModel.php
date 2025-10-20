@@ -145,7 +145,7 @@ class ProjectModel
 
                 return array_filter($r);
             },
-            (array)$relations
+            (array)$relations,
         );
     }
 
@@ -258,7 +258,7 @@ class ProjectModel
         self::categoriesToUpdate($update);
 
         return array_filter(
-            array_map('array_filter', compact('create', 'update', 'remove'))
+            array_map('array_filter', compact('create', 'update', 'remove')),
         );
     }
 
@@ -371,7 +371,7 @@ class ProjectModel
                 return $v;
             },
             array_keys($new),
-            array_values($new)
+            array_values($new),
         ));
     }
 }

@@ -14,15 +14,17 @@ declare(strict_types=1);
  */
 namespace BEdita\Core\Test\TestCase\Model\Behavior;
 
+use BEdita\Core\Model\Behavior\DataCleanupBehavior;
 use Cake\Core\Configure;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * {@see \BEdita\Core\Model\Behavior\DataCleanupBehavior} Test Case
- *
- * @coversDefaultClass \BEdita\Core\Model\Behavior\DataCleanupBehavior
  */
+#[CoversClass(DataCleanupBehavior::class)]
 class DataCleanupBehaviorTest extends TestCase
 {
     /**
@@ -133,10 +135,8 @@ class DataCleanupBehaviorTest extends TestCase
      * @param array $expected Expected result.
      * @param array $defaultValues Defaults values per type
      * @return void
-     * @dataProvider cleanupProvider
-     * @covers ::beforeMarshal()
-     * @covers ::defaultFields()
      */
+    #[DataProvider('cleanupProvider')]
     public function testDataCleanup(array $inputData, array $expected, array $defaultValues)
     {
         Configure::write('DefaultValues', $defaultValues);
@@ -198,9 +198,8 @@ class DataCleanupBehaviorTest extends TestCase
      * @param array $expected Expected result.
      * @param string $level Status level.
      * @return void
-     * @dataProvider statusLevelProvider
-     * @covers ::defaultFields()
      */
+    #[DataProvider('statusLevelProvider')]
     public function testStatusLevel(array $inputData, array $expected, string $level = ''): void
     {
         if (!empty($level)) {

@@ -20,13 +20,14 @@ use BEdita\Core\Model\Table\PropertiesTable;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use InvalidArgumentException;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 use stdClass;
 
 /**
  * {@see \BEdita\Core\Model\Entity\Property} Test Case
- *
- * @coversDefaultClass \BEdita\Core\Model\Entity\Property
  */
+#[CoversClass(Property::class)]
 class PropertyTest extends TestCase
 {
     /**
@@ -78,7 +79,6 @@ class PropertyTest extends TestCase
      * Test accessible properties.
      *
      * @return void
-     * @coversNothing
      */
     public function testAccessible()
     {
@@ -136,9 +136,8 @@ class PropertyTest extends TestCase
      * @param string|null $expected Expected property type name.
      * @param mixed $propertyTypeId Property type ID.
      * @return void
-     * @covers ::_getPropertyType()
-     * @dataProvider getPropertyTypeNameProvider()
      */
+    #[DataProvider('getPropertyTypeNameProvider')]
     public function testGetPropertyType($expected, $propertyTypeId)
     {
         $entity = new Property();
@@ -164,9 +163,8 @@ class PropertyTest extends TestCase
      * @param string|null $expected Expected property type name.
      * @param mixed $propertyTypeId Property type ID.
      * @return void
-     * @covers ::_getPropertyTypeName()
-     * @dataProvider getPropertyTypeNameProvider()
      */
+    #[DataProvider('getPropertyTypeNameProvider')]
     public function testGetPropertyTypeName($expected, $propertyTypeId)
     {
         $entity = new Property();
@@ -202,9 +200,8 @@ class PropertyTest extends TestCase
      * @param string|null $expected Expected property type ID.
      * @param mixed $propertyTypeName Property type name.
      * @return void
-     * @covers ::_setPropertyTypeName()
-     * @dataProvider setPropertyTypeNameProvider()
      */
+    #[DataProvider('setPropertyTypeNameProvider')]
     public function testSetPropertyTypeName($expected, $propertyTypeName)
     {
         $entity = new Property();
@@ -240,9 +237,8 @@ class PropertyTest extends TestCase
      * @param bool $expected Expected result.
      * @param bool $isNullable Is property nullable?
      * @return void
-     * @dataProvider getRequiredProvider()
-     * @covers ::_getRequired()
      */
+    #[DataProvider('getRequiredProvider')]
     public function testGetRequired($expected, $isNullable)
     {
         $entity = new Property();
@@ -332,9 +328,8 @@ class PropertyTest extends TestCase
      * @param bool $isNullable Is the property nullable?
      * @param string|null $mode Property access mode.
      * @return void
-     * @dataProvider getSchemaProvider()
-     * @covers ::getSchema()
      */
+    #[DataProvider('getSchemaProvider')]
     public function testGetSchema($expected, $propertyTypeName, $isNullable, $mode = null)
     {
         $entity = new Property();
@@ -388,9 +383,8 @@ class PropertyTest extends TestCase
      * @param bool $expected Expected result.
      * @param string|null $propertyTypeName Property type name.
      * @return void
-     * @dataProvider getTranslatableProvider()
-     * @covers ::_getTranslatable()
      */
+    #[DataProvider('getTranslatableProvider')]
     public function testGetTranslatable($expected, ?string $propertyTypeName): void
     {
         $entity = new Property();

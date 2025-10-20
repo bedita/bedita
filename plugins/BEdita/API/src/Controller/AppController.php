@@ -77,8 +77,8 @@ class AppController extends Controller
             Router::fullBaseUrl(
                 rtrim(
                     sprintf('%s://%s/%s', $this->request->scheme(), $this->request->host(), $this->request->getAttribute('base')),
-                    '/'
-                )
+                    '/',
+                ),
             );
         }
     }
@@ -135,7 +135,7 @@ class AppController extends Controller
         }
         if (!is_string($include)) {
             throw new BadRequestException(
-                __d('bedita', 'Invalid "{0}" query parameter ({1})', 'include', __d('bedita', 'Must be a comma-separated string'))
+                __d('bedita', 'Invalid "{0}" query parameter ({1})', 'include', __d('bedita', 'Must be a comma-separated string')),
             );
         }
 
@@ -150,7 +150,7 @@ class AppController extends Controller
                 $association = $this->findAssociation($relationship, $table);
             } catch (NotFoundException $e) {
                 throw new BadRequestException(
-                    __d('bedita', 'Invalid "{0}" query parameter ({1})', 'include', __d('bedita', 'Relationship "{0}" does not exist', $relationship))
+                    __d('bedita', 'Invalid "{0}" query parameter ({1})', 'include', __d('bedita', 'Relationship "{0}" does not exist', $relationship)),
                 );
             }
 

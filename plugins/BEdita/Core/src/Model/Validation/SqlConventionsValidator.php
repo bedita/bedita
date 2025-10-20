@@ -92,11 +92,11 @@ class SqlConventionsValidator extends Validator
                 function ($word) {
                     return strtoupper(trim($word));
                 },
-                file($fileName)
+                file($fileName),
             ),
             function ($word) use ($allowed) {
                 return !empty($word) && substr($word, 0, 1) !== '#' && !in_array($word, $allowed);
-            }
+            },
         );
 
         return static::$reservedWords;

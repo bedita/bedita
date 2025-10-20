@@ -61,7 +61,7 @@ class RemoveAssociatedAction extends UpdateAssociatedAction
         }
 
         throw new RuntimeException(
-            __d('bedita', 'Unable to remove existing links with association of type "{0}"', get_class($this->Association))
+            __d('bedita', 'Unable to remove existing links with association of type "{0}"', get_class($this->Association)),
         );
     }
 }

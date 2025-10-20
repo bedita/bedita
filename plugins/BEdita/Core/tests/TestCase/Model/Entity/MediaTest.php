@@ -14,15 +14,16 @@ declare(strict_types=1);
  */
 namespace BEdita\Core\Test\TestCase\Model\Entity;
 
+use BEdita\Core\Model\Entity\Media;
 use BEdita\Core\Model\Table\MediaTable;
 use BEdita\Core\Test\Utility\TestFilesystemTrait;
 use Cake\TestSuite\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
 
 /**
  * {@see \BEdita\Core\Model\Entity\Media} Test Case
- *
- * @coversDefaultClass \BEdita\Core\Model\Entity\Media
  */
+#[CoversClass(Media::class)]
 class MediaTest extends TestCase
 {
     use TestFilesystemTrait;
@@ -78,8 +79,6 @@ class MediaTest extends TestCase
      * Test virtual properties.
      *
      * @return void
-     * @covers ::__construct()
-     * @covers ::_getMediaUrl()
      */
     public function testMediaUrl()
     {
@@ -94,7 +93,6 @@ class MediaTest extends TestCase
      * Test empty media url and provider url fallback in case of no streams.
      *
      * @return void
-     * @covers ::_getMediaUrl()
      */
     public function testGetMediaUrl()
     {

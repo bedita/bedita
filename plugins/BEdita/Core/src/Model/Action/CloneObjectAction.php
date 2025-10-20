@@ -96,7 +96,7 @@ class CloneObjectAction extends BaseAction
         $schema = $this->Table->getSchema();
         $reset = array_merge(
             SchemaTools::getPrimaryFields($schema, ['count' => 1]),
-            ['created', 'modified', 'created_by', 'modified_by']
+            ['created', 'modified', 'created_by', 'modified_by'],
         );
         $unique = SchemaTools::getUniqueFields($schema, ['count' => 1]);
         $nullable = SchemaTools::getNullableFields($schema);

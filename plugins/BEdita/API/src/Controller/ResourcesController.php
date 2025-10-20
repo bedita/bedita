@@ -83,7 +83,7 @@ abstract class ResourcesController extends AppController
                 $this->JsonApi->setConfig(
                     'resourceTypes',
                     $this->getConfig(sprintf('allowedAssociations.%s', $this->request->getParam('relationship'))),
-                    false
+                    false,
                 );
                 $this->JsonApi->setConfig('clientGeneratedIds', true);
             }
@@ -162,7 +162,7 @@ abstract class ResourcesController extends AppController
                 ->withStatus(201)
                 ->withHeader(
                     'Location',
-                    $this->resourceUrl($data, $primaryKey)
+                    $this->resourceUrl($data, $primaryKey),
                 );
         } else {
             // List existing entities.
@@ -202,7 +202,7 @@ abstract class ResourcesController extends AppController
                 'controller' => $this->name,
                 'id' => $entity->get($primaryKey),
             ],
-            true
+            true,
         );
     }
 
@@ -423,7 +423,7 @@ abstract class ResourcesController extends AppController
                 '_name' => $destinationEntity->routeNamePrefix() . ':index',
                 'controller' => Inflector::camelize($jsonApiData['type']),
             ],
-            true
+            true,
         );
     }
 }

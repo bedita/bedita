@@ -188,7 +188,7 @@ class LoginController extends AppController
                     'name' => Hash::get((array)$role, 'name'),
                 ];
             },
-            (array)Hash::get($userInput, 'roles')
+            (array)Hash::get($userInput, 'roles'),
         );
 
         return array_filter($user);

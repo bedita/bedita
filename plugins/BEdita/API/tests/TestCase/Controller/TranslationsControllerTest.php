@@ -14,20 +14,22 @@ declare(strict_types=1);
  */
 namespace BEdita\API\Test\TestCase\Controller;
 
+use BEdita\API\Controller\TranslationsController;
 use BEdita\API\Test\TestConstants;
 use BEdita\API\TestSuite\IntegrationTestCase;
 use Cake\ORM\TableRegistry;
+use PHPUnit\Framework\Attributes\CoversClass;
 
 /**
- * @coversDefaultClass \BEdita\API\Controller\TranslationsController
+ * {@see \BEdita\API\Controller\TranslationsController} Test Case
  */
+#[CoversClass(TranslationsController::class)]
 class TranslationsControllerTest extends IntegrationTestCase
 {
     /**
      * Test index method.
      *
      * @return void
-     * @coversNothing
      */
     public function testIndex()
     {
@@ -197,7 +199,6 @@ class TranslationsControllerTest extends IntegrationTestCase
      * Test view method.
      *
      * @return void
-     * @coversNothing
      */
     public function testSingle()
     {
@@ -253,7 +254,6 @@ class TranslationsControllerTest extends IntegrationTestCase
      * Test add method.
      *
      * @return void
-     * @coversNothing
      */
     public function testAdd()
     {
@@ -283,7 +283,6 @@ class TranslationsControllerTest extends IntegrationTestCase
      * Test edit method.
      *
      * @return void
-     * @coversNothing
      */
     public function testEdit()
     {
@@ -308,7 +307,6 @@ class TranslationsControllerTest extends IntegrationTestCase
      * Test delete method.
      *
      * @return void
-     * @coversNothing
      */
     public function testDelete()
     {
@@ -324,7 +322,6 @@ class TranslationsControllerTest extends IntegrationTestCase
      * Test related objects.
      *
      * @return void
-     * @covers ::getAvailableUrl()
      */
     public function testRelated()
     {
@@ -433,7 +430,6 @@ class TranslationsControllerTest extends IntegrationTestCase
      * Test relationships method to list existing relationships.
      *
      * @return void
-     * @covers ::getAssociatedAction()
      */
     public function testRelationships()
     {

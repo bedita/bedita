@@ -58,7 +58,7 @@ class SimpleAdapter extends BaseAdapter
             $table->getSchema()->columns(),
             function ($column) use ($columnTypes, $table) {
                 return in_array($table->getSchema()->getColumnType($column), $columnTypes);
-            }
+            },
         );
 
         if ($table instanceof InheritanceTable && $table->inheritedTable() !== null) {
@@ -130,15 +130,15 @@ class SimpleAdapter extends BaseAdapter
             $words = preg_split('/\W+/', $text); // Split words.
         }
         $words = array_unique(array_map( // Escape `%` and `\` characters in words.
-            fn (string $word): string => str_replace(
+            fn(string $word): string => str_replace(
                 ['%', '\\'],
                 ['\\%', '\\\\'],
                 $word,
             ),
             array_filter( // Filter out words that are too short.
                 $words,
-                fn (string $word): bool => mb_strlen($word) >= $minLength,
-            )
+                fn(string $word): bool => mb_strlen($word) >= $minLength,
+            ),
         ));
 
         return $words;
@@ -178,7 +178,7 @@ class SimpleAdapter extends BaseAdapter
                 foreach ($words as $word) {
                     $exp->like(
                         $field,
-                        sprintf('%%%s%%', $word)
+                        sprintf('%%%s%%', $word),
                     );
                 }
 

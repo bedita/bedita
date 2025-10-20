@@ -17,17 +17,18 @@ namespace BEdita\Core\Test\TestCase\Filesystem;
 use BEdita\Core\Filesystem\ThumbnailGenerator;
 use BEdita\Core\Model\Entity\Stream;
 use Cake\TestSuite\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
 
 /**
- * @coversDefaultClass \BEdita\Core\Filesystem\ThumbnailGenerator
+ * {@see \BEdita\Core\Filesystem\ThumbnailGenerator} Test Case
  */
+#[CoversClass(ThumbnailGenerator::class)]
 class ThumbnailGeneratorTest extends TestCase
 {
     /**
      * Test `initialize` method.
      *
      * @return void
-     * @covers ::initialize()
      */
     public function testInitialize()
     {

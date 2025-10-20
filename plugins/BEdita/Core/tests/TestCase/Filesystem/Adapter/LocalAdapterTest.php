@@ -18,10 +18,12 @@ use BEdita\Core\Filesystem\Adapter\LocalAdapter;
 use Cake\Routing\Router;
 use Cake\TestSuite\TestCase;
 use League\Flysystem\Local\LocalFilesystemAdapter;
+use PHPUnit\Framework\Attributes\CoversClass;
 
 /**
- * @coversDefaultClass \BEdita\Core\Filesystem\Adapter\LocalAdapter
+ * {@see \BEdita\Core\Filesystem\Adapter\LocalAdapter} Test Case
  */
+#[CoversClass(LocalAdapter::class)]
 class LocalAdapterTest extends TestCase
 {
     /**
@@ -48,7 +50,6 @@ class LocalAdapterTest extends TestCase
      * Test adapter initialization.
      *
      * @return void
-     * @covers ::initialize()
      */
     public function testInitialize()
     {
@@ -71,7 +72,6 @@ class LocalAdapterTest extends TestCase
      * Test builder of inner adapter.
      *
      * @return void
-     * @covers ::buildAdapter()
      */
     public function testBuildAdapter()
     {

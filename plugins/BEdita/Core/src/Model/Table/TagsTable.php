@@ -131,7 +131,7 @@ class TagsTable extends Table
 
                 return $row->setHidden(
                     ['id', 'enabled', 'created', 'modified'],
-                    true
+                    true,
                 );
             });
         });

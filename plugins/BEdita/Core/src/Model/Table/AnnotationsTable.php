@@ -141,8 +141,8 @@ class AnnotationsTable extends Table
                     'bedita',
                     'Could not change annotation "{0}" of user "{1}"',
                     $entity->get('id'),
-                    $entity->get('user_id')
-                )
+                    $entity->get('user_id'),
+                ),
             );
         }
         if (!$entity->isNew() && $entity->isDirty('object_id')) {
@@ -150,8 +150,8 @@ class AnnotationsTable extends Table
                 __d(
                     'bedita',
                     'Could not change object id on annotation "{0}"',
-                    $entity->get('id')
-                )
+                    $entity->get('id'),
+                ),
             );
         }
     }
@@ -172,8 +172,8 @@ class AnnotationsTable extends Table
                     'bedita',
                     'Could not delete annotation "{0}" of user "{1}"',
                     $entity->get('id'),
-                    $entity->get('user_id')
-                )
+                    $entity->get('user_id'),
+                ),
             );
         }
     }

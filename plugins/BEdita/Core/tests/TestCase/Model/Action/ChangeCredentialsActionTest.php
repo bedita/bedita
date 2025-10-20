@@ -27,12 +27,12 @@ use Cake\Mailer\TransportFactory;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use LogicException;
+use PHPUnit\Framework\Attributes\CoversClass;
 
 /**
  * {@see \BEdita\Core\Model\Action\ChangeCredentialsAction} Test Case
- *
- * @coversDefaultClass \BEdita\Core\Model\Action\ChangeCredentialsAction
  */
+#[CoversClass(ChangeCredentialsAction::class)]
 class ChangeCredentialsActionTest extends TestCase
 {
     /**
@@ -93,8 +93,6 @@ class ChangeCredentialsActionTest extends TestCase
      * Test invocation of command.
      *
      * @return void
-     * @covers ::execute()
-     * @covers ::validate()
      */
     public function testExecute()
     {
@@ -127,8 +125,6 @@ class ChangeCredentialsActionTest extends TestCase
      * Test validate failure.
      *
      * @return void
-     * @covers ::execute()
-     * @covers ::validate()
      */
     public function testValidationFail()
     {
@@ -149,8 +145,6 @@ class ChangeCredentialsActionTest extends TestCase
      * Test find job failure.
      *
      * @return void
-     * @covers ::execute()
-     * @covers ::validate()
      */
     public function testExecuteFail()
     {
@@ -172,8 +166,6 @@ class ChangeCredentialsActionTest extends TestCase
      * Test payload failure.
      *
      * @return void
-     * @covers ::execute()
-     * @covers ::validate()
      */
     public function testPayloadFail()
     {

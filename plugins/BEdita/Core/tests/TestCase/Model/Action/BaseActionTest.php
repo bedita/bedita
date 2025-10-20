@@ -16,20 +16,18 @@ namespace BEdita\Core\Test\TestCase\Model\Action;
 
 use BEdita\Core\Model\Action\BaseAction;
 use Cake\TestSuite\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
 
 /**
  * {@see \BEdita\Core\Model\Action\BaseAction} Test Case
- *
- * @coversDefaultClass \BEdita\Core\Model\Action\BaseAction
  */
+#[CoversClass(BaseAction::class)]
 class BaseActionTest extends TestCase
 {
     /**
      * Test constructor method.
      *
      * @return void
-     * @covers ::__construct()
-     * @covers ::initialize()
      */
     public function testConstruct()
     {
@@ -37,7 +35,12 @@ class BaseActionTest extends TestCase
             'key' => 'value',
         ];
 
-        $baseAction = $this->getMockForAbstractClass(BaseAction::class, [$config]);
+        $baseAction = new class ($config) extends BaseAction {
+            public function execute(array $data = []): mixed
+            {
+                return $data;
+            }
+        };
 
         static::assertEquals($config, $baseAction->getConfig());
     }
@@ -46,14 +49,15 @@ class BaseActionTest extends TestCase
      * Test magic method for invoking command.
      *
      * @return void
-     * @covers ::__invoke()
      */
     public function testInvoke()
     {
-        $baseAction = $this->getMockForAbstractClass(BaseAction::class, [[]]);
-
-        $baseAction->method('execute')
-            ->willReturnArgument(0);
+        $baseAction = new class () extends BaseAction {
+            public function execute(array $data = []): mixed
+            {
+                return $data;
+            }
+        };
 
         $data = [
             'key' => 'value',

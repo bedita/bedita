@@ -17,13 +17,15 @@ namespace BEdita\Core\Test\TestCase\Model\Table;
 use BEdita\Core\Model\Table\AppConfigTable;
 use BEdita\Core\State\CurrentApplication;
 use Cake\TestSuite\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * {@see \BEdita\Core\Model\Table\AppConfigTable} Test Case
  *
- * @coversDefaultClass \BEdita\Core\Model\Table\AppConfigTable
  * @since 5.0.0
  */
+#[CoversClass(AppConfigTable::class)]
 class AppConfigTableTest extends TestCase
 {
     /**
@@ -65,7 +67,6 @@ class AppConfigTableTest extends TestCase
      * Test `initialize` method.
      *
      * @return void
-     * @covers ::initialize()
      */
     public function testInitialize(): void
     {
@@ -106,9 +107,8 @@ class AppConfigTableTest extends TestCase
      * @param bool $expected Expected result.
      * @param array $data Data to be validated.
      * @return void
-     * @dataProvider validationProvider
-     * @covers ::validationDefault()
      */
+    #[DataProvider('validationProvider')]
     public function testValidation($expected, array $data): void
     {
         $config = $this->AppConfig->newEntity($data);
@@ -126,7 +126,6 @@ class AppConfigTableTest extends TestCase
      * Test `all` finder
      *
      * @return void
-     * @covers ::findAll()
      */
     public function testFindAll(): void
     {
@@ -145,7 +144,6 @@ class AppConfigTableTest extends TestCase
      * Test `newEmptyEntity` method
      *
      * @return void
-     * @covers ::newEmptyEntity()
      */
     public function testNewEmptyEntity(): void
     {

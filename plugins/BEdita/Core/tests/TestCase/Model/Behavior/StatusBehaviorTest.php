@@ -15,17 +15,19 @@ declare(strict_types=1);
 namespace BEdita\Core\Test\TestCase\Model\Behavior;
 
 use BEdita\Core\Exception\BadFilterException;
+use BEdita\Core\Model\Behavior\StatusBehavior;
 use Cake\Core\Configure;
 use Cake\Http\Exception\BadRequestException;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use Exception;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * {@see \BEdita\Core\Model\Behavior\StatusBehavior} Test Case
- *
- * @coversDefaultClass \BEdita\Core\Model\Behavior\StatusBehavior
  */
+#[CoversClass(StatusBehavior::class)]
 class StatusBehaviorTest extends TestCase
 {
     /**
@@ -120,9 +122,8 @@ class StatusBehaviorTest extends TestCase
      * @param string $config Status level config.
      * @param array $data Save input data.
      * @return void
-     * @dataProvider checkStatusProvider()
-     * @covers ::checkStatus()
      */
+    #[DataProvider('checkStatusProvider')]
     public function testCheckStatus($expected, array $data, string $config = ''): void
     {
         if ($expected instanceof Exception) {
@@ -178,9 +179,8 @@ class StatusBehaviorTest extends TestCase
      * @param array $expected Expected result.
      * @param string $level Status level.
      * @return void
-     * @dataProvider findStatusLevelProvider()
-     * @covers ::findStatusLevel()
      */
+    #[DataProvider('findStatusLevelProvider')]
     public function testFindStatus($expected, string $level)
     {
         if ($expected instanceof Exception) {

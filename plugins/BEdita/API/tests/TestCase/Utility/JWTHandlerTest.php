@@ -25,11 +25,14 @@ use Firebase\JWT\ExpiredException;
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
 use InvalidArgumentException;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 use UnexpectedValueException;
 
 /**
- * @coversDefaultClass \BEdita\API\Utility\JWTHandler
+ * {@see \BEdita\API\Utility\JWTHandler} Test Case
  */
+#[CoversClass(JWTHandler::class)]
 class JWTHandlerTest extends TestCase
 {
     /**
@@ -74,9 +77,8 @@ class JWTHandlerTest extends TestCase
      * @param string $token Token.
      * @param array $options Decode options.
      * @return void
-     * @dataProvider decodeProvider
-     * @covers ::decode()
      */
+    #[DataProvider('decodeProvider')]
     public function testDecode($expected, string $token, array $options = []): void
     {
         if ($expected instanceof Exception) {
@@ -93,8 +95,6 @@ class JWTHandlerTest extends TestCase
      * Test `tokens` method.
      *
      * @return void
-     * @covers ::tokens()
-     * @covers ::applicationData()
      */
     public function testTokens(): void
     {
@@ -141,7 +141,6 @@ class JWTHandlerTest extends TestCase
      * Test `applicationData` method.
      *
      * @return void
-     * @covers ::applicationData()
      */
     public function testApplicationData(): void
     {

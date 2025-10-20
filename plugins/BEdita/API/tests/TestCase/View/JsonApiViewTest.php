@@ -15,14 +15,18 @@ declare(strict_types=1);
 namespace BEdita\API\Test\TestCase\View;
 
 use BEdita\API\Test\TestConstants;
+use BEdita\API\View\JsonApiView;
 use Cake\Controller\Controller;
 use Cake\Http\ServerRequest;
 use Cake\ORM\Table;
 use Cake\TestSuite\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
- * @covers \BEdita\API\View\JsonApiView
+ * {@see \BEdita\API\View\JsonApiView} Test Case
  */
+#[CoversClass(JsonApiView::class)]
 class JsonApiViewTest extends TestCase
 {
     /**
@@ -493,8 +497,8 @@ class JsonApiViewTest extends TestCase
      * @param string $expected Expected output.
      * @param array $data Variables to be set in controller.
      * @return void
-     * @dataProvider renderWithoutViewProvider
      */
+    #[DataProvider('renderWithoutViewProvider')]
     public function testRenderWithoutView($expected, $data)
     {
         if (is_callable($data)) {

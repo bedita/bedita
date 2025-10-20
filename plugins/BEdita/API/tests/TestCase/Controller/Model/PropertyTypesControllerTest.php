@@ -14,13 +14,15 @@ declare(strict_types=1);
  */
 namespace BEdita\API\Test\TestCase\Controller\Model;
 
+use BEdita\API\Controller\Model\PropertyTypesController;
+use BEdita\API\Controller\ResourcesController;
 use BEdita\API\TestSuite\IntegrationTestCase;
 use BEdita\Core\Test\Utility\TestArraySubsetTrait;
 use Cake\ORM\TableRegistry;
+use PHPUnit\Framework\Attributes\CoversClass;
 
-/**
- * @coversDefaultClass \BEdita\API\Controller\Model\PropertyTypesController
- */
+#[CoversClass(PropertyTypesController::class)]
+#[CoversClass(ResourcesController::class)]
 class PropertyTypesControllerTest extends IntegrationTestCase
 {
     use TestArraySubsetTrait;
@@ -39,8 +41,6 @@ class PropertyTypesControllerTest extends IntegrationTestCase
      * Test index method.
      *
      * @return void
-     * @covers ::index()
-     * @covers ::initialize()
      */
     public function testIndex()
     {
@@ -440,8 +440,6 @@ class PropertyTypesControllerTest extends IntegrationTestCase
      * Test index method.
      *
      * @return void
-     * @covers ::resource()
-     * @covers ::initialize()
      */
     public function testEmpty()
     {
@@ -481,8 +479,6 @@ class PropertyTypesControllerTest extends IntegrationTestCase
      * Test view method.
      *
      * @return void
-     * @covers ::resource()
-     * @covers ::initialize()
      */
     public function testSingle()
     {
@@ -529,7 +525,6 @@ class PropertyTypesControllerTest extends IntegrationTestCase
      * Test view method with name as argument.
      *
      * @return void
-     * @covers ::getResourceId()
      */
     public function testSingleName()
     {
@@ -542,8 +537,6 @@ class PropertyTypesControllerTest extends IntegrationTestCase
      * Test view method.
      *
      * @return void
-     * @covers ::resource()
-     * @covers ::initialize()
      */
     public function testMissing()
     {
@@ -576,9 +569,6 @@ class PropertyTypesControllerTest extends IntegrationTestCase
      * Test add method.
      *
      * @return void
-     * @covers ::index()
-     * @covers ::initialize()
-     * @covers ::resourceUrl()
      */
     public function testAdd()
     {
@@ -603,8 +593,6 @@ class PropertyTypesControllerTest extends IntegrationTestCase
      * Test add method with invalid data.
      *
      * @return void
-     * @covers ::index()
-     * @covers ::initialize()
      */
     public function testInvalidAdd()
     {
@@ -629,8 +617,6 @@ class PropertyTypesControllerTest extends IntegrationTestCase
      * Test edit method.
      *
      * @return void
-     * @covers ::resource()
-     * @covers ::initialize()
      */
     public function testEdit()
     {
@@ -661,8 +647,6 @@ class PropertyTypesControllerTest extends IntegrationTestCase
      * Test edit method with ID conflict.
      *
      * @return void
-     * @covers ::resource()
-     * @covers ::initialize()
      */
     public function testConflictEdit()
     {
@@ -687,7 +671,6 @@ class PropertyTypesControllerTest extends IntegrationTestCase
      * Test edit failure on `core` type.
      *
      * @return void
-     * @coversNothing
      */
     public function testEditFailure()
     {
@@ -719,8 +702,6 @@ class PropertyTypesControllerTest extends IntegrationTestCase
      * Test delete method.
      *
      * @return void
-     * @covers ::resource()
-     * @covers ::initialize()
      */
     public function testDelete()
     {

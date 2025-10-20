@@ -64,7 +64,7 @@ trait FinderFilterTrait
             throw new LogicException(sprintf(
                 'Filters are only available for `%s` instances. Got `%s` instead.',
                 Table::class,
-                $this::class
+                $this::class,
             ));
         }
 
@@ -79,7 +79,7 @@ trait FinderFilterTrait
             $implementedFinders = $behaviorInstance->implementedFinders();
             $filterFinders = array_intersect_key(
                 $implementedFinders,
-                array_flip((array)$behaviorInstance->getConfig('implementedFilters', array_keys($implementedFinders)))
+                array_flip((array)$behaviorInstance->getConfig('implementedFilters', array_keys($implementedFinders))),
             );
             if (array_key_exists($name, $filterFinders) && method_exists($behaviorInstance, $filterFinders[$name])) {
                 return $behaviorInstance->{$finderName}(...);
@@ -123,7 +123,7 @@ trait FinderFilterTrait
         $reflected = new ReflectionFunction($callable);
         if ($reflected->getNumberOfParameters() === 0) {
             throw new BadMethodCallException(
-                sprintf('filter `%s` must accept at least one parameter', $reflected->getName())
+                sprintf('filter `%s` must accept at least one parameter', $reflected->getName()),
             );
         }
 

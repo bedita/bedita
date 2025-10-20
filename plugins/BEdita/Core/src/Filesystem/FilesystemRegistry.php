@@ -89,13 +89,13 @@ class FilesystemRegistry extends ObjectRegistry
 
         if (!($instance instanceof FilesystemAdapter)) {
             throw new RuntimeException(
-                sprintf('Filesystem adapters must use %s as a base class.', FilesystemAdapter::class)
+                sprintf('Filesystem adapters must use %s as a base class.', FilesystemAdapter::class),
             );
         }
 
         if (!$instance->initialize($config)) {
             throw new RuntimeException(
-                sprintf('Filesystem adapter %s is not properly configured.', get_class($instance))
+                sprintf('Filesystem adapter %s is not properly configured.', get_class($instance)),
             );
         }
 

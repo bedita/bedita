@@ -144,12 +144,12 @@ class CategoriesTable extends Table
             ->add(
                 $rules->existsIn(['object_type_id'], 'ObjectTypes'),
                 null,
-                ['errorField' => 'object_type_id']
+                ['errorField' => 'object_type_id'],
             )
             ->add(
                 $rules->existsIn(['parent_id'], 'ParentCategories', ['allowNullableNulls' => true]),
                 null,
-                ['errorField' => 'parent_id']
+                ['errorField' => 'parent_id'],
             );
     }
 
@@ -184,7 +184,7 @@ class CategoriesTable extends Table
                         'parent', 'object',
                         'parent_id', 'tree_left', 'tree_right',
                     ],
-                    true
+                    true,
                 );
             });
         });
@@ -253,7 +253,7 @@ class CategoriesTable extends Table
         SelectQuery $query,
         string $name,
         ?string $object_type_name = null,
-        ?string $object = null
+        ?string $object = null,
     ): SelectQuery {
         $object = $object_type_name ?? $object;
         if (empty($object)) {
@@ -273,7 +273,7 @@ class CategoriesTable extends Table
     public function findRoots(SelectQuery $query): SelectQuery
     {
         return $query->where(
-            fn (QueryExpression $exp): QueryExpression => $exp->isNull($this->aliasField('parent_id'))
+            fn(QueryExpression $exp): QueryExpression => $exp->isNull($this->aliasField('parent_id')),
         );
     }
 }

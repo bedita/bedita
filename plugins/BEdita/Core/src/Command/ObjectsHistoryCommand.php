@@ -155,9 +155,9 @@ class ObjectsHistoryCommand extends Command
                 return $exp->eq(
                     new IdentifierExpression(
                         $historyTable->aliasField('resource_id'),
-                        Hash::get($historyTable->getSchema()->getColumn('resource_id'), 'collate')
+                        Hash::get($historyTable->getSchema()->getColumn('resource_id'), 'collate'),
                     ),
-                    $q->func()->cast($objectsTable->aliasField('id'), 'char')
+                    $q->func()->cast($objectsTable->aliasField('id'), 'char'),
                 );
             },
         ]);
@@ -198,9 +198,9 @@ class ObjectsHistoryCommand extends Command
                 ->distinct(array_map(
                     // Avoid duplicate results when INNER JOIN-ing hasMany associations and similar.
                     [$historyTable, 'aliasField'],
-                    (array)$historyTable->getPrimaryKey()
+                    (array)$historyTable->getPrimaryKey(),
                 ))
-                ->where(fn (QueryExpression $exp): QueryExpression => $exp->gt($aliasId, $lastId));
+                ->where(fn(QueryExpression $exp): QueryExpression => $exp->gt($aliasId, $lastId));
             $results = $q->orderByAsc($aliasId)->all();
             if ($results->isEmpty()) {
                 break;

@@ -21,10 +21,13 @@ use Cake\ORM\Query\SelectQuery;
 use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
- * @coversDefaultClass \BEdita\Core\ORM\Association\RelatedTo
+ * {@see \BEdita\Core\ORM\Association\RelatedTo} Test Case
  */
+#[CoversClass(RelatedTo::class)]
 class RelatedToTest extends TestCase
 {
     /**
@@ -105,9 +108,8 @@ class RelatedToTest extends TestCase
      * @param string $association Association name.
      * @param array $options Additional options.
      * @return void
-     * @dataProvider getSubQueryForMatchingProvider()
-     * @covers ::getSubQueryForMatching()
      */
+    #[DataProvider('getSubQueryForMatchingProvider')]
     public function testGetSubQueryForMatching(array $expected, string $table, string $association, array $options = []): void
     {
         $table = TableRegistry::getTableLocator()->get($table);
@@ -160,10 +162,8 @@ class RelatedToTest extends TestCase
      * @param bool $expected The expected value
      * @param string $table The source table name
      * @return void
-     * @dataProvider isAbstractProvider
-     * @covers ::isSourceAbstract()
-     * @covers ::isAbstract()
      */
+    #[DataProvider('isAbstractProvider')]
     public function testIsSourceAbstract(bool $expected, string $table): void
     {
         $relatedTo = new RelatedTo('SourceAbstract');
@@ -177,10 +177,8 @@ class RelatedToTest extends TestCase
      * @param bool $expected The expected value
      * @param string $table The target table name
      * @return void
-     * @dataProvider isAbstractProvider
-     * @covers ::isTargetAbstract()
-     * @covers ::isAbstract()
      */
+    #[DataProvider('isAbstractProvider')]
     public function testIsTargetAbstract(bool $expected, string $table): void
     {
         $relatedTo = new RelatedTo('SourceAbstract');
@@ -231,12 +229,8 @@ class RelatedToTest extends TestCase
      * @param bool $expected The value expected.
      * @param array $options The options for the association.
      * @return void
-     * @dataProvider isInverseProvider()
-     * @covers ::isInverse()
-     * @covers ::_options()
-     * @covers ::setInverseKey()
-     * @covers ::getInverseKey()
      */
+    #[DataProvider('isInverseProvider')]
     public function testIsInverse(bool $expected, array $options): void
     {
         $relatedTo = new RelatedTo('Alias', $options);
@@ -247,9 +241,6 @@ class RelatedToTest extends TestCase
      * Test setting and retrieving object type.
      *
      * @return void
-     * @covers ::_options()
-     * @covers ::setObjectType()
-     * @covers ::getObjectType()
      */
     public function testSetGetObjectTypeNull(): void
     {
@@ -261,9 +252,6 @@ class RelatedToTest extends TestCase
      * Test setting and retrieving object type.
      *
      * @return void
-     * @covers ::_options()
-     * @covers ::setObjectType()
-     * @covers ::getObjectType()
      */
     public function testSetGetObjectType(): void
     {
@@ -278,9 +266,6 @@ class RelatedToTest extends TestCase
      * Test setting and retrieving relation.
      *
      * @return void
-     * @covers ::_options()
-     * @covers ::setRelation()
-     * @covers ::getRelation()
      */
     public function testSetGetRelation(): void
     {
@@ -315,9 +300,8 @@ class RelatedToTest extends TestCase
      * @param string|null $objectType Object type to pass to association.
      * @param string $alias Relation alias.
      * @return void
-     * @dataProvider getTargetProvider()
-     * @covers ::getTarget()
      */
+    #[DataProvider('getTargetProvider')]
     public function testGetTarget(?string $expectedOT, array $expectedAssociations, ?string $className, ?string $objectType, string $alias = 'Alias'): void
     {
         $options = compact('className');
@@ -401,9 +385,8 @@ class RelatedToTest extends TestCase
      * @param string $relation Relation name
      * @param array $joinConditions Conditions to apply
      * @return void
-     * @covers ::attachTo()
-     * @dataProvider attachToProvider
      */
+    #[DataProvider('attachToProvider')]
     public function testAttachTo($expected, $tableName, $relation, $joinConditions): void
     {
         $Table = $this->getTableLocator()->get($tableName);

@@ -20,10 +20,12 @@ use BEdita\Core\Test\Utility\TestArraySubsetTrait;
 use Cake\I18n\DateTime;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
 
 /**
- * @coversDefaultClass \BEdita\Core\Filesystem\Thumbnail\AsyncGenerator
+ * {@see \BEdita\Core\Filesystem\Thumbnail\AsyncGenerator} Test Case
  */
+#[CoversClass(AsyncGenerator::class)]
 class AsyncGeneratorTest extends TestCase
 {
     use TestArraySubsetTrait;
@@ -87,7 +89,7 @@ class AsyncGeneratorTest extends TestCase
         $this->originalRegistry = Thumbnail::getRegistry();
         $this->originalConfig = array_combine(
             $keys,
-            array_map([Thumbnail::class, 'getConfig'], $keys)
+            array_map([Thumbnail::class, 'getConfig'], $keys),
         );
 
         Thumbnail::setRegistry(null);
@@ -124,8 +126,6 @@ class AsyncGeneratorTest extends TestCase
      * Test `getUrl` method.
      *
      * @return void
-     * @covers ::getUrl()
-     * @covers ::getBaseGenerator()
      */
     public function testGetUrl()
     {
@@ -142,7 +142,6 @@ class AsyncGeneratorTest extends TestCase
      * Test `generate` method.
      *
      * @return void
-     * @covers ::generate()
      */
     public function testGenerate()
     {
@@ -171,7 +170,6 @@ class AsyncGeneratorTest extends TestCase
      * Test `generate` method when a custom priority is set.
      *
      * @return void
-     * @covers ::generate()
      */
     public function testGenerateWithPriority()
     {
@@ -202,8 +200,6 @@ class AsyncGeneratorTest extends TestCase
      * Test `exists` method.
      *
      * @return void
-     * @covers ::exists()
-     * @covers ::getBaseGenerator()
      */
     public function testExists()
     {

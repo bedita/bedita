@@ -14,15 +14,16 @@ declare(strict_types=1);
  */
 namespace BEdita\Core\Test\TestCase\Model\Entity;
 
+use BEdita\Core\Model\Entity\Config;
 use BEdita\Core\Model\Table\ConfigTable;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
 
 /**
  * {@see \BEdita\Core\Model\Entity\Config} Test Case
- *
- * @coversDefaultClass \BEdita\Core\Model\Entity\Config
  */
+#[CoversClass(Config::class)]
 class ConfigTest extends TestCase
 {
     /**
@@ -65,7 +66,6 @@ class ConfigTest extends TestCase
      * Test entity
      *
      * @return void
-     * @coversNothing
      */
     public function testEntity()
     {
@@ -93,7 +93,6 @@ class ConfigTest extends TestCase
      * Test `_setApplication` method
      *
      * @return void
-     * @covers ::_setApplication()
      */
     public function testSetApplication()
     {

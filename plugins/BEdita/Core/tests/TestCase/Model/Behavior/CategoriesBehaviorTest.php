@@ -14,15 +14,17 @@ declare(strict_types=1);
  */
 namespace BEdita\Core\Test\TestCase\Model\Behavior;
 
+use BEdita\Core\Model\Behavior\CategoriesBehavior;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Hash;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * {@see \BEdita\Core\Model\Behavior\CategoriesBehavior} Test Case
- *
- * @coversDefaultClass \BEdita\Core\Model\Behavior\CategoriesBehavior
  */
+#[CoversClass(CategoriesBehavior::class)]
 class CategoriesBehaviorTest extends TestCase
 {
     /**
@@ -174,11 +176,8 @@ class CategoriesBehaviorTest extends TestCase
      * @param int $id Entity ID.
      * @param string $tableName Table.
      * @return void
-     * @dataProvider beforeSaveProvider()
-     * @covers ::beforeSave()
-     * @covers ::prepareData()
-     * @covers ::updateData()
      */
+    #[DataProvider('beforeSaveProvider')]
     public function testBeforeSave(array $expected, array $data, $id, $tableName)
     {
         $table = TableRegistry::getTableLocator()->get($tableName);
@@ -215,7 +214,6 @@ class CategoriesBehaviorTest extends TestCase
      * Test `fetchCategories` method
      *
      * @return void
-     * @covers ::fetchCategories()
      */
     public function testFetchCategories(): void
     {
@@ -241,8 +239,6 @@ class CategoriesBehaviorTest extends TestCase
      * Test `fetchTags` method
      *
      * @return void
-     * @covers ::fetchTags()
-     * @covers ::checkTag()
      */
     public function testFetchTags(): void
     {
@@ -282,8 +278,6 @@ class CategoriesBehaviorTest extends TestCase
      * Test `fetchTags` with a disabled tag
      *
      * @return void
-     * @covers ::fetchTags()
-     * @covers ::checkTag()
      */
     public function testFetchTagsDisabled(): void
     {

@@ -143,14 +143,14 @@ class ObjectsController extends ResourcesController
                 $this->log(
                     sprintf('Bad object type name `%s`, could be `%s`', $type, $this->objectType->name),
                     'warning',
-                    ['request' => $this->request]
+                    ['request' => $this->request],
                 );
 
                 throw new MissingRouteException(__d(
                     'bedita',
                     'A route matching `{0}` could not be found. Did you mean `{1}`?',
                     $this->request->getRequestTarget(),
-                    $this->objectType->name
+                    $this->objectType->name,
                 ));
             }
             $this->defaultTable = $this->objectType->alias;
@@ -174,7 +174,7 @@ class ObjectsController extends ResourcesController
         ) {
             throw new ForbiddenException(__d(
                 'bedita',
-                'You are not authorized to manage an object relationship to streams, please update stream relationship to objects instead'
+                'You are not authorized to manage an object relationship to streams, please update stream relationship to objects instead',
             ));
         }
 
@@ -244,7 +244,7 @@ class ObjectsController extends ResourcesController
                 ->withStatus(201)
                 ->withHeader(
                     'Location',
-                    $this->resourceUrl($data, 'id')
+                    $this->resourceUrl($data, 'id'),
                 );
         } else {
             // List existing entities.
@@ -277,7 +277,7 @@ class ObjectsController extends ResourcesController
                 'object_type' => $this->objectType->name,
                 'id' => $entity->get($primaryKey),
             ],
-            true
+            true,
         );
     }
 
@@ -357,7 +357,7 @@ class ObjectsController extends ResourcesController
         $data = (array)$this->request->getData();
         $protectedFieldsChanged = array_filter(
             ['uname', 'status'],
-            fn (string $field): bool => Hash::check($data, $field) && $entity->get($field) !== Hash::get($data, $field),
+            fn(string $field): bool => Hash::check($data, $field) && $entity->get($field) !== Hash::get($data, $field),
         );
 
         if (empty($protectedFieldsChanged) || $this->Authorization->can($entity, 'updateParents')) {
@@ -372,8 +372,8 @@ class ObjectsController extends ResourcesController
                     implode(', ', $protectedFieldsChanged),
                     count($protectedFieldsChanged) > 1 ? 's' : '',
                     $entity->id,
-                ]
-            )
+                ],
+            ),
         );
     }
 

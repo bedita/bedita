@@ -131,7 +131,7 @@ class ListEntitiesAction extends BaseAction implements FinderFilterInterface
                     ->distinct(array_map(
                         // Avoid duplicate results when INNER JOIN-ing hasMany associations and similar.
                         [$this->Table, 'aliasField'],
-                        (array)$this->Table->getPrimaryKey()
+                        (array)$this->Table->getPrimaryKey(),
                     ))
                     ->innerJoinWith($camelizedKey, function (SelectQuery $query) use ($conditions) {
                         return $query->where($conditions);

@@ -20,10 +20,13 @@ use Cake\Event\Event;
 use Cake\Event\EventManager;
 use Cake\Http\Exception\HttpException;
 use Exception;
+use PHPUnit\Framework\Attributes\CoversNothing;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
- * @coversNothing
+ * Test Exception Renderer
  */
+#[CoversNothing]
 class ExceptionRendererTest extends IntegrationTestCase
 {
     /**
@@ -70,8 +73,8 @@ class ExceptionRendererTest extends IntegrationTestCase
      * @param string|null $expectedContentType Expected content type.
      * @param string $accept Request's "Accept" header.
      * @return void
-     * @dataProvider contentTypeProvider
      */
+    #[DataProvider('contentTypeProvider')]
     public function testContentType($expectedCode, $expectedContentType, $accept): void
     {
         $this->configRequest([
@@ -138,8 +141,8 @@ class ExceptionRendererTest extends IntegrationTestCase
      * @param \Exception $error Error to be injected.
      * @param string $event Event name.
      * @return void
-     * @dataProvider contentTypeErrorProvider
      */
+    #[DataProvider('contentTypeErrorProvider')]
     public function testContentTypeError($expectedCode, $expectedContentType, $accept, Exception $error, $event)
     {
         $eventManager = EventManager::instance();

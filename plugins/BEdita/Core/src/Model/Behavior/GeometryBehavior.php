@@ -70,7 +70,7 @@ class GeometryBehavior extends Behavior
                 new FunctionExpression('ST_GeomFromText', $point2),
             ],
             [],
-            'float'
+            'float',
         );
     }
 

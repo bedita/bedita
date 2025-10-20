@@ -21,12 +21,13 @@ use Cake\TestSuite\TestCase;
 use Cake\Utility\Hash;
 use Cake\Utility\Inflector;
 use Exception;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * {@see \BEdita\Core\Utility\Resources} Test Case
- *
- * @coversDefaultClass \BEdita\Core\Utility\Resources
  */
+#[CoversClass(Resources::class)]
 class ResourcesTest extends TestCase
 {
     /**
@@ -144,7 +145,9 @@ class ResourcesTest extends TestCase
                         'description' => 'handle pets with care',
                     ],
                 ],
-                'endpoints with object type',
+            ],
+            'endpoints with object type' => [
+                'endpoints',
                 [
                     [
                         'name' => 'pets',
@@ -217,9 +220,8 @@ class ResourcesTest extends TestCase
      * @param string $type Resource type.
      * @param array $data Resource data.
      * @return void
-     * @covers ::create()
-     * @dataProvider createProvider
      */
+    #[DataProvider('createProvider')]
     public function testCreate(string $type, array $data): void
     {
         $result = Resources::create($type, $data);
@@ -333,9 +335,8 @@ class ResourcesTest extends TestCase
      * @param string $type Resource type.
      * @param array $data Resource data.
      * @return void
-     * @covers ::remove()
-     * @dataProvider removeProvider
      */
+    #[DataProvider('removeProvider')]
     public function testRemove(string $type, array $data): void
     {
         Resources::remove($type, $data);
@@ -439,7 +440,9 @@ class ResourcesTest extends TestCase
                         'enabled' => 1,
                     ],
                 ],
-                'endpoints with object type',
+            ],
+            'endpoints with object type' => [
+                'endpoints',
                 [
                     [
                         'name' => 'disabled',
@@ -478,11 +481,8 @@ class ResourcesTest extends TestCase
      * @param string $type Resource type.
      * @param array $data Resource data.
      * @return void
-     * @covers ::update()
-     * @covers ::loadEntity()
-     * @covers ::findCondition()
-     * @dataProvider updateProvider
      */
+    #[DataProvider('updateProvider')]
     public function testUpdate(string $type, array $data): void
     {
         $result = Resources::update($type, $data);
@@ -512,7 +512,7 @@ class ResourcesTest extends TestCase
     /**
      * Test `findCondition` method failure.
      *
-     * @covers ::findCondition()
+     * @return void
      */
     public function testFindConditionFail()
     {
@@ -595,10 +595,8 @@ class ResourcesTest extends TestCase
      * @param array $resources Resource save input data.
      * @param \Exception|null $exception Expected expection.
      * @return void
-     * @covers ::save()
-     * @covers ::saveType()
-     * @dataProvider saveProvider
      */
+    #[DataProvider('saveProvider')]
     public function testSave(array $resources, ?Exception $exception = null): void
     {
         if ($exception) {

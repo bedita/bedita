@@ -18,12 +18,13 @@ use BEdita\Core\Database\Type\DateType;
 use Cake\I18n\DateTime;
 use Cake\TestSuite\TestCase;
 use DateTime as PHPdateTime;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * {@see \BEdita\Core\Database\Type\DateType} Test Case
- *
- * @coversDefaultClass \BEdita\Core\Database\Type\DateType
  */
+#[CoversClass(DateType::class)]
 class DateTypeTest extends TestCase
 {
     /**
@@ -79,9 +80,8 @@ class DateTypeTest extends TestCase
      * @param \DateTimeInterface|string $expected Expected result
      * @param mixed $input Input data to be marshaled.
      * @return void
-     * @dataProvider marshalProvider
-     * @covers ::marshal
      */
+    #[DataProvider('marshalProvider')]
     public function testMarshal($expected, $input): void
     {
         $dateType = new DateType();

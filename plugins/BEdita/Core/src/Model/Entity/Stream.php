@@ -147,7 +147,7 @@ class Stream extends Entity implements JsonApiSerializable
             '%s://%s%s',
             $filesystem, // Flysystem mount point.
             $prefix, // Prefix.
-            $fileName // File name.
+            $fileName, // File name.
         );
     }
 
@@ -265,7 +265,7 @@ class Stream extends Entity implements JsonApiSerializable
         }
 
         throw new InvalidArgumentException(
-            'Invalid contents provided, must be a PSR-7 stream, a resource or a value that can be converted to string'
+            'Invalid contents provided, must be a PSR-7 stream, a resource or a value that can be converted to string',
         );
     }
 
@@ -330,7 +330,7 @@ class Stream extends Entity implements JsonApiSerializable
         set_error_handler(
             function (int $code, string $message, string $filename, int $lineNumber): void {
                 throw new ErrorException($message, $code, LOG_ERR, $filename, $lineNumber);
-            }
+            },
         );
 
         try {

@@ -15,16 +15,18 @@ declare(strict_types=1);
 namespace BEdita\Core\Test\TestCase\Model\Table;
 
 use BEdita\Core\Exception\BadFilterException;
+use BEdita\Core\Model\Table\CategoriesTable;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Hash;
 use Exception;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * {@see \BEdita\Core\Model\Table\CategoriesTable} Test Case
- *
- * @coversDefaultClass \BEdita\Core\Model\Table\CategoriesTable
  */
+#[CoversClass(CategoriesTable::class)]
 class CategoriesTableTest extends TestCase
 {
     /**
@@ -72,7 +74,6 @@ class CategoriesTableTest extends TestCase
      * Test `beforeFind` method
      *
      * @return void
-     * @covers ::beforeFind()
      */
     public function testBeforeFindPrimary()
     {
@@ -96,7 +97,6 @@ class CategoriesTableTest extends TestCase
      * Test `beforeFind` method in case of association
      *
      * @return void
-     * @covers ::beforeFind()
      */
     public function testBeforeFindAssoc()
     {
@@ -124,7 +124,6 @@ class CategoriesTableTest extends TestCase
      * Test find enabled categories
      *
      * @return void
-     * @covers ::findEnabled()
      */
     public function testFindEnabledCategories()
     {
@@ -136,7 +135,6 @@ class CategoriesTableTest extends TestCase
      * Test find categories by type
      *
      * @return void
-     * @covers ::findType()
      */
     public function testFindCategoriesType()
     {
@@ -180,9 +178,8 @@ class CategoriesTableTest extends TestCase
      * @param int|\Exception $expected The value expected
      * @param array $options The options for the finder
      * @return void
-     * @covers ::findResource()
-     * @dataProvider findResourceProvider()
      */
+    #[DataProvider('findResourceProvider')]
     public function testFindResource($expected, $options): void
     {
         if ($expected instanceof Exception) {
@@ -200,7 +197,6 @@ class CategoriesTableTest extends TestCase
      * Test `findIds` method.
      *
      * @return void
-     * @covers ::findIds()
      */
     public function testFindIds()
     {
@@ -220,7 +216,6 @@ class CategoriesTableTest extends TestCase
      * Test `findRoots` method.
      *
      * @return void
-     * @covers ::findRoots()
      */
     public function testFindRoots()
     {

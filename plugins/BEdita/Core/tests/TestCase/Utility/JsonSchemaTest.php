@@ -22,12 +22,13 @@ use Cake\Http\Exception\NotFoundException;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use Exception;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * {@see \BEdita\Core\Utility\JsonSchema} Test Case
- *
- * @coversDefaultClass \BEdita\Core\Utility\JsonSchema
  */
+#[CoversClass(JsonSchema::class)]
 class JsonSchemaTest extends TestCase
 {
     /**
@@ -216,12 +217,8 @@ class JsonSchemaTest extends TestCase
      * @param array|bool|\Exception $expected Expected result.
      * @param string $name Type name.
      * @return void
-     * @dataProvider generateProvider()
-     * @covers ::generate()
-     * @covers ::typeSchema()
-     * @covers ::resourceSchema()
-     * @covers ::objectSchema()
      */
+    #[DataProvider('generateProvider')]
     public function testGenerate($expected, $name)
     {
         if ($expected instanceof Exception) {
@@ -254,7 +251,6 @@ class JsonSchemaTest extends TestCase
     /**
      * Test revision change
      *
-     * @covers ::addRevision()
      * @return void
      */
     public function testRevision()
@@ -293,7 +289,6 @@ class JsonSchemaTest extends TestCase
     /**
      * Test revision on abstract type
      *
-     * @covers ::addRevision()
      * @return void
      */
     public function testNoRevision()
@@ -329,9 +324,8 @@ class JsonSchemaTest extends TestCase
      * @param string $type Type name
      * @param string|bool $expected Expected revision
      * @return void
-     * @covers ::schemaRevision()
-     * @dataProvider schemaRevisionProvider
      */
+    #[DataProvider('schemaRevisionProvider')]
     public function testSchemaRevision($type, $expected)
     {
         $result = JsonSchema::schemaRevision($type);

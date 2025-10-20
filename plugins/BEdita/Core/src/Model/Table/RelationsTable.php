@@ -174,7 +174,7 @@ class RelationsTable extends Table
         array|string $finder = 'all',
         CacheInterface|string|null $cache = null,
         Closure|string|null $cacheKey = null,
-        mixed ...$args
+        mixed ...$args,
     ): EntityInterface {
         if (!is_numeric($primaryKey)) {
             $relation = $this->find('byName', name: $primaryKey)

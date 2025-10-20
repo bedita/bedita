@@ -22,12 +22,13 @@ use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use Exception;
 use InvalidArgumentException;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * {@see \BEdita\Core\Model\Entity\Endpoint} Test Case
- *
- * @coversDefaultClass \BEdita\Core\Model\Entity\Endpoint
  */
+#[CoversClass(Endpoint::class)]
 class EndpointTest extends TestCase
 {
     /**
@@ -75,7 +76,6 @@ class EndpointTest extends TestCase
      * Test accessible properties.
      *
      * @return void
-     * @coversNothing
      */
     public function testAccessible()
     {
@@ -132,9 +132,8 @@ class EndpointTest extends TestCase
      * @param mixed $expected The expected data
      * @param string $name The object type name
      * @return void
-     * @covers ::_setObjectTypeName()
-     * @dataProvider setObjectTypeNameProvider()
      */
+    #[DataProvider('setObjectTypeNameProvider')]
     public function testSetObjectTypeName($expected, ?string $name): void
     {
         if ($expected instanceof Exception) {

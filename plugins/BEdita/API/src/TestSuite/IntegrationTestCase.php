@@ -96,10 +96,10 @@ abstract class IntegrationTestCase extends TestCase
     /**
      * @inheritDoc
      */
-    public function __construct(string $name)
+    public function setupFixtures(): void
     {
         $this->addAuthFixtures();
-        parent::__construct($name);
+        parent::setupFixtures();
     }
 
     /**

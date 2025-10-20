@@ -18,12 +18,12 @@ use BEdita\Core\Model\Entity\Relation;
 use BEdita\Core\Model\Table\RelationsTable;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
 
 /**
  * {@see \BEdita\Core\Model\Entity\Relation} Test Case
- *
- * @coversDefaultClass \BEdita\Core\Model\Entity\Relation
  */
+#[CoversClass(Relation::class)]
 class RelationTest extends TestCase
 {
     /**
@@ -66,7 +66,6 @@ class RelationTest extends TestCase
      * Test accessible properties.
      *
      * @return void
-     * @coversNothing
      */
     public function testAccessible()
     {
@@ -89,8 +88,6 @@ class RelationTest extends TestCase
      * Test setter method for `name` and getter method for `alias`.
      *
      * @return void
-     * @covers ::_setName()
-     * @covers ::_getAlias()
      */
     public function testSetName()
     {
@@ -108,8 +105,6 @@ class RelationTest extends TestCase
      * Test setter method for `inverse_name` and getter method for `inverse_alias`.
      *
      * @return void
-     * @covers ::_setInverseName()
-     * @covers ::_getInverseAlias()
      */
     public function testSetInverseName()
     {
@@ -127,7 +122,6 @@ class RelationTest extends TestCase
      * Test setter method for `params`.
      *
      * @return void
-     * @covers ::_setParams()
      */
     public function testSetParams()
     {

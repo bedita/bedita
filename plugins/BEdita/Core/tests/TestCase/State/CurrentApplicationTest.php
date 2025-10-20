@@ -20,12 +20,12 @@ use Cake\Core\Configure;
 use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
 
 /**
  * {@see BEdita\Core\State\CurrentApplication} Test Case
- *
- * @coversDefaultClass \BEdita\Core\State\CurrentApplication
  */
+#[CoversClass(CurrentApplication::class)]
 class CurrentApplicationTest extends TestCase
 {
     /**
@@ -73,8 +73,6 @@ class CurrentApplicationTest extends TestCase
      * Test `getApplication` method.
      *
      * @return void
-     * @covers ::get()
-     * @covers ::getApplication()
      */
     public function testGetApplication()
     {
@@ -90,8 +88,6 @@ class CurrentApplicationTest extends TestCase
      * Test `getApplicationId` method.
      *
      * @return void
-     * @covers ::id()
-     * @covers ::getApplicationId()
      */
     public function testGetApplicationId()
     {
@@ -107,8 +103,6 @@ class CurrentApplicationTest extends TestCase
      * Test `setApplication` method.
      *
      * @return void
-     * @covers ::set()
-     * @covers ::setApplication()
      */
     public function testSetApplication()
     {
@@ -122,7 +116,6 @@ class CurrentApplicationTest extends TestCase
      * Test `setFromApiKey` method.
      *
      * @return void
-     * @covers ::setFromApiKey()
      */
     public function testSetFromApiKey()
     {
@@ -138,7 +131,6 @@ class CurrentApplicationTest extends TestCase
      * Test `loadConfiguration` method.
      *
      * @return void
-     * @covers ::loadConfiguration()
      */
     public function testLoadConfiguration()
     {
@@ -156,7 +148,6 @@ class CurrentApplicationTest extends TestCase
      * Test `loadApplicationConfiguration` method.
      *
      * @return void
-     * @covers ::loadApplicationConfiguration()
      */
     public function testLoadApplicationConfiguration()
     {
@@ -174,7 +165,6 @@ class CurrentApplicationTest extends TestCase
      * Test `setFromApiKey` method with invalid API key.
      *
      * @return void
-     * @covers ::setFromApiKey()
      */
     public function testSetFromApiKeyFailure()
     {

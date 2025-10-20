@@ -51,36 +51,36 @@ return function (RouteBuilder $routes): void {
         $routes->redirect(
             '/',
             '/home',
-            ['persist' => true]
+            ['persist' => true],
         );
         $routes->connect(
             '/home',
             ['controller' => 'Home', 'action' => 'index'],
-            ['_name' => 'home']
+            ['_name' => 'home'],
         );
 
         // Status.
         $routes->connect(
             '/status',
             ['controller' => 'Status', 'action' => 'index'],
-            ['_name' => 'status']
+            ['_name' => 'status'],
         );
 
         // Login.
         $routes->post(
             '/auth',
             ['controller' => 'Login', 'action' => 'login'],
-            'login'
+            'login',
         );
         $routes->post(
             '/auth/optout',
             ['controller' => 'Login', 'action' => 'optout'],
-            'login:optout'
+            'login:optout',
         );
         $routes->connect(
             '/auth/change',
             ['controller' => 'Login', 'action' => 'change'],
-            ['_name' => 'login:change']
+            ['_name' => 'login:change'],
         );
         $routes->get(
             '/auth/user',
@@ -90,47 +90,47 @@ return function (RouteBuilder $routes): void {
         $routes->patch(
             '/auth/user',
             ['controller' => 'Login', 'action' => 'update'],
-            'login:update'
+            'login:update',
         );
 
         // Signup.
         $routes->connect(
             '/signup',
             ['controller' => 'Signup', 'action' => 'signup'],
-            ['_name' => 'signup']
+            ['_name' => 'signup'],
         );
         $routes->connect(
             '/signup/activation',
             ['controller' => 'Signup', 'action' => 'activation'],
-            ['_name' => 'signup:activation']
+            ['_name' => 'signup:activation'],
         );
 
         // Upload and thumbnails.
         $routes->connect(
             '/streams/upload/{fileName}',
             ['controller' => 'Streams', 'action' => 'upload'],
-            ['_name' => 'streams:upload', 'pass' => ['fileName']]
+            ['_name' => 'streams:upload', 'pass' => ['fileName']],
         );
         $routes->connect(
             '/streams/clone/{uuid}',
             ['controller' => 'Streams', 'action' => 'clone'],
-            ['_name' => 'streams:clone']
+            ['_name' => 'streams:clone'],
         )->setPass(['uuid']);
         $routes->connect(
             '/media/thumbs/{id}',
             ['controller' => 'Media', 'action' => 'thumbs'],
-            ['_name' => 'media:thumbs', 'pass' => ['id']]
+            ['_name' => 'media:thumbs', 'pass' => ['id']],
         );
         $routes->connect(
             '/media/thumbs',
             ['controller' => 'Media', 'action' => 'thumbs'],
-            ['_name' => 'media:thumbs:multiple']
+            ['_name' => 'media:thumbs:multiple'],
         );
         // Download
         $routes->connect(
             '/streams/download/{uuid}',
             ['controller' => 'Streams', 'action' => 'download'],
-            ['_name' => 'streams:download']
+            ['_name' => 'streams:download'],
         )
         ->setPass(['uuid']);
 
@@ -141,22 +141,22 @@ return function (RouteBuilder $routes): void {
                 $routes->connect(
                     '/{controller}',
                     ['action' => 'index'],
-                    ['_name' => 'resources:index'] + compact('controller')
+                    ['_name' => 'resources:index'] + compact('controller'),
                 );
                 $routes->connect(
                     '/{controller}/{id}',
                     ['action' => 'resource'],
-                    ['_name' => 'resources:resource', 'pass' => ['id']] + compact('controller')
+                    ['_name' => 'resources:resource', 'pass' => ['id']] + compact('controller'),
                 );
                 $routes->connect(
                     '/{controller}/{related_id}/{relationship}',
                     ['action' => 'related'],
-                    ['_name' => 'resources:related'] + compact('controller')
+                    ['_name' => 'resources:related'] + compact('controller'),
                 );
                 $routes->connect(
                     '/{controller}/{id}/relationships/{relationship}',
                     ['action' => 'relationships'],
-                    ['_name' => 'resources:relationships'] + compact('controller')
+                    ['_name' => 'resources:relationships'] + compact('controller'),
                 );
             };
         };
@@ -173,9 +173,9 @@ return function (RouteBuilder $routes): void {
                 $routes->connect(
                     '/sysinfo',
                     ['controller' => 'Sysinfo', 'action' => 'index'],
-                    ['_name' => 'sysinfo']
+                    ['_name' => 'sysinfo'],
                 );
-            }
+            },
         );
 
         // Modeling endpoints.
@@ -190,14 +190,14 @@ return function (RouteBuilder $routes): void {
                 $routes->connect(
                     '/schema/{type}',
                     ['controller' => 'Schema', 'action' => 'jsonSchema'],
-                    ['_name' => 'schema', 'pass' => ['type']]
+                    ['_name' => 'schema', 'pass' => ['type']],
                 );
                 $routes->connect(
                     '/project',
                     ['controller' => 'Project', 'action' => 'index'],
-                    ['_name' => 'project']
+                    ['_name' => 'project'],
                 );
-            }
+            },
         );
 
         // Resources.
@@ -208,88 +208,88 @@ return function (RouteBuilder $routes): void {
         $routes->connect(
             '/trash',
             ['controller' => 'Trash', 'action' => 'index', '_method' => ['GET', 'DELETE']],
-            ['_name' => 'trash:index']
+            ['_name' => 'trash:index'],
         );
         $routes->connect(
             '/trash/{id}',
             ['controller' => 'Trash', 'action' => 'view', '_method' => 'GET'],
-            ['_name' => 'trash:resource', 'pass' => ['id']]
+            ['_name' => 'trash:resource', 'pass' => ['id']],
         );
         $routes->connect(
             '/trash/{id}',
             ['controller' => 'Trash', 'action' => 'restore', '_method' => 'PATCH'],
-            ['_name' => 'trash:restore', 'pass' => ['id']]
+            ['_name' => 'trash:restore', 'pass' => ['id']],
         );
         $routes->connect(
             '/trash/{id}',
             ['controller' => 'Trash', 'action' => 'delete', '_method' => 'DELETE'],
-            ['_name' => 'trash:delete', 'pass' => ['id']]
+            ['_name' => 'trash:delete', 'pass' => ['id']],
         );
 
         // Applications.
         $routes->connect(
             '/applications',
             ['controller' => 'Applications', 'action' => 'index', '_method' => 'GET'],
-            ['_name' => 'applications:index']
+            ['_name' => 'applications:index'],
         );
 
         // Async jobs.
         $routes->connect(
             '/async_jobs',
             ['controller' => 'AsyncJobs', 'action' => 'index'],
-            ['_name' => 'async_jobs:index']
+            ['_name' => 'async_jobs:index'],
         );
 
         // Trees.
         $routes->connect(
             '/trees/**',
             ['controller' => 'Trees', 'action' => 'index', '_method' => 'GET'],
-            ['_name' => 'trees:index']
+            ['_name' => 'trees:index'],
         );
         // Tree paths.
         $routes->connect(
             '/tree_paths/**',
             ['controller' => 'TreePaths', 'action' => 'index', '_method' => 'GET'],
-            ['_name' => 'tree_paths:index']
+            ['_name' => 'tree_paths:index'],
         );
 
         // Upload file and create object.
         $routes->connect(
             '/{object_type}/upload/{fileName}',
             ['controller' => 'Upload', 'action' => 'upload'],
-            ['_name' => 'objects:upload', 'pass' => ['fileName']]
+            ['_name' => 'objects:upload', 'pass' => ['fileName']],
         );
 
         // Objects.
         $routes->connect(
             '/{object_type}',
             ['controller' => 'Objects', 'action' => 'index'],
-            ['_name' => 'objects:index']
+            ['_name' => 'objects:index'],
         );
         $routes->connect(
             '/{object_type}/{id}',
             ['controller' => 'Objects', 'action' => 'resource'],
-            ['_name' => 'objects:resource', 'pass' => ['id']]
+            ['_name' => 'objects:resource', 'pass' => ['id']],
         );
         $routes->connect(
             '/{object_type}/{related_id}/{relationship}',
             ['controller' => 'Objects', 'action' => 'related'],
-            ['_name' => 'objects:related']
+            ['_name' => 'objects:related'],
         );
         $routes->connect(
             '/{object_type}/{id}/actions/clone',
             ['controller' => 'Objects', 'action' => 'clone'],
-            ['_name' => 'objects:clone', 'pass' => ['id']]
+            ['_name' => 'objects:clone', 'pass' => ['id']],
         );
         $routes->connect(
             '/{object_type}/{id}/relationships/{relationship}',
             ['controller' => 'Objects', 'action' => 'relationships'],
-            ['_name' => 'objects:relationships']
+            ['_name' => 'objects:relationships'],
         );
         $routes->connect(
             '/{object_type}/{id}/relationships/{relationship}/sort',
             ['controller' => 'Objects', 'action' => 'relationshipsSort'],
-            ['_name' => 'objects:relationshipsSort']
+            ['_name' => 'objects:relationshipsSort'],
         );
     });
 };

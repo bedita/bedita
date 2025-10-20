@@ -17,13 +17,17 @@ namespace BEdita\Core\Test\TestCase\Model\Entity;
 use BadMethodCallException;
 use BEdita\Core\Job\JobService;
 use BEdita\Core\Job\ServiceRegistry;
+use BEdita\Core\Model\Entity\AsyncJob;
 use Cake\Datasource\ConnectionManager;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
- * @coversDefaultClass \BEdita\Core\Model\Entity\AsyncJob
+ * {@see \BEdita\Core\Model\Entity\AsyncJob} Test Case
  */
+#[CoversClass(AsyncJob::class)]
 class AsyncJobTest extends TestCase
 {
     /**
@@ -126,9 +130,8 @@ class AsyncJobTest extends TestCase
      * @param string $expected Expected status.
      * @param string $uuid UUID of
      * @return void
-     * @dataProvider getStatusProvider()
-     * @covers ::_getStatus()
      */
+    #[DataProvider('getStatusProvider')]
     public function testGetStatus($expected, $uuid)
     {
         $entity = $this->AsyncJobs->get($uuid);
@@ -141,7 +144,6 @@ class AsyncJobTest extends TestCase
      * Test running a non-locked asynchronous job.
      *
      * @return void
-     * @covers ::run()
      */
     public function testRunNotLocked()
     {
@@ -154,7 +156,6 @@ class AsyncJobTest extends TestCase
      * Test running an asynchronous job.
      *
      * @return void
-     * @covers ::run()
      */
     public function testRun()
     {

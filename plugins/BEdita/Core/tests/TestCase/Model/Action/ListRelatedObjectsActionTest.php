@@ -21,10 +21,13 @@ use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Inflector;
 use Exception;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
- * @covers \BEdita\Core\Model\Action\ListRelatedObjectsAction
+ * {@see \BEdita\Core\Model\Action\ListRelatedObjectsAction} Test Case
  */
+#[CoversClass(ListRelatedObjectsAction::class)]
 class ListRelatedObjectsActionTest extends TestCase
 {
     /**
@@ -262,8 +265,8 @@ class ListRelatedObjectsActionTest extends TestCase
      * @param array|null $only Filter related entities by ID.
      * @param string|null $statusLevel Status level.
      * @return void
-     * @dataProvider invocationProvider()
      */
+    #[DataProvider('invocationProvider')]
     public function testInvocation($expected, $objectType, $relation, $id, $list = true, ?array $only = null, $statusLevel = null)
     {
         if ($expected instanceof Exception) {
@@ -287,7 +290,6 @@ class ListRelatedObjectsActionTest extends TestCase
      * Test that deleted objects will not show as related
      *
      * @return void
-     * @coversNothing
      */
     public function testDeleted(): void
     {

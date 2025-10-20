@@ -14,6 +14,7 @@ declare(strict_types=1);
  */
 namespace BEdita\Core\Test\TestCase\Command;
 
+use BEdita\Core\Command\BuildSearchIndexCommand;
 use BEdita\Core\Search\Adapter\SimpleAdapter;
 use Cake\Command\Command;
 use Cake\Console\TestSuite\ConsoleIntegrationTestTrait;
@@ -21,12 +22,12 @@ use Cake\Core\Configure;
 use Cake\Datasource\EntityInterface;
 use Cake\TestSuite\TestCase;
 use Exception;
+use PHPUnit\Framework\Attributes\CoversClass;
 
 /**
- * BEdita\Core\Command\BuildSearchIndexCommand Test Case
- *
- * @coversDefaultClass \BEdita\Core\Command\BuildSearchIndexCommand
+ * {@see BEdita\Core\Command\BuildSearchIndexCommand} Test Case
  */
+#[CoversClass(BuildSearchIndexCommand::class)]
 class BuildSearchIndexCommandTest extends TestCase
 {
     use ConsoleIntegrationTestTrait;
@@ -54,7 +55,6 @@ class BuildSearchIndexCommandTest extends TestCase
      * Test `buildOptionParser` method
      *
      * @return void
-     * @covers ::buildOptionParser()
      */
     public function testBuildOptionParser(): void
     {
@@ -71,9 +71,6 @@ class BuildSearchIndexCommandTest extends TestCase
      * Test `execute` method with no options
      *
      * @return void
-     * @covers ::execute()
-     * @covers ::objectsIterator()
-     * @covers ::doIndexResource()
      */
     public function testExecute(): void
     {
@@ -114,9 +111,6 @@ class BuildSearchIndexCommandTest extends TestCase
      * Test `execute` method with exception
      *
      * @return void
-     * @covers ::execute()
-     * @covers ::objectsIterator()
-     * @covers ::doIndexResource()
      */
     public function testExecuteException(): void
     {
@@ -138,9 +132,6 @@ class BuildSearchIndexCommandTest extends TestCase
      * Test `execute` method with --type option
      *
      * @return void
-     * @covers ::execute()
-     * @covers ::objectsIterator()
-     * @covers ::doIndexResource()
      */
     public function testExecuteByTypes(): void
     {
@@ -181,9 +172,6 @@ class BuildSearchIndexCommandTest extends TestCase
      * Test `execute` method with --id option
      *
      * @return void
-     * @covers ::execute()
-     * @covers ::objectsIterator()
-     * @covers ::doIndexResource()
      */
     public function testExecuteById(): void
     {
@@ -224,9 +212,6 @@ class BuildSearchIndexCommandTest extends TestCase
      * Test `execute` method on wrong ID
      *
      * @return void
-     * @covers ::execute()
-     * @covers ::objectsIterator()
-     * @covers ::doIndexResource()
      */
     public function testExecuteWrongId(): void
     {
@@ -239,9 +224,6 @@ class BuildSearchIndexCommandTest extends TestCase
      * Test `execute` method with --uname option
      *
      * @return void
-     * @covers ::execute()
-     * @covers ::objectsIterator()
-     * @covers ::doIndexResource()
      */
     public function testExecuteByUname(): void
     {
@@ -282,9 +264,6 @@ class BuildSearchIndexCommandTest extends TestCase
      * Test `execute` method on wrong uname
      *
      * @return void
-     * @covers ::execute()
-     * @covers ::objectsIterator()
-     * @covers ::doIndexResource()
      */
     public function testExecuteWrongUname(): void
     {
@@ -297,9 +276,6 @@ class BuildSearchIndexCommandTest extends TestCase
      * Test `execute` method with --ancestor option
      *
      * @return void
-     * @covers ::execute()
-     * @covers ::objectsIterator()
-     * @covers ::doIndexResource()
      */
     public function testExecuteByAncestor(): void
     {
@@ -340,9 +316,6 @@ class BuildSearchIndexCommandTest extends TestCase
      * Test `execute` method on wrong ancestor
      *
      * @return void
-     * @covers ::execute()
-     * @covers ::objectsIterator()
-     * @covers ::doIndexResource()
      */
     public function testExecuteWrongAncestor(): void
     {
@@ -355,9 +328,6 @@ class BuildSearchIndexCommandTest extends TestCase
      * Test `execute` method with --adapters option
      *
      * @return void
-     * @covers ::execute()
-     * @covers ::objectsIterator()
-     * @covers ::doIndexResource()
      */
     public function testExecuteByAdapters(): void
     {

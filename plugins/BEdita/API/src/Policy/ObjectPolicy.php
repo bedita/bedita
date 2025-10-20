@@ -88,7 +88,7 @@ class ObjectPolicy implements BeforePolicyInterface
         $parents = $this->fetchTable('Folders')
             ->find('available')
             ->contain(['Permissions.Roles'])
-            ->innerJoinWith('Children', fn (SelectQuery $q) => $q->where(['Children.id' => $object->id]))
+            ->innerJoinWith('Children', fn(SelectQuery $q) => $q->where(['Children.id' => $object->id]))
             ->toArray();
 
         foreach ($parents as $parent) {

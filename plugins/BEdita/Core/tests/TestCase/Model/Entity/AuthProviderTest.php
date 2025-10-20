@@ -21,12 +21,13 @@ use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Hash;
 use InvalidArgumentException;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * {@see \BEdita\Core\Model\Entity\AuthProvider} Test Case
- *
- * @coversDefaultClass \BEdita\Core\Model\Entity\AuthProvider
  */
+#[CoversClass(AuthProvider::class)]
 class AuthProviderTest extends TestCase
 {
     /**
@@ -70,7 +71,6 @@ class AuthProviderTest extends TestCase
      * Test accessible properties.
      *
      * @return void
-     * @coversNothing
      */
     public function testAccessible()
     {
@@ -93,7 +93,6 @@ class AuthProviderTest extends TestCase
      * Test getter for `slug` property.
      *
      * @return void
-     * @covers ::_getSlug()
      */
     public function testGetSlug()
     {
@@ -132,9 +131,8 @@ class AuthProviderTest extends TestCase
      * @param array $expected Expected result.
      * @param array $configuration Initial configuration.
      * @return void
-     * @covers ::getRoles()
-     * @dataProvider getRolesProvider()
      */
+    #[DataProvider('getRolesProvider')]
     public function testGetRoles(array $expected, array $configuration)
     {
         Configure::write('Roles.BEdita/API.Uuid', $configuration);
@@ -143,7 +141,7 @@ class AuthProviderTest extends TestCase
         $roles = Hash::combine(
             $authProvider->getRoles(),
             '{n}.id',
-            '{n}.name'
+            '{n}.name',
         );
 
         static::assertEquals($expected, $roles);
@@ -181,9 +179,8 @@ class AuthProviderTest extends TestCase
      * @param array $configuration Initial configuration.
      * @param string $username Initial configuration.
      * @return void
-     * @covers ::checkAuthorization()
-     * @dataProvider checkAuthorizationProvider()
      */
+    #[DataProvider('checkAuthorizationProvider')]
     public function testCheckAuthorization(bool $expected, array $response, $username)
     {
         $authProvider = $this->AuthProviders->get(1);

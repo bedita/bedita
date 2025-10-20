@@ -17,18 +17,18 @@ namespace BEdita\Core\Test\TestCase\I18n;
 use BEdita\Core\I18n\MessagesFileLoader;
 use Cake\Core\Plugin;
 use Cake\TestSuite\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
 
 /**
- * @coversDefaultClass \BEdita\Core\I18n\MessagesFileLoader
+ * {@see \BEdita\Core\I18n\MessagesFileLoader} Test Case
  */
+#[CoversClass(MessagesFileLoader::class)]
 class MessagesFileLoaderTest extends TestCase
 {
     /**
      * Test constructor.
      *
      * @return void
-     * @covers ::__construct()
-     * @covers ::plugins()
      */
     public function testConstruct()
     {
@@ -45,7 +45,6 @@ class MessagesFileLoaderTest extends TestCase
      * Test getter of search paths.
      *
      * @return void
-     * @covers ::translationsFolders()
      */
     public function testTranslationsFolders()
     {

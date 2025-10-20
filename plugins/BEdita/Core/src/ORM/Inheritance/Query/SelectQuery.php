@@ -81,12 +81,12 @@ class SelectQuery extends CakeSelectQuery
                 // Select fields from current table.
                 $this->subQueryAliasFields(
                     $this->_repository->getSchema()->columns(),
-                    $this->_repository
-                )
+                    $this->_repository,
+                ),
             )
             ->from(
                 // Set "from" of the sub-query.
-                [$this->_repository->getTable() => $this->_repository->getTable()]
+                [$this->_repository->getTable() => $this->_repository->getTable()],
             );
 
         // Inherited tables.
@@ -96,8 +96,8 @@ class SelectQuery extends CakeSelectQuery
                     // Add fields from inherited table to "select" clause.
                     $this->subQueryAliasFields(
                         array_diff($table->getSchema()->columns(), (array)$table->getPrimaryKey()), // Be careful to avoid duplicate columns.
-                        $table
-                    )
+                        $table,
+                    ),
                 )
                 ->innerJoin(
                     // Add joins with inherited tables.
@@ -105,9 +105,9 @@ class SelectQuery extends CakeSelectQuery
                     function (QueryExpression $exp) use ($table) {
                         return $exp->equalFields(
                             sprintf('%s.%s', $table->getTable(), (string)$table->getPrimaryKey()),
-                            sprintf('%s.%s', $this->_repository->getTable(), (string)$this->_repository->getPrimaryKey())
+                            sprintf('%s.%s', $this->_repository->getTable(), (string)$this->_repository->getPrimaryKey()),
                         );
-                    }
+                    },
                 );
         }
 

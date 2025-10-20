@@ -190,25 +190,25 @@ class ObjectTypesTable extends Table
         array|string $finder = 'all',
         CacheInterface|string|null $cache = null,
         Closure|string|null $cacheKey = null,
-        mixed ...$args
+        mixed ...$args,
     ): EntityInterface {
         if (is_string($primaryKey) && !is_numeric($primaryKey)) {
             $allTypes = array_flip(
                 $this->find('list')
                     ->cache('map', self::CACHE_CONFIG)
-                    ->toArray()
+                    ->toArray(),
             );
             $allTypes += array_flip(
                 $this->find('list', valueField: 'singular')
                     ->cache('map_singular', self::CACHE_CONFIG)
-                    ->toArray()
+                    ->toArray(),
             );
 
             $primaryKey = Inflector::underscore($primaryKey);
             if (!isset($allTypes[$primaryKey])) {
                 throw new RecordNotFoundException(sprintf(
                     'Record not found in table `%s`',
-                    $this->getTable()
+                    $this->getTable(),
                 ));
             }
 
@@ -301,7 +301,7 @@ class ObjectTypesTable extends Table
         if ($entity->isDirty('is_abstract')) {
             if ($entity->get('is_abstract') && $this->objectsExist($entity->get('id'))) {
                 throw new ForbiddenException(
-                    __d('bedita', 'Setting as abstract forbidden: objects of this type exist')
+                    __d('bedita', 'Setting as abstract forbidden: objects of this type exist'),
                 );
             } elseif (!$entity->get('is_abstract') && $this->childCount($entity) > 0) {
                 throw new ForbiddenException(__d('bedita', 'Setting as not abstract forbidden: subtypes exist'));
@@ -316,7 +316,7 @@ class ObjectTypesTable extends Table
         }
         if ($entity->isDirty('table') && !App::className($entity->get('table'), 'Model/Table', 'Table')) {
             throw new BadRequestException(
-                __d('bedita', '"{0}" is not a valid model table name', [$entity->get('table')])
+                __d('bedita', '"{0}" is not a valid model table name', [$entity->get('table')]),
             );
         }
     }
@@ -427,7 +427,7 @@ class ObjectTypesTable extends Table
         SelectQuery $query,
         string $name,
         string $side = 'right',
-        bool $descendants = false
+        bool $descendants = false,
     ): SelectQuery {
         if (empty($name)) {
             throw new LogicException(__d('bedita', 'Missing required parameter "{0}"', 'name'));
@@ -496,7 +496,7 @@ class ObjectTypesTable extends Table
                                     ->lte($this->aliasField('tree_right'), $row['tree_right']);
                             });
                         })
-                        ->toArray()
+                        ->toArray(),
                 );
             };
         }

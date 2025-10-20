@@ -216,7 +216,7 @@ class UsersTable extends Table
             ],
             [
                 'id' => $identity->getIdentifier(),
-            ]
+            ],
         );
     }
 
@@ -244,7 +244,7 @@ class UsersTable extends Table
             ],
             [
                 'username' => (string)$request->getData('username'),
-            ]
+            ],
         );
     }
 
@@ -283,14 +283,14 @@ class UsersTable extends Table
     public function findExternalAuth(
         SelectQuery $query,
         AuthProvider|array|string|int $auth_provider,
-        array|string|null $username = null
+        array|string|null $username = null,
     ): SelectQuery {
         $query = $query->find('loginRoles');
 
         return $query->innerJoinWith('ExternalAuth', function (SelectQuery $query) use ($auth_provider, $username) {
             $query = $query->find('authProvider', authProvider: $auth_provider);
             if (!empty($username)) {
-                $query = $query->where(fn (QueryExpression $exp) => $exp->in(
+                $query = $query->where(fn(QueryExpression $exp) => $exp->in(
                     $this->ExternalAuth->aliasField('provider_username'),
                     (array)$username,
                 ));
@@ -447,7 +447,7 @@ class UsersTable extends Table
             $entity->external_auth,
             function ($item): void {
                 $this->ExternalAuth->deleteOrFail($item);
-            }
+            },
         );
 
         return $this->save($entity, ['checkRules' => false]);
@@ -519,7 +519,7 @@ class UsersTable extends Table
                 strpos((string)$entity->get($prop), self::DELETED_USER_PREFIX) === 0
             ) {
                 throw new BadRequestException(
-                    __d('bedita', '"{0}" cannot start with reserved word "{1}"', $prop, self::DELETED_USER_PREFIX)
+                    __d('bedita', '"{0}" cannot start with reserved word "{1}"', $prop, self::DELETED_USER_PREFIX),
                 );
             }
         }

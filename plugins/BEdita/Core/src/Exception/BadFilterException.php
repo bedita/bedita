@@ -14,27 +14,20 @@ declare(strict_types=1);
  */
 namespace BEdita\Core\Exception;
 
-use Cake\Core\Exception\CakeException;
+use Cake\Http\Exception\HttpException;
 
 /**
  * Exception raised when bad filter data are passed to Model/ORM classes
  */
-class BadFilterException extends CakeException
+class BadFilterException extends HttpException
 {
     /**
      * @inheritDoc
      */
-    protected string $_messageTemplate = '%s';
+    protected int $_defaultCode = 400;
 
     /**
-     * {@inheritDoc}
-     *
-     * Default error code 400
-     *
-     * @codeCoverageIgnore
+     * @inheritDoc
      */
-    public function __construct($message, $code = 400, $previous = null)
-    {
-        parent::__construct($message, $code, $previous);
-    }
+    protected string $_messageTemplate = '%s';
 }

@@ -14,12 +14,12 @@ declare(strict_types=1);
  */
 namespace BEdita\API\Test\TestCase\Controller\Admin;
 
+use BEdita\API\Controller\Admin\ConfigController;
 use BEdita\API\TestSuite\IntegrationTestCase;
 use Cake\ORM\TableRegistry;
+use PHPUnit\Framework\Attributes\CoversClass;
 
-/**
- * @coversDefaultClass \BEdita\API\Controller\Admin\ConfigController
- */
+#[CoversClass(ConfigController::class)]
 class ConfigControllerTest extends IntegrationTestCase
 {
     /**
@@ -35,8 +35,6 @@ class ConfigControllerTest extends IntegrationTestCase
      * Test view method.
      *
      * @return void
-     * @covers ::resource()
-     * @covers ::initialize()
      */
     public function testSingle()
     {
@@ -74,9 +72,6 @@ class ConfigControllerTest extends IntegrationTestCase
      * Test add method.
      *
      * @return void
-     * @covers ::index()
-     * @covers ::initialize()
-     * @covers ::resourceUrl()
      */
     public function testAdd()
     {
@@ -103,8 +98,6 @@ class ConfigControllerTest extends IntegrationTestCase
      * Test edit method.
      *
      * @return void
-     * @covers ::resource()
-     * @covers ::initialize()
      */
     public function testEdit()
     {
@@ -130,8 +123,6 @@ class ConfigControllerTest extends IntegrationTestCase
      * Test delete method.
      *
      * @return void
-     * @covers ::resource()
-     * @covers ::initialize()
      */
     public function testDelete()
     {

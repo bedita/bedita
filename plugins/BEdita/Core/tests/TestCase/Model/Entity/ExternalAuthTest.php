@@ -19,12 +19,12 @@ use BEdita\Core\Model\Table\ExternalAuthTable;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use InvalidArgumentException;
+use PHPUnit\Framework\Attributes\CoversClass;
 
 /**
  * {@see \BEdita\Core\Model\Entity\ExternalAuth} Test Case
- *
- * @coversDefaultClass \BEdita\Core\Model\Entity\ExternalAuth
  */
+#[CoversClass(ExternalAuth::class)]
 class ExternalAuthTest extends TestCase
 {
     /**
@@ -72,7 +72,6 @@ class ExternalAuthTest extends TestCase
      * Test accessible properties.
      *
      * @return void
-     * @coversNothing
      */
     public function testAccessible()
     {

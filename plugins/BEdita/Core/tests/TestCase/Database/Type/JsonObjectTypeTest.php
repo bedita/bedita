@@ -17,11 +17,14 @@ namespace BEdita\Core\Test\TestCase\Database\Type;
 use BEdita\Core\Database\Type\JsonObjectType;
 use Cake\Datasource\ConnectionManager;
 use Cake\TestSuite\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 use stdClass;
 
 /**
- * @coversDefaultClass \BEdita\Core\Database\Type\JsonObjectType
+ * {@see \BEdita\Core\Database\Type\JsonObjectType} Test Case
  */
+#[CoversClass(JsonObjectType::class)]
 class JsonObjectTypeTest extends TestCase
 {
     /**
@@ -80,9 +83,8 @@ class JsonObjectTypeTest extends TestCase
      * @param mixed $expected Expected result.
      * @param string $value Value to be decoded.
      * @return void
-     * @dataProvider toPHPProvider()
-     * @covers ::toPHP()
      */
+    #[DataProvider('toPHPProvider')]
     public function testToPHP($expected, $value)
     {
         /** @var \Cake\Database\Connection $connection */
@@ -102,7 +104,6 @@ class JsonObjectTypeTest extends TestCase
      * Test `manyToPHP()` method.
      *
      * @return void
-     * @covers ::manyToPHP()
      */
     public function testManyToPHP(): void
     {

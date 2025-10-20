@@ -20,12 +20,13 @@ use Cake\TestSuite\TestCase;
 use Cake\Utility\Hash;
 use Exception;
 use LogicException;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * {@see \BEdita\Core\Job\Service\MailService} Test Case
- *
- * @coversDefaultClass \BEdita\Core\Job\Service\MailService
  */
+#[CoversClass(MailService::class)]
 class MailServiceTest extends TestCase
 {
     /**
@@ -98,9 +99,8 @@ class MailServiceTest extends TestCase
      * @param mixed $expected Expected result.
      * @param array $payload Payload data.
      * @return void
-     * @covers ::run()
-     * @dataProvider runProvider()
      */
+    #[DataProvider('runProvider')]
     public function testRun($expected, array $payload)
     {
         if ($expected instanceof Exception) {

@@ -97,7 +97,7 @@ class Folder extends ObjectEntity
                         'Trees.object_id' => 'integer',
                         'Trees.tree_left' => 'integer',
                         'Trees.tree_right' => 'integer',
-                    ]
+                    ],
                 )
                 ->orderBy(['Trees.tree_left' => 'DESC'])
                 ->toArray();
@@ -300,7 +300,7 @@ class Folder extends ObjectEntity
 
         try {
             return TableRegistry::getTableLocator()->get('Trees')
-                ->find('pathNodes', [$this->id])
+                ->find('pathNodes', objectId: $this->id)
                 ->select(['id' => 'object_id', 'menu', 'params', 'slug'], true)
                 ->disableHydration()
                 ->toArray();

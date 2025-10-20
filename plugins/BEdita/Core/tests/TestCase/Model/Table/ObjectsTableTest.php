@@ -17,6 +17,7 @@ namespace BEdita\Core\Test\TestCase\Model\Table;
 use BEdita\Core\Exception\LockedResourceException;
 use BEdita\Core\Model\Entity\ObjectEntity;
 use BEdita\Core\Model\Enum\DateRangesSortField;
+use BEdita\Core\Model\Table\ObjectsTable;
 use BEdita\Core\Utility\LoggedUser;
 use Cake\Core\Configure;
 use Cake\Database\Driver\Mysql;
@@ -27,12 +28,13 @@ use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Hash;
 use Exception;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * {@see \BEdita\Core\Model\Table\ObjectsTable} Test Case
- *
- * @coversDefaultClass \BEdita\Core\Model\Table\ObjectsTable
  */
+#[CoversClass(ObjectsTable::class)]
 class ObjectsTableTest extends TestCase
 {
     /**
@@ -93,7 +95,6 @@ class ObjectsTableTest extends TestCase
      * Test initialization.
      *
      * @return void
-     * @coversNothing
      */
     public function testInitialization()
     {
@@ -137,9 +138,8 @@ class ObjectsTableTest extends TestCase
      * @param bool $changed
      * @param array $data
      * @return void
-     * @dataProvider saveProvider
-     * @coversNothing
      */
+    #[DataProvider('saveProvider')]
     public function testSave(bool $changed, array $data)
     {
         $entity = $this->Objects->newEntity($data);
@@ -201,9 +201,8 @@ class ObjectsTableTest extends TestCase
      * @param bool $expected Expected result.
      * @param array $data Data to be validated.
      * @return void
-     * @dataProvider validationProvider
-     * @coversNothing
      */
+    #[DataProvider('validationProvider')]
     public function testValidation($expected, array $data)
     {
         $object = $this->Objects->newEntity($data);
@@ -309,9 +308,8 @@ class ObjectsTableTest extends TestCase
      * @param array|\Exception $expected Expected results.
      * @param array $types Array of object types to filter for.
      * @return void
-     * @dataProvider findTypeProvider
-     * @covers ::findType()
      */
+    #[DataProvider('findTypeProvider')]
     public function testFindType($expected, array $types)
     {
         if ($expected instanceof Exception) {
@@ -362,10 +360,8 @@ class ObjectsTableTest extends TestCase
      * @param array $expected Expected results.
      * @param array $options Finder options.
      * @return void
-     * @dataProvider findDateRangesProvider
-     * @covers ::findDateRanges()
-     * @covers ::dateRangesSubQueryJoin()
      */
+    #[DataProvider('findDateRangesProvider')]
     public function testFindDateRanges(array $expected, array $options)
     {
         $result = $this->Objects->find('dateRanges', ...$options)->toArray();
@@ -376,7 +372,6 @@ class ObjectsTableTest extends TestCase
      * Test save of date ranges using 'replace' save strategy ({@see https://github.com/bedita/bedita/issues/1152}).
      *
      * @return void
-     * @coversNothing
      */
     public function testSaveDateRanges()
     {
@@ -420,7 +415,6 @@ class ObjectsTableTest extends TestCase
      * Test finder for my objects.
      *
      * @return void
-     * @covers ::findMine()
      */
     public function testFindMine()
     {
@@ -440,7 +434,6 @@ class ObjectsTableTest extends TestCase
      * Test save emojis in text fields.
      *
      * @return void
-     * @coversNothing
      */
     public function testEmoji()
     {
@@ -494,9 +487,8 @@ class ObjectsTableTest extends TestCase
      * @param bool $enabled Is the type enabled?
      * @param string $type Type being saved.
      * @return void
-     * @covers ::beforeSave()
-     * @dataProvider saveAbstractDisabledTypes()
      */
+    #[DataProvider('saveAbstractDisabledTypes')]
     public function testSaveAbstractDisabledTypes($abstract, $enabled, $type)
     {
         if ($abstract || !$enabled) {
@@ -515,7 +507,6 @@ class ObjectsTableTest extends TestCase
      * Test `findAncestor()`
      *
      * @return void
-     * @covers ::findAncestor()
      */
     public function testFindAncestor()
     {
@@ -531,7 +522,6 @@ class ObjectsTableTest extends TestCase
      * Test `findParent()`
      *
      * @return void
-     * @covers ::findParent()
      */
     public function testFindParent()
     {
@@ -577,9 +567,8 @@ class ObjectsTableTest extends TestCase
      * @param array $config I18n config.
      * @param array $data Save input data.
      * @return void
-     * @dataProvider checkLangTagProvider()
-     * @covers ::checkLangTag()
      */
+    #[DataProvider('checkLangTagProvider')]
     public function testCheckLangTag($expected, array $config, array $data)
     {
         Configure::write('I18n', $config);
@@ -612,7 +601,6 @@ class ObjectsTableTest extends TestCase
                     'id' => 2,
                     'status' => 'off',
                 ],
-                'on',
             ],
             'allowed' => [
                 true,
@@ -638,9 +626,8 @@ class ObjectsTableTest extends TestCase
      * @param string|\Exception $expected result or Exception.
      * @param array $data Save input data.
      * @return void
-     * @dataProvider checkLockedProvider()
-     * @covers ::checkLocked()
      */
+    #[DataProvider('checkLockedProvider')]
     public function testCheckLocked($expected, array $data): void
     {
         if ($expected instanceof Exception) {
@@ -659,7 +646,6 @@ class ObjectsTableTest extends TestCase
      * Test `findTranslations()`.
      *
      * @return void
-     * @covers ::findTranslations()
      */
     public function testFindTranslations()
     {
@@ -677,7 +663,6 @@ class ObjectsTableTest extends TestCase
      * Test `findTranslations() with status`.
      *
      * @return void
-     * @covers ::findTranslations()
      */
     public function testFindTranslationsWithStatus()
     {
@@ -723,9 +708,8 @@ class ObjectsTableTest extends TestCase
      * @param array $condition Search condition.
      * @param string $statusLevel Configuration to write.
      * @return void
-     * @dataProvider findAvailableProvider()
-     * @covers ::findAvailable()
      */
+    #[DataProvider('findAvailableProvider')]
     public function testFindAvailable(int $expected, array $condition, ?string $statusLevel = null): void
     {
         if (!empty($statusLevel)) {
@@ -766,9 +750,8 @@ class ObjectsTableTest extends TestCase
      * @param int $expected Expected results.
      * @param array $config Configuration to write.
      * @return void
-     * @dataProvider findPublishableProvider()
-     * @covers ::findPublishable()
      */
+    #[DataProvider('findPublishableProvider')]
     public function testFindPublishable(int $expected, ?array $config = null): void
     {
         if (!empty($config)) {
@@ -783,7 +766,6 @@ class ObjectsTableTest extends TestCase
      * Test `findPublishDateAllowed()`.
      *
      * @return void
-     * @covers ::findPublishDateAllowed()
      */
     public function testFindPublishDateAllowed(): void
     {
@@ -795,7 +777,6 @@ class ObjectsTableTest extends TestCase
      * Test `findPublishDateAllowed()` on a single object changing `publish_end`.
      *
      * @return void
-     * @covers ::findPublishDateAllowed()
      */
     public function testFindPublishDateAllowedSingle(): void
     {
@@ -814,8 +795,6 @@ class ObjectsTableTest extends TestCase
      * Test `findCategories` method.
      *
      * @return void
-     * @covers ::findCategories()
-     * @covers ::categoriesQuery()
      */
     public function testFindCategories()
     {
@@ -830,8 +809,6 @@ class ObjectsTableTest extends TestCase
      * Test `findTags` method.
      *
      * @return void
-     * @covers ::findTags()
-     * @covers ::categoriesQuery()
      */
     public function testFindTags()
     {
@@ -846,7 +823,6 @@ class ObjectsTableTest extends TestCase
      * Test `findUnameId` method.
      *
      * @return void
-     * @covers ::findUnameId()
      */
     public function testFindUnameID()
     {
@@ -867,7 +843,6 @@ class ObjectsTableTest extends TestCase
      * Test that only available children are returned.
      *
      * @return void
-     * @coversNothing
      */
     public function testParentsAvailable(): void
     {

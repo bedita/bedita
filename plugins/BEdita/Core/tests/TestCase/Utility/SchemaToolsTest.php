@@ -16,12 +16,12 @@ namespace BEdita\Core\Test\TestCase\Utility;
 
 use BEdita\Core\Utility\SchemaTools;
 use Cake\TestSuite\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
 
 /**
- * {@see BEdita\Core\Utility\SchemaTools}  Test Case
- *
- * @coversDefaultClass \BEdita\Core\Utility\SchemaTools
+ * {@see BEdita\Core\Utility\SchemaTools} Test Case
  */
+#[CoversClass(SchemaTools::class)]
 class SchemaToolsTest extends TestCase
 {
     /**
@@ -46,7 +46,6 @@ class SchemaToolsTest extends TestCase
      * Test `getPrimaryFields` method
      *
      * @return void
-     * @covers ::getPrimaryFields()
      */
     public function testGetPrimaryFields(): void
     {
@@ -61,7 +60,6 @@ class SchemaToolsTest extends TestCase
      * Test `getUniqueFields` method
      *
      * @return void
-     * @covers ::getUniqueFields()
      */
     public function testGetUniqueFields(): void
     {
@@ -77,7 +75,6 @@ class SchemaToolsTest extends TestCase
      * Test `getNullableFields` method
      *
      * @return void
-     * @covers ::getNullableFields()
      */
     public function testGetNullableFields(): void
     {

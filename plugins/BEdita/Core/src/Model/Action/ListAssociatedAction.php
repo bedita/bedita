@@ -94,7 +94,7 @@ class ListAssociatedAction extends BaseAction
             throw new InvalidPrimaryKeyException(__(
                 'Record not found in table "{0}" with primary key [{1}]',
                 $table->getTable(),
-                implode(', ', $primaryKey)
+                implode(', ', $primaryKey),
             ));
         }
 

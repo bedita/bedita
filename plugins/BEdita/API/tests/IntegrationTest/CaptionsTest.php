@@ -16,12 +16,12 @@ namespace BEdita\API\Test\IntegrationTest;
 
 use BEdita\API\TestSuite\IntegrationTestCase;
 use Cake\Utility\Hash;
+use PHPUnit\Framework\Attributes\CoversNothing;
 
 /**
  * Test captions.
- *
- * @coversNothing
  */
+#[CoversNothing]
 class CaptionsTest extends IntegrationTestCase
 {
     /**
@@ -35,7 +35,6 @@ class CaptionsTest extends IntegrationTestCase
      * Test get video with captions.
      *
      * @return void
-     * @coversNothing
      */
     public function testVideoWithCaptions(): void
     {
@@ -63,7 +62,6 @@ class CaptionsTest extends IntegrationTestCase
      * Test add captions.
      *
      * @return void
-     * @coversNothing
      */
     public function testAddCaptions(): void
     {
@@ -108,7 +106,6 @@ class CaptionsTest extends IntegrationTestCase
      * Test replace captions.
      *
      * @return void
-     * @coversNothing
      */
     public function testReplaceCaption(): void
     {
@@ -144,7 +141,6 @@ class CaptionsTest extends IntegrationTestCase
      * Test delete captions.
      *
      * @return void
-     * @coversNothing
      */
     public function testDeleteCaptions(): void
     {

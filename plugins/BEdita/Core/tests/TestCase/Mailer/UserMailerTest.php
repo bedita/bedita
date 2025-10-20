@@ -23,10 +23,13 @@ use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use Exception;
 use LogicException;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
- * @coversDefaultClass \BEdita\Core\Mailer\UserMailer
+ * {@see \BEdita\Core\Mailer\UserMailer} Test Case
  */
+#[CoversClass(UserMailer::class)]
 class UserMailerTest extends TestCase
 {
     use MailerAwareTrait;
@@ -136,11 +139,8 @@ class UserMailerTest extends TestCase
      * @param mixed $expected
      * @param array $options
      * @return void
-     * @dataProvider signupProvider
-     * @covers ::signup()
-     * @covers ::checkUser()
-     * @covers ::getProjectName()
      */
+    #[DataProvider('signupProvider')]
     public function testSignup($expected, $options)
     {
         if ($expected instanceof Exception) {
@@ -161,8 +161,6 @@ class UserMailerTest extends TestCase
      * Test fail sending email to user without email
      *
      * @return void
-     * @covers ::signup()
-     * @covers ::checkUser()
      */
     public function testSignupMissingUserEmail()
     {
@@ -213,10 +211,8 @@ class UserMailerTest extends TestCase
      * @param mixed $expected
      * @param array $options
      * @return void
-     * @dataProvider welcomeProvider
-     * @covers ::welcome()
-     * @covers ::checkUser()
      */
+    #[DataProvider('welcomeProvider')]
     public function testWelcome($expected, $options)
     {
         if ($expected instanceof Exception) {
@@ -275,10 +271,8 @@ class UserMailerTest extends TestCase
      * @param mixed $expected
      * @param array $options
      * @return void
-     * @dataProvider changeRequestProvider
-     * @covers ::changeRequest()
-     * @covers ::checkUser()
      */
+    #[DataProvider('changeRequestProvider')]
     public function testChangeRequest($expected, $options)
     {
         if ($expected instanceof Exception) {
@@ -320,9 +314,8 @@ class UserMailerTest extends TestCase
      * @param string $expected The project name expected
      * @param string $configured The project name to put in configuration
      * @return void
-     * @dataProvider getProjectNameProvider
-     * @covers ::getProjectName()
      */
+    #[DataProvider('getProjectNameProvider')]
     public function testGetProjectName($expected, $configured)
     {
         Configure::write('Project.name', $configured);

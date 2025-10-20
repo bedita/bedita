@@ -15,16 +15,22 @@ declare(strict_types=1);
 namespace BEdita\Core\Test\TestCase\Model\Action;
 
 use BEdita\Core\Exception\InvalidDataException;
+use BEdita\Core\Model\Action\ListRelatedObjectsAction;
+use BEdita\Core\Model\Action\SetRelatedObjectsAction;
 use BEdita\Core\Model\Action\SortRelatedObjectsAction;
 use BEdita\Core\Utility\LoggedUser;
 use Cake\ORM\Association\BelongsToMany;
 use Cake\TestSuite\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
 
 /**
- * @covers \BEdita\Core\Model\Action\SortRelatedObjectsAction
- * @covers \BEdita\Core\Model\Action\SetRelatedObjectsAction
- * @covers \BEdita\Core\Model\Action\ListRelatedObjectsAction
+ * {@see \BEdita\Core\Model\Action\SortRelatedObjectsAction} Test Case
+ * {@see \BEdita\Core\Model\Action\SetRelatedObjectsAction} Test Case
+ * {@see \BEdita\Core\Model\Action\ListRelatedObjectsAction} Test Case
  */
+#[CoversClass(SortRelatedObjectsAction::class)]
+#[CoversClass(SetRelatedObjectsAction::class)]
+#[CoversClass(ListRelatedObjectsAction::class)]
 class SortRelatedObjectsActionTest extends TestCase
 {
     /**

@@ -20,12 +20,12 @@ use Cake\Console\Exception\StopException;
 use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\ORM\Exception\PersistenceFailedException;
 use Cake\TestSuite\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
 
 /**
  * {@see \BEdita\Core\Utility\ObjectsHandler} Test Case
- *
- * @coversDefaultClass \BEdita\Core\Utility\ObjectsHandler
  */
+#[CoversClass(ObjectsHandler::class)]
 class ObjectsHandlerTest extends TestCase
 {
     /**
@@ -74,9 +74,6 @@ class ObjectsHandlerTest extends TestCase
      * Test `create` and `remove` method
      *
      * @return void
-     * @covers ::save()
-     * @covers ::remove()
-     * @covers ::checkEnvironment()
      */
     public function testCreateRemove()
     {
@@ -108,7 +105,6 @@ class ObjectsHandlerTest extends TestCase
      * Test `save` failure
      *
      * @return void
-     * @covers ::save()
      */
     public function testSaveException()
     {
@@ -121,8 +117,6 @@ class ObjectsHandlerTest extends TestCase
      * Test `save` existing object
      *
      * @return void
-     * @covers ::save()
-     * @covers ::isCli()
      */
     public function testSaveExisting()
     {
@@ -136,7 +130,6 @@ class ObjectsHandlerTest extends TestCase
      * Test `save` with `locked` attribute
      *
      * @return void
-     * @covers ::save()
      */
     public function testSaveLocked()
     {
@@ -150,7 +143,6 @@ class ObjectsHandlerTest extends TestCase
      * Test `delete` failure
      *
      * @return void
-     * @covers ::remove()
      */
     public function testDeleteException()
     {
@@ -162,7 +154,6 @@ class ObjectsHandlerTest extends TestCase
      * Test `checkEnvironment'
      *
      * @return void
-     * @covers ::checkEnvironment()
      */
     public function testEnvironment()
     {
@@ -181,7 +172,6 @@ class ObjectsHandlerTest extends TestCase
      * Test save custom properties
      *
      * @return void
-     * @coversNothing
      */
     public function testCustomPropsSave()
     {

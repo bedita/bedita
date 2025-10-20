@@ -191,7 +191,7 @@ class ApplicationsTable extends Table
     protected function findCredentials(
         SelectQuery $query,
         string $client_id,
-        ?string $client_secret = null
+        ?string $client_secret = null,
     ): SelectQuery {
         if (empty($client_id)) {
             throw new BadMethodCallException('Required option "clientId" must be a not empty string');

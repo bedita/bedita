@@ -23,12 +23,13 @@ use Cake\ORM\Exception\PersistenceFailedException;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * {@see \BEdita\Core\ORM\Inheritance\InheritanceEventHandler} Test Case
- *
- * @coversDefaultClass \BEdita\Core\ORM\Inheritance\InheritanceEventHandler
  */
+#[CoversClass(InheritanceEventHandler::class)]
 class InheritanceEventHandlerTest extends TestCase
 {
     use FakeAnimalsTrait;
@@ -50,7 +51,6 @@ class InheritanceEventHandlerTest extends TestCase
      * Test implemented events.
      *
      * @return void
-     * @covers ::implementedEvents()
      */
     public function testImplementedEvents()
     {
@@ -209,11 +209,8 @@ class InheritanceEventHandlerTest extends TestCase
      * @param array $expected Expected result.
      * @param array $data Data.
      * @return void
-     * @dataProvider saveProvider()
-     * @covers ::beforeSave()
-     * @covers ::toParent()
-     * @covers ::toDescendant()
      */
+    #[DataProvider('saveProvider')]
     public function testBeforeSave($expected, $data)
     {
         $feline = $this->fakeFelines->newEmptyEntity();
@@ -236,9 +233,6 @@ class InheritanceEventHandlerTest extends TestCase
      * Test rollback if save on a parent table fails.
      *
      * @return void
-     * @covers ::beforeSave()
-     * @covers ::toParent()
-     * @covers ::toDescendant()
      */
     public function testBeforeSaveFailure()
     {
@@ -350,10 +344,8 @@ class InheritanceEventHandlerTest extends TestCase
      * @param array $expected The expected rule errors.
      * @param array $rulesConfig The rules configuration.
      * @return void
-     * @dataProvider applicationRulesErrorsPropagationProvider
-     * @covers ::beforeSave()
-     * @covers ::afterRules()
      */
+    #[DataProvider('applicationRulesErrorsPropagationProvider')]
     public function testApplicationRulesErrorsPropagation($expected, $rulesConfig)
     {
         foreach ($rulesConfig as $rule) {
@@ -367,9 +359,9 @@ class InheritanceEventHandlerTest extends TestCase
                             return false;
                         },
                         sprintf('%sFailure', $table->getAlias()),
-                        $options
+                        $options,
                     );
-                }
+                },
             );
         }
 
@@ -390,7 +382,6 @@ class InheritanceEventHandlerTest extends TestCase
      * Test options passed in che chain
      *
      * @return void
-     * @covers ::beforeSave()
      */
     public function testBeforeSaveOptions()
     {
@@ -402,7 +393,7 @@ class InheritanceEventHandlerTest extends TestCase
                 $eventDispatchedFelines++;
                 static::assertArrayNotHasKey('_inherited', $options);
                 static::assertTrue($options['atomic']);
-            }
+            },
         );
 
         // Inherited table
@@ -413,7 +404,7 @@ class InheritanceEventHandlerTest extends TestCase
                 static::assertArrayHasKey('_inherited', $options);
                 static::assertTrue($options['_inherited']);
                 static::assertFalse($options['atomic']);
-            }
+            },
         );
 
         // Inherited table
@@ -424,7 +415,7 @@ class InheritanceEventHandlerTest extends TestCase
                 static::assertArrayHasKey('_inherited', $options);
                 static::assertTrue($options['_inherited']);
                 static::assertFalse($options['atomic']);
-            }
+            },
         );
 
         $feline = $this->fakeFelines->newEntity([
@@ -444,8 +435,6 @@ class InheritanceEventHandlerTest extends TestCase
      * Test `afterDelete` event handler.
      *
      * @return void
-     * @covers ::afterDelete()
-     * @covers ::toParent()
      */
     public function testAfterDelete()
     {
@@ -463,8 +452,6 @@ class InheritanceEventHandlerTest extends TestCase
      * Test rollback if delete on a parent table fails.
      *
      * @return void
-     * @covers ::afterDelete()
-     * @covers ::toParent()
      */
     public function testAfterDeleteFailure()
     {
@@ -503,8 +490,6 @@ class InheritanceEventHandlerTest extends TestCase
      * Test dirty properties consistency during save process.
      *
      * @return void
-     * @covers ::beforeSave()
-     * @covers ::toDescendant()
      */
     public function testDirtyPropertiesSaving(): void
     {
@@ -538,7 +523,7 @@ class InheritanceEventHandlerTest extends TestCase
                 foreach ($cleanProps as $prop) {
                     static::assertFalse($entity->isDirty($prop));
                 }
-            }
+            },
         );
 
         $feline = $this->fakeFelines->save($feline);

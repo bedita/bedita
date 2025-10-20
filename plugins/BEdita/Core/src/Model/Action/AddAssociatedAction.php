@@ -60,7 +60,7 @@ class AddAssociatedAction extends UpdateAssociatedAction
                     if ($relatedEntity->has('_joinData') && $relatedEntity->get('_joinData')->getErrors()) {
                         throw new InvalidDataException(
                             __d('bedita', 'Error linking entities'),
-                            (array)$relatedEntity->get('_joinData')->getErrors()
+                            (array)$relatedEntity->get('_joinData')->getErrors(),
                         );
                     }
                 }
@@ -71,7 +71,7 @@ class AddAssociatedAction extends UpdateAssociatedAction
         }
 
         throw new RuntimeException(
-            __d('bedita', 'Unable to add additional links with association of type "{0}"', get_class($this->Association))
+            __d('bedita', 'Unable to add additional links with association of type "{0}"', get_class($this->Association)),
         );
     }
 }

@@ -14,13 +14,17 @@ declare(strict_types=1);
  */
 namespace BEdita\Core\Test\TestCase\Model\Behavior;
 
+use BEdita\Core\Model\Behavior\TreeBehavior;
 use Cake\ORM\Entity;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
- * @coversDefaultClass \BEdita\Core\Model\Behavior\TreeBehavior
+ * {@see \BEdita\Core\Model\Behavior\TreeBehavior} Test Case
  */
+#[CoversClass(TreeBehavior::class)]
 class TreeBehaviorTest extends TestCase
 {
     /**
@@ -124,9 +128,8 @@ class TreeBehaviorTest extends TestCase
      * @param int $expected Expected position.
      * @param string $name Name of node.
      * @return void
-     * @dataProvider getCurrentPositionProvider()
-     * @covers ::getCurrentPosition()
      */
+    #[DataProvider('getCurrentPositionProvider')]
     public function testGetCurrentPosition(int $expected, string $name): void
     {
         $node = $this->Table->find()
@@ -206,10 +209,8 @@ class TreeBehaviorTest extends TestCase
      * @param string $name Name of node.
      * @param int|string $position Position to move node at.
      * @return void
-     * @dataProvider moveAtProvider()
-     * @covers ::moveAt()
-     * @covers ::validatePosition()
      */
+    #[DataProvider('moveAtProvider')]
     public function testMoveAt($expected, string $name, $position): void
     {
         $node = $this->Table->find()
@@ -254,7 +255,6 @@ class TreeBehaviorTest extends TestCase
      * The test assures that `left_idx` and `right_idx` are the actual values and not those stored in the entities.
      *
      * @return void
-     * @covers ::moveAt()
      */
     public function testMoveAtUseActualNodePosition(): void
     {
@@ -288,7 +288,6 @@ class TreeBehaviorTest extends TestCase
      * Test {@see TreeBehavior::checkIntegrity()} method with a sane tree.
      *
      * @return void
-     * @covers ::checkIntegrity()
      */
     public function testCheckIntegritySuccess(): void
     {
@@ -301,7 +300,6 @@ class TreeBehaviorTest extends TestCase
      * Test {@see TreeBehavior::checkIntegrity()} method with a record where `left_idx >= right_idx`.
      *
      * @return void
-     * @covers ::checkIntegrity()
      */
     public function testCheckIntegritySwappedIndexes(): void
     {
@@ -320,7 +318,6 @@ class TreeBehaviorTest extends TestCase
      * and its first child's `left_idx`.
      *
      * @return void
-     * @covers ::checkIntegrity()
      */
     public function testCheckIntegrityFirstChildGap(): void
     {
@@ -340,7 +337,6 @@ class TreeBehaviorTest extends TestCase
      * and its last child's `right_idx`.
      *
      * @return void
-     * @covers ::checkIntegrity()
      */
     public function testCheckIntegrityLastChildGap(): void
     {
@@ -359,7 +355,6 @@ class TreeBehaviorTest extends TestCase
      * Test {@see TreeBehavior::checkIntegrity()} method with a record where there's a gap between two consecutive siblings.
      *
      * @return void
-     * @covers ::checkIntegrity()
      */
     public function testCheckIntegritySiblingsGap(): void
     {
@@ -378,7 +373,6 @@ class TreeBehaviorTest extends TestCase
      * Test {@see TreeBehavior::checkIntegrity()} method with two siblings overlapping each other.
      *
      * @return void
-     * @covers ::checkIntegrity()
      */
     public function testCheckIntegritySiblingsOverlapping(): void
     {
@@ -397,7 +391,6 @@ class TreeBehaviorTest extends TestCase
      * Test {@see TreeBehavior::beforeDelete()} method with two siblings nodes.
      *
      * @return void
-     * @covers ::beforeDelete()
      */
     public function testUnorderedDelete()
     {

@@ -17,12 +17,12 @@ namespace BEdita\Core\Test\TestCase\Model\Action;
 use BEdita\Core\Model\Action\DeleteEntityAction;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
 
 /**
  * {@see \BEdita\Core\Model\Action\DeleteEntityAction} Test Case
- *
- * @coversDefaultClass \BEdita\Core\Model\Action\DeleteEntityAction
  */
+#[CoversClass(DeleteEntityAction::class)]
 class DeleteEntityActionTest extends TestCase
 {
     /**
@@ -38,8 +38,6 @@ class DeleteEntityActionTest extends TestCase
      * Test command execution.
      *
      * @return void
-     * @covers ::initialize()
-     * @covers ::execute()
      */
     public function testExecute()
     {

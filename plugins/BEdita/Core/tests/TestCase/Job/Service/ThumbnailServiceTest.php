@@ -21,10 +21,13 @@ use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Text;
 use Exception;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
- * @coversDefaultClass \BEdita\Core\Job\Service\ThumbnailService
+ * {@see \BEdita\Core\Job\Service\ThumbnailService} Test Case
  */
+#[CoversClass(ThumbnailService::class)]
 class ThumbnailServiceTest extends TestCase
 {
     /**
@@ -71,7 +74,7 @@ class ThumbnailServiceTest extends TestCase
         $this->originalRegistry = Thumbnail::getRegistry();
         $this->originalConfig = array_combine(
             $keys,
-            array_map([Thumbnail::class, 'getConfig'], $keys)
+            array_map([Thumbnail::class, 'getConfig'], $keys),
         );
 
         Thumbnail::setRegistry(null);
@@ -109,7 +112,7 @@ class ThumbnailServiceTest extends TestCase
         return [
             'ok' => [
                 true,
-                fn (self $testCase) => $testCase->once(),
+                fn(self $testCase) => $testCase->once(),
                 [
                     'uuid' => 'e5afe167-7341-458d-a1e6-042e8791b0fe',
                     'generator' => 'test',
@@ -120,7 +123,7 @@ class ThumbnailServiceTest extends TestCase
             ],
             'not found' => [
                 true,
-                fn (self $testCase) => $testCase->never(),
+                fn(self $testCase) => $testCase->never(),
                 [
                     'uuid' => Text::uuid(), // This UUID does not exist.
                     'generator' => 'test',
@@ -131,7 +134,7 @@ class ThumbnailServiceTest extends TestCase
             ],
             'error' => [
                 false,
-                fn (self $testCase) => $testCase->once(),
+                fn(self $testCase) => $testCase->once(),
                 [
                     'uuid' => 'e5afe167-7341-458d-a1e6-042e8791b0fe',
                     'generator' => 'test',
@@ -152,16 +155,16 @@ class ThumbnailServiceTest extends TestCase
      * @param array $payload Async job payload.
      * @param bool $shouldThrow Should the base generator throw an exception when invoked?
      * @return void
-     * @dataProvider runProvider()
-     * @covers ::run()
      */
+    #[DataProvider('runProvider')]
     public function testRun($expected, callable $count, array $payload, $shouldThrow = false)
     {
         $stream = $this->Streams->find()->where(['uuid' => $payload['uuid']])->first();
 
         $generator = $this->getMockBuilder(ThumbnailGenerator::class)
-            ->onlyMethods(['generate'])
-            ->getMockForAbstractClass();
+            ->getMock();
+        $generator->method('initialize')
+            ->willReturn(true);
         $method = $generator->expects($count($this))
             ->method('generate')
             ->with($stream, $payload['options']);

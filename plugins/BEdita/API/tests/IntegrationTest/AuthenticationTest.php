@@ -18,12 +18,13 @@ use BEdita\API\TestSuite\IntegrationTestCase;
 use BEdita\Core\Utility\LoggedUser;
 use Cake\ORM\Locator\LocatorAwareTrait;
 use Cake\Utility\Hash;
+use PHPUnit\Framework\Attributes\CoversNothing;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * Tests on /auth endpoint.
- *
- * @coversNothing
  */
+#[CoversNothing]
 class AuthenticationTest extends IntegrationTestCase
 {
     use LocatorAwareTrait;
@@ -70,9 +71,8 @@ class AuthenticationTest extends IntegrationTestCase
      * @param array $data Post data.
      * @param array $headers Additional headers.
      * @return void
-     * @dataProvider authProvider
-     * @coversNothing
      */
+    #[DataProvider('authProvider')]
     public function testAuth(array $data, array $headers = []): void
     {
         $headers += [
@@ -113,7 +113,6 @@ class AuthenticationTest extends IntegrationTestCase
      * Test /auth response with wrong formatted token.
      *
      * @return void
-     * @coversNothing
      */
     public function testBadToken(): void
     {

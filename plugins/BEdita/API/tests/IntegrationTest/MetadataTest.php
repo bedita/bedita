@@ -17,12 +17,13 @@ namespace BEdita\API\Test\IntegrationTest;
 use BEdita\API\TestSuite\IntegrationTestCase;
 use Cake\I18n\DateTime;
 use Cake\Utility\Text;
+use PHPUnit\Framework\Attributes\CoversNothing;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * Test meta data
- *
- * @coversNothing
  */
+#[CoversNothing]
 class MetadataTest extends IntegrationTestCase
 {
     /**
@@ -78,9 +79,8 @@ class MetadataTest extends IntegrationTestCase
      * @param string $type Object type.
      * @param array $attributes New attributes.
      * @return void
-     * @dataProvider lastModifiedProvider
-     * @coversNothing
      */
+    #[DataProvider('lastModifiedProvider')]
     public function testLastModified($id, $type, array $attributes)
     {
         $this->configRequestHeaders('PATCH', $this->getUserAuthHeader('second user', 'password2'));
@@ -102,7 +102,7 @@ class MetadataTest extends IntegrationTestCase
         static::assertEquals(
             DateTime::now()->timestamp,
             DateTime::parse($body['data']['meta']['modified'])->getTimestamp(),
-            '`modified` field not updated'
+            '`modified` field not updated',
         );
         static::assertEqualsWithDelta(DateTime::now()->timestamp, DateTime::parse($body['data']['meta']['modified'])->getTimestamp(), 5, '`modified` field not updated');
         static::assertSame(5, $body['data']['meta']['modified_by'], '`modified_by` field not updated');

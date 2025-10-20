@@ -14,15 +14,17 @@ declare(strict_types=1);
  */
 namespace BEdita\Core\Test\TestCase\Model\Table;
 
+use BEdita\Core\Model\Table\ObjectCategoriesTable;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Hash;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * {@see \BEdita\Core\Model\Table\ObjectCategoriesTable} Test Case
- *
- * @coversDefaultClass \BEdita\Core\Model\Table\ObjectCategoriesTable
  */
+#[CoversClass(ObjectCategoriesTable::class)]
 class ObjectCategoriesTableTest extends TestCase
 {
     /**
@@ -101,9 +103,8 @@ class ObjectCategoriesTableTest extends TestCase
      * @param string[] $expected Expected errors.
      * @param array $data Data.
      * @return void
-     * @dataProvider validationProvider
-     * @covers ::validationDefault()
      */
+    #[DataProvider('validationProvider')]
     public function testValidation(array $expected, array $data)
     {
         $entity = $this->ObjectCategories->newEmptyEntity();
@@ -144,9 +145,8 @@ class ObjectCategoriesTableTest extends TestCase
      * @param bool $expected Expected result.
      * @param array $data Data to be validated.
      * @return void
-     * @dataProvider buildRulesProvider
-     * @covers ::buildRules()
      */
+    #[DataProvider('buildRulesProvider')]
     public function testBuildRules($expected, array $data)
     {
         $entity = $this->ObjectCategories->newEntity($data, ['validate' => false]);

@@ -73,7 +73,7 @@ class ListObjectsAction extends BaseAction
         if (!empty($data['filter'])) {
             $filter = array_merge(
                 ListEntitiesAction::parseFilter($data['filter']),
-                $filter // Later values overwrite previous ones.
+                $filter, // Later values overwrite previous ones.
             );
         }
 

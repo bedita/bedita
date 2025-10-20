@@ -18,12 +18,12 @@ use BEdita\Core\Model\Action\DeleteEntitiesAction;
 use Cake\ORM\Exception\PersistenceFailedException;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
 
 /**
  * {@see \BEdita\Core\Model\Action\DeleteEntitiesAction} Test Case
- *
- * @coversDefaultClass \BEdita\Core\Model\Action\DeleteEntitiesAction
  */
+#[CoversClass(DeleteEntitiesAction::class)]
 class DeleteEntitiesActionTest extends TestCase
 {
     /**
@@ -39,8 +39,6 @@ class DeleteEntitiesActionTest extends TestCase
      * Test command execution.
      *
      * @return void
-     * @covers ::initialize()
-     * @covers ::execute()
      */
     public function testExecute(): void
     {
@@ -56,7 +54,6 @@ class DeleteEntitiesActionTest extends TestCase
      * Test command execution failure.
      *
      * @return void
-     * @covers ::execute()
      */
     public function testExecuteFail(): void
     {

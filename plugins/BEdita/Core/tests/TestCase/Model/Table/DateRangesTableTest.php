@@ -14,15 +14,17 @@ declare(strict_types=1);
  */
 namespace BEdita\Core\Test\TestCase\Model\Table;
 
+use BEdita\Core\Model\Table\DateRangesTable;
 use Cake\I18n\DateTime;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * {@see \BEdita\Core\Model\Table\DateRangesTable} Test Case
- *
- * @coversDefaultClass \BEdita\Core\Model\Table\DateRangesTable
  */
+#[CoversClass(DateRangesTable::class)]
 class DateRangesTableTest extends TestCase
 {
     /**
@@ -66,7 +68,6 @@ class DateRangesTableTest extends TestCase
      * Test marshalling of new entities.
      *
      * @return void
-     * @coversNothing
      */
     public function testMarshal(): void
     {
@@ -153,10 +154,8 @@ class DateRangesTableTest extends TestCase
      * @param array $conditions Date conditions.
      * @param int $numExpected Number of expected results.
      * @return void
-     * @dataProvider findDateProvider
-     * @covers ::findDateRanges()
-     * @covers ::fromToDateFilter()
      */
+    #[DataProvider('findDateProvider')]
     public function testFindDate(array $conditions, int $numExpected): void
     {
         $result = $this->DateRanges->find('dateRanges', ...$conditions)->toArray();
@@ -168,7 +167,6 @@ class DateRangesTableTest extends TestCase
      * Test date ranges finder failure.
      *
      * @return void
-     * @covers ::findDateRanges()
      */
     public function testFindDateFail(): void
     {
@@ -231,13 +229,8 @@ class DateRangesTableTest extends TestCase
      * @param array $conditions Date conditions.
      * @param int $numExpected Number of expected results.
      * @return void
-     * @dataProvider fromToDateFilterProvider
-     * @covers ::fromToDateFilter()
-     * @covers ::getTime()
-     * @covers ::fromDateFilter()
-     * @covers ::toDateFilter()
-     * @covers ::betweenDatesFilter()
      */
+    #[DataProvider('fromToDateFilterProvider')]
     public function testFromToDateFilter(array $conditions, int $numExpected): void
     {
         $result = $this->DateRanges->find('dateRanges', ...$conditions)->toArray();
@@ -248,7 +241,7 @@ class DateRangesTableTest extends TestCase
     /**
      * Test `getTime` failure.
      *
-     * @covers ::getTime()
+     * @return void
      */
     public function testGetTimeFailure(): void
     {

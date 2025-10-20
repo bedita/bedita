@@ -17,10 +17,13 @@ namespace BEdita\API\Test\IntegrationTest;
 use BEdita\API\TestSuite\IntegrationTestCase;
 use Cake\ORM\TableRegistry;
 use Cake\Utility\Hash;
+use PHPUnit\Framework\Attributes\CoversNothing;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * Test on `uname` field
  */
+#[CoversNothing]
 class UniqueNameTest extends IntegrationTestCase
 {
     /**
@@ -55,9 +58,8 @@ class UniqueNameTest extends IntegrationTestCase
      *
      * @param array $attributes Object attributes.
      * @return void
-     * @dataProvider doubleInsertProvider
-     * @coversNothing
      */
+    #[DataProvider('doubleInsertProvider')]
     public function testDoubleInsert(array $attributes)
     {
         $authHeader = $this->getUserAuthHeader();
@@ -96,7 +98,6 @@ class UniqueNameTest extends IntegrationTestCase
      * Test unique name customization.
      *
      * @return void
-     * @coversNothing
      */
     public function testCustomBehavior()
     {
@@ -131,7 +132,6 @@ class UniqueNameTest extends IntegrationTestCase
      * Test invalid numeric unique name.
      *
      * @return void
-     * @coversNothing
      */
     public function testInvalidNumericUname(): void
     {
@@ -161,7 +161,6 @@ class UniqueNameTest extends IntegrationTestCase
      * Test invalid numeric unique name.
      *
      * @return void
-     * @coversNothing
      */
     public function testPostNumericTitle(): void
     {
@@ -189,7 +188,6 @@ class UniqueNameTest extends IntegrationTestCase
      * Test invalid numeric unique name updating an object.
      *
      * @return void
-     * @coversNothing
      */
     public function testUpdateInvalidNumericUname(): void
     {

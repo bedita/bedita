@@ -16,18 +16,24 @@ namespace BEdita\Core\Test\TestCase\Model\Action;
 
 use BEdita\Core\Model\Action\ListAssociatedAction;
 use BEdita\Core\ORM\Inheritance\Table;
+use Cake\Datasource\EntityInterface;
 use Cake\Datasource\Exception\InvalidPrimaryKeyException;
 use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\ORM\Association;
+use Cake\ORM\Table as CakeTable;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
+use Closure;
 use Exception;
 use InvalidArgumentException;
 use LogicException;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
- * @coversDefaultClass \BEdita\Core\Model\Action\ListAssociatedAction
+ * {@see \BEdita\Core\Model\Action\ListAssociatedAction} Test Case
  */
+#[CoversClass(ListAssociatedAction::class)]
 class ListAssociatedActionTest extends TestCase
 {
     /**
@@ -197,17 +203,8 @@ class ListAssociatedActionTest extends TestCase
      * @param int $id Entity ID to list relations for.
      * @param array $options Additional options for action.
      * @return void
-     * @dataProvider invocationProvider()
-     * @covers ::initialize()
-     * @covers ::checkEntityExists()
-     * @covers ::primaryKeyConditions()
-     * @covers ::buildInverseAssociation()
-     * @covers ::clearInverseAssociation()
-     * @covers ::buildQuery()
-     * @covers ::prepareJoinEntity()
-     * @covers ::sort()
-     * @covers ::execute()
      */
+    #[DataProvider('invocationProvider')]
     public function testInvocation($expected, $table, $association, $id, ?array $options = null)
     {
         if ($expected instanceof Exception) {
@@ -237,17 +234,38 @@ class ListAssociatedActionTest extends TestCase
      * Test invocation of command with an unknown association type.
      *
      * @return void
-     * @covers ::execute()
      */
     public function testUnknownAssociationType()
     {
         $this->expectException(LogicException::class);
-        $this->expectExceptionMessageMatches('/^Unknown association type "\w+"$/');
+        $this->expectExceptionMessageMatches('/^Unknown association type ".+"$/');
         $sourceTable = TableRegistry::getTableLocator()->get('FakeArticles');
-        $association = static::getMockForAbstractClass(Association::class, [
-            'TestAssociation',
-            compact('sourceTable'),
-        ]);
+        $association = new class ('TestAssociation', ['sourceTable' => $sourceTable]) extends Association {
+            public function type(): string
+            {
+                return static::ONE_TO_ONE;
+            }
+
+            public function eagerLoader(array $options): Closure
+            {
+                return fn() => null;
+            }
+
+            public function cascadeDelete(EntityInterface $entity, array $options = []): bool
+            {
+                return false;
+            }
+
+            public function isOwningSide(CakeTable $side): bool
+            {
+                return false;
+            }
+
+            public function saveAssociated(EntityInterface $entity, array $options = []): EntityInterface|false
+            {
+                return false;
+            }
+        };
 
         $action = new ListAssociatedAction(compact('association'));
         $action(['primaryKey' => 1]);
@@ -257,7 +275,6 @@ class ListAssociatedActionTest extends TestCase
      * Test `sort` method
      *
      * @return void
-     * @covers ::sort()
      */
     public function testSort(): void
     {
@@ -273,7 +290,6 @@ class ListAssociatedActionTest extends TestCase
      * Test `buildQuery` method with sort param
      *
      * @return void
-     * @covers ::buildQuery()
      */
     public function testBuildQueryWithSortParam(): void
     {
@@ -292,7 +308,6 @@ class ListAssociatedActionTest extends TestCase
      * Test `sort` method with publish start sorting, which uses a query function.
      *
      * @return void
-     * @covers ::sort()
      */
     public function testSortWithPublishStart()
     {

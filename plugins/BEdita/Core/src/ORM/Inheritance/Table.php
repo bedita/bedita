@@ -173,11 +173,11 @@ class Table extends CakeTable implements FinderFilterInterface
 
         $inherited = array_merge(
             array_reverse($this->inheritedTables()),
-            [$this]
+            [$this],
         );
         $table = array_merge(
             array_reverse($table->inheritedTables()),
-            [$table]
+            [$table],
         );
 
         $common = [];
@@ -230,7 +230,7 @@ class Table extends CakeTable implements FinderFilterInterface
         }
 
         throw new BadMethodCallException(
-            sprintf('Unknown finder method `%s`', $type)
+            sprintf('Unknown finder method `%s`', $type),
         );
     }
 

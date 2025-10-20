@@ -19,12 +19,13 @@ use BEdita\Core\Model\Table\ProfilesTable;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use InvalidArgumentException;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * {@see \BEdita\Core\Model\Entity\Profile} Test Case
- *
- * @coversDefaultClass \BEdita\Core\Model\Entity\Profile
  */
+#[CoversClass(Profile::class)]
 class ProfileTest extends TestCase
 {
     /**
@@ -74,7 +75,6 @@ class ProfileTest extends TestCase
      * Test accessible properties.
      *
      * @return void
-     * @coversNothing
      */
     public function testAccessible()
     {
@@ -96,7 +96,6 @@ class ProfileTest extends TestCase
      * Test translatable properties.
      *
      * @return void
-     * @covers ::__construct()
      */
     public function testTranslatable(): void
     {
@@ -137,9 +136,8 @@ class ProfileTest extends TestCase
      * @param mixed $expected Expected result.
      * @param mixed $website Website value.
      * @return void
-     * @dataProvider setUrlProvider()
-     * @covers ::_setWebsite()
      */
+    #[DataProvider('setUrlProvider')]
     public function testSetUrl($expected, $website): void
     {
         $profile = $this->Profiles->newEmptyEntity();

@@ -15,16 +15,19 @@ declare(strict_types=1);
 namespace BEdita\Core\Test\TestCase\Mailer\Transport;
 
 use BEdita\Core\Job\Service\MailService;
+use BEdita\Core\Mailer\Transport\AsyncJobsTransport;
 use BEdita\Core\Test\Utility\TestArraySubsetTrait;
 use Cake\Mailer\Mailer;
 use Cake\Mailer\TransportFactory;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Hash;
+use PHPUnit\Framework\Attributes\CoversClass;
 
 /**
- * @coversDefaultClass \BEdita\Core\Mailer\Transport\AsyncJobsTransport
+ * {@see \BEdita\Core\Mailer\Transport\AsyncJobsTransport} Test Case
  */
+#[CoversClass(AsyncJobsTransport::class)]
 class AsyncJobsTransportTest extends TestCase
 {
     use TestArraySubsetTrait;
@@ -88,7 +91,6 @@ class AsyncJobsTransportTest extends TestCase
      * Test creation of asynchronous jobs.
      *
      * @return void
-     * @covers ::send()
      */
     public function testSend()
     {
@@ -111,7 +113,6 @@ class AsyncJobsTransportTest extends TestCase
      * Test creation of asynchronous jobs.
      *
      * @return void
-     * @covers ::send()
      */
     public function testSendPriority()
     {
@@ -138,7 +139,6 @@ class AsyncJobsTransportTest extends TestCase
      * Test creation of asynchronous jobs and later real email sending.
      *
      * @return void
-     * @coversNothing
      */
     public function testAsyncSend()
     {

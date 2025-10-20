@@ -20,10 +20,13 @@ use Cake\Mailer\TransportFactory;
 use Cake\TestSuite\TestCase;
 use Exception;
 use LogicException;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
- * @coversDefaultClass \BEdita\Core\Mailer\Mailer
+ * {@see \BEdita\Core\Mailer\Mailer} Test Case
  */
+#[CoversClass(Mailer::class)]
 class MailerTest extends TestCase
 {
     /**
@@ -113,9 +116,8 @@ class MailerTest extends TestCase
      * @param array $config Email configuration.
      * @param bool $setTransport Should email transport be set?
      * @return void
-     * @covers ::sendRaw()
-     * @dataProvider sendRawProvider()
      */
+    #[DataProvider('sendRawProvider')]
     public function testRun($expected, array $config, $setTransport = true)
     {
         if ($expected instanceof Exception) {

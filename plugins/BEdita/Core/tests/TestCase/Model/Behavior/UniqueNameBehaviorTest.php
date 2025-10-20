@@ -21,12 +21,13 @@ use Cake\Event\Event;
 use Cake\ORM\Entity;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * {@see \BEdita\Core\Model\Behavior\UniqueNameBehavior} Test Case
- *
- * @coversDefaultClass \BEdita\Core\Model\Behavior\UniqueNameBehavior
  */
+#[CoversClass(UniqueNameBehavior::class)]
 class UniqueNameBehaviorTest extends TestCase
 {
     /**
@@ -101,9 +102,8 @@ class UniqueNameBehaviorTest extends TestCase
      * @param string $username Username.
      * @param string $uname Expected unique name.
      * @return void
-     * @dataProvider uniqueUserProvider
-     * @covers ::uniqueName()
      */
+    #[DataProvider('uniqueUserProvider')]
     public function testUniqueUser($username, $uname)
     {
         $Users = TableRegistry::getTableLocator()->get('Users');
@@ -146,9 +146,8 @@ class UniqueNameBehaviorTest extends TestCase
      * @param string $value Original uname.
      * @param string $expected Expected sanitized uname.
      * @return void
-     * @dataProvider uniqueNameProvider
-     * @covers ::uniqueName()
      */
+    #[DataProvider('uniqueNameProvider')]
     public function testUniqueName($value, $expected)
     {
         $behavior = TableRegistry::getTableLocator()->get('Objects')->behaviors()->get('UniqueName');
@@ -208,9 +207,8 @@ class UniqueNameBehaviorTest extends TestCase
      * @param string $name Full name.
      * @param array $config Configuration.
      * @return void
-     * @dataProvider generateUniqueUserProvider
-     * @covers ::generateUniqueName()
      */
+    #[DataProvider('generateUniqueUserProvider')]
     public function testGenerateUniqueName($username, $name, $config)
     {
         $Users = TableRegistry::getTableLocator()->get('Users');
@@ -227,7 +225,6 @@ class UniqueNameBehaviorTest extends TestCase
      * Test generate unique name when title is numeric.
      *
      * @return array
-     * @covers ::generateUniqueName()
      */
     public function testGenerateUniqueNameFromNumericTitle(): void
     {
@@ -268,9 +265,8 @@ class UniqueNameBehaviorTest extends TestCase
      * @param string $uname Uname.
      * @param string $title Title.
      * @return void
-     * @dataProvider regenerateUniqueNameProvider
-     * @covers ::generateUniqueName()
      */
+    #[DataProvider('regenerateUniqueNameProvider')]
     public function testRegenerateUniqueName($uname, $title)
     {
         $Folders = TableRegistry::getTableLocator()->get('Folders');
@@ -329,9 +325,8 @@ class UniqueNameBehaviorTest extends TestCase
      * @param int|null $id ID to exclude.
      * @param bool $expected Expected result.
      * @return void
-     * @dataProvider uniqueNameExistsProvider
-     * @covers ::uniqueNameExists()
      */
+    #[DataProvider('uniqueNameExistsProvider')]
     public function testUniqueNameExists($uname, $id, $expected)
     {
         $Users = TableRegistry::getTableLocator()->get('Users');
@@ -390,9 +385,8 @@ class UniqueNameBehaviorTest extends TestCase
      * @param array $cfg Configuration.
      * @param bool $regenerate Should unique name be regenerated?
      * @return void
-     * @dataProvider uniqueFromValueProvider
-     * @covers ::uniqueNameFromValue()
      */
+    #[DataProvider('uniqueFromValueProvider')]
     public function testUniqueNameFromValue($value, $expected, array $cfg, $regenerate)
     {
         $behavior = TableRegistry::getTableLocator()->get('Objects')->behaviors()->get('UniqueName');
@@ -409,7 +403,6 @@ class UniqueNameBehaviorTest extends TestCase
      * test uniqueName() conflicts / missing
      *
      * @return void
-     * @covers ::uniqueName()
      */
     public function testUniqueNameMissing()
     {
@@ -437,7 +430,6 @@ class UniqueNameBehaviorTest extends TestCase
      * Test `uniqueName()` when `uname` is valid an unchanged
      *
      * @return void
-     * @covers ::uniqueName()
      */
     public function testUniqueNameUnchanged(): void
     {
@@ -453,7 +445,6 @@ class UniqueNameBehaviorTest extends TestCase
      * Test `uniqueName()` when `uname` is unchanged and not in entity
      *
      * @return void
-     * @covers ::uniqueName()
      */
     public function testUniqueNameIgnore(): void
     {
@@ -473,7 +464,6 @@ class UniqueNameBehaviorTest extends TestCase
      * test generate uname before rules
      *
      * @return void
-     * @covers ::beforeRules()
      */
     public function testBeforeRules()
     {
@@ -497,7 +487,6 @@ class UniqueNameBehaviorTest extends TestCase
      * Test unique name max lenght
      *
      * @return void
-     * @coversNothing
      */
     public function testUniqueNameMaxLen()
     {

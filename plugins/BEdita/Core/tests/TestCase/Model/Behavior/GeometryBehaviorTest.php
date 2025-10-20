@@ -15,12 +15,16 @@ declare(strict_types=1);
 namespace BEdita\Core\Test\TestCase\Model\Behavior;
 
 use BEdita\Core\Exception\BadFilterException;
+use BEdita\Core\Model\Behavior\GeometryBehavior;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
- * @coversDefaultClass \BEdita\Core\Model\Behavior\GeometryBehavior
+ * {@see \BEdita\Core\Model\Behavior\GeometryBehavior} Test Case
  */
+#[CoversClass(GeometryBehavior::class)]
 class GeometryBehaviorTest extends TestCase
 {
     /**
@@ -121,12 +125,8 @@ class GeometryBehaviorTest extends TestCase
      * @param array $conditions Date conditions.
      * @param int $numExpected Number of expected results.
      * @return void
-     * @dataProvider findGeoProvider
-     * @covers ::findGeo()
-     * @covers ::checkGeoSupport()
-     * @covers ::getDistanceExpression()
-     * @covers ::parseCoordinates()
      */
+    #[DataProvider('findGeoProvider')]
     public function testFindGeo(array $conditions, int $numExpected): void
     {
         if (!static::$geoSupport) {
@@ -188,10 +188,8 @@ class GeometryBehaviorTest extends TestCase
      *
      * @param array $conditions Filter options.
      * @return void
-     * @dataProvider badGeoProvider
-     * @covers ::findGeo()
-     * @covers ::parseCoordinates()
      */
+    #[DataProvider('badGeoProvider')]
     public function testBadGeo(array $conditions): void
     {
         $this->expectException(BadFilterException::class);

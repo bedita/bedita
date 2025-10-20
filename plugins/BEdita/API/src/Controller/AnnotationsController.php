@@ -50,7 +50,7 @@ class AnnotationsController extends ResourcesController
                 '_name' => 'api:objects:index',
                 'object_type' => 'objects',
             ],
-            true
+            true,
         );
     }
 

@@ -15,6 +15,7 @@ declare(strict_types=1);
 namespace BEdita\Core\Test\TestCase\Model\Behavior;
 
 use BEdita\Core\Exception\BadFilterException;
+use BEdita\Core\Model\Behavior\SearchableBehavior;
 use BEdita\Core\ORM\Inheritance\Table;
 use BEdita\Core\Search\BaseAdapter;
 use Cake\Core\Configure;
@@ -25,13 +26,14 @@ use Cake\ORM\Query\SelectQuery;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Hash;
 use Exception;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 use RuntimeException;
 
 /**
  * {@see \BEdita\Core\Model\Behavior\SearchableBehavior} Test Case
- *
- * @coversDefaultClass \BEdita\Core\Model\Behavior\SearchableBehavior
  */
+#[CoversClass(SearchableBehavior::class)]
 class SearchableBehaviorTest extends TestCase
 {
     /**
@@ -100,11 +102,8 @@ class SearchableBehaviorTest extends TestCase
      * @param array|\Exception $expected Expected result.
      * @param string|array $query Query string.
      * @return void
-     * @dataProvider findQueryProvider()
-     * @covers ::findQuery()
-     * @covers ::getAdapter()
-     * @covers ::getSearchRegistry()
      */
+    #[DataProvider('findQueryProvider')]
     public function testFindQuery(array|Exception $expected, array $query): void
     {
         if ($expected instanceof Exception) {
@@ -133,7 +132,7 @@ class SearchableBehaviorTest extends TestCase
      */
     public static function getAdapterProvider(): array
     {
-        $newFakeAdapter = fn (array $condition = []) => new class ($condition) extends BaseAdapter {
+        $newFakeAdapter = fn(array $condition = []) => new class ($condition) extends BaseAdapter {
             protected array $condition;
 
             public function __construct(array $condition)
@@ -266,9 +265,8 @@ class SearchableBehaviorTest extends TestCase
      * @param string $expectedPath Expected path.
      * @param array $expected Expected result.
      * @return void
-     * @covers ::getAdapter()
-     * @dataProvider getAdapterProvider()
      */
+    #[DataProvider('getAdapterProvider')]
     public function testGetAdapter(array $searchConfig, array $scopes, string $expectedPath, array $expected): void
     {
         $backupConf = Configure::read('Search');
@@ -289,7 +287,6 @@ class SearchableBehaviorTest extends TestCase
      * Test exception when Search config is wrong.
      *
      * @return void
-     * @covers ::getAdapter()
      */
     public function testGetAdapterException(): void
     {
@@ -306,16 +303,10 @@ class SearchableBehaviorTest extends TestCase
      * Test afterSave() and afterDelete()
      *
      * @return void
-     * @covers ::afterSave()
-     * @covers ::afterDelete()
-     * @covers ::indexEntity()
-     * @covers ::getOperation()
-     * @covers ::getSearchAdapters()
-     * @covers ::getAdapter()
      */
     public function testAfterSaveDelete(): void
     {
-        $newAdapter = fn () => new class extends BaseAdapter {
+        $newAdapter = fn() => new class extends BaseAdapter {
             public $initializedCount = 0;
             public $afterDeleteCount = 0;
             public $afterSaveCount = 0;
@@ -389,16 +380,10 @@ class SearchableBehaviorTest extends TestCase
      * Test afterSave() and afterDelete()
      *
      * @return void
-     * @covers ::afterSave()
-     * @covers ::afterDelete()
-     * @covers ::indexEntity()
-     * @covers ::getOperation()
-     * @covers ::getSearchAdapters()
-     * @covers ::getAdapter()
      */
     public function testAfterSaveDeleteScopes(): void
     {
-        $newAdapter = fn () => new class extends BaseAdapter {
+        $newAdapter = fn() => new class extends BaseAdapter {
             public $initializedCount = 0;
             public $afterDeleteCount = 0;
             public $afterSaveCount = 0;

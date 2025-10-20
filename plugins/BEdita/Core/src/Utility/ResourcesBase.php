@@ -44,7 +44,7 @@ abstract class ResourcesBase
     {
         if (!empty(static::$allowed) && !in_array($type, static::$allowed)) {
             throw new BadRequestException(
-                __d('bedita', 'Resource type not allowed "{0}"', $type)
+                __d('bedita', 'Resource type not allowed "{0}"', $type),
             );
         }
         $type = Inflector::camelize($type);

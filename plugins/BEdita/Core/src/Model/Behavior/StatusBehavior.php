@@ -63,7 +63,7 @@ class StatusBehavior extends Behavior
                 'bedita',
                 'Status "{0}" is not consistent with configured Status.level "{1}"',
                 $status,
-                $level
+                $level,
             ));
         }
     }

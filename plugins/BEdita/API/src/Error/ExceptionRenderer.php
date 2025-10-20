@@ -14,11 +14,6 @@ declare(strict_types=1);
  */
 namespace BEdita\API\Error;
 
-use BEdita\Core\Exception\BadFilterException;
-use BEdita\Core\Exception\ImmutableResourceException;
-use BEdita\Core\Exception\InvalidDataException;
-use BEdita\Core\Exception\LockedResourceException;
-use BEdita\Core\Exception\UserExistsException;
 use Cake\Core\Configure;
 use Cake\Core\Exception\CakeException;
 use Cake\Error\Renderer\WebExceptionRenderer;
@@ -36,19 +31,6 @@ use Throwable;
 class ExceptionRenderer extends WebExceptionRenderer
 {
     /**
-     * Additional exception codes
-     *
-     * @var array
-     */
-    protected array $additionalHttpCodes = [
-        BadFilterException::class => 400,
-        LockedResourceException::class => 403,
-        ImmutableResourceException::class => 403,
-        InvalidDataException::class => 400,
-        UserExistsException::class => 400,
-    ];
-
-    /**
      * {@inheritDoc}
      *
      * @codeCoverageIgnore
@@ -60,8 +42,6 @@ class ExceptionRenderer extends WebExceptionRenderer
         ServerRequest::addDetector('html', [
             'accept' => ['text/html', 'application/xhtml+xml', 'application/xhtml', 'text/xhtml'],
         ]);
-
-        $this->exceptionHttpCodes += $this->additionalHttpCodes;
     }
 
     /**
@@ -140,8 +120,8 @@ class ExceptionRenderer extends WebExceptionRenderer
                         return sprintf('[%s]: %s', $key, $val);
                     },
                     array_keys($d),
-                    array_values($d)
-                )
+                    array_values($d),
+                ),
             );
         }
 

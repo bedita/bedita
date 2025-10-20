@@ -14,16 +14,18 @@ declare(strict_types=1);
  */
 namespace BEdita\Core\Test\TestCase\Model\Table;
 
+use BEdita\Core\Model\Table\ProfilesTable;
 use BEdita\Core\Utility\LoggedUser;
 use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * {@see \BEdita\Core\Model\Table\ProfilesTable} Test Case
- *
- * @coversDefaultClass \BEdita\Core\Model\Table\ProfilesTable
  */
+#[CoversClass(ProfilesTable::class)]
 class ProfilesTableTest extends TestCase
 {
     /**
@@ -86,7 +88,6 @@ class ProfilesTableTest extends TestCase
      * Test initialize method
      *
      * @return void
-     * @coversNothing
      */
     public function testInitialize()
     {
@@ -137,9 +138,8 @@ class ProfilesTableTest extends TestCase
      * @param bool $changed
      * @param array $data
      * @return void
-     * @dataProvider saveProvider
-     * @coversNothing
      */
+    #[DataProvider('saveProvider')]
     public function testSave(bool $changed, array $data)
     {
         $entity = $this->Profiles->newEntity($data);
@@ -187,9 +187,8 @@ class ProfilesTableTest extends TestCase
      * @param bool $expected Expected result.
      * @param array $data Data to be validated.
      * @return void
-     * @dataProvider validationProvider
-     * @coversNothing
      */
+    #[DataProvider('validationProvider')]
     public function testValidation($expected, array $data)
     {
         $profile = $this->Profiles->newEntity($data);
@@ -208,7 +207,6 @@ class ProfilesTableTest extends TestCase
      * Test find method.
      *
      * @return void
-     * @coversNothing
      */
     public function testFind()
     {
@@ -271,7 +269,6 @@ class ProfilesTableTest extends TestCase
      * Test delete.
      *
      * @return void
-     * @covers ::delete()
      */
     public function testDelete()
     {
@@ -380,10 +377,8 @@ class ProfilesTableTest extends TestCase
      * @param array $expected Expected result.
      * @param array $data Save input data.
      * @return void
-     * @dataProvider beforeSaveProvider
-     * @covers ::beforeSave()
-     * @covers ::titleValue()
      */
+    #[DataProvider('beforeSaveProvider')]
     public function testBeforeSave(array $expected, array $data)
     {
         if (empty($data['id'])) {

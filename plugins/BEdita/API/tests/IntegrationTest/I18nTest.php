@@ -17,17 +17,19 @@ namespace BEdita\API\Test\IntegrationTest;
 use BEdita\API\TestSuite\IntegrationTestCase;
 use Cake\Core\Configure;
 use Cake\Utility\Hash;
+use PHPUnit\Framework\Attributes\CoversNothing;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * Test internationalization related cases.
  */
+#[CoversNothing]
 class I18nTest extends IntegrationTestCase
 {
     /**
      * Test wrong lang tag.
      *
      * @return void
-     * @coversNothing
      */
     public function testWrongLang()
     {
@@ -37,7 +39,7 @@ class I18nTest extends IntegrationTestCase
                 'languages' => [
                     'en' => 'English',
                 ],
-            ]
+            ],
         );
 
         $data = [
@@ -96,9 +98,8 @@ class I18nTest extends IntegrationTestCase
      * @param string $url Url string.
      * @param array $expected Expected result.
      * @return void
-     * @dataProvider langProvider
-     * @coversNothing
      */
+    #[DataProvider('langProvider')]
     public function testLang($url, $expected)
     {
         $this->configRequestHeaders();

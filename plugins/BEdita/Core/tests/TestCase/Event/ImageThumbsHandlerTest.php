@@ -25,10 +25,13 @@ use Cake\Event\Event;
 use Cake\Event\EventManager;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Text;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
- * @coversDefaultClass \BEdita\Core\Event\ImageThumbsHandler
+ * {@see \BEdita\Core\Event\ImageThumbsHandler} Test Case
  */
+#[CoversClass(ImageThumbsHandler::class)]
 class ImageThumbsHandlerTest extends TestCase
 {
     /**
@@ -47,7 +50,6 @@ class ImageThumbsHandlerTest extends TestCase
      * Test `implementedEvents` method
      *
      * @return void
-     * @covers ::implementedEvents()
      */
     public function testImplementedEvents(): void
     {
@@ -72,14 +74,14 @@ class ImageThumbsHandlerTest extends TestCase
             ],
             'noImages' => [
                 [
-                    'entity' => static fn (self $testCase) => $testCase->getMockBuilder(Stream::class)->getMock(),
+                    'entity' => static fn(self $testCase) => $testCase->getMockBuilder(Stream::class)->getMock(),
                     'relatedEntities' => [],
                 ],
                 false,
             ],
             'stream and images' => [
                 [
-                    'entity' => static fn (self $testCase) => $testCase->getMockBuilder(Stream::class)->getMock(),
+                    'entity' => static fn(self $testCase) => $testCase->getMockBuilder(Stream::class)->getMock(),
                     'relatedEntities' => static function (self $testCase) {
                         $image = $testCase->getMockBuilder(ObjectEntity::class)
                             ->onlyMethods(['get'])
@@ -100,9 +102,8 @@ class ImageThumbsHandlerTest extends TestCase
      * @param array $data Event data.
      * @param bool $updateThumbsIsCalled If `updateThumbs` method is called.
      * @return void
-     * @dataProvider afterSaveAssociatedProvider
-     * @covers ::afterSaveAssociated()
      */
+    #[DataProvider('afterSaveAssociatedProvider')]
     public function testAfterSaveAssociated(array $data, bool $updateThumbsIsCalled): void
     {
         $handler = new class extends ImageThumbsHandler {
@@ -114,8 +115,8 @@ class ImageThumbsHandlerTest extends TestCase
         };
 
         $data = array_map(
-            fn ($value) => is_callable($value) ? $value($this) : $value,
-            $data
+            fn($value) => is_callable($value) ? $value($this) : $value,
+            $data,
         );
 
         $event = new Event('Associated.afterSave', $this, $data);
@@ -127,7 +128,6 @@ class ImageThumbsHandlerTest extends TestCase
      * Test `updateThumbs` method
      *
      * @return void
-     * @covers ::updateThumbs()
      */
     public function testUpdateThumbs(): void
     {

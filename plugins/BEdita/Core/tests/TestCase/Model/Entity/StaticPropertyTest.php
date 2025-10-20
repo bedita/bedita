@@ -23,12 +23,13 @@ use BEdita\Core\Test\Utility\TestArraySubsetTrait;
 use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * {@see \BEdita\Core\Model\Entity\StaticProperty} Test Case
- *
- * @coversDefaultClass \BEdita\Core\Model\Entity\StaticProperty
  */
+#[CoversClass(StaticProperty::class)]
 class StaticPropertyTest extends TestCase
 {
     use TestArraySubsetTrait;
@@ -83,7 +84,6 @@ class StaticPropertyTest extends TestCase
      * Test conversion from a property to a static property.
      *
      * @return void
-     * @covers ::fromProperty()
      */
     public function testFromProperty()
     {
@@ -148,12 +148,8 @@ class StaticPropertyTest extends TestCase
      * @param string $name Column name.
      * @param string $table Table name.
      * @return void
-     * @dataProvider inferFromSchemaProvider()
-     * @covers ::_setName()
-     * @covers ::_setTable()
-     * @covers ::getSchemaColumnDefinition()
-     * @covers ::inferFromSchema()
      */
+    #[DataProvider('inferFromSchemaProvider')]
     public function testInferFromSchema(array $expected, $name, $table)
     {
         $entity = new StaticProperty();
@@ -200,9 +196,8 @@ class StaticPropertyTest extends TestCase
      * @param string|null $expected Expected result
      * @param array $data Entity data.
      * @return void
-     * @dataProvider getTableProvider()
-     * @covers ::_getTable()
      */
+    #[DataProvider('getTableProvider')]
     public function testGetTable($expected, array $data)
     {
         $entity = new StaticProperty($data);
@@ -258,9 +253,8 @@ class StaticPropertyTest extends TestCase
      * @param mixed $expected Expected result.
      * @param array $data Entity data.
      * @return void
-     * @dataProvider getDefaultProvider()
-     * @covers ::_getDefault()
      */
+    #[DataProvider('getDefaultProvider')]
     public function testGetDefault($expected, array $data)
     {
         $entity = new StaticProperty($data);
@@ -328,9 +322,8 @@ class StaticPropertyTest extends TestCase
      * @param bool $expected Expected result.
      * @param array $data Entity data.
      * @return void
-     * @dataProvider getRequiredProvider()
-     * @covers ::_getRequired()
      */
+    #[DataProvider('getRequiredProvider')]
     public function testGetRequired($expected, array $data)
     {
         $entity = new StaticProperty($data);
@@ -404,9 +397,8 @@ class StaticPropertyTest extends TestCase
      * @param string $table Table name.
      * @param string|null $mode Property access mode.
      * @return void
-     * @dataProvider getSchemaProvider()
-     * @covers ::getSchema()
      */
+    #[DataProvider('getSchemaProvider')]
     public function testGetSchema($expected, $name, $table, $mode = null)
     {
         $entity = new StaticProperty();
@@ -474,9 +466,8 @@ class StaticPropertyTest extends TestCase
      * @param bool $expected Expected result.
      * @param array $data Entity data.
      * @return void
-     * @dataProvider getTranslatableProvider()
-     * @covers ::_getTranslatable()
      */
+    #[DataProvider('getTranslatableProvider')]
     public function testGetTranslatable($expected, array $data): void
     {
         $entity = new StaticProperty($data);

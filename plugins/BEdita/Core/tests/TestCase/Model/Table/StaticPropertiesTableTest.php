@@ -16,17 +16,19 @@ namespace BEdita\Core\Test\TestCase\Model\Table;
 
 use BEdita\Core\Model\Entity\StaticProperty;
 use BEdita\Core\Model\Table\ObjectTypesTable;
+use BEdita\Core\Model\Table\StaticPropertiesTable;
 use BEdita\Core\Test\Utility\TestArraySubsetTrait;
 use Cake\Cache\Cache;
 use Cake\Database\Schema\TableSchema;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * {@see \BEdita\Core\Model\Table\StaticPropertiesTable} Test Case
- *
- * @coversDefaultClass \BEdita\Core\Model\Table\StaticPropertiesTable
  */
+#[CoversClass(StaticPropertiesTable::class)]
 class StaticPropertiesTableTest extends TestCase
 {
     use TestArraySubsetTrait;
@@ -80,7 +82,6 @@ class StaticPropertiesTableTest extends TestCase
      * Test table initialization.
      *
      * @return void
-     * @covers ::initialize()
      */
     public function testInitialize()
     {
@@ -98,7 +99,6 @@ class StaticPropertiesTableTest extends TestCase
      * Test creation of temporary table.
      *
      * @return void
-     * @covers ::createTable()
      */
     public function testCreateTable()
     {
@@ -252,11 +252,8 @@ class StaticPropertiesTableTest extends TestCase
      * @param array|null $expected Expected result.
      * @param array $conditions Conditions
      * @return void
-     * @dataProvider addSchemaDetailsProvider()
-     * @covers ::addSchemaDetails()
-     * @covers ::listOwnTables()
-     * @covers ::prepareTableFields()
      */
+    #[DataProvider('addSchemaDetailsProvider')]
     public function testAddSchemaDetails(?array $expected, array $conditions)
     {
         $result = TableRegistry::getTableLocator()->get('StaticProperties')->find()

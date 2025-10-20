@@ -14,18 +14,16 @@ declare(strict_types=1);
  */
 namespace BEdita\Core\Test\TestCase\Utility;
 
-use AllowDynamicProperties;
+use BEdita\Core\Model\Table\PropertiesTable;
 use BEdita\Core\Utility\Properties;
 use Cake\Http\Exception\BadRequestException;
 use Cake\TestSuite\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
 
 /**
  * {@see \BEdita\Core\Utility\Properties} Test Case
- *
- * @coversDefaultClass \BEdita\Core\Utility\Properties
- * @property \BEdita\Core\Model\Table\PropertiesTable $Properties
  */
-#[AllowDynamicProperties]
+#[CoversClass(Properties::class)]
 class PropertiesTest extends TestCase
 {
     /**
@@ -45,6 +43,13 @@ class PropertiesTest extends TestCase
         'plugin.BEdita/Core.Locations',
         'plugin.BEdita/Core.Media',
     ];
+
+    /**
+     * Properties table instance.
+     *
+     * @var \BEdita\Core\Model\Table\PropertiesTable
+     */
+    protected PropertiesTable $Properties;
 
     /**
      * Test properties
@@ -79,8 +84,6 @@ class PropertiesTest extends TestCase
      * Test `create` method.
      *
      * @return void
-     * @covers ::create()
-     * @covers ::validate()
      */
     public function testCreate(): void
     {
@@ -99,7 +102,6 @@ class PropertiesTest extends TestCase
      * Test `remove` method.
      *
      * @return void
-     * @covers ::remove()
      */
     public function testRemove(): void
     {
@@ -117,7 +119,6 @@ class PropertiesTest extends TestCase
      * Test `validate` failure.
      *
      * @return void
-     * @covers ::validate()
      */
     public function testValidate(): void
     {
@@ -132,7 +133,6 @@ class PropertiesTest extends TestCase
      * Test `update` method.
      *
      * @return void
-     * @covers ::update()
      */
     public function testUpdate(): void
     {

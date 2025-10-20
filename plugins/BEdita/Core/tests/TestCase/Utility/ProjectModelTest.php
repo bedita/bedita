@@ -16,12 +16,13 @@ namespace BEdita\Core\Test\TestCase\Utility;
 
 use BEdita\Core\Utility\ProjectModel;
 use Cake\TestSuite\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * {@see \BEdita\Core\Utility\ProjectModel} Test Case
- *
- * @coversDefaultClass \BEdita\Core\Utility\ProjectModel
  */
+#[CoversClass(ProjectModel::class)]
 class ProjectModelTest extends TestCase
 {
     /**
@@ -492,15 +493,6 @@ class ProjectModelTest extends TestCase
      * Test `generate()` method
      *
      * @return void
-     * @covers ::generate()
-     * @covers ::applications()
-     * @covers ::roles()
-     * @covers ::propertyTypes()
-     * @covers ::objectTypes()
-     * @covers ::relations()
-     * @covers ::properties()
-     * @covers ::categories()
-     * @covers ::configs()
      */
     public function testGenerate(): void
     {
@@ -514,9 +506,6 @@ class ProjectModelTest extends TestCase
      * Test `diff()` method adding items
      *
      * @return void
-     * @covers ::diff()
-     * @covers ::byObjectDiff()
-     * @covers ::itemsToUpdate()
      */
     public function testDiffAdd(): void
     {
@@ -550,8 +539,6 @@ class ProjectModelTest extends TestCase
      * Test `diff()` method removing items
      *
      * @return void
-     * @covers ::diff()
-     * @covers ::byObjectDiff()
      */
     public function testDiffRemove(): void
     {
@@ -589,9 +576,6 @@ class ProjectModelTest extends TestCase
      * Test `diff()` method updating items
      *
      * @return void
-     * @covers ::diff()
-     * @covers ::byObjectDiff()
-     * @covers ::itemsToUpdate()
      */
     public function testDiffUpdate(): void
     {
@@ -648,9 +632,8 @@ class ProjectModelTest extends TestCase
      * Test `categoriesToUpdate` method
      *
      * @return void
-     * @covers ::categoriesToUpdate()
-     * @dataProvider categoriesToUpdateProvider()
      */
+    #[DataProvider('categoriesToUpdateProvider')]
     public function testCategoriesToUpdate(array $update, array $expected): void
     {
         ProjectModel::categoriesToUpdate($update);
@@ -718,10 +701,8 @@ class ProjectModelTest extends TestCase
      * @param array $old Old config
      * @param array $current Current config
      * @return void
-     * @dataProvider configDiffProvider()
-     * @covers ::configDiff()
-     * @covers ::itemsToUpdate()
      */
+    #[DataProvider('configDiffProvider')]
     public function testConfigDiff(array $old, array $current, array $expected): void
     {
         $projectModel = new class extends ProjectModel {

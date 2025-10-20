@@ -107,7 +107,7 @@ class CategoriesBehavior extends Behavior
             function ($item) {
                 return $this->checkTag($item);
             },
-            (array)$entity->get('tags')
+            (array)$entity->get('tags'),
         ));
     }
 

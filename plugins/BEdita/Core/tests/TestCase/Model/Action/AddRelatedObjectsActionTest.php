@@ -16,6 +16,8 @@ namespace BEdita\Core\Test\TestCase\Model\Action;
 
 use ArrayObject;
 use BEdita\Core\Model\Action\AddRelatedObjectsAction;
+use BEdita\Core\Model\Action\AssociatedTrait;
+use BEdita\Core\Model\Action\UpdateRelatedObjectsAction;
 use BEdita\Core\ORM\Association\RelatedTo;
 use BEdita\Core\Utility\LoggedUser;
 use Cake\Database\Expression\QueryExpression;
@@ -26,12 +28,18 @@ use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Inflector;
 use Exception;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\CoversTrait;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
- * @covers \BEdita\Core\Model\Action\AddRelatedObjectsAction
- * @covers \BEdita\Core\Model\Action\UpdateRelatedObjectsAction
- * @covers \BEdita\Core\Model\Action\AssociatedTrait
+ * {@see \BEdita\Core\Model\Action\AddRelatedObjectsAction} Test Case
+ * {@see \BEdita\Core\Model\Action\UpdateRelatedObjectsAction} Test Case
+ * {@see \BEdita\Core\Model\Action\AssociatedTrait} Test Case
  */
+#[CoversClass(AddRelatedObjectsAction::class)]
+#[CoversClass(UpdateRelatedObjectsAction::class)]
+#[CoversTrait(AssociatedTrait::class)]
 class AddRelatedObjectsActionTest extends TestCase
 {
     /**
@@ -176,8 +184,8 @@ class AddRelatedObjectsActionTest extends TestCase
      * @param int $id Entity to update relations for.
      * @param int[] $related Related entity(-ies).
      * @return void
-     * @dataProvider invocationProvider()
      */
+    #[DataProvider('invocationProvider')]
     public function testInvocation($expected, $objectType, $relation, $id, array $related)
     {
         if ($expected instanceof Exception) {
@@ -286,8 +294,8 @@ class AddRelatedObjectsActionTest extends TestCase
      * @param string $tableName The table name of object id
      * @param string $relation The relation to use
      * @return void
-     * @dataProvider linkEntitiesRelatedToOtherObjectProvider()
      */
+    #[DataProvider('linkEntitiesRelatedToOtherObjectProvider')]
     public function testLinkEntitiesRelatedToOtherObject(int $id, string $tableName, string $relation): void
     {
         $Table = TableRegistry::getTableLocator()->get($tableName);

@@ -20,12 +20,13 @@ use Cake\ORM\Association\BelongsTo;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Hash;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * {@see \BEdita\Core\Model\Table\UserTokensTable} Test Case
- *
- * @coversDefaultClass BEdita\Core\Model\Table\UserTokensTable
  */
+#[CoversClass(UserTokensTable::class)]
 class UserTokensTableTest extends TestCase
 {
     /**
@@ -75,7 +76,6 @@ class UserTokensTableTest extends TestCase
      * Test initialization.
      *
      * @return void
-     * @coversNothing
      */
     public function testInitialization()
     {
@@ -122,9 +122,8 @@ class UserTokensTableTest extends TestCase
      * @param string[] $expected Expected errors.
      * @param array $data Data.
      * @return void
-     * @dataProvider validationProvider
-     * @covers ::validationDefault()
      */
+    #[DataProvider('validationProvider')]
     public function testValidation(array $expected, array $data)
     {
         $entity = $this->UserTokens->newEmptyEntity();
@@ -138,7 +137,6 @@ class UserTokensTableTest extends TestCase
      * Test 'valid' finder.
      *
      * @return void
-     * @covers ::findValid()
      */
     public function testValidFinder()
     {
@@ -175,9 +173,8 @@ class UserTokensTableTest extends TestCase
      * Test for getTokenTypes()
      *
      * @return void
-     * @dataProvider getTokenTypesProvider
-     * @covers ::getTokenTypes()
      */
+    #[DataProvider('getTokenTypesProvider')]
     public function testGetTokenTypes($expected, $conf)
     {
         Configure::write('UserTokens.types', $conf);

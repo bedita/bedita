@@ -24,12 +24,15 @@ use InvalidArgumentException;
 use League\Flysystem\DirectoryListing;
 use League\Flysystem\MountManager;
 use League\Flysystem\UnableToResolveFilesystemMount;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 use RuntimeException;
 use stdClass;
 
 /**
- * @coversDefaultClass \BEdita\Core\Filesystem\FilesystemRegistry
+ * {@see \BEdita\Core\Filesystem\FilesystemRegistry} Test Case
  */
+#[CoversClass(FilesystemRegistry::class)]
 class FilesystemRegistryTest extends TestCase
 {
     /**
@@ -46,7 +49,6 @@ class FilesystemRegistryTest extends TestCase
      * Test static configuration.
      *
      * @return void
-     * @coversNothing
      */
     public function testStaticConfiguration()
     {
@@ -97,7 +99,7 @@ class FilesystemRegistryTest extends TestCase
             ],
             'bad instance' => [
                 new RuntimeException(
-                    sprintf('Filesystem adapters must use %s as a base class.', FilesystemAdapter::class)
+                    sprintf('Filesystem adapters must use %s as a base class.', FilesystemAdapter::class),
                 ),
                 'Bad',
                 [
@@ -114,11 +116,8 @@ class FilesystemRegistryTest extends TestCase
      * @param string $objectName Name of registry object.
      * @param array $config Adapter configuration.
      * @return void
-     * @dataProvider registryProvider()
-     * @covers ::_resolveClassName()
-     * @covers ::_throwMissingClassError()
-     * @covers ::_create()
      */
+    #[DataProvider('registryProvider')]
     public function testRegistry($expected, $objectName, array $config = []): void
     {
         if ($expected instanceof Exception) {
@@ -138,7 +137,6 @@ class FilesystemRegistryTest extends TestCase
      * Test registry with invalid configuration.
      *
      * @return void
-     * @covers ::_create()
      */
     public function testRegistryFailInitialize(): void
     {
@@ -157,7 +155,6 @@ class FilesystemRegistryTest extends TestCase
      * Test getter.
      *
      * @return void
-     * @covers ::get()
      */
     public function testGet()
     {
@@ -184,7 +181,6 @@ class FilesystemRegistryTest extends TestCase
      * Test getter when adapter is missing.
      *
      * @return void
-     * @covers ::get()
      */
     public function testGetMissing()
     {
@@ -197,7 +193,6 @@ class FilesystemRegistryTest extends TestCase
      * Test getter for mount manager.
      *
      * @return void
-     * @covers ::getMountManager()
      */
     public function testGetMountManager()
     {
@@ -225,7 +220,6 @@ class FilesystemRegistryTest extends TestCase
      * Test dropping all configurations.
      *
      * @return void
-     * @covers ::dropAll()
      */
     public function testDropAll()
     {
@@ -277,10 +271,8 @@ class FilesystemRegistryTest extends TestCase
      * @param string $path
      * @param array $config
      * @return void
-     * @dataProvider getPublicUrlProvider()
-     * @covers ::getPublicUrl()
-     * @covers ::getPrefixAndPath()
      */
+    #[DataProvider('getPublicUrlProvider')]
     public function testGetPublicUrl($expected, $path, array $config)
     {
         if ($expected instanceof Exception) {

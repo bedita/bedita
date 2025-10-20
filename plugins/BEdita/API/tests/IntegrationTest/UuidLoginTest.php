@@ -18,12 +18,12 @@ use BEdita\API\TestSuite\IntegrationTestCase;
 use Cake\ORM\TableRegistry;
 use Cake\Utility\Hash;
 use Cake\Utility\Text;
+use PHPUnit\Framework\Attributes\CoversNothing;
 
 /**
  * Tests on anonymous login.
- *
- * @coversNothing
  */
+#[CoversNothing]
 class UuidLoginTest extends IntegrationTestCase
 {
     /**

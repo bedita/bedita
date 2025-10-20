@@ -69,7 +69,7 @@ class ThumbsCommand extends Command
         $io->out(sprintf(
             '=====> Operation started at <info>%s</info>, using presets: %s',
             DateTime::now()->toIso8601String(),
-            implode(', ', array_map(fn (string $preset) => sprintf('<comment>%s</comment>', $preset), $presets)),
+            implode(', ', array_map(fn(string $preset) => sprintf('<comment>%s</comment>', $preset), $presets)),
         ));
 
         $success = $failed = 0;
@@ -107,7 +107,7 @@ class ThumbsCommand extends Command
      */
     protected static function availablePresets(): array
     {
-        return array_keys(array_filter((array)Configure::read('Thumbnails.presets'), fn (array $preset) => !isset($preset['generator'])));
+        return array_keys(array_filter((array)Configure::read('Thumbnails.presets'), fn(array $preset) => !isset($preset['generator'])));
     }
 
     /**
@@ -127,12 +127,12 @@ class ThumbsCommand extends Command
             ->matching('Streams')
             ->contain('Streams');
         if (!empty($ids)) {
-            $query = $query->where(fn (QueryExpression $exp): QueryExpression => $exp->in($idField, $ids));
+            $query = $query->where(fn(QueryExpression $exp): QueryExpression => $exp->in($idField, $ids));
         }
 
         do {
             $results = $query->cleanCopy()
-                ->where(fn (QueryExpression $exp): QueryExpression => $exp->gt('id', $id))
+                ->where(fn(QueryExpression $exp): QueryExpression => $exp->gt('id', $id))
                 ->limit(100)
                 ->orderByAsc($idField)
                 ->all();

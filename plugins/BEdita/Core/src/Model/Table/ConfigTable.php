@@ -138,7 +138,7 @@ class ConfigTable extends Table
         SelectQuery $query,
         string $name,
         ?string $application = null,
-        ?int $application_id = null
+        ?int $application_id = null,
     ): SelectQuery {
         $query = $query->where([$this->aliasField('name') => $name]);
         if (empty($application) && empty($application_id)) {
@@ -195,7 +195,7 @@ class ConfigTable extends Table
 
         return $this->queryCache(
             $query,
-            sprintf('config_%s_%s', $applicationId ?: 'any', $context ?: 'any')
+            sprintf('config_%s_%s', $applicationId ?: 'any', $context ?: 'any'),
         );
     }
 }

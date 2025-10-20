@@ -18,12 +18,13 @@ use BEdita\Core\ORM\QueryFilterTrait;
 use Cake\ORM\Query\SelectQuery;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
+use PHPUnit\Framework\Attributes\CoversTrait;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * {@see BEdita\Core\ORM\QueryFilterTrait} Test Case
- *
- * @coversDefaultClass \BEdita\Core\ORM\QueryFilterTrait
  */
+#[CoversTrait(QueryFilterTrait::class)]
 class QueryFilterTraitTest extends TestCase
 {
     use QueryFilterTrait;
@@ -201,10 +202,8 @@ class QueryFilterTraitTest extends TestCase
      * @param array $options Options.
      * @param array|false $numExpected Number of expected results.
      * @return void
-     * @dataProvider fieldsFilterProvider
-     * @covers ::fieldsFilter()
-     * @covers ::operatorExpression()
      */
+    #[DataProvider('fieldsFilterProvider')]
     public function testFieldsFilter($options, $numExpected)
     {
         $query = new SelectQuery($this->fakeAnimals);

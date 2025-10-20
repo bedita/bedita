@@ -18,10 +18,13 @@ use BEdita\Core\ORM\Inheritance\Marshaller;
 use Cake\I18n\DateTime;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
- * @coversDefaultClass \BEdita\Core\ORM\Inheritance\Marshaller
+ * {@see \BEdita\Core\ORM\Inheritance\Marshaller} Test Case
  */
+#[CoversClass(Marshaller::class)]
 class MarshallerTest extends TestCase
 {
     use FakeAnimalsTrait;
@@ -41,8 +44,6 @@ class MarshallerTest extends TestCase
      * Test marshall data using table without inheritance
      *
      * @return void
-     * @covers ::_buildPropertyMap()
-     * @covers ::buildTablePropertyMap()
      */
     public function testBuildPropertyMapWithoutInheritance()
     {
@@ -108,10 +109,8 @@ class MarshallerTest extends TestCase
      * @param array $data The data to be marshalled
      * @param array $expected The array of entity visible properties
      * @return void
-     * @dataProvider buildPropertyMapProvider()
-     * @covers ::_buildPropertyMap()
-     * @covers ::buildTablePropertyMap()
      */
+    #[DataProvider('buildPropertyMapProvider')]
     public function testBuildPropertyMap(array $data, array $expected)
     {
         $marshaller = new Marshaller($this->fakeFelines);

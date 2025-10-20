@@ -15,15 +15,19 @@ declare(strict_types=1);
 namespace BEdita\Core\Test\TestCase\Model\Table;
 
 use BEdita\Core\Model\Table\ObjectTypesTable;
+use BEdita\Core\Model\Table\RelationsTable;
 use Cake\Cache\Cache;
 use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use Exception;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
- * @coversDefaultClass \BEdita\Core\Model\Table\RelationsTable
+ * {@see \BEdita\Core\Model\Table\RelationsTable} Test Case
  */
+#[CoversClass(RelationsTable::class)]
 class RelationsTableTest extends TestCase
 {
     /**
@@ -137,9 +141,8 @@ class RelationsTableTest extends TestCase
      * @param bool $expected Expected result.
      * @param array $data Data to be validated.
      * @return void
-     * @dataProvider validationProvider
-     * @coversNothing
      */
+    #[DataProvider('validationProvider')]
     public function testValidation($expected, array $data)
     {
         if (empty($data['id'])) {
@@ -182,9 +185,8 @@ class RelationsTableTest extends TestCase
      * @param array $expected Expected results.
      * @param string $name Relation name.
      * @return void
-     * @covers ::findByName()
-     * @dataProvider findByNameProvider()
      */
+    #[DataProvider('findByNameProvider')]
     public function testFindByName(array $expected, string $name): void
     {
         if ($expected instanceof Exception) {
@@ -207,7 +209,6 @@ class RelationsTableTest extends TestCase
      * Test after save callback.
      *
      * @return void
-     * @covers ::afterSave()
      */
     public function testInvalidateCacheAfterSave()
     {
@@ -233,7 +234,6 @@ class RelationsTableTest extends TestCase
      * Test before save callback on an existing entity.
      *
      * @return void
-     * @covers ::beforeSave()
      */
     public function testBeforeSaveExisting()
     {
@@ -258,7 +258,6 @@ class RelationsTableTest extends TestCase
      * Test before save callback with a new entity.
      *
      * @return void
-     * @covers ::beforeSave()
      */
     public function testBeforeSave()
     {
@@ -276,7 +275,6 @@ class RelationsTableTest extends TestCase
      * Test after delete callback.
      *
      * @return void
-     * @covers ::afterDelete()
      */
     public function testInvalidateCacheAfterDelete()
     {
@@ -335,9 +333,8 @@ class RelationsTableTest extends TestCase
      * @param int|\Exception $expected The expected result
      * @param int|string $search The search value
      * @return void
-     * @dataProvider getProvider
-     * @covers ::get()
      */
+    #[DataProvider('getProvider')]
     public function testGet($expected, $search)
     {
         if ($expected instanceof Exception) {

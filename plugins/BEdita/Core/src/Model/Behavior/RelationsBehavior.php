@@ -114,11 +114,11 @@ class RelationsBehavior extends Behavior
 
             $through = TableRegistry::getTableLocator()->get(
                 $relation->alias . 'ObjectRelations',
-                ['className' => 'ObjectRelations']
+                ['className' => 'ObjectRelations'],
             );
             $through->getValidator()->setProvider(
                 'jsonSchema',
-                Schema::import(!empty($relation->get('params')) ? $relation->params : true)
+                Schema::import(!empty($relation->get('params')) ? $relation->params : true),
             );
             $targetObjectType = ObjectType::getClosestCommonAncestor(...(array)$relation->right_object_types);
 
@@ -147,11 +147,11 @@ class RelationsBehavior extends Behavior
 
             $through = TableRegistry::getTableLocator()->get(
                 $relation->inverse_alias . 'ObjectRelations',
-                ['className' => 'ObjectRelations']
+                ['className' => 'ObjectRelations'],
             );
             $through->getValidator()->setProvider(
                 'jsonSchema',
-                Schema::import(!empty($relation->get('params')) ? $relation->params : true)
+                Schema::import(!empty($relation->get('params')) ? $relation->params : true),
             );
             $targetObjectType = ObjectType::getClosestCommonAncestor(...(array)$relation->left_object_types);
 

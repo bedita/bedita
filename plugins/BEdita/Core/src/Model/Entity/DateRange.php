@@ -282,19 +282,19 @@ class DateRange extends Entity
         foreach ($dateRanges as $dateRange) {
             if (!($dateRange instanceof self)) {
                 throw new LogicException(
-                    __d('bedita', 'Invalid Date Range entity class: expected "{0}", got "{1}"', static::class, $getType($dateRange))
+                    __d('bedita', 'Invalid Date Range entity class: expected "{0}", got "{1}"', static::class, $getType($dateRange)),
                 );
             }
 
             if (!($dateRange->start_date instanceof DateTimeInterface)) {
                 throw new LogicException(
-                    __d('bedita', 'Invalid "{0}": expected "{1}", got "{2}"', 'start_date', DateTimeInterface::class, $getType($dateRange->start_date))
+                    __d('bedita', 'Invalid "{0}": expected "{1}", got "{2}"', 'start_date', DateTimeInterface::class, $getType($dateRange->start_date)),
                 );
             }
 
             if (!($dateRange->end_date instanceof DateTimeInterface) && $dateRange->end_date !== null) {
                 throw new LogicException(
-                    __d('bedita', 'Invalid "{0}": expected "{1}", got "{2}"', 'end_date', DateTimeInterface::class, $getType($dateRange->end_date))
+                    __d('bedita', 'Invalid "{0}": expected "{1}", got "{2}"', 'end_date', DateTimeInterface::class, $getType($dateRange->end_date)),
                 );
             }
         }

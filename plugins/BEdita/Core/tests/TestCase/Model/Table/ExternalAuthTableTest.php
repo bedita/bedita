@@ -15,6 +15,7 @@ declare(strict_types=1);
 namespace BEdita\Core\Test\TestCase\Model\Table;
 
 use BEdita\Core\Exception\BadFilterException;
+use BEdita\Core\Model\Table\ExternalAuthTable;
 use BEdita\Core\Utility\LoggedUser;
 use Cake\Core\Configure;
 use Cake\I18n\DateTime;
@@ -23,12 +24,13 @@ use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Hash;
 use Exception;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * {@see \BEdita\Core\Model\Table\ExternalAuthTable} Test Case
- *
- * @coversDefaultClass \BEdita\Core\Model\Table\ExternalAuthTable
  */
+#[CoversClass(ExternalAuthTable::class)]
 class ExternalAuthTableTest extends TestCase
 {
     /**
@@ -84,7 +86,6 @@ class ExternalAuthTableTest extends TestCase
      * Test initialization.
      *
      * @return void
-     * @coversNothing
      */
     public function testInitialization()
     {
@@ -144,9 +145,8 @@ class ExternalAuthTableTest extends TestCase
      * @param bool $expected Expected result.
      * @param array $data Data to be validated.
      * @return void
-     * @dataProvider validationProvider
-     * @coversNothing
      */
+    #[DataProvider('validationProvider')]
     public function testValidation($expected, array $data)
     {
         $externalAuth = $this->ExternalAuth->newEmptyEntity();
@@ -160,7 +160,6 @@ class ExternalAuthTableTest extends TestCase
      * Test before save callback when everything is already ok.
      *
      * @return void
-     * @covers ::beforeSave()
      */
     public function testBeforeSaveNothingToDo()
     {
@@ -182,7 +181,6 @@ class ExternalAuthTableTest extends TestCase
      * Test before save callback that creates a new user.
      *
      * @return void
-     * @covers ::beforeSave()
      */
     public function testBeforeSaveCreateUser()
     {
@@ -212,7 +210,6 @@ class ExternalAuthTableTest extends TestCase
      * Test before save callback that creates a new user and sets `created_by` to its own ID.
      *
      * @return void
-     * @covers ::beforeSave()
      */
     public function testBeforeSaveCreateUserCreatedByThemselves()
     {
@@ -330,9 +327,8 @@ class ExternalAuthTableTest extends TestCase
      * @param array $expected Expected result.
      * @param mixed $authProvider The auth provider option.
      * @return void
-     * @covers ::findAuthProvider()
-     * @dataProvider findAuthProviderProvider()
      */
+    #[DataProvider('findAuthProviderProvider')]
     public function testFindAuthProvider(mixed $expected, array|string|int $authProvider): void
     {
         if ($expected instanceof Exception) {
@@ -420,9 +416,8 @@ class ExternalAuthTableTest extends TestCase
      * @param mixed $expected The expected result
      * @param array|string|int $user The finder option
      * @return void
-     * @covers ::findUser()
-     * @dataProvider findByUserProvider()
      */
+    #[DataProvider('findByUserProvider')]
     public function testFindByUser(mixed $expected, array|string|int $user): void
     {
         if ($expected instanceof Exception) {

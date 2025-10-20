@@ -16,10 +16,13 @@ namespace BEdita\API\Test\IntegrationTest;
 
 use BEdita\API\TestSuite\IntegrationTestCase;
 use Cake\ORM\TableRegistry;
+use PHPUnit\Framework\Attributes\CoversNothing;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * Test validation on relationships params.
  */
+#[CoversNothing]
 class RelationshipsParamsTest extends IntegrationTestCase
 {
     /**
@@ -77,7 +80,6 @@ class RelationshipsParamsTest extends IntegrationTestCase
      * Test success with valid parameters.
      *
      * @return void
-     * @coversNothing
      */
     public function testOk()
     {
@@ -193,9 +195,8 @@ class RelationshipsParamsTest extends IntegrationTestCase
      * @param mixed $params Relation parameters.
      * @param string $method Request method (either `POST` or `PATCH`).
      * @return void
-     * @dataProvider invalidParamsProvider()
-     * @coversNothing
      */
+    #[DataProvider('invalidParamsProvider')]
     public function testInvalidParams($expected, $params, $method)
     {
         $relation = $this->Relations->find()
@@ -250,7 +251,6 @@ class RelationshipsParamsTest extends IntegrationTestCase
      * parameters that were previously set.
      *
      * @return void
-     * @coversNothing
      */
     public function testUpdateParamsNotRequired()
     {
@@ -310,7 +310,6 @@ class RelationshipsParamsTest extends IntegrationTestCase
      * Test that creating a new relation does not enforce presence of parameters if they are allowed to be empty.
      *
      * @return void
-     * @coversNothing
      */
     public function testOkNoParams()
     {
@@ -366,7 +365,6 @@ class RelationshipsParamsTest extends IntegrationTestCase
      * Test patch relationships.
      *
      * @return void
-     * @coversNothing
      */
     public function testPatch()
     {
@@ -404,7 +402,6 @@ class RelationshipsParamsTest extends IntegrationTestCase
      * Test patch relationships passing uname in place of id.
      *
      * @return void
-     * @coversNothing
      */
     public function testPatchUname(): void
     {

@@ -139,7 +139,7 @@ class ExternalAuthTable extends Table
                     $user
                         ->set('created_by', $user->id)
                         ->set('modified_by', $user->id),
-                    ['atomic' => false]
+                    ['atomic' => false],
                 );
             }
 

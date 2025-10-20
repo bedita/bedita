@@ -14,6 +14,7 @@ declare(strict_types=1);
  */
 namespace BEdita\API\Test\TestCase\Controller;
 
+use BEdita\API\Controller\SignupController;
 use BEdita\API\TestSuite\IntegrationTestCase;
 use BEdita\Core\Test\Utility\TestArraySubsetTrait;
 use Cake\Core\Configure;
@@ -21,10 +22,13 @@ use Cake\I18n\DateTime;
 use Cake\Mailer\TransportFactory;
 use Cake\ORM\TableRegistry;
 use Cake\Utility\Hash;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
- * @coversDefaultClass \BEdita\API\Controller\SignupController
+ * {@see \BEdita\API\Controller\SignupController} Test Case
  */
+#[CoversClass(SignupController::class)]
 class SignupControllerTest extends IntegrationTestCase
 {
     use TestArraySubsetTrait;
@@ -210,11 +214,8 @@ class SignupControllerTest extends IntegrationTestCase
      * @param string $method The HTTP method
      * @param array $data The payload to send
      * @return void
-     * @dataProvider signupProvider
-     * @covers ::signup()
-     * @covers ::initialize()
-     * @covers ::isIdentityRequired()
      */
+    #[DataProvider('signupProvider')]
     public function testSignup($statusCode, $expected, $method, $data)
     {
         $this->configRequestHeaders($method, [
@@ -345,9 +346,8 @@ class SignupControllerTest extends IntegrationTestCase
      * @param string $method The HTTP method
      * @param array $data The payload to send
      * @return void
-     * @dataProvider activationErrorProvider
-     * @covers ::activation()
      */
+    #[DataProvider('activationErrorProvider')]
     public function testActivationError($statusCode, $expected, $method, $data)
     {
         $this->configRequestHeaders($method, [
@@ -372,7 +372,6 @@ class SignupControllerTest extends IntegrationTestCase
      * Test success in /signup/activation endpoint
      *
      * @return void
-     * @covers ::activation()
      */
     public function testActivationOk()
     {
@@ -407,7 +406,6 @@ class SignupControllerTest extends IntegrationTestCase
      * Test success in /signup/activation endpoint
      *
      * @return void
-     * @covers ::activation()
      */
     public function testActivationConflict()
     {

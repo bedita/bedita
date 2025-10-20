@@ -19,10 +19,12 @@ use Cake\Core\Configure;
 use Cake\Database\Query;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
 
 /**
- * @covers \BEdita\Core\Model\Action\ListObjectsAction
+ * {@see \BEdita\Core\Model\Action\ListObjectsAction} Test Case
  */
+#[CoversClass(ListObjectsAction::class)]
 class ListObjectsActionTest extends TestCase
 {
     /**

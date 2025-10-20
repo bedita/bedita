@@ -17,10 +17,13 @@ namespace BEdita\Core\Test\TestCase\Model\Validation;
 use BEdita\Core\Model\Validation\UsersValidator;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Hash;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
- * @covers \BEdita\Core\Model\Validation\UsersValidator
+ * {@see \BEdita\Core\Model\Validation\UsersValidator} Test Case
  */
+#[CoversClass(UsersValidator::class)]
 class UsersValidatorTest extends TestCase
 {
     /**
@@ -183,8 +186,8 @@ class UsersValidatorTest extends TestCase
      * @param array $data Data being validated.
      * @param bool $newRecord Is this a new record?
      * @return void
-     * @dataProvider validationProvider()
      */
+    #[DataProvider('validationProvider')]
     public function testValidation(array $expected, array $data, $newRecord = true)
     {
         $validator = new UsersValidator();

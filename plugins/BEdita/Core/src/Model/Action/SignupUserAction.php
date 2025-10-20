@@ -320,7 +320,7 @@ class SignupUserAction extends BaseAction implements EventListenerInterface
         if ($this->Users->exists(['username' => $data['username']])) {
             $this->dispatchEvent('Auth.signupUserExists', [$data], $this->Users);
             throw new UserExistsException(
-                __d('bedita', 'User "{0}" already registered', $data['username'])
+                __d('bedita', 'User "{0}" already registered', $data['username']),
             );
         }
         $action = new SaveEntityAction(['table' => $this->Users]);
@@ -366,7 +366,7 @@ class SignupUserAction extends BaseAction implements EventListenerInterface
             $providerResponse = $this->getOAuth2Response(
                 $authProvider->get('url'),
                 $data['access_token'],
-                $options
+                $options,
             );
             if (!$authProvider->checkAuthorization($providerResponse, $data['provider_username'])) {
                 throw new UnauthorizedException(__d('bedita', 'External auth failed'));

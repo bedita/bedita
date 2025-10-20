@@ -14,17 +14,18 @@ declare(strict_types=1);
  */
 namespace BEdita\Core\Test\TestCase\Command;
 
+use BEdita\Core\Command\CustomPropsCommand;
 use BEdita\Core\Filesystem\Adapter\LocalAdapter;
 use BEdita\Core\Filesystem\FilesystemRegistry;
 use Cake\Console\TestSuite\ConsoleIntegrationTestTrait;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
 
 /**
  * {@see BEdita\Core\Command\CustomPropsCommand} Test Case
- *
- * @coversDefaultClass \BEdita\Core\Command\CustomPropsCommand
  */
+#[CoversClass(CustomPropsCommand::class)]
 class CustomPropsCommandTest extends TestCase
 {
     use ConsoleIntegrationTestTrait;
@@ -62,7 +63,6 @@ class CustomPropsCommandTest extends TestCase
      * Test buildOptionParser method
      *
      * @return void
-     * @covers ::buildOptionParser()
      */
     public function testBuildOptionParser()
     {
@@ -75,9 +75,6 @@ class CustomPropsCommandTest extends TestCase
      * Test `execute` method
      *
      * @return void
-     * @covers ::execute()
-     * @covers ::customPropsByType()
-     * @covers ::objectsGenerator()
      */
     public function testExecute(): void
     {
@@ -95,8 +92,6 @@ class CustomPropsCommandTest extends TestCase
      * Test `execute` with `id` and `type` option
      *
      * @return void
-     * @covers ::execute()
-     * @covers ::customPropsByType()
      */
     public function testOptionsExecute(): void
     {
@@ -109,9 +104,6 @@ class CustomPropsCommandTest extends TestCase
      * Test `execute` method
      *
      * @return void
-     * @covers ::execute()
-     * @covers ::customPropsByType()
-     * @covers ::objectsGenerator()
      */
     public function testFail(): void
     {

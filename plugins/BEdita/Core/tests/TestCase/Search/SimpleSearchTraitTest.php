@@ -23,10 +23,12 @@ use Cake\ORM\Query\SelectQuery;
 use Cake\ORM\Table;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Hash;
+use PHPUnit\Framework\Attributes\CoversTrait;
 
 /**
- * @coversDefaultClass \BEdita\Core\Search\SimpleSearchTrait
+ * {@see \BEdita\Core\Search\SimpleSearchTrait} Test Case
  */
+#[CoversTrait(SimpleSearchTrait::class)]
 class SimpleSearchTraitTest extends TestCase
 {
     /**
@@ -40,7 +42,6 @@ class SimpleSearchTraitTest extends TestCase
      * Test `setupSimpleSearch()`
      *
      * @return void
-     * @covers ::setupSimpleSearch()
      */
     public function testSetupSimpleSearch(): void
     {
@@ -81,7 +82,6 @@ class SimpleSearchTraitTest extends TestCase
      * Test that for adapter different from `SimpleAdapter` conf is not changed.
      *
      * @return void
-     * @covers ::setupSimpleSearch()
      */
     public function testSetupSimpleSearchWrongAdapter(): void
     {
@@ -135,7 +135,6 @@ class SimpleSearchTraitTest extends TestCase
      * Test that conf is not changed if table.
      *
      * @return void
-     * @covers ::setupSimpleSearch()
      */
     public function testSetupSimpleSearchWrongTable(): void
     {

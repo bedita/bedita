@@ -18,12 +18,13 @@ use BEdita\Core\Utility\Text;
 use Cake\TestSuite\TestCase;
 use Exception;
 use LogicException;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * {@see \BEdita\Core\Utility\Text} Test Case
- *
- * @coversDefaultClass \BEdita\Core\Utility\Text
  */
+#[CoversClass(Text::class)]
 class TextTest extends TestCase
 {
     /**
@@ -80,10 +81,8 @@ class TextTest extends TestCase
      * @param string $name Name.
      * @param string $namespace Namespace.
      * @return void
-     * @dataProvider uuid5Provider()
-     * @covers ::uuid5()
-     * @covers ::uuidToBin()
      */
+    #[DataProvider('uuid5Provider')]
     public function testUuid5($expected, $name, $namespace)
     {
         if ($expected instanceof Exception) {

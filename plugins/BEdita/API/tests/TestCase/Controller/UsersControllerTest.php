@@ -14,14 +14,17 @@ declare(strict_types=1);
  */
 namespace BEdita\API\Test\TestCase\Controller;
 
+use BEdita\API\Controller\UsersController;
 use BEdita\API\Test\TestConstants;
 use BEdita\API\TestSuite\IntegrationTestCase;
 use BEdita\Core\Test\Utility\TestArraySubsetTrait;
 use Cake\ORM\TableRegistry;
+use PHPUnit\Framework\Attributes\CoversClass;
 
 /**
- * @coversDefaultClass \BEdita\API\Controller\UsersController
+ * {@see \BEdita\API\Controller\UsersController} Test Case
  */
+#[CoversClass(UsersController::class)]
 class UsersControllerTest extends IntegrationTestCase
 {
     use TestArraySubsetTrait;
@@ -30,8 +33,6 @@ class UsersControllerTest extends IntegrationTestCase
      * Test index method.
      *
      * @return void
-     * @covers ::index()
-     * @covers ::initialize()
      */
     public function testIndex()
     {
@@ -340,8 +341,6 @@ class UsersControllerTest extends IntegrationTestCase
      * Test index method.
      *
      * @return void
-     * @covers ::resource()
-     * @covers ::initialize()
      */
     public function testEmpty()
     {
@@ -387,8 +386,6 @@ class UsersControllerTest extends IntegrationTestCase
      * Test view method.
      *
      * @return void
-     * @covers ::resource()
-     * @covers ::initialize()
      */
     public function testSingle()
     {
@@ -505,8 +502,6 @@ class UsersControllerTest extends IntegrationTestCase
      * Test view method.
      *
      * @return void
-     * @covers ::resource()
-     * @covers ::initialize()
      */
     public function testMissing()
     {
@@ -539,8 +534,6 @@ class UsersControllerTest extends IntegrationTestCase
      * Test add method.
      *
      * @return void
-     * @covers ::index()
-     * @covers ::initialize()
      */
     public function testAdd()
     {
@@ -566,8 +559,6 @@ class UsersControllerTest extends IntegrationTestCase
      * Test add method with invalid data.
      *
      * @return void
-     * @covers ::index()
-     * @covers ::initialize()
      */
     public function testAddInvalid()
     {
@@ -592,8 +583,6 @@ class UsersControllerTest extends IntegrationTestCase
      * Test edit method.
      *
      * @return void
-     * @covers ::resource()
-     * @covers ::initialize()
      */
     public function testEdit()
     {
@@ -624,8 +613,6 @@ class UsersControllerTest extends IntegrationTestCase
      * Test edit method with ID conflict.
      *
      * @return void
-     * @covers ::resource()
-     * @covers ::initialize()
      */
     public function testEditConflict()
     {
@@ -650,8 +637,6 @@ class UsersControllerTest extends IntegrationTestCase
      * Test edit method with invalid data.
      *
      * @return void
-     * @covers ::resource()
-     * @covers ::initialize()
      */
     public function testEditInvalid()
     {
@@ -675,8 +660,6 @@ class UsersControllerTest extends IntegrationTestCase
      * Test delete method.
      *
      * @return void
-     * @covers ::resource()
-     * @covers ::initialize()
      */
     public function testDelete()
     {
@@ -704,10 +687,6 @@ class UsersControllerTest extends IntegrationTestCase
      * Test related method to list related objects.
      *
      * @return void
-     * @covers ::initialize()
-     * @covers ::related()
-     * @covers ::findAssociation()
-     * @covers ::getAvailableUrl()
      */
     public function testRelated()
     {
@@ -778,7 +757,6 @@ class UsersControllerTest extends IntegrationTestCase
      * Test empty `email` case.
      *
      * @return void
-     * @coversNothing
      */
     public function testEmptyEmail()
     {

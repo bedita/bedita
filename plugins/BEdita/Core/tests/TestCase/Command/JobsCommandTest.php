@@ -15,6 +15,7 @@ declare(strict_types=1);
 namespace BEdita\Core\Test\TestCase\Command;
 
 use BadMethodCallException;
+use BEdita\Core\Command\JobsCommand;
 use BEdita\Core\Job\JobService;
 use BEdita\Core\Job\ServiceRegistry;
 use Cake\Command\Command;
@@ -22,12 +23,12 @@ use Cake\Console\TestSuite\ConsoleIntegrationTestTrait;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Text;
 use Exception;
+use PHPUnit\Framework\Attributes\CoversClass;
 
 /**
  * {@see BEdita\Core\Command\JobsCommand} Test Case
- *
- * @coversDefaultClass \BEdita\Core\Command\JobsCommand
  */
+#[CoversClass(JobsCommand::class)]
 class JobsCommandTest extends TestCase
 {
     use ConsoleIntegrationTestTrait;
@@ -75,7 +76,6 @@ class JobsCommandTest extends TestCase
      * Test buildOptionParser method
      *
      * @return void
-     * @covers ::buildOptionParser()
      */
     public function testBuildOptionParser()
     {
@@ -92,8 +92,6 @@ class JobsCommandTest extends TestCase
      * Test `process` method via `jobs run <uuid>`.
      *
      * @return void
-     * @covers ::execute()
-     * @covers ::process()
      */
     public function testRetrocompatibility(): void
     {
@@ -109,8 +107,6 @@ class JobsCommandTest extends TestCase
      * Test `process` method.
      *
      * @return void
-     * @covers ::execute()
-     * @covers ::process()
      */
     public function testProcess()
     {
@@ -126,8 +122,6 @@ class JobsCommandTest extends TestCase
      * Test `process` method with invalid job.
      *
      * @return void
-     * @covers ::execute()
-     * @covers ::process()
      */
     public function testProcessInvalid()
     {
@@ -143,8 +137,6 @@ class JobsCommandTest extends TestCase
      * Test `process` method with smooth failure.
      *
      * @return void
-     * @covers ::execute()
-     * @covers ::process()
      */
     public function testProcessFailException()
     {
@@ -161,8 +153,6 @@ class JobsCommandTest extends TestCase
      * Test `process` method with smooth failure.
      *
      * @return void
-     * @covers ::execute()
-     * @covers ::process()
      */
     public function testProcessFailSmooth()
     {
@@ -177,8 +167,6 @@ class JobsCommandTest extends TestCase
      * Test `process` method with fail hard mode.
      *
      * @return void
-     * @covers ::execute()
-     * @covers ::process()
      */
     public function testProcessFailHard()
     {
@@ -193,8 +181,6 @@ class JobsCommandTest extends TestCase
      * Test run pending jobs.
      *
      * @return void
-     * @covers ::execute()
-     * @covers ::pending()
      */
     public function testPending()
     {
@@ -212,8 +198,6 @@ class JobsCommandTest extends TestCase
      * Test run pending jobs with no pending jobs to run.
      *
      * @return void
-     * @covers ::execute()
-     * @covers ::pending()
      */
     public function testPendingEmpty()
     {
@@ -228,8 +212,6 @@ class JobsCommandTest extends TestCase
      * Test run pending jobs with fail hard mode.
      *
      * @return void
-     * @covers ::execute()
-     * @covers ::pending()
      */
     public function testPendingFailHard()
     {

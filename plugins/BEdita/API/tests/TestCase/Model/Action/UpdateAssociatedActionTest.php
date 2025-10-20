@@ -32,10 +32,13 @@ use Cake\Utility\Hash;
 use Cake\Utility\Inflector;
 use Exception;
 use InvalidArgumentException;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
- * @covers \BEdita\API\Model\Action\UpdateAssociatedAction
+ * {@see \BEdita\API\Model\Action\UpdateAssociatedAction} Test Case
  */
+#[CoversClass(UpdateAssociatedAction::class)]
 class UpdateAssociatedActionTest extends TestCase
 {
     /**
@@ -149,7 +152,7 @@ class UpdateAssociatedActionTest extends TestCase
             ],
             'unsupportedMultipleEntities' => [
                 new InvalidArgumentException(
-                    'Unable to link multiple entities'
+                    'Unable to link multiple entities',
                 ),
                 'FakeArticles',
                 'FakeAnimals',
@@ -230,8 +233,8 @@ class UpdateAssociatedActionTest extends TestCase
      * @param int $id Entity ID to update relations for.
      * @param int|int[]|null $data Related entity(-ies).
      * @return void
-     * @dataProvider invocationProvider()
      */
+    #[DataProvider('invocationProvider')]
     public function testInvocation($expected, $table, $association, $id, $data)
     {
         if ($expected instanceof Exception) {
@@ -264,7 +267,7 @@ class UpdateAssociatedActionTest extends TestCase
                         return $query->where([
                             $association->getSource()->aliasField($association->getSource()->getPrimaryKey()) => $id,
                         ]);
-                    }
+                    },
                 )
                 ->count();
         }
@@ -630,8 +633,8 @@ class UpdateAssociatedActionTest extends TestCase
      * @param int $primaryKey Left entity ID.
      * @param array $body Request body.
      * @return void
-     * @dataProvider prepareMetaProvider()
      */
+    #[DataProvider('prepareMetaProvider')]
     public function testPrepareMeta($expectedResult, $expectedParams, $associationName, $primaryKey, $body): void
     {
         $Documents = $this->fetchTable('Documents');
@@ -650,9 +653,9 @@ class UpdateAssociatedActionTest extends TestCase
 
         // $entity = $Documents->get($primaryKey, ['contain' => [$associationName]]);
         $entity = $Documents->find()
-            ->where(fn (QueryExpression $exp): QueryExpression => $exp
+            ->where(fn(QueryExpression $exp): QueryExpression => $exp
                 ->eq('id', $primaryKey))
-            ->contain([$associationName => fn (SelectQuery $q): SelectQuery => $q->where(['right_id' => $body[0]['id']])])
+            ->contain([$associationName => fn(SelectQuery $q): SelectQuery => $q->where(['right_id' => $body[0]['id']])])
             ->first();
         $actualParams = Hash::get(
             (array)$entity->get(Inflector::underscore($associationName)),

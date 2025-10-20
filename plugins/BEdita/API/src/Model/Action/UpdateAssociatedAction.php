@@ -110,8 +110,8 @@ class UpdateAssociatedAction extends BaseAction
                 __d(
                     'bedita',
                     '{0} [id={1}] patching "Parents" is forbidden due to restricted permission on some parent',
-                    [get_class($entity), $entity->id]
-                )
+                    [get_class($entity), $entity->id],
+                ),
             );
         }
 
@@ -119,7 +119,7 @@ class UpdateAssociatedAction extends BaseAction
             try {
                 if ($identity->can('update', $ent) === false) {
                     throw new ForbiddenException(
-                        __d('bedita', '{0} [id={1}] update is forbidden for user', [get_class($ent), $ent->id])
+                        __d('bedita', '{0} [id={1}] update is forbidden for user', [get_class($ent), $ent->id]),
                     );
                 }
             } catch (MissingPolicyException $e) {
@@ -158,7 +158,7 @@ class UpdateAssociatedAction extends BaseAction
             $targetEntities,
             function ($a, $b) use ($targetPrimaryKeys) {
                 return array_search($a, $targetPrimaryKeys) - array_search($b, $targetPrimaryKeys);
-            }
+            },
         );
 
         foreach ($data as $datum) {

@@ -17,10 +17,13 @@ namespace BEdita\API\Test\IntegrationTest;
 use BEdita\API\TestSuite\IntegrationTestCase;
 use Cake\Core\Configure;
 use Cake\Utility\Hash;
+use PHPUnit\Framework\Attributes\CoversNothing;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * Test `Status.level` configuration
  */
+#[CoversNothing]
 class StatusLevelTest extends IntegrationTestCase
 {
     /**
@@ -66,9 +69,8 @@ class StatusLevelTest extends IntegrationTestCase
      * @param string $config The `Status.level` config
      * @param string $url The test URL
      * @return void
-     * @dataProvider listProvider
-     * @coversNothing
      */
+    #[DataProvider('listProvider')]
     public function testListObjects($expected, $config, $url)
     {
         Configure::write('Status.level', $config);
@@ -116,9 +118,8 @@ class StatusLevelTest extends IntegrationTestCase
      * @param string $config The `Status.level` config
      * @param string $url The test URL
      * @return void
-     * @dataProvider singleProvider
-     * @coversNothing
      */
+    #[DataProvider('singleProvider')]
     public function testSingleObject($expected, $config, $url)
     {
         Configure::write('Status.level', $config);

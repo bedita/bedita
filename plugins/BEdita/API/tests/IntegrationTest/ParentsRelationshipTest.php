@@ -17,12 +17,13 @@ namespace BEdita\API\Test\IntegrationTest;
 use BEdita\API\TestSuite\IntegrationTestCase;
 use Cake\ORM\TableRegistry;
 use Cake\Utility\Hash;
+use PHPUnit\Framework\Attributes\CoversNothing;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * Test operations on `parents` relationships.
- *
- * @coversNothing
  */
+#[CoversNothing]
 class ParentsRelationshipTest extends IntegrationTestCase
 {
     /**
@@ -280,9 +281,8 @@ class ParentsRelationshipTest extends IntegrationTestCase
      * @param string $expected Expected error.
      * @param int|string $position Desired position.
      * @return void
-     * @dataProvider setParentPositionInvalidProvider()
-     * @coversNothing
      */
+    #[DataProvider('setParentPositionInvalidProvider')]
     public function testSetParentPositionInvalid($expected, $position)
     {
         $this->configRequestHeaders('POST', $this->getUserAuthHeader());
@@ -316,7 +316,6 @@ class ParentsRelationshipTest extends IntegrationTestCase
      * Test `meta.relation` content in GET `parents` and GET `parent` response
      *
      * @return void
-     * @coversNothing
      */
     public function testParentsMeta()
     {

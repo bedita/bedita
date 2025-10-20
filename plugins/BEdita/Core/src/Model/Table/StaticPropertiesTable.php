@@ -60,7 +60,7 @@ class StaticPropertiesTable extends Table
         // to the database is closed. Doing so, we never explicitly drop a temporary table.
         $this->setTable(sprintf(
             'static_properties_%016x',
-            function_exists('random_int') ? random_int(0, PHP_INT_MAX) : mt_rand(0, PHP_INT_MAX)
+            function_exists('random_int') ? random_int(0, PHP_INT_MAX) : mt_rand(0, PHP_INT_MAX),
         ));
 
         // Create the temporary table.
@@ -102,7 +102,7 @@ class StaticPropertiesTable extends Table
             return preg_replace(
                 '/^properties_/',
                 sprintf('%s_', str_replace('_', '', $tableName)),
-                $indexOrConstraint
+                $indexOrConstraint,
             );
         };
 
@@ -170,16 +170,16 @@ class StaticPropertiesTable extends Table
                             foreach ($tables as $table) {
                                 $accumulator = array_merge(
                                     $accumulator,
-                                    $this->prepareTableFields($objectType, $table)
+                                    $this->prepareTableFields($objectType, $table),
                                 );
                             }
 
                             return $accumulator;
                         },
-                        []
+                        [],
                     );
             },
-            ObjectTypesTable::CACHE_CONFIG
+            ObjectTypesTable::CACHE_CONFIG,
         );
         $this->saveMany($properties);
     }
@@ -219,7 +219,7 @@ class StaticPropertiesTable extends Table
                 $tables,
                 function (Table $table) use ($commonTables) {
                     return !in_array($table, $commonTables, true);
-                }
+                },
             ); // `array_diff($tables, $table->commonInheritance($parentTable))` does not work. :(
         }
 

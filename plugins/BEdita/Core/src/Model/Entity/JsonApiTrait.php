@@ -173,7 +173,7 @@ trait JsonApiTrait
 
         $properties = array_filter(
             array_diff($visible, (array)$table->getPrimaryKey(), $associations, ['_joinData', '_matchingData', '_countData']),
-            [$this, 'isAccessible']
+            [$this, 'isAccessible'],
         );
 
         return $this->extract($properties);
@@ -195,7 +195,7 @@ trait JsonApiTrait
             array_diff($visible, (array)$table->getPrimaryKey(), $associations, ['_joinData', '_matchingData', '_countData']),
             function ($property) {
                 return !$this->isAccessible($property);
-            }
+            },
         );
 
         $custom = $this->customProps($table);
@@ -203,7 +203,7 @@ trait JsonApiTrait
             $properties,
             function ($property) use ($table, $virtual, $custom) {
                 return !in_array($property, $virtual) && !$table->hasField($property) && !in_array($property, $custom);
-            }
+            },
         );
 
         $meta = $this->extract(array_diff($properties, $extraProperties));
@@ -282,7 +282,7 @@ trait JsonApiTrait
                 'controller' => Inflector::camelize($this->getType()),
                 'id' => $this->getId(),
             ],
-            true
+            true,
         );
 
         return compact('self');
@@ -311,7 +311,7 @@ trait JsonApiTrait
                 throw new InvalidArgumentException(sprintf(
                     'Objects must implement "%s", got "%s" instead',
                     JsonApiSerializable::class,
-                    is_object($item) ? get_class($item) : gettype($item)
+                    is_object($item) ? get_class($item) : gettype($item),
                 ));
             }
 
@@ -339,7 +339,7 @@ trait JsonApiTrait
                     'relationship' => $relationship,
                     'id' => $this->getId(),
                 ],
-                true
+                true,
             );
             $related = Router::url(
                 [
@@ -348,7 +348,7 @@ trait JsonApiTrait
                     'relationship' => $relationship,
                     'related_id' => $this->getId(),
                 ],
-                true
+                true,
             );
 
             if ($this->has($relationship) && $this->get($relationship) !== null) {
@@ -410,7 +410,7 @@ trait JsonApiTrait
             function (BelongsToMany $val) {
                 return $val->junction()->getAlias();
             },
-            $associations->getByType('BelongsToMany')
+            $associations->getByType('BelongsToMany'),
         );
 
         $relationships = [];

@@ -14,11 +14,14 @@ declare(strict_types=1);
  */
 namespace BEdita\Core\Test\TestCase\Model\Entity;
 
+use BEdita\Core\Model\Entity\Publication;
 use Cake\TestSuite\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
 
 /**
- * @coversDefaultClass \BEdita\Core\Model\Entity\Publication
+ * {@see \BEdita\Core\Model\Entity\Publication} Test Case
  */
+#[CoversClass(Publication::class)]
 class PublicationTest extends TestCase
 {
     /**
@@ -38,7 +41,6 @@ class PublicationTest extends TestCase
      * Test translatable properties.
      *
      * @return void
-     * @covers ::__construct()
      */
     public function testTranslatable(): void
     {

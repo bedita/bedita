@@ -91,7 +91,7 @@ class UserExternalAuthRemoveCommand extends UserExternalAuthListCommand
         /** @var \BEdita\Core\Model\Entity\ExternalAuth|false $externalAuth */
         $externalAuth = current(array_filter(
             $user->external_auth,
-            fn (ExternalAuth $auth) => $auth->{$field} == $value,
+            fn(ExternalAuth $auth) => $auth->{$field} == $value,
         ));
         if ($externalAuth === false) {
             $io->error('External auth record not found.');
