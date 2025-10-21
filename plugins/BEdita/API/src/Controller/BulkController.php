@@ -19,7 +19,6 @@ use Authorization\IdentityInterface;
 use BEdita\API\Policy\EndpointPolicy;
 use BEdita\Core\Model\Action\ListObjectsAction;
 use Cake\Http\Exception\MethodNotAllowedException;
-use Cake\Http\Response;
 use Cake\Http\ServerRequest;
 use Cake\Utility\Hash;
 use Cake\Utility\Inflector;
