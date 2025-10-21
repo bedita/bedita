@@ -387,6 +387,22 @@ class HomeControllerTest extends IntegrationTestCase
                             'multiple_types' => false,
                         ],
                     ],
+                    '/bulk' => [
+                        'href' => 'http://api.example.com/bulk',
+                        'hints' => [
+                            'allow' => [
+                                'POST',
+                            ],
+                            'formats' => [
+                                'application/json',
+                            ],
+                            'display' => [
+                                'label' => 'Bulk',
+                            ],
+                            'object_type' => false,
+                            'multiple_types' => false,
+                        ],
+                    ],
                 ],
                 'project' => $project,
                 'version' => $version,
@@ -413,6 +429,7 @@ class HomeControllerTest extends IntegrationTestCase
         $resetExpect = Hash::insert($resetExpect, 'meta.resources.{*}.hints.allow', ['GET']);
         $resetExpect = Hash::insert($resetExpect, 'meta.resources./auth.hints.allow', ['POST']);
         $resetExpect = Hash::insert($resetExpect, 'meta.resources./signup.hints.allow', ['POST']);
+        unset($resetExpect['meta']['resources']['/bulk']);
 
         $this->assertEquals($resetExpect, $result);
     }

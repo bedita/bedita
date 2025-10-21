@@ -253,6 +253,13 @@ return function (RouteBuilder $routes) {
             ['_name' => 'tree_paths:index']
         );
 
+        // Bulk operations.
+        $routes->connect(
+            '/bulk/{operation}',
+            ['controller' => 'Bulk', 'action' => 'index'],
+            ['_name' => 'bulk:index', 'pass' => ['operation']]
+        );
+
         // Upload file and create object.
         $routes->connect(
             '/{object_type}/upload/{fileName}',

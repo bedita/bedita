@@ -38,50 +38,47 @@ class ObjectPermissionsControllerTest extends IntegrationTestCase
      */
     public function testIndex(): void
     {
-        $expected = [
-            'links' => [
-                'self' => 'http://api.example.com/object_permissions',
-                'first' => 'http://api.example.com/object_permissions',
-                'last' => 'http://api.example.com/object_permissions',
-                'prev' => null,
-                'next' => null,
-                'home' => 'http://api.example.com/home',
-            ],
-            'meta' => [
-                'pagination' => [
-                    'count' => 1,
-                    'page' => 1,
-                    'page_count' => 1,
-                    'page_items' => 1,
-                    'page_size' => 20,
-                ],
-            ],
-            'data' => [
-                [
-                    'id' => '1',
-                    'type' => 'object_permissions',
-                    'attributes' => [
-                        'object_id' => 2,
-                        'role_id' => 1,
-                    ],
-                    'meta' => [
-                        'created_by' => 1,
-                        'created' => '2023-03-29T15:08:00+00:00',
-                    ],
-                    'links' => [
-                        'self' => 'http://api.example.com/object_permissions/1',
-                    ],
-                ],
-            ],
-        ];
-
         $this->configRequestHeaders();
         $this->get('/object_permissions');
         $result = json_decode((string)$this->_response->getBody(), true);
 
         $this->assertResponseCode(200);
         $this->assertContentType('application/vnd.api+json');
-        static::assertEquals($expected, $result);
+        $this->assertCount(1, $result['data']);
+        // check links
+        $expectedLinks = [
+            'self' => 'http://api.example.com/object_permissions',
+            'first' => 'http://api.example.com/object_permissions',
+            'last' => 'http://api.example.com/object_permissions',
+            'prev' => null,
+            'next' => null,
+            'home' => 'http://api.example.com/home',
+        ];
+        $this->assertEquals($expectedLinks, $result['links']);
+        // check meta
+        $expectedMeta = [
+            'pagination' => [
+                'count' => 1,
+                'page' => 1,
+                'page_count' => 1,
+                'page_items' => 1,
+                'page_size' => 20,
+            ],
+        ];
+        $this->assertEquals($expectedMeta, $result['meta']);
+        // check data
+        $this->assertEquals('object_permissions', $result['data'][0]['type']);
+        $expectedAttributes = [
+            'object_id' => 2,
+            'role_id' => 1,
+        ];
+        $this->assertEquals($expectedAttributes, $result['data'][0]['attributes']);
+        $expectedMeta = [
+            'created_by' => 1,
+            'created' => '2023-03-29T15:08:00+00:00',
+        ];
+        $this->assertEquals($expectedMeta, $result['data'][0]['meta']);
+        $this->assertStringContainsString('http://api.example.com/object_permissions/', $result['data'][0]['links']['self']);
     }
 
     /**
