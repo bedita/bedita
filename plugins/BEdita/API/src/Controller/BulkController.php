@@ -43,16 +43,16 @@ class BulkController extends JsonBaseController
      * Perform bulk operations
      *
      * @param string|null $operation Operation to perform
-     * @return \Cake\Http\Response
+     * @return void
      */
-    public function index(?string $operation): Response
+    public function index(?string $operation): void
     {
         $this->request->allowMethod(['post']);
         if (!in_array($operation, $this->allowedOperations, true)) {
             throw new MethodNotAllowedException(sprintf('Operation %s not allowed', $operation));
         }
 
-        return $this->{$operation}();
+        $this->{$operation}();
     }
 
     /**
@@ -72,9 +72,9 @@ class BulkController extends JsonBaseController
      * }
      * ```
      *
-     * @return \Cake\Http\Response
+     * @return void
      */
-    protected function edit(): Response
+    protected function edit(): void
     {
         /** @var \Authorization\IdentityInterface $user */
         $user = $this->Authentication->getIdentity();
@@ -140,8 +140,6 @@ class BulkController extends JsonBaseController
         ];
         $this->set('data', $responseData);
         $this->setSerialize(['data']);
-
-        return $this->response->withStringBody(json_encode(['data' => $responseData]));
     }
 
     /**
