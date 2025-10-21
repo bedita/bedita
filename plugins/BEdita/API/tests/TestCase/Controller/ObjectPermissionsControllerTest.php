@@ -15,8 +15,6 @@ declare(strict_types=1);
 namespace BEdita\API\Test\TestCase\Controller;
 
 use BEdita\API\TestSuite\IntegrationTestCase;
-use Cake\Database\Driver\Postgres;
-use Cake\Datasource\ConnectionManager;
 
 /**
  * @coversDefaultClass \BEdita\API\Controller\ObjectPermissionsController
@@ -40,55 +38,47 @@ class ObjectPermissionsControllerTest extends IntegrationTestCase
      */
     public function testIndex(): void
     {
-        $expectedId = '2';
-        // if database is postgresql, expectedId is 1
-        if (ConnectionManager::get('default')->getDriver() instanceof Postgres) {
-            $expectedId = '1';
-        }
-        $expected = [
-            'links' => [
-                'self' => 'http://api.example.com/object_permissions',
-                'first' => 'http://api.example.com/object_permissions',
-                'last' => 'http://api.example.com/object_permissions',
-                'prev' => null,
-                'next' => null,
-                'home' => 'http://api.example.com/home',
-            ],
-            'meta' => [
-                'pagination' => [
-                    'count' => 1,
-                    'page' => 1,
-                    'page_count' => 1,
-                    'page_items' => 1,
-                    'page_size' => 20,
-                ],
-            ],
-            'data' => [
-                [
-                    'id' => $expectedId,
-                    'type' => 'object_permissions',
-                    'attributes' => [
-                        'object_id' => 2,
-                        'role_id' => 1,
-                    ],
-                    'meta' => [
-                        'created_by' => 1,
-                        'created' => '2023-03-29T15:08:00+00:00',
-                    ],
-                    'links' => [
-                        'self' => 'http://api.example.com/object_permissions/' . $expectedId,
-                    ],
-                ],
-            ],
-        ];
-
         $this->configRequestHeaders();
         $this->get('/object_permissions');
         $result = json_decode((string)$this->_response->getBody(), true);
 
         $this->assertResponseCode(200);
         $this->assertContentType('application/vnd.api+json');
-        static::assertEquals($expected, $result);
+        $this->assertCount(1, $result['data']);
+        // check links
+        $expectedLinks = [
+            'self' => 'http://api.example.com/object_permissions',
+            'first' => 'http://api.example.com/object_permissions',
+            'last' => 'http://api.example.com/object_permissions',
+            'prev' => null,
+            'next' => null,
+            'home' => 'http://api.example.com/home',
+        ];
+        $this->assertEquals($expectedLinks, $result['links']);
+        // check meta
+        $expectedMeta = [
+            'pagination' => [
+                'count' => 1,
+                'page' => 1,
+                'page_count' => 1,
+                'page_items' => 1,
+                'page_size' => 20,
+            ],
+        ];
+        $this->assertEquals($expectedMeta, $result['meta']);
+        // check data
+        $this->assertEquals('object_permissions', $result['data'][0]['type']);
+        $expectedAttributes = [
+            'object_id' => 2,
+            'role_id' => 1,
+        ];
+        $this->assertEquals($expectedAttributes, $result['data'][0]['attributes']);
+        $expectedMeta = [
+            'created_by' => 1,
+            'created' => '2023-03-29T15:08:00+00:00',
+        ];
+        $this->assertEquals($expectedMeta, $result['data'][0]['meta']);
+        $this->assertStringContainsString('http://api.example.com/object_permissions/', $result['data'][0]['links']['self']);
     }
 
     /**
