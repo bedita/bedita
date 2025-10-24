@@ -441,12 +441,14 @@ return [
         'default' => [
             'className' => 'BEdita/Core.Local',
             'path' => WWW_ROOT . '_files',
-            'url' => env('FILESYSTEM_DEFAULT_URL', null),
+            'baseUrl' => env('FILESYSTEM_DEFAULT_BASE_URL', null),
+            'url' => env('FILESYSTEM_DEFAULT_URL', null), // this will override baseUrl if set
         ],
         'thumbnails' => [
             'className' => 'BEdita/Core.Local',
             'path' => WWW_ROOT . '_files' . DS . 'thumbs',
-            'url' => env('FILESYSTEM_THUMBNAILS_URL', null),
+            'baseUrl' => env('FILESYSTEM_THUMBNAILS_BASE_URL', null),
+            'url' => env('FILESYSTEM_THUMBNAILS_URL', null), // this will override baseUrl if set
         ],
     ],
 
