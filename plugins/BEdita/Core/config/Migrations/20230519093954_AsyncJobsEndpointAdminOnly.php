@@ -2,9 +2,9 @@
 declare(strict_types=1);
 
 use BEdita\Core\Model\Table\RolesTable;
-use Migrations\AbstractMigration;
+use Migrations\BaseMigration;
 
-class AsyncJobsEndpointAdminOnly extends AbstractMigration
+class AsyncJobsEndpointAdminOnly extends BaseMigration
 {
     /**
      * @inheritDoc

@@ -1,13 +1,13 @@
 <?php
 
 use Cake\Database\Expression\QueryExpression;
-use Migrations\AbstractMigration;
+use Migrations\BaseMigration;
 use Phinx\Db\Adapter\MysqlAdapter;
 
 /**
  * Split tags and categories into their own tables.
  */
-class CreateTagsTable extends AbstractMigration
+class CreateTagsTable extends BaseMigration
 {
     /**
      * @inheritDoc

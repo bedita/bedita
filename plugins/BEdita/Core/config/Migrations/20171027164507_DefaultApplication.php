@@ -12,14 +12,14 @@
  */
 
 use BEdita\Core\Model\Table\ApplicationsTable;
-use Migrations\AbstractMigration;
+use Migrations\BaseMigration;
 
 /**
  * Create a default application if missing.
  *
  * @since 4.0.0
  */
-class DefaultApplication extends AbstractMigration
+class DefaultApplication extends BaseMigration
 {
     /**
      * {@inheritdoc}

@@ -1,10 +1,10 @@
 <?php
-use Migrations\AbstractMigration;
+use Migrations\BaseMigration;
 
 /**
  * Add `async_jobs` table.
  */
-class AddAsyncJobsTable extends AbstractMigration
+class AddAsyncJobsTable extends BaseMigration
 {
 
     /**

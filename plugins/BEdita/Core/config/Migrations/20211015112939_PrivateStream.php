@@ -1,7 +1,7 @@
 <?php
-use Migrations\AbstractMigration;
+use Migrations\BaseMigration;
 
-class PrivateStream extends AbstractMigration
+class PrivateStream extends BaseMigration
 {
     /**
      * Change Method.

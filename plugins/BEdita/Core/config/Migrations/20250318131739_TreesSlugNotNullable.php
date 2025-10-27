@@ -3,9 +3,9 @@ declare(strict_types=1);
 
 use Cake\Database\Expression\QueryExpression;
 use Cake\Database\Query;
-use Migrations\AbstractMigration;
+use Migrations\BaseMigration;
 
-class TreesSlugNotNullable extends AbstractMigration
+class TreesSlugNotNullable extends BaseMigration
 {
     /**
      * @inheritDoc

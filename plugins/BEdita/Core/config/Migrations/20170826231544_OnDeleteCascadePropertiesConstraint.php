@@ -11,14 +11,14 @@
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
 
-use Migrations\AbstractMigration;
+use Migrations\BaseMigration;
 
 /**
  * Change constraints of `properties` table enabling ON DELETE CASCADE
  *
  * @since 4.0.0
  */
-class OnDeleteCascadePropertiesConstraint extends AbstractMigration
+class OnDeleteCascadePropertiesConstraint extends BaseMigration
 {
 
     public function up()

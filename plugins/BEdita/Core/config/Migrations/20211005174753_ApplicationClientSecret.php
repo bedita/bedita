@@ -1,7 +1,7 @@
 <?php
-use Migrations\AbstractMigration;
+use Migrations\BaseMigration;
 
-class ApplicationClientSecret extends AbstractMigration
+class ApplicationClientSecret extends BaseMigration
 {
     /**
      * {@inheritDoc}

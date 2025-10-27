@@ -1,7 +1,7 @@
 <?php
-use Migrations\AbstractMigration;
+use Migrations\BaseMigration;
 
-class ProfilePseudonym extends AbstractMigration
+class ProfilePseudonym extends BaseMigration
 {
     /**
      * {@inheritDoc}

@@ -1,12 +1,12 @@
 <?php
 use Cake\Auth\WeakPasswordHasher;
-use Migrations\AbstractMigration;
+use Migrations\BaseMigration;
 
 /**
  * Replace `CASCADE` with `RESTRICT` on `objects.created_by`, `objects.modified_by`, `objects.object_type_id`
  * delete condition
  */
-class DeleteRestrict extends AbstractMigration
+class DeleteRestrict extends BaseMigration
 {
     /**
      * {@inheritDoc}

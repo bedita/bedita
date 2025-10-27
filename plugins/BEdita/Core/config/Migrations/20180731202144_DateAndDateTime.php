@@ -1,10 +1,10 @@
 <?php
-use Migrations\AbstractMigration;
+use Migrations\BaseMigration;
 
 /**
  * Add `datetime` and update `date` property types.
  */
-class DateAndDateTime extends AbstractMigration
+class DateAndDateTime extends BaseMigration
 {
 
     /**

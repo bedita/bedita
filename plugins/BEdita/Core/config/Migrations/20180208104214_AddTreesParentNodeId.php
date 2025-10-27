@@ -1,5 +1,5 @@
 <?php
-use Migrations\AbstractMigration;
+use Migrations\BaseMigration;
 
 /**
  * Migration for:
@@ -10,7 +10,7 @@ use Migrations\AbstractMigration;
  *
  * @since 4.0.0
  */
-class AddTreesParentNodeId extends AbstractMigration
+class AddTreesParentNodeId extends BaseMigration
 {
 
     /**

@@ -13,9 +13,9 @@ declare(strict_types=1);
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
 
-use Migrations\AbstractMigration;
+use Migrations\BaseMigration;
 
-class AddChildrenOrder extends AbstractMigration
+class AddChildrenOrder extends BaseMigration
 {
     /**
      * {@inheritDoc}

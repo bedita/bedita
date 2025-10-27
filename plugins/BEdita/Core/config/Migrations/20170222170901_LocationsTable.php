@@ -11,9 +11,9 @@
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-use Migrations\AbstractMigration;
+use Migrations\BaseMigration;
 
-class LocationsTable extends AbstractMigration
+class LocationsTable extends BaseMigration
 {
     public bool $autoId = false;
 

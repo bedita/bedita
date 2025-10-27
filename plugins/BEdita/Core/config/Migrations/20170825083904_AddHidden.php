@@ -1,12 +1,12 @@
 <?php
-use Migrations\AbstractMigration;
+use Migrations\BaseMigration;
 
 /**
  * Add `hidden` column to `object_types` table.
  *
  * @see https://github.com/bedita/bedita/1328
  */
-class AddHidden extends AbstractMigration
+class AddHidden extends BaseMigration
 {
 
     /**

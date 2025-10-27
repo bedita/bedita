@@ -11,14 +11,14 @@
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
 
-use Migrations\AbstractMigration;
+use Migrations\BaseMigration;
 
 /**
  * Modify `object_types.singular` to be unique.
  *
  * @since 4.0.0
  */
-class UniqueSingular extends AbstractMigration
+class UniqueSingular extends BaseMigration
 {
     /**
      * {@inheritdoc}

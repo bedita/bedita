@@ -1,12 +1,12 @@
 <?php
-use Migrations\AbstractMigration;
+use Migrations\BaseMigration;
 
 /**
  * Allow `null` value in column `endpoint_permissions.endpoint_id`.
  *
  * @see https://github.com/bedita/bedita/issues/968
  */
-class AllowPermissionsOnAllEndpoints extends AbstractMigration
+class AllowPermissionsOnAllEndpoints extends BaseMigration
 {
 
     /**
@@ -17,7 +17,7 @@ class AllowPermissionsOnAllEndpoints extends AbstractMigration
         $this->table('endpoint_permissions')
             ->dropForeignKey(
                 'endpoint_id'
-            )            
+            )
             ->update();
 
         $this->table('endpoint_permissions')

@@ -1,7 +1,7 @@
 <?php
-use Migrations\AbstractMigration;
+use Migrations\BaseMigration;
 
-class AddStreamMetadata extends AbstractMigration
+class AddStreamMetadata extends BaseMigration
 {
     /**
     * {@inheritDoc}

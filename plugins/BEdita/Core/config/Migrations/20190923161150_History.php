@@ -1,8 +1,8 @@
 <?php
 
-use Migrations\AbstractMigration;
+use Migrations\BaseMigration;
 
-class History extends AbstractMigration
+class History extends BaseMigration
 {
     /**
      * @inheritDoc

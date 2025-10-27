@@ -1,10 +1,10 @@
 <?php
-use Migrations\AbstractMigration;
+use Migrations\BaseMigration;
 
 /**
  * Add label, description, enabled and list view columns to `properties` table.
  */
-class AddPropertiesLabelDescEnabledList extends AbstractMigration
+class AddPropertiesLabelDescEnabledList extends BaseMigration
 {
 
     /**
