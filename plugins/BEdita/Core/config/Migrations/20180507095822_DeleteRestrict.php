@@ -1,5 +1,4 @@
 <?php
-use Cake\Auth\WeakPasswordHasher;
 use Migrations\BaseMigration;
 
 /**
