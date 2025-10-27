@@ -1,4 +1,4 @@
-ARG PHP_VERSION=8.3
+ARG PHP_VERSION=8.4
 FROM chialab/php:${PHP_VERSION}-apache
 LABEL author="dev@chialab.io"
 

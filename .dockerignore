@@ -2,6 +2,7 @@
 /.git
 /.vagrant
 /.vscode
+/config/app_local.php
 /logs
 /tmp
 /vendor
