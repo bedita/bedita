@@ -1,10 +1,10 @@
 <?php
-use Migrations\AbstractMigration;
+use Migrations\BaseMigration;
 
 /**
  * Add `user_tokens` table
  */
-class AddUserTokensTable extends AbstractMigration
+class AddUserTokensTable extends BaseMigration
 {
     /**
      * @inheritDoc

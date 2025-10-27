@@ -1,10 +1,10 @@
 <?php
 declare(strict_types=1);
 
-use Migrations\AbstractMigration;
+use Migrations\BaseMigration;
 use Phinx\Db\Adapter\MysqlAdapter;
 
-class ChangeObjectsDescriptionBodySize extends AbstractMigration
+class ChangeObjectsDescriptionBodySize extends BaseMigration
 {
     /**
      * Up Method.

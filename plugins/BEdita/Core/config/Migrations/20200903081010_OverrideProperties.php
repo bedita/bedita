@@ -1,12 +1,13 @@
 <?php
 use BEdita\Core\Utility\Resources;
-use Migrations\AbstractMigration;
+use Cake\Cache\Cache;
+use Migrations\BaseMigration;
 
 /**
  * New column `properties.is_static` to override property type of static property
  * New core property type `plain_text`
  */
-class OverrideProperties extends AbstractMigration
+class OverrideProperties extends BaseMigration
 {
     protected $create = [
         'property_types' => [
@@ -38,8 +39,17 @@ class OverrideProperties extends AbstractMigration
 
         Resources::save(
             ['create' => $this->create],
-            ['connection' => $this->getAdapter()->getCakeConnection()]
+            ['connection' => $this->getAdapter()->getConnection()]
         );
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function postFlightCheck(): void
+    {
+        parent::postFlightCheck();
+        Cache::clearAll();
     }
 
     /**
@@ -53,7 +63,7 @@ class OverrideProperties extends AbstractMigration
 
         Resources::save(
             ['remove' => $this->create],
-            ['connection' => $this->getAdapter()->getCakeConnection()]
+            ['connection' => $this->getAdapter()->getConnection()]
         );
     }
 }

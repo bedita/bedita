@@ -1,8 +1,8 @@
 <?php
 
-use Migrations\AbstractMigration;
+use Migrations\BaseMigration;
 
-class NameSingularComments extends AbstractMigration
+class NameSingularComments extends BaseMigration
 {
     /**
      * {@inheritDoc}

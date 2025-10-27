@@ -1,12 +1,12 @@
 <?php
-use Migrations\AbstractMigration;
+use Migrations\BaseMigration;
 
 /**
  * Use dedicated column for deleted objects.
  *
  * @see https://github.com/bedita/bedita/issues/1027
  */
-class DeleteTrash extends AbstractMigration
+class DeleteTrash extends BaseMigration
 {
 
     /**

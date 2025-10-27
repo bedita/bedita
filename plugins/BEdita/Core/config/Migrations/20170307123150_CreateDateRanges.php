@@ -1,8 +1,8 @@
 <?php
 
-use Migrations\AbstractMigration;
+use Migrations\BaseMigration;
 
-class CreateDateRanges extends AbstractMigration
+class CreateDateRanges extends BaseMigration
 {
     public bool $autoId = false;
 

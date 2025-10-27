@@ -1,11 +1,11 @@
 <?php
 use Authentication\PasswordHasher\LegacyPasswordHasher;
-use Migrations\AbstractMigration;
+use Migrations\BaseMigration;
 
 /**
  * Database schema for Alpha release.
  */
-class Alpha extends AbstractMigration
+class Alpha extends BaseMigration
 {
 
     /**

@@ -50,7 +50,7 @@ class ResourcesMigrationTest extends TestCase
      */
     public function testUp(): void
     {
-        $migration = new TestAdd('test', 20241220102400);
+        $migration = new TestAdd(20241220102400);
 
         $migration->up();
 
@@ -69,7 +69,7 @@ class ResourcesMigrationTest extends TestCase
         $objectType = $ObjectTypes->newEntity(['name' => 'foos', 'singular' => 'foo']);
         $ObjectTypes->saveOrFail($objectType);
 
-        $migration = new TestAdd('test', 20241220102400);
+        $migration = new TestAdd(20241220102400);
 
         $migration->down();
 
@@ -87,7 +87,7 @@ class ResourcesMigrationTest extends TestCase
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('YAML file not found');
 
-        $migration = new TestMissing('test', 20241220102400);
+        $migration = new TestMissing(20241220102400);
         $migration->up();
     }
 
@@ -100,7 +100,7 @@ class ResourcesMigrationTest extends TestCase
     {
         MockMigrationsTable::$calls = [];
 
-        $migration = new TestColumns('test', 20241220102400);
+        $migration = new TestColumns(20241220102400);
         $migration->up();
 
         $expected = [
@@ -160,7 +160,7 @@ class ResourcesMigrationTest extends TestCase
     {
         MockMigrationsTable::$calls = [];
 
-        $migration = new TestColumns('test', 20241220102400);
+        $migration = new TestColumns(20241220102400);
         $migration->down();
 
         $expected = [

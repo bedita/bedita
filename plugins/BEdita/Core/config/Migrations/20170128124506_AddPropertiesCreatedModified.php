@@ -1,7 +1,7 @@
 <?php
-use Migrations\AbstractMigration;
+use Migrations\BaseMigration;
 
-class AddPropertiesCreatedModified extends AbstractMigration
+class AddPropertiesCreatedModified extends BaseMigration
 {
 
     public function up()

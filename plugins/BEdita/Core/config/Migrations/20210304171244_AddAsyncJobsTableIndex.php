@@ -1,8 +1,8 @@
 <?php
 
-use Migrations\AbstractMigration;
+use Migrations\BaseMigration;
 
-class AddAsyncJobsTableIndex extends AbstractMigration
+class AddAsyncJobsTableIndex extends BaseMigration
 {
     /**
      * Change Method.

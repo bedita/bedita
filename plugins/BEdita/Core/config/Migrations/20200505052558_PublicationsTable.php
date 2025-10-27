@@ -1,9 +1,8 @@
 <?php
-use BEdita\Core\Utility\Resources;
 use Cake\ORM\Table;
-use Migrations\AbstractMigration;
+use Migrations\BaseMigration;
 
-class PublicationsTable extends AbstractMigration
+class PublicationsTable extends BaseMigration
 {
     /**
      * {@inheritDoc}
@@ -99,7 +98,7 @@ class PublicationsTable extends AbstractMigration
     {
         $table = new Table([
             'table' => 'object_types',
-            'connection' => $this->getAdapter()->getCakeConnection(),
+            'connection' => $this->getAdapter()->getConnection(),
         ]);
         $table->addBehavior('BEdita/Core.Tree', [
             'left' => 'tree_left',

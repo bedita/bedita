@@ -18,7 +18,7 @@ use BEdita\Core\Migration\ResourcesMigration;
 use BEdita\Core\Test\TestCase\Migration\MockMigrationsTable;
 use Cake\Database\Connection;
 use Cake\Datasource\ConnectionManager;
-use Migrations\Table;
+use Migrations\Db\Table;
 
 class TestColumns extends ResourcesMigration
 {

@@ -1,8 +1,8 @@
 <?php
 
-use Migrations\AbstractMigration;
+use Migrations\BaseMigration;
 
-class AddObjectCategories extends AbstractMigration
+class AddObjectCategories extends BaseMigration
 {
     public bool $autoId = false;
 

@@ -1,7 +1,7 @@
 <?php
-use Migrations\AbstractMigration;
+use Migrations\BaseMigration;
 
-class CorePropertyTypes extends AbstractMigration
+class CorePropertyTypes extends BaseMigration
 {
     /**
      * {@inheritDoc}

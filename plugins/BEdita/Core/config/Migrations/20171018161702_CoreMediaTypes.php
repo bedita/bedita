@@ -11,14 +11,14 @@
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
 
-use Migrations\AbstractMigration;
+use Migrations\BaseMigration;
 
 /**
  * Add `videos`, `audio` and `files` core media types.
  *
  * @since 4.0.0
  */
-class CoreMediaTypes extends AbstractMigration
+class CoreMediaTypes extends BaseMigration
 {
 
     /**

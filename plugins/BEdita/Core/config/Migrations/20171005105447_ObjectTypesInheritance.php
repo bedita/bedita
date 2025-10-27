@@ -1,7 +1,7 @@
 <?php
 
 use Cake\ORM\Table;
-use Migrations\AbstractMigration;
+use Migrations\BaseMigration;
 
 /**
  * Add inheritance to object types.
@@ -9,7 +9,7 @@ use Migrations\AbstractMigration;
  * This migration class also fixes tree information (left and right indexes, as prescribed by Nested-Set Model)
  * in order to make things work as expected from the very beginning.
  */
-class ObjectTypesInheritance extends AbstractMigration
+class ObjectTypesInheritance extends BaseMigration
 {
 
     /**
@@ -96,11 +96,10 @@ class ObjectTypesInheritance extends AbstractMigration
             ->update();
 
         // Populate tree data. We'll be using a clean CakePHP table object to be able to use Tree behavior.
-        /* @var \Migrations\CakeAdapter $adapter */
         $adapter = $this->getAdapter();
         $table = new Table([
             'table' => 'object_types',
-            'connection' => $adapter->getCakeConnection(),
+            'connection' => $adapter->getConnection(),
         ]);
 
         $table->updateAll( // "objects" and "media" are abstract.

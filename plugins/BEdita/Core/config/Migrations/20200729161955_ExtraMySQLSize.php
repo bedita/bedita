@@ -11,13 +11,13 @@
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
 
-use Migrations\AbstractMigration;
+use Migrations\BaseMigration;
 use Phinx\Db\Adapter\MysqlAdapter;
 
 /**
  * Increase `objects.extra` column size to 16MB (on MySQL only)
  */
-class ExtraMySQLSize extends AbstractMigration
+class ExtraMySQLSize extends BaseMigration
 {
     /**
      * {@inheritDoc}

@@ -1,7 +1,7 @@
 <?php
-use Migrations\AbstractMigration;
+use Migrations\BaseMigration;
 
-class PasswordCreated extends AbstractMigration
+class PasswordCreated extends BaseMigration
 {
     /**
      * Change Method.

@@ -1,12 +1,12 @@
 <?php
-use Migrations\AbstractMigration;
+use Migrations\BaseMigration;
 
 /**
  * Add `associations` column to `object_types` table.
  *
  * @see https://github.com/bedita/bedita/pull/1138
  */
-class AddAssociations extends AbstractMigration
+class AddAssociations extends BaseMigration
 {
 
     /**

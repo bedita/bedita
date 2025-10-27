@@ -1,13 +1,13 @@
 <?php
 
 use Cake\ORM\Table;
-use Migrations\AbstractMigration;
+use Migrations\BaseMigration;
 
 /**
  * Add inheritance info to `videos`, `audio` and `files`.
  *
  */
-class MediaTypesInheritance extends AbstractMigration
+class MediaTypesInheritance extends BaseMigration
 {
     /**
      * {@inheritDoc}
@@ -15,11 +15,10 @@ class MediaTypesInheritance extends AbstractMigration
     public function up()
     {
         // Populate tree data. We'll be using a clean CakePHP table object to be able to use Tree behavior.
-        /* @var \Migrations\CakeAdapter $adapter */
         $adapter = $this->getAdapter();
         $table = new Table([
             'table' => 'object_types',
-            'connection' => $adapter->getCakeConnection(),
+            'connection' => $adapter->getConnection(),
         ]);
 
         $table->updateAll( // `videos`, `audio` and `files` inherit from `media`.

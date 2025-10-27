@@ -1,8 +1,8 @@
 <?php
 use Cake\ORM\Table;
-use Migrations\AbstractMigration;
+use Migrations\BaseMigration;
 
-class LinksTable extends AbstractMigration
+class LinksTable extends BaseMigration
 {
     /**
      * {@inheritDoc}
@@ -92,7 +92,7 @@ class LinksTable extends AbstractMigration
     {
         $table = new Table([
             'table' => 'object_types',
-            'connection' => $this->getAdapter()->getCakeConnection(),
+            'connection' => $this->getAdapter()->getConnection(),
         ]);
         $table->addBehavior('BEdita/Core.Tree', [
             'left' => 'tree_left',
