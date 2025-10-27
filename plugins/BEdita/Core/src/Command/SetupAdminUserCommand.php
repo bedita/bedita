@@ -44,21 +44,21 @@ class SetupAdminUserCommand extends Command
      *
      * @var \Cake\Console\Arguments
      */
-    protected $args;
+    protected Arguments $args;
 
     /**
      * Console IO
      *
      * @var \Cake\Console\ConsoleIo
      */
-    protected $io;
+    protected ConsoleIo $io;
 
     /**
      * Users table
      *
      * @var \BEdita\Core\Model\Table\UsersTable
      */
-    protected $table;
+    protected UsersTable $table;
 
     /**
      * {@inheritDoc}

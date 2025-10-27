@@ -45,28 +45,28 @@ class CheckSchemaCommand extends Command
      *
      * @var \Cake\Console\Arguments
      */
-    protected $args;
+    protected Arguments $args;
 
     /**
      * Console IO
      *
      * @var \Cake\Console\ConsoleIo
      */
-    protected $io;
+    protected ConsoleIo $io;
 
     /**
      * Registry of all issues found.
      *
      * @var array
      */
-    protected $messages = [];
+    protected array $messages = [];
 
     /**
      * List of SQL reserved words.
      *
      * @var array
      */
-    protected $reservedWords = [];
+    protected array $reservedWords = [];
 
     /**
      * {@inheritDoc}
@@ -195,7 +195,7 @@ class CheckSchemaCommand extends Command
      * @return array
      * @internal
      */
-    protected function checkSymbol($symbol, array $context = []): array
+    protected function checkSymbol(string $symbol, array $context = []): array
     {
         $validator = new SqlConventionsValidator();
         foreach ($context as $key => $value) {
@@ -232,7 +232,7 @@ class CheckSchemaCommand extends Command
             foreach ($schema->columns() as $column) {
                 $errors['column'][$column]['naming'] = $this->checkSymbol(
                     $column,
-                    compact('table', 'allColumns')
+                    compact('table', 'allColumns'),
                 );
                 $allColumns[$column] = $table;
             }
@@ -240,14 +240,14 @@ class CheckSchemaCommand extends Command
             foreach ($schema->indexes() as $index) {
                 $errors['index'][$index]['naming'] = $this->checkSymbol(
                     $index,
-                    $schema->getIndex($index) + compact('table')
+                    $schema->getIndex($index) + compact('table'),
                 );
             }
 
             foreach ($schema->constraints() as $constraint) {
                 $errors['constraint'][$constraint]['naming'] = $this->checkSymbol(
                     $constraint,
-                    $schema->getConstraint($constraint) + compact('table')
+                    $schema->getConstraint($constraint) + compact('table'),
                 );
             }
 
@@ -292,7 +292,7 @@ class CheckSchemaCommand extends Command
                     function ($line) {
                         return sprintf('=====>  - <warning>%s</warning>', $line);
                     },
-                    $lines
+                    $lines,
                 ));
                 $check = false;
             } else {

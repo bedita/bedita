@@ -37,14 +37,14 @@ class InitSchemaCommand extends Command
      *
      * @var \Cake\Console\Arguments
      */
-    protected $args;
+    protected Arguments $args;
 
     /**
      * Console IO
      *
      * @var \Cake\Console\ConsoleIo
      */
-    protected $io;
+    protected ConsoleIo $io;
 
     /**
      * {@inheritDoc}
@@ -152,7 +152,7 @@ class InitSchemaCommand extends Command
 
         $this->io->out('Dropping all tables in database...');
         $connection
-            ->transactional(function (Connection $connection) {
+            ->transactional(function (Connection $connection): void {
                 $tables = $connection->getSchemaCollection()->listTables();
 
                 foreach ($tables as $table) {
@@ -185,11 +185,11 @@ class InitSchemaCommand extends Command
      * @return void
      * @codeCoverageIgnore
      */
-    protected function migrate(ConnectionInterface $connection)
+    protected function migrate(ConnectionInterface $connection): void
     {
         $this->io->out('Running migrations... ', 0);
 
-        $connection->transactional(function (Connection $connection) {
+        $connection->transactional(function (Connection $connection): void {
             $migrations = new Migrations([
                 'connection' => $connection->configName(),
                 'plugin' => 'BEdita/Core',
@@ -211,7 +211,7 @@ class InitSchemaCommand extends Command
      * @return void
      * @codeCoverageIgnore
      */
-    protected function seed(ConnectionInterface $connection)
+    protected function seed(ConnectionInterface $connection): void
     {
         $seed = null;
         if ($this->args->getOption('no-seed')) {
@@ -227,7 +227,7 @@ class InitSchemaCommand extends Command
         }
 
         $this->io->out('Seeding data... ', 0);
-        $connection->transactional(function (Connection $connection) {
+        $connection->transactional(function (Connection $connection): void {
             $migrations = new Migrations([
                 'connection' => $connection->configName(),
                 'plugin' => 'BEdita/Core',

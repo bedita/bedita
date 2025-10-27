@@ -296,7 +296,7 @@ class BulkControllerTest extends IntegrationTestCase
             ],
             [
                 'accessibleFields' => ['created_by' => true],
-            ]
+            ],
         );
         $ObjectPermissions->saveOrFail($entity);
 

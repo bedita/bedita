@@ -129,7 +129,7 @@ class Resources extends ResourcesBase
             $resource = $Table->newEntity($item);
             if ($resource->hasErrors()) {
                 throw new InvalidArgumentException(
-                    __('Invalid resource data') . ': ' . json_encode($resource->getErrors())
+                    __('Invalid resource data') . ': ' . json_encode($resource->getErrors()),
                 );
             }
             foreach ($item as $k => $v) {

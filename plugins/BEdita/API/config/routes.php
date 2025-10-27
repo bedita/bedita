@@ -257,7 +257,7 @@ return function (RouteBuilder $routes): void {
         $routes->connect(
             '/bulk/{operation}',
             ['controller' => 'Bulk', 'action' => 'index'],
-            ['_name' => 'bulk:index', 'pass' => ['operation']]
+            ['_name' => 'bulk:index', 'pass' => ['operation']],
         );
 
         // Upload file and create object.

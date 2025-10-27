@@ -39,14 +39,14 @@ class SetupConnectionCommand extends Command
      *
      * @var \Cake\Console\Arguments
      */
-    protected $args;
+    protected Arguments $args;
 
     /**
      * Console IO
      *
      * @var \Cake\Console\ConsoleIo
      */
-    protected $io;
+    protected ConsoleIo $io;
 
     /**
      * {@inheritDoc}
@@ -317,14 +317,14 @@ class SetupConnectionCommand extends Command
             function ($value) {
                 return str_replace(['\'', '\\'], ['\\\'', '\\\\'], $value);
             },
-            $replace
+            $replace,
         );
 
         // Replace placeholders in current file's content.
         $contents = str_replace(
             array_keys($replace),
             array_values($replace),
-            $file->read()
+            $file->read(),
         );
 
         // Open process to validate PHP syntax, and attach pipes to stdin, stdout and stderr.
@@ -336,7 +336,7 @@ class SetupConnectionCommand extends Command
                 1 => ['pipe', 'w'], // stdout (write-end on the process' side)
                 2 => ['pipe', 'w'], // stderr (write-end on the process' side)
             ],
-            $pipes // This array will contain the pipes as asked.
+            $pipes, // This array will contain the pipes as asked.
         );
         if (!is_resource($process)) {
             $this->io->verbose('<error>FAIL</error>');

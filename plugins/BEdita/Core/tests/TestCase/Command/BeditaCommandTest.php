@@ -21,6 +21,7 @@ use Cake\Database\Connection;
 use Cake\Datasource\ConnectionManager;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Hash;
+use PDOException;
 
 /**
  * {@see BEdita\Core\Command\BeditaCommand} Test Case
@@ -36,7 +37,7 @@ class BeditaCommandTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.Applications',
     ];
 
@@ -66,7 +67,7 @@ class BeditaCommandTest extends TestCase
         // Try to avoid "database schema has changed" error on SQLite.
         try {
             ConnectionManager::get('default')->getSchemaCollection()->listTables();
-        } catch (\PDOException $e) {
+        } catch (PDOException $e) {
             // Do nothing.
         }
         $this->useCommandRunner();
@@ -191,7 +192,7 @@ class BeditaCommandTest extends TestCase
         file_put_contents(
             static::TEMP_FILE,
             file_get_contents(CONFIG . 'app_local.example.php'),
-            EXTR_OVERWRITE | LOCK_EX
+            EXTR_OVERWRITE | LOCK_EX,
         );
 
         // Setup temporary configuration.
@@ -231,7 +232,7 @@ class BeditaCommandTest extends TestCase
 
         $this->exec(
             sprintf('bedita setup --connection %s --config-file %s', static::TEMP_CONNECTION, static::TEMP_FILE),
-            $returnValues
+            $returnValues,
         );
 
         $this->assertExitCode(Command::CODE_SUCCESS);
@@ -255,7 +256,7 @@ class BeditaCommandTest extends TestCase
         file_put_contents(
             static::TEMP_FILE,
             file_get_contents(CONFIG . 'app_local.example.php'),
-            EXTR_OVERWRITE | LOCK_EX
+            EXTR_OVERWRITE | LOCK_EX,
         );
 
         // Setup temporary configuration.
@@ -344,9 +345,9 @@ class BeditaCommandTest extends TestCase
                 ' ',
                 array_merge(
                     ['bedita', 'setup', '--connection', static::TEMP_CONNECTION, '--config-file', static::TEMP_FILE],
-                    $cliOptions
-                )
-            )
+                    $cliOptions,
+                ),
+            ),
         );
 
         $this->assertExitCode(Command::CODE_SUCCESS);

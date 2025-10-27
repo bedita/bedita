@@ -15,7 +15,10 @@ declare(strict_types=1);
 
 namespace BEdita\Core\Test\TestCase\Command;
 
+use BEdita\Core\Command\CheckFilesystemCommand;
 use Cake\Command\Command;
+use Cake\Console\Arguments;
+use Cake\Console\ConsoleIo;
 use Cake\Console\TestSuite\ConsoleIntegrationTestTrait;
 use Cake\TestSuite\TestCase;
 
@@ -94,11 +97,11 @@ class CheckFilesystemCommandTest extends TestCase
      */
     public function testEmptyHttpdUser(): void
     {
-        $cmd = new class extends \BEdita\Core\Command\CheckFilesystemCommand {
+        $cmd = new class extends CheckFilesystemCommand {
             public function __construct()
             {
                 $this->args = ['cake', 'check_filesystem'];
-                $this->io = new \Cake\Console\ConsoleIo();
+                $this->io = new ConsoleIo();
                 parent::__construct();
             }
 
@@ -107,8 +110,8 @@ class CheckFilesystemCommandTest extends TestCase
                 return '';
             }
         };
-        $args = new \Cake\Console\Arguments([], [], []);
-        $io = new \Cake\Console\ConsoleIo();
+        $args = new Arguments([], [], []);
+        $io = new ConsoleIo();
         $actual = $cmd->execute($args, $io);
         static::assertSame(Command::CODE_ERROR, $actual);
     }

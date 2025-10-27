@@ -22,6 +22,7 @@ use Cake\Database\Connection;
 use Cake\Database\Schema\TableSchema;
 use Cake\Datasource\ConnectionManager;
 use Cake\TestSuite\TestCase;
+use RuntimeException;
 
 /**
  * {@see BEdita\Core\Command\InitSchemaCommand} Test Case
@@ -105,7 +106,7 @@ class InitSchemaCommandTest extends TestCase
     {
         $connection = ConnectionManager::get('default');
         if (!($connection instanceof Connection)) {
-            throw new \RuntimeException('Unable to use database connection');
+            throw new RuntimeException('Unable to use database connection');
         }
 
         $table = new TableSchema('foo_bar', ['foo' => ['type' => 'string', 'length' => 255, 'null' => true, 'default' => null]]);
@@ -128,7 +129,7 @@ class InitSchemaCommandTest extends TestCase
     {
         $connection = ConnectionManager::get('default');
         if (!($connection instanceof Connection)) {
-            throw new \RuntimeException('Unable to use database connection');
+            throw new RuntimeException('Unable to use database connection');
         }
 
         $table = new TableSchema('foo_bar', ['foo' => ['type' => 'string', 'length' => 255, 'null' => true, 'default' => null]]);

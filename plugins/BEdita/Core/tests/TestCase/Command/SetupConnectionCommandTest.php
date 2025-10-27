@@ -259,7 +259,7 @@ class SetupConnectionCommandTest extends TestCase
         // Invoke task.
         $this->exec(
             sprintf('setup_connection --connection %s --config-file %s', static::TEMP_CONNECTION, TMP . Text::uuid()),
-            $returnValues
+            $returnValues,
         );
 
         $this->assertExitCode(Command::CODE_ERROR);
@@ -282,7 +282,7 @@ class SetupConnectionCommandTest extends TestCase
         file_put_contents(
             static::TEMP_FILE,
             file_get_contents(CONFIG . 'app_local.example.php'),
-            EXTR_OVERWRITE | LOCK_EX
+            EXTR_OVERWRITE | LOCK_EX,
         );
 
         // Setup temporary configuration.
@@ -322,7 +322,7 @@ class SetupConnectionCommandTest extends TestCase
         // Invoke task.
         $this->exec(
             sprintf('setup_connection --connection %s --config-file %s', static::TEMP_CONNECTION, static::TEMP_FILE),
-            $returnValues
+            $returnValues,
         );
 
         $this->assertExitCode(Command::CODE_SUCCESS);
@@ -360,7 +360,7 @@ class SetupConnectionCommandTest extends TestCase
         file_put_contents(
             static::TEMP_FILE,
             file_get_contents(CONFIG . 'app_local.example.php'),
-            EXTR_OVERWRITE | LOCK_EX
+            EXTR_OVERWRITE | LOCK_EX,
         );
 
         // Setup temporary configuration.
@@ -431,9 +431,9 @@ class SetupConnectionCommandTest extends TestCase
                 ' ',
                 array_merge(
                     ['setup_connection', '--connection', static::TEMP_CONNECTION, '--config-file', static::TEMP_FILE],
-                    $cliOptions
-                )
-            )
+                    $cliOptions,
+                ),
+            ),
         );
 
         $this->assertExitCode(Command::CODE_SUCCESS);
@@ -472,7 +472,7 @@ class SetupConnectionCommandTest extends TestCase
         file_put_contents(
             static::TEMP_FILE,
             $fileContents,
-            EXTR_OVERWRITE | LOCK_EX
+            EXTR_OVERWRITE | LOCK_EX,
         );
 
         // Setup temporary configuration.
@@ -540,9 +540,9 @@ class SetupConnectionCommandTest extends TestCase
                 ' ',
                 array_merge(
                     ['setup_connection', '--connection', static::TEMP_CONNECTION, '--config-file', static::TEMP_FILE],
-                    $cliOptions
-                )
-            )
+                    $cliOptions,
+                ),
+            ),
         );
 
         $this->assertExitCode(Command::CODE_ERROR);
