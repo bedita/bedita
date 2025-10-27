@@ -210,7 +210,6 @@ class ProjectModelCommandTest extends TestCase
      * Test modelFileFromFolder method
      *
      * @return void
-     * @covers ::modelFileFromFolder()
      */
     public function testModelFileFromFolder(): void
     {

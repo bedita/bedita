@@ -20,7 +20,7 @@ use BEdita\Core\Test\Utility\TestArraySubsetTrait;
 use PHPUnit\Framework\Attributes\CoversClass;
 
 /**
- * @coversDefaultClass \BEdita\API\Controller\Admin\AdminController
+ * {@see \BEdita\API\Controller\Admin\AdminController} Test case.
  */
 #[CoversClass(AdminController::class)]
 class AdminControllerTest extends IntegrationTestCase

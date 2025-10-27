@@ -12,17 +12,19 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\API\Test\TestCase\Controller;
 
+use BEdita\API\Controller\BulkController;
 use BEdita\API\TestSuite\IntegrationTestCase;
 use BEdita\Core\State\CurrentApplication;
 use BEdita\Core\Utility\LoggedUser;
 use Cake\Utility\Hash;
+use PHPUnit\Framework\Attributes\CoversClass;
 
 /**
- * @coversDefaultClass \BEdita\API\Controller\BulkController
+ * {@see \BEdita\API\Controller\BulkController} Test Case.
  */
+#[CoversClass(BulkController::class)]
 class BulkControllerTest extends IntegrationTestCase
 {
     /**
@@ -30,7 +32,7 @@ class BulkControllerTest extends IntegrationTestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.Objects',
         'plugin.BEdita/Core.Endpoints',
         'plugin.BEdita/Core.EndpointPermissions',
@@ -41,14 +43,14 @@ class BulkControllerTest extends IntegrationTestCase
      *
      * @var array
      */
-    protected $originalEndpointPermissions = [];
+    protected array $originalEndpointPermissions = [];
 
     /**
      * Backup of original object permissions
      *
      * @var array
      */
-    protected $originalObjectPermissions = [];
+    protected array $originalObjectPermissions = [];
 
     /**
      * Set up method
@@ -99,7 +101,6 @@ class BulkControllerTest extends IntegrationTestCase
      * Test index method on GET /bulk.
      *
      * @return void
-     * @covers ::index()
      */
     public function testIndex404(): void
     {
@@ -112,7 +113,6 @@ class BulkControllerTest extends IntegrationTestCase
      * Test index method on GET /bulk/edit.
      *
      * @return void
-     * @covers ::index()
      */
     public function testIndex405(): void
     {
@@ -129,9 +129,6 @@ class BulkControllerTest extends IntegrationTestCase
      * Test index method on POST /bulk/edit.
      *
      * @return void
-     * @covers ::index()
-     * @covers ::edit()
-     * @covers ::canAccessEndpoint()
      */
     public function testEdit(): void
     {
@@ -146,8 +143,6 @@ class BulkControllerTest extends IntegrationTestCase
      * Test index method on POST /bulk/edit with abstract type in payload.
      *
      * @return void
-     * @covers ::index()
-     * @covers ::edit()
      */
     public function testEditAbstractType(): void
     {
@@ -180,9 +175,6 @@ class BulkControllerTest extends IntegrationTestCase
      * Test index method on POST /bulk/edit with endpoint access not allowed for current user.
      *
      * @return void
-     * @covers ::index()
-     * @covers ::edit()
-     * @covers ::canAccessEndpoint()
      */
     public function testEditEndpointAccessFalse(): void
     {
@@ -258,9 +250,6 @@ class BulkControllerTest extends IntegrationTestCase
      * Test index method on POST /bulk/edit with object having perms that do not allow current user to edit it.
      *
      * @return void
-     * @covers ::index()
-     * @covers ::edit()
-     * @covers ::canAccessEndpoint()
      */
     public function testEditObjectWithPerms(): void
     {

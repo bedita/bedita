@@ -14,15 +14,16 @@ declare(strict_types=1);
  */
 namespace BEdita\Core\Test\TestCase\Command;
 
+use BEdita\Core\Command\CompactHistoryCommand;
 use BEdita\Core\Model\Entity\History;
 use Cake\Console\TestSuite\ConsoleIntegrationTestTrait;
 use Cake\TestSuite\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
 
 /**
  * {@see BEdita\Core\Command\CompactHistoryCommand} Test Case
- *
- * @coversDefaultClass \BEdita\Core\Command\CompactHistoryCommand
  */
+#[CoversClass(CompactHistoryCommand::class)]
 class CompactHistoryCommandTest extends TestCase
 {
     use ConsoleIntegrationTestTrait;
@@ -32,7 +33,7 @@ class CompactHistoryCommandTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.Applications',
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.PropertyTypes',
@@ -49,21 +50,9 @@ class CompactHistoryCommandTest extends TestCase
     ];
 
     /**
-     * setUp method
-     *
-     * @return void
-     */
-    public function setUp(): void
-    {
-        parent::setUp();
-        $this->useCommandRunner();
-    }
-
-    /**
      * Test buildOptionParser method
      *
      * @return void
-     * @covers ::buildOptionParser()
      */
     public function testBuildOptionParser(): void
     {
@@ -77,12 +66,6 @@ class CompactHistoryCommandTest extends TestCase
      * Test execute method, min and max not set
      *
      * @return void
-     * @covers ::execute()
-     * @covers ::initialize()
-     * @covers ::compactHistory()
-     * @covers ::objectsGenerator()
-     * @covers ::processHistory()
-     * @covers ::compare()
      */
     public function testExecuteMinMaxDryrun(): void
     {
@@ -101,12 +84,6 @@ class CompactHistoryCommandTest extends TestCase
      * Test execute method with ID 1, no duplicates
      *
      * @return void
-     * @covers ::execute()
-     * @covers ::initialize()
-     * @covers ::compactHistory()
-     * @covers ::objectsGenerator()
-     * @covers ::processHistory()
-     * @covers ::compare()
      */
     public function testNoDuplicates(): void
     {
@@ -121,12 +98,6 @@ class CompactHistoryCommandTest extends TestCase
      * Test execute method with dryrun mode
      *
      * @return void
-     * @covers ::execute()
-     * @covers ::initialize()
-     * @covers ::compactHistory()
-     * @covers ::objectsGenerator()
-     * @covers ::processHistory()
-     * @covers ::compare()
      */
     public function testExecuteDryrun(): void
     {
@@ -164,12 +135,6 @@ class CompactHistoryCommandTest extends TestCase
      * Test execute method
      *
      * @return void
-     * @covers ::execute()
-     * @covers ::initialize()
-     * @covers ::compactHistory()
-     * @covers ::objectsGenerator()
-     * @covers ::processHistory()
-     * @covers ::compare()
      */
     public function testExecute(): void
     {
@@ -225,12 +190,6 @@ class CompactHistoryCommandTest extends TestCase
      * Test execute method with versions option
      *
      * @return void
-     * @covers ::execute()
-     * @covers ::initialize()
-     * @covers ::compactHistory()
-     * @covers ::objectsGenerator()
-     * @covers ::processHistory()
-     * @covers ::compare()
      */
     public function testExecuteVersions(): void
     {
@@ -285,12 +244,6 @@ class CompactHistoryCommandTest extends TestCase
      * Test execute method with no versions to delete
      *
      * @return void
-     * @covers ::execute()
-     * @covers ::initialize()
-     * @covers ::compactHistory()
-     * @covers ::objectsGenerator()
-     * @covers ::processHistory()
-     * @covers ::compare()
      */
     public function testExecuteNoVersionsToDelete(): void
     {

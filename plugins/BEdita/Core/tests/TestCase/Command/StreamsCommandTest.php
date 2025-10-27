@@ -192,7 +192,6 @@ class StreamsCommandTest extends TestCase
      * Test `streamsGenerator` method
      *
      * @return void
-     * @covers ::streamsGenerator()
      */
     public function testStreamsGenerator(): void
     {
@@ -225,7 +224,6 @@ class StreamsCommandTest extends TestCase
      * Test `updateStreamMetadata` method on exception
      *
      * @return void
-     * @covers ::updateStreamMetadata()
      */
     public function testUpdateStreamMetadataException(): void
     {

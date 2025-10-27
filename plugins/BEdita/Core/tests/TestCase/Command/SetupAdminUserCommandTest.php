@@ -20,12 +20,12 @@ use BEdita\Core\Model\Table\UsersTable;
 use Cake\Command\Command;
 use Cake\Console\TestSuite\ConsoleIntegrationTestTrait;
 use Cake\TestSuite\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
 
 /**
  * {@see BEdita\Core\Command\SetupAdminUserCommand} Test Case
- *
- * @coversDefaultClass \BEdita\Core\Command\SetupAdminUserCommand
  */
+#[CoversClass(SetupAdminUserCommand::class)]
 class SetupAdminUserCommandTest extends TestCase
 {
     use ConsoleIntegrationTestTrait;
@@ -42,7 +42,7 @@ class SetupAdminUserCommandTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.PropertyTypes',
         'plugin.BEdita/Core.Properties',
@@ -59,7 +59,6 @@ class SetupAdminUserCommandTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->useCommandRunner();
         $this->Users = $this->fetchTable('Users');
     }
 
@@ -76,8 +75,6 @@ class SetupAdminUserCommandTest extends TestCase
      * Test buildOptionParser method
      *
      * @return void
-     * @covers ::buildOptionParser()
-     * @covers ::getDescription()
      */
     public function testBuildOptionParser(): void
     {
@@ -95,7 +92,6 @@ class SetupAdminUserCommandTest extends TestCase
      * Test execution when default admin user is missing.
      *
      * @return void
-     * @covers ::execute()
      */
     public function testExecuteMissingUser(): void
     {
@@ -113,7 +109,6 @@ class SetupAdminUserCommandTest extends TestCase
      * Test execution when default admin users has already been configured and is kept as is.
      *
      * @return void
-     * @covers ::execute()
      */
     public function testExecuteExistingUsersNoOverwrite(): void
     {
@@ -138,7 +133,6 @@ class SetupAdminUserCommandTest extends TestCase
      * Test execution when default admin users has already been configured and is kept as is with CLI options.
      *
      * @return void
-     * @covers ::execute()
      */
     public function testExecuteExistingUsersNoOverwriteNonInteractive(): void
     {
@@ -164,7 +158,6 @@ class SetupAdminUserCommandTest extends TestCase
      * Test execution when default admin users has already been configured and is overwritten.
      *
      * @return void
-     * @covers ::execute()
      */
     public function testExecuteExistingUsersOverwrite(): void
     {
@@ -193,7 +186,6 @@ class SetupAdminUserCommandTest extends TestCase
      * Test execution when default admin users has already been configured and is overwritten with CLI options.
      *
      * @return void
-     * @covers ::execute()
      */
     public function testExecuteExistingUsersOverwriteNonInteractive(): void
     {
@@ -223,7 +215,6 @@ class SetupAdminUserCommandTest extends TestCase
      * Test execution when default admin users hasn't been configured yet.
      *
      * @return void
-     * @covers ::execute()
      */
     public function testExecuteDefaultUser(): void
     {
@@ -253,7 +244,6 @@ class SetupAdminUserCommandTest extends TestCase
      * Test execution when persistence of user credential fails.
      *
      * @return void
-     * @covers ::execute()
      */
     public function testExecutePersistenceFailed(): void
     {

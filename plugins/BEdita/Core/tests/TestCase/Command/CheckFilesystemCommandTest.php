@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\Command;
 
 use BEdita\Core\Command\CheckFilesystemCommand;
@@ -21,12 +20,13 @@ use Cake\Console\Arguments;
 use Cake\Console\ConsoleIo;
 use Cake\Console\TestSuite\ConsoleIntegrationTestTrait;
 use Cake\TestSuite\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * {@see BEdita\Core\Command\CheckFilesystemCommand} Test Case
- *
- * @coversDefaultClass \BEdita\Core\Command\CheckFilesystemCommand
  */
+#[CoversClass(CheckFilesystemCommand::class)]
 class CheckFilesystemCommandTest extends TestCase
 {
     use ConsoleIntegrationTestTrait;
@@ -36,7 +36,7 @@ class CheckFilesystemCommandTest extends TestCase
      *
      * @var string
      */
-    protected $wwwUser;
+    protected string $wwwUser;
 
     /**
      * Temporary directory for permissions tests.
@@ -51,7 +51,6 @@ class CheckFilesystemCommandTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->useCommandRunner();
         $this->wwwUser = exec('ps aux | grep -E "[a]pache|[h]ttpd|[_]www|[w]ww-data|[n]ginx" | grep -v root | head -1 | cut -d\\  -f1');
     }
 
@@ -74,8 +73,6 @@ class CheckFilesystemCommandTest extends TestCase
      * Test buildOptionParser method
      *
      * @return void
-     * @covers ::buildOptionParser()
-     * @covers ::getDescription()
      */
     public function testBuildOptionParser(): void
     {
@@ -93,7 +90,6 @@ class CheckFilesystemCommandTest extends TestCase
      * Test `execute` when httpd user is empty.
      *
      * @return void
-     * @covers ::execute()
      */
     public function testEmptyHttpdUser(): void
     {
@@ -120,9 +116,6 @@ class CheckFilesystemCommandTest extends TestCase
      * Test execution when permissions are ok.
      *
      * @return void
-     * @covers ::execute()
-     * @covers ::getHttpdUser()
-     * @covers ::checkPaths()
      */
     public function testExecuteOk()
     {
@@ -139,8 +132,6 @@ class CheckFilesystemCommandTest extends TestCase
      * Test execution with auto-detection of Web server user when Web server is running.
      *
      * @return void
-     * @covers ::execute()
-     * @covers ::getHttpdUser()
      */
     public function testExecuteAutodetectOk()
     {
@@ -162,8 +153,6 @@ class CheckFilesystemCommandTest extends TestCase
      * Test execution with auto-detection of Web server user when Web server is **NOT** running.
      *
      * @return void
-     * @covers ::execute()
-     * @covers ::getHttpdUser()
      */
     public function testExecuteAutodetectFail()
     {
@@ -185,8 +174,6 @@ class CheckFilesystemCommandTest extends TestCase
      * Test execution when the path to check does not exist.
      *
      * @return void
-     * @covers ::execute()
-     * @covers ::checkPaths()
      */
     public function testExecuteMissingDirectory()
     {
@@ -200,8 +187,6 @@ class CheckFilesystemCommandTest extends TestCase
      * Test execution when the path is not writable for the CLI user.
      *
      * @return void
-     * @covers ::execute()
-     * @covers ::checkPaths()
      */
     public function testExecuteNotWritableCli()
     {
@@ -236,10 +221,8 @@ class CheckFilesystemCommandTest extends TestCase
      *
      * @param int $perms Permissions to be set on folder.
      * @return void
-     * @dataProvider executeNotWritableWebServerProvider()
-     * @covers ::execute()
-     * @covers ::checkPaths()
      */
+    #[DataProvider('executeNotWritableWebServerProvider')]
     public function testExecuteNotWritableWebServer($perms)
     {
         mkdir(static::TEMP_DIR);
@@ -257,8 +240,6 @@ class CheckFilesystemCommandTest extends TestCase
      * Test execution when the path is world writable.
      *
      * @return void
-     * @covers ::execute()
-     * @covers ::checkPaths()
      */
     public function testExecuteWorldWritable()
     {

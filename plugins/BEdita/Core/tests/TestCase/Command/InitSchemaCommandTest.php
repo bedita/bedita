@@ -12,9 +12,9 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\Command;
 
+use BEdita\Core\Command\InitSchemaCommand;
 use Cake\Command\Command;
 use Cake\Console\TestSuite\ConsoleIntegrationTestTrait;
 use Cake\Core\Plugin;
@@ -22,14 +22,13 @@ use Cake\Database\Connection;
 use Cake\Database\Schema\TableSchema;
 use Cake\Datasource\ConnectionManager;
 use Cake\TestSuite\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
 use RuntimeException;
 
 /**
  * {@see BEdita\Core\Command\InitSchemaCommand} Test Case
- *
- * @coversDefaultClass \BEdita\Core\Command\InitSchemaCommand
- * @covers \BEdita\Core\Command\InitSchemaCommand
  */
+#[CoversClass(InitSchemaCommand::class)]
 class InitSchemaCommandTest extends TestCase
 {
     use ConsoleIntegrationTestTrait;
@@ -40,7 +39,6 @@ class InitSchemaCommandTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->useCommandRunner();
         if (static::$fixtureManager !== null) {
             static::$fixtureManager->shutDown();
         }
@@ -75,8 +73,6 @@ class InitSchemaCommandTest extends TestCase
      * Test buildOptionParser method
      *
      * @return void
-     * @covers ::buildOptionParser()
-     * @covers ::getDescription()
      */
     public function testBuildOptionParser(): void
     {

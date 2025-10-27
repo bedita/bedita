@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\Command;
 
 use BEdita\Core\Command\CheckSchemaCommand;
@@ -28,14 +27,14 @@ use Cake\Datasource\ConnectionManager;
 use Cake\TestSuite\ConnectionHelper;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Hash;
+use PHPUnit\Framework\Attributes\CoversClass;
 use stdClass;
 use TestApp\Application;
 
 /**
  * {@see BEdita\Core\Command\CheckSchemaCommand} Test Case
- *
- * @coversDefaultClass \BEdita\Core\Command\CheckSchemaCommand
  */
+#[CoversClass(CheckSchemaCommand::class)]
 class CheckSchemaCommandTest extends TestCase
 {
     use ConsoleIntegrationTestTrait;
@@ -45,33 +44,14 @@ class CheckSchemaCommandTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.FakeAnimals',
     ];
-
-    /**
-     * @inheritDoc
-     */
-    protected function setUp(): void
-    {
-        parent::setUp();
-        $this->useCommandRunner();
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function tearDown(): void
-    {
-        parent::tearDown();
-    }
 
     /**
      * Test buildOptionParser method
      *
      * @return void
-     * @covers ::buildOptionParser()
-     * @covers ::getDescription()
      */
     public function testBuildOptionParser(): void
     {
@@ -108,7 +88,6 @@ class CheckSchemaCommandTest extends TestCase
      * Test `checkSymbol` method.
      *
      * @return void
-     * @covers ::checkSymbol()
      */
     public function testCheckSymbol(): void
     {
@@ -146,7 +125,6 @@ class CheckSchemaCommandTest extends TestCase
      * Test `checkConventions`.
      *
      * @return void
-     * @covers ::checkConventions()
      */
     public function testCheckConventions(): void
     {
@@ -200,9 +178,6 @@ class CheckSchemaCommandTest extends TestCase
      * Test `formatMessages`.
      *
      * @return void
-     * @covers ::checkConventions()
-     * @covers ::formatMessages()
-     * @covers ::errorMessage()
      */
     public function testCheckFormatMessages(): void
     {
@@ -256,7 +231,6 @@ class CheckSchemaCommandTest extends TestCase
      * Test `errorMessage`.
      *
      * @return void
-     * @covers ::errorMessage()
      */
     public function testErrorMessage(): void
     {
@@ -294,7 +268,6 @@ class CheckSchemaCommandTest extends TestCase
      * Test check on Phinxlog tables.
      *
      * @return void
-     * @covers ::filterPhinxlogTables()
      */
     public function testFilterPhinxlogTables(): void
     {
@@ -320,7 +293,6 @@ class CheckSchemaCommandTest extends TestCase
      * Test check on unknown connection type.
      *
      * @return void
-     * @covers ::execute()
      */
     public function testUnkwownConnectionType(): void
     {
@@ -336,7 +308,6 @@ class CheckSchemaCommandTest extends TestCase
      * Test controlled failure on missing "Migrations" plugin.
      *
      * @return void
-     * @covers ::execute()
      */
     public function testMissingMigrationsPlugin(): void
     {
@@ -357,12 +328,6 @@ class CheckSchemaCommandTest extends TestCase
      * Test check on offended SQL conventions.
      *
      * @return void
-     * @covers ::execute()
-     * @covers ::checkConventions()
-     * @covers ::filterPhinxlogTables()
-     * @covers ::checkMigrationsStatus()
-     * @covers ::checkSymbol()
-     * @covers ::formatMessages()
      */
     public function testOffendedConventions(): void
     {
@@ -425,7 +390,6 @@ class CheckSchemaCommandTest extends TestCase
      * Test successful schema check.
      *
      * @return void
-     * @covers ::execute()
      */
     public function testCheckSchema(): void
     {

@@ -12,9 +12,9 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\Command;
 
+use BEdita\Core\Command\BeditaCommand;
 use Cake\Command\Command;
 use Cake\Console\TestSuite\ConsoleIntegrationTestTrait;
 use Cake\Database\Connection;
@@ -22,12 +22,12 @@ use Cake\Datasource\ConnectionManager;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Hash;
 use PDOException;
+use PHPUnit\Framework\Attributes\CoversClass;
 
 /**
- * {@see BEdita\Core\Command\BeditaCommand} Test Case
- *
- * @coversDefaultClass \BEdita\Core\Command\BeditaCommand
+ * {@see BEdita\Core\Command\BeditaCommand} Test Case.
  */
+#[CoversClass(BeditaCommand::class)]
 class BeditaCommandTest extends TestCase
 {
     use ConsoleIntegrationTestTrait;
@@ -110,8 +110,6 @@ class BeditaCommandTest extends TestCase
      * Test buildOptionParser method
      *
      * @return void
-     * @covers ::buildOptionParser()
-     * @covers ::getDescription()
      */
     public function testBuildOptionParser(): void
     {
@@ -124,7 +122,6 @@ class BeditaCommandTest extends TestCase
      * Test help
      *
      * @return void
-     * @covers ::execute()
      */
     public function testHelp(): void
     {
@@ -137,7 +134,6 @@ class BeditaCommandTest extends TestCase
      * Test error on missing subcommand
      *
      * @return void
-     * @covers ::execute()
      */
     public function testNoSubcommand(): void
     {
@@ -169,8 +165,6 @@ class BeditaCommandTest extends TestCase
      * Test subcommand.
      *
      * @return void
-     * @covers ::execute()
-     * @covers ::executeSubcommand()
      */
     public function testSubcommand(): void
     {
@@ -182,9 +176,6 @@ class BeditaCommandTest extends TestCase
      * Test full setup on a new instance.
      *
      * @return void
-     * @covers ::execute()
-     * @covers ::executeSubcommand()
-     * @covers ::setup()
      */
     public function testSetupNewInteractive(): void
     {
@@ -246,9 +237,6 @@ class BeditaCommandTest extends TestCase
      * Test full setup on a new instance in a completely non-interactive mode.
      *
      * @return void
-     * @covers ::execute()
-     * @covers ::executeSubcommand()
-     * @covers ::setup()
      */
     public function testSetupNewNonInteractive(): void
     {
@@ -361,9 +349,6 @@ class BeditaCommandTest extends TestCase
      * Test check.
      *
      * @return void
-     * @covers ::execute()
-     * @covers ::executeSubcommand()
-     * @covers ::check()
      */
     public function testInitSchema(): void
     {
@@ -375,9 +360,6 @@ class BeditaCommandTest extends TestCase
      * Test check.
      *
      * @return void
-     * @covers ::execute()
-     * @covers ::executeSubcommand()
-     * @covers ::check()
      */
     public function testCheck(): void
     {

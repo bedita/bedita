@@ -232,7 +232,7 @@ class ResourcesTest extends TestCase
     /**
      * Test `create` method with invalid name.
      *
-     * @covers ::create()
+     * @return void
      */
     public function testCreateInvalidCategory(): void
     {
@@ -248,7 +248,7 @@ class ResourcesTest extends TestCase
     /**
      * Test `create` method with invalid name.
      *
-     * @covers ::create()
+     * @return void
      */
     public function testCreateInvalidRole(): void
     {
