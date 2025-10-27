@@ -39,6 +39,7 @@ class ImageThumbsHandler implements EventListenerInterface
     {
         return [
             'Associated.afterSave' => 'afterSaveAssociated',
+            'Thumbnails.update' => 'thumbnailsUpdate',
         ];
     }
 
@@ -50,6 +51,10 @@ class ImageThumbsHandler implements EventListenerInterface
      */
     public function afterSaveAssociated(Event $event): void
     {
+        $presets = (array)Configure::read('Thumbnails.presets');
+        if (empty($presets)) {
+            return;
+        }
         $data = $event->getData();
         $stream = Hash::get($data, 'entity');
         if (!$stream instanceof Stream) {
@@ -60,7 +65,36 @@ class ImageThumbsHandler implements EventListenerInterface
         if ($type !== 'images') {
             return;
         }
+        $this->updateThumbs($image, $stream, $presets);
+    }
+
+    /**
+     * Handle 'Thumbnails.update' and update thumbs using presets on streams
+     *
+     * @param \Cake\Event\Event $event Dispatched event.
+     * @return void
+     */
+    public function thumbnailsUpdate(Event $event): void
+    {
         $presets = (array)Configure::read('Thumbnails.presets');
+        if (empty($presets)) {
+            return;
+        }
+        $stream = $event->getData('stream');
+        if (!$stream instanceof Stream) {
+            return;
+        }
+        $objectId = $stream->get('object_id');
+        if (!$objectId) {
+            return;
+        }
+        $image = $this->fetchTable('Images')
+            ->find('type', ['images'])
+            ->where(['id' => $objectId])
+            ->first();
+        if (empty($image) || !$image instanceof ObjectEntity) {
+            return;
+        }
         $this->updateThumbs($image, $stream, $presets);
     }
 

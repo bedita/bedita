@@ -205,4 +205,48 @@ class ProjectModelCommandTest extends TestCase
         ];
         $this->assertEquals($expected, $actual);
     }
+
+    /**
+     * Test modelFileFromFolder method
+     *
+     * @return void
+     * @covers ::modelFileFromFolder()
+     */
+    public function testModelFileFromFolder(): void
+    {
+        // CONFIG . DS . 'project-model' not exists
+        $folder = CONFIG . DS . 'project-model';
+        if (is_dir($folder)) {
+            rmdir($folder);
+        }
+        $cmd = new class () extends ProjectModelCommand
+        {
+            public function modelFileFromFolder(): ?string
+            {
+                return parent::modelFileFromFolder();
+            }
+        };
+        $this->assertNull($cmd->modelFileFromFolder());
+
+        // CONFIG . DS . 'project-model' exists but empty
+        mkdir($folder, 0777, true);
+        $this->assertNull($cmd->modelFileFromFolder());
+
+        // CONFIG . DS . 'project-model' exists and contains files
+        $file1 = $folder . DS . 'test1.json';
+        $file2 = $folder . DS . 'test2.json';
+        file_put_contents($file1, json_encode(['test1' => 'value1']));
+        file_put_contents($file2, json_encode(['test2' => 'value2']));
+        $expected = TMP . DS . 'project-model.json';
+        $result = $cmd->modelFileFromFolder();
+        $this->assertFileExists($expected);
+        $this->assertJsonStringEqualsJsonFile($expected, json_encode([
+            'test1' => ['test1' => 'value1'],
+            'test2' => ['test2' => 'value2'],
+        ]));
+        unlink($file1);
+        unlink($file2);
+        rmdir($folder);
+        $this->assertEquals($expected, $result);
+    }
 }

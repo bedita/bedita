@@ -1,9 +1,9 @@
 {
 	"info": {
-		"_postman_id": "582503df-130c-43a4-b347-8b5c472eb959",
+		"_postman_id": "0d6c1a56-5deb-4ed3-942b-770b13182267",
 		"name": "BEdita 5 Core API",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "14877423"
+		"_exporter_id": "6916583"
 	},
 	"item": [
 		{
@@ -12211,6 +12211,71 @@
 							""
 						]
 					}
+				}
+			]
+		},
+		{
+			"name": "19. Bulk actions",
+			"item": [
+				{
+					"name": "Bulk edit",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var responseJSON;",
+									"try {",
+									"    responseJSON = JSON.parse(responseBody); ",
+									"    tests[\"Status code is 200\"] = responseCode.code === 200;",
+									"    tests[\"Content-Type is correct\"] = postman.getResponseHeader(\"Content-Type\") === 'application/json';",
+									"} catch (e) {",
+									"    tests[\"Error in parsing response\"] = e;",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt}}"
+							},
+							{
+								"key": "X-Api-Key",
+								"value": "{{apiKey}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"data\": {\n        \"attributes\": {\n            \"status\": \"on\"\n        },\n        \"objects\": {\n            \"events\": [15810],\n            \"profiles\": [15694, 15693]\n        }\n    }\n}"
+						},
+						"url": {
+							"raw": "{{be4Url}}/bulk/edit",
+							"host": [
+								"{{be4Url}}"
+							],
+							"path": [
+								"bulk",
+								"edit"
+							]
+						},
+						"description": "Create new Object"
+					},
+					"response": []
 				}
 			]
 		}

@@ -51,6 +51,10 @@ class HomeController extends AppController
             'methods' => ['GET', 'POST'],
             'multiple_types' => false,
         ],
+        '/bulk' => [
+            'methods' => ['POST'],
+            'multiple_types' => false,
+        ],
         '/model' => [
             'methods' => 'ALL',
             'multiple_types' => true,
@@ -148,15 +152,14 @@ class HomeController extends AppController
         if (empty($allow)) {
             return [];
         }
+        $formats = ['application/json', 'application/vnd.api+json'];
+        $formats = $endpoint === '/bulk' ? ['application/json'] : $formats;
 
         return [
             'href' => Router::url($endpoint, true),
             'hints' => [
                 'allow' => $allow,
-                'formats' => [
-                    'application/json',
-                    'application/vnd.api+json',
-                ],
+                'formats' => $formats,
                 'display' => [
                     'label' => Inflector::camelize(substr($endpoint, 1)),
                 ],

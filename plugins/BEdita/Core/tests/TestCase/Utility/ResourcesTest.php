@@ -21,6 +21,7 @@ use Cake\TestSuite\TestCase;
 use Cake\Utility\Hash;
 use Cake\Utility\Inflector;
 use Exception;
+use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 
@@ -69,7 +70,7 @@ class ResourcesTest extends TestCase
                 'roles',
                 [
                     [
-                        'name' => 'new role',
+                        'name' => 'new_role',
                     ],
                 ],
             ],
@@ -77,7 +78,7 @@ class ResourcesTest extends TestCase
                 'applications',
                 [
                     [
-                        'name' => 'new app',
+                        'name' => 'new_app',
                     ],
                 ],
             ],
@@ -226,6 +227,38 @@ class ResourcesTest extends TestCase
     {
         $result = Resources::create($type, $data);
         static::assertEquals(count($data), count($result));
+    }
+
+    /**
+     * Test `create` method with invalid name.
+     *
+     * @covers ::create()
+     */
+    public function testCreateInvalidCategory(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Invalid resource data: {"name":{"regex":"The provided value is invalid"}}');
+        Resources::create('categories', [
+            [
+                'name' => 'società',
+            ],
+        ]);
+    }
+
+    /**
+     * Test `create` method with invalid name.
+     *
+     * @covers ::create()
+     */
+    public function testCreateInvalidRole(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Invalid resource data: {"name":{"regex":"The provided value is invalid"}}');
+        Resources::create('roles', [
+            [
+                'name' => 'invalid name',
+            ],
+        ]);
     }
 
     /**
