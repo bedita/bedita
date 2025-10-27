@@ -108,10 +108,13 @@ class ObjectTypesTable extends Table
         $this->setTable('object_types');
         $this->setPrimaryKey('id');
         $this->setDisplayField('name');
-        $this->getSchema()
+        $tableSchema = $this->getSchema();
+        $tableSchema
             ->setColumnType('associations', 'json')
-            ->setColumnType('hidden', 'json')
-            ->setColumnType('translation_rules', 'json');
+            ->setColumnType('hidden', 'json');
+        if ($tableSchema->hasColumn('translation_rules')) {
+            $tableSchema->setColumnType('translation_rules', 'json');
+        }
 
         $this->hasMany('Objects', [
             'foreignKey' => 'object_type_id',
