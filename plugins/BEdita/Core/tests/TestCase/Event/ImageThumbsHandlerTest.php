@@ -72,7 +72,7 @@ class ImageThumbsHandlerTest extends TestCase
         return [
             'no presets' => [
                 [
-                    'entity' => $this->getMockBuilder('BEdita\Core\Model\Entity\Stream')->getMock(),
+                    'entity' => static fn(self $testCase) => $testCase->getMockBuilder(Stream::class)->getMock(),
                 ],
                 [],
                 false,
@@ -135,7 +135,7 @@ class ImageThumbsHandlerTest extends TestCase
     }
 
     /**
-     * Test `afterSaveAssociated` method
+     * Test `afterSaveAssociated` methodk
      *
      * @param array $data Event data.
      * @param array $presets Presets to set.
@@ -206,17 +206,20 @@ class ImageThumbsHandlerTest extends TestCase
      *
      * @return array
      */
-    public function thumbnailsUpdateProvider(): array
+    public static function thumbnailsUpdateProvider(): array
     {
-        $streamWithObjectId = $this->getMockBuilder(Stream::class)
-            ->onlyMethods(['get'])
-            ->getMock();
-        $streamWithObjectId->method('get')->willReturn(999);
+        // $streamWithObjectId = $this->getMockBuilder(Stream::class)
+        //     ->onlyMethods(['get'])
+        //     ->getMock();
+        // $streamWithObjectId->method('get')->willReturn(999);
 
         return [
             'empty presets' => [
                 [
-                    'stream' => $this->getMockBuilder('BEdita\Core\Model\Entity\Stream')->getMock(),
+                    'stream' => static fn(self $testCase) => $testCase->getMockBuilder(Stream::class)
+                        ->getMock()
+                        ->method('get')
+                        ->willReturn(999),
                 ],
                 [],
                 false,
@@ -240,7 +243,10 @@ class ImageThumbsHandlerTest extends TestCase
             ],
             'presets, stream, no image' => [
                 [
-                    'stream' => $this->getMockBuilder('BEdita\Core\Model\Entity\Stream')->getMock(),
+                    'stream' => static fn(self $testCase) => $testCase->getMockBuilder(Stream::class)
+                        ->getMock()
+                        ->method('get')
+                        ->willReturn(999),
                 ],
                 [
                     'default' => [
@@ -256,7 +262,10 @@ class ImageThumbsHandlerTest extends TestCase
             ],
             'presets, stream, but image not found' => [
                 [
-                    'stream' => $streamWithObjectId,
+                    'stream' => static fn(self $testCase) => $testCase->getMockBuilder(Stream::class)
+                        ->getMock()
+                        ->method('get')
+                        ->willReturn(999),
                 ],
                 [
                     'default' => [
@@ -297,9 +306,8 @@ class ImageThumbsHandlerTest extends TestCase
      * @param bool $updateThumbsIsCalled If `updateThumbs` method is called.
      * @param bool $useValidStream If to use a stream with object id or not.
      * @return void
-     * @dataProvider thumbnailsUpdateProvider()
-     * @covers ::thumbnailsUpdate()
      */
+    #[DataProvider('thumbnailsUpdateProvider')]
     public function testThumbnailsUpdate(array $data, array $presets, bool $updateThumbsIsCalled, bool $useValidStream): void
     {
         Configure::write('Thumbnails.presets', $presets);

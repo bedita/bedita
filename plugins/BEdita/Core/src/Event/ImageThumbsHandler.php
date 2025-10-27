@@ -89,7 +89,7 @@ class ImageThumbsHandler implements EventListenerInterface
             return;
         }
         $image = $this->fetchTable('Images')
-            ->find('type', ['images'])
+            ->find('type', value: ['images'])
             ->where(['id' => $objectId])
             ->first();
         if (empty($image) || !$image instanceof ObjectEntity) {
