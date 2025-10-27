@@ -14,7 +14,7 @@ declare(strict_types=1);
  */
 namespace BEdita\Core\Test\TestCase\Migration;
 
-use Migrations\Table;
+use Migrations\Db\Table;
 
 class MockMigrationsTable extends Table
 {
