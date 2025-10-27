@@ -153,7 +153,7 @@ return [
      * - `name` public name of the project, short expression recommended like `MyProject`, `Nope v1`
      */
     'Project' => [
-        'name' => env('PROJECT_NAME', 'BEdita 5'),
+        'name' => env('PROJECT_NAME', 'BEdita 6'),
     ],
 
     /**
