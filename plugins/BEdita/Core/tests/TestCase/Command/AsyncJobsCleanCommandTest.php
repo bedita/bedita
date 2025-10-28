@@ -28,14 +28,6 @@ class AsyncJobsCleanCommandTest extends TestCase
     use ConsoleIntegrationTestTrait;
 
     /**
-     * @inheritDoc
-     */
-    public function setUp(): void
-    {
-        parent::setUp();
-    }
-
-    /**
      * Test buildOptionParser method
      *
      * @return void

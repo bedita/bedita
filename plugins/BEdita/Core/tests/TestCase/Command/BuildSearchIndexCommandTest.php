@@ -42,16 +42,6 @@ class BuildSearchIndexCommandTest extends TestCase
     ];
 
     /**
-     * setUp method
-     *
-     * @return void
-     */
-    public function setUp(): void
-    {
-        parent::setUp();
-    }
-
-    /**
      * Test `buildOptionParser` method
      *
      * @return void
