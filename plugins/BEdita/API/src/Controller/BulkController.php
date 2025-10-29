@@ -109,7 +109,7 @@ class BulkController extends JsonBaseController
                 continue;
             }
             $typesTable = $this->fetchTable(Inflector::camelize($type));
-            $action = new ListObjectsAction(['table' => $typesTable, 'objectType' => $type]);
+            $action = new ListObjectsAction(['table' => $typesTable, 'objectType' => $objectType]);
             $query = $action();
             $entities = $query
                 ->where([sprintf('%s.id IN', $typesTable->getAlias()) => $map[$type]])

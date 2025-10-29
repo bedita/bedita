@@ -104,7 +104,7 @@ class BulkControllerTest extends IntegrationTestCase
      */
     public function testIndex404(): void
     {
-        $this->configRequestHeaders('GET', $this->getUserAuthHeader());
+        $this->configRequestHeaders('GET', $this->getUserAuthHeader() + $this->headers);
         $this->get('/bulk');
         $this->assertResponseCode(404);
     }
@@ -116,11 +116,11 @@ class BulkControllerTest extends IntegrationTestCase
      */
     public function testIndex405(): void
     {
-        $this->configRequestHeaders('GET', $this->getUserAuthHeader());
+        $this->configRequestHeaders('GET', $this->getUserAuthHeader() + $this->headers);
         $this->get('/bulk/edit');
         $this->assertResponseCode(405);
 
-        $this->configRequestHeaders('POST', $this->getUserAuthHeader());
+        $this->configRequestHeaders('POST', $this->getUserAuthHeader() + $this->headers);
         $this->post('/bulk/something');
         $this->assertResponseCode(405);
     }
@@ -147,7 +147,7 @@ class BulkControllerTest extends IntegrationTestCase
     public function testEditAbstractType(): void
     {
         // try to edit object 1 of abstract type 'objects'
-        $this->configRequestHeaders('POST', $this->getUserAuthHeader('first user', 'password1'));
+        $this->configRequestHeaders('POST', $this->getUserAuthHeader('first user', 'password1') + $this->headers);
         $this->post('/bulk/edit', json_encode([
             'data' => [
                 'attributes' => [
@@ -222,7 +222,7 @@ class BulkControllerTest extends IntegrationTestCase
         $this->assertEquals(0, $permission->get('permission'), 'Permission should be 0 (block)');
 
         // try to edit object 3 with user that is not admin
-        $this->configRequestHeaders('POST', $this->getUserAuthHeader('second user', 'password2'));
+        $this->configRequestHeaders('POST', $this->getUserAuthHeader('second user', 'password2') + $this->headers);
         $this->post('/bulk/edit', json_encode([
             'data' => [
                 'attributes' => [
@@ -295,7 +295,7 @@ class BulkControllerTest extends IntegrationTestCase
         $this->assertEquals(['first role'], $perms['roles']);
 
         // Try to edit with user that doesn't have permissions (second user, role 2)
-        $this->configRequestHeaders('POST', $this->getUserAuthHeader('second user', 'password2'));
+        $this->configRequestHeaders('POST', $this->getUserAuthHeader('second user', 'password2') + $this->headers);
         $this->post('/bulk/edit', json_encode([
             'data' => [
                 'attributes' => [
@@ -335,7 +335,7 @@ class BulkControllerTest extends IntegrationTestCase
         $o2 = $this->fetchTable('Objects')->get(3);
         $secondOriginalStatus = $o2->get('status');
         $this->assertEquals('draft', $secondOriginalStatus);
-        $this->configRequestHeaders('POST', $this->getUserAuthHeader($user, $password));
+        $this->configRequestHeaders('POST', $this->getUserAuthHeader($user, $password) + $this->headers);
         $map = [];
         $map[$o1->get('type')][] = $o1->get('id');
         $map[$o2->get('type')][] = $o2->get('id');
@@ -364,7 +364,7 @@ class BulkControllerTest extends IntegrationTestCase
         $o2 = $this->fetchTable('Objects')->get(3);
         $secondStatus = $o2->get('status');
         $this->assertEquals('off', $secondStatus);
-        $this->configRequestHeaders('POST', $this->getUserAuthHeader($user, $password));
+        $this->configRequestHeaders('POST', $this->getUserAuthHeader($user, $password) + $this->headers);
         $this->post('/bulk/edit', json_encode([
             'data' => [
                 'attributes' => [
@@ -379,5 +379,56 @@ class BulkControllerTest extends IntegrationTestCase
         $o2 = $this->fetchTable('Objects')->get(3);
         $secondStatus = $o2->get('status');
         $this->assertEquals('draft', $secondStatus);
+    }
+
+    /**
+     * Test that trying to save in bulk data referred to a wrong id for an object type then it is ignored.
+     *
+     * @return void
+     * @covers ::edit()
+     */
+    public function testWrongObjectType(): void
+    {
+        $eventId = 9;
+        $documentId = 3;
+        $wrongObject = $this->fetchTable('Documents')
+            ->find('type', ['documents'])
+            ->where(['id' => $documentId])
+            ->firstOrFail();
+        $originalStatusWrongObject = $wrongObject->get('status');
+
+        $this->configRequestHeaders('POST', $this->getUserAuthHeader('first user', 'password1') + $this->headers);
+        $this->post('/bulk/edit', json_encode([
+            'data' => [
+                'attributes' => [
+                    'status' => 'off',
+                ],
+                'objects' => [
+                    'events' => [$documentId, $eventId], // 3 is id of document => can't edit it as event
+                ],
+            ],
+        ]));
+        $this->assertResponseCode(200);
+
+        // check response content
+        $response = (array)json_decode((string)$this->_response->getBody(), true);
+        $response = (array)Hash::get($response, 'data');
+        $this->assertArrayHasKey('saved', $response);
+        $this->assertArrayHasKey('errors', $response);
+        $this->assertCount(1, Hash::get($response, 'saved')); // just one object save, the wrong one was skipped
+        $this->assertCount(0, Hash::get($response, 'errors'));
+        $this->assertEquals($eventId, Hash::get($response, 'saved.0'));
+
+        $wrongObject = $this->fetchTable('Documents')
+            ->find('type', ['documents'])
+            ->where(['id' => $documentId])
+            ->firstOrFail();
+        $event = $this->fetchTable('Events')
+            ->find('type', ['events'])
+            ->where(['id' => $eventId])
+            ->firstOrFail();
+
+        $this->assertEquals($originalStatusWrongObject, $wrongObject->get('status'));
+        $this->assertEquals('off', $event->get('status'));
     }
 }

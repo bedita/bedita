@@ -20,6 +20,7 @@ use BEdita\Core\Model\Entity\ObjectType;
 use BEdita\Core\Model\Validation\Validation;
 use Cake\Collection\CollectionInterface;
 use Cake\Database\Driver\Mysql;
+use Cake\Database\Driver\Postgres;
 use Cake\Database\Expression\FunctionExpression;
 use Cake\Database\Expression\QueryExpression;
 use Cake\Datasource\EntityInterface;
@@ -322,9 +323,10 @@ class CustomPropertiesBehavior extends Behavior
      */
     public function findCustomProp(SelectQuery $query, mixed ...$args): SelectQuery
     {
-        // for now we handle just MySQL
-        if (!($query->getConnection()->getDriver() instanceof Mysql)) {
-            throw new BadFilterException(__d('bedita', 'customProp finder isn\'t supported for datasource'));
+        $driver = $query->getConnection()->getDriver();
+        // Check if driver is supported
+        if (!($driver instanceof Mysql) && !($driver instanceof Postgres)) {
+            throw new BadFilterException(__d('bedita', 'customProp finder isn\'t supported for this datasource'));
         }
 
         $options = $args['value'] ?? $args;
@@ -342,22 +344,35 @@ class CustomPropertiesBehavior extends Behavior
         }
         unset($value);
 
-        return $query->where(function (QueryExpression $exp, SelectQuery $query) use ($options) {
+        return $query->where(function (QueryExpression $exp, SelectQuery $query) use ($options, $driver) {
             $field = $this->table()->aliasField($this->getConfig('field'));
 
             return $exp->and(array_map(
-                function ($key, $value) use ($field, $query) {
+                function ($key, $value) use ($field, $query, $driver) {
+                    if ($driver instanceof Mysql) {
+                        // MySQL syntax using JSON_EXTRACT and JSON_UNQUOTE
+                        return $query->expr()->eq(
+                            new FunctionExpression(
+                                'JSON_UNQUOTE',
+                                [
+                                    new FunctionExpression(
+                                        'JSON_EXTRACT',
+                                        [$field => 'identifier', sprintf('$.%s', $key)]
+                                    ),
+                                ],
+                            ),
+                            new FunctionExpression('JSON_UNQUOTE', [json_encode($value)]), // trick to normalize values compared
+                        );
+                    }
+                    // PostgreSQL syntax with native JSON column using ->> operator
+                    // For PostgreSQL's ->> operator, we need to handle value formatting correctly
+                    $compareValue = is_string($value) ? $value : json_encode($value); // Use json_encode to handle formatting
+                    [$key, $type] = $query->getConnection()->cast($key, 'string');
+
+                    // Use ->> operator directly on JSON column
                     return $query->expr()->eq(
-                        new FunctionExpression(
-                            'JSON_UNQUOTE',
-                            [
-                                new FunctionExpression(
-                                    'JSON_EXTRACT',
-                                    [$field => 'identifier', sprintf('$.%s', $key)],
-                                ),
-                            ],
-                        ),
-                        new FunctionExpression('JSON_UNQUOTE', [json_encode($value)]), // trick to normalize values compared
+                        sprintf('%s->>%s', $field, $query->getConnection()->getDriver()->quote($key, $type)),
+                        $compareValue
                     );
                 },
                 array_keys($options),
