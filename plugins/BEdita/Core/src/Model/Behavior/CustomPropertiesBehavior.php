@@ -357,7 +357,7 @@ class CustomPropertiesBehavior extends Behavior
                                 [
                                     new FunctionExpression(
                                         'JSON_EXTRACT',
-                                        [$field => 'identifier', sprintf('$.%s', $key)]
+                                        [$field => 'identifier', sprintf('$.%s', $key)],
                                     ),
                                 ],
                             ),
@@ -372,7 +372,7 @@ class CustomPropertiesBehavior extends Behavior
                     // Use ->> operator directly on JSON column
                     return $query->expr()->eq(
                         sprintf('%s->>%s', $field, $query->getConnection()->getDriver()->quote($key, $type)),
-                        $compareValue
+                        $compareValue,
                     );
                 },
                 array_keys($options),

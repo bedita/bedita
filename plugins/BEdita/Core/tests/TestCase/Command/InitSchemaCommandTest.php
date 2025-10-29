@@ -43,23 +43,23 @@ class InitSchemaCommandTest extends TestCase
         $connection->transactional(function (Connection $connection) {
             $tables = $connection->getSchemaCollection()->listTables();
 
-                foreach ($tables as $table) {
-                    /** @var \Cake\Database\Schema\TableSchema $tableSchema */
-                    $tableSchema = $connection->getSchemaCollection()->describe($table);
-                    $sql = $tableSchema->dropConstraintSql($connection);
-                    foreach ($sql as $query) {
-                        $connection->updateQuery($query);
-                    }
+            foreach ($tables as $table) {
+                /** @var \Cake\Database\Schema\TableSchema $tableSchema */
+                $tableSchema = $connection->getSchemaCollection()->describe($table);
+                $sql = $tableSchema->dropConstraintSql($connection);
+                foreach ($sql as $query) {
+                    $connection->updateQuery($query);
                 }
-                foreach ($tables as $table) {
-                    /** @var \Cake\Database\Schema\TableSchema $tableSchema */
-                    $tableSchema = $connection->getSchemaCollection()->describe($table);
-                    $sql = $tableSchema->dropSql($connection);
-                    foreach ($sql as $query) {
-                        $connection->updateQuery($query);
-                    }
+            }
+            foreach ($tables as $table) {
+                /** @var \Cake\Database\Schema\TableSchema $tableSchema */
+                $tableSchema = $connection->getSchemaCollection()->describe($table);
+                $sql = $tableSchema->dropSql($connection);
+                foreach ($sql as $query) {
+                    $connection->updateQuery($query);
                 }
-            });
+            }
+        });
         parent::tearDown();
     }
 
