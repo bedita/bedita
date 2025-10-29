@@ -41,14 +41,24 @@ class BulkControllerTest extends IntegrationTestCase
      *
      * @var array
      */
-    protected $originalEndpointPermissions = [];
+    protected array $originalEndpointPermissions = [];
 
     /**
      * Backup of original object permissions
      *
      * @var array
      */
-    protected $originalObjectPermissions = [];
+    protected array $originalObjectPermissions = [];
+
+    /**
+     * Request headers
+     *
+     * @var array
+     */
+    protected array $headers = [
+        'Content-Type' => 'application/json',
+        'Accept' => 'application/json',
+    ];
 
     /**
      * Set up method
@@ -103,7 +113,7 @@ class BulkControllerTest extends IntegrationTestCase
      */
     public function testIndex404(): void
     {
-        $this->configRequestHeaders('GET', $this->getUserAuthHeader());
+        $this->configRequestHeaders('GET', $this->getUserAuthHeader() + $this->headers);
         $this->get('/bulk');
         $this->assertResponseCode(404);
     }
@@ -116,11 +126,11 @@ class BulkControllerTest extends IntegrationTestCase
      */
     public function testIndex405(): void
     {
-        $this->configRequestHeaders('GET', $this->getUserAuthHeader());
+        $this->configRequestHeaders('GET', $this->getUserAuthHeader() + $this->headers);
         $this->get('/bulk/edit');
         $this->assertResponseCode(405);
 
-        $this->configRequestHeaders('POST', $this->getUserAuthHeader());
+        $this->configRequestHeaders('POST', $this->getUserAuthHeader() + $this->headers);
         $this->post('/bulk/something');
         $this->assertResponseCode(405);
     }
@@ -152,7 +162,7 @@ class BulkControllerTest extends IntegrationTestCase
     public function testEditAbstractType(): void
     {
         // try to edit object 1 of abstract type 'objects'
-        $this->configRequestHeaders('POST', $this->getUserAuthHeader('first user', 'password1'));
+        $this->configRequestHeaders('POST', $this->getUserAuthHeader('first user', 'password1') + $this->headers);
         $this->post('/bulk/edit', json_encode([
             'data' => [
                 'attributes' => [
@@ -230,7 +240,7 @@ class BulkControllerTest extends IntegrationTestCase
         $this->assertEquals(0, $permission->get('permission'), 'Permission should be 0 (block)');
 
         // try to edit object 3 with user that is not admin
-        $this->configRequestHeaders('POST', $this->getUserAuthHeader('second user', 'password2'));
+        $this->configRequestHeaders('POST', $this->getUserAuthHeader('second user', 'password2') + $this->headers);
         $this->post('/bulk/edit', json_encode([
             'data' => [
                 'attributes' => [
@@ -306,7 +316,7 @@ class BulkControllerTest extends IntegrationTestCase
         $this->assertEquals(['first role'], $perms['roles']);
 
         // Try to edit with user that doesn't have permissions (second user, role 2)
-        $this->configRequestHeaders('POST', $this->getUserAuthHeader('second user', 'password2'));
+        $this->configRequestHeaders('POST', $this->getUserAuthHeader('second user', 'password2') + $this->headers);
         $this->post('/bulk/edit', json_encode([
             'data' => [
                 'attributes' => [
@@ -346,7 +356,7 @@ class BulkControllerTest extends IntegrationTestCase
         $o2 = $this->fetchTable('Objects')->get(3);
         $secondOriginalStatus = $o2->get('status');
         $this->assertEquals('draft', $secondOriginalStatus);
-        $this->configRequestHeaders('POST', $this->getUserAuthHeader($user, $password));
+        $this->configRequestHeaders('POST', $this->getUserAuthHeader($user, $password) + $this->headers);
         $map = [];
         $map[$o1->get('type')][] = $o1->get('id');
         $map[$o2->get('type')][] = $o2->get('id');
@@ -375,7 +385,7 @@ class BulkControllerTest extends IntegrationTestCase
         $o2 = $this->fetchTable('Objects')->get(3);
         $secondStatus = $o2->get('status');
         $this->assertEquals('off', $secondStatus);
-        $this->configRequestHeaders('POST', $this->getUserAuthHeader($user, $password));
+        $this->configRequestHeaders('POST', $this->getUserAuthHeader($user, $password) + $this->headers);
         $this->post('/bulk/edit', json_encode([
             'data' => [
                 'attributes' => [
