@@ -185,8 +185,8 @@ class ParentsRelationshipTest extends IntegrationTestCase
      * Test deleted objects as `parent`
      *
      * @return void
-     * @coversNothing
      */
+    #[CoversNothing]
     public function testDeletedParent()
     {
         // a deleted folder must not be listed in `parents`
@@ -224,8 +224,8 @@ class ParentsRelationshipTest extends IntegrationTestCase
      * Test setting an object's parent with position.
      *
      * @return void
-     * @coversNothing
      */
+    #[CoversNothing]
     public function testSetParentPosition()
     {
         $this->configRequestHeaders('POST', $this->getUserAuthHeader());

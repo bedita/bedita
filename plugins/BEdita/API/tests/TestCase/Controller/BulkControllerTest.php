@@ -28,17 +28,6 @@ use PHPUnit\Framework\Attributes\CoversClass;
 class BulkControllerTest extends IntegrationTestCase
 {
     /**
-     * Fixtures
-     *
-     * @var array
-     */
-    protected array $fixtures = [
-        'plugin.BEdita/Core.Objects',
-        'plugin.BEdita/Core.Endpoints',
-        'plugin.BEdita/Core.EndpointPermissions',
-    ];
-
-    /**
      * Backup of original endpoint permissions
      *
      * @var array
@@ -51,6 +40,16 @@ class BulkControllerTest extends IntegrationTestCase
      * @var array
      */
     protected array $originalObjectPermissions = [];
+
+    /**
+     * Request headers
+     *
+     * @var array
+     */
+    protected array $headers = [
+        'Content-Type' => 'application/json',
+        'Accept' => 'application/json',
+    ];
 
     /**
      * Set up method
@@ -385,7 +384,6 @@ class BulkControllerTest extends IntegrationTestCase
      * Test that trying to save in bulk data referred to a wrong id for an object type then it is ignored.
      *
      * @return void
-     * @covers ::edit()
      */
     public function testWrongObjectType(): void
     {

@@ -364,14 +364,14 @@ class CustomPropertiesBehavior extends Behavior
                             new FunctionExpression('JSON_UNQUOTE', [json_encode($value)]), // trick to normalize values compared
                         );
                     }
+
                     // PostgreSQL syntax with native JSON column using ->> operator
                     // For PostgreSQL's ->> operator, we need to handle value formatting correctly
                     $compareValue = is_string($value) ? $value : json_encode($value); // Use json_encode to handle formatting
-                    [$key, $type] = $query->getConnection()->cast($key, 'string');
 
                     // Use ->> operator directly on JSON column
                     return $query->expr()->eq(
-                        sprintf('%s->>%s', $field, $query->getConnection()->getDriver()->quote($key, $type)),
+                        sprintf('%s->>%s', $field, $query->getConnection()->getDriver()->quote($key)),
                         $compareValue,
                     );
                 },
