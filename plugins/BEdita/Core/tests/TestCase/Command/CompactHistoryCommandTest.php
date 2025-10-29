@@ -102,7 +102,7 @@ class CompactHistoryCommandTest extends TestCase
     public function testExecuteDryrun(): void
     {
         // insert duplicated history records
-        $table = $this->fetchTable('History');
+        $table = $this->fetchTable('History')->addBehavior('Timestamp');
         $countBefore = $table->find()->where(['resource_id' => 1])->count();
         $table->save(new History([
             'resource_id' => 1,
@@ -139,7 +139,7 @@ class CompactHistoryCommandTest extends TestCase
     public function testExecute(): void
     {
         // insert duplicated history records
-        $table = $this->fetchTable('History');
+        $table = $this->fetchTable('History')->addBehavior('Timestamp');
         $countBefore = $table->find()->where(['resource_id' => 1])->count();
         $table->save(new History([
             'resource_id' => 1,
@@ -194,7 +194,7 @@ class CompactHistoryCommandTest extends TestCase
     public function testExecuteVersions(): void
     {
         // insert duplicated history records
-        $table = $this->fetchTable('History');
+        $table = $this->fetchTable('History')->addBehavior('Timestamp');
         $countBefore = $table->find()->where(['resource_id' => 1])->count();
         $table->save(new History([
             'resource_id' => 1,

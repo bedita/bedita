@@ -94,13 +94,6 @@ class CheckFilesystemCommandTest extends TestCase
     public function testEmptyHttpdUser(): void
     {
         $cmd = new class extends CheckFilesystemCommand {
-            public function __construct()
-            {
-                $this->args = ['cake', 'check_filesystem'];
-                $this->io = new ConsoleIo();
-                parent::__construct();
-            }
-
             public function getHttpdUser(): string
             {
                 return '';
@@ -206,7 +199,7 @@ class CheckFilesystemCommandTest extends TestCase
      *
      * @return array
      */
-    public function executeNotWritableWebServerProvider()
+    public static function executeNotWritableWebServerProvider()
     {
         return [
             'no one can write' => [0555],

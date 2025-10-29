@@ -21,7 +21,6 @@ use Cake\Database\Connection;
 use Cake\Datasource\ConnectionManager;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Hash;
-use PDOException;
 use PHPUnit\Framework\Attributes\CoversClass;
 
 /**
@@ -58,41 +57,29 @@ class BeditaCommandTest extends TestCase
     /**
      * @inheritDoc
      */
-    protected function setUp(): void
-    {
-        parent::setUp();
-        if (static::$fixtureManager !== null) {
-            static::$fixtureManager->shutDown();
-        }
-        // Try to avoid "database schema has changed" error on SQLite.
-        try {
-            ConnectionManager::get('default')->getSchemaCollection()->listTables();
-        } catch (PDOException $e) {
-            // Do nothing.
-        }
-        $this->useCommandRunner();
-    }
-
-    /**
-     * @inheritDoc
-     */
     public function tearDown(): void
     {
         parent::tearDown();
         ConnectionManager::alias('test', 'default'); // Restore alias which is dropped by `BeditaShell`.
-        ConnectionManager::get('default')->getDriver()->disconnect();
-        ConnectionManager::get('default')
+        /** @var \Cake\Database\Connection $connection */
+        $connection = ConnectionManager::get('default');
+        $connection->getDriver()->disconnect();
+        $connection
             ->transactional(function (Connection $connection) {
                 $tables = $connection->getSchemaCollection()->listTables();
 
                 foreach ($tables as $table) {
-                    $sql = $connection->getSchemaCollection()->describe($table)->dropConstraintSql($connection);
+                    /** @var \Cake\Database\Schema\TableSchema $tableSchema */
+                    $tableSchema = $connection->getSchemaCollection()->describe($table);
+                    $sql = $tableSchema->dropConstraintSql($connection);
                     foreach ($sql as $query) {
                         $connection->updateQuery($query);
                     }
                 }
                 foreach ($tables as $table) {
-                    $sql = $connection->getSchemaCollection()->describe($table)->dropSql($connection);
+                    /** @var \Cake\Database\Schema\TableSchema $tableSchema */
+                    $tableSchema = $connection->getSchemaCollection()->describe($table);
+                    $sql = $tableSchema->dropSql($connection);
                     foreach ($sql as $query) {
                         $connection->updateQuery($query);
                     }

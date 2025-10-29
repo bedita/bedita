@@ -28,6 +28,7 @@ use Cake\ORM\Locator\LocatorAwareTrait;
 use Cake\Utility\Hash;
 use Cake\Utility\Inflector;
 use Migrations\Migrations;
+use Throwable;
 
 /**
  * CheckSchema command.
@@ -121,8 +122,10 @@ class CheckSchemaCommand extends Command
             $this->io->abort('Plugin "Migrations" must be loaded in order to perform schema checks');
         }
 
-        $connection = ConnectionManager::get($this->args->getOption('connection'));
-        if (!($connection instanceof Connection)) {
+        try {
+            $connection = ConnectionManager::get($this->args->getOption('connection'));
+        } catch (Throwable $e) {
+            $this->io->error($e->getMessage());
             $this->io->abort('Unknown connection type');
         }
 

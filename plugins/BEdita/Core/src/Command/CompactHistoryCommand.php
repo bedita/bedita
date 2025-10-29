@@ -16,25 +16,32 @@ namespace BEdita\Core\Command;
 
 use BEdita\Core\Model\Entity\History;
 use BEdita\Core\Model\Table\HistoryTable;
+use BEdita\Core\Model\Table\ObjectsTable;
 use Cake\Command\Command;
 use Cake\Console\Arguments;
 use Cake\Console\ConsoleIo;
 use Cake\Console\ConsoleOptionParser;
-use Cake\ORM\Query;
+use Cake\ORM\Query\SelectQuery;
 use Generator;
 
 /**
  * CompactHistory command: remove duplicates.
  *
  * @since 5.40.0
- * @property \BEdita\Core\Model\Table\ObjectsTable $Objects
  */
 class CompactHistoryCommand extends Command
 {
     /**
      * @inheritDoc
      */
-    public $defaultTable = 'Objects';
+    public ?string $defaultTable = 'Objects';
+
+    /**
+     * Objects table
+     *
+     * @var \BEdita\Core\Model\Table\ObjectsTable
+     */
+    public ObjectsTable $Objects;
 
     /**
      * History table
@@ -119,8 +126,11 @@ class CompactHistoryCommand extends Command
      */
     public function initialize(): void
     {
-        $this->History = $this->Objects->getBehavior('History')->Table;
-        $application = $this->fetchTable('Applications')->find()->orderAsc('id')->firstOrFail();
+        $this->Objects = $this->fetchTable();
+        /** @var \BEdita\Core\Model\Behavior\HistoryBehavior $historyBehavior */
+        $historyBehavior = $this->Objects->getBehavior('History');
+        $this->History = $historyBehavior->Table;
+        $application = $this->fetchTable('Applications')->find()->orderByAsc('id')->firstOrFail();
         $this->appId = $application->get('id');
     }
 
@@ -183,7 +193,7 @@ class CompactHistoryCommand extends Command
                     $this->History->aliasField('resource_id') => $objectId,
                     $this->History->aliasField('resource_type') => 'objects',
                 ])
-                ->orderDesc($this->History->aliasField('created'))
+                ->orderByDesc($this->History->aliasField('created'))
                 ->toArray();
             if (count($items) > $this->versions) {
                 $toDelete = array_slice($items, $this->versions);
@@ -271,10 +281,10 @@ class CompactHistoryCommand extends Command
     /**
      * Objects generator.
      *
-     * @param \Cake\ORM\Query $query Query object
+     * @param \Cake\ORM\Query\SelectQuery $query Query object
      * @return \Generator
      */
-    protected function objectsGenerator(Query $query): Generator
+    protected function objectsGenerator(SelectQuery $query): Generator
     {
         $pageSize = self::PAGE_SIZE;
         $pages = ceil($query->count() / $pageSize);

@@ -36,31 +36,25 @@ class InitSchemaCommandTest extends TestCase
     /**
      * @inheritDoc
      */
-    protected function setUp(): void
-    {
-        parent::setUp();
-        if (static::$fixtureManager !== null) {
-            static::$fixtureManager->shutDown();
-        }
-    }
-
-    /**
-     * @inheritDoc
-     */
     public function tearDown(): void
     {
-        ConnectionManager::get('default')
-            ->transactional(function (Connection $connection) {
-                $tables = $connection->getSchemaCollection()->listTables();
+        /** @var \Cake\Database\Connection $connection */
+        $connection = ConnectionManager::get('default');
+        $connection->transactional(function (Connection $connection) {
+            $tables = $connection->getSchemaCollection()->listTables();
 
                 foreach ($tables as $table) {
-                    $sql = $connection->getSchemaCollection()->describe($table)->dropConstraintSql($connection);
+                    /** @var \Cake\Database\Schema\TableSchema $tableSchema */
+                    $tableSchema = $connection->getSchemaCollection()->describe($table);
+                    $sql = $tableSchema->dropConstraintSql($connection);
                     foreach ($sql as $query) {
                         $connection->updateQuery($query);
                     }
                 }
                 foreach ($tables as $table) {
-                    $sql = $connection->getSchemaCollection()->describe($table)->dropSql($connection);
+                    /** @var \Cake\Database\Schema\TableSchema $tableSchema */
+                    $tableSchema = $connection->getSchemaCollection()->describe($table);
+                    $sql = $tableSchema->dropSql($connection);
                     foreach ($sql as $query) {
                         $connection->updateQuery($query);
                     }

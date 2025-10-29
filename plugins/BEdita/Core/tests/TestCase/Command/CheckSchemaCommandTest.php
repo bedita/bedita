@@ -17,6 +17,7 @@ namespace BEdita\Core\Test\TestCase\Command;
 use BEdita\Core\Command\CheckSchemaCommand;
 use BEdita\Core\Utility\Database;
 use Cake\Command\Command;
+use Cake\Console\Arguments;
 use Cake\Console\ConsoleIo;
 use Cake\Console\TestSuite\ConsoleIntegrationTestTrait;
 use Cake\Core\Plugin;
@@ -28,7 +29,6 @@ use Cake\TestSuite\ConnectionHelper;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Hash;
 use PHPUnit\Framework\Attributes\CoversClass;
-use stdClass;
 use TestApp\Application;
 
 /**
@@ -101,6 +101,7 @@ class CheckSchemaCommandTest extends TestCase
         $actual = $cmd->checkSymbol('fake_animals');
         static::assertEmpty($actual);
 
+        /** @var \Cake\Database\Connection $connection */
         $connection = ConnectionManager::get('default');
         $allColumns = [];
         $table = $this->fetchTable('fake_animals');
@@ -134,7 +135,7 @@ class CheckSchemaCommandTest extends TestCase
         $cmd = new class extends CheckSchemaCommand {
             public function __construct()
             {
-                $this->args = ['cake', 'check_schema'];
+                $this->args = new Arguments([], [], []);
                 $this->io = new ConsoleIo();
                 parent::__construct();
             }
@@ -184,7 +185,7 @@ class CheckSchemaCommandTest extends TestCase
         $cmd = new class extends CheckSchemaCommand {
             public function __construct()
             {
-                $this->args = ['cake', 'check_schema'];
+                $this->args = new Arguments([], [], []);
                 $this->io = new ConsoleIo();
                 parent::__construct();
             }
@@ -237,7 +238,7 @@ class CheckSchemaCommandTest extends TestCase
         $cmd = new class extends CheckSchemaCommand {
             public function __construct()
             {
-                $this->args = ['cake', 'check_schema'];
+                $this->args = new Arguments([], [], []);
                 $this->io = new ConsoleIo();
                 parent::__construct();
             }
@@ -296,7 +297,7 @@ class CheckSchemaCommandTest extends TestCase
      */
     public function testUnkwownConnectionType(): void
     {
-        ConnectionManager::setConfig('dummy', new stdClass());
+        ConnectionManager::setConfig('dummy', []);
         $this->exec('check_schema -c dummy');
         ConnectionManager::drop('dummy');
 

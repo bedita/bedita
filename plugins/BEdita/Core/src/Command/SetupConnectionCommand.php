@@ -21,7 +21,6 @@ use Cake\Console\ConsoleOptionParser;
 use Cake\Database\Connection;
 use Cake\Database\Exception\MissingConnectionException;
 use Cake\Datasource\ConnectionManager;
-use Cake\Filesystem\File;
 use Cake\ORM\Locator\LocatorAwareTrait;
 use Cake\ORM\TableRegistry;
 use Cake\Utility\Hash;
@@ -298,8 +297,9 @@ class SetupConnectionCommand extends Command
      */
     protected function saveConnectionConfig(Connection $connection): void
     {
-        $file = new File($this->args->getOption('config-file')); /* @phpstan-ignore-line */
-        if (!$file->exists() || !$file->readable() || !$file->writable()) {
+        $filePath = $this->args->getOption('config-file');
+        $fileExists = file_exists($filePath) && is_file($filePath) && is_readable($filePath) && is_writable($filePath);
+        if (!$fileExists) {
             $this->io->abort('Unable to read from or write to configuration file');
         }
 
@@ -323,7 +323,7 @@ class SetupConnectionCommand extends Command
         $contents = str_replace(
             array_keys($replace),
             array_values($replace),
-            $file->read(),
+            file_get_contents($filePath),
         );
 
         // Open process to validate PHP syntax, and attach pipes to stdin, stdout and stderr.
@@ -359,11 +359,9 @@ class SetupConnectionCommand extends Command
         $this->io->verbose('<info>DONE</info>');
 
         // Write changes to disk.
-        if (!$file->write($contents)) {
+        if (!file_put_contents($filePath, $contents)) {
             $this->io->abort('Could not update configuration file');
         }
         $this->io->out('=====> <success>Configuration saved</success>');
-
-        $file->close();
     }
 }
