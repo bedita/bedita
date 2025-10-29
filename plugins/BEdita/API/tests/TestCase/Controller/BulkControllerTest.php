@@ -26,17 +26,6 @@ use Cake\Utility\Hash;
 class BulkControllerTest extends IntegrationTestCase
 {
     /**
-     * Fixtures
-     *
-     * @var array
-     */
-    protected $fixtures = [
-        'plugin.BEdita/Core.Objects',
-        'plugin.BEdita/Core.Endpoints',
-        'plugin.BEdita/Core.EndpointPermissions',
-    ];
-
-    /**
      * Backup of original endpoint permissions
      *
      * @var array
@@ -400,5 +389,56 @@ class BulkControllerTest extends IntegrationTestCase
         $o2 = $this->fetchTable('Objects')->get(3);
         $secondStatus = $o2->get('status');
         $this->assertEquals('draft', $secondStatus);
+    }
+
+    /**
+     * Test that trying to save in bulk data referred to a wrong id for an object type then it is ignored.
+     *
+     * @return void
+     * @covers ::edit()
+     */
+    public function testWrongObjectType(): void
+    {
+        $eventId = 9;
+        $documentId = 3;
+        $wrongObject = $this->fetchTable('Documents')
+            ->find('type', ['documents'])
+            ->where(['id' => $documentId])
+            ->firstOrFail();
+        $originalStatusWrongObject = $wrongObject->get('status');
+
+        $this->configRequestHeaders('POST', $this->getUserAuthHeader('first user', 'password1') + $this->headers);
+        $this->post('/bulk/edit', json_encode([
+            'data' => [
+                'attributes' => [
+                    'status' => 'off',
+                ],
+                'objects' => [
+                    'events' => [$documentId, $eventId], // 3 is id of document => can't edit it as event
+                ],
+            ],
+        ]));
+        $this->assertResponseCode(200);
+
+        // check response content
+        $response = (array)json_decode((string)$this->_response->getBody(), true);
+        $response = (array)Hash::get($response, 'data');
+        $this->assertArrayHasKey('saved', $response);
+        $this->assertArrayHasKey('errors', $response);
+        $this->assertCount(1, Hash::get($response, 'saved')); // just one object save, the wrong one was skipped
+        $this->assertCount(0, Hash::get($response, 'errors'));
+        $this->assertEquals($eventId, Hash::get($response, 'saved.0'));
+
+        $wrongObject = $this->fetchTable('Documents')
+            ->find('type', ['documents'])
+            ->where(['id' => $documentId])
+            ->firstOrFail();
+        $event = $this->fetchTable('Events')
+            ->find('type', ['events'])
+            ->where(['id' => $eventId])
+            ->firstOrFail();
+
+        $this->assertEquals($originalStatusWrongObject, $wrongObject->get('status'));
+        $this->assertEquals('off', $event->get('status'));
     }
 }
