@@ -21,14 +21,13 @@ class CustomPropsJson extends AbstractMigration
             // For PostgreSQL, use raw SQL with explicit casting
             $this->execute('ALTER TABLE objects ALTER COLUMN custom_props TYPE jsonb USING custom_props::jsonb');
         } else {
-            // For other databases, use Phinx changeColumn
-            $json = 'text';
-            if (in_array('json', $columnTypes)) {
-                $json = 'json';
+            // For other databases having a 'json' column type, use Phinx changeColumn
+            if (!in_array('json', $columnTypes)) {
+                return;
             }
 
             $this->table('objects')
-                ->changeColumn('custom_props', $json, [
+                ->changeColumn('custom_props', 'json', [
                     'comment' => 'object custom properties (JSON format)',
                     'default' => null,
                     'null' => true,
