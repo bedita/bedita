@@ -18,6 +18,7 @@ namespace BEdita\Core\Test\TestCase\Model\Action;
 use BEdita\Core\Model\Action\ListEntitiesAction;
 use BEdita\Core\ORM\Inheritance\Table;
 use Cake\Database\Driver\Mysql;
+use Cake\Database\Driver\Postgres;
 use Cake\Datasource\ConnectionManager;
 use Cake\I18n\FrozenTime;
 use Cake\ORM\Query;
@@ -258,7 +259,8 @@ class ListEntitiesActionTest extends TestCase
      */
     public function testFilterCustomProp(): void
     {
-        $this->skipUnless(ConnectionManager::get('default')->getDriver() instanceof Mysql);
+        $driver = ConnectionManager::get('default')->getDriver();
+        $this->skipUnless(($driver instanceof Mysql) || ($driver instanceof Postgres));
 
         $table = $this->getTableLocator()->get('Files');
         $action = new ListEntitiesAction(compact('table'));
