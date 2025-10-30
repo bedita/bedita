@@ -81,7 +81,7 @@ return [
          * The test connection is used during the test suite.
          */
         'test' => [
-            'url' => env('DATABASE_TEST_URL', 'sqlite:///tmp/be5_tests.sqlite'),
+            'url' => env('DATABASE_TEST_URL', 'sqlite:///tmp/be6_tests.sqlite'),
         ],
     ],
 
