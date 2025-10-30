@@ -21,7 +21,7 @@ class AdminFromEnvSeed extends BaseSeed
             $this->io->abort('No data seeded!');
         }
 
-        $hash = (new LegacyPasswordHasher(['hashType' => 'md5']))->hash('password1');
+        $hash = (new LegacyPasswordHasher(['hashType' => 'md5']))->hash($password);
         $query = sprintf("UPDATE users set username='%s', password_hash='%s' WHERE id=1", $username, $hash);
         $this->query($query);
     }
