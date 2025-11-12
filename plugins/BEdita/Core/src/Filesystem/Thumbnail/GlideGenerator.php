@@ -21,13 +21,13 @@ use BEdita\Core\Filesystem\ThumbnailGenerator;
 use BEdita\Core\Model\Entity\Stream;
 use Cake\Log\Log;
 use Cake\Utility\Hash;
+use Intervention\Image\Exceptions\RuntimeException;
 use Intervention\Image\ImageManager;
 use League\Glide\Api\Api as GlideApi;
 use League\Glide\Manipulators\Blur as BlurManipulator;
 use League\Glide\Manipulators\Crop as CropManipulator;
 use League\Glide\Manipulators\Orientation as OrientationManipulator;
 use League\Glide\Manipulators\Size as SizeManipulator;
-use Throwable;
 
 /**
  * Thumbnail generator that uses Intervention library.
@@ -170,7 +170,7 @@ class GlideGenerator extends ThumbnailGenerator
             $thumbnail = $this->makeThumbnail($stream, $options);
 
             FilesystemRegistry::getMountManager()->write($path, $thumbnail);
-        } catch (Throwable $e) {
+        } catch (RuntimeException $e) {
             throw new InvalidStreamException(__d('bedita', 'Unable to generate thumbnail for stream {0}', $stream->uuid), null, $e);
         }
 
