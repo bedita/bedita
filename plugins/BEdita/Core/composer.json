@@ -25,10 +25,10 @@
         "cakephp/cakephp": "~5.2.9",
         "cakephp/migrations": "^4.8.2",
         "cakephp/queue": "^2.2.0",
-        "league/flysystem": "^2.4.5",
-        "league/glide": "^2.2.2",
-        "symfony/yaml": "^5.4.3",
-        "swaggest/json-schema": "~0.12.39"
+        "league/flysystem": "^3.30.2",
+        "league/glide": "^3.0",
+        "symfony/yaml": "^7.3.5",
+        "swaggest/json-schema": "~0.12.43"
     },
     "require-dev": {
         "cakephp/cakephp-codesniffer": "^5.3.0",

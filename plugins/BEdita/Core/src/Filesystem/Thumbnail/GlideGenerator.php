@@ -21,12 +21,11 @@ use BEdita\Core\Filesystem\ThumbnailGenerator;
 use BEdita\Core\Model\Entity\Stream;
 use Cake\Log\Log;
 use Cake\Utility\Hash;
-use Intervention\Image\Exception\NotReadableException;
+use Intervention\Image\Exceptions\RuntimeException;
 use Intervention\Image\ImageManager;
 use League\Glide\Api\Api as GlideApi;
 use League\Glide\Manipulators\Blur as BlurManipulator;
 use League\Glide\Manipulators\Crop as CropManipulator;
-use League\Glide\Manipulators\Encode as EncodeManipulator;
 use League\Glide\Manipulators\Orientation as OrientationManipulator;
 use League\Glide\Manipulators\Size as SizeManipulator;
 
@@ -82,14 +81,19 @@ class GlideGenerator extends ThumbnailGenerator
     {
         $driver = $this->getConfig('driver', 'gd');
 
+        $imageManager = match ($driver) {
+            'gd' => ImageManager::gd(),
+            'imagick' => ImageManager::imagick(),
+            default => ImageManager::withDriver($driver), // should be a FQCN
+        };
+
         return new GlideApi(
-            new ImageManager(compact('driver')),
+            $imageManager,
             [
                 new OrientationManipulator(),
                 new CropManipulator(),
                 new SizeManipulator($this->getConfig('maxThumbSize', 1 << 22)), // 2048 * 2048 === 2^11 * 2^11 === 2^22
                 new BlurManipulator(),
-                new EncodeManipulator(),
             ],
         );
     }
@@ -166,7 +170,7 @@ class GlideGenerator extends ThumbnailGenerator
             $thumbnail = $this->makeThumbnail($stream, $options);
 
             FilesystemRegistry::getMountManager()->write($path, $thumbnail);
-        } catch (NotReadableException $e) {
+        } catch (RuntimeException $e) {
             throw new InvalidStreamException(__d('bedita', 'Unable to generate thumbnail for stream {0}', $stream->uuid), null, $e);
         }
 
