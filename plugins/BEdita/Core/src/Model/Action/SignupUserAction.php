@@ -20,6 +20,7 @@ use BEdita\Core\Mailer\UserMailerTrait;
 use BEdita\Core\Model\Entity\AsyncJob;
 use BEdita\Core\Model\Entity\AuthProvider;
 use BEdita\Core\Model\Entity\User;
+use BEdita\Core\Model\Enum\ObjectStatus;
 use BEdita\Core\Model\Table\AsyncJobsTable;
 use BEdita\Core\Model\Table\RolesTable;
 use BEdita\Core\Model\Table\UsersTable;
@@ -281,9 +282,9 @@ class SignupUserAction extends BaseAction implements EventListenerInterface
             LoggedUser::setUserAdmin();
         }
 
-        $status = 'draft';
+        $status = ObjectStatus::DRAFT;
         if ($this->getConfig('requireActivation') === false) {
-            $status = 'on';
+            $status = ObjectStatus::ON;
         }
 
         if (empty($data['auth_provider'])) {
@@ -292,7 +293,7 @@ class SignupUserAction extends BaseAction implements EventListenerInterface
 
         $authProvider = $this->checkExternalAuth($data);
 
-        $user = $this->createUserEntity($data, 'on', 'signupExternal', true);
+        $user = $this->createUserEntity($data, ObjectStatus::ON, 'signupExternal', true);
 
         // create `ExternalAuth` entry
         $this->Users->dispatchEvent('Auth.externalAuth', [
@@ -309,13 +310,13 @@ class SignupUserAction extends BaseAction implements EventListenerInterface
      * Create User entity.
      *
      * @param array $data The signup data
-     * @param string $status User `status`, `on` or `draft`
+     * @param \BEdita\Core\Model\Enum\ObjectStatus $status User `status`, `on` or `draft`
      * @param string $validate Validation options to use
      * @param bool $verified Add `verified` value to entity
      * @return \BEdita\Core\Model\Entity\User The User entity created
      * @throws \Cake\Http\Exception\BadRequestException When some data is invalid.
      */
-    protected function createUserEntity(array $data, string $status, string $validate, bool $verified = false): User
+    protected function createUserEntity(array $data, ObjectStatus $status, string $validate, bool $verified = false): User
     {
         if ($this->Users->exists(['username' => $data['username']])) {
             $this->dispatchEvent('Auth.signupUserExists', [$data], $this->Users);
@@ -325,7 +326,7 @@ class SignupUserAction extends BaseAction implements EventListenerInterface
         }
         $action = new SaveEntityAction(['table' => $this->Users]);
 
-        $data['status'] = $status;
+        $data['status'] = $status->value;
         $entity = $this->Users->newEmptyEntity();
         if ($verified === true) {
             $entity->set('verified', DateTime::now());

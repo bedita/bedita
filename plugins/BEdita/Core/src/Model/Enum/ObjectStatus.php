@@ -14,17 +14,27 @@ declare(strict_types=1);
  */
 namespace BEdita\Core\Model\Enum;
 
+use Cake\Database\Type\EnumLabelInterface;
+use Cake\Utility\Inflector;
+
 /**
- * DateRangesSortField enum.
+ * ObjectStatus Enum
  *
  * @since 6.0.0
  */
-enum DateRangesSortField: string
+enum ObjectStatus: string implements EnumLabelInterface
 {
     use EnumValuesTrait;
 
-    case MIN_START_DATE = 'date_ranges_min_start_date';
-    case MAX_START_DATE = 'date_ranges_max_start_date';
-    case MIN_END_DATE = 'date_ranges_min_end_date';
-    case MAX_END_DATE = 'date_ranges_max_end_date';
+    case ON = 'on';
+    case DRAFT = 'draft';
+    case OFF = 'off';
+
+    /**
+     * @return string
+     */
+    public function label(): string
+    {
+        return Inflector::humanize(Inflector::underscore($this->name));
+    }
 }

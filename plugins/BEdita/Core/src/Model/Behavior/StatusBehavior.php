@@ -15,6 +15,7 @@ declare(strict_types=1);
 namespace BEdita\Core\Model\Behavior;
 
 use BEdita\Core\Exception\BadFilterException;
+use BEdita\Core\Model\Enum\ObjectStatus;
 use Cake\Core\Configure;
 use Cake\Database\Expression\QueryExpression;
 use Cake\Datasource\EntityInterface;
@@ -58,11 +59,11 @@ class StatusBehavior extends Behavior
         }
         $level = Configure::read('Status.level');
         $status = $entity->get('status');
-        if (($level === 'on' && $status !== 'on') || ($level === 'draft' && $status === 'off')) {
+        if (($level === ObjectStatus::ON->value && $status !== ObjectStatus::ON) || ($level === ObjectStatus::DRAFT->value && $status === ObjectStatus::OFF)) {
             throw new BadRequestException(__d(
                 'bedita',
                 'Status "{0}" is not consistent with configured Status.level "{1}"',
-                $status,
+                $status->value,
                 $level,
             ));
         }
@@ -81,17 +82,17 @@ class StatusBehavior extends Behavior
     {
         $field = $this->getConfigOrFail('field');
         switch ($level) {
-            case 'on':
+            case ObjectStatus::ON->value:
                 return $query->where([
-                    $this->table()->aliasField($field) => 'on',
+                    $this->table()->aliasField($field) => ObjectStatus::ON->value,
                 ]);
 
-            case 'draft':
+            case ObjectStatus::DRAFT->value:
                 return $query->where(function (QueryExpression $exp) use ($field) {
-                    return $exp->in($this->table()->aliasField($field), ['on', 'draft']);
+                    return $exp->in($this->table()->aliasField($field), [ObjectStatus::ON->value, ObjectStatus::DRAFT->value]);
                 });
 
-            case 'off':
+            case ObjectStatus::OFF->value:
             case 'all':
                 return $query;
 

@@ -16,6 +16,7 @@ namespace BEdita\Core\Model\Action;
 
 use BEdita\Core\Mailer\UserMailerTrait;
 use BEdita\Core\Model\Entity\User;
+use BEdita\Core\Model\Enum\ObjectStatus;
 use BEdita\Core\Model\Table\AsyncJobsTable;
 use BEdita\Core\Model\Table\UsersTable;
 use Cake\Event\EventDispatcherTrait;
@@ -80,7 +81,7 @@ class SignupUserActivationAction extends BaseAction implements EventListenerInte
         }
 
         $user = $this->Users->get($asyncJob->payload['user_id'], contain: ['Roles']);
-        if ($user->status === 'on' && $user->verified !== null) {
+        if ($user->status === ObjectStatus::ON && $user->verified !== null) {
             throw new ConflictException(__d('bedita', 'User already active'));
         }
 
@@ -89,7 +90,7 @@ class SignupUserActivationAction extends BaseAction implements EventListenerInte
         // the user is the creator of himself
         $user->created_by = $user->id;
         $user->modified_by = $user->id;
-        $user->status = 'on';
+        $user->status = ObjectStatus::ON;
         $user->verified = $now;
         $this->Users->saveOrFail($user);
 

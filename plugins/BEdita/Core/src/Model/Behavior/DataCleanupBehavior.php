@@ -15,6 +15,7 @@ declare(strict_types=1);
 namespace BEdita\Core\Model\Behavior;
 
 use ArrayObject;
+use BEdita\Core\Model\Enum\ObjectStatus;
 use Cake\Core\Configure;
 use Cake\Event\EventInterface;
 use Cake\ORM\Behavior;
@@ -39,7 +40,7 @@ class DataCleanupBehavior extends Behavior
      */
     protected array $_defaultConfig = [
         'fields' => [
-            'status' => 'draft',
+            'status' => ObjectStatus::DRAFT->value,
             'deleted' => 0,
         ],
     ];
@@ -81,8 +82,8 @@ class DataCleanupBehavior extends Behavior
     {
         $fields = (array)$this->getConfig('fields');
         // set default `on` if minimum level is `on`
-        if (Configure::read('Status.level') === 'on') {
-            $fields['status'] = 'on';
+        if (Configure::read('Status.level') === ObjectStatus::ON->value) {
+            $fields['status'] = ObjectStatus::ON->value;
         }
         $defaults = (array)Configure::read(sprintf('DefaultValues.%s', $type));
 

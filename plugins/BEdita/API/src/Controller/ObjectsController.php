@@ -357,7 +357,16 @@ class ObjectsController extends ResourcesController
         $data = (array)$this->request->getData();
         $protectedFieldsChanged = array_filter(
             ['uname', 'status'],
-            fn(string $field): bool => Hash::check($data, $field) && $entity->get($field) !== Hash::get($data, $field),
+            function (string $field) use ($data, $entity): bool {
+                if (!Hash::check($data, $field)) {
+                    return false;
+                }
+
+                $fieldValue = $entity->get($field);
+                $dataValue = Hash::get($data, $field);
+
+                return ($field === 'status') ? $fieldValue->value !== $dataValue : $fieldValue !== $dataValue;
+            },
         );
 
         if (empty($protectedFieldsChanged) || $this->Authorization->can($entity, 'updateParents')) {
