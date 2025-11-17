@@ -18,6 +18,7 @@ use BEdita\Core\Model\Action\SignupUserAction;
 use BEdita\Core\Model\Action\SignupUserActivationAction;
 use BEdita\Core\Model\Entity\AsyncJob;
 use BEdita\Core\Model\Entity\User;
+use BEdita\Core\Model\Enum\ObjectStatus;
 use Cake\Core\Configure;
 use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\Event\Event;
@@ -181,7 +182,7 @@ class SignupUserActivationActionTest extends TestCase
 
         static::assertEquals(1, $user->created_by);
         static::assertEquals(1, $user->modified_by);
-        static::assertEquals('draft', $user->status);
+        static::assertEquals(ObjectStatus::DRAFT, $user->status);
 
         $eventDispatched = 0;
         EventManager::instance()->on('Auth.signupActivation', function (...$arguments) use (&$eventDispatched) {
@@ -200,7 +201,7 @@ class SignupUserActivationActionTest extends TestCase
 
         static::assertEquals($user->id, $user->created_by);
         static::assertEquals($user->id, $user->modified_by);
-        static::assertEquals('on', $user->status);
+        static::assertEquals(ObjectStatus::ON, $user->status);
         static::assertNotNull($user->verified);
         static::assertSame(1, $eventDispatched, 'Event not dispatched');
 
