@@ -15,9 +15,11 @@ declare(strict_types=1);
 namespace BEdita\Core\Model\Table;
 
 use BEdita\Core\Exception\BadFilterException;
+use BEdita\Core\Model\Enum\TranslationStatus;
 use BEdita\Core\Search\SimpleSearchTrait;
 use Cake\Core\Configure;
 use Cake\Database\Expression\QueryExpression;
+use Cake\Database\Type\EnumType;
 use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\ORM\Query\SelectQuery;
 use Cake\ORM\RulesChecker;
@@ -65,7 +67,9 @@ class TranslationsTable extends Table
         $this->setTable('translations');
         $this->setPrimaryKey('id');
         $this->setDisplayField('id');
-        $this->getSchema()->setColumnType('translated_fields', 'json');
+        $this->getSchema()
+            ->setColumnType('translated_fields', 'json')
+            ->setColumnType('status', EnumType::from(TranslationStatus::class));
 
         $this->addBehavior('Timestamp');
         $this->addBehavior('BEdita/Core.UserModified');
@@ -121,7 +125,7 @@ class TranslationsTable extends Table
 
         $validator
             ->add('status', 'scalar', ['rule' => 'isScalar', 'last' => true])
-            ->inList('status', ['on', 'off', 'draft'])
+            ->inList('status', TranslationStatus::values())
             ->requirePresence('status', 'create')
             ->notEmptyString('status');
 
