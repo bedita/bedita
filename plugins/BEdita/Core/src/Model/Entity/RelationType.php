@@ -21,7 +21,7 @@ use Cake\ORM\Entity;
  *
  * @property int $relation_id
  * @property int $object_type_id
- * @property string $side
+ * @property \BEdita\Core\Model\Enum\RelationTypeSide $side
  *
  * @property \BEdita\Core\Model\Entity\Relation $relation
  * @property \BEdita\Core\Model\Entity\ObjectType $object_type

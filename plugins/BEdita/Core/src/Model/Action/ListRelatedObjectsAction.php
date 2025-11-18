@@ -15,6 +15,7 @@ declare(strict_types=1);
 namespace BEdita\Core\Model\Action;
 
 use BEdita\Core\Model\Entity\ObjectRelation;
+use BEdita\Core\Model\Enum\RelationTypeSide;
 use BEdita\Core\Model\Table\ObjectsTable;
 use BEdita\Core\ORM\Association\RelatedTo;
 use BEdita\Core\ORM\Inheritance\Table;
@@ -39,7 +40,7 @@ class ListRelatedObjectsAction extends ListAssociatedAction
 
         if ($this->Association instanceof RelatedTo) {
             $objectTypes = TableRegistry::getTableLocator()->get('ObjectTypes')
-                ->find('byRelation', name: $this->Association->getName(), side: 'right')
+                ->find('byRelation', name: $this->Association->getName(), side: RelationTypeSide::Right)
                 ->contain(['LeftRelations.RightObjectTypes', 'RightRelations.LeftObjectTypes'])
                 ->toArray();
             $table = $this->Association->getTarget();

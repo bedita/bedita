@@ -14,6 +14,8 @@ declare(strict_types=1);
  */
 namespace BEdita\Core\Model\Table;
 
+use BEdita\Core\Model\Entity\Relation;
+use BEdita\Core\Model\Enum\RelationTypeSide;
 use BEdita\Core\Model\Validation\Validation;
 use BEdita\Core\ORM\Rule\IsUniqueAmongst;
 use BEdita\Core\Search\SimpleSearchTrait;
@@ -79,7 +81,7 @@ class RelationsTable extends Table
             'foreignKey' => 'relation_id',
             'targetForeignKey' => 'object_type_id',
             'conditions' => [
-                $through->aliasField('side') => 'left',
+                $through->aliasField('side') => RelationTypeSide::Left->value,
             ],
         ]);
         $through = TableRegistry::getTableLocator()->get('RightRelationTypes', ['className' => 'RelationTypes']);
@@ -89,7 +91,7 @@ class RelationsTable extends Table
             'foreignKey' => 'relation_id',
             'targetForeignKey' => 'object_type_id',
             'conditions' => [
-                $through->aliasField('side') => 'right',
+                $through->aliasField('side') => RelationTypeSide::Right->value,
             ],
         ]);
         $this->addBehavior('BEdita/Core.Searchable', ['scopes' => (array)$this->getTable()]);
