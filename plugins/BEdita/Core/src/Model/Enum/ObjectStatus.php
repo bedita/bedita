@@ -22,19 +22,11 @@ use Cake\Utility\Inflector;
  *
  * @since 6.0.0
  */
-enum ObjectStatus: string implements EnumLabelInterface
+enum ObjectStatus: string
 {
     use EnumValuesTrait;
 
     case ON = 'on';
     case DRAFT = 'draft';
     case OFF = 'off';
-
-    /**
-     * @return string
-     */
-    public function label(): string
-    {
-        return Inflector::humanize(Inflector::underscore($this->name));
-    }
 }
