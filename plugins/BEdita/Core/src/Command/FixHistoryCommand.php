@@ -16,6 +16,7 @@ namespace BEdita\Core\Command;
 
 use BEdita\Core\Model\Entity\History;
 use BEdita\Core\Model\Entity\ObjectEntity;
+use BEdita\Core\Model\Enum\HistoryUserAction;
 use BEdita\Core\Model\Table\ObjectsTable;
 use Cake\Command\Command;
 use Cake\Console\Arguments;
@@ -192,12 +193,12 @@ class FixHistoryCommand extends Command
             ->find()->where([
                 $this->History->aliasField('resource_id') => $object->id,
                 $this->History->aliasField('resource_type') => 'objects',
-                $this->History->aliasField('user_action') => 'create',
+                $this->History->aliasField('user_action') => HistoryUserAction::Create->value,
             ])
             ->first();
         if (empty($history)) {
             $history = $this->historyEntity($object);
-            $history->user_action = 'create';
+            $history->user_action = HistoryUserAction::Create;
         }
         $history->user_id = $object->get('created_by');
         $history->created = $object->get('created');
@@ -223,7 +224,7 @@ class FixHistoryCommand extends Command
             ->first();
         if (empty($history)) {
             $history = $this->historyEntity($object);
-            $history->user_action = 'update';
+            $history->user_action = HistoryUserAction::Update;
         }
         $history->user_id = $object->get('modified_by');
         $history->created = $object->get('modified');
@@ -300,7 +301,8 @@ class FixHistoryCommand extends Command
             ),
         ];
         if ($created) {
-            $joinConditions[] = $query->expr()->eq($this->History->aliasField('user_action'), 'create');
+            $joinConditions[] = $query->expr()
+                ->eq($this->History->aliasField('user_action'), HistoryUserAction::Create->value);
         }
 
         return $joinConditions;

@@ -26,7 +26,7 @@ use Cake\ORM\Entity;
  * @property \Cake\I18n\DateTime $created
  * @property int|null $user_id
  * @property int|null $application_id
- * @property string|null $user_action
+ * @property \BEdita\Core\Model\Enum\HistoryUserAction|null $user_action
  * @property array|null $changed
  *
  * @property \BEdita\Core\Model\Entity\User $user

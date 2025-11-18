@@ -14,6 +14,8 @@ declare(strict_types=1);
  */
 namespace BEdita\Core\Model\Table;
 
+use BEdita\Core\Model\Enum\HistoryUserAction;
+use Cake\Database\Type\EnumType;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
 
@@ -53,7 +55,9 @@ class HistoryTable extends Table
         $this->setTable('history');
         $this->setDisplayField('id');
         $this->setPrimaryKey('id');
-        $this->getSchema()->setColumnType('changed', 'json');
+        $this->getSchema()
+            ->setColumnType('changed', 'json')
+            ->setColumnType('user_action', EnumType::from(HistoryUserAction::class));
 
         $this->belongsTo('Users', [
             'foreignKey' => 'user_id',
@@ -82,7 +86,8 @@ class HistoryTable extends Table
 
         $validator
             ->scalar('user_action')
-            ->allowEmptyString('user_action');
+            ->allowEmptyString('user_action')
+            ->inList('user_action', HistoryUserAction::values());
 
         $validator
             ->requirePresence('resource_id')

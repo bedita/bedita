@@ -15,6 +15,7 @@ declare(strict_types=1);
 namespace BEdita\Core\Model\Behavior;
 
 use ArrayObject;
+use BEdita\Core\Model\Enum\HistoryUserAction;
 use BEdita\Core\State\CurrentApplication;
 use BEdita\Core\Utility\LoggedUser;
 use Cake\Core\Configure;
@@ -176,23 +177,23 @@ class HistoryBehavior extends Behavior
      * 'remove' action defined in in `afterDelete`
      *
      * @param \Cake\Datasource\EntityInterface $entity Object entity.
-     * @return string
+     * @return \BEdita\Core\Model\Enum\HistoryUserAction
      */
-    protected function entityUserAction(EntityInterface $entity): string
+    protected function entityUserAction(EntityInterface $entity): HistoryUserAction
     {
         if ($entity->isNew()) {
-            return 'create';
+            return HistoryUserAction::Create;
         }
 
         if ($entity->isDirty('deleted')) {
             if ($entity->get('deleted')) {
-                return 'trash';
+                return HistoryUserAction::Trash;
             } else {
-                return 'restore';
+                return HistoryUserAction::Restore;
             }
         }
 
-        return 'update';
+        return HistoryUserAction::Update;
     }
 
     /**
@@ -210,7 +211,7 @@ class HistoryBehavior extends Behavior
 
         /** @var \BEdita\Core\Model\Entity\History $history */
         $history = $this->historyEntity($entity);
-        $history->user_action = 'remove';
+        $history->user_action = HistoryUserAction::Remove;
         $this->Table->saveOrFail($history);
     }
 
