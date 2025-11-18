@@ -15,7 +15,6 @@ declare(strict_types=1);
 namespace BEdita\Core\Test\TestCase\Model\Table;
 
 use BEdita\Core\Exception\BadFilterException;
-use BEdita\Core\Model\Entity\Relation;
 use BEdita\Core\Model\Enum\RelationTypeSide;
 use BEdita\Core\Model\Table\ObjectTypesTable;
 use BEdita\Core\ORM\Rule\IsUniqueAmongst;

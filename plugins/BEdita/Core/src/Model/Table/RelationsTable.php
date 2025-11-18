@@ -14,7 +14,6 @@ declare(strict_types=1);
  */
 namespace BEdita\Core\Model\Table;
 
-use BEdita\Core\Model\Entity\Relation;
 use BEdita\Core\Model\Enum\RelationTypeSide;
 use BEdita\Core\Model\Validation\Validation;
 use BEdita\Core\ORM\Rule\IsUniqueAmongst;

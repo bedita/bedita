@@ -14,8 +14,6 @@ declare(strict_types=1);
  */
 namespace BEdita\Core\Model\Table;
 
-use BEdita\Core\Model\Entity\Relation;
-use BEdita\Core\Model\Entity\RelationType;
 use BEdita\Core\Model\Enum\RelationTypeSide;
 use Cake\Cache\Cache;
 use Cake\Database\Type\EnumType;

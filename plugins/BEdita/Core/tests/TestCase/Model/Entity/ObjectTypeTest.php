@@ -15,7 +15,6 @@ declare(strict_types=1);
 namespace BEdita\Core\Test\TestCase\Model\Entity;
 
 use BEdita\Core\Model\Entity\ObjectType;
-use BEdita\Core\Model\Entity\Relation;
 use BEdita\Core\Model\Enum\RelationTypeSide;
 use BEdita\Core\Model\Table\ObjectTypesTable;
 use Cake\Event\Event;
