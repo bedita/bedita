@@ -18,7 +18,7 @@ use ArrayObject;
 use BEdita\Core\Exception\BadFilterException;
 use BEdita\Core\Exception\ImmutableResourceException;
 use BEdita\Core\Model\Entity\AuthProvider;
-use BEdita\Core\Model\Enum\ObjectStatus;
+use BEdita\Core\Model\Enum\ObjectEntityStatus;
 use BEdita\Core\Model\Table\ObjectsBaseTable as Table;
 use BEdita\Core\Model\Validation\UsersValidator;
 use BEdita\Core\Utility\LoggedUser;
@@ -378,9 +378,9 @@ class UsersTable extends Table
      */
     protected function findLogin(SelectQuery $query): SelectQuery
     {
-        $status = [ObjectStatus::ON->value];
+        $status = [ObjectEntityStatus::On->value];
         if ((bool)Configure::read('Login.draft') === true) {
-            $status[] = ObjectStatus::DRAFT->value;
+            $status[] = ObjectEntityStatus::Draft->value;
         }
 
         return $query

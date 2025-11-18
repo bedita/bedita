@@ -16,7 +16,7 @@ namespace BEdita\API\Test\TestCase\Controller;
 
 use BEdita\API\Controller\BulkController;
 use BEdita\API\TestSuite\IntegrationTestCase;
-use BEdita\Core\Model\Enum\ObjectStatus;
+use BEdita\Core\Model\Enum\ObjectEntityStatus;
 use BEdita\Core\State\CurrentApplication;
 use BEdita\Core\Utility\LoggedUser;
 use Cake\Utility\Hash;
@@ -331,10 +331,10 @@ class BulkControllerTest extends IntegrationTestCase
         // object 2 is locked, status cannot be changed
         $o1 = $this->fetchTable('Objects')->get(2);
         $firstOriginalStatus = $o1->get('status');
-        $this->assertEquals(ObjectStatus::ON, $firstOriginalStatus);
+        $this->assertEquals(ObjectEntityStatus::On, $firstOriginalStatus);
         $o2 = $this->fetchTable('Objects')->get(3);
         $secondOriginalStatus = $o2->get('status');
-        $this->assertEquals(ObjectStatus::DRAFT, $secondOriginalStatus);
+        $this->assertEquals(ObjectEntityStatus::Draft, $secondOriginalStatus);
         $this->configRequestHeaders('POST', $this->getUserAuthHeader($user, $password) + $this->headers);
         $map = [];
         $map[$o1->get('type')][] = $o1->get('id');
@@ -363,7 +363,7 @@ class BulkControllerTest extends IntegrationTestCase
         $this->assertEquals($firstOriginalStatus, $firstStatus);
         $o2 = $this->fetchTable('Objects')->get(3);
         $secondStatus = $o2->get('status');
-        $this->assertEquals(ObjectStatus::OFF, $secondStatus);
+        $this->assertEquals(ObjectEntityStatus::Off, $secondStatus);
         $this->configRequestHeaders('POST', $this->getUserAuthHeader($user, $password) + $this->headers);
         $this->post('/bulk/edit', json_encode([
             'data' => [
@@ -378,7 +378,7 @@ class BulkControllerTest extends IntegrationTestCase
         $this->assertResponseCode(200);
         $o2 = $this->fetchTable('Objects')->get(3);
         $secondStatus = $o2->get('status');
-        $this->assertEquals(ObjectStatus::DRAFT, $secondStatus);
+        $this->assertEquals(ObjectEntityStatus::Draft, $secondStatus);
     }
 
     /**
@@ -428,6 +428,6 @@ class BulkControllerTest extends IntegrationTestCase
             ->firstOrFail();
 
         $this->assertEquals($originalStatusWrongObject, $wrongObject->get('status'));
-        $this->assertEquals(ObjectStatus::OFF, $event->get('status'));
+        $this->assertEquals(ObjectEntityStatus::Off, $event->get('status'));
     }
 }

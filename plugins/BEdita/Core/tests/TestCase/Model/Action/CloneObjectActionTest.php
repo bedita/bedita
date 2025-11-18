@@ -16,7 +16,7 @@ namespace BEdita\Core\Test\TestCase\Model\Action;
 
 use BEdita\Core\Model\Action\CloneObjectAction;
 use BEdita\Core\Model\Entity\ObjectEntity;
-use BEdita\Core\Model\Enum\ObjectStatus;
+use BEdita\Core\Model\Enum\ObjectEntityStatus;
 use BEdita\Core\Test\Utility\TestFilesystemTrait;
 use BEdita\Core\Utility\LoggedUser;
 use Cake\Http\Exception\UnauthorizedException;
@@ -105,7 +105,7 @@ class CloneObjectActionTest extends TestCase
         // document with ID 2 from fixtures has 5 relationships records and 4 translations records
         $id = 2;
         $title = 'new title for my clone';
-        $status = ObjectStatus::DRAFT;
+        $status = ObjectEntityStatus::Draft;
         $_meta = ['include' => ['relationships', 'translations']];
         $data = compact('title', 'status', '_meta');
         $table = $this->fetchTable('Documents');
@@ -197,7 +197,7 @@ class CloneObjectActionTest extends TestCase
         // ID 14, stream bedita-logo-gray.gif
         $id = 14;
         $title = 'new title for my clone';
-        $status = ObjectStatus::DRAFT;
+        $status = ObjectEntityStatus::Draft;
         $data = compact('title', 'status');
         $table = $this->fetchTable('Images');
         $original = $table->get($id, contain: ['Streams']);

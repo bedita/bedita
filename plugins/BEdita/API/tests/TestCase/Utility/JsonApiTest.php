@@ -16,7 +16,7 @@ namespace BEdita\API\Test\TestCase\Utility;
 
 use BEdita\API\Test\TestConstants;
 use BEdita\API\Utility\JsonApi;
-use BEdita\Core\Model\Enum\ObjectStatus;
+use BEdita\Core\Model\Enum\ObjectEntityStatus;
 use BEdita\Core\Utility\JsonApiSerializable;
 use Cake\Datasource\EntityInterface;
 use Cake\Event\Event;
@@ -814,9 +814,9 @@ class JsonApiTest extends TestCase
             $item = $items[0];
 
             static::assertInstanceOf(EntityInterface::class, $item);
-            static::assertEquals(ObjectStatus::ON, $item->get('status'));
+            static::assertEquals(ObjectEntityStatus::On, $item->get('status'));
 
-            $item->set('status', ObjectStatus::OFF);
+            $item->set('status', ObjectEntityStatus::Off);
             $event->setResult($items);
         });
 
@@ -825,7 +825,7 @@ class JsonApiTest extends TestCase
         $result = JsonApi::formatData($document);
 
         static::assertEquals(1, $dispatchedEvent);
-        static::assertEquals(ObjectStatus::OFF, Hash::get($result, 'attributes.status'));
+        static::assertEquals(ObjectEntityStatus::Off, Hash::get($result, 'attributes.status'));
     }
 
     /**

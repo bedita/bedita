@@ -15,7 +15,7 @@ declare(strict_types=1);
 namespace BEdita\Core\Test\TestCase\Model\Behavior;
 
 use BEdita\Core\Model\Behavior\DataCleanupBehavior;
-use BEdita\Core\Model\Enum\ObjectStatus;
+use BEdita\Core\Model\Enum\ObjectEntityStatus;
 use Cake\Core\Configure;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
@@ -57,7 +57,7 @@ class DataCleanupBehaviorTest extends TestCase
                     'status' => null,
                 ],
                 [
-                    'status' => ObjectStatus::DRAFT,
+                    'status' => ObjectEntityStatus::Draft,
                 ],
                 [],
             ],
@@ -68,7 +68,7 @@ class DataCleanupBehaviorTest extends TestCase
                     'status' => '',
                 ],
                 [
-                    'status' => ObjectStatus::DRAFT,
+                    'status' => ObjectEntityStatus::Draft,
                 ],
                 [],
             ],
@@ -79,11 +79,11 @@ class DataCleanupBehaviorTest extends TestCase
                     'status' => '',
                 ],
                 [
-                    'status' => ObjectStatus::ON,
+                    'status' => ObjectEntityStatus::On,
                 ],
                 [
                     'users' => [
-                        'status' => ObjectStatus::ON->value,
+                        'status' => ObjectEntityStatus::On->value,
                     ],
                 ],
             ],
@@ -93,11 +93,11 @@ class DataCleanupBehaviorTest extends TestCase
                     'password_hash' => 'ipsum',
                 ],
                 [
-                    'status' => ObjectStatus::ON,
+                    'status' => ObjectEntityStatus::On,
                 ],
                 [
                     'users' => [
-                        'status' => ObjectStatus::ON->value,
+                        'status' => ObjectEntityStatus::On->value,
                     ],
                 ],
             ],
@@ -121,7 +121,7 @@ class DataCleanupBehaviorTest extends TestCase
                 ],
                 [
                     'users' => [
-                        'status' => ObjectStatus::ON->value,
+                        'status' => ObjectEntityStatus::On->value,
                     ],
                 ],
             ],
@@ -164,7 +164,7 @@ class DataCleanupBehaviorTest extends TestCase
                     'status' => null,
                 ],
                 [
-                    'status' => ObjectStatus::DRAFT,
+                    'status' => ObjectEntityStatus::Draft,
                 ],
                 'draft',
             ],
@@ -175,7 +175,7 @@ class DataCleanupBehaviorTest extends TestCase
                     'status' => '',
                 ],
                 [
-                    'status' => ObjectStatus::ON,
+                    'status' => ObjectEntityStatus::On,
                 ],
                 'on',
             ],
@@ -186,7 +186,7 @@ class DataCleanupBehaviorTest extends TestCase
                     'status' => '',
                 ],
                 [
-                    'status' => ObjectStatus::DRAFT,
+                    'status' => ObjectEntityStatus::Draft,
                 ],
             ],
         ];

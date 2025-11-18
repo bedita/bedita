@@ -18,7 +18,7 @@ use Authentication\AuthenticationService;
 use BEdita\API\Controller\ObjectsController;
 use BEdita\API\Test\TestConstants;
 use BEdita\API\TestSuite\IntegrationTestCase;
-use BEdita\Core\Model\Enum\ObjectStatus;
+use BEdita\Core\Model\Enum\ObjectEntityStatus;
 use BEdita\Core\Test\Utility\TestArraySubsetTrait;
 use Cake\Event\EventManager;
 use Cake\Http\ServerRequest;
@@ -1795,7 +1795,7 @@ class ObjectsControllerTest extends IntegrationTestCase
         $document = TableRegistry::getTableLocator()->get('Documents')->get('2');
         static::assertEquals($newTitle, $document->get('title'));
         static::assertEquals('documents', $document->get('type'));
-        static::assertEquals(ObjectStatus::ON, $document->get('status'));
+        static::assertEquals(ObjectEntityStatus::On, $document->get('status'));
 
         $result = json_decode((string)$this->_response->getBody(), true);
         static::assertEquals($data['id'], $result['data']['id']);

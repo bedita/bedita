@@ -15,7 +15,7 @@ declare(strict_types=1);
 namespace BEdita\Core\Model\Behavior;
 
 use BEdita\Core\Exception\BadFilterException;
-use BEdita\Core\Model\Enum\ObjectStatus;
+use BEdita\Core\Model\Enum\ObjectEntityStatus;
 use Cake\Core\Configure;
 use Cake\Database\Expression\QueryExpression;
 use Cake\Datasource\EntityInterface;
@@ -59,7 +59,7 @@ class StatusBehavior extends Behavior
         }
         $level = Configure::read('Status.level');
         $status = $entity->get('status');
-        if (($level === ObjectStatus::ON->value && $status !== ObjectStatus::ON) || ($level === ObjectStatus::DRAFT->value && $status === ObjectStatus::OFF)) {
+        if (($level === ObjectEntityStatus::On->value && $status !== ObjectEntityStatus::On) || ($level === ObjectEntityStatus::Draft->value && $status === ObjectEntityStatus::Off)) {
             throw new BadRequestException(__d(
                 'bedita',
                 'Status "{0}" is not consistent with configured Status.level "{1}"',
@@ -82,17 +82,17 @@ class StatusBehavior extends Behavior
     {
         $field = $this->getConfigOrFail('field');
         switch ($level) {
-            case ObjectStatus::ON->value:
+            case ObjectEntityStatus::On->value:
                 return $query->where([
-                    $this->table()->aliasField($field) => ObjectStatus::ON->value,
+                    $this->table()->aliasField($field) => ObjectEntityStatus::On->value,
                 ]);
 
-            case ObjectStatus::DRAFT->value:
+            case ObjectEntityStatus::Draft->value:
                 return $query->where(function (QueryExpression $exp) use ($field) {
-                    return $exp->in($this->table()->aliasField($field), [ObjectStatus::ON->value, ObjectStatus::DRAFT->value]);
+                    return $exp->in($this->table()->aliasField($field), [ObjectEntityStatus::On->value, ObjectEntityStatus::Draft->value]);
                 });
 
-            case ObjectStatus::OFF->value:
+            case ObjectEntityStatus::Off->value:
             case 'all':
                 return $query;
 

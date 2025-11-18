@@ -14,7 +14,7 @@ declare(strict_types=1);
  */
 namespace BEdita\Core\Model\Validation;
 
-use BEdita\Core\Model\Enum\ObjectStatus;
+use BEdita\Core\Model\Enum\ObjectEntityStatus;
 use Cake\ORM\TableRegistry;
 use Cake\Validation\Validator;
 use Phinx\Db\Adapter\MysqlAdapter;
@@ -43,7 +43,7 @@ class ObjectsValidator extends Validator
             ->allowEmptyString('id', null, 'create')
             ->requirePresence('id', 'update')
 
-            ->inList('status', ObjectStatus::values())
+            ->inList('status', ObjectEntityStatus::values())
             ->notEmptyString('status')
 
             ->ascii('uname')

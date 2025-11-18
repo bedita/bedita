@@ -19,7 +19,7 @@ use BEdita\Core\Exception\UserExistsException;
 use BEdita\Core\Model\Action\SignupUserAction;
 use BEdita\Core\Model\Entity\AsyncJob;
 use BEdita\Core\Model\Entity\User;
-use BEdita\Core\Model\Enum\ObjectStatus;
+use BEdita\Core\Model\Enum\ObjectEntityStatus;
 use Cake\Core\Configure;
 use Cake\Core\Exception\CakeException;
 use Cake\Event\Event;
@@ -227,7 +227,7 @@ class SignupUserActionTest extends TestCase
 
         static::assertTrue((bool)$result);
         static::assertInstanceOf(User::class, $result);
-        static::assertSame(ObjectStatus::DRAFT, $result->status);
+        static::assertSame(ObjectEntityStatus::Draft, $result->status);
         static::assertSame(1, $eventDispatched, 'Event not dispatched');
     }
 
@@ -312,7 +312,7 @@ class SignupUserActionTest extends TestCase
 
         static::assertTrue((bool)$result);
         static::assertInstanceOf(User::class, $result);
-        static::assertSame(ObjectStatus::DRAFT, $result->status);
+        static::assertSame(ObjectEntityStatus::Draft, $result->status);
         static::assertSame($data['username'], $result->username);
         Configure::delete('Status.level');
     }
@@ -353,7 +353,7 @@ class SignupUserActionTest extends TestCase
 
         static::assertTrue((bool)$result);
         static::assertInstanceOf(User::class, $result);
-        static::assertSame(ObjectStatus::ON, $result->status);
+        static::assertSame(ObjectEntityStatus::On, $result->status);
         static::assertNotEmpty($result->verified);
         static::assertSame(1, $eventDispatched, 'Event not dispatched');
     }
@@ -468,7 +468,7 @@ class SignupUserActionTest extends TestCase
         $result = $action($data);
 
         static::assertInstanceOf(User::class, $result);
-        static::assertSame(ObjectStatus::ON, $result->status);
+        static::assertSame(ObjectEntityStatus::On, $result->status);
         static::assertSame(1, $eventDispatched, 'Event not dispatched');
     }
 

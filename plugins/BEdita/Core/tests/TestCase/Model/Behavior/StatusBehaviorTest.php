@@ -16,7 +16,7 @@ namespace BEdita\Core\Test\TestCase\Model\Behavior;
 
 use BEdita\Core\Exception\BadFilterException;
 use BEdita\Core\Model\Behavior\StatusBehavior;
-use BEdita\Core\Model\Enum\ObjectStatus;
+use BEdita\Core\Model\Enum\ObjectEntityStatus;
 use Cake\Core\Configure;
 use Cake\Http\Exception\BadRequestException;
 use Cake\ORM\TableRegistry;
@@ -93,7 +93,7 @@ class StatusBehaviorTest extends TestCase
     {
         return [
             'no conf' => [
-                ObjectStatus::DRAFT,
+                ObjectEntityStatus::Draft,
                 [
                     'status' => 'draft',
                 ],
@@ -107,7 +107,7 @@ class StatusBehaviorTest extends TestCase
                 'on',
             ],
             'ok' => [
-                ObjectStatus::DRAFT,
+                ObjectEntityStatus::Draft,
                 [
                     'status' => 'draft',
                 ],

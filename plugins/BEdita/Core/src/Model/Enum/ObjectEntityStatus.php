@@ -14,19 +14,16 @@ declare(strict_types=1);
  */
 namespace BEdita\Core\Model\Enum;
 
-use Cake\Database\Type\EnumLabelInterface;
-use Cake\Utility\Inflector;
-
 /**
- * ObjectStatus Enum
+ * ObjectEntityStatus Enum
  *
  * @since 6.0.0
  */
-enum ObjectStatus: string
+enum ObjectEntityStatus: string
 {
     use EnumValuesTrait;
 
-    case ON = 'on';
-    case DRAFT = 'draft';
-    case OFF = 'off';
+    case On = 'on';
+    case Draft = 'draft';
+    case Off = 'off';
 }

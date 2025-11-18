@@ -30,7 +30,7 @@ use Cake\Utility\Hash;
  * @property int $object_type_id
  * @property bool $deleted
  * @property string $type
- * @property \BEdita\Core\Model\Enum\ObjectStatus $status
+ * @property \BEdita\Core\Model\Enum\ObjectEntityStatus $status
  * @property string $uname
  * @property bool $locked
  * @property \Cake\I18n\Time|\Cake\I18n\DateTime $created
