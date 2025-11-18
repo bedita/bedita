@@ -177,7 +177,7 @@ class StaticProperty extends Property
 
         $type = TypeFactory::build($typeName);
         $driver = $this->table->getConnection()->getDriver();
-         if ($type instanceof EnumType)  {
+        if ($type instanceof EnumType) {
             return $this->_fields['default'] = $default;
         }
 

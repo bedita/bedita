@@ -365,7 +365,7 @@ class ObjectsController extends ResourcesController
                 $fieldValue = $entity->get($field);
                 $dataValue = Hash::get($data, $field);
 
-                return ($field === 'status') ? $fieldValue->value !== $dataValue : $fieldValue !== $dataValue;
+                return $field === 'status' ? $fieldValue->value !== $dataValue : $fieldValue !== $dataValue;
             },
         );
 
