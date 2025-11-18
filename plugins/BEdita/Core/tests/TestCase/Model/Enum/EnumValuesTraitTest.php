@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 /**
  * BEdita, API-first content management framework
- * Copyright 2025 ChannelWeb Srl, Chialab Srl
+ * Copyright 2025 Chialab Srl
  *
  * This file is part of BEdita: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published
@@ -15,14 +15,15 @@ declare(strict_types=1);
 namespace BEdita\Core\Test\TestCase\Model;
 
 use BEdita\Core\Model\Enum\DateRangesSortField;
+use BEdita\Core\Model\Enum\EnumValuesTrait;
 use Cake\TestSuite\TestCase;
-use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\CoversTrait;
 
 /**
  * {@see BEdita\Core\Model\Enum\DateRangesSortField} Test Case
  */
-#[CoversClass(DateRangesSortField::class)]
-class DateRangesSortFieldTest extends TestCase
+#[CoversTrait(EnumValuesTrait::class)]
+class EnumValuesTraitTest extends TestCase
 {
     /**
      * Test that enum cases are correctly defined.
