@@ -514,6 +514,37 @@ class CustomPropertiesBehaviorTest extends TestCase
                 'Users',
                 ['another_username' => 'synapse'],
             ],
+            'filter operator string' => [
+                [],
+                'Users',
+                ['another_username' => ['ne' => 'synapse']],
+            ],
+            'filter integer' => [
+                [4],
+                'Profiles',
+                ['number_of_friends' => 42],
+            ],
+            'filter integer operator gt' => [
+                [4],
+                'Profiles',
+                ['number_of_friends' => ['gt' => 17]],
+            ],
+            'filter integer operator lt' => [
+                [],
+                'Profiles',
+                ['number_of_friends' => ['lt' => 10]],
+            ],
+            'filter integer operator in' => [
+                [4],
+                'Profiles',
+                ['number_of_friends' => ['in' => [12, 24, 42]]],
+            ],
+            'filter integer with array' => [
+                [4],
+                'Profiles',
+                ['number_of_friends' => [12, 24, 42]],
+            ],
+
             'filter bool true' => [
                 [10],
                 'Files',
@@ -567,6 +598,7 @@ class CustomPropertiesBehaviorTest extends TestCase
             $this->expectException(get_class($expected));
             $this->expectExceptionMessage($expected->getMessage());
         }
+        $this->prepareCustomProps($tableName);
 
         $result = $this->getTableLocator()
             ->get($tableName)
@@ -581,36 +613,22 @@ class CustomPropertiesBehaviorTest extends TestCase
     }
 
     /**
-     * Test custom prop finder for integer property.
+     * Prepare custom properties for testing.
      *
+     * @param string $tableName Table name.
      * @return void
      */
-    public function testFindCustomPropInteger(): void
+    protected function prepareCustomProps(string $tableName): void
     {
-        $connection = ConnectionManager::get('default');
-        $driver = $connection->getDriver();
-        if (!($driver instanceof Mysql) && !($driver instanceof Postgres)) {
-            $this->expectException(BadFilterException::class);
-            $this->expectExceptionMessage('customProp finder isn\'t supported for this datasource');
+        $table = $this->getTableLocator()->get($tableName);
+        $entity = null;
+        if ($tableName === 'Profiles') {
+            $entity = $table->get(4);
+            $entity->set('number_of_friends', 42);
         }
-
-        $Profiles = $this->getTableLocator()->get('Profiles');
-        $profile = $Profiles->find()->first();
-        $profile->set('number_of_friends', 10);
-        $Profiles->saveOrFail($profile);
-
-        $result = $Profiles->find('customProp', value: ['number_of_friends' => 10])
-            ->find('list')
-            ->orderByAsc('id')
-            ->toArray();
-
-        static::assertEquals([$profile->id], array_keys($result));
-
-        $result = $Profiles->find('customProp', number_of_friends: '10')
-            ->find('list')
-            ->orderByAsc('id')
-            ->toArray();
-
-        static::assertEquals([$profile->id], array_keys($result));
+        if (empty($entity)) {
+            return;
+        }
+        $table->saveOrFail($entity);
     }
 }
