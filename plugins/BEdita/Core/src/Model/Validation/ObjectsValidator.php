@@ -43,7 +43,7 @@ class ObjectsValidator extends Validator
             ->allowEmptyString('id', null, 'create')
             ->requirePresence('id', 'update')
 
-            ->inList('status', ObjectEntityStatus::values())
+            ->enum('status', ObjectEntityStatus::class)
             ->notEmptyString('status')
 
             ->ascii('uname')

@@ -85,9 +85,8 @@ class HistoryTable extends Table
             ->allowEmptyString('id', null, 'create');
 
         $validator
-            ->scalar('user_action')
             ->allowEmptyString('user_action')
-            ->inList('user_action', HistoryUserAction::values());
+            ->enum('user_action', HistoryUserAction::class);
 
         $validator
             ->requirePresence('resource_id')

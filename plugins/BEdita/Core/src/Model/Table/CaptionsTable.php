@@ -82,7 +82,7 @@ class CaptionsTable extends Table
             ->naturalNumber('id')
             ->allowEmptyString('id', null, 'create')
 
-            ->inList('status', CaptionStatus::values())
+            ->enum('status', CaptionStatus::class)
             ->notEmptyString('status')
 
             ->allowEmptyString('label')

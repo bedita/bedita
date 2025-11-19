@@ -125,7 +125,7 @@ class TranslationsTable extends Table
 
         $validator
             ->add('status', 'scalar', ['rule' => 'isScalar', 'last' => true])
-            ->inList('status', TranslationStatus::values())
+            ->enum('status', TranslationStatus::class)
             ->requirePresence('status', 'create')
             ->notEmptyString('status');
 

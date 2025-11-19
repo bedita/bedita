@@ -77,7 +77,7 @@ class RelationTypesTable extends Table
     public function validationDefault(Validator $validator): Validator
     {
         $validator
-            ->inList('side', RelationTypeSide::values())
+            ->enum('side', RelationTypeSide::class)
             ->notEmptyString('side')
             ->requirePresence('side', 'create');
 
