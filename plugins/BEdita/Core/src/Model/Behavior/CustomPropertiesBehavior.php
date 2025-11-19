@@ -379,7 +379,7 @@ class CustomPropertiesBehavior extends Behavior
         $available = $this->getAvailable();
         foreach ($options as $key => $value) {
             if ($value === null) {
-                $conditions[$key] = ['null' => null];
+                $conditions[$key] = ['null' => true];
                 continue;
             }
             $in = [];
