@@ -519,6 +519,11 @@ class CustomPropertiesBehaviorTest extends TestCase
                 'Users',
                 ['another_username' => ['ne' => 'synapse']],
             ],
+            'filter operator null' => [
+                [1, 20],
+                'Users',
+                ['another_username' => null],
+            ],
             'filter integer' => [
                 [4],
                 'Profiles',
@@ -544,7 +549,11 @@ class CustomPropertiesBehaviorTest extends TestCase
                 'Profiles',
                 ['number_of_friends' => [12, 24, 42]],
             ],
-
+            'filter integer with array as string' => [
+                [4],
+                'Profiles',
+                ['number_of_friends' => '12,24,42'],
+            ],
             'filter bool true' => [
                 [10],
                 'Files',
