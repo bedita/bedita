@@ -429,7 +429,7 @@ class CustomPropertiesBehavior extends Behavior
      * @param object $driver Database driver.
      * @return mixed
      */
-    protected function expressionField(string $field, string $key, object $driver): mixed
+    protected function expressionField(string $field, string $key, object $driver): FunctionExpression|string
     {
         if ($driver instanceof Mysql) {
             return new FunctionExpression(

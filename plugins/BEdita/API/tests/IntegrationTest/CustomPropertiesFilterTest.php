@@ -100,7 +100,7 @@ class CustomPropertiesFilterTest extends IntegrationTestCase
                 ['5'],
                 '/users?filter[another_username]=synapse,batman',
             ],
-            'string witj operator' => [
+            'string with operator' => [
                 ['5'],
                 '/users?filter[another_username][eq]=synapse',
             ],
