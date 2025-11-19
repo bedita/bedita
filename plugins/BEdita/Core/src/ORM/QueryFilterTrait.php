@@ -110,11 +110,11 @@ trait QueryFilterTrait
      *
      * @param \Cake\Database\Expression\QueryExpression $exp Current query expression
      * @param string $operator Filter operator
-     * @param string $field Filter field
+     * @param mixed $field Filter field
      * @param mixed $value Filter value
      * @return \Cake\Database\Expression\QueryExpression Operator query expression
      */
-    protected function operatorExpression(QueryExpression $exp, string $operator, string $field, mixed $value): QueryExpression
+    public function operatorExpression(QueryExpression $exp, string $operator, mixed $field, mixed $value): QueryExpression
     {
         switch ($operator) {
             case 'eq':
