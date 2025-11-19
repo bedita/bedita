@@ -326,7 +326,7 @@ class SignupUserAction extends BaseAction implements EventListenerInterface
         }
         $action = new SaveEntityAction(['table' => $this->Users]);
 
-        $data['status'] = $status->value;
+        $data['status'] = $status;
         $entity = $this->Users->newEmptyEntity();
         if ($verified === true) {
             $entity->set('verified', DateTime::now());

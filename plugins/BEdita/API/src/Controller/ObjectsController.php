@@ -14,6 +14,7 @@ declare(strict_types=1);
  */
 namespace BEdita\API\Controller;
 
+use BackedEnum;
 use BEdita\API\Model\Action\UpdateRelatedAction;
 use BEdita\Core\Exception\BadFilterException;
 use BEdita\Core\Model\Action\ActionTrait;
@@ -365,7 +366,7 @@ class ObjectsController extends ResourcesController
                 $fieldValue = $entity->get($field);
                 $dataValue = Hash::get($data, $field);
 
-                return $field === 'status' ? $fieldValue->value !== $dataValue : $fieldValue !== $dataValue;
+                return $fieldValue instanceof BackedEnum ? $fieldValue->value !== $dataValue : $fieldValue !== $dataValue;
             },
         );
 
