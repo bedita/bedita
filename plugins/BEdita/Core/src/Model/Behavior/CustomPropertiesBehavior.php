@@ -427,7 +427,7 @@ class CustomPropertiesBehavior extends Behavior
      * @param string $field Field name.
      * @param string $key Property name.
      * @param object $driver Database driver.
-     * @return mixed
+     * @return \Cake\Database\Expression\FunctionExpression|string
      */
     protected function expressionField(string $field, string $key, object $driver): FunctionExpression|string
     {
@@ -453,9 +453,9 @@ class CustomPropertiesBehavior extends Behavior
      * @param mixed $value Property value.
      * @param array $schema Property JSON Schema.
      * @param object $driver Database driver.
-     * @return mixed
+     * @return \Cake\Database\Expression\FunctionExpression|string
      */
-    protected function expressionValue(mixed $value, array $schema, object $driver): mixed
+    protected function expressionValue(mixed $value, array $schema, object $driver): FunctionExpression|string
     {
         $value = $this->formatValue($value, $schema);
         $value = is_string($value) ? $value : json_encode($value);
