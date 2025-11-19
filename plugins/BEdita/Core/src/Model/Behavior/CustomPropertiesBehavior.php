@@ -361,8 +361,8 @@ class CustomPropertiesBehavior extends Behavior
      *
      * ```
      * [
-     *     <expressionProperty1> => [<operator> => <expressionValue>],
-     *     <expressionProperty2> => [<operator> => <expressionValue>],
+     *     <expressionProperty1> => [<operator1> => <expressionValue1>],
+     *     <expressionProperty2> => [<operator2> => <expressionValue2>],
      * ]
      * ...
      *
