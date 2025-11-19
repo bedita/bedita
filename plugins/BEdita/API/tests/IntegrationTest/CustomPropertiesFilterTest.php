@@ -84,9 +84,25 @@ class CustomPropertiesFilterTest extends IntegrationTestCase
                 ['14', '16'],
                 '/files?filter[media_property]=0',
             ],
+            'integer' => [
+                ['4'],
+                '/profiles?filter[number_of_friends]=42',
+            ],
+            'integer with operator' => [
+                ['4'],
+                '/profiles?filter[number_of_friends][gt]=10',
+            ],
             'string' => [
                 ['5'],
                 '/users?filter[another_username]=synapse',
+            ],
+            'string with multiple values' => [
+                ['5'],
+                '/users?filter[another_username]=synapse,batman',
+            ],
+            'string with operator' => [
+                ['5'],
+                '/users?filter[another_username][eq]=synapse',
             ],
             'string no results' => [
                 [],
@@ -105,6 +121,7 @@ class CustomPropertiesFilterTest extends IntegrationTestCase
     #[DataProvider('filterProvider')]
     public function testFilter(array $expected, $url): void
     {
+        $this->prepareCustomProps($url);
         $this->configRequestHeaders();
         $this->get($url);
 
@@ -115,6 +132,27 @@ class CustomPropertiesFilterTest extends IntegrationTestCase
         sort($expected);
         sort($ids);
         static::assertEquals($expected, $ids);
+    }
+
+    /**
+     * Prepare custom properties for testing.
+     *
+     * @param string $url Url.
+     * @return void
+     */
+    protected function prepareCustomProps(string $url): void
+    {
+        $tableName = ucfirst(substr($url, 1, strpos($url, '?') - 1));
+        $table = $this->getTableLocator()->get($tableName);
+        $entity = null;
+        if ($tableName === 'Profiles') {
+            $entity = $table->get(4);
+            $entity->set('number_of_friends', 42);
+        }
+        if (empty($entity)) {
+            return;
+        }
+        $table->saveOrFail($entity);
     }
 
     /**

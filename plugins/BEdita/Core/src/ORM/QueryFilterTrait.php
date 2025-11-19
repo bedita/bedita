@@ -16,6 +16,7 @@ namespace BEdita\Core\ORM;
 
 use Cake\Database\Expression\ComparisonExpression;
 use Cake\Database\Expression\QueryExpression;
+use Cake\Database\ExpressionInterface;
 use Cake\ORM\Query\SelectQuery;
 
 /**
@@ -110,11 +111,11 @@ trait QueryFilterTrait
      *
      * @param \Cake\Database\Expression\QueryExpression $exp Current query expression
      * @param string $operator Filter operator
-     * @param string $field Filter field
+     * @param \Cake\Database\ExpressionInterface|string $field Filter field
      * @param mixed $value Filter value
      * @return \Cake\Database\Expression\QueryExpression Operator query expression
      */
-    protected function operatorExpression(QueryExpression $exp, string $operator, string $field, mixed $value): QueryExpression
+    public function operatorExpression(QueryExpression $exp, string $operator, ExpressionInterface|string $field, mixed $value): QueryExpression
     {
         switch ($operator) {
             case 'eq':
