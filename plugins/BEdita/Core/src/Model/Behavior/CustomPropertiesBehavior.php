@@ -357,7 +357,7 @@ class CustomPropertiesBehavior extends Behavior
 
     /**
      * Setup conditions for custom properties filtering.
-     * An array of conditions is returned whit this structure:
+     * An array of conditions is returned with this structure:
      *
      * ```
      * [
@@ -404,9 +404,12 @@ class CustomPropertiesBehavior extends Behavior
                     $in[] = $this->expressionValue($v, $schema, $driver);
                     continue;
                 }
-                $expValue = $this->expressionValue($v, $schema, $driver);
-                if ($operator == 'in' || $operator == 'notin' || $operator == 'nin') {
-                    $expValue = is_array($v) ? $v : [$v];
+
+                if ($operator === 'in' || $operator === 'notin' || $operator === 'nin') {
+                    $v = is_array($v) ? $v : [$v];
+                    $expValue = array_map(fn($i) => $this->expressionValue($i, $schema, $driver), $v);
+                } else {
+                    $expValue = $this->expressionValue($v, $schema, $driver);
                 }
                 $conditions[$key] = [$operator => $expValue];
             }
@@ -427,7 +430,7 @@ class CustomPropertiesBehavior extends Behavior
      * @param object $driver Database driver.
      * @return mixed
      */
-    protected function expressionField(string $field, string $key, object $driver)
+    protected function expressionField(string $field, string $key, object $driver): mixed
     {
         if ($driver instanceof Mysql) {
             return new FunctionExpression(
@@ -453,11 +456,11 @@ class CustomPropertiesBehavior extends Behavior
      * @param object $driver Database driver.
      * @return mixed
      */
-    protected function expressionValue(mixed $value, array $schema, object $driver)
+    protected function expressionValue(mixed $value, array $schema, object $driver): mixed
     {
         $value = $this->formatValue($value, $schema);
         if ($driver instanceof Mysql) {
-            return  new FunctionExpression('JSON_UNQUOTE', [json_encode($value)]);
+            return new FunctionExpression('JSON_UNQUOTE', [json_encode($value)]);
         }
 
         return is_string($value) ? $value : json_encode($value);
