@@ -340,17 +340,18 @@ class CustomPropertiesBehavior extends Behavior
             throw new BadFilterException(__d('bedita', 'Invalid data'));
         }
 
-        $field = $this->table()->aliasField($this->getConfig('field'));
-        $conditions = $this->setupConditions($options, $field, $driver);
+        $conditions = $this->setupConditions($options, $driver);
 
-        return $query->where(function (QueryExpression $exp) use ($conditions, $query) {
+        return $query->where(function (QueryExpression $exp) use ($conditions, $query, $driver) {
 
-            return $exp->and(array_map(function ($key) use ($conditions, $query) {
+            return $exp->and(array_map(function ($key) use ($conditions, $query, $driver) {
+                $field = $this->table()->aliasField($this->getConfig('field'));
+                $fieldExp = $this->expressionField($field, $key, $driver);
                 $operation = $conditions[$key];
                 $operator = key($operation);
                 $value = $operation[$operator];
 
-                return $this->operatorExpression($query->newExpr(), $operator, $key, $value);
+                return $this->operatorExpression($query->newExpr(), $operator, $fieldExp, $value);
             }, array_keys($conditions)));
         });
     }
@@ -361,35 +362,33 @@ class CustomPropertiesBehavior extends Behavior
      *
      * ```
      * [
-     *     <expressionProperty1> => [<operator1> => <expressionValue1>],
-     *     <expressionProperty2> => [<operator2> => <expressionValue2>],
+     *     <property1> => [<operator1> => <expressionValue1>],
+     *     <property2> => [<operator2> => <expressionValue2>],
      * ]
      * ...
      *
-     * Where `<expressionPropertyN>` and `<expressionValueN>` are database driver specific expressions.
+     * Where `<expressionValue1>` and `<expressionValue2>` are database driver specific expressions.
      *
      * @param array $options Filter options.
-     * @param string $field Field name.
      * @param object $driver Database driver.
      * @return array
      */
-    protected function setupConditions(array $options, string $field, object $driver): array
+    protected function setupConditions(array $options, object $driver): array
     {
         $conditions = [];
         $available = $this->getAvailable();
-        foreach ($options as $prop => $value) {
-            $key = $this->expressionField($field, $prop, $driver);
-            /** @var \BEdita\Core\Model\Entity\Property $property */
-            $property = Hash::get($available, $prop);
-            $schema = [];
-            if ($property && $property->property_type) {
-                $schema = (array)$property->property_type->params;
-            }
+        foreach ($options as $key => $value) {
             if ($value === null) {
                 $conditions[$key] = ['null' => null];
                 continue;
             }
             $in = [];
+            /** @var \BEdita\Core\Model\Entity\Property $property */
+            $property = Hash::get($available, $key);
+            $schema = [];
+            if ($property && $property->property_type) {
+                $schema = (array)$property->property_type->params;
+            }
 
             if (!is_array($value)) {
                 if (is_string($value) && strpos($value, ',') !== false) {
@@ -459,10 +458,11 @@ class CustomPropertiesBehavior extends Behavior
     protected function expressionValue(mixed $value, array $schema, object $driver): mixed
     {
         $value = $this->formatValue($value, $schema);
+        $value = is_string($value) ? $value : json_encode($value);
         if ($driver instanceof Mysql) {
-            return new FunctionExpression('JSON_UNQUOTE', [json_encode($value)]);
+            return new FunctionExpression('JSON_UNQUOTE', [$value]);
         }
 
-        return is_string($value) ? $value : json_encode($value);
+        return $value;
     }
 }
