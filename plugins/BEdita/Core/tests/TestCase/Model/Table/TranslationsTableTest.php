@@ -108,7 +108,7 @@ class TranslationsTableTest extends TestCase
                 [
                     'object_id.integer',
                     'lang.scalar',
-                    'status.inList',
+                    'status.enum',
                     'translated_fields.array',
                 ],
                 [

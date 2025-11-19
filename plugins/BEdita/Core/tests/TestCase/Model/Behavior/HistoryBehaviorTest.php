@@ -15,6 +15,7 @@ declare(strict_types=1);
 namespace BEdita\Core\Test\TestCase\Model\Behavior;
 
 use BEdita\Core\Model\Behavior\HistoryBehavior;
+use BEdita\Core\Model\Enum\HistoryUserAction;
 use BEdita\Core\Utility\LoggedUser;
 use Cake\Core\Configure;
 use Cake\I18n\DateTime;
@@ -83,6 +84,7 @@ class HistoryBehaviorTest extends TestCase
         // pass config via `Configure`
         Configure::write('History.exclude', ['id']);
         $Documents = TableRegistry::getTableLocator()->get('Documents');
+        /** @var \BEdita\Core\Model\Behavior\HistoryBehavior $behavior */
         $behavior = $Documents->getBehavior('History');
         static::assertEquals(['id'], $behavior->getConfig('exclude'));
         static::assertNotEmpty($behavior->Table);
@@ -112,6 +114,7 @@ class HistoryBehaviorTest extends TestCase
         $entity = $Documents->newEntity($data);
         $Documents->save($entity);
 
+        /** @var \BEdita\Core\Model\Behavior\HistoryBehavior $behavior */
         $behavior = $Documents->getBehavior('History');
         unset($data['type']);
         static::assertEquals($data, $behavior->getChanged());
@@ -162,6 +165,7 @@ class HistoryBehaviorTest extends TestCase
         $Documents->save($entity);
 
         $behavior = $Documents->getBehavior('History');
+        /** @var \BEdita\Core\Model\Behavior\HistoryBehavior $behavior */
         static::assertEquals($data, $behavior->getChanged());
 
         $history = TableRegistry::getTableLocator()->get('History')->find()
@@ -177,7 +181,7 @@ class HistoryBehaviorTest extends TestCase
             'resource_type' => 'objects',
             'user_id' => 1,
             'application_id' => null,
-            'user_action' => 'update',
+            'user_action' => HistoryUserAction::Update,
             'changed' => $data,
         ];
         static::assertNotEmpty($history['created']);
@@ -205,7 +209,7 @@ class HistoryBehaviorTest extends TestCase
                 ->orderBy(['id' => 'ASC'])
                 ->all()
                 ->last();
-        static::assertEquals('trash', $history->get('user_action'));
+        static::assertEquals(HistoryUserAction::Trash, $history->get('user_action'));
 
         $entity->deleted = false;
         $Documents->saveOrFail($entity);
@@ -215,7 +219,7 @@ class HistoryBehaviorTest extends TestCase
                 ->all()
                 ->last();
         static::assertNotEmpty($history);
-        static::assertEquals('restore', $history->get('user_action'));
+        static::assertEquals(HistoryUserAction::Restore, $history->get('user_action'));
     }
 
     /**
@@ -240,7 +244,7 @@ class HistoryBehaviorTest extends TestCase
                 ->toArray();
         static::assertNotEmpty($history);
         static::assertEquals(1, count($history));
-        static::assertEquals('create', $history[0]->get('user_action'));
+        static::assertEquals(HistoryUserAction::Create, $history[0]->get('user_action'));
         static::assertEquals($data, $history[0]->get('changed'));
     }
 
@@ -268,7 +272,7 @@ class HistoryBehaviorTest extends TestCase
             'resource_type' => 'objects',
             'user_id' => 1,
             'application_id' => null,
-            'user_action' => 'remove',
+            'user_action' => HistoryUserAction::Remove,
             'changed' => [],
         ];
         static::assertNotEmpty($history['created']);
