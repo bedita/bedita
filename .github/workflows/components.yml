@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - '**'
+      - '!6-pinus'
       - '!5-salix'
       - '!4-cactus'
     paths:
