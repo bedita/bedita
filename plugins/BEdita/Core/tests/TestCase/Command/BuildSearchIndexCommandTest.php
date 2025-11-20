@@ -19,6 +19,8 @@ use BEdita\Core\Search\Adapter\SimpleAdapter;
 use Cake\Command\Command;
 use Cake\Console\TestSuite\ConsoleIntegrationTestTrait;
 use Cake\Core\Configure;
+use Cake\Database\Driver\Postgres;
+use Cake\Datasource\ConnectionManager;
 use Cake\Datasource\EntityInterface;
 use Cake\TestSuite\TestCase;
 use Exception;
@@ -132,6 +134,9 @@ class BuildSearchIndexCommandTest extends TestCase
      */
     public function testExecuteException(): void
     {
+        $driver = ConnectionManager::get('default')->getDriver();
+        $this->skipIf($driver instanceof Postgres);
+
         $adapter1 = new class extends SimpleAdapter
         {
             public function indexResource(EntityInterface $entity, string $operation): void
@@ -153,6 +158,9 @@ class BuildSearchIndexCommandTest extends TestCase
      */
     public function testExecuteByTypes(): void
     {
+        $driver = ConnectionManager::get('default')->getDriver();
+        $this->skipIf($driver instanceof Postgres);
+
         $adapter1 = new class extends SimpleAdapter
         {
             public $afterSaveCount = 0;
