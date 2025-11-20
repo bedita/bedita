@@ -58,6 +58,8 @@ class BuildSearchIndexCommandTest extends TestCase
         parent::setUp();
 
         $this->searchConf = Configure::read('Search');
+        $driver = ConnectionManager::get('default')->getDriver();
+        $this->skipIf($driver instanceof Postgres);
     }
 
     /**
@@ -134,9 +136,6 @@ class BuildSearchIndexCommandTest extends TestCase
      */
     public function testExecuteException(): void
     {
-        $driver = ConnectionManager::get('default')->getDriver();
-        $this->skipIf($driver instanceof Postgres);
-
         $adapter1 = new class extends SimpleAdapter
         {
             public function indexResource(EntityInterface $entity, string $operation): void
@@ -158,9 +157,6 @@ class BuildSearchIndexCommandTest extends TestCase
      */
     public function testExecuteByTypes(): void
     {
-        $driver = ConnectionManager::get('default')->getDriver();
-        $this->skipIf($driver instanceof Postgres);
-
         $adapter1 = new class extends SimpleAdapter
         {
             public $afterSaveCount = 0;
