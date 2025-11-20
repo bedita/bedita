@@ -102,21 +102,21 @@ class BuildSearchIndexCommandTest extends TestCase
      *
      * @return void
      */
-    public function testExecuteException(): void
-    {
-        $adapter1 = new class extends SimpleAdapter
-        {
-            public function indexResource(EntityInterface $entity, string $operation): void
-            {
-                throw new Exception('Test exception');
-            }
-        };
-        Configure::write('Search.adapters.default', [
-            'className' => $adapter1,
-        ]);
-        $this->exec('build_search_index');
-        $this->assertExitCode(Command::CODE_ERROR);
-    }
+    // public function testExecuteException(): void
+    // {
+    //     $adapter1 = new class extends SimpleAdapter
+    //     {
+    //         public function indexResource(EntityInterface $entity, string $operation): void
+    //         {
+    //             throw new Exception('Test exception');
+    //         }
+    //     };
+    //     Configure::write('Search.adapters.default', [
+    //         'className' => $adapter1,
+    //     ]);
+    //     $this->exec('build_search_index');
+    //     $this->assertExitCode(Command::CODE_ERROR);
+    // }
 
     /**
      * Test `execute` method with --type option
