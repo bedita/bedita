@@ -42,6 +42,34 @@ class BuildSearchIndexCommandTest extends TestCase
     ];
 
     /**
+     * Store original Search config
+     *
+     * @var array|null
+     */
+    protected array|null $searchConf = null;
+
+    /**
+     * @inheritDoc
+     */
+    public function setUp(): void
+    {
+        parent::setUp();
+
+        $this->searchConf = Configure::read('Search');
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function tearDown(): void
+    {
+        parent::tearDown();
+
+        // restore Search config after each test
+        Configure::write('Search', $this->searchConf);
+    }
+
+    /**
      * Test `buildOptionParser` method
      *
      * @return void
@@ -102,61 +130,61 @@ class BuildSearchIndexCommandTest extends TestCase
      *
      * @return void
      */
-    // public function testExecuteException(): void
-    // {
-    //     $adapter1 = new class extends SimpleAdapter
-    //     {
-    //         public function indexResource(EntityInterface $entity, string $operation): void
-    //         {
-    //             throw new Exception('Test exception');
-    //         }
-    //     };
-    //     Configure::write('Search.adapters.default', [
-    //         'className' => $adapter1,
-    //     ]);
-    //     $this->exec('build_search_index');
-    //     $this->assertExitCode(Command::CODE_ERROR);
-    // }
+    public function testExecuteException(): void
+    {
+        $adapter1 = new class extends SimpleAdapter
+        {
+            public function indexResource(EntityInterface $entity, string $operation): void
+            {
+                throw new Exception('Test exception');
+            }
+        };
+        Configure::write('Search.adapters.default', [
+            'className' => $adapter1,
+        ]);
+        $this->exec('build_search_index');
+        $this->assertExitCode(Command::CODE_ERROR);
+    }
 
     /**
      * Test `execute` method with --type option
      *
      * @return void
      */
-    // public function testExecuteByTypes(): void
-    // {
-    //     $adapter1 = new class extends SimpleAdapter
-    //     {
-    //         public $afterSaveCount = 0;
-    //         public function indexResource(EntityInterface $entity, string $operation): void
-    //         {
-    //             if ($operation === 'edit') {
-    //                 $this->afterSaveCount++;
-    //             }
-    //         }
-    //     };
-    //     $adapter2 = new class extends SimpleAdapter
-    //     {
-    //         public $afterSaveCount = 0;
-    //         public function indexResource(EntityInterface $entity, string $operation): void
-    //         {
-    //             if ($operation === 'edit') {
-    //                 $this->afterSaveCount--;
-    //             }
-    //         }
-    //     };
-    //     Configure::write('Search.adapters.default', [
-    //         'className' => $adapter1,
-    //     ]);
-    //     Configure::write('Search.adapters.dummy', [
-    //         'className' => $adapter2,
-    //     ]);
-    //     $this->exec('build_search_index --type documents,profiles');
-    //     static::assertGreaterThan(0, $adapter1->afterSaveCount);
-    //     static::assertLessThan(0, $adapter2->afterSaveCount);
-    //     static::assertSame(0, $adapter1->afterSaveCount + $adapter2->afterSaveCount);
-    //     $this->assertExitCode(Command::CODE_SUCCESS);
-    // }
+    public function testExecuteByTypes(): void
+    {
+        $adapter1 = new class extends SimpleAdapter
+        {
+            public $afterSaveCount = 0;
+            public function indexResource(EntityInterface $entity, string $operation): void
+            {
+                if ($operation === 'edit') {
+                    $this->afterSaveCount++;
+                }
+            }
+        };
+        $adapter2 = new class extends SimpleAdapter
+        {
+            public $afterSaveCount = 0;
+            public function indexResource(EntityInterface $entity, string $operation): void
+            {
+                if ($operation === 'edit') {
+                    $this->afterSaveCount--;
+                }
+            }
+        };
+        Configure::write('Search.adapters.default', [
+            'className' => $adapter1,
+        ]);
+        Configure::write('Search.adapters.dummy', [
+            'className' => $adapter2,
+        ]);
+        $this->exec('build_search_index --type documents,profiles');
+        static::assertGreaterThan(0, $adapter1->afterSaveCount);
+        static::assertLessThan(0, $adapter2->afterSaveCount);
+        static::assertSame(0, $adapter1->afterSaveCount + $adapter2->afterSaveCount);
+        $this->assertExitCode(Command::CODE_SUCCESS);
+    }
 
     /**
      * Test `execute` method with --id option
