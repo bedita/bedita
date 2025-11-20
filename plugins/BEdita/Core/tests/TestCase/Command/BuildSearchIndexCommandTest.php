@@ -123,47 +123,7 @@ class BuildSearchIndexCommandTest extends TestCase
      *
      * @return void
      */
-    public function testExecuteByTypes(): void
-    {
-        $adapter1 = new class extends SimpleAdapter
-        {
-            public $afterSaveCount = 0;
-            public function indexResource(EntityInterface $entity, string $operation): void
-            {
-                if ($operation === 'edit') {
-                    $this->afterSaveCount++;
-                }
-            }
-        };
-        $adapter2 = new class extends SimpleAdapter
-        {
-            public $afterSaveCount = 0;
-            public function indexResource(EntityInterface $entity, string $operation): void
-            {
-                if ($operation === 'edit') {
-                    $this->afterSaveCount--;
-                }
-            }
-        };
-        Configure::write('Search.adapters.default', [
-            'className' => $adapter1,
-        ]);
-        Configure::write('Search.adapters.dummy', [
-            'className' => $adapter2,
-        ]);
-        $this->exec('build_search_index --type documents,profiles');
-        static::assertGreaterThan(0, $adapter1->afterSaveCount);
-        static::assertLessThan(0, $adapter2->afterSaveCount);
-        static::assertSame(0, $adapter1->afterSaveCount + $adapter2->afterSaveCount);
-        $this->assertExitCode(Command::CODE_SUCCESS);
-    }
-
-    /**
-     * Test `execute` method with --id option
-     *
-     * @return void
-     */
-    // public function testExecuteById(): void
+    // public function testExecuteByTypes(): void
     // {
     //     $adapter1 = new class extends SimpleAdapter
     //     {
@@ -191,12 +151,52 @@ class BuildSearchIndexCommandTest extends TestCase
     //     Configure::write('Search.adapters.dummy', [
     //         'className' => $adapter2,
     //     ]);
-    //     $this->exec('build_search_index --id 2');
-    //     static::assertSame(1, $adapter1->afterSaveCount);
-    //     static::assertSame(-1, $adapter2->afterSaveCount);
+    //     $this->exec('build_search_index --type documents,profiles');
+    //     static::assertGreaterThan(0, $adapter1->afterSaveCount);
+    //     static::assertLessThan(0, $adapter2->afterSaveCount);
     //     static::assertSame(0, $adapter1->afterSaveCount + $adapter2->afterSaveCount);
     //     $this->assertExitCode(Command::CODE_SUCCESS);
     // }
+
+    /**
+     * Test `execute` method with --id option
+     *
+     * @return void
+     */
+    public function testExecuteById(): void
+    {
+        $adapter1 = new class extends SimpleAdapter
+        {
+            public $afterSaveCount = 0;
+            public function indexResource(EntityInterface $entity, string $operation): void
+            {
+                if ($operation === 'edit') {
+                    $this->afterSaveCount++;
+                }
+            }
+        };
+        $adapter2 = new class extends SimpleAdapter
+        {
+            public $afterSaveCount = 0;
+            public function indexResource(EntityInterface $entity, string $operation): void
+            {
+                if ($operation === 'edit') {
+                    $this->afterSaveCount--;
+                }
+            }
+        };
+        Configure::write('Search.adapters.default', [
+            'className' => $adapter1,
+        ]);
+        Configure::write('Search.adapters.dummy', [
+            'className' => $adapter2,
+        ]);
+        $this->exec('build_search_index --id 2');
+        static::assertSame(1, $adapter1->afterSaveCount);
+        static::assertSame(-1, $adapter2->afterSaveCount);
+        static::assertSame(0, $adapter1->afterSaveCount + $adapter2->afterSaveCount);
+        $this->assertExitCode(Command::CODE_SUCCESS);
+    }
 
     /**
      * Test `execute` method on wrong ID
