@@ -12,20 +12,25 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\Model\Action;
 
 use BEdita\Core\Exception\InvalidDataException;
+use BEdita\Core\Model\Action\ListRelatedObjectsAction;
+use BEdita\Core\Model\Action\SetRelatedObjectsAction;
 use BEdita\Core\Model\Action\SortRelatedObjectsAction;
 use BEdita\Core\Utility\LoggedUser;
 use Cake\ORM\Association\BelongsToMany;
 use Cake\TestSuite\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
 
 /**
- * @covers \BEdita\Core\Model\Action\SortRelatedObjectsAction
- * @covers \BEdita\Core\Model\Action\SetRelatedObjectsAction
- * @covers \BEdita\Core\Model\Action\ListRelatedObjectsAction
+ * {@see \BEdita\Core\Model\Action\SortRelatedObjectsAction} Test Case
+ * {@see \BEdita\Core\Model\Action\SetRelatedObjectsAction} Test Case
+ * {@see \BEdita\Core\Model\Action\ListRelatedObjectsAction} Test Case
  */
+#[CoversClass(SortRelatedObjectsAction::class)]
+#[CoversClass(SetRelatedObjectsAction::class)]
+#[CoversClass(ListRelatedObjectsAction::class)]
 class SortRelatedObjectsActionTest extends TestCase
 {
     /**
@@ -33,7 +38,7 @@ class SortRelatedObjectsActionTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.PropertyTypes',
         'plugin.BEdita/Core.Properties',
@@ -79,17 +84,17 @@ class SortRelatedObjectsActionTest extends TestCase
         $relationName = 'test';
         $relationKey = 'Test';
         $entity = $Documents->get($id);
-        $relatedEntities = $Documents->get($id, ['contain' => [$relationKey]])->get($relationName);
+        $relatedEntities = $Documents->get($id, contain: [$relationKey])->get($relationName);
         $association = $Documents->getAssociation($relationKey);
         $action = new SortRelatedObjectsAction(compact('association'));
         $action(['entity' => $entity, 'field' => 'title', 'direction' => 'desc']);
-        $relatedEntitiesCompare = $Documents->get($id, ['contain' => [$relationKey]])->get($relationName);
+        $relatedEntitiesCompare = $Documents->get($id, contain: [$relationKey])->get($relationName);
         static::assertEquals($relatedEntities[0]->get('id'), $relatedEntitiesCompare[1]->get('id'));
         static::assertEquals($relatedEntities[1]->get('id'), $relatedEntitiesCompare[0]->get('id'));
         static::assertEquals(1, $relatedEntitiesCompare[0]->get('_joinData')['priority']);
         static::assertEquals(2, $relatedEntitiesCompare[1]->get('_joinData')['priority']);
         $action(['entity' => $entity, 'field' => 'title', 'direction' => 'asc']);
-        $relatedEntitiesCompare = $Documents->get($id, ['contain' => [$relationKey]])->get($relationName);
+        $relatedEntitiesCompare = $Documents->get($id, contain: [$relationKey])->get($relationName);
         static::assertEquals($relatedEntities[0]->get('id'), $relatedEntitiesCompare[0]->get('id'));
         static::assertEquals($relatedEntities[1]->get('id'), $relatedEntitiesCompare[1]->get('id'));
         static::assertEquals(1, $relatedEntitiesCompare[0]->get('_joinData')['priority']);
@@ -101,17 +106,17 @@ class SortRelatedObjectsActionTest extends TestCase
         $relationName = 'inverse_test';
         $relationKey = 'InverseTest';
         $entity = $Profiles->get($id);
-        $relatedEntities = $Profiles->get($id, ['contain' => [$relationKey]])->get($relationName);
+        $relatedEntities = $Profiles->get($id, contain: [$relationKey])->get($relationName);
         $association = $Profiles->getAssociation($relationKey);
         $action = new SortRelatedObjectsAction(compact('association'));
         $action(['entity' => $entity, 'field' => 'title', 'direction' => 'asc']);
-        $relatedEntitiesCompare = $Profiles->get($id, ['contain' => [$relationKey]])->get($relationName);
+        $relatedEntitiesCompare = $Profiles->get($id, contain: [$relationKey])->get($relationName);
         static::assertEquals($relatedEntities[0]->get('id'), $relatedEntitiesCompare[1]->get('id'));
         static::assertEquals($relatedEntities[1]->get('id'), $relatedEntitiesCompare[0]->get('id'));
         static::assertEquals(1, $relatedEntitiesCompare[0]->get('_joinData')['inv_priority']);
         static::assertEquals(2, $relatedEntitiesCompare[1]->get('_joinData')['inv_priority']);
         $action(['entity' => $entity, 'field' => 'title', 'direction' => 'desc']);
-        $relatedEntitiesCompare = $Profiles->get($id, ['contain' => [$relationKey]])->get($relationName);
+        $relatedEntitiesCompare = $Profiles->get($id, contain: [$relationKey])->get($relationName);
         static::assertEquals($relatedEntities[0]->get('id'), $relatedEntitiesCompare[0]->get('id'));
         static::assertEquals($relatedEntities[1]->get('id'), $relatedEntitiesCompare[1]->get('id'));
         static::assertEquals(1, $relatedEntitiesCompare[0]->get('_joinData')['inv_priority']);

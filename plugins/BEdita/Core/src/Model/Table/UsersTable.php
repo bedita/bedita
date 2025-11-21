@@ -12,17 +12,18 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Model\Table;
 
+use ArrayObject;
 use BEdita\Core\Exception\BadFilterException;
 use BEdita\Core\Exception\ImmutableResourceException;
+use BEdita\Core\Model\Entity\AuthProvider;
+use BEdita\Core\Model\Enum\ObjectEntityStatus;
 use BEdita\Core\Model\Table\ObjectsBaseTable as Table;
 use BEdita\Core\Model\Validation\UsersValidator;
 use BEdita\Core\Utility\LoggedUser;
 use Cake\Core\Configure;
 use Cake\Database\Expression\QueryExpression;
-use Cake\Database\Schema\TableSchemaInterface;
 use Cake\Datasource\EntityInterface;
 use Cake\Event\Event;
 use Cake\Event\EventInterface;
@@ -30,8 +31,9 @@ use Cake\Event\EventManager;
 use Cake\Http\Exception\BadRequestException;
 use Cake\Http\ServerRequest;
 use Cake\ORM\Locator\LocatorAwareTrait;
-use Cake\ORM\Query;
+use Cake\ORM\Query\SelectQuery;
 use Cake\ORM\RulesChecker;
+use Cake\ORM\Table as CakeTable;
 use Cake\Utility\Hash;
 use Cake\Validation\Validator;
 
@@ -71,7 +73,7 @@ class UsersTable extends Table
     /**
      * @inheritDoc
      */
-    protected $_validatorClass = UsersValidator::class;
+    protected string $_validatorClass = UsersValidator::class;
 
     /**
      * {@inheritDoc}
@@ -85,6 +87,7 @@ class UsersTable extends Table
         $this->setTable('users');
         $this->setPrimaryKey('id');
         $this->setDisplayField('username');
+        $this->getSchema()->setColumnType('user_preferences', 'json');
 
         $this->extensionOf('Profiles');
 
@@ -124,11 +127,12 @@ class UsersTable extends Table
      * @return \Cake\Validation\Validator
      * @codeCoverageIgnore
      */
-    public function validationSignup(Validator $validator)
+    public function validationSignup(Validator $validator): Validator
     {
         $validator = $this->validationDefault($validator);
 
         $validator
+            ->remove('email')
             ->email('email')
             ->add('email', 'unique', ['rule' => 'validateUnique', 'provider' => 'table']);
 
@@ -151,11 +155,12 @@ class UsersTable extends Table
      * @return \Cake\Validation\Validator
      * @codeCoverageIgnore
      */
-    public function validationSignupExternal(Validator $validator)
+    public function validationSignupExternal(Validator $validator): Validator
     {
         $validator = $this->validationDefault($validator);
 
         $validator
+            ->remove('email')
             ->email('email')
             ->requirePresence('email')
             ->add('email', 'unique', ['rule' => 'validateUnique', 'provider' => 'table']);
@@ -181,16 +186,6 @@ class UsersTable extends Table
      *
      * @codeCoverageIgnore
      */
-    public function getSchema(): TableSchemaInterface
-    {
-        return parent::getSchema()->setColumnType('user_preferences', 'json');
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @codeCoverageIgnore
-     */
     public function implementedEvents(): array
     {
         $implementedEvents = parent::implementedEvents();
@@ -207,7 +202,7 @@ class UsersTable extends Table
      * @param \Cake\Event\EventInterface $event Dispatched event.
      * @return void
      */
-    public function login(EventInterface $event)
+    public function login(EventInterface $event): void
     {
         /** @var \Authentication\IdentityInterface|null $identity */
         $identity = Hash::get((array)$event->getData(), 'identity');
@@ -222,7 +217,7 @@ class UsersTable extends Table
             ],
             [
                 'id' => $identity->getIdentifier(),
-            ]
+            ],
         );
     }
 
@@ -250,7 +245,7 @@ class UsersTable extends Table
             ],
             [
                 'username' => (string)$request->getData('username'),
-            ]
+            ],
         );
     }
 
@@ -261,9 +256,9 @@ class UsersTable extends Table
      * @param \Cake\Datasource\EntityInterface $authProvider Auth provider entity.
      * @param string $providerUsername Provider username.
      * @param int $userId Existing user entity id, if null a new user is created.
-     * @return \Cake\Datasource\EntityInterface|bool
+     * @return void
      */
-    public function externalAuthLogin(EventInterface $event, EntityInterface $authProvider, $providerUsername, $userId = null)
+    public function externalAuthLogin(EventInterface $event, EntityInterface $authProvider, string $providerUsername, ?int $userId = null): void
     {
         $params = $event->getData('params');
         $externalAuth = $this->ExternalAuth->newEntity([
@@ -275,26 +270,30 @@ class UsersTable extends Table
             $externalAuth->set('user_id', $userId);
         }
 
-        return $this->ExternalAuth->saveOrFail($externalAuth);
+        $event->setResult($this->ExternalAuth->saveOrFail($externalAuth));
     }
 
     /**
      * Find users by their external auth providers.
      *
-     * @param \Cake\ORM\Query $query Query object instance.
-     * @param array $options Additional options.
-     * @return \Cake\ORM\Query
+     * @param \Cake\ORM\Query\SelectQuery $query Query object instance.
+     * @param \BEdita\Core\Model\Entity\AuthProvider|array|string|int $auth_provider Auth provider data passed to `\BEdita\Core\Model\Table\ExternalAuthTable::findAuthProvider()`.
+     * @param array|string|null $username Provider username.
+     * @return \Cake\ORM\Query\SelectQuery
      */
-    protected function findExternalAuth(Query $query, array $options = [])
-    {
+    public function findExternalAuth(
+        SelectQuery $query,
+        AuthProvider|array|string|int $auth_provider,
+        array|string|null $username = null,
+    ): SelectQuery {
         $query = $query->find('loginRoles');
 
-        return $query->innerJoinWith('ExternalAuth', function (Query $query) use ($options) {
-            $query = $query->find('authProvider', $options);
-            if (!empty($options['username'])) {
-                $query = $query->where(fn (QueryExpression $exp) => $exp->in(
+        return $query->innerJoinWith('ExternalAuth', function (SelectQuery $query) use ($auth_provider, $username) {
+            $query = $query->find('authProvider', authProvider: $auth_provider);
+            if (!empty($username)) {
+                $query = $query->where(fn(QueryExpression $exp) => $exp->in(
                     $this->ExternalAuth->aliasField('provider_username'),
-                    (array)$options['username'],
+                    (array)$username,
                 ));
             }
 
@@ -305,18 +304,18 @@ class UsersTable extends Table
     /**
      * Find users by role name or id.
      *
-     * @param \Cake\ORM\Query $query Query object instance.
-     * @param array $options Array with role names or ids also as comma separated elements
-     * @return \Cake\ORM\Query
+     * @param \Cake\ORM\Query\SelectQuery $query Query object instance.
+     * @param array $roles Array with role names or ids also as comma separated elements
+     * @return \Cake\ORM\Query\SelectQuery
      */
-    protected function findRoles(Query $query, array $options)
+    public function findRoles(SelectQuery $query, array|string $roles): SelectQuery
     {
-        if (empty($options)) {
+        if (empty($roles)) {
             throw new BadFilterException(__d('bedita', 'Missing required parameter "{0}"', 'roles'));
         }
 
-        return $query->innerJoinWith('Roles', function (Query $query) use ($options) {
-            $items = $this->rolesNamesIds($options);
+        return $query->innerJoinWith('Roles', function (SelectQuery $query) use ($roles) {
+            $items = $this->rolesNamesIds((array)$roles);
 
             return $query->where(function (QueryExpression $exp) use ($items) {
                 return $exp->or(function (QueryExpression $exp) use ($items) {
@@ -359,10 +358,10 @@ class UsersTable extends Table
     /**
      * Finder for my users. This only returns the currently logged in user.
      *
-     * @param \Cake\ORM\Query $query Query object instance.
-     * @return \Cake\ORM\Query
+     * @param \Cake\ORM\Query\SelectQuery $query Query object instance.
+     * @return \Cake\ORM\Query\SelectQuery
      */
-    protected function findMine(Query $query)
+    public function findMine(SelectQuery $query): SelectQuery
     {
         return $query->where(function (QueryExpression $exp) {
             return $exp->eq($this->aliasField((string)$this->getPrimaryKey()), LoggedUser::id());
@@ -373,15 +372,15 @@ class UsersTable extends Table
      * Finder for valid login users
      * Valid attributes for `blocked`, `deleted` and `status` are checked
      *
-     * @param \Cake\ORM\Query $query Query object instance.
-     * @return \Cake\ORM\Query
+     * @param \Cake\ORM\Query\SelectQuery $query Query object instance.
+     * @return \Cake\ORM\Query\SelectQuery
      * @throws \Cake\Http\Exception\BadRequestException if `username` is missing
      */
-    protected function findLogin(Query $query)
+    protected function findLogin(SelectQuery $query): SelectQuery
     {
-        $status = ['on'];
+        $status = [ObjectEntityStatus::On->value];
         if ((bool)Configure::read('Login.draft') === true) {
-            $status[] = 'draft';
+            $status[] = ObjectEntityStatus::Draft->value;
         }
 
         return $query
@@ -396,10 +395,10 @@ class UsersTable extends Table
     /**
      * Finder for valid login users + associated roles via `contain`
      *
-     * @param \Cake\ORM\Query $query Query object instance.
-     * @return \Cake\ORM\Query
+     * @param \Cake\ORM\Query\SelectQuery $query Query object instance.
+     * @return \Cake\ORM\Query\SelectQuery
      */
-    protected function findLoginRoles(Query $query)
+    protected function findLoginRoles(SelectQuery $query): SelectQuery
     {
         $query = $query->find('login');
 
@@ -414,7 +413,7 @@ class UsersTable extends Table
      * @return void
      * @throws \BEdita\Core\Exception\ImmutableResourceException if entity is not deletable
      */
-    public function beforeDelete(EventInterface $event, EntityInterface $entity)
+    public function beforeDelete(EventInterface $event, EntityInterface $entity): void
     {
         if ($entity->id === static::ADMIN_USER) {
             throw new ImmutableResourceException(__d('bedita', 'Could not delete "User" {0}', $entity->id));
@@ -427,7 +426,7 @@ class UsersTable extends Table
      * @param \Cake\Datasource\EntityInterface $entity the entity to anonimize
      * @return \Cake\Datasource\EntityInterface|bool
      */
-    protected function anonymizeUser(EntityInterface $entity)
+    protected function anonymizeUser(EntityInterface $entity): EntityInterface|bool
     {
         $notNull = $this->notNullableColumns($this);
         foreach ($this->inheritedTables() as $table) {
@@ -447,9 +446,9 @@ class UsersTable extends Table
         $this->loadInto($entity, ['ExternalAuth']);
         array_walk(
             $entity->external_auth,
-            function ($item) {
+            function ($item): void {
                 $this->ExternalAuth->deleteOrFail($item);
-            }
+            },
         );
 
         return $this->save($entity, ['checkRules' => false]);
@@ -461,7 +460,7 @@ class UsersTable extends Table
      * @param \Cake\ORM\Table $table Table class
      * @return array
      */
-    protected function notNullableColumns($table)
+    protected function notNullableColumns(CakeTable $table): array
     {
         $res = [];
         $schema = $table->getSchema();
@@ -507,7 +506,7 @@ class UsersTable extends Table
      * @return void
      * @throws \BEdita\Core\Exception\ImmutableResourceException if entity is not deletable and deletion is the update type
      */
-    public function beforeSave(EventInterface $event, EntityInterface $entity)
+    public function beforeSave(EventInterface $event, EntityInterface $entity): void
     {
         if ($entity->deleted === true && $entity->id === static::ADMIN_USER) {
             throw new ImmutableResourceException(__d('bedita', 'Could not delete "User" {0}', $entity->id));
@@ -521,7 +520,7 @@ class UsersTable extends Table
                 strpos((string)$entity->get($prop), self::DELETED_USER_PREFIX) === 0
             ) {
                 throw new BadRequestException(
-                    __d('bedita', '"{0}" cannot start with reserved word "{1}"', $prop, self::DELETED_USER_PREFIX)
+                    __d('bedita', '"{0}" cannot start with reserved word "{1}"', $prop, self::DELETED_USER_PREFIX),
                 );
             }
         }
@@ -535,7 +534,7 @@ class UsersTable extends Table
      * @return void
      * @throws \Cake\Http\Exception\BadRequestException if password is not valid
      */
-    public function beforeMarshal(EventInterface $event, \ArrayObject $data)
+    public function beforeMarshal(EventInterface $event, ArrayObject $data): void
     {
         if (isset($data['password'])) {
             $passwdRule = Configure::read('Auth.passwordPolicy.rule');

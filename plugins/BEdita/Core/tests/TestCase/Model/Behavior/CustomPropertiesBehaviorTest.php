@@ -12,10 +12,10 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\Model\Behavior;
 
 use BEdita\Core\Exception\BadFilterException;
+use BEdita\Core\Model\Behavior\CustomPropertiesBehavior;
 use BEdita\Core\Test\Utility\TestFilesystemTrait;
 use Cake\Collection\CollectionInterface;
 use Cake\Database\Driver\Mysql;
@@ -24,12 +24,14 @@ use Cake\Datasource\ConnectionManager;
 use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
+use Exception;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * {@see \BEdita\Core\Model\Behavior\CustomPropertiesBehavior} Test Case
- *
- * @coversDefaultClass \BEdita\Core\Model\Behavior\CustomPropertiesBehavior
  */
+#[CoversClass(CustomPropertiesBehavior::class)]
 class CustomPropertiesBehaviorTest extends TestCase
 {
     use TestFilesystemTrait;
@@ -39,7 +41,7 @@ class CustomPropertiesBehaviorTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.PropertyTypes',
         'plugin.BEdita/Core.Properties',
@@ -77,7 +79,6 @@ class CustomPropertiesBehaviorTest extends TestCase
      * Test initialization.
      *
      * @return void
-     * @covers ::initialize()
      */
     public function testInitialize()
     {
@@ -95,7 +96,7 @@ class CustomPropertiesBehaviorTest extends TestCase
      *
      * @return array
      */
-    public function getAvailableProvider()
+    public static function getAvailableProvider(): array
     {
         return [
             'locations' => [
@@ -140,10 +141,8 @@ class CustomPropertiesBehaviorTest extends TestCase
      * @param array $expected Expected result.
      * @param string $tableName Table name.
      * @return void
-     * @covers ::getAvailable()
-     * @covers ::objectType()
-     * @dataProvider getAvailableProvider
      */
+    #[DataProvider('getAvailableProvider')]
     public function testGetAvailable(array $expected, $tableName)
     {
         $table = TableRegistry::getTableLocator()->get($tableName);
@@ -165,8 +164,6 @@ class CustomPropertiesBehaviorTest extends TestCase
      * Test get available properties for related object.
      *
      * @return void
-     * @covers ::getAvailable()
-     * @covers ::objectType()
      */
     public function testGetAvailableRelatedObject(): void
     {
@@ -189,7 +186,6 @@ class CustomPropertiesBehaviorTest extends TestCase
      * Test get available when no object type is found
      *
      * @return void
-     * @covers ::getAvailable()
      */
     public function testGetAvailableTypeNotFound()
     {
@@ -205,7 +201,6 @@ class CustomPropertiesBehaviorTest extends TestCase
      * Test empty custom properties
      *
      * @return void
-     * @covers ::getAvailable()
      */
     public function testEmpty()
     {
@@ -218,7 +213,6 @@ class CustomPropertiesBehaviorTest extends TestCase
      * Test get available properties
      *
      * @return void
-     * @covers ::getDefaultValues()
      */
     public function testDefaultValues()
     {
@@ -237,7 +231,7 @@ class CustomPropertiesBehaviorTest extends TestCase
      *
      * @return array
      */
-    public function beforeFindProvider()
+    public static function beforeFindProvider(): array
     {
         return [
             'simple' => [
@@ -267,12 +261,8 @@ class CustomPropertiesBehaviorTest extends TestCase
      * @param string $table Table.
      * @param bool $hydrate Should hydration be enabled?
      * @return void
-     * @dataProvider beforeFindProvider()
-     * @covers ::beforeFind()
-     * @covers ::promoteProperties()
-     * @covers ::setupCustomProps()
-     * @covers ::isFieldSet()
      */
+    #[DataProvider('beforeFindProvider')]
     public function testBeforeFind(array $expectedProperties, $id, $table, $hydrate = true)
     {
         $result = TableRegistry::getTableLocator()->get($table)->find()
@@ -294,7 +284,6 @@ class CustomPropertiesBehaviorTest extends TestCase
      * Test that formatter is prepended to other formatters that may be attached to the Query object.
      *
      * @return void
-     * @covers ::beforeFind()
      */
     public function testBeforeFindFormatterPrepended()
     {
@@ -326,7 +315,7 @@ class CustomPropertiesBehaviorTest extends TestCase
                     'count' => $results->count(),
                 ];
             })
-            ->order('Files.id')
+            ->orderBy('Files.id')
             ->toArray();
 
         static::assertSame($expected, $result);
@@ -336,16 +325,12 @@ class CustomPropertiesBehaviorTest extends TestCase
      * Test that no errors are triggered if results aren't neither entities nor arrays.
      *
      * @return void
-     * @covers ::beforeFind()
-     * @covers ::promoteProperties()
-     * @covers ::setupCustomProps()
-     * @covers ::isFieldSet()
      */
     public function testBeforeFindOtherType()
     {
         $result = TableRegistry::getTableLocator()->get('Objects')
             ->find('list')
-            ->find('type', ['documents'])
+            ->find('type', value: ['documents'])
             ->toArray();
 
         static::assertNotEmpty($result);
@@ -356,7 +341,7 @@ class CustomPropertiesBehaviorTest extends TestCase
      *
      * @return array
      */
-    public function beforeSaveProvider()
+    public static function beforeSaveProvider(): array
     {
         return [
             'simple' => [
@@ -430,11 +415,8 @@ class CustomPropertiesBehaviorTest extends TestCase
      * @param int $id Entity ID.
      * @param string $table Table.
      * @return void
-     * @dataProvider beforeSaveProvider()
-     * @covers ::beforeSave()
-     * @covers ::demoteProperties()
-     * @covers ::formatValue()
      */
+    #[DataProvider('beforeSaveProvider')]
     public function testBeforeSave(array $expected, array $data, $id, $table): void
     {
         $table = TableRegistry::getTableLocator()->get($table);
@@ -460,8 +442,6 @@ class CustomPropertiesBehaviorTest extends TestCase
      * Test validation error on custom properties.
      *
      * @return void
-     * @covers ::beforeSave()
-     * @covers ::demoteProperties()
      */
     public function testValidationFail(): void
     {
@@ -479,7 +459,6 @@ class CustomPropertiesBehaviorTest extends TestCase
      * Test validation error on not nullable property.
      *
      * @return void
-     * @covers ::demoteProperties()
      */
     public function testValidationNewFail(): void
     {
@@ -499,10 +478,6 @@ class CustomPropertiesBehaviorTest extends TestCase
      * Test that custom properties are not dirty getting object.
      *
      * @return void
-     * @covers ::beforeFind()
-     * @covers ::promoteProperties()
-     * @covers ::setupCustomProps()
-     * @covers ::isFieldSet()
      */
     public function testCustomPropertyNotDirty(): void
     {
@@ -521,7 +496,7 @@ class CustomPropertiesBehaviorTest extends TestCase
      *
      * @return array
      */
-    public function findCustomPropProvider(): array
+    public static function findCustomPropProvider(): array
     {
         return [
             'empty options' => [
@@ -538,6 +513,46 @@ class CustomPropertiesBehaviorTest extends TestCase
                 [5],
                 'Users',
                 ['another_username' => 'synapse'],
+            ],
+            'filter operator string' => [
+                [],
+                'Users',
+                ['another_username' => ['ne' => 'synapse']],
+            ],
+            'filter operator null' => [
+                [1, 20],
+                'Users',
+                ['another_username' => null],
+            ],
+            'filter integer' => [
+                [4],
+                'Profiles',
+                ['number_of_friends' => 42],
+            ],
+            'filter integer operator gt' => [
+                [4],
+                'Profiles',
+                ['number_of_friends' => ['gt' => 17]],
+            ],
+            'filter integer operator lt' => [
+                [],
+                'Profiles',
+                ['number_of_friends' => ['lt' => 10]],
+            ],
+            'filter integer operator in' => [
+                [4],
+                'Profiles',
+                ['number_of_friends' => ['in' => [12, 24, 42]]],
+            ],
+            'filter integer with array' => [
+                [4],
+                'Profiles',
+                ['number_of_friends' => [12, 24, 42]],
+            ],
+            'filter integer with array as string' => [
+                [4],
+                'Profiles',
+                ['number_of_friends' => '12,24,42'],
             ],
             'filter bool true' => [
                 [10],
@@ -579,9 +594,8 @@ class CustomPropertiesBehaviorTest extends TestCase
      * @param string $tableName The table name
      * @param array $options Options for finder
      * @return void
-     * @covers ::findCustomProp()
-     * @dataProvider findCustomPropProvider
      */
+    #[DataProvider('findCustomPropProvider')]
     public function testFindCustomProp($expected, string $tableName, array $options): void
     {
         $connection = ConnectionManager::get('default');
@@ -589,16 +603,17 @@ class CustomPropertiesBehaviorTest extends TestCase
         if (!($driver instanceof Mysql) && !($driver instanceof Postgres)) {
             $this->expectException(BadFilterException::class);
             $this->expectExceptionMessage('customProp finder isn\'t supported for this datasource');
-        } elseif ($expected instanceof \Exception) {
+        } elseif ($expected instanceof Exception) {
             $this->expectException(get_class($expected));
             $this->expectExceptionMessage($expected->getMessage());
         }
+        $this->prepareCustomProps($tableName);
 
         $result = $this->getTableLocator()
             ->get($tableName)
-            ->find('customProp', $options)
+            ->find('customProp', ...$options)
             ->find('list')
-            ->orderAsc('id')
+            ->orderByAsc('id')
             ->toArray();
 
         sort($expected);
@@ -607,37 +622,22 @@ class CustomPropertiesBehaviorTest extends TestCase
     }
 
     /**
-     * Test custom prop finder for integer property.
+     * Prepare custom properties for testing.
      *
+     * @param string $tableName Table name.
      * @return void
-     * @covers ::findCustomProp()
      */
-    public function testFindCustomPropInteger(): void
+    protected function prepareCustomProps(string $tableName): void
     {
-        $connection = ConnectionManager::get('default');
-        $driver = $connection->getDriver();
-        if (!($driver instanceof Mysql) && !($driver instanceof Postgres)) {
-            $this->expectException(BadFilterException::class);
-            $this->expectExceptionMessage('customProp finder isn\'t supported for this datasource');
+        $table = $this->getTableLocator()->get($tableName);
+        $entity = null;
+        if ($tableName === 'Profiles') {
+            $entity = $table->get(4);
+            $entity->set('number_of_friends', 42);
         }
-
-        $Profiles = $this->getTableLocator()->get('Profiles');
-        $profile = $Profiles->find()->first();
-        $profile->set('number_of_friends', 10);
-        $Profiles->saveOrFail($profile);
-
-        $result = $Profiles->find('customProp', ['number_of_friends' => 10])
-            ->find('list')
-            ->orderAsc('id')
-            ->toArray();
-
-        static::assertEquals([$profile->id], array_keys($result));
-
-        $result = $Profiles->find('customProp', ['number_of_friends' => '10'])
-            ->find('list')
-            ->orderAsc('id')
-            ->toArray();
-
-        static::assertEquals([$profile->id], array_keys($result));
+        if (empty($entity)) {
+            return;
+        }
+        $table->saveOrFail($entity);
     }
 }

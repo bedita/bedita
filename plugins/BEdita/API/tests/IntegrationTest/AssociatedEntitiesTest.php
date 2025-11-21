@@ -20,12 +20,14 @@ use BEdita\Core\Test\Utility\TestFilesystemTrait;
 use BEdita\Core\Utility\Relations;
 use Cake\ORM\TableRegistry;
 use Cake\Utility\Hash;
+use DateTime;
+use PHPUnit\Framework\Attributes\CoversNothing;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * Test CRUD operations on objects with associated entities
- *
- * @coversNothing
  */
+#[CoversNothing]
 class AssociatedEntitiesTest extends IntegrationTestCase
 {
     use TestFilesystemTrait;
@@ -33,7 +35,7 @@ class AssociatedEntitiesTest extends IntegrationTestCase
     /**
      * @inheritDoc
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.DateRanges',
         'plugin.BEdita/Core.Locations',
         'plugin.BEdita/Core.Streams',
@@ -45,7 +47,7 @@ class AssociatedEntitiesTest extends IntegrationTestCase
      *
      * @return array
      */
-    public function eventAssocProvider(): array
+    public static function eventAssocProvider(): array
     {
         return [
             'moreDates' => [
@@ -101,9 +103,8 @@ class AssociatedEntitiesTest extends IntegrationTestCase
      * @param $attributes array Event data to insert
      * @param $modified array Attributes to modify
      * @return void
-     * @dataProvider eventAssocProvider
-     * @coversNothing
      */
+    #[DataProvider('eventAssocProvider')]
     public function testEventAssoc(array $attributes, array $modified): void
     {
         $type = 'events';
@@ -138,7 +139,7 @@ class AssociatedEntitiesTest extends IntegrationTestCase
         for ($i = 0; $i < $count; $i++) {
             foreach ($expectedDates[$i] as $k => $d) {
                 $found = $resultDates[$i][$k];
-                $exp = new \DateTime($d);
+                $exp = new DateTime($d);
                 $exp = $exp->format('Y-m-d\TH:i:s+00:00');
                 static::assertEquals($found, $exp);
             }
@@ -374,7 +375,7 @@ class AssociatedEntitiesTest extends IntegrationTestCase
             ],
             [
                 'accessibleFields' => ['created_by' => true],
-            ]
+            ],
         );
 
         $ObjectPermissions->saveOrFail($entity);

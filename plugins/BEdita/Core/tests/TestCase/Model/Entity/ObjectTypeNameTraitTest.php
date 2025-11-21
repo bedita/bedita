@@ -12,17 +12,18 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\Model\Entity;
 
+use BEdita\Core\Model\Entity\ObjectTypeNameTrait;
 use BEdita\Core\Model\Entity\Property;
 use Cake\TestSuite\TestCase;
+use PHPUnit\Framework\Attributes\CoversTrait;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  *  {@see \BEdita\Core\Model\Entity\ObjectTypeNameTrait} Test Case
- *
- * @coversDefaultClass \BEdita\Core\Model\Entity\ObjectTypeNameTrait
  */
+#[CoversTrait(ObjectTypeNameTrait::class)]
 class ObjectTypeNameTraitTest extends TestCase
 {
     /**
@@ -30,7 +31,7 @@ class ObjectTypeNameTraitTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.PropertyTypes',
         'plugin.BEdita/Core.Properties',
@@ -43,7 +44,7 @@ class ObjectTypeNameTraitTest extends TestCase
      *
      * @return array
      */
-    public function getObjectTypeNameProvider()
+    public static function getObjectTypeNameProvider(): array
     {
         return [
             'document' => [
@@ -67,9 +68,8 @@ class ObjectTypeNameTraitTest extends TestCase
      * @param string|null $expected Expected object type name.
      * @param mixed $objectTypeId Object type ID.
      * @return void
-     * @covers ::_getObjectTypeName()
-     * @dataProvider getObjectTypeNameProvider()
      */
+    #[DataProvider('getObjectTypeNameProvider')]
     public function testGetObjectTypeName($expected, $objectTypeId)
     {
         $entity = new Property();
@@ -85,7 +85,7 @@ class ObjectTypeNameTraitTest extends TestCase
      *
      * @return array
      */
-    public function setObjectTypeNameProvider()
+    public static function setObjectTypeNameProvider(): array
     {
         return [
             'document' => [
@@ -105,9 +105,8 @@ class ObjectTypeNameTraitTest extends TestCase
      * @param string|null $expected Expected object type ID.
      * @param mixed $objectTypeName Object type name.
      * @return void
-     * @covers ::_setObjectTypeName()
-     * @dataProvider setObjectTypeNameProvider()
      */
+    #[DataProvider('setObjectTypeNameProvider')]
     public function testSetObjectTypeName($expected, $objectTypeName)
     {
         $entity = new Property();

@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Model\Action;
 
 use BEdita\Core\Model\Entity\Folder;
@@ -31,7 +30,7 @@ abstract class UpdateRelatedObjectsAction extends UpdateAssociatedAction
     /**
      * @inheritDoc
      */
-    public function execute(array $data = [])
+    public function execute(array $data = []): array|int|false
     {
         $data = $this->prepareData($data);
 
@@ -48,7 +47,7 @@ abstract class UpdateRelatedObjectsAction extends UpdateAssociatedAction
      * @param array $data Action data.
      * @return array
      */
-    protected function prepareData(array $data)
+    protected function prepareData(array $data): array
     {
         if (empty($data['entity']) || !($data['entity'] instanceof Folder) || $this->Association->getName() !== 'Parents') {
             $this->setupPriority($data);

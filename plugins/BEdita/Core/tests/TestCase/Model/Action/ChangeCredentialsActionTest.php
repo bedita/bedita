@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\Model\Action;
 
 use BEdita\Core\Exception\InvalidDataException;
@@ -20,18 +19,20 @@ use BEdita\Core\Model\Action\ChangeCredentialsAction;
 use BEdita\Core\Model\Action\SaveEntityAction;
 use BEdita\Core\Model\Entity\AsyncJob;
 use BEdita\Core\Model\Entity\User;
+use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\Event\Event;
 use Cake\Event\EventManager;
-use Cake\I18n\FrozenTime;
+use Cake\I18n\DateTime;
 use Cake\Mailer\TransportFactory;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
+use LogicException;
+use PHPUnit\Framework\Attributes\CoversClass;
 
 /**
  * {@see \BEdita\Core\Model\Action\ChangeCredentialsAction} Test Case
- *
- * @coversDefaultClass \BEdita\Core\Model\Action\ChangeCredentialsAction
  */
+#[CoversClass(ChangeCredentialsAction::class)]
 class ChangeCredentialsActionTest extends TestCase
 {
     /**
@@ -39,7 +40,7 @@ class ChangeCredentialsActionTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.Objects',
         'plugin.BEdita/Core.Profiles',
@@ -76,13 +77,13 @@ class ChangeCredentialsActionTest extends TestCase
         $action = new SaveEntityAction(['table' => TableRegistry::getTableLocator()->get('AsyncJobs')]);
 
         return $action([
-            'entity' => TableRegistry::getTableLocator()->get('AsyncJobs')->newEntity([]),
+            'entity' => TableRegistry::getTableLocator()->get('AsyncJobs')->newEmptyEntity(),
             'data' => [
                 'service' => 'credentials_change',
                 'payload' => [
                     'user_id' => 1,
                 ],
-                'scheduled_from' => new FrozenTime('1 day'),
+                'scheduled_from' => new DateTime('1 day'),
                 'priority' => 1,
             ],
         ]);
@@ -92,8 +93,6 @@ class ChangeCredentialsActionTest extends TestCase
      * Test invocation of command.
      *
      * @return void
-     * @covers ::execute()
-     * @covers ::validate()
      */
     public function testExecute()
     {
@@ -116,7 +115,7 @@ class ChangeCredentialsActionTest extends TestCase
         $action = new ChangeCredentialsAction();
         $res = $action($data);
 
-        $user = TableRegistry::getTableLocator()->get('Users')->get(1, ['contain' => ['Roles']]);
+        $user = TableRegistry::getTableLocator()->get('Users')->get(1, contain: ['Roles']);
         static::assertEquals($res->id, $user->id);
         static::assertEquals($res->username, $user->username);
         static::assertSame(1, $eventDispatched, 'Event not dispatched');
@@ -126,8 +125,6 @@ class ChangeCredentialsActionTest extends TestCase
      * Test validate failure.
      *
      * @return void
-     * @covers ::execute()
-     * @covers ::validate()
      */
     public function testValidationFail()
     {
@@ -148,12 +145,10 @@ class ChangeCredentialsActionTest extends TestCase
      * Test find job failure.
      *
      * @return void
-     * @covers ::execute()
-     * @covers ::validate()
      */
     public function testExecuteFail()
     {
-        $this->expectException(\Cake\Datasource\Exception\RecordNotFoundException::class);
+        $this->expectException(RecordNotFoundException::class);
         $data = [
             'uuid' => '66594f3c-8888-49d2-9999-382baf1a12b3',
             'password' => 'unbreakablepassword',
@@ -171,12 +166,10 @@ class ChangeCredentialsActionTest extends TestCase
      * Test payload failure.
      *
      * @return void
-     * @covers ::execute()
-     * @covers ::validate()
      */
     public function testPayloadFail()
     {
-        $this->expectException(\LogicException::class);
+        $this->expectException(LogicException::class);
         $data = [
             'uuid' => '66594f3c-995f-49d2-9192-382baf1a12b3',
             'password' => 'unbreakablepassword',

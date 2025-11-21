@@ -12,12 +12,12 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Model\Behavior;
 
 use BEdita\Core\Model\Entity\ObjectType;
 use BEdita\Core\ORM\Association\RelatedTo;
 use Cake\Datasource\Exception\RecordNotFoundException;
+use Cake\ORM\Association;
 use Cake\ORM\Behavior;
 use Cake\ORM\TableRegistry;
 use Swaggest\JsonSchema\Schema;
@@ -30,7 +30,7 @@ class RelationsBehavior extends Behavior
     /**
      * @inheritDoc
      */
-    protected $_defaultConfig = [
+    protected array $_defaultConfig = [
         'implementedMethods' => [
             'setupRelations' => 'setupRelations',
             'getRelations' => 'getRelations',
@@ -55,12 +55,12 @@ class RelationsBehavior extends Behavior
     /**
      * Getter for object type.
      *
-     * @param array $args Method arguments.
+     * @param \BEdita\Core\Model\Entity\ObjectType|string|int|null $type Method arguments.
      * @return \BEdita\Core\Model\Entity\ObjectType
      */
-    protected function objectType(...$args)
+    protected function objectType(ObjectType|string|int|null $type = null): ObjectType
     {
-        return $this->table()->behaviors()->call('objectType', $args);
+        return $this->table()->behaviors()->call('objectType', [$type]);
     }
 
     /**
@@ -80,7 +80,7 @@ class RelationsBehavior extends Behavior
      * @param array $options List of options to configure the association definition.
      * @return \Cake\ORM\Association
      */
-    protected function relatedTo($associated, array $options = [])
+    protected function relatedTo(string $associated, array $options = []): Association
     {
         $options += ['sourceTable' => $this->table()];
         $association = new RelatedTo($associated, $options);
@@ -91,10 +91,10 @@ class RelationsBehavior extends Behavior
     /**
      * Set up relations for the current table.
      *
-     * @param string|int|null $objectType Object type name or ID.
+     * @param \BEdita\Core\Model\Entity\ObjectType|string|int|null $objectType Object type name or ID.
      * @return void
      */
-    public function setupRelations($objectType = null)
+    public function setupRelations(ObjectType|string|int|null $objectType = null): void
     {
         if ($objectType === null) {
             $objectType = $this->table()->getAlias();
@@ -114,11 +114,11 @@ class RelationsBehavior extends Behavior
 
             $through = TableRegistry::getTableLocator()->get(
                 $relation->alias . 'ObjectRelations',
-                ['className' => 'ObjectRelations']
+                ['className' => 'ObjectRelations'],
             );
             $through->getValidator()->setProvider(
                 'jsonSchema',
-                Schema::import(!empty($relation->get('params')) ? $relation->params : true)
+                Schema::import(!empty($relation->get('params')) ? $relation->params : true),
             );
             $targetObjectType = ObjectType::getClosestCommonAncestor(...(array)$relation->right_object_types);
 
@@ -147,11 +147,11 @@ class RelationsBehavior extends Behavior
 
             $through = TableRegistry::getTableLocator()->get(
                 $relation->inverse_alias . 'ObjectRelations',
-                ['className' => 'ObjectRelations']
+                ['className' => 'ObjectRelations'],
             );
             $through->getValidator()->setProvider(
                 'jsonSchema',
-                Schema::import(!empty($relation->get('params')) ? $relation->params : true)
+                Schema::import(!empty($relation->get('params')) ? $relation->params : true),
             );
             $targetObjectType = ObjectType::getClosestCommonAncestor(...(array)$relation->left_object_types);
 
@@ -176,10 +176,10 @@ class RelationsBehavior extends Behavior
     /**
      * Get a list of all available relations indexed by their name with regards of side.
      *
-     * @return \BEdita\Core\Model\Entity\Relation[]
+     * @return array<\BEdita\Core\Model\Entity\Relation>
      * @deprecated Use `ObjectType::getRelations()` instead.
      */
-    public function getRelations()
+    public function getRelations(): array
     {
         return $this->objectType()->getRelations();
     }

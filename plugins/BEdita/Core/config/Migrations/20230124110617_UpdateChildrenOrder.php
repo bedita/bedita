@@ -14,9 +14,9 @@ declare(strict_types=1);
  */
 
 use Cake\ORM\Table;
-use Migrations\AbstractMigration;
+use Migrations\BaseMigration;
 
-class UpdateChildrenOrder extends AbstractMigration
+class UpdateChildrenOrder extends BaseMigration
 {
     /**
      * Data for migration.
@@ -53,15 +53,14 @@ class UpdateChildrenOrder extends AbstractMigration
     ];
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
-    public function up()
+    public function up(): void
     {
-        /* @var \Migrations\CakeAdapter $adapter */
         $adapter = $this->getAdapter();
         $table = new Table([
             'table' => 'property_types',
-            'connection' => $adapter->getCakeConnection(),
+            'connection' => $adapter->getConnection(),
         ]);
         $table->updateAll(
             [
@@ -74,15 +73,14 @@ class UpdateChildrenOrder extends AbstractMigration
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
-    public function down()
+    public function down(): void
     {
-        /* @var \Migrations\CakeAdapter $adapter */
         $adapter = $this->getAdapter();
         $table = new Table([
             'table' => 'property_types',
-            'connection' => $adapter->getCakeConnection(),
+            'connection' => $adapter->getConnection(),
         ]);
         $table->updateAll(
             [

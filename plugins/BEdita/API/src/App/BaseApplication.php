@@ -20,6 +20,7 @@ use Authentication\AuthenticationServiceProviderInterface;
 use Authentication\Authenticator\AbstractAuthenticator;
 use Authentication\Authenticator\JwtAuthenticator;
 use Authentication\Identifier\AbstractIdentifier;
+use Authentication\Identifier\IdentifierCollection;
 use Authentication\Middleware\AuthenticationMiddleware;
 use Authorization\AuthorizationService;
 use Authorization\AuthorizationServiceInterface;
@@ -61,7 +62,7 @@ abstract class BaseApplication extends CakeBaseApplication implements Authentica
      *
      * @var array
      */
-    protected $pluginDefaults = [
+    protected array $pluginDefaults = [
         'debugOnly' => false,
         'autoload' => false,
         'bootstrap' => true,
@@ -245,27 +246,6 @@ abstract class BaseApplication extends CakeBaseApplication implements Authentica
      */
     protected function passwordGrantType(AuthenticationService $service): AuthenticationService
     {
-        $service->loadIdentifier('Authentication.Password', [
-            'fields' => [
-                'username' => 'username',
-                'password' => 'password_hash',
-            ],
-            'resolver' => [
-                'className' => 'Authentication.Orm',
-                'finder' => 'loginRoles',
-            ],
-            'passwordHasher' => [
-                'className' => 'Authentication.Fallback',
-                'hashers' => [
-                    'Authentication.Default',
-                    [
-                        'className' => 'Authentication.Legacy',
-                        'hashType' => 'md5',
-                    ],
-                ],
-            ],
-        ]);
-
         // Load authenticators
         $service->loadAuthenticator('Authentication.Form', [
             'loginUrl' => [
@@ -273,6 +253,28 @@ abstract class BaseApplication extends CakeBaseApplication implements Authentica
                 ['_name' => 'api:login:optout'],
             ],
             'urlChecker' => 'Authentication.CakeRouter',
+            'identifier' => [
+                'Authentication.Password' => [
+                    'fields' => [
+                        'username' => 'username',
+                        'password' => 'password_hash',
+                    ],
+                    'resolver' => [
+                        'className' => 'Authentication.Orm',
+                        'finder' => 'loginRoles',
+                    ],
+                    'passwordHasher' => [
+                        'className' => 'Authentication.Fallback',
+                        'hashers' => [
+                            'Authentication.Default',
+                            [
+                                'className' => 'Authentication.Legacy',
+                                'hashType' => 'md5',
+                            ],
+                        ],
+                    ],
+                ],
+            ],
         ]);
 
         return $service;
@@ -286,27 +288,18 @@ abstract class BaseApplication extends CakeBaseApplication implements Authentica
      */
     protected function refreshTokenGrantType(AuthenticationService $service): AuthenticationService
     {
-        $service->loadIdentifier('Authentication.JwtSubject', [
-            'tokenField' => 'id',
-            'resolver' => [
-                'className' => 'Authentication.Orm',
-                'finder' => 'loginRoles',
-            ],
-        ]);
-
-        $service->loadIdentifier('RenewClientCredentialsJwtSubject', [
-            'className' => JwtSubjectIdentifier::class,
-            'dataField' => 'app.id',
-            'resolver' => [
-                'className' => 'Authentication.Orm',
-                'userModel' => 'Applications',
-                'finder' => 'enabled',
-            ],
-        ]);
-
         $service->loadAuthenticator('Authentication.Jwt', [
             'algorithm' => Configure::read('Security.jwt.algorithm') ?: 'HS256',
             'returnPayload' => false,
+            'identifier' => [
+                'Authentication.JwtSubject' => [
+                    'tokenField' => 'id',
+                    'resolver' => [
+                        'className' => 'Authentication.Orm',
+                        'finder' => 'loginRoles',
+                    ],
+                ],
+            ],
         ]);
 
         $service->loadAuthenticator('RenewClientCredentials', [
@@ -314,6 +307,17 @@ abstract class BaseApplication extends CakeBaseApplication implements Authentica
             'algorithm' => Configure::read('Security.jwt.algorithm') ?: 'HS256',
             'subjectKey' => 'app',
             'returnPayload' => false,
+            'identifier' => [
+                'RenewClientCredentialsJwtSubject' => [
+                    'className' => JwtSubjectIdentifier::class,
+                    'dataField' => 'app.id',
+                    'resolver' => [
+                        'className' => 'Authentication.Orm',
+                        'userModel' => 'Applications',
+                        'finder' => 'enabled',
+                    ],
+                ],
+            ],
         ]);
 
         return $service;
@@ -327,8 +331,6 @@ abstract class BaseApplication extends CakeBaseApplication implements Authentica
      */
     protected function clientCredentialsGrantType(AuthenticationService $service): AuthenticationService
     {
-        $service->loadIdentifier('BEdita/API.Application');
-
         $service->loadAuthenticator('BEdita/API.Application', [
             'loginUrl' => ['_name' => 'api:login'],
             'urlChecker' => 'Authentication.CakeRouter',
@@ -336,6 +338,7 @@ abstract class BaseApplication extends CakeBaseApplication implements Authentica
                 'username' => 'client_id',
                 'password' => 'client_secret',
             ],
+            'identifier' => ['BEdita/API.Application'],
         ]);
 
         return $service;
@@ -355,22 +358,29 @@ abstract class BaseApplication extends CakeBaseApplication implements Authentica
             ->all()
             ->each(function (AuthProvider $authProvider) use ($service, $name): void {
                 if ($authProvider->name === $name) {
+                    $authClass = (string)$authProvider->auth_class;
                     $authenticator = $service->loadAuthenticator(
-                        (string)$authProvider->auth_class,
-                        compact('authProvider'),
+                        $authClass,
+                        [
+                            ...compact('authProvider'),
+                            'identifier' => [
+                                $authClass => compact('authProvider'),
+                            ],
+                        ],
                     );
                     if ($authenticator instanceof AbstractAuthenticator) {
                         $authenticator->setConfig(
-                            Hash::get((array)$authProvider->params, 'config.authenticator', [])
+                            Hash::get((array)$authProvider->params, 'config.authenticator', []),
                         );
                     }
-                    $identifier = $service->loadIdentifier(
-                        (string)$authProvider->auth_class,
-                        compact('authProvider'),
-                    );
+                    $identifier = $authenticator->getIdentifier();
+                    if ($identifier instanceof IdentifierCollection) {
+                        [, $identifierName] = pluginSplit($authClass);
+                        $identifier = $identifier->get($identifierName);
+                    }
                     if ($identifier instanceof AbstractIdentifier) {
                         $identifier->setConfig(
-                            Hash::get((array)$authProvider->params, 'config.identifier', [])
+                            Hash::get((array)$authProvider->params, 'config.identifier', []),
                         );
                     }
                 }

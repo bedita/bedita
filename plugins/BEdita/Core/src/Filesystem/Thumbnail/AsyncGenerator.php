@@ -12,9 +12,9 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Filesystem\Thumbnail;
 
+use BEdita\Core\Filesystem\GeneratorInterface;
 use BEdita\Core\Filesystem\Thumbnail;
 use BEdita\Core\Filesystem\ThumbnailGenerator;
 use BEdita\Core\Model\Entity\Stream;
@@ -30,7 +30,7 @@ class AsyncGenerator extends ThumbnailGenerator
     /**
      * @inheritDoc
      */
-    protected $_defaultConfig = [
+    protected array $_defaultConfig = [
         'baseGenerator' => 'default',
         'service' => 'thumbnail',
         'max_attempts' => 2,
@@ -41,7 +41,7 @@ class AsyncGenerator extends ThumbnailGenerator
      *
      * @return \BEdita\Core\Filesystem\GeneratorInterface
      */
-    protected function getBaseGenerator()
+    protected function getBaseGenerator(): GeneratorInterface
     {
         return Thumbnail::getGenerator($this->getConfig('baseGenerator'));
     }
@@ -62,7 +62,7 @@ class AsyncGenerator extends ThumbnailGenerator
         /** @var \BEdita\Core\Model\Table\AsyncJobsTable $table */
         $table = TableRegistry::getTableLocator()->get('AsyncJobs');
 
-        $asyncJob = $table->newEntity([]);
+        $asyncJob = $table->newEmptyEntity();
         $asyncJob->service = $this->getConfig('service');
         $asyncJob->max_attempts = $this->getConfig('max_attempts');
         if ($this->getConfig('priority') !== null) {

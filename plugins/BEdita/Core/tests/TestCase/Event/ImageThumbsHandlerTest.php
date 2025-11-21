@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\Event;
 
 use BEdita\Core\Event\ImageThumbsHandler;
@@ -26,10 +25,13 @@ use Cake\Event\Event;
 use Cake\Event\EventManager;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Text;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
- * @coversDefaultClass \BEdita\Core\Event\ImageThumbsHandler
+ * {@see \BEdita\Core\Event\ImageThumbsHandler} Test Case
  */
+#[CoversClass(ImageThumbsHandler::class)]
 class ImageThumbsHandlerTest extends TestCase
 {
     /**
@@ -37,7 +39,7 @@ class ImageThumbsHandlerTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.Objects',
         'plugin.BEdita/Core.Profiles',
@@ -50,7 +52,6 @@ class ImageThumbsHandlerTest extends TestCase
      * Test `implementedEvents` method
      *
      * @return void
-     * @covers ::implementedEvents()
      */
     public function testImplementedEvents(): void
     {
@@ -66,17 +67,12 @@ class ImageThumbsHandlerTest extends TestCase
      *
      * @return array
      */
-    public function afterSaveAssociatedProvider(): array
+    public static function afterSaveAssociatedProvider(): array
     {
-        $image = $this->getMockBuilder(ObjectEntity::class)
-            ->onlyMethods(['get'])
-            ->getMock();
-        $image->method('get')->willReturn('images');
-
         return [
             'no presets' => [
                 [
-                    'entity' => $this->getMockBuilder('BEdita\Core\Model\Entity\Stream')->getMock(),
+                    'entity' => static fn(self $testCase) => $testCase->getMockBuilder(Stream::class)->getMock(),
                 ],
                 [],
                 false,
@@ -98,7 +94,7 @@ class ImageThumbsHandlerTest extends TestCase
             ],
             'presets, noImages' => [
                 [
-                    'entity' => $this->getMockBuilder('BEdita\Core\Model\Entity\Stream')->getMock(),
+                    'entity' => static fn(self $testCase) => $testCase->getMockBuilder(Stream::class)->getMock(),
                     'relatedEntities' => [],
                 ],
                 [
@@ -114,10 +110,15 @@ class ImageThumbsHandlerTest extends TestCase
             ],
             'presets, stream and images' => [
                 [
-                    'entity' => $this->getMockBuilder('BEdita\Core\Model\Entity\Stream')->getMock(),
-                    'relatedEntities' => [
-                        $image,
-                    ],
+                    'entity' => static fn(self $testCase) => $testCase->getMockBuilder(Stream::class)->getMock(),
+                    'relatedEntities' => static function (self $testCase) {
+                        $image = $testCase->getMockBuilder(ObjectEntity::class)
+                            ->onlyMethods(['get'])
+                            ->getMock();
+                        $image->method('get')->willReturn('images');
+
+                        return [$image];
+                    },
                 ],
                 [
                     'default' => [
@@ -134,15 +135,14 @@ class ImageThumbsHandlerTest extends TestCase
     }
 
     /**
-     * Test `afterSaveAssociated` method
+     * Test `afterSaveAssociated` methodk
      *
      * @param array $data Event data.
      * @param array $presets Presets to set.
      * @param bool $updateThumbsIsCalled If `updateThumbs` method is called.
      * @return void
-     * @dataProvider afterSaveAssociatedProvider
-     * @covers ::afterSaveAssociated()
      */
+    #[DataProvider('afterSaveAssociatedProvider')]
     public function testAfterSaveAssociated(array $data, array $presets, bool $updateThumbsIsCalled): void
     {
         Configure::write('Thumbnails.presets', $presets);
@@ -153,6 +153,12 @@ class ImageThumbsHandlerTest extends TestCase
                 $this->called = true;
             }
         };
+
+        $data = array_map(
+            fn($value) => is_callable($value) ? $value($this) : $value,
+            $data,
+        );
+
         $event = new Event('Associated.afterSave', $this, $data);
         $handler->afterSaveAssociated($event);
         static::assertEquals($updateThumbsIsCalled, $handler->called);
@@ -162,7 +168,6 @@ class ImageThumbsHandlerTest extends TestCase
      * Test `updateThumbs` method
      *
      * @return void
-     * @covers ::updateThumbs()
      */
     public function testUpdateThumbs(): void
     {
@@ -170,8 +175,8 @@ class ImageThumbsHandlerTest extends TestCase
 
         $stream = new Stream(['uuid' => Text::uuid()]);
         $mock = $this->getMockBuilder(ThumbnailGenerator::class)
-            ->onlyMethods(['getUrl', 'exists', 'generate'])
-            ->getMockForAbstractClass();
+            ->onlyMethods(['getUrl', 'exists', 'generate', 'delete'])
+            ->getMock();
         $mock->expects(static::once())
             ->method('getUrl')
             ->with($stream, [])
@@ -201,17 +206,20 @@ class ImageThumbsHandlerTest extends TestCase
      *
      * @return array
      */
-    public function thumbnailsUpdateProvider(): array
+    public static function thumbnailsUpdateProvider(): array
     {
-        $streamWithObjectId = $this->getMockBuilder(Stream::class)
-            ->onlyMethods(['get'])
-            ->getMock();
-        $streamWithObjectId->method('get')->willReturn(999);
+        // $streamWithObjectId = $this->getMockBuilder(Stream::class)
+        //     ->onlyMethods(['get'])
+        //     ->getMock();
+        // $streamWithObjectId->method('get')->willReturn(999);
 
         return [
             'empty presets' => [
                 [
-                    'stream' => $this->getMockBuilder('BEdita\Core\Model\Entity\Stream')->getMock(),
+                    'stream' => static fn(self $testCase) => $testCase->getMockBuilder(Stream::class)
+                        ->getMock()
+                        ->method('get')
+                        ->willReturn(999),
                 ],
                 [],
                 false,
@@ -235,7 +243,10 @@ class ImageThumbsHandlerTest extends TestCase
             ],
             'presets, stream, no image' => [
                 [
-                    'stream' => $this->getMockBuilder('BEdita\Core\Model\Entity\Stream')->getMock(),
+                    'stream' => static fn(self $testCase) => $testCase->getMockBuilder(Stream::class)
+                        ->getMock()
+                        ->method('get')
+                        ->willReturn(999),
                 ],
                 [
                     'default' => [
@@ -251,7 +262,10 @@ class ImageThumbsHandlerTest extends TestCase
             ],
             'presets, stream, but image not found' => [
                 [
-                    'stream' => $streamWithObjectId,
+                    'stream' => static fn(self $testCase) => $testCase->getMockBuilder(Stream::class)
+                        ->getMock()
+                        ->method('get')
+                        ->willReturn(999),
                 ],
                 [
                     'default' => [
@@ -292,9 +306,8 @@ class ImageThumbsHandlerTest extends TestCase
      * @param bool $updateThumbsIsCalled If `updateThumbs` method is called.
      * @param bool $useValidStream If to use a stream with object id or not.
      * @return void
-     * @dataProvider thumbnailsUpdateProvider()
-     * @covers ::thumbnailsUpdate()
      */
+    #[DataProvider('thumbnailsUpdateProvider')]
     public function testThumbnailsUpdate(array $data, array $presets, bool $updateThumbsIsCalled, bool $useValidStream): void
     {
         Configure::write('Thumbnails.presets', $presets);

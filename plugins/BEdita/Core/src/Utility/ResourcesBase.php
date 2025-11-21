@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Utility;
 
 use Cake\Http\Exception\BadRequestException;
@@ -32,7 +31,7 @@ abstract class ResourcesBase
      *
      * @var array
      */
-    protected static $allowed = [];
+    protected static array $allowed = [];
 
     /**
      * Get resource table, removing type from registry to force new options.
@@ -45,7 +44,7 @@ abstract class ResourcesBase
     {
         if (!empty(static::$allowed) && !in_array($type, static::$allowed)) {
             throw new BadRequestException(
-                __d('bedita', 'Resource type not allowed "{0}"', $type)
+                __d('bedita', 'Resource type not allowed "{0}"', $type),
             );
         }
         $type = Inflector::camelize($type);

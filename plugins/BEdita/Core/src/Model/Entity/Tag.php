@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Model\Entity;
 
 use BEdita\Core\Utility\JsonApiSerializable;
@@ -26,10 +25,10 @@ use Cake\Utility\Hash;
  * @property string $name
  * @property array|null $labels
  * @property bool $enabled
- * @property \Cake\I18n\Time $created
- * @property \Cake\I18n\Time $modified
- *
+ * @property \Cake\I18n\DateTime $created
+ * @property \Cake\I18n\DateTime $modified
  * @property \BEdita\Core\Model\Entity\ObjectTag[] $object_tags
+ * @property-read string|null $label
  */
 class Tag extends Entity implements JsonApiSerializable
 {
@@ -38,7 +37,7 @@ class Tag extends Entity implements JsonApiSerializable
     /**
      * @inheritDoc
      */
-    protected $_accessible = [
+    protected array $_accessible = [
         '*' => true,
         'created' => false,
         'modified' => false,
@@ -47,14 +46,14 @@ class Tag extends Entity implements JsonApiSerializable
     /**
      * @inheritDoc
      */
-    protected $_hidden = [
+    protected array $_hidden = [
         '_joinData',
     ];
 
     /**
      * @inheritDoc
      */
-    protected $_virtual = [
+    protected array $_virtual = [
         'label',
     ];
 

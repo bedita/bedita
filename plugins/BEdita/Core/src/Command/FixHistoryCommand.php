@@ -16,6 +16,8 @@ namespace BEdita\Core\Command;
 
 use BEdita\Core\Model\Entity\History;
 use BEdita\Core\Model\Entity\ObjectEntity;
+use BEdita\Core\Model\Enum\HistoryUserAction;
+use BEdita\Core\Model\Table\ObjectsTable;
 use Cake\Command\Command;
 use Cake\Console\Arguments;
 use Cake\Console\ConsoleIo;
@@ -23,7 +25,8 @@ use Cake\Console\ConsoleOptionParser;
 use Cake\Database\Driver\Postgres;
 use Cake\Database\Expression\IdentifierExpression;
 use Cake\Database\Expression\QueryExpression;
-use Cake\ORM\Query;
+use Cake\ORM\Query\SelectQuery;
+use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
 use Generator;
 
@@ -39,21 +42,28 @@ class FixHistoryCommand extends Command
     /**
      * @inheritDoc
      */
-    public $defaultTable = 'Objects';
+    protected ?string $defaultTable = 'Objects';
+
+    /**
+     * Objects table
+     *
+     * @var \BEdita\Core\Model\Table\ObjectsTable
+     */
+    protected ObjectsTable $Objects;
 
     /**
      * History table
      *
      * @var \Cake\ORM\Table
      */
-    public $History;
+    protected Table $History;
 
     /**
      * Application ID
      *
      * @var int
      */
-    public $appId;
+    public int $appId;
 
     /**
      * Increment to use in object ID scan
@@ -67,14 +77,14 @@ class FixHistoryCommand extends Command
      *
      * @var int
      */
-    protected $minId;
+    protected int $minId;
 
     /**
      * Max object ID to scan
      *
      * @var int
      */
-    protected $maxId;
+    protected int $maxId;
 
     /**
      * @inheritDoc
@@ -100,9 +110,12 @@ class FixHistoryCommand extends Command
      */
     public function initialize(): void
     {
-        $this->History = $this->Objects->getBehavior('History')->Table;
+        $this->Objects = $this->fetchTable();
+        /** @var \BEdita\Core\Model\Behavior\HistoryBehavior $behavior*/
+        $behavior = $this->Objects->getBehavior('History');
+        $this->History = $behavior->Table;
         $application = TableRegistry::getTableLocator()->get('Applications')
-            ->find()->orderAsc('id')->firstOrFail();
+            ->find()->orderByAsc('id')->firstOrFail();
         $this->appId = $application->get('id');
     }
 
@@ -162,7 +175,7 @@ class FixHistoryCommand extends Command
             $action,
             $object->id,
             $object->title,
-            $object->type
+            $object->type,
         );
         $io->info($msg);
     }
@@ -180,12 +193,12 @@ class FixHistoryCommand extends Command
             ->find()->where([
                 $this->History->aliasField('resource_id') => $object->id,
                 $this->History->aliasField('resource_type') => 'objects',
-                $this->History->aliasField('user_action') => 'create',
+                $this->History->aliasField('user_action') => HistoryUserAction::Create->value,
             ])
             ->first();
         if (empty($history)) {
             $history = $this->historyEntity($object);
-            $history->user_action = 'create';
+            $history->user_action = HistoryUserAction::Create;
         }
         $history->user_id = $object->get('created_by');
         $history->created = $object->get('created');
@@ -211,7 +224,7 @@ class FixHistoryCommand extends Command
             ->first();
         if (empty($history)) {
             $history = $this->historyEntity($object);
-            $history->user_action = 'update';
+            $history->user_action = HistoryUserAction::Update;
         }
         $history->user_id = $object->get('modified_by');
         $history->created = $object->get('modified');
@@ -228,7 +241,7 @@ class FixHistoryCommand extends Command
     protected function historyEntity(ObjectEntity $object): History
     {
         /** @var \BEdita\Core\Model\Entity\History $history */
-        $history = $this->History->newEntity([]);
+        $history = $this->History->newEmptyEntity();
         $history->resource_id = $object->get('id');
         $history->resource_type = 'objects';
         $history->application_id = $this->appId;
@@ -244,14 +257,14 @@ class FixHistoryCommand extends Command
      * @param int $to To ID
      * @return \Cake\ORM\Query
      */
-    protected function missingHistoryQuery(bool $created, int $from, int $to): Query
+    protected function missingHistoryQuery(bool $created, int $from, int $to): SelectQuery
     {
         $query = $this->Objects->find();
 
         return $query->leftJoin(
             [$this->History->getAlias() => $this->History->getTable()],
-            $this->joinConditions($query, $created)
-        )->where(function (QueryExpression $exp, Query $q) use ($from, $to) {
+            $this->joinConditions($query, $created),
+        )->where(function (QueryExpression $exp, SelectQuery $q) use ($from, $to) {
             return $exp->and([
                 $q->expr()->between($this->Objects->aliasField('id'), $from, $to),
                 $q->expr()->isNull($this->History->aliasField('resource_id')),
@@ -262,11 +275,11 @@ class FixHistoryCommand extends Command
     /**
      * Join conditions used in `missingHistoryQuery`
      *
-     * @param \Cake\ORM\Query $query Query object
+     * @param \Cake\ORM\SelectQuery $query SelectQuery object
      * @param bool $created Created flag, if true look for `create` action in history
      * @return array
      */
-    protected function joinConditions(Query $query, bool $created): array
+    protected function joinConditions(SelectQuery $query, bool $created): array
     {
         $idField = $this->History->aliasField('resource_id');
         // On Postgres we need an explicit cast to INTEGER to avoid
@@ -284,11 +297,12 @@ class FixHistoryCommand extends Command
             $query->expr()->eq($idField, new IdentifierExpression($this->Objects->aliasField('id'))),
             $query->expr()->equalFields(
                 $this->History->aliasField('user_id'),
-                $this->Objects->aliasField($userField)
+                $this->Objects->aliasField($userField),
             ),
         ];
         if ($created) {
-            $joinConditions[] = $query->expr()->eq($this->History->aliasField('user_action'), 'create');
+            $joinConditions[] = $query->expr()
+                ->eq($this->History->aliasField('user_action'), HistoryUserAction::Create->value);
         }
 
         return $joinConditions;

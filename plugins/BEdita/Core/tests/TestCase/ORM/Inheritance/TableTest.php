@@ -12,27 +12,28 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\ORM\Inheritance;
 
+use BadMethodCallException;
 use BEdita\Core\ORM\Inheritance\AssociationCollection;
 use BEdita\Core\ORM\Inheritance\Marshaller;
-use BEdita\Core\ORM\Inheritance\Query;
 use BEdita\Core\ORM\Inheritance\Query\DeleteQuery;
 use BEdita\Core\ORM\Inheritance\Query\InsertQuery;
 use BEdita\Core\ORM\Inheritance\Query\SelectQuery;
 use BEdita\Core\ORM\Inheritance\Query\UpdateQuery;
+use BEdita\Core\ORM\Inheritance\Table as InheritanceTable;
 use Cake\Datasource\EntityInterface;
-use Cake\I18n\FrozenTime;
+use Cake\I18n\DateTime;
 use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * {@see \BEdita\Core\ORM\Inheritance\Table} Test Case
- *
- * @coversDefaultClass \BEdita\Core\ORM\Inheritance\Table
  */
+#[CoversClass(InheritanceTable::class)]
 class TableTest extends TestCase
 {
     use FakeAnimalsTrait;
@@ -53,65 +54,23 @@ class TableTest extends TestCase
      * Test marshaller
      *
      * @return void
-     * @covers ::marshaller()
      */
-    public function testMarshaller()
+    public function testMarshaller(): void
     {
         static::assertInstanceOf(Marshaller::class, $this->fakeFelines->marshaller());
     }
 
     /**
-     * Test query
+     * Test that the query factory is correctly set up.
      *
      * @return void
-     * @covers ::query()
      */
-    public function testQuery()
+    public function testUseInheritanceQueryFactory(): void
     {
-        static::assertInstanceOf(Query::class, $this->fakeFelines->query()); // @phpstan-ignore-line
-    }
-
-    /**
-     * Test selectQuery
-     *
-     * @return void
-     * @covers ::selectQuery()
-     */
-    public function testSelectQuery()
-    {
+        static::assertInstanceOf(SelectQuery::class, $this->fakeFelines->query());
         static::assertInstanceOf(SelectQuery::class, $this->fakeFelines->selectQuery());
-    }
-
-    /**
-     * Test insertQuery
-     *
-     * @return void
-     * @covers ::insertQuery()
-     */
-    public function testInsertQuery()
-    {
         static::assertInstanceOf(InsertQuery::class, $this->fakeFelines->insertQuery());
-    }
-
-    /**
-     * Test updateQuery
-     *
-     * @return void
-     * @covers ::updateQuery()
-     */
-    public function testUpdateQuery()
-    {
         static::assertInstanceOf(UpdateQuery::class, $this->fakeFelines->updateQuery());
-    }
-
-    /**
-     * Test deleteQuery
-     *
-     * @return void
-     * @covers ::deleteQuery()
-     */
-    public function testDeleteQuery()
-    {
         static::assertInstanceOf(DeleteQuery::class, $this->fakeFelines->deleteQuery());
     }
 
@@ -119,9 +78,8 @@ class TableTest extends TestCase
      * Test inheritance setup.
      *
      * @return void
-     * @covers ::extensionOf()
      */
-    public function testExtensionOf()
+    public function testExtensionOf(): void
     {
         $this->fakeFelines->extensionOf('FakeAnimals');
 
@@ -133,10 +91,8 @@ class TableTest extends TestCase
      * Test inherited tables
      *
      * @return void
-     * @covers ::inheritedTable()
-     * @covers ::inheritedTables()
      */
-    public function testInheritedTables()
+    public function testInheritedTables(): void
     {
         static::assertEquals(null, $this->fakeFelines->inheritedTable());
         static::assertEquals([], $this->fakeFelines->inheritedTables());
@@ -160,9 +116,8 @@ class TableTest extends TestCase
      * Test method to find common inheritance tables.
      *
      * @return void
-     * @covers ::commonInheritance()
      */
-    public function testCommonInheritance()
+    public function testCommonInheritance(): void
     {
         $this->setupAssociations();
 
@@ -180,9 +135,8 @@ class TableTest extends TestCase
      * Test inherited tables
      *
      * @return void
-     * @covers ::isTableInherited()
      */
-    public function testIsTableInherited()
+    public function testIsTableInherited(): void
     {
         static::assertFalse($this->fakeFelines->isTableInherited('FakeMammals'));
         static::assertFalse($this->fakeFelines->isTableInherited('FakeMammals', true));
@@ -198,9 +152,8 @@ class TableTest extends TestCase
      * testBasicFindWithoutInheritance
      *
      * @return void
-     * @coversNothing
      */
-    public function testBasicFindWithoutInheritance()
+    public function testBasicFindWithoutInheritance(): void
     {
         // find felines
         $felines = $this->fakeFelines->find();
@@ -221,9 +174,8 @@ class TableTest extends TestCase
      * testBasicFindWithInheritance
      *
      * @return void
-     * @coversNothing
      */
-    public function testBasicFindWithInheritance()
+    public function testBasicFindWithInheritance(): void
     {
         $this->setupAssociations();
 
@@ -231,7 +183,7 @@ class TableTest extends TestCase
         $felines = $this->fakeFelines->find();
         static::assertEquals(1, $felines->count());
 
-        $updatedAt = new FrozenTime('2018-02-20 09:50:00');
+        $updatedAt = new DateTime('2018-02-20 09:50:00');
 
         $feline = $felines->first();
         $expected = [
@@ -296,9 +248,8 @@ class TableTest extends TestCase
      * Test find using contain
      *
      * @return void
-     * @coversNothing
      */
-    public function testContainFind()
+    public function testContainFind(): void
     {
         $this->setupAssociations();
 
@@ -317,7 +268,7 @@ class TableTest extends TestCase
             'id' => 1,
             'name' => 'cat',
             'legs' => 4,
-            'modified' => new FrozenTime('2018-02-20 09:50:00'),
+            'modified' => new DateTime('2018-02-20 09:50:00'),
             'subclass' => 'Eutheria',
             'family' => 'purring cats',
             'fake_articles' => [
@@ -348,7 +299,7 @@ class TableTest extends TestCase
      *
      * @return array
      */
-    public function selectProvider()
+    public static function selectProvider(): array
     {
         return [
             'fieldsFromAllInherited' => [
@@ -372,10 +323,9 @@ class TableTest extends TestCase
      * @param array $expected Expected result.
      * @param array $select Select clause.
      * @return void
-     * @dataProvider selectProvider
-     * @coversNothing
      */
-    public function testSelect($expected, $select)
+    #[DataProvider('selectProvider')]
+    public function testSelect($expected, $select): void
     {
         $this->setupAssociations();
 
@@ -412,9 +362,8 @@ class TableTest extends TestCase
      * testClauses
      *
      * @return void
-     * @coversNothing
      */
-    public function testClauses()
+    public function testClauses(): void
     {
         $this->setupAssociations();
 
@@ -433,7 +382,7 @@ class TableTest extends TestCase
 
         $query = $this->fakeFelines->find();
         $result = $query->select(['subclass', 'count' => $query->func()->count('*')])
-            ->group(['subclass'])
+            ->groupBy(['subclass'])
             ->enableHydration(false);
 
         foreach ($result as $item) {
@@ -450,7 +399,7 @@ class TableTest extends TestCase
      *
      * @return array
      */
-    public function findListProvider()
+    public static function findListProvider(): array
     {
         return [
             'fieldsOnMain' => [
@@ -515,10 +464,9 @@ class TableTest extends TestCase
      * @param array $listParams Options for `find('list')`.
      * @param array $order Order clause.
      * @return void
-     * @dataProvider findListProvider
-     * @coversNothing
      */
-    public function testFindList($expected, $listParams, $order)
+    #[DataProvider('findListProvider')]
+    public function testFindList($expected, $listParams, $order): void
     {
         $this->setupAssociations();
 
@@ -535,8 +483,8 @@ class TableTest extends TestCase
             $this->fakeFelines->save($feline);
         }
 
-        $query = $this->fakeFelines->find('list', $listParams);
-        $query->order($order);
+        $query = $this->fakeFelines->find('list', ...$listParams);
+        $query->orderBy($order);
 
         $result = $query->toArray();
         static::assertEquals($expected, $result);
@@ -546,9 +494,8 @@ class TableTest extends TestCase
      * Test `hasFinder` method.
      *
      * @return void
-     * @covers ::hasFinder()
      */
-    public function testHasFinder()
+    public function testHasFinder(): void
     {
         $this->setupAssociations();
 
@@ -567,9 +514,8 @@ class TableTest extends TestCase
      * Test `callFinder` method.
      *
      * @return void
-     * @covers ::callFinder()
      */
-    public function testCallFinder()
+    public function testCallFinder(): void
     {
         $this->setupAssociations();
 
@@ -584,14 +530,14 @@ class TableTest extends TestCase
             static::assertSame($animalsAlias, $this->fakeAnimals->getAlias());
         };
 
-        static::assertInstanceOf(SelectQuery::class, $this->fakeMammals->find('children', ['for' => 1, 'direct' => true]));
+        static::assertInstanceOf(SelectQuery::class, $this->fakeMammals->find('children', for: 1, direct: true));
         $checkAliases();
-        static::assertInstanceOf(SelectQuery::class, $this->fakeFelines->find('children', ['for' => 1, 'direct' => true]));
+        static::assertInstanceOf(SelectQuery::class, $this->fakeFelines->find('children', for: 1, direct: true));
         $checkAliases();
 
-        static::assertTextNotContains('FakeAnimals', $this->fakeMammals->find('children', ['for' => 1, 'direct' => true])->sql());
+        static::assertTextNotContains('FakeAnimals', $this->fakeMammals->find('children', for: 1, direct: true)->sql());
         $checkAliases();
-        static::assertTextNotContains('FakeAnimals', $this->fakeFelines->find('children', ['for' => 1, 'direct' => true])->sql());
+        static::assertTextNotContains('FakeAnimals', $this->fakeFelines->find('children', for: 1, direct: true)->sql());
         $checkAliases();
     }
 
@@ -599,12 +545,11 @@ class TableTest extends TestCase
      * Test `callFinder` method.
      *
      * @return void
-     * @covers ::callFinder()
      */
-    public function testCallMissingFinder()
+    public function testCallMissingFinder(): void
     {
-        $this->expectException(\BadMethodCallException::class);
-        $this->expectExceptionMessage('Unknown finder method "gustavo"');
+        $this->expectException(BadMethodCallException::class);
+        $this->expectExceptionMessage('Unknown finder method `gustavo`');
         $this->fakeMammals->find('gustavo');
     }
 
@@ -612,9 +557,8 @@ class TableTest extends TestCase
      * Test `hasField` method.
      *
      * @return void
-     * @covers ::hasField()
      */
-    public function testHasField()
+    public function testHasField(): void
     {
         $this->setupAssociations();
 
@@ -627,9 +571,8 @@ class TableTest extends TestCase
      * Test cloning of a table.
      *
      * @return void
-     * @covers ::__clone()
      */
-    public function testClone()
+    public function testClone(): void
     {
         $clone = clone $this->fakeMammals;
 
@@ -641,5 +584,84 @@ class TableTest extends TestCase
 
         static::assertEquals($clone->getEventManager(), $this->fakeMammals->getEventManager());
         static::assertNotSame($clone->getEventManager(), $this->fakeMammals->getEventManager());
+    }
+
+    /**
+     * Test `hasFilter` method.
+     *
+     * @return void
+     */
+    public function testHasFilter(): void
+    {
+        static::assertFalse($this->fakeFelines->hasFilter('children'));
+
+        $this->setupAssociations();
+        static::assertFalse($this->fakeFelines->hasFilter('children'));
+        static::assertFalse($this->fakeMammals->hasFilter('children'));
+
+        $this->fakeFelines->addBehavior('Tree');
+        static::assertTrue($this->fakeFelines->hasFilter('children'));
+        static::assertFalse($this->fakeMammals->hasFilter('children'));
+
+        $this->fakeFelines->removeBehavior('Tree');
+        $this->fakeMammals->addBehavior('Tree');
+        static::assertTrue($this->fakeFelines->hasFilter('children'));
+        static::assertTrue($this->fakeMammals->hasFilter('children'));
+    }
+
+    /**
+     * Test `callFilter` method.
+     *
+     * @return void
+     */
+    public function testCallFilter(): void
+    {
+        // test callFilter on a tabel without inheritance
+        $this->fakeFelines->addBehavior('Tree');
+        $queryFelines = $this->fakeFelines->callFilter('children', $this->fakeFelines->find(), ['for' => 1, 'direct' => true]);
+        static::assertInstanceOf(SelectQuery::class, $queryFelines);
+        $this->fakeFelines->removeBehavior('Tree');
+
+        $this->setupAssociations();
+
+        // test callFilter having filter on a table in the middle of the inheritance chain
+        $this->fakeMammals->addBehavior('Tree');
+        $queryFelines = $this->fakeFelines->callFilter('children', $this->fakeFelines->find(), ['for' => 1, 'direct' => true]);
+        static::assertInstanceOf(SelectQuery::class, $queryFelines);
+        $this->fakeMammals->removeBehavior('Tree');
+
+        // test callFilter having filter on the last table of the inheritance chain
+        $this->fakeAnimals->addBehavior('Tree');
+        $animalsAlias = $this->fakeAnimals->getAlias();
+        $mammalsAlias = $this->fakeMammals->getAlias();
+        $felinesAlias = $this->fakeFelines->getAlias();
+        $checkAliases = function () use ($animalsAlias, $mammalsAlias, $felinesAlias) {
+            static::assertSame($felinesAlias, $this->fakeFelines->getAlias());
+            static::assertSame($mammalsAlias, $this->fakeMammals->getAlias());
+            static::assertSame($animalsAlias, $this->fakeAnimals->getAlias());
+        };
+
+        $queryMammals = $this->fakeMammals->callFilter('children', $this->fakeMammals->find(), ['for' => 1, 'direct' => true]);
+        static::assertInstanceOf(SelectQuery::class, $queryMammals);
+        static::assertTextNotContains('FakeAnimals', $queryMammals->sql());
+        $checkAliases();
+
+        $queryFelines = $this->fakeFelines->callFilter('children', $this->fakeFelines->find(), ['for' => 1, 'direct' => true]);
+        static::assertInstanceOf(SelectQuery::class, $queryFelines);
+        static::assertTextNotContains('FakeAnimals', $queryFelines->sql());
+        static::assertTextNotContains('FakeMammals', $queryFelines->sql());
+        $checkAliases();
+    }
+
+    /**
+     * Test `callFilter` method.
+     *
+     * @return void
+     */
+    public function testCallMissingFilter(): void
+    {
+        $this->expectException(BadMethodCallException::class);
+        $this->expectExceptionMessage('Unknown filter method `gustavo`');
+        $this->fakeMammals->callFilter('gustavo', $this->fakeMammals->find(), null);
     }
 }

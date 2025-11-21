@@ -12,9 +12,11 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Model\Action;
 
+use BEdita\Core\Model\Entity\ObjectType;
+use Cake\ORM\Query\SelectQuery;
+use Cake\ORM\Table;
 use Cake\Utility\Hash;
 
 /**
@@ -29,19 +31,19 @@ class ListObjectsAction extends BaseAction
      *
      * @var \Cake\ORM\Table
      */
-    protected $Table;
+    protected Table $Table;
 
     /**
      * Object type.
      *
      * @var \BEdita\Core\Model\Entity\ObjectType|null
      */
-    protected $objectType;
+    protected ?ObjectType $objectType = null;
 
     /**
      * @inheritDoc
      */
-    protected function initialize(array $config)
+    protected function initialize(array $config): void
     {
         $this->Table = $this->getConfig('table');
         $this->objectType = $this->getConfig('objectType');
@@ -50,9 +52,9 @@ class ListObjectsAction extends BaseAction
     /**
      * {@inheritDoc}
      *
-     * @return \Cake\ORM\Query
+     * @return \Cake\ORM\Query\SelectQuery
      */
-    public function execute(array $data = [])
+    public function execute(array $data = []): SelectQuery
     {
         $filter = [
             'deleted' => (int)!empty($data['deleted']),
@@ -71,18 +73,18 @@ class ListObjectsAction extends BaseAction
         if (!empty($data['filter'])) {
             $filter = array_merge(
                 ListEntitiesAction::parseFilter($data['filter']),
-                $filter // Later values overwrite previous ones.
+                $filter, // Later values overwrite previous ones.
             );
         }
 
         $action = new ListEntitiesAction(['table' => $this->Table]);
         $query = $action->execute(compact('filter', 'contain'));
         if (isset($type)) {
-            $query = $query->find('type', (array)$type);
+            $query = $query->find('type', value: $type);
         }
 
         if (!empty($data['lang'])) {
-            $query = $query->find('translations', ['lang' => $data['lang']]);
+            $query = $query->find('translations', lang: $data['lang']);
         }
 
         return $query->find('publishable');

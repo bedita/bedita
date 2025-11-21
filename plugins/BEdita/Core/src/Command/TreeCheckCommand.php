@@ -12,9 +12,9 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Command;
 
+use BEdita\Core\Model\Table\ObjectsTable;
 use BEdita\Core\Model\Table\TreesTable;
 use Cake\Collection\CollectionInterface;
 use Cake\Command\Command;
@@ -24,7 +24,7 @@ use Cake\Console\ConsoleOptionParser;
 use Cake\Database\Expression\IdentifierExpression;
 use Cake\Database\Expression\QueryExpression;
 use Cake\Datasource\EntityInterface;
-use Cake\ORM\Query;
+use Cake\ORM\Query\SelectQuery;
 
 /**
  * Commend to check tree sanity and perform objects-aware tree recovery.
@@ -37,7 +37,14 @@ class TreeCheckCommand extends Command
     /**
      * @inheritDoc
      */
-    public $defaultTable = 'Objects';
+    protected ?string $defaultTable = 'Objects';
+
+    /**
+     * Objects table.
+     *
+     * @var \BEdita\Core\Model\Table\ObjectsTable
+     */
+    protected ObjectsTable $Objects;
 
     /**
      * {@inheritDoc}
@@ -66,11 +73,23 @@ class TreeCheckCommand extends Command
     }
 
     /**
+     * {@inheritDoc}
+     *
+     * @codeCoverageIgnore
+     */
+    public function initialize(): void
+    {
+        parent::initialize();
+
+        $this->Objects = $this->fetchTable();
+    }
+
+    /**
      * Implement this method with your command's logic.
      *
      * @param \Cake\Console\Arguments $args The command arguments.
      * @param \Cake\Console\ConsoleIo $io The console io
-     * @return null|int The exit code or null for success
+     * @return int|null The exit code or null for success
      */
     public function execute(Arguments $args, ConsoleIo $io): int
     {
@@ -162,11 +181,11 @@ class TreeCheckCommand extends Command
     /**
      * Return query to find all folders that are not in the tree.
      *
-     * @return \Cake\ORM\Query
+     * @return \Cake\ORM\Query\SelectQuery
      */
-    protected function getFoldersNotInTree(): Query
+    protected function getFoldersNotInTree(): SelectQuery
     {
-        return $this->Objects->find('type', ['folders'])
+        return $this->Objects->find('type', value: ['folders'])
             ->select([
                 $this->Objects->aliasField('id'),
                 $this->Objects->aliasField('uname'),
@@ -178,21 +197,21 @@ class TreeCheckCommand extends Command
     /**
      * Return query to find all folders that are ubiquitous.
      *
-     * @return \Cake\ORM\Query
+     * @return \Cake\ORM\Query\SelectQuery
      */
-    protected function getUbiquitousFolders(): Query
+    protected function getUbiquitousFolders(): SelectQuery
     {
-        return $this->Objects->find('type', ['folders'])
+        return $this->Objects->find('type', value: ['folders'])
             ->select([
                 $this->Objects->aliasField('id'),
                 $this->Objects->aliasField('uname'),
                 $this->Objects->aliasField('object_type_id'),
             ])
             ->innerJoinWith('TreeNodes')
-            ->group([
+            ->groupBy([
                 $this->Objects->aliasField('id'),
             ])
-            ->having(function (QueryExpression $exp, Query $query): QueryExpression {
+            ->having(function (QueryExpression $exp, SelectQuery $query): QueryExpression {
                 return $exp->gt($query->func()->count('*'), 1, 'integer');
             });
     }
@@ -200,17 +219,17 @@ class TreeCheckCommand extends Command
     /**
      * Return query to find all objects that are roots despite not being folders.
      *
-     * @return \Cake\ORM\Query
+     * @return \Cake\ORM\Query\SelectQuery
      */
-    protected function getObjectsInRoot(): Query
+    protected function getObjectsInRoot(): SelectQuery
     {
-        return $this->Objects->find('type', ['!=' => 'folders'])
+        return $this->Objects->find('type', value: ['!=' => 'folders'])
             ->select([
                 $this->Objects->aliasField('id'),
                 $this->Objects->aliasField('uname'),
                 $this->Objects->aliasField('object_type_id'),
             ])
-            ->innerJoinWith('TreeNodes', function (Query $query): Query {
+            ->innerJoinWith('TreeNodes', function (SelectQuery $query): SelectQuery {
                 return $query->where(function (QueryExpression $exp): QueryExpression {
                     return $exp->isNull($this->Objects->TreeNodes->aliasField('parent_id'));
                 });
@@ -220,9 +239,9 @@ class TreeCheckCommand extends Command
     /**
      * Return query to find all objects that have children despite not being folders.
      *
-     * @return \Cake\ORM\Query
+     * @return \Cake\ORM\Query\SelectQuery
      */
-    protected function getObjectsWithChildren(): Query
+    protected function getObjectsWithChildren(): SelectQuery
     {
         // This association normally would live in the "Folders" table, but we're checking for anomalies,
         // so let's assume it makes sense here.
@@ -231,7 +250,7 @@ class TreeCheckCommand extends Command
             'foreignKey' => 'parent_id',
         ]);
 
-        return $this->Objects->find('type', ['!=' => 'folders'])
+        return $this->Objects->find('type', ne: 'folders')
             ->select([
                 $this->Objects->aliasField('id'),
                 $this->Objects->aliasField('uname'),
@@ -243,11 +262,11 @@ class TreeCheckCommand extends Command
     /**
      * Return query to find all objects that are placed twice inside same parent.
      *
-     * @return \Cake\ORM\Query
+     * @return \Cake\ORM\Query\SelectQuery
      */
-    protected function getObjectsTwiceInFolder(): Query
+    protected function getObjectsTwiceInFolder(): SelectQuery
     {
-        return $this->Objects->find('type', ['!=' => 'folders'])
+        return $this->Objects->find('type', ne: 'folders')
             ->select([
                 $this->Objects->aliasField('id'),
                 $this->Objects->aliasField('uname'),
@@ -256,11 +275,11 @@ class TreeCheckCommand extends Command
                 $this->Objects->Parents->aliasField('uname'),
             ])
             ->innerJoinWith('Parents')
-            ->group([
+            ->groupBy([
                 $this->Objects->aliasField('id'),
                 $this->Objects->Parents->aliasField('id'),
             ])
-            ->having(function (QueryExpression $exp, Query $query): QueryExpression {
+            ->having(function (QueryExpression $exp, SelectQuery $query): QueryExpression {
                 return $exp->gt($query->func()->count('*'), 1, 'integer');
             });
     }
@@ -268,9 +287,9 @@ class TreeCheckCommand extends Command
     /**
      * Return query to find all rows in `trees` table that reference a different `parent_id` than the `object_id` in the parent tree node.
      *
-     * @return \Cake\ORM\Query
+     * @return \Cake\ORM\Query\SelectQuery
      */
-    protected function getNotMatchingParentId(): Query
+    protected function getNotMatchingParentId(): SelectQuery
     {
         return $this->Objects->find()
             ->select([
@@ -282,7 +301,7 @@ class TreeCheckCommand extends Command
             ->where(function (QueryExpression $exp): QueryExpression {
                 return $exp->notEq(
                     $this->Objects->TreeNodes->aliasField('parent_id'),
-                    new IdentifierExpression($this->Objects->TreeNodes->ParentNode->aliasField('object_id'))
+                    new IdentifierExpression($this->Objects->TreeNodes->ParentNode->aliasField('object_id')),
                 );
             });
     }
@@ -290,9 +309,9 @@ class TreeCheckCommand extends Command
     /**
      * Return query to find all rows in `trees` table that reference a different `parent_id` than the `object_id` in the parent tree node.
      *
-     * @return \Cake\ORM\Query
+     * @return \Cake\ORM\Query\SelectQuery
      */
-    protected function getNotMatchingRootId(): Query
+    protected function getNotMatchingRootId(): SelectQuery
     {
         return $this->Objects->find()
             ->select([
@@ -301,13 +320,13 @@ class TreeCheckCommand extends Command
                 $this->Objects->aliasField('object_type_id'),
             ])
             ->leftJoinWith('TreeNodes.ParentNode')
-            ->where(function (QueryExpression $exp, Query $query): QueryExpression {
+            ->where(function (QueryExpression $exp, SelectQuery $query): QueryExpression {
                 return $exp->notEq(
                     $this->Objects->TreeNodes->aliasField('root_id'),
                     $query->func()->coalesce([
                         $this->Objects->TreeNodes->ParentNode->aliasField('root_id') => 'identifier',
                         $this->Objects->TreeNodes->aliasField('object_id') => 'identifier',
-                    ])
+                    ]),
                 );
             });
     }
@@ -338,8 +357,8 @@ class TreeCheckCommand extends Command
                     $this->Objects->ObjectTypes->get($entity['object_type_id'])->get('singular'),
                     $entity['uname'],
                     $entity['id'],
-                    $message
-                )
+                    $message,
+                ),
             );
         });
     }

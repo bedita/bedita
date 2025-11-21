@@ -17,10 +17,13 @@ namespace BEdita\API\Test\IntegrationTest;
 use BEdita\API\TestSuite\IntegrationTestCase;
 use BEdita\Core\Test\Utility\TestFilesystemTrait;
 use Cake\Utility\Hash;
+use PHPUnit\Framework\Attributes\CoversNothing;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * Test relationships priority.
  */
+#[CoversNothing]
 class RelationshipsPriorityTest extends IntegrationTestCase
 {
     use TestFilesystemTrait;
@@ -28,7 +31,7 @@ class RelationshipsPriorityTest extends IntegrationTestCase
     /**
      * @inheritDoc
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.Media',
         'plugin.BEdita/Core.Streams',
     ];
@@ -58,7 +61,7 @@ class RelationshipsPriorityTest extends IntegrationTestCase
      *
      * @return array
      */
-    public function priorityProvider(): array
+    public static function priorityProvider(): array
     {
         return [
             'ok' => [
@@ -105,9 +108,8 @@ class RelationshipsPriorityTest extends IntegrationTestCase
      * Test relationships priority set via API.
      *
      * @return void
-     * @dataProvider priorityProvider
-     * @coversNothing
      */
+    #[DataProvider('priorityProvider')]
     public function testPriority(array $expected, string $saveEndpoint, array $data, string $readEndpoint): void
     {
         $this->configRequestHeaders('POST', $this->getUserAuthHeader());

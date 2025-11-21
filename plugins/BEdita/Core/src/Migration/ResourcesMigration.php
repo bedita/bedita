@@ -15,16 +15,17 @@ declare(strict_types=1);
 namespace BEdita\Core\Migration;
 
 use BEdita\Core\Utility\Resources;
+use Cake\Cache\Cache;
 use Cake\Database\Connection;
 use Cake\ORM\TableRegistry;
 use Cake\Utility\Hash;
-use Migrations\AbstractMigration;
-use Migrations\Table;
+use Migrations\BaseMigration;
+use Migrations\Db\Table;
 use ReflectionClass;
 use RuntimeException;
 use Symfony\Component\Yaml\Yaml;
 
-abstract class ResourcesMigration extends AbstractMigration
+abstract class ResourcesMigration extends BaseMigration
 {
     /**
      * Read YAML migration data
@@ -71,6 +72,15 @@ abstract class ResourcesMigration extends AbstractMigration
     }
 
     /**
+     * @inheritDoc
+     */
+    public function postFlightCheck(): void
+    {
+        parent::postFlightCheck();
+        Cache::clearAll();
+    }
+
+    /**
      * Extract column related data from input array, then:
      *  - perform table columns removal
      *  - perform internal resources migrations
@@ -84,7 +94,7 @@ abstract class ResourcesMigration extends AbstractMigration
         $columnActions = $this->tableColumnsActions($data);
         // first perform column removal
         $removeColumns = array_filter(
-            array_intersect_key($columnActions, ['remove' => ''])
+            array_intersect_key($columnActions, ['remove' => '']),
         );
         $this->updateColumns($removeColumns);
         unset($columnActions['remove']);
@@ -92,7 +102,7 @@ abstract class ResourcesMigration extends AbstractMigration
         // then perform resources operations
         Resources::save(
             $data,
-            ['connection' => $this->getConnection()]
+            ['connection' => $this->getConnection()],
         );
         // finally columns creation + change
         $this->updateColumns($columnActions);
@@ -106,7 +116,7 @@ abstract class ResourcesMigration extends AbstractMigration
      */
     protected function getConnection(): Connection
     {
-        return $this->getAdapter()->getCakeConnection();
+        return $this->getAdapter()->getConnection();
     }
 
     /**
@@ -150,9 +160,9 @@ abstract class ResourcesMigration extends AbstractMigration
         foreach ($data as $action => $items) {
             array_walk(
                 $items,
-                function ($item) use ($action) {
+                function ($item) use ($action): void {
                     $this->columnAction($action, $item);
-                }
+                },
             );
         }
     }

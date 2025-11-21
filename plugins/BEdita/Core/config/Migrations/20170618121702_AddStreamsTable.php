@@ -11,14 +11,14 @@
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
 
-use Migrations\AbstractMigration;
+use Migrations\BaseMigration;
 
 /**
  * Refactor `media` table and add `streams` table.
  *
  * @since 4.0.0
  */
-class AddStreamsTable extends AbstractMigration
+class AddStreamsTable extends BaseMigration
 {
 
     /**
@@ -388,7 +388,7 @@ class AddStreamsTable extends AbstractMigration
             )
             ->update();
 
-        $this->dropTable('streams');
+        $this->table('streams')->drop()->save();
     }
 }
 

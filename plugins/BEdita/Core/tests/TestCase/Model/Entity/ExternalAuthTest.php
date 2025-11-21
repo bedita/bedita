@@ -12,33 +12,34 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\Model\Entity;
 
 use BEdita\Core\Model\Entity\ExternalAuth;
+use BEdita\Core\Model\Table\ExternalAuthTable;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
+use InvalidArgumentException;
+use PHPUnit\Framework\Attributes\CoversClass;
 
 /**
  * {@see \BEdita\Core\Model\Entity\ExternalAuth} Test Case
- *
- * @coversDefaultClass \BEdita\Core\Model\Entity\ExternalAuth
  */
+#[CoversClass(ExternalAuth::class)]
 class ExternalAuthTest extends TestCase
 {
     /**
      * Test subject's table
      *
-     * @var \BEdita\Core\Model\Table\AuthProvidersTable
+     * @var \BEdita\Core\Model\Table\ExternalAuthTable
      */
-    public $ExternalAuth;
+    public ExternalAuthTable $ExternalAuth;
 
     /**
      * Fixtures
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.Objects',
         'plugin.BEdita/Core.Profiles',
@@ -71,7 +72,6 @@ class ExternalAuthTest extends TestCase
      * Test accessible properties.
      *
      * @return void
-     * @coversNothing
      */
     public function testAccessible()
     {
@@ -83,7 +83,7 @@ class ExternalAuthTest extends TestCase
         ];
         $externalAuth = $this->ExternalAuth->patchEntity($externalAuth, $data);
         if (!($externalAuth instanceof ExternalAuth)) {
-            throw new \InvalidArgumentException();
+            throw new InvalidArgumentException();
         }
 
         $this->assertEquals(1, $externalAuth->id);

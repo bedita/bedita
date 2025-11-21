@@ -12,21 +12,31 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\Model\Action;
 
+use ArrayObject;
+use BEdita\Core\Model\Action\AssociatedTrait;
 use BEdita\Core\Model\Action\RemoveAssociatedAction;
+use BEdita\Core\Model\Action\UpdateAssociatedAction;
 use Cake\Event\Event;
-use Cake\ORM\Query;
+use Cake\ORM\Query\SelectQuery;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Inflector;
+use Exception;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\CoversTrait;
+use PHPUnit\Framework\Attributes\DataProvider;
+use RuntimeException;
 
 /**
- * @covers \BEdita\Core\Model\Action\RemoveAssociatedAction
- * @covers \BEdita\Core\Model\Action\UpdateAssociatedAction
- * @covers \BEdita\Core\Model\Action\AssociatedTrait
+ * {@see \BEdita\Core\Model\Action\RemoveAssociatedAction} Test Case
+ * {@see \BEdita\Core\Model\Action\UpdateAssociatedAction} Test Case
+ * {@see \BEdita\Core\Model\Action\AssociatedTrait} Test Case
  */
+#[CoversClass(RemoveAssociatedAction::class)]
+#[CoversClass(UpdateAssociatedAction::class)]
+#[CoversTrait(AssociatedTrait::class)]
 class RemoveAssociatedActionTest extends TestCase
 {
     /**
@@ -34,7 +44,7 @@ class RemoveAssociatedActionTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.FakeAnimals',
         'plugin.BEdita/Core.FakeArticles',
         'plugin.BEdita/Core.FakeTags',
@@ -69,7 +79,7 @@ class RemoveAssociatedActionTest extends TestCase
      *
      * @return array
      */
-    public function invocationProvider()
+    public static function invocationProvider(): array
     {
         return [
             'nothingToDo' => [
@@ -101,8 +111,8 @@ class RemoveAssociatedActionTest extends TestCase
                 [1, 2],
             ],
             'belongsTo' => [
-                new \RuntimeException(
-                    'Unable to remove existing links with association of type "Cake\ORM\Association\BelongsTo"'
+                new RuntimeException(
+                    'Unable to remove existing links with association of type "Cake\ORM\Association\BelongsTo"',
                 ),
                 'FakeArticles',
                 'FakeAnimals',
@@ -121,11 +131,11 @@ class RemoveAssociatedActionTest extends TestCase
      * @param int $entity Entity to update relations for.
      * @param int|int[]|null $related Related entity(-ies).
      * @return void
-     * @dataProvider invocationProvider()
      */
+    #[DataProvider('invocationProvider')]
     public function testInvocation($expected, $table, $association, $entity, $related)
     {
-        if ($expected instanceof \Exception) {
+        if ($expected instanceof Exception) {
             $this->expectException(get_class($expected));
             $this->expectExceptionMessage($expected->getMessage());
         }
@@ -133,7 +143,7 @@ class RemoveAssociatedActionTest extends TestCase
         $association = TableRegistry::getTableLocator()->get($table)->getAssociation($association);
         $action = new RemoveAssociatedAction(compact('association'));
 
-        $entity = $association->getSource()->get($entity, ['contain' => [$association->getName()]]);
+        $entity = $association->getSource()->get($entity, contain: [$association->getName()]);
         $relatedEntities = null;
         if (is_int($related)) {
             $relatedEntities = $association->getTarget()->get($related);
@@ -152,7 +162,7 @@ class RemoveAssociatedActionTest extends TestCase
             static::assertSame('remove', $event->getData('action'));
             static::assertSame($association, $event->getData('association'));
             static::assertSame($entity, $event->getData('entity'));
-            static::assertInstanceOf(\ArrayObject::class, $event->getData('relatedEntities'));
+            static::assertInstanceOf(ArrayObject::class, $event->getData('relatedEntities'));
             $rel = is_object($relatedEntities) ? [$relatedEntities] : (array)$relatedEntities;
             static::assertSameSize($rel, $event->getData('relatedEntities'));
             $n = count($rel);
@@ -181,11 +191,11 @@ class RemoveAssociatedActionTest extends TestCase
                 ])
                 ->matching(
                     Inflector::camelize($association->getSource()->getTable()),
-                    function (Query $query) use ($association, $entity) {
+                    function (SelectQuery $query) use ($association, $entity) {
                         return $query->where([
                             $association->getSource()->aliasField($association->getSource()->getPrimaryKey()) => $entity->id,
                         ]);
-                    }
+                    },
                 )
                 ->count();
         }

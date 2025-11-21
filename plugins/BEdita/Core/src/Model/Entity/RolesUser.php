@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Model\Entity;
 
 use Cake\ORM\Entity;
@@ -32,7 +31,7 @@ class RolesUser extends Entity
     /**
      * @inheritDoc
      */
-    protected $_accessible = [
+    protected array $_accessible = [
         '*' => true,
         'id' => false,
     ];
@@ -40,7 +39,7 @@ class RolesUser extends Entity
     /**
      * @inheritDoc
      */
-    protected $_hidden = [
+    protected array $_hidden = [
         'id',
         'role_id',
         'user_id',

@@ -12,28 +12,29 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\API\Test\TestCase\Controller\Model;
 
+use BEdita\API\Controller\Model\SchemaController;
 use BEdita\API\Test\TestConstants;
 use BEdita\API\TestSuite\IntegrationTestCase;
-use DMS\PHPUnitExtensions\ArraySubset\ArraySubsetAsserts;
+use BEdita\Core\Test\Utility\TestArraySubsetTrait;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * {@see \BEdita\API\Controller\Model\SchemaController} Test Case
- *
- * @coversDefaultClass \BEdita\API\Controller\Model\SchemaController
  */
+#[CoversClass(SchemaController::class)]
 class SchemaControllerTest extends IntegrationTestCase
 {
-    use ArraySubsetAsserts;
+    use TestArraySubsetTrait;
 
     /**
      * Fixtures
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.Media',
         'plugin.BEdita/Core.Locations',
         'plugin.BEdita/Core.PropertyTypes',
@@ -45,7 +46,7 @@ class SchemaControllerTest extends IntegrationTestCase
      *
      * @return array
      */
-    public function jsonSchemaProvider()
+    public static function jsonSchemaProvider(): array
     {
         return [
             'locations' => [
@@ -68,10 +69,8 @@ class SchemaControllerTest extends IntegrationTestCase
      * @param string $type Type name
      * @param string $accept Accept request header
      * @return void
-     * @covers ::jsonSchema()
-     * @covers ::initialize()
-     * @dataProvider jsonSchemaProvider
      */
+    #[DataProvider('jsonSchemaProvider')]
     public function testJsonSchema($type, $accept = '')
     {
         $expected = [
@@ -94,8 +93,6 @@ class SchemaControllerTest extends IntegrationTestCase
      * Test `jsonSchema` method with an abstract object type.
      *
      * @return void
-     * @covers ::jsonSchema()
-     * @covers ::initialize()
      */
     public function testJsonSchemaAbstractType()
     {
@@ -112,7 +109,6 @@ class SchemaControllerTest extends IntegrationTestCase
      * Test `jsonSchema` method on a disabled object type.
      *
      * @return void
-     * @coversNothing
      */
     public function testJsonSchemaDisabled()
     {
@@ -129,7 +125,6 @@ class SchemaControllerTest extends IntegrationTestCase
      * Test ETag response header and Not Modified response.
      *
      * @return void
-     * @covers ::jsonSchema()
      */
     public function testETag()
     {

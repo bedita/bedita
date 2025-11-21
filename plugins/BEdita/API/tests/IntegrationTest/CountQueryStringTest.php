@@ -16,12 +16,13 @@ namespace BEdita\API\Test\IntegrationTest;
 
 use BEdita\API\TestSuite\IntegrationTestCase;
 use Cake\Utility\Hash;
+use PHPUnit\Framework\Attributes\CoversNothing;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * Test Query String `count`.
- *
- * @coversNothing
  */
+#[CoversNothing]
 class CountQueryStringTest extends IntegrationTestCase
 {
     /**
@@ -29,7 +30,7 @@ class CountQueryStringTest extends IntegrationTestCase
      *
      * @return array
      */
-    public function countSingleProvider(): array
+    public static function countSingleProvider(): array
     {
         return [
             'empty' => [
@@ -72,9 +73,8 @@ class CountQueryStringTest extends IntegrationTestCase
      * @param array $expected The expected count
      * @param string $count The count query string
      * @return void
-     * @dataProvider countSingleProvider()
-     * @coversNothing
      */
+    #[DataProvider('countSingleProvider')]
     public function testCountSingle($expected, $count): void
     {
         $url = sprintf('/documents/2?count=%s', $count);

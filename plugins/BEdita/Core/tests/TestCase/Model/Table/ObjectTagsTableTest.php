@@ -12,17 +12,21 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\Model\Table;
 
+use BEdita\Core\Model\Table\ObjectCategoriesTable;
+use BEdita\Core\Model\Table\ObjectTagsTable;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\CoversMethod;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * {@see \BEdita\Core\Model\Table\ObjectTagsTable} Test Case
- *
- * @coversDefaultClass \BEdita\Core\Model\Table\ObjectTagsTable
  */
+#[CoversClass(ObjectTagsTable::class)]
+#[CoversMethod(ObjectCategoriesTable::class, 'buildRules')]
 class ObjectTagsTableTest extends TestCase
 {
     /**
@@ -37,7 +41,7 @@ class ObjectTagsTableTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.Relations',
         'plugin.BEdita/Core.RelationTypes',
@@ -74,7 +78,7 @@ class ObjectTagsTableTest extends TestCase
      *
      * @return array
      */
-    public function buildRulesProvider()
+    public static function buildRulesProvider(): array
     {
         return [
             'inValidObject' => [
@@ -107,9 +111,8 @@ class ObjectTagsTableTest extends TestCase
      * @param bool $expected Expected result.
      * @param array $data Data to be validated.
      * @return void
-     * @dataProvider buildRulesProvider
-     * @covers \BEdita\Core\Model\Table\ObjectCategoriesTable::buildRules()
      */
+    #[DataProvider('buildRulesProvider')]
     public function testBuildRules($expected, array $data)
     {
         $entity = $this->ObjectTags->newEntity($data, ['validate' => false]);

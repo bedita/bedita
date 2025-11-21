@@ -12,15 +12,18 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\Model\Entity;
 
+use BEdita\Core\Model\Entity\Location;
+use BEdita\Core\Model\Table\LocationsTable;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
 
 /**
- * @coversDefaultClass \BEdita\Core\Model\Entity\Location
+ * {@see \BEdita\Core\Model\Entity\Location} Test Case
  */
+#[CoversClass(Location::class)]
 class LocationTest extends TestCase
 {
     /**
@@ -28,7 +31,7 @@ class LocationTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.Relations',
         'plugin.BEdita/Core.RelationTypes',
@@ -41,7 +44,7 @@ class LocationTest extends TestCase
      *
      * @var \BEdita\Core\Model\Table\LocationsTable
      */
-    protected $Locations;
+    protected LocationsTable $Locations;
 
     /**
      * @inheritDoc
@@ -57,11 +60,10 @@ class LocationTest extends TestCase
      * Test accessible properties.
      *
      * @return void
-     * @covers ::__construct()
      */
     public function testGetMeta()
     {
-        $location = $this->Locations->newEntity([]);
+        $location = $this->Locations->newEmptyEntity();
 
         static::assertFalse($location->isAccessible('distance'));
     }

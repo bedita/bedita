@@ -12,16 +12,16 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Model\Behavior;
 
+use BackedEnum;
 use BEdita\Core\Exception\BadFilterException;
 use Cake\Core\Configure;
 use Cake\Database\Expression\QueryExpression;
 use Cake\Datasource\EntityInterface;
 use Cake\Http\Exception\BadRequestException;
 use Cake\ORM\Behavior;
-use Cake\ORM\Query;
+use Cake\ORM\Query\SelectQuery;
 
 /**
  * This behavior adds finders for object's status filtering.
@@ -35,7 +35,7 @@ class StatusBehavior extends Behavior
      *
      * @var array
      */
-    protected $_defaultConfig = [
+    protected array $_defaultConfig = [
         'implementedMethods' => [
             'checkStatus' => 'checkStatus',
         ],
@@ -59,12 +59,15 @@ class StatusBehavior extends Behavior
         }
         $level = Configure::read('Status.level');
         $status = $entity->get('status');
+        if ($status instanceof BackedEnum) {
+            $status = $status->value;
+        }
         if (($level === 'on' && $status !== 'on') || ($level === 'draft' && $status === 'off')) {
             throw new BadRequestException(__d(
                 'bedita',
                 'Status "{0}" is not consistent with configured Status.level "{1}"',
                 $status,
-                $level
+                $level,
             ));
         }
     }
@@ -72,19 +75,14 @@ class StatusBehavior extends Behavior
     /**
      * Finder for objects based on status level.
      *
-     * @param \Cake\ORM\Query $query Query object instance.
-     * @param array $options Object status level.
-     * @return \Cake\ORM\Query
+     * @param \Cake\ORM\Query\SelectQuery $query Query object instance.
+     * @param string $level The status level.
+     * @return \Cake\ORM\Query\SelectQuery
      * @throws \BEdita\Core\Exception\BadFilterException Throws an exception if an invalid set of options is passed to
      *      the finder.
      */
-    public function findStatusLevel(Query $query, array $options)
+    public function findStatusLevel(SelectQuery $query, string $level): SelectQuery
     {
-        if (empty($options[0])) {
-            throw new BadFilterException(__d('bedita', 'Invalid options for finder "{0}"', 'status'));
-        }
-
-        $level = $options[0];
         $field = $this->getConfigOrFail('field');
         switch ($level) {
             case 'on':

@@ -24,7 +24,7 @@ class FakeFelinesFixture extends TestFixture
     /**
      * @inheritDoc
      */
-    public $records = [
+    public array $records = [
         ['family' => 'purring cats'],
     ];
 }

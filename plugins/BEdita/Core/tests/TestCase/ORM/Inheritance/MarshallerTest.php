@@ -12,17 +12,19 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\ORM\Inheritance;
 
 use BEdita\Core\ORM\Inheritance\Marshaller;
-use Cake\I18n\FrozenTime;
+use Cake\I18n\DateTime;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
- * @coversDefaultClass \BEdita\Core\ORM\Inheritance\Marshaller
+ * {@see \BEdita\Core\ORM\Inheritance\Marshaller} Test Case
  */
+#[CoversClass(Marshaller::class)]
 class MarshallerTest extends TestCase
 {
     use FakeAnimalsTrait;
@@ -42,8 +44,6 @@ class MarshallerTest extends TestCase
      * Test marshall data using table without inheritance
      *
      * @return void
-     * @covers ::_buildPropertyMap()
-     * @covers ::buildTablePropertyMap()
      */
     public function testBuildPropertyMapWithoutInheritance()
     {
@@ -65,7 +65,7 @@ class MarshallerTest extends TestCase
      *
      * @return array
      */
-    public function buildPropertyMapProvider()
+    public static function buildPropertyMapProvider(): array
     {
         return [
             'marshallInheritedDate' => [
@@ -80,7 +80,7 @@ class MarshallerTest extends TestCase
                 [
                     'name' => 'tiger',
                     'legs' => 4,
-                    'modified' => new FrozenTime('2018-02-20 12:05:00'),
+                    'modified' => new DateTime('2018-02-20 12:05:00'),
                     'family' => 'The big tiger family',
                 ],
             ],
@@ -109,10 +109,8 @@ class MarshallerTest extends TestCase
      * @param array $data The data to be marshalled
      * @param array $expected The array of entity visible properties
      * @return void
-     * @dataProvider buildPropertyMapProvider()
-     * @covers ::_buildPropertyMap()
-     * @covers ::buildTablePropertyMap()
      */
+    #[DataProvider('buildPropertyMapProvider')]
     public function testBuildPropertyMap(array $data, array $expected)
     {
         $marshaller = new Marshaller($this->fakeFelines);

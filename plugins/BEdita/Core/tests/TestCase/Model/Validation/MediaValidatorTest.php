@@ -12,16 +12,18 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\Model\Validation;
 
 use BEdita\Core\Model\Validation\MediaValidator;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Hash;
+use PHPUnit\Framework\Attributes\CoversNothing;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
- * @coversNothing
+ * {@see \BEdita\Core\Model\Validation\MediaValidator} Test Case
  */
+#[CoversNothing]
 class MediaValidatorTest extends TestCase
 {
     /**
@@ -29,7 +31,7 @@ class MediaValidatorTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.Relations',
         'plugin.BEdita/Core.RelationTypes',
@@ -42,7 +44,7 @@ class MediaValidatorTest extends TestCase
      *
      * @return array
      */
-    public function validationProvider()
+    public static function validationProvider(): array
     {
         return [
             'empty' => [
@@ -68,7 +70,7 @@ class MediaValidatorTest extends TestCase
             'invalid types' => [
                 [
                     'id.naturalNumber',
-                    'status.inList',
+                    'status.enum',
                     'uname.ascii',
                     'locked.boolean',
                     'deleted.boolean',
@@ -113,8 +115,8 @@ class MediaValidatorTest extends TestCase
      * @param array $data Data being validated.
      * @param bool $newRecord Is this a new record?
      * @return void
-     * @dataProvider validationProvider()
      */
+    #[DataProvider('validationProvider')]
     public function testValidation(array $expected, array $data, $newRecord = true)
     {
         $validator = new MediaValidator();

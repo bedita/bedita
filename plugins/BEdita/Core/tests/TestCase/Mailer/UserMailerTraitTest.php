@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\Mailer;
 
 use BEdita\Core\Mailer\UserMailerInterface;
@@ -21,12 +20,12 @@ use Cake\Core\Configure;
 use Cake\Mailer\Mailer;
 use Cake\TestSuite\TestCase;
 use LogicException;
+use PHPUnit\Framework\Attributes\CoversTrait;
 
 /**
  * {@see \BEdita\Core\Mailer\UserMailerTrait} Test Case.
- *
- * @coversDefaultClass \BEdita\Core\Mailer\UserMailerTrait
  */
+#[CoversTrait(UserMailerTrait::class)]
 class UserMailerTraitTest extends TestCase
 {
     use UserMailerTrait;
@@ -35,7 +34,6 @@ class UserMailerTraitTest extends TestCase
      * Test `getUserMailer` failure.
      *
      * @return void
-     * @covers ::getUserMailer()
      */
     public function testGetUserMailerFailure(): void
     {
@@ -51,7 +49,6 @@ class UserMailerTraitTest extends TestCase
      * Test `getUserMailer`
      *
      * @return void
-     * @covers ::getUserMailer()
      */
     public function testGetUserMailer(): void
     {

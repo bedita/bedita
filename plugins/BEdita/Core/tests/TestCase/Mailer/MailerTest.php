@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 /**
  * BEdita, API-first content management framework
- * Copyright 2017 ChannelWeb Srl, Chialab Srl
+ * Copyright 2024 ChannelWeb Srl, Chialab Srl
  *
  * This file is part of BEdita: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published
@@ -12,17 +12,22 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\Mailer;
 
-use BEdita\Core\Mailer\Email;
+use BadMethodCallException;
+use BEdita\Core\Mailer\Mailer;
 use Cake\Mailer\TransportFactory;
 use Cake\TestSuite\TestCase;
+use Exception;
+use LogicException;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
- * @coversDefaultClass \BEdita\Core\Mailer\Email
+ * {@see \BEdita\Core\Mailer\Mailer} Test Case
  */
-class EmailTest extends TestCase
+#[CoversClass(Mailer::class)]
+class MailerTest extends TestCase
 {
     /**
      * @inheritDoc
@@ -51,7 +56,7 @@ class EmailTest extends TestCase
      *
      * @return array
      */
-    public function sendRawProvider()
+    public static function sendRawProvider(): array
     {
         return [
             'simple' => [
@@ -81,17 +86,20 @@ class EmailTest extends TestCase
                 ],
             ],
             'empty from' => [
-                new \LogicException('From is not specified.'),
+                new LogicException('From is not specified.'),
                 [],
             ],
             'empty to' => [
-                new \LogicException('You need specify one destination on to, cc or bcc.'),
+                new LogicException('You need specify one destination on to, cc or bcc.'),
                 [
                     'from' => ['gustavo.supporto@example.org' => 'Gustavo'],
                 ],
             ],
             'wrong transport' => [
-                new \LogicException('Cannot send email, transport was not defined. Did you call transport() or define a transport in the set profile?'),
+                new BadMethodCallException(
+                    'Transport was not defined. '
+                    . 'You must set on using setTransport() or set `transport` option in your mailer profile.',
+                ),
                 [
                     'from' => ['gustavo.supporto@example.org' => 'Gustavo'],
                     'to' => ['evermannella@example.org' => 'Evermannella'],
@@ -108,18 +116,17 @@ class EmailTest extends TestCase
      * @param array $config Email configuration.
      * @param bool $setTransport Should email transport be set?
      * @return void
-     * @covers ::sendRaw()
-     * @dataProvider sendRawProvider()
      */
+    #[DataProvider('sendRawProvider')]
     public function testRun($expected, array $config, $setTransport = true)
     {
-        if ($expected instanceof \Exception) {
+        if ($expected instanceof Exception) {
             $this->expectException(get_class($expected));
             $this->expectExceptionCode($expected->getCode());
             $this->expectExceptionMessage($expected->getMessage());
         }
 
-        $email = (new Email())
+        $email = (new Mailer())
             ->reset()
             ->createFromArray($config);
         if ($setTransport) {
@@ -138,28 +145,4 @@ class EmailTest extends TestCase
         static::assertArrayHasKey('message', $result);
         static::assertSame($expected['message'], $result['message']);
     }
-
-    /**
-     * Test getter for boundary.
-     *
-     * @return void
-     * @covers ::getBoundary()
-     */
-    // public function testGetBoundary()
-    // {
-    //     $email = new Email();
-    //     $email->setTo('evermannella@example.org');
-    //     $email->setBodyText('This is the message');
-    //     $email->addAttachments([
-    //         'test.txt' => [
-    //             'data' => 'Some text attachment',
-    //             'mimetype' => 'text/plain',
-    //         ],
-    //     ]);
-    //     $message = $email->getMessage()->getBody();
-    //     $boundary = Email::getBoundary($email);
-
-    //     static::assertNotNull($boundary);
-    //     static::assertAttributeSame($boundary, '_boundary', $email);
-    // }
 }

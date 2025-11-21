@@ -12,21 +12,23 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\Model\Table;
 
+use BEdita\Core\Model\Table\EndpointPermissionsTable;
 use BEdita\Core\State\CurrentApplication;
 use Cake\Cache\Cache;
 use Cake\Log\LogTrait;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
- * BEdita\Core\Model\Table\EndpointPermissionsTable Test Case
+ * {@see BEdita\Core\Model\Table\EndpointPermissionsTable} Test Case
  *
- * @coversDefaultClass \BEdita\Core\Model\Table\EndpointPermissionsTable
  * @since 4.0.0
  */
+#[CoversClass(EndpointPermissionsTable::class)]
 class EndpointPermissionsTableTest extends TestCase
 {
     use LogTrait;
@@ -43,7 +45,7 @@ class EndpointPermissionsTableTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.Roles',
         'plugin.BEdita/Core.Endpoints',
@@ -79,11 +81,9 @@ class EndpointPermissionsTableTest extends TestCase
      * Test initialize method
      *
      * @return void
-     * @covers ::initialize()
      */
     public function testInitialize()
     {
-        $this->EndpointPermissions->initialize([]);
         $this->assertEquals('endpoint_permissions', $this->EndpointPermissions->getTable());
         $this->assertEquals('id', $this->EndpointPermissions->getPrimaryKey());
         $this->assertEquals('id', $this->EndpointPermissions->getDisplayField());
@@ -101,7 +101,7 @@ class EndpointPermissionsTableTest extends TestCase
      *
      * @return array
      */
-    public function validationProvider()
+    public static function validationProvider(): array
     {
         return [
             'valid' => [
@@ -134,9 +134,8 @@ class EndpointPermissionsTableTest extends TestCase
      * @param bool $expected Expected result.
      * @param array $data Data to be validated.
      * @return void
-     * @dataProvider validationProvider
-     * @coversNothing
      */
+    #[DataProvider('validationProvider')]
     public function testValidation($expected, array $data)
     {
         $endpointPermission = $this->EndpointPermissions->newEntity($data);
@@ -153,7 +152,7 @@ class EndpointPermissionsTableTest extends TestCase
      *
      * @return array
      */
-    public function buildRulesProvider()
+    public static function buildRulesProvider(): array
     {
         return [
             'inValidEndpoint' => [
@@ -189,9 +188,8 @@ class EndpointPermissionsTableTest extends TestCase
      * @param bool $expected Expected result.
      * @param array $data Data to be validated.
      * @return void
-     * @dataProvider buildRulesProvider
-     * @coversNothing
      */
+    #[DataProvider('buildRulesProvider')]
     public function testBuildRules($expected, array $data)
     {
         $endpointPermission = $this->EndpointPermissions->newEntity($data, ['validate' => false]);
@@ -204,7 +202,7 @@ class EndpointPermissionsTableTest extends TestCase
      *
      * @return array
      */
-    public function findByEndpointProvider()
+    public static function findByEndpointProvider(): array
     {
         return [
             'auth' => [
@@ -217,7 +215,7 @@ class EndpointPermissionsTableTest extends TestCase
             ],
             'null' => [
                 2,
-                '',
+                [],
             ],
             'auth,home' => [
                 5,
@@ -230,7 +228,7 @@ class EndpointPermissionsTableTest extends TestCase
             ],
             'empty (strict)' => [
                 0,
-                '',
+                [],
                 true,
             ],
         ];
@@ -243,12 +241,11 @@ class EndpointPermissionsTableTest extends TestCase
      * @param array|int $endpointIds Endpoint id(s).
      * @param bool $strict Is strict mode enabled?
      * @return void
-     * @covers ::findByEndpoint()
-     * @dataProvider findByEndpointProvider()
      */
-    public function testFindByEndpoint($expected, $endpointIds, $strict = false)
+    #[DataProvider('findByEndpointProvider')]
+    public function testFindByEndpoint(int $expected, array|int $endpointIds, bool $strict = false)
     {
-        $count = $this->EndpointPermissions->find('byEndpoint', compact('endpointIds', 'strict'))->count();
+        $count = $this->EndpointPermissions->find('byEndpoint', endpointIds: $endpointIds, strict: $strict)->count();
 
         static::assertSame($expected, $count);
     }
@@ -258,7 +255,7 @@ class EndpointPermissionsTableTest extends TestCase
      *
      * @return array
      */
-    public function findByApplicationProvider()
+    public static function findByApplicationProvider(): array
     {
         return [
             'application one' => [
@@ -271,7 +268,7 @@ class EndpointPermissionsTableTest extends TestCase
             ],
             'null' => [
                 1,
-                '',
+                null,
             ],
             'application one (strict)' => [
                 1,
@@ -280,7 +277,7 @@ class EndpointPermissionsTableTest extends TestCase
             ],
             'empty (strict)' => [
                 0,
-                '',
+                null,
                 true,
             ],
         ];
@@ -290,15 +287,16 @@ class EndpointPermissionsTableTest extends TestCase
      * Test finder by application ID.
      *
      * @param int $expected Expected count.
-     * @param int $applicationId Application id.
+     * @param int|null $applicationId Application id.
      * @param bool $strict Is strict mode enabled?
      * @return void
-     * @covers ::findByApplication()
-     * @dataProvider findByApplicationProvider()
      */
-    public function testFindByApplication($expected, $applicationId, $strict = false)
+    #[DataProvider('findByApplicationProvider')]
+    public function testFindByApplication(int $expected, ?int $applicationId, $strict = false): void
     {
-        $count = $this->EndpointPermissions->find('byApplication', compact('applicationId', 'strict'))->count();
+        $count = $this->EndpointPermissions
+            ->find('byApplication', applicationId: $applicationId, strict: $strict)
+            ->count();
 
         static::assertSame($expected, $count);
     }
@@ -308,7 +306,7 @@ class EndpointPermissionsTableTest extends TestCase
      *
      * @return array
      */
-    public function findByRoleProvider()
+    public static function findByRoleProvider(): array
     {
         return [
             'first' => [
@@ -321,7 +319,7 @@ class EndpointPermissionsTableTest extends TestCase
             ],
             'null' => [
                 2,
-                '',
+                [],
             ],
             'first,second' => [
                 5,
@@ -334,7 +332,7 @@ class EndpointPermissionsTableTest extends TestCase
             ],
             'empty (strict)' => [
                 0,
-                '',
+                [],
                 true,
             ],
         ];
@@ -347,12 +345,11 @@ class EndpointPermissionsTableTest extends TestCase
      * @param array|int $roleIds Role id(s).
      * @param bool $strict Is strict mode enabled?
      * @return void
-     * @covers ::findByRole()
-     * @dataProvider findByRoleProvider()
      */
-    public function testFindByRole($expected, $roleIds, $strict = false)
+    #[DataProvider('findByRoleProvider')]
+    public function testFindByRole(int $expected, array|int $roleIds, bool $strict = false): void
     {
-        $count = $this->EndpointPermissions->find('byRole', compact('roleIds', 'strict'))->count();
+        $count = $this->EndpointPermissions->find('byRole', roleIds: $roleIds, strict: $strict)->count();
 
         static::assertSame($expected, $count);
     }
@@ -362,7 +359,7 @@ class EndpointPermissionsTableTest extends TestCase
      *
      * @return array
      */
-    public function findResourceProvider(): array
+    public static function findResourceProvider(): array
     {
         return [
             'application, endpoint, role' => [
@@ -398,12 +395,11 @@ class EndpointPermissionsTableTest extends TestCase
      * @param int $expected The value expected
      * @param array $options The options for the finder
      * @return void
-     * @covers ::findResource()
-     * @dataProvider findResourceProvider()
      */
+    #[DataProvider('findResourceProvider')]
     public function testFindResource($expected, $options)
     {
-        $query = $this->EndpointPermissions->find('resource', $options);
+        $query = $this->EndpointPermissions->find('resource', ...$options);
         $entity = $query->first();
 
         static::assertEquals(1, $query->count());
@@ -413,7 +409,7 @@ class EndpointPermissionsTableTest extends TestCase
     /**
      * Data provider for `testFetchCount`
      */
-    public function fetchCountProvider(): array
+    public static function fetchCountProvider(): array
     {
         return [
             'one' => [
@@ -433,9 +429,8 @@ class EndpointPermissionsTableTest extends TestCase
      * @param int $expected Expected result.
      * @param int|null $endpointId Endpoint ID.
      * @return void
-     * @dataProvider fetchCountProvider()
-     * @covers ::fetchCount()
      */
+    #[DataProvider('fetchCountProvider')]
     public function testFetchCount(int $expected, ?int $endpointId): void
     {
         CurrentApplication::setApplication(null);
@@ -446,7 +441,7 @@ class EndpointPermissionsTableTest extends TestCase
     /**
      * Data provider for `testFetchPermissions`
      */
-    public function fetchPermissionsProvider(): array
+    public static function fetchPermissionsProvider(): array
     {
         return [
             'one' => [
@@ -476,9 +471,8 @@ class EndpointPermissionsTableTest extends TestCase
      * @param array|null $user User data. Null if user is unlogged.
      * @param bool $strict Strict check.
      * @return void
-     * @dataProvider fetchPermissionsProvider()
-     * @covers ::fetchPermissions()
      */
+    #[DataProvider('fetchPermissionsProvider')]
     public function testFetchPermissions(int $expected, ?int $endpointId, ?array $user, bool $strict): void
     {
         CurrentApplication::setApplication(null);

@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Command;
 
 use BEdita\Core\Model\Table\ApplicationsTable;
@@ -34,21 +33,21 @@ class CheckApiKeyCommand extends Command
      *
      * @var \Cake\Console\Arguments
      */
-    protected $args;
+    protected Arguments $args;
 
     /**
      * Console IO
      *
      * @var \Cake\Console\ConsoleIo
      */
-    protected $io;
+    protected ConsoleIo $io;
 
     /**
      * Applications table
      *
      * @var \BEdita\Core\Model\Table\ApplicationsTable
      */
-    protected $table;
+    protected ApplicationsTable $table;
 
     /**
      * {@inheritDoc}

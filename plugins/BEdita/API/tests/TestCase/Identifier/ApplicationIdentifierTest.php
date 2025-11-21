@@ -12,43 +12,48 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\API\Test\TestCase\Identifier;
 
+use ArrayAccess;
 use ArrayObject;
 use Authentication\Identifier\Resolver\ResolverInterface;
 use BEdita\API\Identifier\ApplicationIdentifier;
+use Cake\Core\InstanceConfigTrait;
 use Cake\TestSuite\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
 
 /**
  * {@see \BEdita\API\Identifier\ApplicationIdentifier} Test Case.
- *
- * @coversDefaultClass \BEdita\API\Identifier\ApplicationIdentifier
  */
+#[CoversClass(ApplicationIdentifier::class)]
 class ApplicationIdentifierTest extends TestCase
 {
     /**
      * Test `identify` method
      *
      * @return void
-     * @covers ::identify()
      */
     public function testIdentify(): void
     {
-        $resolver = $this->getMockBuilder(ResolverInterface::class)
-            ->onlyMethods(['find'])
-            ->addMethods(['setConfig'])
-            ->getMock();
-
         $app = new ArrayObject([
             'client_id' => 'gustavo',
             'client_secret' => 'segreto',
         ]);
 
-        $resolver->method('find')
-            ->willReturn($app);
-        $resolver->method('setConfig')
-            ->willReturn([]);
+        $resolver = new class ($app) implements ResolverInterface {
+            use InstanceConfigTrait;
+
+            protected array $_defaultConfig = [];
+
+            public function __construct(protected ArrayObject $app)
+            {
+            }
+
+            public function find(array $conditions, string $type = self::TYPE_AND): ArrayAccess|array|null
+            {
+                return $this->app;
+            }
+        };
 
         $identifier = new ApplicationIdentifier();
         $identifier->setResolver($resolver);

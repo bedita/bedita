@@ -26,7 +26,7 @@ class StreamsFixture extends TestFixture
     /**
      * @inheritDoc
      */
-    public $records = [
+    public array $records = [
         [
             'uuid' => 'e5afe167-7341-458d-a1e6-042e8791b0fe',
             'version' => 1,

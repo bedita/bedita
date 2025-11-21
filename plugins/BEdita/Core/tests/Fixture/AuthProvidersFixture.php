@@ -24,7 +24,7 @@ class AuthProvidersFixture extends TestFixture
     /**
      * @inheritDoc
      */
-    public $records = [
+    public array $records = [
         // 1
         [
             'name' => 'example',

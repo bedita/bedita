@@ -12,24 +12,22 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\API\Test\TestCase\Controller\Model;
 
+use BEdita\API\Controller\Model\ProjectController;
 use BEdita\API\TestSuite\IntegrationTestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
 
 /**
  * {@see \BEdita\API\Controller\Model\ProjectController} Test Case
- *
- * @coversDefaultClass \BEdita\API\Controller\Model\ProjectController
  */
+#[CoversClass(ProjectController::class)]
 class ProjectControllerTest extends IntegrationTestCase
 {
     /**
      * Test `index()` method.
      *
      * @return void
-     * @covers ::index()
-     * @covers ::initialize()
      */
     public function testIndex(): void
     {
@@ -504,12 +502,11 @@ class ProjectControllerTest extends IntegrationTestCase
     }
 
     /**
-     * Test `checkAcceptable()` method.
+     * Test content negotiation.
      *
      * @return void
-     * @covers ::checkAcceptable()
      */
-    public function testCheckAcceptable(): void
+    public function testContentNegotiation(): void
     {
         $this->configRequestHeaders();
         $this->get('/model/project');

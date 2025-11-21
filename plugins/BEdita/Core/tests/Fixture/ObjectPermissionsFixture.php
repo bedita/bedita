@@ -26,7 +26,7 @@ class ObjectPermissionsFixture extends TestFixture
      *
      * @var array
      */
-    public $records = [
+    public array $records = [
         [
             'object_id' => 2,
             'role_id' => 1,

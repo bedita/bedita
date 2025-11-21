@@ -12,27 +12,26 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\API\Test\TestCase\Controller\Admin;
 
+use BEdita\API\Controller\Admin\AuthProvidersController;
+use BEdita\API\Error\ExceptionRenderer;
 use BEdita\API\TestSuite\IntegrationTestCase;
+use BEdita\Core\Test\Utility\TestArraySubsetTrait;
 use Cake\Core\Configure;
 use Cake\ORM\TableRegistry;
-use DMS\PHPUnitExtensions\ArraySubset\ArraySubsetAsserts;
+use PHPUnit\Framework\Attributes\CoversClass;
 
-/**
- * @coversDefaultClass \BEdita\API\Controller\Admin\AuthProvidersController
- */
+#[CoversClass(AuthProvidersController::class)]
+#[CoversClass(ExceptionRenderer::class)]
 class AuthProvidersControllerTest extends IntegrationTestCase
 {
-    use ArraySubsetAsserts;
+    use TestArraySubsetTrait;
 
     /**
      * Test `index` method with user not admin.
      *
      * @return void
-     * @covers ::index()
-     * @covers ::initialize()
      */
     public function testIndexNoAdmin()
     {
@@ -46,8 +45,6 @@ class AuthProvidersControllerTest extends IntegrationTestCase
      * Test `index` method.
      *
      * @return void
-     * @covers ::index()
-     * @covers ::initialize()
      */
     public function testIndex()
     {
@@ -163,8 +160,6 @@ class AuthProvidersControllerTest extends IntegrationTestCase
      * Test index method.
      *
      * @return void
-     * @covers ::resource()
-     * @covers ::initialize()
      */
     public function testEmpty()
     {
@@ -205,8 +200,6 @@ class AuthProvidersControllerTest extends IntegrationTestCase
      * Test view method.
      *
      * @return void
-     * @covers ::resource()
-     * @covers ::initialize()
      */
     public function testSingle()
     {
@@ -245,9 +238,6 @@ class AuthProvidersControllerTest extends IntegrationTestCase
      * Test view method.
      *
      * @return void
-     * @covers ::resource()
-     * @covers ::initialize()
-     * @covers \BEdita\API\Error\ExceptionRenderer
      */
     public function testMissing()
     {
@@ -280,9 +270,6 @@ class AuthProvidersControllerTest extends IntegrationTestCase
      * Test add method.
      *
      * @return void
-     * @covers ::index()
-     * @covers ::initialize()
-     * @covers ::resourceUrl()
      */
     public function testAdd()
     {
@@ -301,7 +288,7 @@ class AuthProvidersControllerTest extends IntegrationTestCase
 
         $application = TableRegistry::getTableLocator()->get('auth_providers')
             ->find()
-            ->order(['id' => 'DESC'])
+            ->orderBy(['id' => 'DESC'])
             ->first();
 
         $this->assertHeader('Location', 'http://api.example.com/admin/auth_providers/' . $application->id);
@@ -314,8 +301,6 @@ class AuthProvidersControllerTest extends IntegrationTestCase
      * Test add method with invalid data.
      *
      * @return void
-     * @covers ::index()
-     * @covers ::initialize()
      */
     public function testAddAlreadyExist()
     {
@@ -341,8 +326,6 @@ class AuthProvidersControllerTest extends IntegrationTestCase
      * Test edit method.
      *
      * @return void
-     * @covers ::resource()
-     * @covers ::initialize()
      */
     public function testEdit()
     {
@@ -369,8 +352,6 @@ class AuthProvidersControllerTest extends IntegrationTestCase
      * Test edit method with ID conflict.
      *
      * @return void
-     * @covers ::resource()
-     * @covers ::initialize()
      */
     public function testEditConflict()
     {
@@ -397,8 +378,6 @@ class AuthProvidersControllerTest extends IntegrationTestCase
      * Test delete method.
      *
      * @return void
-     * @covers ::resource()
-     * @covers ::initialize()
      */
     public function testDelete()
     {

@@ -12,17 +12,17 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\Model\Entity;
 
 use BEdita\Core\Model\Entity\Category;
 use Cake\TestSuite\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
- *  {@see \BEdita\Core\Model\Entity\Category} Test Case
- *
- * @coversDefaultClass \BEdita\Core\Model\Entity\Category
+ * {@see \BEdita\Core\Model\Entity\Category} Test Case
  */
+#[CoversClass(Category::class)]
 class CategoryTest extends TestCase
 {
     /**
@@ -30,7 +30,7 @@ class CategoryTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.Categories',
         'plugin.BEdita/Core.Relations',
@@ -41,7 +41,6 @@ class CategoryTest extends TestCase
      * Test `_getObject` method.
      *
      * @return void
-     * @covers ::_getObject()
      */
     public function testGetObject(): void
     {
@@ -53,7 +52,6 @@ class CategoryTest extends TestCase
      * Test `_setObject` method.
      *
      * @return void
-     * @covers ::_setObject()
      */
     public function testSetObject(): void
     {
@@ -67,7 +65,7 @@ class CategoryTest extends TestCase
      *
      * @return array
      */
-    public function getParentProvider()
+    public static function getParentProvider(): array
     {
         return [
             'no parent' => [
@@ -91,9 +89,8 @@ class CategoryTest extends TestCase
      * @param string|null $expected Expected parent name.
      * @param int|null $parentId Parent ID.
      * @return void
-     * @covers ::_getParent()
-     * @dataProvider getParentProvider()
      */
+    #[DataProvider('getParentProvider')]
     public function testGetParent(?string $expected, ?int $parentId): void
     {
         $entity = new Category();
@@ -107,7 +104,7 @@ class CategoryTest extends TestCase
      *
      * @return array
      */
-    public function setParentProvider()
+    public static function setParentProvider(): array
     {
         return [
             'no parent' => [
@@ -131,9 +128,8 @@ class CategoryTest extends TestCase
      * @param int|null $expected Expected parent ID.
      * @param ?string $parent Parent name.
      * @return void
-     * @covers ::_setParent()
-     * @dataProvider setParentProvider()
      */
+    #[DataProvider('setParentProvider')]
     public function testSetParent(?int $expected, ?string $parent): void
     {
         $entity = new Category();
@@ -147,7 +143,6 @@ class CategoryTest extends TestCase
      * Test `_getLabel` methods.
      *
      * @return void
-     * @covers ::_getLabel()
      */
     public function testGetLabel(): void
     {
@@ -159,8 +154,6 @@ class CategoryTest extends TestCase
      * Test `_setLabel` methods.
      *
      * @return void
-     * @covers ::_getLabel()
-     * @covers ::_setLabel()
      */
     public function testSetLabel(): void
     {

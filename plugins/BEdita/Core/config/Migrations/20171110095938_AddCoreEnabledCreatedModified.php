@@ -1,13 +1,23 @@
 <?php
-use Migrations\AbstractMigration;
+use Migrations\BaseMigration;
 
 /**
  * Add `core_type`, `created`, `modified`, `enabled` columns to `object_types`.
  *
  * @see https://github.com/bedita/bedita/1366
  */
-class AddCoreEnabledCreatedModified extends AbstractMigration
+class AddCoreEnabledCreatedModified extends BaseMigration
 {
+    /**
+     * {@inheritDoc}
+     *
+     * @see https://github.com/cakephp/migrations/issues/741, https://github.com/cakephp/migrations/pull/745
+     */
+    public function useTransactions(): bool
+    {
+        return $this->getAdapter()->getAdapterType() === 'sqlite' ? false : parent::useTransactions();
+    }
+
     /**
      * {@inheritDoc}
      */

@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Model\Entity;
 
 use BEdita\Core\Utility\JsonApiSerializable;
@@ -24,12 +23,12 @@ use Cake\ORM\TableRegistry;
  * EndpointPermission Entity
  *
  * @property int $id
- * @property int $endpoint_id
- * @property int $application_id
- * @property int $role_id
+ * @property int|null $endpoint_id
+ * @property int|null $application_id
+ * @property int|null $role_id
  * @property int $permission
- * @property bool|string $read
- * @property bool|string $write
+ * @property string|bool $read
+ * @property string|bool $write
  * @property string $endpoint_name (virtual prop)
  * @property string $application_name (virtual prop)
  * @property string $role_name (virtual prop)
@@ -88,7 +87,7 @@ class EndpointPermission extends Entity implements JsonApiSerializable
     /**
      * @inheritDoc
      */
-    protected $_accessible = [
+    protected array $_accessible = [
         '*' => true,
         'id' => false,
         'permission' => false,
@@ -97,14 +96,14 @@ class EndpointPermission extends Entity implements JsonApiSerializable
     /**
      * @inheritDoc
      */
-    protected $_hidden = [
+    protected array $_hidden = [
         'permission',
     ];
 
     /**
      * @inheritDoc
      */
-    protected $_virtual = [
+    protected array $_virtual = [
         'read',
         'write',
     ];
@@ -112,10 +111,10 @@ class EndpointPermission extends Entity implements JsonApiSerializable
     /**
      * Decode a permission value.
      *
-     * @param int $value Integer representing a permission value.
-     * @return bool|string
+     * @param string|int $value Integer representing a permission value.
+     * @return string|bool
      */
-    public static function decode($value)
+    public static function decode(string|int $value): bool|string
     {
         if (is_string($value) && is_numeric($value)) {
             $value = (int)$value;
@@ -145,7 +144,7 @@ class EndpointPermission extends Entity implements JsonApiSerializable
      * @param mixed $value Value to be encoded. Can be either a boolean, or the strings `mine` and `block`.
      * @return int
      */
-    public static function encode($value)
+    public static function encode(mixed $value): int
     {
         if (is_string($value)) {
             $value = strtolower(trim($value));
@@ -167,10 +166,10 @@ class EndpointPermission extends Entity implements JsonApiSerializable
     /**
      * Setter for permission value.
      *
-     * @param int|array $value Permission value. Can be either an integer, or an array with `read` and `write` keys.
+     * @param mixed $value Permission value. Can be either an integer, or an array with `read` and `write` keys.
      * @return int
      */
-    protected function _setPermission($value)
+    protected function _setPermission(mixed $value): int
     {
         if (is_array($value)) {
             $read = static::encode(array_key_exists('read', $value) ? $value['read'] : $this->read);
@@ -191,9 +190,9 @@ class EndpointPermission extends Entity implements JsonApiSerializable
     /**
      * Human-readable getter for read permission.
      *
-     * @return bool|string
+     * @return string|bool
      */
-    protected function _getRead()
+    protected function _getRead(): bool|string
     {
         return static::decode($this->permission >> static::PERM_READ & static::PERM_YES);
     }
@@ -202,9 +201,9 @@ class EndpointPermission extends Entity implements JsonApiSerializable
      * Setter for read permission.
      *
      * @param mixed $read Value to be set for read permission.
-     * @return bool|string
+     * @return string|bool
      */
-    protected function _setRead($read)
+    protected function _setRead(mixed $read): bool|string
     {
         $this->permission = compact('read');
 
@@ -214,9 +213,9 @@ class EndpointPermission extends Entity implements JsonApiSerializable
     /**
      * Human-readable getter for write permission.
      *
-     * @return bool|string
+     * @return string|bool
      */
-    protected function _getWrite()
+    protected function _getWrite(): bool|string
     {
         return static::decode($this->permission >> static::PERM_WRITE & static::PERM_YES);
     }
@@ -225,9 +224,9 @@ class EndpointPermission extends Entity implements JsonApiSerializable
      * Setter for write permission.
      *
      * @param mixed $write Value to be set for write permission.
-     * @return bool|string
+     * @return string|bool
      */
-    protected function _setWrite($write)
+    protected function _setWrite(mixed $write): bool|string
     {
         $this->permission = compact('write');
 

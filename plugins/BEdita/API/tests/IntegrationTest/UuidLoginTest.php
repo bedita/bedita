@@ -12,19 +12,18 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\API\Test\IntegrationTest;
 
 use BEdita\API\TestSuite\IntegrationTestCase;
 use Cake\ORM\TableRegistry;
 use Cake\Utility\Hash;
 use Cake\Utility\Text;
+use PHPUnit\Framework\Attributes\CoversNothing;
 
 /**
  * Tests on anonymous login.
- *
- * @coversNothing
  */
+#[CoversNothing]
 class UuidLoginTest extends IntegrationTestCase
 {
     /**

@@ -19,12 +19,12 @@ use BEdita\Core\Utility\System;
 use Cake\Core\Configure;
 use Cake\Datasource\ConnectionManager;
 use Cake\TestSuite\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
 
 /**
- * \BEdita\Core\Utility\System Test Case
- *
- * @covers \BEdita\Core\Utility\System
+ * {@see \BEdita\Core\Utility\System} Test Case
  */
+#[CoversClass(System::class)]
 class SystemTest extends TestCase
 {
     /**

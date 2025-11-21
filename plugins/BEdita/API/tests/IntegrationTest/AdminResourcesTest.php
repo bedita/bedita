@@ -15,12 +15,13 @@ declare(strict_types=1);
 namespace BEdita\API\Test\IntegrationTest;
 
 use BEdita\API\TestSuite\IntegrationTestCase;
+use PHPUnit\Framework\Attributes\CoversNothing;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * Test CRUD operations on /admin resources
- *
- * @coversNothing
  */
+#[CoversNothing]
 class AdminResourcesTest extends IntegrationTestCase
 {
     /**
@@ -28,7 +29,7 @@ class AdminResourcesTest extends IntegrationTestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.Config',
     ];
 
@@ -37,7 +38,7 @@ class AdminResourcesTest extends IntegrationTestCase
      *
      * @return array
      */
-    public function resourceProvider()
+    public static function resourceProvider(): array
     {
         return [
             'apps' => [
@@ -90,9 +91,8 @@ class AdminResourcesTest extends IntegrationTestCase
      * @param $attributes array Resource attributes to insert
      * @param $modified array Resource attributes to modify
      * @return void
-     * @dataProvider resourceProvider
-     * @coversNothing
      */
+    #[DataProvider('resourceProvider')]
     public function testResource($type, $attributes, $modified)
     {
         // CREATE

@@ -12,18 +12,22 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\Model\Entity;
 
+use BadMethodCallException;
 use BEdita\Core\Job\JobService;
 use BEdita\Core\Job\ServiceRegistry;
+use BEdita\Core\Model\Entity\AsyncJob;
 use Cake\Datasource\ConnectionManager;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
- * @coversDefaultClass \BEdita\Core\Model\Entity\AsyncJob
+ * {@see \BEdita\Core\Model\Entity\AsyncJob} Test Case
  */
+#[CoversClass(AsyncJob::class)]
 class AsyncJobTest extends TestCase
 {
     /**
@@ -38,7 +42,7 @@ class AsyncJobTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.AsyncJobs',
     ];
 
@@ -90,7 +94,7 @@ class AsyncJobTest extends TestCase
      *
      * @return array
      */
-    public function getStatusProvider()
+    public static function getStatusProvider(): array
     {
         return [
             'pending' => [
@@ -126,9 +130,8 @@ class AsyncJobTest extends TestCase
      * @param string $expected Expected status.
      * @param string $uuid UUID of
      * @return void
-     * @dataProvider getStatusProvider()
-     * @covers ::_getStatus()
      */
+    #[DataProvider('getStatusProvider')]
     public function testGetStatus($expected, $uuid)
     {
         $entity = $this->AsyncJobs->get($uuid);
@@ -141,11 +144,10 @@ class AsyncJobTest extends TestCase
      * Test running a non-locked asynchronous job.
      *
      * @return void
-     * @covers ::run()
      */
     public function testRunNotLocked()
     {
-        $this->expectException(\BadMethodCallException::class);
+        $this->expectException(BadMethodCallException::class);
         $this->expectExceptionMessage('Only locked jobs can be run');
         $this->AsyncJobs->get('1e2d1c66-c0bb-47d7-be5a-5bc92202333e')->run();
     }
@@ -154,12 +156,11 @@ class AsyncJobTest extends TestCase
      * Test running an asynchronous job.
      *
      * @return void
-     * @covers ::run()
      */
     public function testRun()
     {
         $service = $this->getMockBuilder(JobService::class)->getMock();
-        $service->method('run')->will(static::returnValue(true));
+        $service->method('run')->willReturn(true);
         ServiceRegistry::set('example', $service);
 
         $result = $this->AsyncJobs->lock('d6bb8c84-6b29-432e-bb84-c3c4b2c1b99c')->run();

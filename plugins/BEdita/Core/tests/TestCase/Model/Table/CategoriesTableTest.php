@@ -12,19 +12,21 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\Model\Table;
 
 use BEdita\Core\Exception\BadFilterException;
+use BEdita\Core\Model\Table\CategoriesTable;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Hash;
+use Exception;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * {@see \BEdita\Core\Model\Table\CategoriesTable} Test Case
- *
- * @coversDefaultClass \BEdita\Core\Model\Table\CategoriesTable
  */
+#[CoversClass(CategoriesTable::class)]
 class CategoriesTableTest extends TestCase
 {
     /**
@@ -39,7 +41,7 @@ class CategoriesTableTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.Relations',
         'plugin.BEdita/Core.RelationTypes',
@@ -72,7 +74,6 @@ class CategoriesTableTest extends TestCase
      * Test `beforeFind` method
      *
      * @return void
-     * @covers ::beforeFind()
      */
     public function testBeforeFindPrimary()
     {
@@ -96,12 +97,11 @@ class CategoriesTableTest extends TestCase
      * Test `beforeFind` method in case of association
      *
      * @return void
-     * @covers ::beforeFind()
      */
     public function testBeforeFindAssoc()
     {
         $document = TableRegistry::getTableLocator()->get('Documents')
-            ->get(2, ['contain' => ['Categories']])
+            ->get(2, contain: ['Categories'])
             ->toArray();
         $expected = [
             [
@@ -124,7 +124,6 @@ class CategoriesTableTest extends TestCase
      * Test find enabled categories
      *
      * @return void
-     * @covers ::findEnabled()
      */
     public function testFindEnabledCategories()
     {
@@ -136,32 +135,17 @@ class CategoriesTableTest extends TestCase
      * Test find categories by type
      *
      * @return void
-     * @covers ::findType()
      */
     public function testFindCategoriesType()
     {
         $order = [
             $this->Categories->aliasField('id') => 'ASC',
         ];
-        $categories = $this->Categories->find('type', ['documents'])->order($order)->toArray();
+        $categories = $this->Categories->find('type', objectType: 'documents')->orderBy($order)->toArray();
         static::assertEquals([1, 2, 3, 4], Hash::extract($categories, '{n}.id'));
 
-        $categories = $this->Categories->find('type', ['news'])->order($order)->toArray();
+        $categories = $this->Categories->find('type', objectType: 'news')->orderBy($order)->toArray();
         static::assertEquals([], $categories);
-    }
-
-    /**
-     * Test find categories by type failure
-     *
-     * @return void
-     * @covers ::findType()
-     */
-    public function testFindCategoriesTypeFail(): void
-    {
-        $this->expectException(BadFilterException::class);
-        $this->expectExceptionMessage('Missing required parameter "type"');
-
-        $this->Categories->find('type')->toArray();
     }
 
     /**
@@ -169,19 +153,13 @@ class CategoriesTableTest extends TestCase
      *
      * @return array
      */
-    public function findResourceProvider(): array
+    public static function findResourceProvider(): array
     {
         return [
             'category' => [
                 1,
                 [
                     'name' => 'first-cat',
-                    'object_type_name' => 'documents',
-                ],
-            ],
-            'no name' => [
-                new BadFilterException('Missing required parameter "name"'),
-                [
                     'object_type_name' => 'documents',
                 ],
             ],
@@ -200,16 +178,15 @@ class CategoriesTableTest extends TestCase
      * @param int|\Exception $expected The value expected
      * @param array $options The options for the finder
      * @return void
-     * @covers ::findResource()
-     * @dataProvider findResourceProvider()
      */
+    #[DataProvider('findResourceProvider')]
     public function testFindResource($expected, $options): void
     {
-        if ($expected instanceof \Exception) {
+        if ($expected instanceof Exception) {
             $this->expectException(get_class($expected));
             $this->expectExceptionMessage($expected->getMessage());
         }
-        $query = $this->Categories->find('resource', $options);
+        $query = $this->Categories->find('resource', ...$options);
         $entity = $query->first();
 
         static::assertEquals(1, $query->count());
@@ -220,41 +197,25 @@ class CategoriesTableTest extends TestCase
      * Test `findIds` method.
      *
      * @return void
-     * @covers ::findIds()
      */
     public function testFindIds()
     {
         $categories = $this->Categories
-            ->find('ids', ['names' => ['second-cat'], 'typeId' => 2])
+            ->find('ids', names: ['second-cat'], typeId: 2)
             ->toArray();
         static::assertEquals(1, count($categories));
         static::assertEquals(2, $categories[0]['id']);
 
         $categories = $this->Categories
-            ->find('ids', ['names' => ['first-cat', 'second-cat'], 'typeId' => 4])
+            ->find('ids', names: ['first-cat', 'second-cat'], typeId: 4)
             ->toArray();
         static::assertEmpty($categories);
-    }
-
-    /**
-     * Test `findIds` failure.
-     *
-     * @return void
-     * @covers ::findIds()
-     */
-    public function testFindIdsFail()
-    {
-        $this->expectException(BadFilterException::class);
-        $this->expectExceptionMessage('Missing required parameter "typeId"');
-
-        $this->Categories->find('ids', ['names' => ['unnamed']])->toArray();
     }
 
     /**
      * Test `findRoots` method.
      *
      * @return void
-     * @covers ::findRoots()
      */
     public function testFindRoots()
     {

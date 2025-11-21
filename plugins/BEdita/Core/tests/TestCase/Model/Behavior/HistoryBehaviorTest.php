@@ -12,18 +12,22 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\Model\Behavior;
 
+use BEdita\Core\Model\Behavior\HistoryBehavior;
+use BEdita\Core\Model\Enum\HistoryUserAction;
 use BEdita\Core\Utility\LoggedUser;
 use Cake\Core\Configure;
-use Cake\I18n\FrozenTime;
+use Cake\I18n\DateTime;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
- * @coversDefaultClass \BEdita\Core\Model\Behavior\HistoryBehavior
+ * {@see \BEdita\Core\Model\Behavior\HistoryBehavior} Test Case
  */
+#[CoversClass(HistoryBehavior::class)]
 class HistoryBehaviorTest extends TestCase
 {
     /**
@@ -31,7 +35,7 @@ class HistoryBehaviorTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.Applications',
         'plugin.BEdita/Core.PropertyTypes',
@@ -71,7 +75,7 @@ class HistoryBehaviorTest extends TestCase
     /**
      * Test `initialize` method
      *
-     * @covers ::initialize()
+     * @return void
      */
     public function testInitialize()
     {
@@ -80,6 +84,7 @@ class HistoryBehaviorTest extends TestCase
         // pass config via `Configure`
         Configure::write('History.exclude', ['id']);
         $Documents = TableRegistry::getTableLocator()->get('Documents');
+        /** @var \BEdita\Core\Model\Behavior\HistoryBehavior $behavior */
         $behavior = $Documents->getBehavior('History');
         static::assertEquals(['id'], $behavior->getConfig('exclude'));
         static::assertNotEmpty($behavior->Table);
@@ -97,7 +102,7 @@ class HistoryBehaviorTest extends TestCase
     /**
      * Test `beforeMarshal` method
      *
-     * @covers ::beforeMarshal()
+     * @return void
      */
     public function testBeforeMarshal()
     {
@@ -109,6 +114,7 @@ class HistoryBehaviorTest extends TestCase
         $entity = $Documents->newEntity($data);
         $Documents->save($entity);
 
+        /** @var \BEdita\Core\Model\Behavior\HistoryBehavior $behavior */
         $behavior = $Documents->getBehavior('History');
         unset($data['type']);
         static::assertEquals($data, $behavior->getChanged());
@@ -117,7 +123,7 @@ class HistoryBehaviorTest extends TestCase
     /**
      * Test `beforeSave` method
      *
-     * @covers ::beforeSave()
+     * @return void
      */
     public function testBeforeSave()
     {
@@ -146,9 +152,7 @@ class HistoryBehaviorTest extends TestCase
     /**
      * Test `afterSave` method
      *
-     * @covers ::afterSave()
-     * @covers ::historyEntity()
-     * @covers ::entityUserAction()
+     * @return void
      */
     public function testAfterSave()
     {
@@ -161,11 +165,12 @@ class HistoryBehaviorTest extends TestCase
         $Documents->save($entity);
 
         $behavior = $Documents->getBehavior('History');
+        /** @var \BEdita\Core\Model\Behavior\HistoryBehavior $behavior */
         static::assertEquals($data, $behavior->getChanged());
 
         $history = TableRegistry::getTableLocator()->get('History')->find()
                 ->where(['resource_id' => '3', 'resource_type' => 'objects'])
-                ->order(['id' => 'ASC'])
+                ->orderBy(['id' => 'ASC'])
                 ->all()
                 ->last()
                 ->toArray();
@@ -176,11 +181,11 @@ class HistoryBehaviorTest extends TestCase
             'resource_type' => 'objects',
             'user_id' => 1,
             'application_id' => null,
-            'user_action' => 'update',
+            'user_action' => HistoryUserAction::Update,
             'changed' => $data,
         ];
         static::assertNotEmpty($history['created']);
-        static::assertEquals(FrozenTime::class, get_class($history['created']));
+        static::assertEquals(DateTime::class, get_class($history['created']));
         unset($history['created']);
         $history['changed'] = (array)$history['changed'];
         static::assertEquals($expected, $history);
@@ -189,7 +194,7 @@ class HistoryBehaviorTest extends TestCase
     /**
      * Test `trash` and `restore` user actions
      *
-     * @covers ::entityUserAction()
+     * @return void
      */
     public function testTrashRestore()
     {
@@ -201,31 +206,31 @@ class HistoryBehaviorTest extends TestCase
         $History = TableRegistry::getTableLocator()->get('History');
         $history = $History->find()
                 ->where(['resource_id' => '3', 'resource_type' => 'objects'])
-                ->order(['id' => 'ASC'])
+                ->orderBy(['id' => 'ASC'])
                 ->all()
                 ->last();
-        static::assertEquals('trash', $history->get('user_action'));
+        static::assertEquals(HistoryUserAction::Trash, $history->get('user_action'));
 
         $entity->deleted = false;
         $Documents->saveOrFail($entity);
         $history = $History->find()
                 ->where(['resource_id' => '3', 'resource_type' => 'objects'])
-                ->order(['id' => 'ASC'])
+                ->orderBy(['id' => 'ASC'])
                 ->all()
                 ->last();
         static::assertNotEmpty($history);
-        static::assertEquals('restore', $history->get('user_action'));
+        static::assertEquals(HistoryUserAction::Restore, $history->get('user_action'));
     }
 
     /**
      * Test `create` user action
      *
-     * @covers ::entityUserAction()
+     * @return void
      */
     public function testCreate()
     {
         $Users = TableRegistry::getTableLocator()->get('Users');
-        $entity = $Users->newEntity([]);
+        $entity = $Users->newEmptyEntity();
         $data = [
             'username' => 'aurelio',
             'name' => 'Aurelio',
@@ -239,16 +244,14 @@ class HistoryBehaviorTest extends TestCase
                 ->toArray();
         static::assertNotEmpty($history);
         static::assertEquals(1, count($history));
-        static::assertEquals('create', $history[0]->get('user_action'));
+        static::assertEquals(HistoryUserAction::Create, $history[0]->get('user_action'));
         static::assertEquals($data, $history[0]->get('changed'));
     }
 
     /**
      * Test `afterDelete` method
      *
-     * @covers ::afterDelete()
-     * @covers ::historyEntity()
-     * @covers ::entityUserAction()
+     * @return void
      */
     public function testAfterDelete()
     {
@@ -258,7 +261,7 @@ class HistoryBehaviorTest extends TestCase
 
         $history = TableRegistry::getTableLocator()->get('History')->find()
                 ->where(['resource_id' => '2', 'resource_type' => 'objects'])
-                ->order(['id' => 'ASC'])
+                ->orderBy(['id' => 'ASC'])
                 ->all()
                 ->last()
                 ->toArray();
@@ -269,11 +272,11 @@ class HistoryBehaviorTest extends TestCase
             'resource_type' => 'objects',
             'user_id' => 1,
             'application_id' => null,
-            'user_action' => 'remove',
+            'user_action' => HistoryUserAction::Remove,
             'changed' => [],
         ];
         static::assertNotEmpty($history['created']);
-        static::assertEquals(FrozenTime::class, get_class($history['created']));
+        static::assertEquals(DateTime::class, get_class($history['created']));
         unset($history['created']);
         static::assertEquals($expected, $history);
     }
@@ -281,7 +284,7 @@ class HistoryBehaviorTest extends TestCase
     /**
      * Test `afterDelete` with empty table
      *
-     * @covers ::afterDelete()
+     * @return void
      */
     public function testAfterDeleteEmpty()
     {
@@ -300,7 +303,7 @@ class HistoryBehaviorTest extends TestCase
     /**
      * Test `afterSave` with empty table
      *
-     * @covers ::afterSave()
+     * @return void
      */
     public function testAfterSaveEmpty()
     {
@@ -322,16 +325,16 @@ class HistoryBehaviorTest extends TestCase
      *
      * @return array
      */
-    public function findHistoryEditorProvider(): array
+    public static function findHistoryEditorProvider(): array
     {
         return [
             'logged' => [
                 [2],
-                [],
+                null,
             ],
             'options' => [
                 [2],
-                [5],
+                5,
             ],
         ];
     }
@@ -340,18 +343,17 @@ class HistoryBehaviorTest extends TestCase
      * Test `findHistoryEditor` finder.
      *
      * @param array $expected Expected result
-     * @param array $options Filter options
+     * @param int|null $editorId The editor id
      * @return void
-     * @dataProvider findHistoryEditorProvider
-     * @covers ::findHistoryEditor()
      */
-    public function testFindHistoryEditor(array $expected, array $options): void
+    #[DataProvider('findHistoryEditorProvider')]
+    public function testFindHistoryEditor(array $expected, ?int $editorId): void
     {
         LoggedUser::setUserAdmin();
 
         $result = TableRegistry::getTableLocator()->get('Documents')
-            ->find('historyEditor', $options)
-            ->find('list', ['keyField' => 'id', 'valueField' => 'id'])
+            ->find('historyEditor', editorId: $editorId)
+            ->find('list', keyField: 'id', valueField: 'id')
             ->toArray();
 
         LoggedUser::resetUser();

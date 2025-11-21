@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Model\Behavior;
 
 use Cake\Database\Expression\ComparisonExpression;
@@ -22,12 +21,13 @@ use Cake\Database\Query;
 use Cake\Datasource\EntityInterface;
 use Cake\Event\EventInterface;
 use Cake\ORM\Behavior\TreeBehavior as CakeTreeBehavior;
+use Cake\ORM\Query\SelectQuery;
 use Cake\ORM\Table;
 
 /**
- * This behavior adds absolute positioning of nodes on top of CakePHP {@see \Cake\ORM\Behavior\TreeBehavior}.
- *
  * {@inheritDoc}
+ *
+ * This behavior adds absolute positioning of nodes on top of CakePHP {@see \Cake\ORM\Behavior\TreeBehavior}.
  */
 class TreeBehavior extends CakeTreeBehavior
 {
@@ -50,7 +50,7 @@ class TreeBehavior extends CakeTreeBehavior
     /**
      * @inheritDoc
      */
-    public function beforeDelete(EventInterface $event, EntityInterface $entity)
+    public function beforeDelete(EventInterface $event, EntityInterface $entity): void
     {
         // ensure to use actual left and right fields
         unset($entity[$this->getConfig('left')], $entity[$this->getConfig('right')]);
@@ -65,14 +65,14 @@ class TreeBehavior extends CakeTreeBehavior
      * @param \Cake\Datasource\EntityInterface $node Node to get position for.
      * @return int
      */
-    public function getCurrentPosition(EntityInterface $node)
+    public function getCurrentPosition(EntityInterface $node): int
     {
         return $this->_scope($this->table()->find())
             ->where(function (QueryExpression $exp) use ($node) {
                 $parentField = $this->getConfig('parent');
                 $leftField = $this->getConfig('left');
 
-                if (!$node->has($parentField)) {
+                if (!$node->hasValue($parentField)) {
                     $exp = $exp->isNull($this->table()->aliasField($parentField));
                 } else {
                     $exp = $exp->eq($this->table()->aliasField($parentField), $node->get($parentField));
@@ -88,11 +88,11 @@ class TreeBehavior extends CakeTreeBehavior
      * Move a node at a specific position without changing the parent.
      *
      * @param \Cake\Datasource\EntityInterface $node Node to be moved.
-     * @param int|string $position New position. Can be either an integer, or a string (`'first'` or `'last'`).
+     * @param string|int $position New position. Can be either an integer, or a string (`'first'` or `'last'`).
      *      Negative integers are interpreted as number of positions from the end of the list. 0 (zero) is not allowed.
      * @return \Cake\Datasource\EntityInterface|false
      */
-    public function moveAt(EntityInterface $node, $position)
+    public function moveAt(EntityInterface $node, int|string $position): EntityInterface|false
     {
         return $this->table()->getConnection()->transactional(function () use ($node, $position) {
             $position = static::validatePosition($position);
@@ -115,7 +115,7 @@ class TreeBehavior extends CakeTreeBehavior
                 ->where(function (QueryExpression $exp) use ($node) {
                     $parentField = $this->getConfig('parent');
 
-                    if (!$node->has($parentField)) {
+                    if (!$node->hasValue($parentField)) {
                         return $exp->isNull($this->table()->aliasField($parentField));
                     }
 
@@ -145,10 +145,10 @@ class TreeBehavior extends CakeTreeBehavior
     /**
      * Validate a position.
      *
-     * @param int|string $position Position to be validated.
+     * @param string|int $position Position to be validated.
      * @return int|false
      */
-    protected static function validatePosition($position)
+    protected static function validatePosition(int|string $position): int|false
     {
         if ($position === 'first') {
             return 1;
@@ -180,7 +180,7 @@ class TreeBehavior extends CakeTreeBehavior
     /**
      * Run queries to check tree integrity.
      *
-     * @return string[]
+     * @return array<string>
      */
     public function checkIntegrity(): array
     {
@@ -192,8 +192,8 @@ class TreeBehavior extends CakeTreeBehavior
         $childAlias = sprintf('Child%s', $table->getAlias());
         $siblingAlias = sprintf('Sibling%s', $table->getAlias());
 
-        $exists = function (Query $query): bool {
-            return $query->select(['existing' => 1])->limit(1)->execute()->count() > 0;
+        $exists = function (SelectQuery $query): bool {
+            return $query->select(['existing' => 1])->limit(1)->count() > 0;
         };
 
         $errors = [];
@@ -214,13 +214,13 @@ class TreeBehavior extends CakeTreeBehavior
                 function (QueryExpression $exp) use ($pk, $childAlias): QueryExpression {
                     return $exp
                         ->equalFields($pk, sprintf('%s.%s', $childAlias, $this->getConfigOrFail('parent')));
-                }
+                },
             )
-            ->group([$pk, $left])
+            ->groupBy([$pk, $left])
             ->having(function (QueryExpression $exp, Query $query) use ($childAlias, $left): QueryExpression {
                 return $exp->notEq(
                     new ComparisonExpression($left, 1, null, '+'),
-                    $query->func()->min(sprintf('%s.%s', $childAlias, $this->getConfigOrFail('left')))
+                    $query->func()->min(sprintf('%s.%s', $childAlias, $this->getConfigOrFail('left'))),
                 );
             });
         if ($exists($query)) {
@@ -234,13 +234,13 @@ class TreeBehavior extends CakeTreeBehavior
                 function (QueryExpression $exp) use ($pk, $childAlias): QueryExpression {
                     return $exp
                         ->equalFields($pk, sprintf('%s.%s', $childAlias, $this->getConfigOrFail('parent')));
-                }
+                },
             )
-            ->group([$pk, $right])
+            ->groupBy([$pk, $right])
             ->having(function (QueryExpression $exp, Query $query) use ($childAlias, $right): QueryExpression {
                 return $exp->notEq(
                     new ComparisonExpression($right, 1, null, '-'),
-                    $query->func()->max(sprintf('%s.%s', $childAlias, $this->getConfigOrFail('right')))
+                    $query->func()->max(sprintf('%s.%s', $childAlias, $this->getConfigOrFail('right'))),
                 );
             });
         if ($exists($query)) {
@@ -264,13 +264,13 @@ class TreeBehavior extends CakeTreeBehavior
                         }))
                         ->gte($left, new IdentifierExpression(sprintf('%s.%s', $siblingAlias, $this->getConfigOrFail('left'))))
                         ->notEq($pk, new IdentifierExpression(sprintf('%s.%s', $siblingAlias, $table->getPrimaryKey())));
-                }
+                },
             )
-            ->group([$pk, $left])
+            ->groupBy([$pk, $left])
             ->having(function (QueryExpression $exp, Query $query) use ($siblingAlias, $left): QueryExpression {
                 return $exp->notEq(
                     new ComparisonExpression($left, 1, null, '-'),
-                    $query->func()->max(sprintf('%s.%s', $siblingAlias, $this->getConfigOrFail('right')))
+                    $query->func()->max(sprintf('%s.%s', $siblingAlias, $this->getConfigOrFail('right'))),
                 );
             });
         if ($exists($query)) {

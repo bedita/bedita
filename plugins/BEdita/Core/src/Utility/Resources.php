@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Utility;
 
 use Cake\Datasource\EntityInterface;
@@ -53,7 +52,7 @@ class Resources extends ResourcesBase
      *
      * @var array
      */
-    protected static $defaults = [
+    protected static array $defaults = [
         // since default usage is in migrations
         // don't commit transactions but let migrations do it
         'save' => [
@@ -85,7 +84,7 @@ class Resources extends ResourcesBase
      *
      * @var array
      */
-    protected static $allowed = [
+    protected static array $allowed = [
         'applications',
         'auth_providers',
         'categories',
@@ -103,7 +102,7 @@ class Resources extends ResourcesBase
      *
      * @var array
      */
-    protected static $otherTypesMap = [
+    protected static array $otherTypesMap = [
         'properties' => Properties::class,
         'relations' => Relations::class,
     ];
@@ -130,7 +129,7 @@ class Resources extends ResourcesBase
             $resource = $Table->newEntity($item);
             if ($resource->hasErrors()) {
                 throw new InvalidArgumentException(
-                    __('Invalid resource data') . ': ' . json_encode($resource->getErrors())
+                    __('Invalid resource data') . ': ' . json_encode($resource->getErrors()),
                 );
             }
             foreach ($item as $k => $v) {
@@ -202,7 +201,7 @@ class Resources extends ResourcesBase
     protected static function loadEntity(array $item, Table $Table): EntityInterface
     {
         if ($Table->hasFinder('resource')) {
-            return $Table->find('resource', $item)->firstOrFail();
+            return $Table->find('resource', ...$item)->firstOrFail();
         }
 
         return $Table->find()
@@ -250,7 +249,7 @@ class Resources extends ResourcesBase
         foreach ($resources as $action => $params) {
             if (!is_string($action) || !in_array($action, ['create', 'remove', 'update'])) {
                 throw new BadRequestException(
-                    __d('bedita', 'Save action "{0}" not allowed', $action)
+                    __d('bedita', 'Save action "{0}" not allowed', $action),
                 );
             }
             $params = (array)$params;
@@ -278,7 +277,7 @@ class Resources extends ResourcesBase
             !in_array($type, array_keys(static::$otherTypesMap))
         ) {
             throw new BadRequestException(
-                __d('bedita', 'Resource type "{0}" not supported', $type)
+                __d('bedita', 'Resource type "{0}" not supported', $type),
             );
         }
         $useOther = in_array($type, array_keys(static::$otherTypesMap));
@@ -306,7 +305,7 @@ class Resources extends ResourcesBase
         $condition = array_filter(array_intersect_key($item, $keys));
         if (empty($condition)) {
             throw new BadRequestException(
-                __d('bedita', 'Missing mandatory fields "id" or "name"')
+                __d('bedita', 'Missing mandatory fields "id" or "name"'),
             );
         }
 

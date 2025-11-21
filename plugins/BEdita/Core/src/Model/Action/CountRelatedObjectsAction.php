@@ -12,13 +12,14 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Model\Action;
 
 use BEdita\Core\Model\Entity\ObjectEntity;
+use BEdita\Core\Model\Table\ObjectRelationsTable;
+use BEdita\Core\Model\Table\RelationsTable;
 use Cake\Datasource\EntityInterface;
 use Cake\ORM\Locator\LocatorAwareTrait;
-use Cake\ORM\Query;
+use Cake\ORM\Query\SelectQuery;
 use Cake\Utility\Hash;
 
 /**
@@ -44,7 +45,7 @@ class CountRelatedObjectsAction extends BaseAction
      *
      * @var array
      */
-    protected $_defaultConfig = [
+    protected array $_defaultConfig = [
         'hydrate' => true,
     ];
 
@@ -53,14 +54,14 @@ class CountRelatedObjectsAction extends BaseAction
      *
      * @var \BEdita\Core\Model\Table\RelationsTable
      */
-    protected $Relations = null;
+    protected RelationsTable $Relations;
 
     /**
      * The ObjectRelationTable instance
      *
      * @var \BEdita\Core\Model\Table\ObjectRelationsTable
      */
-    protected $ObjectRelations = null;
+    protected ObjectRelationsTable $ObjectRelations;
 
     /**
      * The relations list described as
@@ -71,9 +72,9 @@ class CountRelatedObjectsAction extends BaseAction
      * ]
      * ```
      *
-     * @var array
+     * @var array|null
      */
-    protected $relationsList = null;
+    protected ?array $relationsList = null;
 
     /**
      * {@inheritDoc}
@@ -122,7 +123,7 @@ class CountRelatedObjectsAction extends BaseAction
     {
         [$directCount, $inverseCount] = $this->filterCount(Hash::get($data, 'count'));
         $count = array_merge($directCount, $inverseCount);
-        /** @var \BEdita\Core\Model\Entity\ObjectEntity[] $entities*/
+        /** @var array<\BEdita\Core\Model\Entity\ObjectEntity> $entities*/
         $entities = (array)Hash::get($data, 'entities');
         if (empty($entities) || empty($count)) {
             return [];
@@ -193,10 +194,7 @@ class CountRelatedObjectsAction extends BaseAction
             return $this->relationsList;
         }
 
-        $this->relationsList = $this->Relations->find('list', [
-            'keyField' => 'name',
-            'valueField' => 'inverse_name',
-        ])->toArray();
+        $this->relationsList = $this->Relations->find('list', keyField: 'name', valueField: 'inverse_name')->toArray();
 
         return $this->relationsList;
     }
@@ -211,7 +209,7 @@ class CountRelatedObjectsAction extends BaseAction
      * @param array|string $count The count
      * @return array
      */
-    protected function filterCount($count): array
+    protected function filterCount(array|string $count): array
     {
         if (empty($count)) {
             return [[], []];
@@ -239,9 +237,9 @@ class CountRelatedObjectsAction extends BaseAction
      * @param array|null $relations The list of direct relations
      * @param array $ids A list of object ids
      * @param bool $inverse If you want to count inverse relation
-     * @return \Cake\ORM\Query
+     * @return \Cake\ORM\Query\SelectQuery
      */
-    protected function countRelations(array $relations, array $ids, bool $inverse = false): Query
+    protected function countRelations(array $relations, array $ids, bool $inverse = false): SelectQuery
     {
         $objectId = 'left_id';
         $relatedObjectId = 'right_id';
@@ -266,22 +264,22 @@ class CountRelatedObjectsAction extends BaseAction
                 'relation_name' => $relationField,
                 'count' => $query->func()->count($this->ObjectRelations->aliasField($relatedObjectId)),
             ])
-            ->innerJoinWith($relatedObjectsTable, function (Query $q) {
+            ->innerJoinWith($relatedObjectsTable, function (SelectQuery $q) {
                 return $q->find('available');
             })
-            ->innerJoinWith('Relations', function (Query $q) use ($relations, $relationField) {
+            ->innerJoinWith('Relations', function (SelectQuery $q) use ($relations, $relationField) {
                 return $q->where([
                     sprintf('%s IN', $relationField) => $relations,
                 ]);
             })
             ->where([sprintf('%s IN', $objectId) => $ids])
-            ->group([$objectId, $relationField]);
+            ->groupBy([$objectId, $relationField]);
     }
 
     /**
      * Hydrate count result into entities.
      *
-     * @param \BEdita\Core\Model\Entity\ObjectEntity[] $entities The collection of entities
+     * @param array<\BEdita\Core\Model\Entity\ObjectEntity> $entities The collection of entities
      * @param array $countData The count data
      * @param array $properties A list of properties on which search
      * @return void
@@ -372,11 +370,11 @@ class CountRelatedObjectsAction extends BaseAction
      * Return all entities with searched id.
      *
      * @param int $id The entity id to look for
-     * @param \Cake\Datasource\EntityInterface[] $entities The enitites on which search
+     * @param array<\Cake\Datasource\EntityInterface> $entities The enitites on which search
      * @param array $properties A list of properties
      * @return array
      */
-    protected function searchEntitiesById($id, $entities, array $properties): array
+    protected function searchEntitiesById(int $id, array $entities, array $properties): array
     {
         $entitiesFound = [];
         foreach ($entities as $entity) {
@@ -401,7 +399,7 @@ class CountRelatedObjectsAction extends BaseAction
      * @param array $properties A list of properties to look in
      * @return array
      */
-    protected function searchEntitiesInProperties($id, EntityInterface $entity, array $properties): array
+    protected function searchEntitiesInProperties(int $id, EntityInterface $entity, array $properties): array
     {
         return collection(array_filter($entity->extract($properties)))
             ->unfold()

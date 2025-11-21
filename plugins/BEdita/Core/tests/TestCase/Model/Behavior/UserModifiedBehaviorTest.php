@@ -12,30 +12,32 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\Model\Behavior;
 
+use BEdita\Core\Model\Behavior\UserModifiedBehavior;
 use BEdita\Core\Model\Entity\ObjectEntity;
+use BEdita\Core\Test\Utility\TestArraySubsetTrait;
 use BEdita\Core\Utility\LoggedUser;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
-use DMS\PHPUnitExtensions\ArraySubset\ArraySubsetAsserts;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Depends;
+use UnexpectedValueException;
 
 /**
  * {@see \BEdita\Core\Model\Behavior\UserModifiedBehavior} Test Case
- *
- * @coversDefaultClass \BEdita\Core\Model\Behavior\UserModifiedBehavior
  */
+#[CoversClass(UserModifiedBehavior::class)]
 class UserModifiedBehaviorTest extends TestCase
 {
-    use ArraySubsetAsserts;
+    use TestArraySubsetTrait;
 
     /**
      * Fixtures
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.PropertyTypes',
         'plugin.BEdita/Core.Properties',
@@ -78,7 +80,6 @@ class UserModifiedBehaviorTest extends TestCase
      * Test behavior initialization process.
      *
      * @return void
-     * @covers ::initialize()
      */
     public function testInitialize()
     {
@@ -102,11 +103,9 @@ class UserModifiedBehaviorTest extends TestCase
      * Test setting a custom user ID.
      *
      * @return void
-     * @covers ::userId()
      */
     public function testUserId()
     {
-        $behavior = $this->Objects->behaviors()->get('UserModified');
         static::assertSame(1, $this->Objects->userId());
 
         static::assertSame(99, $this->Objects->userId(99));
@@ -117,7 +116,6 @@ class UserModifiedBehaviorTest extends TestCase
      * Test implemented events.
      *
      * @return void
-     * @covers ::implementedEvents()
      */
     public function testImplementedEvents()
     {
@@ -134,12 +132,10 @@ class UserModifiedBehaviorTest extends TestCase
      * Test handling of events.
      *
      * @return \BEdita\Core\Model\Entity\ObjectEntity
-     * @covers ::handleEvent()
-     * @covers ::updateField()
      */
     public function testHandleEvent()
     {
-        $object = $this->Objects->newEntity([]);
+        $object = $this->Objects->newEmptyEntity();
         $object->type = 'documents';
         $object = $this->Objects->save($object);
 
@@ -153,12 +149,10 @@ class UserModifiedBehaviorTest extends TestCase
      * Test handling of events.
      *
      * @return void
-     * @covers ::handleEvent()
-     * @covers ::updateField()
      */
     public function testHandleEventFailure()
     {
-        $this->expectException(\UnexpectedValueException::class);
+        $this->expectException(UnexpectedValueException::class);
         $this->expectExceptionMessage('When should be one of "always", "new" or "existing". The passed value "sometimes" is invalid');
         $this->Objects->behaviors()->get('UserModified')->setConfig('events', [
             'Model.beforeSave' => [
@@ -166,7 +160,7 @@ class UserModifiedBehaviorTest extends TestCase
             ],
         ], false);
 
-        $object = $this->Objects->newEntity([]);
+        $object = $this->Objects->newEmptyEntity();
         $object->type = 'documents';
         $this->Objects->save($object);
     }
@@ -176,10 +170,8 @@ class UserModifiedBehaviorTest extends TestCase
      *
      * @param \BEdita\Core\Model\Entity\ObjectEntity $object
      * @return void
-     * @depends testHandleEvent
-     * @covers ::touchUser()
-     * @covers ::updateField()
      */
+    #[Depends('testHandleEvent')]
     public function testTouchUser(ObjectEntity $object)
     {
         $this->Objects->userId(99);
@@ -193,10 +185,8 @@ class UserModifiedBehaviorTest extends TestCase
      * Test "touch" of an entity with an unknown event.
      *
      * @return void
-     * @depends testHandleEvent
-     * @covers ::touchUser()
-     * @covers ::updateField()
      */
+    #[Depends('testHandleEvent')]
     public function testTouchUserUnknownEvent()
     {
         $object = $this->Objects->get(1);
@@ -212,13 +202,11 @@ class UserModifiedBehaviorTest extends TestCase
      * Test "touch" of an entity when one of the fields is dirty already.
      *
      * @return void
-     * @depends testHandleEvent
-     * @covers ::touchUser()
-     * @covers ::updateField()
      */
+    #[Depends('testHandleEvent')]
     public function testTouchUserDirtyField()
     {
-        $object = $this->Objects->newEntity([]);
+        $object = $this->Objects->newEmptyEntity();
         $object->type = 'documents';
         $object->created_by = 5;
         $this->Objects->saveOrFail($object);

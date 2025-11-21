@@ -1,10 +1,10 @@
 <?php
-use Migrations\AbstractMigration;
+use Migrations\BaseMigration;
 
 /**
  * Remove unique `profiles.email` index and add non-unique index
  */
-class RemoveUniqueEmail extends AbstractMigration
+class RemoveUniqueEmail extends BaseMigration
 {
     /**
      * {@inheritDoc}

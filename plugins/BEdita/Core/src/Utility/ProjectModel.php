@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Utility;
 
 use BEdita\Core\Model\Entity\Relation;
@@ -58,7 +57,7 @@ class ProjectModel
         return TableRegistry::getTableLocator()->get('Applications')
             ->find()
             ->select(['name', 'description', 'enabled'])
-            ->order(['name' => 'ASC'])
+            ->orderBy(['name' => 'ASC'])
             ->toArray();
     }
 
@@ -72,7 +71,7 @@ class ProjectModel
         return TableRegistry::getTableLocator()->get('Roles')
             ->find()
             ->select(['name', 'description'])
-            ->order(['name' => 'ASC'])
+            ->orderBy(['name' => 'ASC'])
             ->toArray();
     }
 
@@ -87,7 +86,7 @@ class ProjectModel
             ->find()
             ->select(['name', 'params'])
             ->where(['core_type' => 0])
-            ->order(['name' => 'ASC'])
+            ->orderBy(['name' => 'ASC'])
             ->toArray();
     }
 
@@ -100,9 +99,9 @@ class ProjectModel
     {
         return TableRegistry::getTableLocator()->get('ObjectTypes')
             ->find()
-            ->order(['name' => 'ASC'])
+            ->orderBy(['name' => 'ASC'])
             ->all()
-            ->each(function (EntityInterface $row) {
+            ->each(function (EntityInterface $row): void {
                 unset($row['id']);
                 unset($row['left_relations']);
                 unset($row['right_relations']);
@@ -123,10 +122,10 @@ class ProjectModel
     {
         $relations = TableRegistry::getTableLocator()
             ->get('Relations')
-            ->find('all', ['contain' => ['LeftObjectTypes', 'RightObjectTypes']])
-            ->order(['name' => 'ASC'])
+            ->find('all', contain: ['LeftObjectTypes', 'RightObjectTypes'])
+            ->orderBy(['name' => 'ASC'])
             ->all()
-            ->each(function (EntityInterface $row) {
+            ->each(function (EntityInterface $row): void {
                 $left = (array)Hash::extract($row, 'left_object_types.{n}.name');
                 $right = (array)Hash::extract($row, 'right_object_types.{n}.name');
                 sort($left);
@@ -146,7 +145,7 @@ class ProjectModel
 
                 return array_filter($r);
             },
-            (array)$relations
+            (array)$relations,
         );
     }
 
@@ -158,10 +157,10 @@ class ProjectModel
     protected static function properties(): array
     {
         return TableRegistry::getTableLocator()->get('Properties')
-            ->find('type', ['dynamic'])
-            ->order(['name' => 'ASC'])
+            ->find('type', propType: 'dynamic')
+            ->orderBy(['name' => 'ASC'])
             ->all()
-            ->each(function (EntityInterface $row) {
+            ->each(function (EntityInterface $row): void {
                 $hidden = [
                     'id',
                     'created',
@@ -187,9 +186,9 @@ class ProjectModel
     {
         return TableRegistry::getTableLocator()->get('Categories')
             ->find()
-            ->order(['tree_left' => 'ASC'])
+            ->orderBy(['tree_left' => 'ASC'])
             ->all()
-            ->each(function (EntityInterface $row) {
+            ->each(function (EntityInterface $row): void {
                 $row->setHidden([
                     'id',
                     'created',
@@ -223,7 +222,7 @@ class ProjectModel
                 'application' => $applicationsTable->aliasField('name'),
             ])
             ->innerJoinWith('Applications')
-            ->order([$configTable->aliasField('context') => 'ASC', $configTable->aliasField('name') => 'ASC'])
+            ->orderBy([$configTable->aliasField('context') => 'ASC', $configTable->aliasField('name') => 'ASC'])
             ->toArray();
     }
 
@@ -259,7 +258,7 @@ class ProjectModel
         self::categoriesToUpdate($update);
 
         return array_filter(
-            array_map('array_filter', compact('create', 'update', 'remove'))
+            array_map('array_filter', compact('create', 'update', 'remove')),
         );
     }
 
@@ -279,7 +278,7 @@ class ProjectModel
         $types = array_keys($categories);
         foreach ($types as $objectType) {
             $names = array_keys((array)Hash::get($categories, $objectType));
-            $found = $table->find('type', [$objectType])->where([$table->aliasField('name') . ' IN' => $names])->toArray();
+            $found = $table->find('type', objectType: $objectType)->where([$table->aliasField('name') . ' IN' => $names])->toArray();
             $found = (array)Hash::extract($found, '{n}.name');
             if (empty($found)) {
                 continue;
@@ -372,7 +371,7 @@ class ProjectModel
                 return $v;
             },
             array_keys($new),
-            array_values($new)
+            array_values($new),
         ));
     }
 }

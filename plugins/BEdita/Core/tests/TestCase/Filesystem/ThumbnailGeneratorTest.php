@@ -12,22 +12,23 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\Filesystem;
 
 use BEdita\Core\Filesystem\ThumbnailGenerator;
+use BEdita\Core\Model\Entity\Stream;
 use Cake\TestSuite\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
 
 /**
- * @coversDefaultClass \BEdita\Core\Filesystem\ThumbnailGenerator
+ * {@see \BEdita\Core\Filesystem\ThumbnailGenerator} Test Case
  */
+#[CoversClass(ThumbnailGenerator::class)]
 class ThumbnailGeneratorTest extends TestCase
 {
     /**
      * Test `initialize` method.
      *
      * @return void
-     * @covers ::initialize()
      */
     public function testInitialize()
     {
@@ -37,14 +38,31 @@ class ThumbnailGeneratorTest extends TestCase
             'than' => 'yours',
         ];
 
-        /** @var \BEdita\Core\Filesystem\ThumbnailGenerator $mock */
-        $mock = $this->getMockBuilder(ThumbnailGenerator::class)
-            ->getMockForAbstractClass();
+        $generator = new class extends ThumbnailGenerator {
+            public function getUrl(Stream $stream, array $options = []): string
+            {
+                return '';
+            }
 
-        $result = $mock->initialize($config);
+            public function generate(Stream $stream, array $options = []): bool
+            {
+                return true;
+            }
+
+            public function exists(Stream $stream, array $options = []): bool
+            {
+                return true;
+            }
+
+            public function delete(Stream $stream): void
+            {
+            }
+        };
+
+        $result = $generator->initialize($config);
 
         static::assertTrue($result);
-        static::assertSame($config['my'], $mock->getConfig('my'));
-        static::assertSame($config, $mock->getConfig());
+        static::assertSame($config['my'], $generator->getConfig('my'));
+        static::assertSame($config, $generator->getConfig());
     }
 }

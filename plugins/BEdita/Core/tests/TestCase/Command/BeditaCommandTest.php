@@ -12,21 +12,21 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\Command;
 
+use BEdita\Core\Command\BeditaCommand;
 use Cake\Command\Command;
 use Cake\Console\TestSuite\ConsoleIntegrationTestTrait;
 use Cake\Database\Connection;
 use Cake\Datasource\ConnectionManager;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Hash;
+use PHPUnit\Framework\Attributes\CoversClass;
 
 /**
- * {@see BEdita\Core\Command\BeditaCommand} Test Case
- *
- * @coversDefaultClass \BEdita\Core\Command\BeditaCommand
+ * {@see BEdita\Core\Command\BeditaCommand} Test Case.
  */
+#[CoversClass(BeditaCommand::class)]
 class BeditaCommandTest extends TestCase
 {
     use ConsoleIntegrationTestTrait;
@@ -36,7 +36,7 @@ class BeditaCommandTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.Applications',
     ];
 
@@ -57,41 +57,29 @@ class BeditaCommandTest extends TestCase
     /**
      * @inheritDoc
      */
-    protected function setUp(): void
-    {
-        parent::setUp();
-        if (static::$fixtureManager !== null) {
-            static::$fixtureManager->shutDown();
-        }
-        // Try to avoid "database schema has changed" error on SQLite.
-        try {
-            ConnectionManager::get('default')->getSchemaCollection()->listTables();
-        } catch (\PDOException $e) {
-            // Do nothing.
-        }
-        $this->useCommandRunner();
-    }
-
-    /**
-     * @inheritDoc
-     */
     public function tearDown(): void
     {
         parent::tearDown();
         ConnectionManager::alias('test', 'default'); // Restore alias which is dropped by `BeditaShell`.
-        ConnectionManager::get('default')->getDriver()->disconnect();
-        ConnectionManager::get('default')
+        /** @var \Cake\Database\Connection $connection */
+        $connection = ConnectionManager::get('default');
+        $connection->getDriver()->disconnect();
+        $connection
             ->transactional(function (Connection $connection) {
                 $tables = $connection->getSchemaCollection()->listTables();
 
                 foreach ($tables as $table) {
-                    $sql = $connection->getSchemaCollection()->describe($table)->dropConstraintSql($connection);
+                    /** @var \Cake\Database\Schema\TableSchema $tableSchema */
+                    $tableSchema = $connection->getSchemaCollection()->describe($table);
+                    $sql = $tableSchema->dropConstraintSql($connection);
                     foreach ($sql as $query) {
                         $connection->updateQuery($query);
                     }
                 }
                 foreach ($tables as $table) {
-                    $sql = $connection->getSchemaCollection()->describe($table)->dropSql($connection);
+                    /** @var \Cake\Database\Schema\TableSchema $tableSchema */
+                    $tableSchema = $connection->getSchemaCollection()->describe($table);
+                    $sql = $tableSchema->dropSql($connection);
                     foreach ($sql as $query) {
                         $connection->updateQuery($query);
                     }
@@ -109,8 +97,6 @@ class BeditaCommandTest extends TestCase
      * Test buildOptionParser method
      *
      * @return void
-     * @covers ::buildOptionParser()
-     * @covers ::getDescription()
      */
     public function testBuildOptionParser(): void
     {
@@ -123,7 +109,6 @@ class BeditaCommandTest extends TestCase
      * Test help
      *
      * @return void
-     * @covers ::execute()
      */
     public function testHelp(): void
     {
@@ -136,7 +121,6 @@ class BeditaCommandTest extends TestCase
      * Test error on missing subcommand
      *
      * @return void
-     * @covers ::execute()
      */
     public function testNoSubcommand(): void
     {
@@ -168,8 +152,6 @@ class BeditaCommandTest extends TestCase
      * Test subcommand.
      *
      * @return void
-     * @covers ::execute()
-     * @covers ::executeSubcommand()
      */
     public function testSubcommand(): void
     {
@@ -181,9 +163,6 @@ class BeditaCommandTest extends TestCase
      * Test full setup on a new instance.
      *
      * @return void
-     * @covers ::execute()
-     * @covers ::executeSubcommand()
-     * @covers ::setup()
      */
     public function testSetupNewInteractive(): void
     {
@@ -191,7 +170,7 @@ class BeditaCommandTest extends TestCase
         file_put_contents(
             static::TEMP_FILE,
             file_get_contents(CONFIG . 'app_local.example.php'),
-            EXTR_OVERWRITE | LOCK_EX
+            EXTR_OVERWRITE | LOCK_EX,
         );
 
         // Setup temporary configuration.
@@ -231,7 +210,7 @@ class BeditaCommandTest extends TestCase
 
         $this->exec(
             sprintf('bedita setup --connection %s --config-file %s', static::TEMP_CONNECTION, static::TEMP_FILE),
-            $returnValues
+            $returnValues,
         );
 
         $this->assertExitCode(Command::CODE_SUCCESS);
@@ -245,9 +224,6 @@ class BeditaCommandTest extends TestCase
      * Test full setup on a new instance in a completely non-interactive mode.
      *
      * @return void
-     * @covers ::execute()
-     * @covers ::executeSubcommand()
-     * @covers ::setup()
      */
     public function testSetupNewNonInteractive(): void
     {
@@ -255,7 +231,7 @@ class BeditaCommandTest extends TestCase
         file_put_contents(
             static::TEMP_FILE,
             file_get_contents(CONFIG . 'app_local.example.php'),
-            EXTR_OVERWRITE | LOCK_EX
+            EXTR_OVERWRITE | LOCK_EX,
         );
 
         // Setup temporary configuration.
@@ -344,9 +320,9 @@ class BeditaCommandTest extends TestCase
                 ' ',
                 array_merge(
                     ['bedita', 'setup', '--connection', static::TEMP_CONNECTION, '--config-file', static::TEMP_FILE],
-                    $cliOptions
-                )
-            )
+                    $cliOptions,
+                ),
+            ),
         );
 
         $this->assertExitCode(Command::CODE_SUCCESS);
@@ -360,9 +336,6 @@ class BeditaCommandTest extends TestCase
      * Test check.
      *
      * @return void
-     * @covers ::execute()
-     * @covers ::executeSubcommand()
-     * @covers ::check()
      */
     public function testInitSchema(): void
     {
@@ -374,9 +347,6 @@ class BeditaCommandTest extends TestCase
      * Test check.
      *
      * @return void
-     * @covers ::execute()
-     * @covers ::executeSubcommand()
-     * @covers ::check()
      */
     public function testCheck(): void
     {

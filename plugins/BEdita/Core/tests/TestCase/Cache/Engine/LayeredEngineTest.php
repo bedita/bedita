@@ -12,18 +12,20 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\Cache\Engine;
 
+use BEdita\Core\Cache\Engine\LayeredEngine;
 use Cake\Cache\Cache;
 use Exception;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
+use stdClass;
+use TypeError;
 
 /**
  * {@see \BEdita\Core\Cache\Engine\LayeredEngine} Test Case
- *
- * @coversDefaultClass \BEdita\Core\Cache\Engine\LayeredEngine
  */
+#[CoversClass(LayeredEngine::class)]
 class LayeredEngineTest extends TestCase
 {
     /**
@@ -79,11 +81,9 @@ class LayeredEngineTest extends TestCase
      * Test cache init.
      * Covers persistent engine config with prefix.
      *
-     * @throws Exception
-     * @covers ::init()
-     * @covers ::getEngineInstance()
+     * @return void
      */
-    public function testInit()
+    public function testInit(): void
     {
         Cache::setConfig('test-layered', $this->defaultConfig);
         Cache::clear('test-layered');
@@ -97,14 +97,14 @@ class LayeredEngineTest extends TestCase
     /**
      * Test using an alias for persistent cache.
      *
-     * @covers ::getEngineInstance()
+     * @return void
      */
-    public function testPersistentAlias()
+    public function testPersistentAlias(): void
     {
         Cache::setConfig('test-layered-persistent-alias', ['className' => 'Array']);
         Cache::setConfig('test-layered-alias', array_merge(
             $this->defaultConfig,
-            ['persistent' => 'test-layered-persistent-alias']
+            ['persistent' => 'test-layered-persistent-alias'],
         ));
 
         $result = Cache::write('secret', 42, 'test-layered-persistent-alias');
@@ -117,15 +117,14 @@ class LayeredEngineTest extends TestCase
     /**
      * Test using a bad persistent config.
      *
-     * @covers ::getEngineInstance()
+     * @return void
      */
-    public function testPersistentBadConfig()
+    public function testPersistentBadConfig(): void
     {
-        static::expectException(Exception::class);
-        static::expectExceptionMessage('Unknown cache configuration');
+        static::expectException(TypeError::class);
         Cache::setConfig('test-layered-bad-persistent', array_merge(
             $this->defaultConfig,
-            ['persistent' => 1]
+            ['persistent' => 1],
         ));
         Cache::clear('test-layered-bad-persistent');
     }
@@ -133,15 +132,15 @@ class LayeredEngineTest extends TestCase
     /**
      * Test using an nonexistent alias for persistent cache.
      *
-     * @covers ::getEngineInstance()
+     * @return void
      */
-    public function testPersistentMissingAlias()
+    public function testPersistentMissingAlias(): void
     {
         static::expectException(Exception::class);
         static::expectExceptionMessage("Cache engine alias 'test-layered-persistent-missing' is not defined");
         Cache::setConfig('test-layered-missing-alias', array_merge(
             $this->defaultConfig,
-            ['persistent' => 'test-layered-persistent-missing']
+            ['persistent' => 'test-layered-persistent-missing'],
         ));
         Cache::clear('test-layered-missing-alias');
     }
@@ -149,14 +148,14 @@ class LayeredEngineTest extends TestCase
     /**
      * Test using the engine as persistent engine of itself.
      *
-     * @covers ::getEngineInstance()
+     * @return void
      */
-    public function testPersistentRecursive()
+    public function testPersistentRecursive(): void
     {
         static::expectException(Exception::class);
         Cache::setConfig('test-layered-recursive', array_merge(
             $this->defaultConfig,
-            ['persistent' => 'test-layered-recursive']
+            ['persistent' => 'test-layered-recursive'],
         ));
         Cache::clear('test-layered-recursive');
     }
@@ -164,16 +163,16 @@ class LayeredEngineTest extends TestCase
     /**
      * Test using an alias to wrong object type as persistent engine.
      *
-     * @covers ::getEngineInstance()
+     * @return void
      */
-    public function testPersistentWrongObject()
+    public function testPersistentWrongObject(): void
     {
         static::expectException(Exception::class);
         static::expectExceptionMessage("Cache engine alias 'test-layered-persistent-wrong' is not an implementation of CacheEngine");
-        Cache::getRegistry()->set('test-layered-persistent-wrong', new \stdClass());
+        Cache::getRegistry()->set('test-layered-persistent-wrong', new stdClass());
         Cache::setConfig('test-layered-wrong-object', array_merge(
             $this->defaultConfig,
-            ['persistent' => 'test-layered-persistent-wrong']
+            ['persistent' => 'test-layered-persistent-wrong'],
         ));
         Cache::clear('test-layered-wrong-object');
     }
@@ -181,10 +180,9 @@ class LayeredEngineTest extends TestCase
     /**
      * Test cache write and read.
      *
-     * @covers ::set()
-     * @covers ::read()
+     * @return void
      */
-    public function testWriteAndRead()
+    public function testWriteAndRead(): void
     {
         Cache::setConfig('test-layered', $this->defaultConfig);
 
@@ -198,14 +196,14 @@ class LayeredEngineTest extends TestCase
     /**
      * Test cache read, with miss in memory engine.
      *
-     * @covers ::read()
+     * @return void
      */
-    public function testMemoryCacheMiss()
+    public function testMemoryCacheMiss(): void
     {
         Cache::setConfig('test-layered-persistent-miss', ['className' => 'Array']);
         Cache::setConfig('test-layered-miss', array_merge(
             $this->defaultConfig,
-            ['persistent' => 'test-layered-persistent-miss']
+            ['persistent' => 'test-layered-persistent-miss'],
         ));
 
         $result = Cache::write('secret', 42, 'test-layered-persistent-miss');
@@ -218,9 +216,9 @@ class LayeredEngineTest extends TestCase
     /**
      * Test cache increment.
      *
-     * @covers ::increment()
+     * @return void
      */
-    public function testIncrement()
+    public function testIncrement(): void
     {
         Cache::setConfig('test-layered', $this->defaultConfig);
 
@@ -243,9 +241,9 @@ class LayeredEngineTest extends TestCase
     /**
      * Test cache decrement.
      *
-     * @covers ::decrement()
+     * @return void
      */
-    public function testDecrement()
+    public function testDecrement(): void
     {
         Cache::setConfig('test-layered', $this->defaultConfig);
 
@@ -268,9 +266,9 @@ class LayeredEngineTest extends TestCase
     /**
      * Test cache delete.
      *
-     * @covers ::delete()
+     * @return void
      */
-    public function testDelete()
+    public function testDelete(): void
     {
         Cache::setConfig('test-layered', $this->defaultConfig);
 
@@ -287,9 +285,9 @@ class LayeredEngineTest extends TestCase
     /**
      * Test cache clear.
      *
-     * @covers ::clear()
+     * @return void
      */
-    public function testClear()
+    public function testClear(): void
     {
         Cache::setConfig('test-layered', $this->defaultConfig);
 

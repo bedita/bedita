@@ -12,21 +12,23 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\API\Test\IntegrationTest;
 
 use BEdita\API\TestSuite\IntegrationTestCase;
 use Cake\Core\Configure;
+use PHPUnit\Framework\Attributes\CoversNothing;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * Test `DefaultValues` config upon object creation
  */
+#[CoversNothing]
 class DefaultValuesTest extends IntegrationTestCase
 {
     /**
      * @inheritDoc
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.Streams',
     ];
 
@@ -35,7 +37,7 @@ class DefaultValuesTest extends IntegrationTestCase
      *
      * @return array
      */
-    public function createProvider(): array
+    public static function createProvider(): array
     {
         return [
             'files on' => [
@@ -94,9 +96,8 @@ class DefaultValuesTest extends IntegrationTestCase
      * @param array $attributes Object attributes.
      * @param array $config DefaultValues config.
      * @return void
-     * @dataProvider createProvider
-     * @coversNothing
      */
+    #[DataProvider('createProvider')]
     public function testCreate(array $expected, string $type, array $attributes, array $config): void
     {
         Configure::write('DefaultValues', $config);

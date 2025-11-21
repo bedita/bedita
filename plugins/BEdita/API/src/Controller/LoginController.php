@@ -12,9 +12,9 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\API\Controller;
 
+use Authentication\PasswordHasher\PasswordHasherFactory;
 use BEdita\API\Policy\EndpointPolicy;
 use BEdita\API\Utility\JWTHandler;
 use BEdita\Core\Model\Action\ActionTrait;
@@ -22,7 +22,6 @@ use BEdita\Core\Model\Action\GetObjectAction;
 use BEdita\Core\Model\Action\SaveEntityAction;
 use BEdita\Core\Model\Entity\Application;
 use BEdita\Core\Model\Entity\User;
-use Cake\Auth\PasswordHasherFactory;
 use Cake\Http\Exception\BadRequestException;
 use Cake\Http\Exception\NotFoundException;
 use Cake\Http\Exception\UnauthorizedException;
@@ -49,10 +48,10 @@ class LoginController extends AppController
      * @var array
      */
     public const PASSWORD_HASHER = [
-        'className' => 'Fallback',
+        'className' => 'Authentication.Fallback',
         'hashers' => [
-            'Default',
-            'Weak' => ['hashType' => 'md5'],
+            'Authentication.Default',
+            'Authentication.Legacy' => ['hashType' => 'md5'],
         ],
     ];
 
@@ -65,7 +64,7 @@ class LoginController extends AppController
 
         $this->Users = $this->fetchTable('Users');
 
-        if (isset($this->JsonApi)) {
+        if ($this->components()->has('JsonApi')) {
             $this->JsonApi->setConfig('parseJson', false);
         }
 
@@ -179,7 +178,7 @@ class LoginController extends AppController
      * @param array $userInput Complete user data
      * @return array Reduced user data (can be empty in case of client credentials)
      */
-    protected function reducedUserData(array $userInput)
+    protected function reducedUserData(array $userInput): array
     {
         $user = array_intersect_key($userInput, array_flip(['id', 'username']));
         $user['roles'] = array_map(
@@ -189,7 +188,7 @@ class LoginController extends AppController
                     'name' => Hash::get((array)$role, 'name'),
                 ];
             },
-            (array)Hash::get($userInput, 'roles')
+            (array)Hash::get($userInput, 'roles'),
         );
 
         return array_filter($user);
@@ -201,7 +200,7 @@ class LoginController extends AppController
      * @param array $user Minimal user data to encode in JWT
      * @return array JWT tokens requested
      */
-    protected function jwtTokens(array $user)
+    protected function jwtTokens(array $user): array
     {
         return JWTHandler::tokens($user, Router::reverse($this->request, true));
     }
@@ -211,7 +210,7 @@ class LoginController extends AppController
      *
      * @return void
      */
-    public function whoami()
+    public function whoami(): void
     {
         $this->request->allowMethod('get');
 
@@ -228,7 +227,7 @@ class LoginController extends AppController
      * @return void
      * @throws \Cake\Http\Exception\BadRequestException On invalid input data
      */
-    public function update()
+    public function update(): void
     {
         $this->request->allowMethod('patch');
 
@@ -259,7 +258,7 @@ class LoginController extends AppController
      * @throws \Cake\Http\Exception\BadRequestException Throws an exception if current password is not correct.
      * @return void
      */
-    protected function checkPassword(User $entity, array $data)
+    protected function checkPassword(User $entity, array $data): void
     {
         if (empty($data['password'])) {
             return;
@@ -269,7 +268,7 @@ class LoginController extends AppController
             throw new BadRequestException(__d('bedita', 'Missing current password'));
         }
 
-        $hasher = PasswordHasherFactory::build(self::PASSWORD_HASHER);
+        $hasher = PasswordHasherFactory::build(static::PASSWORD_HASHER);
         if (!$hasher->check($data['old_password'], $entity->password_hash)) {
             throw new BadRequestException(__d('bedita', 'Wrong password'));
         }
@@ -281,7 +280,7 @@ class LoginController extends AppController
      * @return \BEdita\Core\Model\Entity\User Logged user entity
      * @throws \Cake\Http\Exception\UnauthorizedException Throws an exception if user not logged or blocked/removed
      */
-    protected function userEntity()
+    protected function userEntity(): User
     {
         $userId = $this->Authentication->getIdentityData('id');
         $contain = $this->prepareInclude($this->request->getQuery('include'));
@@ -290,7 +289,7 @@ class LoginController extends AppController
 
         /** @var \BEdita\Core\Model\Entity\User|null $user */
         $user = $this->Users
-            ->find('login', compact('conditions', 'contain'))
+            ->find('login', conditions: $conditions, contain: $contain)
             ->first();
         if (empty($user)) {
             throw new UnauthorizedException(__('Request not authorized'));
@@ -320,7 +319,7 @@ class LoginController extends AppController
      *
      * @return \Cake\Http\Response|null
      */
-    public function change()
+    public function change(): ?Response
     {
         $this->request->allowMethod(['patch', 'post']);
 

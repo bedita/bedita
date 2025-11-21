@@ -1,7 +1,7 @@
 <?php
-use Migrations\AbstractMigration;
+use Migrations\BaseMigration;
 
-class ChangeApplicationDescription extends AbstractMigration
+class ChangeApplicationDescription extends BaseMigration
 {
 
     public function up()

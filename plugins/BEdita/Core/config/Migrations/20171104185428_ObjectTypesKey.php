@@ -1,12 +1,12 @@
 <?php
 
 use Cake\ORM\Table;
-use Migrations\AbstractMigration;
+use Migrations\BaseMigration;
 
 /**
  * Fix `object_type_id` foreign key index.
  */
-class ObjectTypesKey extends AbstractMigration
+class ObjectTypesKey extends BaseMigration
 {
     /**
      * {@inheritDoc}

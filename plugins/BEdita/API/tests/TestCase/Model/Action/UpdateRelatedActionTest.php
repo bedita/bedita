@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\API\Test\TestCase\Model\Action;
 
 use Authentication\Identity as AuthenticationIdentity;
@@ -28,10 +27,13 @@ use Cake\TestSuite\TestCase;
 use Cake\Utility\Hash;
 use Cake\Utility\Text;
 use Exception;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
- * @covers \BEdita\API\Model\Action\UpdateRelatedAction
+ * {@see \BEdita\API\Model\Action\UpdateRelatedAction} Test Case
  */
+#[CoversClass(UpdateRelatedAction::class)]
 class UpdateRelatedActionTest extends TestCase
 {
     /**
@@ -39,7 +41,7 @@ class UpdateRelatedActionTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.Objects',
         'plugin.BEdita/Core.Profiles',
@@ -62,7 +64,7 @@ class UpdateRelatedActionTest extends TestCase
      *
      * @return array[]
      */
-    public function invocationProvider(): array
+    public static function invocationProvider(): array
     {
         return [
             'simple' => [
@@ -153,8 +155,8 @@ class UpdateRelatedActionTest extends TestCase
      * @param int $id Entity ID to update relations for.
      * @param int|int[]|null $data Related entity(-ies).
      * @return void
-     * @dataProvider invocationProvider()
      */
+    #[DataProvider('invocationProvider')]
     public function testInvocation($expected, string $table, string $association, int $id, $data): void
     {
         if ($expected instanceof Exception) {
@@ -182,9 +184,9 @@ class UpdateRelatedActionTest extends TestCase
         if ($data !== null) {
             $matching = Hash::extract(
                 $association->getSource()
-                    ->get($id, ['contain' => [$association->getName()]])
+                    ->get($id, contain: [$association->getName()])
                     ->get($association->getProperty()),
-                '{*}.id'
+                '{*}.id',
             );
         }
 

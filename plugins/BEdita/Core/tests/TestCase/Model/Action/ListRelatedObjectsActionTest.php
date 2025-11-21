@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\Model\Action;
 
 use BEdita\Core\Model\Action\ListRelatedObjectsAction;
@@ -21,10 +20,14 @@ use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Inflector;
+use Exception;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
- * @covers \BEdita\Core\Model\Action\ListRelatedObjectsAction
+ * {@see \BEdita\Core\Model\Action\ListRelatedObjectsAction} Test Case
  */
+#[CoversClass(ListRelatedObjectsAction::class)]
 class ListRelatedObjectsActionTest extends TestCase
 {
     /**
@@ -32,7 +35,7 @@ class ListRelatedObjectsActionTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.Relations',
         'plugin.BEdita/Core.RelationTypes',
@@ -55,7 +58,7 @@ class ListRelatedObjectsActionTest extends TestCase
      *
      * @return array
      */
-    public function invocationProvider()
+    public static function invocationProvider(): array
     {
         return [
             [
@@ -262,11 +265,11 @@ class ListRelatedObjectsActionTest extends TestCase
      * @param array|null $only Filter related entities by ID.
      * @param string|null $statusLevel Status level.
      * @return void
-     * @dataProvider invocationProvider()
      */
+    #[DataProvider('invocationProvider')]
     public function testInvocation($expected, $objectType, $relation, $id, $list = true, ?array $only = null, $statusLevel = null)
     {
-        if ($expected instanceof \Exception) {
+        if ($expected instanceof Exception) {
             $this->expectException(get_class($expected));
             $this->expectExceptionMessage($expected->getMessage());
         }
@@ -287,7 +290,6 @@ class ListRelatedObjectsActionTest extends TestCase
      * Test that deleted objects will not show as related
      *
      * @return void
-     * @coversNothing
      */
     public function testDeleted(): void
     {

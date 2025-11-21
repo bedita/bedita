@@ -12,29 +12,32 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Exception;
 
-use Cake\Core\Exception\CakeException as Exception;
+use Cake\Http\Exception\HttpException;
+use Throwable;
 
 /**
  * Exception raised when performing write actions on a resource that is locked.
  */
-class LockedResourceException extends Exception
+class LockedResourceException extends HttpException
 {
+    /**
+     * @inheritDoc
+     */
+    protected int $_defaultCode = 403;
+
     /**
      * {@inheritDoc}
      *
-     * Default error code 403
-     *
      * @codeCoverageIgnore
      */
-    public function __construct($message = null, $code = 403)
+    public function __construct(array|string $message = '', ?int $code = null, ?Throwable $previous = null)
     {
         if ($message === null) {
             $message = __d('bedita', 'This resource is locked');
         }
 
-        parent::__construct($message, $code);
+        parent::__construct($message, $code, $previous);
     }
 }

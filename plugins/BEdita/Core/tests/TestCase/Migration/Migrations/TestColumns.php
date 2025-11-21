@@ -18,11 +18,12 @@ use BEdita\Core\Migration\ResourcesMigration;
 use BEdita\Core\Test\TestCase\Migration\MockMigrationsTable;
 use Cake\Database\Connection;
 use Cake\Datasource\ConnectionManager;
+use Migrations\Db\Table;
 
 class TestColumns extends ResourcesMigration
 {
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
     protected function getConnection(): Connection
     {
@@ -30,15 +31,15 @@ class TestColumns extends ResourcesMigration
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
-    public function table($tableName, $options = [])
+    public function table(string $tableName, array $options = []): Table
     {
         return new MockMigrationsTable($tableName, $options);
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
     protected function columnTypes(): array
     {

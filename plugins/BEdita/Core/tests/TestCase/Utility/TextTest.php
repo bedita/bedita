@@ -12,17 +12,19 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\Utility;
 
 use BEdita\Core\Utility\Text;
 use Cake\TestSuite\TestCase;
+use Exception;
+use LogicException;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * {@see \BEdita\Core\Utility\Text} Test Case
- *
- * @coversDefaultClass \BEdita\Core\Utility\Text
  */
+#[CoversClass(Text::class)]
 class TextTest extends TestCase
 {
     /**
@@ -30,11 +32,11 @@ class TextTest extends TestCase
      *
      * @return array
      */
-    public function uuid5Provider()
+    public static function uuid5Provider(): array
     {
         return [
             'invalid namespace' => [
-                new \LogicException('The UUID provided for the namespace is not valid.'),
+                new LogicException('The UUID provided for the namespace is not valid.'),
                 'whatever',
                 'invalid uuid',
             ],
@@ -79,13 +81,11 @@ class TextTest extends TestCase
      * @param string $name Name.
      * @param string $namespace Namespace.
      * @return void
-     * @dataProvider uuid5Provider()
-     * @covers ::uuid5()
-     * @covers ::uuidToBin()
      */
+    #[DataProvider('uuid5Provider')]
     public function testUuid5($expected, $name, $namespace)
     {
-        if ($expected instanceof \Exception) {
+        if ($expected instanceof Exception) {
             $this->expectException(get_class($expected));
             $this->expectExceptionCode($expected->getCode());
             $this->expectExceptionMessage($expected->getMessage());

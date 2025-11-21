@@ -12,24 +12,24 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\API\Test\IntegrationTest;
 
 use BEdita\API\TestSuite\IntegrationTestCase;
-use Cake\I18n\FrozenTime;
+use Cake\I18n\DateTime;
 use Cake\Utility\Text;
+use PHPUnit\Framework\Attributes\CoversNothing;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * Test meta data
- *
- * @coversNothing
  */
+#[CoversNothing]
 class MetadataTest extends IntegrationTestCase
 {
     /**
      * @inheritDoc
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.Locations',
     ];
 
@@ -38,7 +38,7 @@ class MetadataTest extends IntegrationTestCase
      *
      * @return array
      */
-    public function lastModifiedProvider()
+    public static function lastModifiedProvider(): array
     {
         return [
             'documents' => [
@@ -79,9 +79,8 @@ class MetadataTest extends IntegrationTestCase
      * @param string $type Object type.
      * @param array $attributes New attributes.
      * @return void
-     * @dataProvider lastModifiedProvider
-     * @coversNothing
      */
+    #[DataProvider('lastModifiedProvider')]
     public function testLastModified($id, $type, array $attributes)
     {
         $this->configRequestHeaders('PATCH', $this->getUserAuthHeader('second user', 'password2'));
@@ -101,11 +100,11 @@ class MetadataTest extends IntegrationTestCase
         static::assertArrayHasKey('modified_by', $body['data']['meta']);
 
         static::assertEquals(
-            FrozenTime::now()->timestamp,
-            FrozenTime::parse($body['data']['meta']['modified'])->getTimestamp(),
-            '`modified` field not updated'
+            DateTime::now()->timestamp,
+            DateTime::parse($body['data']['meta']['modified'])->getTimestamp(),
+            '`modified` field not updated',
         );
-        static::assertEqualsWithDelta(FrozenTime::now()->timestamp, FrozenTime::parse($body['data']['meta']['modified'])->getTimestamp(), 5, '`modified` field not updated');
+        static::assertEqualsWithDelta(DateTime::now()->timestamp, DateTime::parse($body['data']['meta']['modified'])->getTimestamp(), 5, '`modified` field not updated');
         static::assertSame(5, $body['data']['meta']['modified_by'], '`modified_by` field not updated');
     }
 }

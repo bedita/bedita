@@ -13,9 +13,9 @@ declare(strict_types=1);
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
 
-use Migrations\AbstractMigration;
+use Migrations\BaseMigration;
 
-class AddChildrenOrder extends AbstractMigration
+class AddChildrenOrder extends BaseMigration
 {
     /**
      * {@inheritDoc}
@@ -39,13 +39,13 @@ class AddChildrenOrder extends AbstractMigration
                 'core_type' => 1,
             ])
             ->save();
-        $objectTypeId = (int)$this->getQueryBuilder()
+        $objectTypeId = (int)$this->getSelectBuilder()
             ->select(['id'])
             ->from(['object_types'])
             ->where(['name' => 'folders'])
             ->execute()
             ->fetch()[0];
-        $propertyTypeId = (int)$this->getQueryBuilder()
+        $propertyTypeId = (int)$this->getSelectBuilder()
             ->select(['id'])
             ->from(['property_types'])
             ->where(['name' => 'children_order'])
@@ -70,13 +70,13 @@ class AddChildrenOrder extends AbstractMigration
      */
     public function down()
     {
-        $this->getQueryBuilder()
+        $this->getDeleteBuilder()
             ->delete('properties')
             ->where(['name' => 'children_order'])
             ->limit(1)
             ->execute();
 
-        $this->getQueryBuilder()
+        $this->getDeleteBuilder()
             ->delete('property_types')
             ->where(['name' => 'children_order'])
             ->limit(1)

@@ -12,19 +12,18 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Model\Table;
 
+use BadMethodCallException;
 use BEdita\Core\Exception\ImmutableResourceException;
 use BEdita\Core\Search\SimpleSearchTrait;
 use BEdita\Core\State\CurrentApplication;
 use Cake\Database\Expression\QueryExpression;
 use Cake\Datasource\EntityInterface;
 use Cake\Event\EventInterface;
-use Cake\ORM\Query;
+use Cake\ORM\Query\SelectQuery;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
-use Cake\Utility\Hash;
 use Cake\Utility\Security;
 use Cake\Utility\Text;
 use Cake\Validation\Validator;
@@ -32,16 +31,25 @@ use Cake\Validation\Validator;
 /**
  * Applications Model
  *
- * @method \BEdita\Core\Model\Entity\Application get($primaryKey, $options = [])
- * @method \BEdita\Core\Model\Entity\Application newEntity($data = null, array $options = [])
+ * @method \BEdita\Core\Model\Entity\Application get(mixed $primaryKey, array|string $finder = 'all', \Psr\SimpleCache\CacheInterface|string|null $cache = null, \Closure|string|null $cacheKey = null, mixed ...$args)
+ * @method \BEdita\Core\Model\Entity\Application newEntity(array $data, array $options = [])
  * @method \BEdita\Core\Model\Entity\Application[] newEntities(array $data, array $options = [])
- * @method \BEdita\Core\Model\Entity\Application|bool save(\Cake\Datasource\EntityInterface $entity, $options = [])
+ * @method \BEdita\Core\Model\Entity\Application|false save(\Cake\Datasource\EntityInterface $entity, array $options = [])
  * @method \BEdita\Core\Model\Entity\Application patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
- * @method \BEdita\Core\Model\Entity\Application[] patchEntities($entities, array $data, array $options = [])
- * @method \BEdita\Core\Model\Entity\Application findOrCreate($search, callable $callback = null, $options = [])
- * @method \Cake\ORM\Query queryCache(\Cake\ORM\Query $query, string $key)
- * @property \Cake\ORM\Association\HasMany $EndpointPermissions
+ * @method \BEdita\Core\Model\Entity\Application[] patchEntities(iterable $entities, array $data, array $options = [])
+ * @method \BEdita\Core\Model\Entity\Application findOrCreate(\Cake\ORM\Query\SelectQuery|callable|array $search, ?callable $callback = null, array $options = [])
+ * @method \Cake\ORM\Query\SelectQuery queryCache(\Cake\ORM\Query $query, string $key)
+ * @property \Cake\ORM\Table&\Cake\ORM\Association\HasMany $EndpointPermissions
  * @mixin \Cake\ORM\Behavior\TimestampBehavior
+ * @method \BEdita\Core\Model\Entity\Application newEmptyEntity()
+ * @method \BEdita\Core\Model\Entity\Application saveOrFail(\Cake\Datasource\EntityInterface $entity, array $options = [])
+ * @method \BEdita\Core\Model\Entity\Application[]|\Cake\Datasource\ResultSetInterface<\BEdita\Core\Model\Entity\Application>|false saveMany(iterable $entities, array $options = [])
+ * @method \BEdita\Core\Model\Entity\Application[]|\Cake\Datasource\ResultSetInterface<\BEdita\Core\Model\Entity\Application> saveManyOrFail(iterable $entities, array $options = [])
+ * @method \BEdita\Core\Model\Entity\Application[]|\Cake\Datasource\ResultSetInterface<\BEdita\Core\Model\Entity\Application>|false deleteMany(iterable $entities, array $options = [])
+ * @method \BEdita\Core\Model\Entity\Application[]|\Cake\Datasource\ResultSetInterface<\BEdita\Core\Model\Entity\Application> deleteManyOrFail(iterable $entities, array $options = [])
+ * @mixin \BEdita\Core\Model\Behavior\SearchableBehavior
+ * @mixin \BEdita\Core\Model\Behavior\QueryCacheBehavior
+ * @mixin \BEdita\Core\Model\Behavior\ResourceNameBehavior
  * @since 4.0.0
  */
 class ApplicationsTable extends Table
@@ -127,7 +135,7 @@ class ApplicationsTable extends Table
      * @return void
      * @throws \BEdita\Core\Exception\ImmutableResourceException if entity is not disableable
      */
-    public function beforeSave(EventInterface $event, EntityInterface $entity)
+    public function beforeSave(EventInterface $event, EntityInterface $entity): void
     {
         if (
             !$entity->isNew() && $entity->get('enabled') == false &&
@@ -146,7 +154,7 @@ class ApplicationsTable extends Table
      *
      * @return string
      */
-    public static function generateApiKey()
+    public static function generateApiKey(): string
     {
         return Security::hash(Text::uuid(), 'sha1');
     }
@@ -154,57 +162,60 @@ class ApplicationsTable extends Table
     /**
      * Find an active application by its API key.
      *
-     * @param \Cake\ORM\Query $query Query object instance.
-     * @param array $options Options array. It requires an `apiKey` key.
-     * @return \Cake\ORM\Query
+     * @param \Cake\ORM\Query\SelectQuery $query Query object instance.
+     * @param string $apiKey The api key.
+     * @return \Cake\ORM\Query\SelectQuery
      */
-    protected function findApiKey(Query $query, array $options): Query
+    protected function findApiKey(SelectQuery $query, string $apiKey): SelectQuery
     {
-        if (empty($options['apiKey']) || !is_string($options['apiKey'])) {
-            throw new \BadMethodCallException('Required option "apiKey" must be a not empty string');
+        if (empty($apiKey)) {
+            throw new BadMethodCallException('Required option "apiKey" must be a not empty string');
         }
 
         $query = $query->where([
-            $this->aliasField('api_key') => $options['apiKey'],
+            $this->aliasField('api_key') => $apiKey,
             $this->aliasField('enabled') => true,
         ]);
 
-        return $this->queryCache($query, sprintf('app_%s', $options['apiKey']));
+        return $this->queryCache($query, sprintf('app_%s', $apiKey));
     }
 
     /**
      * Find an active application by client_id and client_secret.
      *
-     * @param \Cake\ORM\Query $query Query object instance.
-     * @param array $options Options array. It requires an `apiKey` key.
-     * @return \Cake\ORM\Query
+     * @param \Cake\ORM\Query\SelectQuery $query Query object instance.
+     * @param string $client_id The client id (aka api key).
+     * @param string|null $client_secret The optional client secret.
+     * @return \Cake\ORM\Query\SelectQuery
      */
-    protected function findCredentials(Query $query, array $options): Query
-    {
-        if (empty($options['client_id'])) {
-            throw new \BadMethodCallException('Required option "client_id" must be a not empty string');
+    protected function findCredentials(
+        SelectQuery $query,
+        string $client_id,
+        ?string $client_secret = null,
+    ): SelectQuery {
+        if (empty($client_id)) {
+            throw new BadMethodCallException('Required option "clientId" must be a not empty string');
         }
 
-        return $query->where(function (QueryExpression $exp) use ($options) {
-            $secret = Hash::get($options, 'client_secret');
-            if ($secret !== null) {
-                $exp = $exp->eq($this->aliasField('client_secret'), $secret);
+        return $query->where(function (QueryExpression $exp) use ($client_id, $client_secret) {
+            if ($client_secret !== null) {
+                $exp = $exp->eq($this->aliasField('client_secret'), $client_secret);
             } else {
                 $exp = $exp->isNull($this->aliasField('client_secret'));
             }
             $exp = $exp->eq($this->aliasField('enabled'), true);
 
-            return $exp->eq($this->aliasField('api_key'), $options['client_id']);
+            return $exp->eq($this->aliasField('api_key'), $client_id);
         });
     }
 
     /**
      * Finder to find all enabled applications
      *
-     * @param \Cake\ORM\Query $query Query object.
-     * @return \Cake\ORM\Query
+     * @param \Cake\ORM\Query\SelectQuery $query Query object.
+     * @return \Cake\ORM\Query\SelectQuery
      */
-    protected function findEnabled(Query $query): Query
+    public function findEnabled(SelectQuery $query): SelectQuery
     {
         return $query->where([
             $this->aliasField('enabled') => true,
@@ -219,7 +230,7 @@ class ApplicationsTable extends Table
      * @return void
      * @throws \BEdita\Core\Exception\ImmutableResourceException if entity is not deletable
      */
-    public function beforeDelete(EventInterface $event, EntityInterface $entity)
+    public function beforeDelete(EventInterface $event, EntityInterface $entity): void
     {
         if (in_array($entity->id, [static::DEFAULT_APPLICATION, CurrentApplication::getApplicationId()])) {
             throw new ImmutableResourceException(__d('bedita', 'Could not delete "Application" {0}', $entity->id));

@@ -12,30 +12,33 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Exception;
 
-use Cake\Core\Exception\CakeException;
+use Cake\Http\Exception\HttpException;
+use Throwable;
 
 /**
  * Exception raised when performing delete or update on immutable resource
  */
 
-class ImmutableResourceException extends CakeException
+class ImmutableResourceException extends HttpException
 {
+    /**
+     * @inheritDoc
+     */
+    protected int $_defaultCode = 403;
+
     /**
      * {@inheritDoc}
      *
-     * Default error code 403
-     *
      * @codeCoverageIgnore
      */
-    public function __construct($message = null, $code = 403)
+    public function __construct(array|string $message = '', ?int $code = null, ?Throwable $previous = null)
     {
         if ($message === null) {
             $message = __d('bedita', 'This is an immutable resource required by the system');
         }
 
-        parent::__construct($message, $code);
+        parent::__construct($message, $code, $previous);
     }
 }

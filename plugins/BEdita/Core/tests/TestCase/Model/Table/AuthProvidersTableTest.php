@@ -12,18 +12,19 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\Model\Table;
 
+use BEdita\Core\Model\Table\AuthProvidersTable;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Hash;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * {@see \BEdita\Core\Model\Table\AuthProvidersTable} Test Case
- *
- * @coversDefaultClass \BEdita\Core\Model\Table\AuthProvidersTable
  */
+#[CoversClass(AuthProvidersTable::class)]
 class AuthProvidersTableTest extends TestCase
 {
     /**
@@ -38,7 +39,7 @@ class AuthProvidersTableTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.AuthProviders',
     ];
 
@@ -66,11 +67,9 @@ class AuthProvidersTableTest extends TestCase
      * Test initialization.
      *
      * @return void
-     * @coversNothing
      */
     public function testInitialization()
     {
-        $this->AuthProviders->initialize([]);
         $schema = $this->AuthProviders->getSchema();
 
         $this->assertEquals('auth_providers', $this->AuthProviders->getTable());
@@ -87,7 +86,7 @@ class AuthProvidersTableTest extends TestCase
      *
      * @return array
      */
-    public function validationProvider()
+    public static function validationProvider(): array
     {
         return [
             'valid' => [
@@ -100,7 +99,6 @@ class AuthProvidersTableTest extends TestCase
             ],
             'notUnique' => [
                 [
-                    'name._required',
                     'name.unique',
                 ],
                 [
@@ -138,12 +136,11 @@ class AuthProvidersTableTest extends TestCase
      * @param string[] $expected Expected validation errors.
      * @param array $data Data to be validated.
      * @return void
-     * @dataProvider validationProvider
-     * @coversNothing
      */
+    #[DataProvider('validationProvider')]
     public function testValidation(array $expected, array $data): void
     {
-        $authProvider = $this->AuthProviders->newEntity([]);
+        $authProvider = $this->AuthProviders->newEmptyEntity();
         $this->AuthProviders->patchEntity($authProvider, $data);
 
         $errors = $authProvider->getErrors();
@@ -160,7 +157,6 @@ class AuthProvidersTableTest extends TestCase
      * Test `findEnabled` method.
      *
      * @return void
-     * @covers ::findEnabled()
      */
     public function testFindEnabled()
     {

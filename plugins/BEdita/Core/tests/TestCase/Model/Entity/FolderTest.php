@@ -12,19 +12,21 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\Model\Entity;
 
 use BEdita\Core\Model\Entity\Folder;
+use BEdita\Core\Model\Table\FoldersTable;
 use BEdita\Core\Utility\LoggedUser;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
+use RuntimeException;
 
 /**
  * {@see \BEdita\Core\Model\Entity\Folder} Test Case
- *
- * @coversDefaultClass \BEdita\Core\Model\Entity\Folder
  */
+#[CoversClass(Folder::class)]
 class FolderTest extends TestCase
 {
     /**
@@ -32,7 +34,7 @@ class FolderTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.PropertyTypes',
         'plugin.BEdita/Core.Properties',
@@ -53,7 +55,7 @@ class FolderTest extends TestCase
      *
      * @var \BEdita\Core\Model\Table\FoldersTable
      */
-    public $Folders;
+    public FoldersTable $Folders;
 
     /**
      * @inheritDoc
@@ -81,7 +83,6 @@ class FolderTest extends TestCase
      * Test getter for `parent`
      *
      * @return void
-     * @covers ::_getParent()
      */
     public function testGetParent()
     {
@@ -97,7 +98,6 @@ class FolderTest extends TestCase
      * Test setter for `parent`
      *
      * @return void
-     * @covers ::_setParent()
      */
     public function testSetParent()
     {
@@ -114,7 +114,6 @@ class FolderTest extends TestCase
      * Test getter for `parent_id`
      *
      * @return void
-     * @covers ::_getParentId()
      */
     public function testGetParentId()
     {
@@ -129,7 +128,6 @@ class FolderTest extends TestCase
      * Test setter for `parent_id`
      *
      * @return void
-     * @covers ::_setParentId()
      */
     public function testSetParentId()
     {
@@ -152,7 +150,6 @@ class FolderTest extends TestCase
      * Test getter for `parent_uname`
      *
      * @return void
-     * @covers ::_getParentUname()
      */
     public function testGetParentUname()
     {
@@ -167,7 +164,6 @@ class FolderTest extends TestCase
      * Test setter for `parent_uname`
      *
      * @return void
-     * @covers ::_setParentUname()
      */
     public function testSetParentUname()
     {
@@ -188,7 +184,6 @@ class FolderTest extends TestCase
      * Test for isParentSet()
      *
      * @return void
-     * @covers ::isParentSet()
      */
     public function testIsParentSet()
     {
@@ -203,7 +198,6 @@ class FolderTest extends TestCase
      * Test the presence of `parent` association
      *
      * @return void
-     * @covers ::listAssociations()
      */
     public function testListAssociations()
     {
@@ -217,7 +211,7 @@ class FolderTest extends TestCase
      *
      * @return array
      */
-    public function getPathProvider()
+    public static function getPathProvider(): array
     {
         return [
             'root' => [
@@ -237,9 +231,8 @@ class FolderTest extends TestCase
      * @param string $expected The expected path
      * @param int $id The folder id
      * @return void
-     * @dataProvider getPathProvider
-     * @covers ::_getPath()
      */
+    #[DataProvider('getPathProvider')]
     public function testGetPath($expected, $id)
     {
         $folder = $this->Folders->get($id);
@@ -250,11 +243,10 @@ class FolderTest extends TestCase
      * Test that `path` virtual property is null if folder id is empty.
      *
      * @return void
-     * @covers ::_getPath()
      */
     public function testGetPathNull()
     {
-        $folder = $this->Folders->newEntity([]);
+        $folder = $this->Folders->newEmptyEntity();
         static::assertNull($folder->path);
     }
 
@@ -262,11 +254,10 @@ class FolderTest extends TestCase
      * Test getter for `path` throws RuntimeException if folder is orphan.
      *
      * @return void
-     * @covers ::_getPath()
      */
     public function testGetPathOrphanFolder()
     {
-        $this->expectException(\RuntimeException::class);
+        $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('Folder "12" is not on the tree.');
         TableRegistry::getTableLocator()->get('Trees')->deleteAll(['object_id' => 12]);
         TableRegistry::getTableLocator()->get('Trees')->recover();
@@ -279,7 +270,7 @@ class FolderTest extends TestCase
      *
      * @return array
      */
-    public function getSlugPathProvider()
+    public static function getSlugPathProvider()
     {
         return [
             'root' => [
@@ -340,9 +331,8 @@ class FolderTest extends TestCase
      * @param array $expected The expected slug path parts
      * @param int $id The folder id
      * @return void
-     * @dataProvider getSlugPathProvider
-     * @covers ::_getSlugPath()
      */
+    #[DataProvider('getSlugPathProvider')]
     public function testGetSlugPath($expected, $id)
     {
         $folder = $this->Folders->get($id);
@@ -353,7 +343,6 @@ class FolderTest extends TestCase
      * Test that `slug_path` virtual property is null if folder id is empty.
      *
      * @return void
-     * @covers ::_getSlugPath()
      */
     public function testGetSlugPathNull()
     {
@@ -365,11 +354,10 @@ class FolderTest extends TestCase
      * Test getter for `path` throws RuntimeException if folder is orphan.
      *
      * @return void
-     * @covers ::_getSlugPath()
      */
     public function testGetSlugPathOrphanFolder()
     {
-        $this->expectException(\RuntimeException::class);
+        $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('Folder "12" is not on the tree.');
         TableRegistry::getTableLocator()->get('Trees')->deleteAll(['object_id' => 12]);
         TableRegistry::getTableLocator()->get('Trees')->recover();
@@ -381,8 +369,6 @@ class FolderTest extends TestCase
      * Test empty perms.
      *
      * @return void
-     * @covers ::_getPerms()
-     * @covers ::getInheritedRolesPermissions()
      */
     public function testGetPermsEmpty(): void
     {
@@ -401,8 +387,6 @@ class FolderTest extends TestCase
      * Test get inherited permissions.
      *
      * @return void
-     * @covers ::_getPerms()
-     * @covers ::getInheritedRolesPermissions()
      */
     public function testGetPermsInherited(): void
     {
@@ -426,7 +410,7 @@ class FolderTest extends TestCase
             ],
             [
                 'accessibleFields' => ['created_by' => true],
-            ]
+            ],
         );
 
         $this->Folders->Permissions->saveManyOrFail($entities);
@@ -451,7 +435,7 @@ class FolderTest extends TestCase
      *
      * @return array[]
      */
-    public function descendantHavePermissionsProvider(): array
+    public static function descendantHavePermissionsProvider(): array
     {
         return [
             'guest user' => [
@@ -554,10 +538,8 @@ class FolderTest extends TestCase
      * Test descendant have permissions.
      *
      * @return void
-     * @dataProvider descendantHavePermissionsProvider
-     * @covers ::_getPerms()
-     * @covers ::descendantHavePermissions()
      */
+    #[DataProvider('descendantHavePermissionsProvider')]
     public function testDescendantHavePermissions($user, $entities, $folderId, $expected): void
     {
         $ot = $this->Folders->ObjectTypes->get('folders');

@@ -14,20 +14,21 @@ declare(strict_types=1);
  */
 namespace BEdita\API\Test\TestCase\Controller;
 
+use BEdita\API\Controller\StatusController;
 use BEdita\API\TestSuite\IntegrationTestCase;
 use BEdita\Core\Utility\System;
+use PHPUnit\Framework\Attributes\CoversClass;
 
 /**
- * @coversDefaultClass \BEdita\API\Controller\StatusController
+ * {@see \BEdita\API\Controller\StatusController} Test Case
  */
+#[CoversClass(StatusController::class)]
 class StatusControllerTest extends IntegrationTestCase
 {
     /**
      * Test index method.
      *
      * @return void
-     * @covers ::index()
-     * @covers ::initialize()
      */
     public function testIndex()
     {
@@ -54,8 +55,6 @@ class StatusControllerTest extends IntegrationTestCase
      * Test index method with `Accept: * / *` header.
      *
      * @return void
-     * @covers ::index()
-     * @covers ::initialize()
      */
     public function testGenericContentType()
     {
@@ -82,8 +81,6 @@ class StatusControllerTest extends IntegrationTestCase
      * Test `HEAD` request.
      *
      * @return void
-     * @covers ::index()
-     * @covers ::initialize()
      */
     public function testHeadRequest()
     {

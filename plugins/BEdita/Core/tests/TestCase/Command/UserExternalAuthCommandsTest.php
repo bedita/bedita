@@ -1,6 +1,17 @@
 <?php
 declare(strict_types=1);
 
+/**
+ * BEdita, API-first content management framework
+ * Copyright 2024 Channelweb Srl, Chialab Srl
+ *
+ * This file is part of BEdita: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
+ */
 namespace BEdita\Core\Test\TestCase\Command;
 
 use BEdita\Core\Command\UserExternalAuthAddCommand;
@@ -12,10 +23,17 @@ use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\ORM\Exception\PersistenceFailedException;
 use Cake\ORM\Locator\LocatorAwareTrait;
 use Cake\TestSuite\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
 
 /**
- * Test cases for {@see \BEdita\Core\Command\UserExternalAuthListCommand}, {@see \BEdita\Core\Command\UserExternalAuthAddCommand} and {@see \BEdita\Core\Command\UserExternalAuthRemoveCommand}.
+ * Test cases for
+ * {@see \BEdita\Core\Command\UserExternalAuthListCommand}
+ * {@see \BEdita\Core\Command\UserExternalAuthAddCommand}
+ * {@see \BEdita\Core\Command\UserExternalAuthRemoveCommand}
  */
+#[CoversClass(UserExternalAuthListCommand::class)]
+#[CoversClass(UserExternalAuthAddCommand::class)]
+#[CoversClass(UserExternalAuthRemoveCommand::class)]
 class UserExternalAuthCommandsTest extends TestCase
 {
     use ConsoleIntegrationTestTrait;
@@ -26,7 +44,7 @@ class UserExternalAuthCommandsTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.Objects',
         'plugin.BEdita/Core.Profiles',
@@ -43,14 +61,12 @@ class UserExternalAuthCommandsTest extends TestCase
         parent::setUp();
 
         $this->cleanupConsoleTrait();
-        $this->useCommandRunner();
     }
 
     /**
      * Test case for {@see \BEdita\Core\Command\UserExternalAuthListCommand} command.
      *
      * @return void
-     * @covers \BEdita\Core\Command\UserExternalAuthListCommand
      */
     public function testList(): void
     {
@@ -75,7 +91,6 @@ class UserExternalAuthCommandsTest extends TestCase
      * Test case for {@see \BEdita\Core\Command\UserExternalAuthListCommand} command.
      *
      * @return void
-     * @covers \BEdita\Core\Command\UserExternalAuthListCommand
      */
     public function testListById(): void
     {
@@ -101,7 +116,6 @@ class UserExternalAuthCommandsTest extends TestCase
      * Test case for {@see \BEdita\Core\Command\UserExternalAuthListCommand} command.
      *
      * @return void
-     * @covers \BEdita\Core\Command\UserExternalAuthListCommand
      */
     public function testListByUsername(): void
     {
@@ -127,7 +141,6 @@ class UserExternalAuthCommandsTest extends TestCase
      * Test case for {@see \BEdita\Core\Command\UserExternalAuthListCommand} command.
      *
      * @return void
-     * @covers \BEdita\Core\Command\UserExternalAuthListCommand
      */
     public function testListByProvider(): void
     {
@@ -164,7 +177,6 @@ class UserExternalAuthCommandsTest extends TestCase
      * Test case for {@see \BEdita\Core\Command\UserExternalAuthListCommand} command.
      *
      * @return void
-     * @covers \BEdita\Core\Command\UserExternalAuthListCommand
      */
     public function testListUserNotFound(): void
     {
@@ -177,7 +189,6 @@ class UserExternalAuthCommandsTest extends TestCase
      * Test case for {@see \BEdita\Core\Command\UserExternalAuthAddCommand} command.
      *
      * @return void
-     * @covers \BEdita\Core\Command\UserExternalAuthAddCommand
      */
     public function testAdd()
     {
@@ -188,7 +199,7 @@ class UserExternalAuthCommandsTest extends TestCase
 
         /** @var \BEdita\Core\Model\Entity\ExternalAuth|null $auth */
         $auth = $this->fetchTable('ExternalAuth')
-            ->find('authProvider', ['auth_provider' => 'otp'])
+            ->find('authProvider', authProvider: 'otp')
             ->where(['user_id' => 5])
             ->contain(['AuthProviders'])
             ->first();
@@ -203,7 +214,6 @@ class UserExternalAuthCommandsTest extends TestCase
      * Test case for {@see \BEdita\Core\Command\UserExternalAuthAddCommand} command.
      *
      * @return void
-     * @covers \BEdita\Core\Command\UserExternalAuthAddCommand
      */
     public function testAddParams()
     {
@@ -214,7 +224,7 @@ class UserExternalAuthCommandsTest extends TestCase
 
         /** @var \BEdita\Core\Model\Entity\ExternalAuth|null $auth */
         $auth = $this->fetchTable('ExternalAuth')
-            ->find('authProvider', ['auth_provider' => 'otp'])
+            ->find('authProvider', authProvider: 'otp')
             ->where(['user_id' => 5])
             ->contain(['AuthProviders'])
             ->first();
@@ -229,7 +239,6 @@ class UserExternalAuthCommandsTest extends TestCase
      * Test case for {@see \BEdita\Core\Command\UserExternalAuthAddCommand} command.
      *
      * @return void
-     * @covers \BEdita\Core\Command\UserExternalAuthAddCommand
      */
     public function testAddNoUser(): void
     {
@@ -243,7 +252,6 @@ class UserExternalAuthCommandsTest extends TestCase
      * Test case for {@see \BEdita\Core\Command\UserExternalAuthAddCommand} command.
      *
      * @return void
-     * @covers \BEdita\Core\Command\UserExternalAuthAddCommand
      */
     public function testAddDuplicateProvider()
     {
@@ -256,7 +264,6 @@ class UserExternalAuthCommandsTest extends TestCase
      * Test case for {@see \BEdita\Core\Command\UserExternalAuthAddCommand} command.
      *
      * @return void
-     * @covers \BEdita\Core\Command\UserExternalAuthAddCommand
      */
     public function testAddProviderNotFound()
     {
@@ -269,7 +276,6 @@ class UserExternalAuthCommandsTest extends TestCase
      * Test case for {@see \BEdita\Core\Command\UserExternalAuthAddCommand} command.
      *
      * @return void
-     * @covers \BEdita\Core\Command\UserExternalAuthAddCommand
      */
     public function testAddNoProvider()
     {
@@ -283,7 +289,6 @@ class UserExternalAuthCommandsTest extends TestCase
      * Test case for {@see \BEdita\Core\Command\UserExternalAuthAddCommand} command.
      *
      * @return void
-     * @covers \BEdita\Core\Command\UserExternalAuthAddCommand
      */
     public function testAddNoProviderUsername()
     {
@@ -297,7 +302,6 @@ class UserExternalAuthCommandsTest extends TestCase
      * Test case for {@see \BEdita\Core\Command\UserExternalAuthRemoveCommand} command.
      *
      * @return void
-     * @covers \BEdita\Core\Command\UserExternalAuthRemoveCommand
      */
     public function testRemoveById()
     {
@@ -322,14 +326,13 @@ class UserExternalAuthCommandsTest extends TestCase
             ->toArray();
 
         static::assertLessThan(count($before), count($after));
-        static::assertNotContains('uuid', array_map(fn (ExternalAuth $auth): string => $auth->auth_provider->name, $after));
+        static::assertNotContains('uuid', array_map(fn(ExternalAuth $auth): string => $auth->auth_provider->name, $after));
     }
 
     /**
      * Test case for {@see \BEdita\Core\Command\UserExternalAuthRemoveCommand} command.
      *
      * @return void
-     * @covers \BEdita\Core\Command\UserExternalAuthRemoveCommand
      */
     public function testRemoveByProvider()
     {
@@ -354,14 +357,13 @@ class UserExternalAuthCommandsTest extends TestCase
             ->toArray();
 
         static::assertLessThan(count($before), count($after));
-        static::assertNotContains('uuid', array_map(fn (ExternalAuth $auth): string => $auth->auth_provider->name, $after));
+        static::assertNotContains('uuid', array_map(fn(ExternalAuth $auth): string => $auth->auth_provider->name, $after));
     }
 
     /**
      * Test case for {@see \BEdita\Core\Command\UserExternalAuthRemoveCommand} command.
      *
      * @return void
-     * @covers \BEdita\Core\Command\UserExternalAuthRemoveCommand
      */
     public function testRemoveNoUser(): void
     {
@@ -375,7 +377,6 @@ class UserExternalAuthCommandsTest extends TestCase
      * Test case for {@see \BEdita\Core\Command\UserExternalAuthRemoveCommand} command.
      *
      * @return void
-     * @covers \BEdita\Core\Command\UserExternalAuthRemoveCommand
      */
     public function testRemoveNoOptions()
     {
@@ -389,7 +390,6 @@ class UserExternalAuthCommandsTest extends TestCase
      * Test case for {@see \BEdita\Core\Command\UserExternalAuthRemoveCommand} command.
      *
      * @return void
-     * @covers \BEdita\Core\Command\UserExternalAuthRemoveCommand
      */
     public function testRemoveNotFoundByProvider()
     {
@@ -402,7 +402,6 @@ class UserExternalAuthCommandsTest extends TestCase
      * Test case for {@see \BEdita\Core\Command\UserExternalAuthRemoveCommand} command.
      *
      * @return void
-     * @covers \BEdita\Core\Command\UserExternalAuthRemoveCommand
      */
     public function testRemoveNotFoundById()
     {

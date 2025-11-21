@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\API\Test\TestCase\Middleware;
 
 use BEdita\API\Middleware\BodyParserMiddleware;
@@ -20,19 +19,19 @@ use BEdita\API\Test\Utility\TestRequestHandler;
 use Cake\Http\Response;
 use Cake\Http\ServerRequest;
 use Cake\TestSuite\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * {@see \BEdita\API\Middleware\BodyParserMiddleware} Test Case.
- *
- * @coversDefaultClass \BEdita\API\Middleware\BodyParserMiddleware
  */
+#[CoversClass(BodyParserMiddleware::class)]
 class BodyParserMiddlewareTest extends TestCase
 {
     /**
      * Test constructor.
      *
      * @return void
-     * @covers ::__construct()
      */
     public function testConstruct()
     {
@@ -52,7 +51,7 @@ class BodyParserMiddlewareTest extends TestCase
      *
      * @return array
      */
-    public function decodeFormProvider(): array
+    public static function decodeFormProvider(): array
     {
         return [
             'empty' => [
@@ -72,9 +71,8 @@ class BodyParserMiddlewareTest extends TestCase
      * @param array $expected Expected request data array
      * @param string $input Request body
      * @return void
-     * @covers ::decodeForm()
-     * @dataProvider decodeFormProvider
      */
+    #[DataProvider('decodeFormProvider')]
     public function testDecodeForm(array $expected, string $input): void
     {
         $request = new ServerRequest([

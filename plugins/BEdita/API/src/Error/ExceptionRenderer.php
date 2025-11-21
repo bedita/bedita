@@ -12,14 +12,8 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\API\Error;
 
-use BEdita\Core\Exception\BadFilterException;
-use BEdita\Core\Exception\ImmutableResourceException;
-use BEdita\Core\Exception\InvalidDataException;
-use BEdita\Core\Exception\LockedResourceException;
-use BEdita\Core\Exception\UserExistsException;
 use Cake\Core\Configure;
 use Cake\Core\Exception\CakeException;
 use Cake\Error\Renderer\WebExceptionRenderer;
@@ -37,19 +31,6 @@ use Throwable;
 class ExceptionRenderer extends WebExceptionRenderer
 {
     /**
-     * Additional exception codes
-     *
-     * @var array
-     */
-    protected $additionalHttpCodes = [
-        BadFilterException::class => 400,
-        LockedResourceException::class => 403,
-        ImmutableResourceException::class => 403,
-        InvalidDataException::class => 400,
-        UserExistsException::class => 400,
-    ];
-
-    /**
      * {@inheritDoc}
      *
      * @codeCoverageIgnore
@@ -61,8 +42,6 @@ class ExceptionRenderer extends WebExceptionRenderer
         ServerRequest::addDetector('html', [
             'accept' => ['text/html', 'application/xhtml+xml', 'application/xhtml', 'text/xhtml'],
         ]);
-
-        $this->exceptionHttpCodes += $this->additionalHttpCodes;
     }
 
     /**
@@ -81,16 +60,10 @@ class ExceptionRenderer extends WebExceptionRenderer
             $trace = explode("\n", $this->error->getTraceAsString());
         }
 
-        $this->controller->loadComponent('RequestHandler');
-        $this->controller->RequestHandler->setConfig('viewClassMap.json', 'BEdita/API.JsonApi');
         $this->controller->loadComponent('BEdita/API.JsonApi', [
-            'contentType' => 'json',
-            // 'contentType' => $this->controller->request->is('json') ? 'json' : null,
-            // 'checkMediaType' => $this->controller->request->is('jsonapi'),
+            'contentType' => $this->controller->getRequest()->is('json') ? 'json' : null,
         ]);
-
         $this->controller->JsonApi->error($status, $title, $detail, $code, array_filter(compact('trace')));
-        $this->controller->RequestHandler->renderAs($this->controller, 'jsonapi');
 
         return parent::render();
     }
@@ -122,7 +95,7 @@ class ExceptionRenderer extends WebExceptionRenderer
      * @param \Throwable $error Exception.
      * @return string Error message
      */
-    protected function errorDetail(Throwable $error)
+    protected function errorDetail(Throwable $error): string
     {
         if (!$error instanceof CakeException) {
             return '';
@@ -147,8 +120,8 @@ class ExceptionRenderer extends WebExceptionRenderer
                         return sprintf('[%s]: %s', $key, $val);
                     },
                     array_keys($d),
-                    array_values($d)
-                )
+                    array_values($d),
+                ),
             );
         }
 

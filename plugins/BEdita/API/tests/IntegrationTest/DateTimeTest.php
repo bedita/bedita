@@ -16,15 +16,21 @@ namespace BEdita\API\Test\IntegrationTest;
 
 use BEdita\API\TestSuite\IntegrationTestCase;
 use Cake\Utility\Hash;
+use PHPUnit\Framework\Attributes\CoversNothing;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * Test date & datetime input/output
- *
- * @coversNothing
  */
+#[CoversNothing]
 class DateTimeTest extends IntegrationTestCase
 {
-    public function dateTimeInputProvider()
+    /**
+     * Data provider for `testDateTimeInput`
+     *
+     * @return array
+     */
+    public static function dateTimeInputProvider(): array
     {
         return [
             'simple date' => [
@@ -75,7 +81,7 @@ class DateTimeTest extends IntegrationTestCase
                     'publish_start' => '2018-08-02T16:23:23+00:00',
                 ],
             ],
-            // Note: \Cake\I18n\FrozenDate::parse('1533117600') gives an error => parsing a date from a timestamp is questionable.. removing this test for now
+            // Note: \Cake\I18n\Date::parse('1533117600') gives an error => parsing a date from a timestamp is questionable.. removing this test for now
             // 'date timestamp' => [
             //     [
             //         'birthdate' => '2018-08-01',
@@ -136,10 +142,9 @@ class DateTimeTest extends IntegrationTestCase
      *
      * @param array $expected Extected result
      * @param array $input Input data
-     * @dataProvider dateTimeInputProvider
      * @return void
-     * @coversNothing
      */
+    #[DataProvider('dateTimeInputProvider')]
     public function testDateTimeInput($expected, $input)
     {
         $data = [

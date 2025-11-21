@@ -12,34 +12,46 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\Command;
 
 use BEdita\Core\Command\TreeCheckCommand;
+use BEdita\Core\Model\Table\CategoriesTable;
+use BEdita\Core\Model\Table\TreesTable;
 use Cake\Console\TestSuite\ConsoleIntegrationTestTrait;
 use Cake\Database\Driver\Mysql;
 use Cake\ORM\Locator\LocatorAwareTrait;
 use Cake\TestSuite\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
 
 /**
  * {@see \BEdita\Core\Command\TreeCheckCommand} Test Case.
- *
- * @property \BEdita\Core\Model\Table\TreesTable $Trees
- * @property \BEdita\Core\Model\Table\CategoriesTable $Categories
- * @covers \BEdita\Core\Command\TreeCheckCommand
  */
-#[\AllowDynamicProperties]
+#[CoversClass(TreeCheckCommand::class)]
 class TreeCheckCommandTest extends TestCase
 {
     use ConsoleIntegrationTestTrait;
     use LocatorAwareTrait;
 
     /**
+     * Trees instance
+     *
+     * @var \BEdita\Core\Model\Table\TreesTable
+     */
+    protected TreesTable $Trees;
+
+    /**
+     * Categories instance
+     *
+     * @var \BEdita\Core\Model\Table\CategoriesTable
+     */
+    protected CategoriesTable $Categories;
+
+    /**
      * Fixtures
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.Relations',
         'plugin.BEdita/Core.RelationTypes',
@@ -60,7 +72,6 @@ class TreeCheckCommandTest extends TestCase
         parent::setUp();
 
         $this->cleanupConsoleTrait();
-        $this->useCommandRunner();
         $this->Trees = $this->fetchTable('Trees');
         $this->Categories = $this->fetchTable('Categories');
     }
@@ -117,7 +128,7 @@ class TreeCheckCommandTest extends TestCase
             $this->Trees->find()
                 ->where(['object_id' => 12])
                 ->firstOrFail(),
-            ['checkRules' => false, '_primary' => false]
+            ['checkRules' => false, '_primary' => false],
         );
 
         $this->exec(sprintf('%s --verbose', TreeCheckCommand::defaultName()));
@@ -147,7 +158,7 @@ class TreeCheckCommandTest extends TestCase
                 'parent_id' => null,
                 'slug' => 'foo-bar',
             ]),
-            ['checkRules' => false]
+            ['checkRules' => false],
         );
 
         $this->exec(sprintf('%s --verbose', TreeCheckCommand::defaultName()));
@@ -177,7 +188,7 @@ class TreeCheckCommandTest extends TestCase
                 'parent_id' => null,
                 'slug' => 'foo-bar',
             ]),
-            ['checkRules' => false]
+            ['checkRules' => false],
         );
 
         $this->exec(sprintf('%s --verbose', TreeCheckCommand::defaultName()));
@@ -206,7 +217,7 @@ class TreeCheckCommandTest extends TestCase
                 'parent_id' => 2,
                 'slug' => 'foo-bar',
             ]),
-            ['checkRules' => false]
+            ['checkRules' => false],
         );
 
         $this->exec(sprintf('%s --verbose', TreeCheckCommand::defaultName()));
@@ -236,7 +247,7 @@ class TreeCheckCommandTest extends TestCase
         }
 
         $this->Trees->getConnection()->execute(
-            sprintf('DROP INDEX %s ON %s', 'trees_objectparent_uq', $this->Trees->getTable())
+            sprintf('DROP INDEX %s ON %s', 'trees_objectparent_uq', $this->Trees->getTable()),
         );
         $this->Trees->saveOrFail(
             $this->Trees->newEntity([
@@ -244,7 +255,7 @@ class TreeCheckCommandTest extends TestCase
                 'parent_id' => 11,
                 'slug' => 'foo-bar',
             ]),
-            ['checkRules' => false]
+            ['checkRules' => false],
         );
 
         $this->exec(sprintf('%s --verbose', TreeCheckCommand::defaultName()));

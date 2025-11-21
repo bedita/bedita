@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Model\Action;
 
 use BEdita\Core\Exception\InvalidDataException;
@@ -42,7 +41,7 @@ class SortRelatedObjectsAction extends BaseAction
      *
      * @throws \BEdita\Core\Exception\InvalidDataException if required data is missing
      */
-    public function execute(array $data = [])
+    public function execute(array $data = []): int
     {
         $association = $this->getConfig('association');
         if (!$association instanceof RelatedTo) {
@@ -62,7 +61,7 @@ class SortRelatedObjectsAction extends BaseAction
         $primaryKey = $entity->get('id');
         $sort = compact('field', 'direction');
         $params = compact('primaryKey', 'sort');
-        $association->getConnection()->transactional(function () use ($association, $entity, $params, &$count) {
+        $association->getConnection()->transactional(function () use ($association, $entity, $params, &$count): void {
             $action = new ListRelatedObjectsAction(compact('association'));
             $relatedEntities = $action($params)->toArray();
             $priority = 1;

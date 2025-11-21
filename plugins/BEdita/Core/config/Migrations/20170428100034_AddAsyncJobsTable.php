@@ -1,10 +1,10 @@
 <?php
-use Migrations\AbstractMigration;
+use Migrations\BaseMigration;
 
 /**
  * Add `async_jobs` table.
  */
-class AddAsyncJobsTable extends AbstractMigration
+class AddAsyncJobsTable extends BaseMigration
 {
 
     /**
@@ -144,7 +144,7 @@ class AddAsyncJobsTable extends AbstractMigration
      */
     public function down()
     {
-        $this->dropTable('async_jobs');
+        $this->table('async_jobs')->drop()->save();
     }
 }
 

@@ -12,14 +12,14 @@
  */
 
 use Cake\ORM\Table;
-use Migrations\AbstractMigration;
+use Migrations\BaseMigration;
 
 /**
  * Add `folders` core media type.
  *
  * @since 4.0.0
  */
-class FoldersType extends AbstractMigration
+class FoldersType extends BaseMigration
 {
 
     /**
@@ -47,7 +47,7 @@ class FoldersType extends AbstractMigration
         $adapter = $this->getAdapter();
         $table = new Table([
             'table' => 'object_types',
-            'connection' => $adapter->getCakeConnection(),
+            'connection' => $adapter->getConnection(),
         ]);
         // Now let's fix NSM (nested-set model) left and right indexes from tree data.
         $table->addBehavior('BEdita/Core.Tree', [
@@ -67,7 +67,7 @@ class FoldersType extends AbstractMigration
         $adapter = $this->getAdapter();
         $table = new Table([
             'table' => 'object_types',
-            'connection' => $adapter->getCakeConnection(),
+            'connection' => $adapter->getConnection(),
         ]);
         $table->addBehavior('Tree', [
             'left' => 'tree_left',

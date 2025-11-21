@@ -19,11 +19,10 @@ use BEdita\Core\Model\Entity\AsyncJob;
 use BEdita\Core\Model\Validation\Validation;
 use Cake\Core\Configure;
 use Cake\Database\Expression\QueryExpression;
-use Cake\Database\Schema\TableSchemaInterface;
 use Cake\Datasource\ConnectionManager;
 use Cake\Event\EventInterface;
-use Cake\I18n\FrozenTime;
-use Cake\ORM\Query;
+use Cake\I18n\DateTime;
+use Cake\ORM\Query\SelectQuery;
 use Cake\ORM\Table;
 use Cake\Queue\QueueManager;
 use Cake\Validation\Validator;
@@ -31,14 +30,20 @@ use Cake\Validation\Validator;
 /**
  * AsyncJobs Model
  *
- * @method \BEdita\Core\Model\Entity\AsyncJob get($primaryKey, $options = [])
- * @method \BEdita\Core\Model\Entity\AsyncJob newEntity($data = null, array $options = [])
+ * @method \BEdita\Core\Model\Entity\AsyncJob get(mixed $primaryKey, array|string $finder = 'all', \Psr\SimpleCache\CacheInterface|string|null $cache = null, \Closure|string|null $cacheKey = null, mixed ...$args)
+ * @method \BEdita\Core\Model\Entity\AsyncJob newEntity(array $data, array $options = [])
  * @method \BEdita\Core\Model\Entity\AsyncJob[] newEntities(array $data, array $options = [])
- * @method \BEdita\Core\Model\Entity\AsyncJob|bool save(\Cake\Datasource\EntityInterface $entity, $options = [])
+ * @method \BEdita\Core\Model\Entity\AsyncJob|false save(\Cake\Datasource\EntityInterface $entity, array $options = [])
  * @method \BEdita\Core\Model\Entity\AsyncJob patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
- * @method \BEdita\Core\Model\Entity\AsyncJob[] patchEntities($entities, array $data, array $options = [])
- * @method \BEdita\Core\Model\Entity\AsyncJob findOrCreate($search, callable $callback = null, $options = [])
+ * @method \BEdita\Core\Model\Entity\AsyncJob[] patchEntities(iterable $entities, array $data, array $options = [])
+ * @method \BEdita\Core\Model\Entity\AsyncJob findOrCreate(\Cake\ORM\Query\SelectQuery|callable|array $search, ?callable $callback = null, array $options = [])
  * @mixin \Cake\ORM\Behavior\TimestampBehavior
+ * @method \BEdita\Core\Model\Entity\AsyncJob newEmptyEntity()
+ * @method \BEdita\Core\Model\Entity\AsyncJob saveOrFail(\Cake\Datasource\EntityInterface $entity, array $options = [])
+ * @method \BEdita\Core\Model\Entity\AsyncJob[]|\Cake\Datasource\ResultSetInterface<\BEdita\Core\Model\Entity\AsyncJob>|false saveMany(iterable $entities, array $options = [])
+ * @method \BEdita\Core\Model\Entity\AsyncJob[]|\Cake\Datasource\ResultSetInterface<\BEdita\Core\Model\Entity\AsyncJob> saveManyOrFail(iterable $entities, array $options = [])
+ * @method \BEdita\Core\Model\Entity\AsyncJob[]|\Cake\Datasource\ResultSetInterface<\BEdita\Core\Model\Entity\AsyncJob>|false deleteMany(iterable $entities, array $options = [])
+ * @method \BEdita\Core\Model\Entity\AsyncJob[]|\Cake\Datasource\ResultSetInterface<\BEdita\Core\Model\Entity\AsyncJob> deleteManyOrFail(iterable $entities, array $options = [])
  * @since 4.0.0
  */
 class AsyncJobsTable extends Table
@@ -68,6 +73,10 @@ class AsyncJobsTable extends Table
 
         $this->setPrimaryKey('uuid');
         $this->setDisplayField('payload');
+        $this->getSchema()
+            ->setColumnType('payload', 'json')
+            ->setColumnType('uuid', 'uuid')
+            ->setColumnType('results', 'json');
 
         $this->addBehavior('Timestamp', [
             'events' => [
@@ -120,19 +129,6 @@ class AsyncJobsTable extends Table
     }
 
     /**
-     * {@inheritDoc}
-     *
-     * @codeCoverageIgnore
-     */
-    public function getSchema(): TableSchemaInterface
-    {
-        return parent::getSchema()
-            ->setColumnType('payload', 'json')
-            ->setColumnType('uuid', 'uuid')
-            ->setColumnType('results', 'json');
-    }
-
-    /**
      * Queue async job as new entity is created.
      *
      * @param \Cake\Event\EventInterface $event The event
@@ -169,12 +165,12 @@ class AsyncJobsTable extends Table
      * @param mixed $duration Duration. By default, jobs are locked for 5 minutes.
      * @return \BEdita\Core\Model\Entity\AsyncJob
      */
-    public function lock($uuid, $duration = '+5 minutes')
+    public function lock(string $uuid, mixed $duration = '+5 minutes'): AsyncJob
     {
         return $this->getConnection()->transactional(function () use ($uuid, $duration) {
-            $entity = $this->get($uuid, ['finder' => 'pending']);
+            $entity = $this->get($uuid, finder: 'pending');
             $entity->max_attempts -= 1;
-            $entity->locked_until = new FrozenTime($duration);
+            $entity->locked_until = new DateTime($duration);
 
             $expires = $entity->locked_until->timestamp;
             $this->dispatchEvent('AsyncJob.lock', compact('entity', 'expires'));
@@ -190,9 +186,9 @@ class AsyncJobsTable extends Table
      * @param mixed $success Job run success. If strictly equal to `false`, job is considered failed.
      * @return void
      */
-    public function unlock($uuid, $success)
+    public function unlock(string $uuid, mixed $success): void
     {
-        $this->getConnection()->transactional(function () use ($uuid, $success) {
+        $this->getConnection()->transactional(function () use ($uuid, $success): void {
             $entity = $this->get($uuid);
             $entity->locked_until = null;
 
@@ -212,30 +208,30 @@ class AsyncJobsTable extends Table
      * This finder returns a query object that filters asynchronous jobs that are
      * still valid (not completed, not yet expired, not locked, and have some attempts left).
      *
-     * @param \Cake\ORM\Query $query Query object instance.
-     * @return \Cake\ORM\Query
+     * @param \Cake\ORM\Query\SelectQuery $query Query object instance.
+     * @return \Cake\ORM\Query\SelectQuery
      */
-    protected function findPending(Query $query)
+    public function findPending(SelectQuery $query): SelectQuery
     {
-        $now = FrozenTime::now();
+        $now = DateTime::now();
 
-        return $query->where(fn (QueryExpression $exp): QueryExpression => $exp->and([
+        return $query->where(fn(QueryExpression $exp): QueryExpression => $exp->and([
             $exp->or(
-                fn (QueryExpression $exp): QueryExpression => $exp
+                fn(QueryExpression $exp): QueryExpression => $exp
                     ->isNull($this->aliasField('scheduled_from'))
                     ->lte($this->aliasField('scheduled_from'), $now),
             ),
             $exp->or(
-                fn (QueryExpression $exp): QueryExpression => $exp
+                fn(QueryExpression $exp): QueryExpression => $exp
                     ->isNull($this->aliasField('expires'))
                     ->gte($this->aliasField('expires'), $now),
             ),
             $exp->or(
-                fn (QueryExpression $exp): QueryExpression => $exp
+                fn(QueryExpression $exp): QueryExpression => $exp
                     ->isNull($this->aliasField('locked_until'))
                     ->lt($this->aliasField('locked_until'), $now),
             ),
-            fn (QueryExpression $exp): QueryExpression => $exp
+            fn(QueryExpression $exp): QueryExpression => $exp
                 ->gt($this->aliasField('max_attempts'), 0)
                 ->isNull($this->aliasField('completed')),
         ]));
@@ -247,21 +243,21 @@ class AsyncJobsTable extends Table
      * This finder returns a query object that filters asynchronous jobs that are either expired or
      * that have failed too many times.
      *
-     * @param \Cake\ORM\Query $query Query object instance.
-     * @return \Cake\ORM\Query
+     * @param \Cake\ORM\Query\SelectQuery $query Query object instance.
+     * @return \Cake\ORM\Query\SelectQuery
      */
-    protected function findFailed(Query $query)
+    public function findFailed(SelectQuery $query): SelectQuery
     {
-        $now = FrozenTime::now();
+        $now = DateTime::now();
 
-        return $query->where(fn (QueryExpression $exp): QueryExpression => $exp->and([
-            fn (QueryExpression $exp): QueryExpression => $exp->isNull($this->aliasField('completed')),
+        return $query->where(fn(QueryExpression $exp): QueryExpression => $exp->and([
+            fn(QueryExpression $exp): QueryExpression => $exp->isNull($this->aliasField('completed')),
             $exp->or([
-                fn (QueryExpression $exp): QueryExpression => $exp->lt($this->aliasField('expires'), $now),
+                fn(QueryExpression $exp): QueryExpression => $exp->lt($this->aliasField('expires'), $now),
                 $exp->and([
-                    fn (QueryExpression $exp): QueryExpression => $exp->eq($this->aliasField('max_attempts'), 0),
+                    fn(QueryExpression $exp): QueryExpression => $exp->eq($this->aliasField('max_attempts'), 0),
                     $exp->or(
-                        fn (QueryExpression $exp): QueryExpression => $exp
+                        fn(QueryExpression $exp): QueryExpression => $exp
                             ->isNull($this->aliasField('locked_until'))
                             ->lt($this->aliasField('locked_until'), $now),
                     ),
@@ -275,13 +271,13 @@ class AsyncJobsTable extends Table
      *
      * This finder returns a query object that filters asynchronous jobs that have been completed successfully.
      *
-     * @param \Cake\ORM\Query $query Query object instance.
-     * @return \Cake\ORM\Query
+     * @param \Cake\ORM\Query\SelectQuery $query Query object instance.
+     * @return \Cake\ORM\Query\SelectQuery
      */
-    protected function findCompleted(Query $query)
+    public function findCompleted(SelectQuery $query): SelectQuery
     {
         return $query->where(
-            fn (QueryExpression $exp): QueryExpression => $exp->isNotNull($this->aliasField('completed')),
+            fn(QueryExpression $exp): QueryExpression => $exp->isNotNull($this->aliasField('completed')),
         );
     }
 
@@ -290,42 +286,39 @@ class AsyncJobsTable extends Table
      *
      * This finder returns a query object that filters asynchronous jobs that haven't been completed yet.
      *
-     * @param \Cake\ORM\Query $query Query object instance.
-     * @return \Cake\ORM\Query
+     * @param \Cake\ORM\Query\SelectQuery $query Query object instance.
+     * @return \Cake\ORM\Query\SelectQuery
      */
-    protected function findIncomplete(Query $query)
+    public function findIncomplete(SelectQuery $query): SelectQuery
     {
         return $query->where(
-            fn (QueryExpression $exp): QueryExpression => $exp->isNull($this->aliasField('completed')),
+            fn(QueryExpression $exp): QueryExpression => $exp->isNull($this->aliasField('completed')),
         );
     }
 
     /**
      * Find pending asynchronous jobs sorted by descending priority, and optionally filtered by service and priority.
      *
-     * @param \Cake\ORM\Query $query Query object instance.
+     * @param \Cake\ORM\Query\SelectQuery $query Query object instance.
      * @param array $options Additional options.
-     * @return \Cake\ORM\Query
+     * @return \Cake\ORM\Query\SelectQuery
      */
-    protected function findPriority(Query $query, array $options)
+    protected function findPriority(SelectQuery $query, ?int $priority = null, ?string $service = null): SelectQuery
     {
-        $options = array_filter(array_intersect_key($options, array_flip(['priority', 'service'])));
-        if (!empty($options)) {
-            $query = $query->where(function (QueryExpression $exp) use ($options) {
-                if (!empty($options['priority'])) {
-                    $exp->gte($this->aliasField('priority'), $options['priority']);
-                }
-                if (!empty($options['service'])) {
-                    $exp->eq($this->aliasField('service'), $options['service']);
-                }
-
-                return $exp;
-            });
+        if (!empty($priority)) {
+            $query = $query->where(
+                fn(QueryExpression $exp): QueryExpression => $exp->gte($this->aliasField('priority'), $priority),
+            );
+        }
+        if (!empty($service)) {
+            $query = $query->where(
+                fn(QueryExpression $exp): QueryExpression => $exp->eq($this->aliasField('service'), $service),
+            );
         }
 
         return $query
             ->find('pending')
-            ->orderDesc($this->aliasField('priority'));
+            ->orderByDesc($this->aliasField('priority'));
     }
 
     /**
@@ -338,7 +331,7 @@ class AsyncJobsTable extends Table
      */
     public function updateResults(AsyncJob $entity, bool $success, array $messages = []): void
     {
-        $this->getConnection()->transactional(function () use ($entity, $success, $messages) {
+        $this->getConnection()->transactional(function () use ($entity, $success, $messages): void {
             $results = (array)$entity->get('results');
             $attempt = count($results) + 1;
             $data = compact('messages');

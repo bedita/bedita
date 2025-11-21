@@ -12,16 +12,17 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase;
 
+use BEdita\Core\SingletonTrait;
 use Cake\TestSuite\TestCase;
+use PHPUnit\Framework\Attributes\CoversTrait;
+use ReflectionClass;
 
 /**
  * {@see BEdita\Core\SingletonTrait} Test Case
- *
- * @covers \BEdita\Core\SingletonTrait
  */
+#[CoversTrait(SingletonTrait::class)]
 class SingletonTraitTest extends TestCase
 {
     /**
@@ -31,7 +32,7 @@ class SingletonTraitTest extends TestCase
      */
     public function testNotInstantiable()
     {
-        $class = new \ReflectionClass(MySingletonClass::class);
+        $class = new ReflectionClass(MySingletonClass::class);
 
         static::assertFalse($class->isInstantiable());
     }
@@ -43,7 +44,7 @@ class SingletonTraitTest extends TestCase
      */
     public function testNotCloneable()
     {
-        $class = new \ReflectionClass(MySingletonClass::class);
+        $class = new ReflectionClass(MySingletonClass::class);
 
         static::assertFalse($class->isCloneable());
     }

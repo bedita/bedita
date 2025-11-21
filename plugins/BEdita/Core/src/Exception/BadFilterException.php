@@ -12,25 +12,22 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Exception;
 
-use Cake\Core\Exception\CakeException;
+use Cake\Http\Exception\HttpException;
 
 /**
  * Exception raised when bad filter data are passed to Model/ORM classes
  */
-class BadFilterException extends CakeException
+class BadFilterException extends HttpException
 {
     /**
-     * {@inheritDoc}
-     *
-     * Default error code 400
-     *
-     * @codeCoverageIgnore
+     * @inheritDoc
      */
-    public function __construct($message, $code = 400, $previous = null)
-    {
-        parent::__construct($message, $code, $previous);
-    }
+    protected int $_defaultCode = 400;
+
+    /**
+     * @inheritDoc
+     */
+    protected string $_messageTemplate = '%s';
 }

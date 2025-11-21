@@ -12,11 +12,10 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Model\Entity;
 
-use Cake\Auth\DefaultPasswordHasher;
-use Cake\I18n\FrozenTime;
+use Authentication\PasswordHasher\DefaultPasswordHasher;
+use Cake\I18n\DateTime;
 use Cake\ORM\Locator\LocatorAwareTrait;
 
 /**
@@ -27,12 +26,12 @@ use Cake\ORM\Locator\LocatorAwareTrait;
  * @property string $password
  * @property string $password_hash
  * @property bool $blocked
- * @property \Cake\I18n\Time|\Cake\I18n\FrozenTime $last_login
- * @property \Cake\I18n\Time|\Cake\I18n\FrozenTime $last_login_err
+ * @property \Cake\I18n\Time|\Cake\I18n\DateTime $last_login
+ * @property \Cake\I18n\Time|\Cake\I18n\DateTime $last_login_err
  * @property int $num_login_err
  * @property \BEdita\Core\Model\Entity\ExternalAuth[] $external_auth
- * @property \Cake\I18n\Time|\Cake\I18n\FrozenTime $verified
- * @property \Cake\I18n\Time|\Cake\I18n\FrozenTime $password_modified
+ * @property \Cake\I18n\Time|\Cake\I18n\DateTime $verified
+ * @property \Cake\I18n\Time|\Cake\I18n\DateTime $password_modified
  * @property array $user_preferences
  * @since 4.0.0
  */
@@ -64,7 +63,7 @@ class User extends Profile
      *
      * Add `external_auth` info to user meta.
      */
-    protected function getMeta()
+    protected function getMeta(): array
     {
         $meta = parent::getMeta();
         $meta['external_auth'] = $this->getExternalAuthMeta();
@@ -94,7 +93,7 @@ class User extends Profile
 
         return $this->getTableLocator()
             ->get('ExternalAuth')
-            ->find('user', ['user' => $this->id])
+            ->find('user', user: $this->id)
             ->all()
             ->map(function (ExternalAuth $item) {
                 return [
@@ -111,7 +110,7 @@ class User extends Profile
      * @param string|null $password Password to be hashed.
      * @return null
      */
-    protected function _setPassword(?string $password)
+    protected function _setPassword(?string $password): null
     {
         $this->password_hash = $password;
 
@@ -126,7 +125,7 @@ class User extends Profile
      */
     protected function _setPasswordHash(?string $password): ?string
     {
-        $this->password_modified = FrozenTime::now();
+        $this->password_modified = DateTime::now();
 
         return $password !== null ? (new DefaultPasswordHasher())->hash($password) : null;
     }

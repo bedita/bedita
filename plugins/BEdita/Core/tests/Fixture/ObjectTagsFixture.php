@@ -26,7 +26,7 @@ class ObjectTagsFixture extends TestFixture
      *
      * @var array
      */
-    public $records = [
+    public array $records = [
         [
             'object_id' => 4,
             'tag_id' => 1,

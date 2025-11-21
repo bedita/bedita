@@ -14,18 +14,22 @@ declare(strict_types=1);
  */
 namespace BEdita\Core\Test\TestCase\Command;
 
+use BEdita\Core\Command\BuildSearchIndexCommand;
 use BEdita\Core\Search\Adapter\SimpleAdapter;
 use Cake\Command\Command;
 use Cake\Console\TestSuite\ConsoleIntegrationTestTrait;
 use Cake\Core\Configure;
+use Cake\Database\Driver\Postgres;
+use Cake\Datasource\ConnectionManager;
 use Cake\Datasource\EntityInterface;
 use Cake\TestSuite\TestCase;
+use Exception;
+use PHPUnit\Framework\Attributes\CoversClass;
 
 /**
- * BEdita\Core\Command\BuildSearchIndexCommand Test Case
- *
- * @coversDefaultClass \BEdita\Core\Command\BuildSearchIndexCommand
+ * {@see BEdita\Core\Command\BuildSearchIndexCommand} Test Case
  */
+#[CoversClass(BuildSearchIndexCommand::class)]
 class BuildSearchIndexCommandTest extends TestCase
 {
     use ConsoleIntegrationTestTrait;
@@ -33,28 +37,46 @@ class BuildSearchIndexCommandTest extends TestCase
     /**
      * @inheritDoc
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.Objects',
         'plugin.BEdita/Core.Trees',
     ];
 
     /**
-     * setUp method
+     * Store original Search config
      *
-     * @return void
+     * @var array|null
+     */
+    protected array|null $searchConf = null;
+
+    /**
+     * @inheritDoc
      */
     public function setUp(): void
     {
         parent::setUp();
-        $this->useCommandRunner();
+
+        $this->searchConf = Configure::read('Search');
+        $driver = ConnectionManager::get('default')->getDriver();
+        $this->skipIf($driver instanceof Postgres);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function tearDown(): void
+    {
+        parent::tearDown();
+
+        // restore Search config after each test
+        Configure::write('Search', $this->searchConf);
     }
 
     /**
      * Test `buildOptionParser` method
      *
      * @return void
-     * @covers ::buildOptionParser()
      */
     public function testBuildOptionParser(): void
     {
@@ -71,9 +93,6 @@ class BuildSearchIndexCommandTest extends TestCase
      * Test `execute` method with no options
      *
      * @return void
-     * @covers ::execute()
-     * @covers ::objectsIterator()
-     * @covers ::doIndexResource()
      */
     public function testExecute(): void
     {
@@ -114,9 +133,6 @@ class BuildSearchIndexCommandTest extends TestCase
      * Test `execute` method with exception
      *
      * @return void
-     * @covers ::execute()
-     * @covers ::objectsIterator()
-     * @covers ::doIndexResource()
      */
     public function testExecuteException(): void
     {
@@ -124,7 +140,7 @@ class BuildSearchIndexCommandTest extends TestCase
         {
             public function indexResource(EntityInterface $entity, string $operation): void
             {
-                throw new \Exception('Test exception');
+                throw new Exception('Test exception');
             }
         };
         Configure::write('Search.adapters.default', [
@@ -138,9 +154,6 @@ class BuildSearchIndexCommandTest extends TestCase
      * Test `execute` method with --type option
      *
      * @return void
-     * @covers ::execute()
-     * @covers ::objectsIterator()
-     * @covers ::doIndexResource()
      */
     public function testExecuteByTypes(): void
     {
@@ -181,9 +194,6 @@ class BuildSearchIndexCommandTest extends TestCase
      * Test `execute` method with --id option
      *
      * @return void
-     * @covers ::execute()
-     * @covers ::objectsIterator()
-     * @covers ::doIndexResource()
      */
     public function testExecuteById(): void
     {
@@ -224,9 +234,6 @@ class BuildSearchIndexCommandTest extends TestCase
      * Test `execute` method on wrong ID
      *
      * @return void
-     * @covers ::execute()
-     * @covers ::objectsIterator()
-     * @covers ::doIndexResource()
      */
     public function testExecuteWrongId(): void
     {
@@ -239,9 +246,6 @@ class BuildSearchIndexCommandTest extends TestCase
      * Test `execute` method with --uname option
      *
      * @return void
-     * @covers ::execute()
-     * @covers ::objectsIterator()
-     * @covers ::doIndexResource()
      */
     public function testExecuteByUname(): void
     {
@@ -282,9 +286,6 @@ class BuildSearchIndexCommandTest extends TestCase
      * Test `execute` method on wrong uname
      *
      * @return void
-     * @covers ::execute()
-     * @covers ::objectsIterator()
-     * @covers ::doIndexResource()
      */
     public function testExecuteWrongUname(): void
     {
@@ -297,9 +298,6 @@ class BuildSearchIndexCommandTest extends TestCase
      * Test `execute` method with --ancestor option
      *
      * @return void
-     * @covers ::execute()
-     * @covers ::objectsIterator()
-     * @covers ::doIndexResource()
      */
     public function testExecuteByAncestor(): void
     {
@@ -340,14 +338,11 @@ class BuildSearchIndexCommandTest extends TestCase
      * Test `execute` method on wrong ancestor
      *
      * @return void
-     * @covers ::execute()
-     * @covers ::objectsIterator()
-     * @covers ::doIndexResource()
      */
     public function testExecuteWrongAncestor(): void
     {
         $this->exec('build_search_index --ancestor abcdefghi');
-        $this->assertErrorContains('Record not found in table "objects"');
+        $this->assertErrorContains('Record not found in table `objects`');
         $this->assertExitCode(Command::CODE_ERROR);
     }
 
@@ -355,9 +350,6 @@ class BuildSearchIndexCommandTest extends TestCase
      * Test `execute` method with --adapters option
      *
      * @return void
-     * @covers ::execute()
-     * @covers ::objectsIterator()
-     * @covers ::doIndexResource()
      */
     public function testExecuteByAdapters(): void
     {

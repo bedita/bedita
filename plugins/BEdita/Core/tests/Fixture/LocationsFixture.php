@@ -26,7 +26,7 @@ class LocationsFixture extends TestFixture
      *
      * @var array
      */
-    public $records = [
+    public array $records = [
         [
             'id' => 8,
             'coords' => 'POINT(11.3464055 44.4944183)',

@@ -1,12 +1,12 @@
 <?php
-use Migrations\AbstractMigration;
+use Migrations\BaseMigration;
 
 /**
  * Add `auth_class`, `enabled`, `creaeted` and `modified` columns to `auth_providers` table.
  *
  * @see https://github.com/bedita/bedita/1429
  */
-class AddAuthProvidersClass extends AbstractMigration
+class AddAuthProvidersClass extends BaseMigration
 {
     /**
      * {@inheritDoc}

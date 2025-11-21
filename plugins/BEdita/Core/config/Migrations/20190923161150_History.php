@@ -1,15 +1,16 @@
 <?php
-use Migrations\AbstractMigration;
 
-class History extends AbstractMigration
+use Migrations\BaseMigration;
+
+class History extends BaseMigration
 {
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
-    public $autoId = false;
+    public bool $autoId = false;
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function up()
     {

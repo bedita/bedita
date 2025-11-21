@@ -12,14 +12,13 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Model\Table;
 
 use BEdita\Core\Exception\ImmutableResourceException;
+use BEdita\Core\Model\Entity\PropertyType;
 use BEdita\Core\Model\Validation\Validation;
 use BEdita\Core\Search\SimpleSearchTrait;
 use Cake\Cache\Cache;
-use Cake\Database\Schema\TableSchemaInterface;
 use Cake\Datasource\EntityInterface;
 use Cake\Event\EventInterface;
 use Cake\Http\Exception\ForbiddenException;
@@ -30,13 +29,23 @@ use Cake\Validation\Validator;
 /**
  * Property Types - available property types
  *
- * @method \BEdita\Core\Model\Entity\PropertyType newEntity($data = null, array $options = [])
+ * @method \BEdita\Core\Model\Entity\PropertyType newEntity(array $data, array $options = [])
  * @method \BEdita\Core\Model\Entity\PropertyType[] newEntities(array $data, array $options = [])
- * @method \BEdita\Core\Model\Entity\PropertyType|bool save(\Cake\Datasource\EntityInterface $entity, $options = [])
+ * @method \BEdita\Core\Model\Entity\PropertyType|false save(\Cake\Datasource\EntityInterface $entity, array $options = [])
  * @method \BEdita\Core\Model\Entity\PropertyType patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
- * @method \BEdita\Core\Model\Entity\PropertyType[] patchEntities($entities, array $data, array $options = [])
- * @method \BEdita\Core\Model\Entity\PropertyType findOrCreate($search, callable $callback = null, $options = [])
- * @property \Cake\ORM\Association\HasMany $Properties
+ * @method \BEdita\Core\Model\Entity\PropertyType[] patchEntities(iterable $entities, array $data, array $options = [])
+ * @method \BEdita\Core\Model\Entity\PropertyType findOrCreate(\Cake\ORM\Query\SelectQuery|callable|array $search, ?callable $callback = null, array $options = [])
+ * @property \Cake\ORM\Table&\Cake\ORM\Association\HasMany $Properties
+ * @method \BEdita\Core\Model\Entity\PropertyType newEmptyEntity()
+ * @method \BEdita\Core\Model\Entity\PropertyType get(mixed $primaryKey, array|string $finder = 'all', \Psr\SimpleCache\CacheInterface|string|null $cache = null, \Closure|string|null $cacheKey = null, mixed ...$args)
+ * @method \BEdita\Core\Model\Entity\PropertyType saveOrFail(\Cake\Datasource\EntityInterface $entity, array $options = [])
+ * @method \BEdita\Core\Model\Entity\PropertyType[]|\Cake\Datasource\ResultSetInterface<\BEdita\Core\Model\Entity\PropertyType>|false saveMany(iterable $entities, array $options = [])
+ * @method \BEdita\Core\Model\Entity\PropertyType[]|\Cake\Datasource\ResultSetInterface<\BEdita\Core\Model\Entity\PropertyType> saveManyOrFail(iterable $entities, array $options = [])
+ * @method \BEdita\Core\Model\Entity\PropertyType[]|\Cake\Datasource\ResultSetInterface<\BEdita\Core\Model\Entity\PropertyType>|false deleteMany(iterable $entities, array $options = [])
+ * @method \BEdita\Core\Model\Entity\PropertyType[]|\Cake\Datasource\ResultSetInterface<\BEdita\Core\Model\Entity\PropertyType> deleteManyOrFail(iterable $entities, array $options = [])
+ * @mixin \Cake\ORM\Behavior\TimestampBehavior
+ * @mixin \BEdita\Core\Model\Behavior\SearchableBehavior
+ * @mixin \BEdita\Core\Model\Behavior\ResourceNameBehavior
  * @since 4.0.0
  */
 class PropertyTypesTable extends Table
@@ -66,6 +75,7 @@ class PropertyTypesTable extends Table
         $this->setTable('property_types');
         $this->setPrimaryKey('id');
         $this->setDisplayField('name');
+        $this->getSchema()->setColumnType('params', 'json');
 
         $this->addBehavior('Timestamp');
         $this->addBehavior('BEdita/Core.Searchable', ['scopes' => (array)$this->getTable()]);
@@ -104,16 +114,6 @@ class PropertyTypesTable extends Table
      *
      * @codeCoverageIgnore
      */
-    public function getSchema(): TableSchemaInterface
-    {
-        return parent::getSchema()->setColumnType('params', 'json');
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @codeCoverageIgnore
-     */
     public function buildRules(RulesChecker $rules): RulesChecker
     {
         $rules->add($rules->isUnique(['name']));
@@ -129,7 +129,7 @@ class PropertyTypesTable extends Table
      * @return void
      * @throws \BEdita\Core\Exception\ImmutableResourceException
      */
-    public function beforeSave(EventInterface $event, EntityInterface $entity)
+    public function beforeSave(EventInterface $event, EntityInterface $entity): void
     {
         if (!$entity->isNew() && $entity->isDirty() && $entity->get('core_type')) {
             throw new ImmutableResourceException(__d('bedita', 'Could not modify core property'));
@@ -141,7 +141,7 @@ class PropertyTypesTable extends Table
      *
      * @return void
      */
-    public function afterSave()
+    public function afterSave(): void
     {
         Cache::clear(ObjectTypesTable::CACHE_CONFIG);
     }
@@ -155,7 +155,7 @@ class PropertyTypesTable extends Table
      * @throws \Cake\Http\Exception\ForbiddenException Throws an exception if one or more properties exist
      *      with the property type being deleted.
      */
-    public function beforeDelete(EventInterface $event, EntityInterface $entity)
+    public function beforeDelete(EventInterface $event, EntityInterface $entity): void
     {
         if ($this->Properties->exists([$this->Properties->getForeignKey() => $entity->get($this->Properties->getBindingKey())])) {
             throw new ForbiddenException(__d('bedita', 'Property type with existing properties'));
@@ -167,7 +167,7 @@ class PropertyTypesTable extends Table
      *
      * @return void
      */
-    public function afterDelete()
+    public function afterDelete(): void
     {
         Cache::clear(ObjectTypesTable::CACHE_CONFIG);
     }
@@ -179,9 +179,9 @@ class PropertyTypesTable extends Table
      * @param \Cake\ORM\Table $table Table object.
      * @return \BEdita\Core\Model\Entity\PropertyType
      */
-    public function detect($name, Table $table)
+    public function detect(string $name, Table $table): PropertyType
     {
-        /** @var \BEdita\Core\Model\Entity\PropertyType[] $propertyTypes */
+        /** @var array<\BEdita\Core\Model\Entity\PropertyType> $propertyTypes */
         $propertyTypes = Cache::remember(
             'property_types',
             function () {
@@ -190,7 +190,7 @@ class PropertyTypesTable extends Table
                     ->indexBy('name')
                     ->toArray();
             },
-            ObjectTypesTable::CACHE_CONFIG
+            ObjectTypesTable::CACHE_CONFIG,
         );
 
         // Check if there is a property type whose name matches column name.

@@ -12,27 +12,26 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\API\Test\TestCase\Controller\Admin;
 
+use BEdita\API\Controller\Admin\AsyncJobsController;
+use BEdita\API\Error\ExceptionRenderer;
 use BEdita\API\TestSuite\IntegrationTestCase;
+use BEdita\Core\Test\Utility\TestArraySubsetTrait;
 use Cake\ORM\TableRegistry;
 use Cake\Utility\Text;
-use DMS\PHPUnitExtensions\ArraySubset\ArraySubsetAsserts;
+use PHPUnit\Framework\Attributes\CoversClass;
 
-/**
- * @coversDefaultClass \BEdita\API\Controller\Admin\AsyncJobsController
- */
+#[CoversClass(AsyncJobsController::class)]
+#[CoversClass(ExceptionRenderer::class)]
 class AsyncJobsControllerTest extends IntegrationTestCase
 {
-    use ArraySubsetAsserts;
+    use TestArraySubsetTrait;
 
     /**
      * Test index method.
      *
      * @return void
-     * @covers ::index()
-     * @covers ::initialize()
      */
     public function testIndex()
     {
@@ -272,8 +271,6 @@ class AsyncJobsControllerTest extends IntegrationTestCase
      * Test index method.
      *
      * @return void
-     * @covers ::resource()
-     * @covers ::initialize()
      */
     public function testEmpty()
     {
@@ -313,8 +310,6 @@ class AsyncJobsControllerTest extends IntegrationTestCase
      * Test view method.
      *
      * @return void
-     * @covers ::resource()
-     * @covers ::initialize()
      */
     public function testSingle()
     {
@@ -360,9 +355,6 @@ class AsyncJobsControllerTest extends IntegrationTestCase
      * Test view method.
      *
      * @return void
-     * @covers ::resource()
-     * @covers ::initialize()
-     * @covers \BEdita\API\Error\ExceptionRenderer
      */
     public function testMissing()
     {
@@ -396,9 +388,6 @@ class AsyncJobsControllerTest extends IntegrationTestCase
      * Test add method.
      *
      * @return void
-     * @covers ::index()
-     * @covers ::initialize()
-     * @covers ::resourceUrl()
      */
     public function testAdd()
     {
@@ -417,7 +406,7 @@ class AsyncJobsControllerTest extends IntegrationTestCase
 
         $asyncJob = TableRegistry::getTableLocator()->get('AsyncJobs')
             ->find()
-            ->order(['created' => 'DESC'])
+            ->orderBy(['created' => 'DESC'])
             ->first();
 
         $this->assertHeader('Location', 'http://api.example.com/admin/async_jobs/' . $asyncJob->get('uuid'));
@@ -430,8 +419,6 @@ class AsyncJobsControllerTest extends IntegrationTestCase
      * Test add method with invalid data.
      *
      * @return void
-     * @covers ::index()
-     * @covers ::initialize()
      */
     public function testAddInvalid()
     {
@@ -457,8 +444,6 @@ class AsyncJobsControllerTest extends IntegrationTestCase
      * Test edit method.
      *
      * @return void
-     * @covers ::resource()
-     * @covers ::initialize()
      */
     public function testEdit()
     {
@@ -485,8 +470,6 @@ class AsyncJobsControllerTest extends IntegrationTestCase
      * Test edit method with ID conflict.
      *
      * @return void
-     * @covers ::resource()
-     * @covers ::initialize()
      */
     public function testEditConflict()
     {
@@ -513,8 +496,6 @@ class AsyncJobsControllerTest extends IntegrationTestCase
      * Test delete method.
      *
      * @return void
-     * @covers ::resource()
-     * @covers ::initialize()
      */
     public function testDelete()
     {

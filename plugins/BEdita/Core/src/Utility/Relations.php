@@ -12,9 +12,9 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Utility;
 
+use BEdita\Core\Model\Enum\RelationTypeSide;
 use Cake\Datasource\EntityInterface;
 use Cake\Http\Exception\BadRequestException;
 use Cake\Utility\Hash;
@@ -49,7 +49,7 @@ class Relations extends ResourcesBase
      *
      * @var array
      */
-    protected static $defaults = [
+    protected static array $defaults = [
         // since default usage is in migrations
         // don't commit transactions but let migrations do it
         'save' => [
@@ -85,11 +85,11 @@ class Relations extends ResourcesBase
      *
      * @param string $relation Relation name or ID
      * @param string $type Object type name
-     * @param string $side Relation side, 'left' or 'right'
+     * @param \BEdita\Core\Model\Enum\RelationTypeSide|string $side Relation side, 'left' or 'right'
      * @param array $options Table locator options
      * @return void
      */
-    public static function addRelationType(string $relation, string $type, string $side, array $options = []): void
+    public static function addRelationType(string $relation, string $type, RelationTypeSide|string $side, array $options = []): void
     {
         $relation = static::getTable('Relations', $options)
             ->get($relation);
@@ -101,14 +101,18 @@ class Relations extends ResourcesBase
      *
      * @param string|int $relationId Relation id
      * @param array $types Object type names
-     * @param string $side Relation side, 'left' or 'right'
+     * @param \BEdita\Core\Model\Enum\RelationTypeSide|string $side Relation side, 'left' or 'right'
      * @param array $options Table locator options
      * @return void
      */
-    protected static function addTypes($relationId, array $types, string $side, array $options = []): void
+    protected static function addTypes(string|int $relationId, array $types, RelationTypeSide|string $side, array $options = []): void
     {
         $RelationTypes = static::getTable('RelationTypes', $options);
         $ObjectTypes = static::getTable('ObjectTypes', $options);
+
+        if (is_string($side)) {
+            $side = RelationTypeSide::from($side);
+        }
 
         foreach ($types as $name) {
             $objectType = $ObjectTypes->get(Inflector::camelize($name));
@@ -116,7 +120,7 @@ class Relations extends ResourcesBase
             $entity = $RelationTypes->newEntity([
                 'relation_id' => $relationId,
                 'object_type_id' => $objectType->get('id'),
-                'side' => $side,
+                'side' => $side->value,
             ]);
             $RelationTypes->saveOrFail($entity, static::$defaults['save']);
         }
@@ -151,14 +155,18 @@ class Relations extends ResourcesBase
      *
      * @param string|int $relationId Relation id
      * @param array $types Object type names
-     * @param string $side Relation side, 'left' or 'right'
+     * @param \BEdita\Core\Model\Enum\RelationTypeSide|string $side Relation side, 'left' or 'right'
      * @param array $options Table locator options
      * @return void
      */
-    protected static function removeTypes($relationId, array $types, string $side, array $options = []): void
+    protected static function removeTypes(string|int $relationId, array $types, RelationTypeSide|string $side, array $options = []): void
     {
         $RelationTypes = static::getTable('RelationTypes', $options);
         $ObjectTypes = static::getTable('ObjectTypes', $options);
+
+        if (is_string($side)) {
+            $side = RelationTypeSide::from($side);
+        }
 
         foreach ($types as $name) {
             $objectType = $ObjectTypes->get(Inflector::camelize($name));
@@ -168,7 +176,7 @@ class Relations extends ResourcesBase
                 ->where([
                     'relation_id' => $relationId,
                     'object_type_id' => $objectType->get('id'),
-                    'side' => $side,
+                    'side' => $side->value,
                 ])
                 ->firstOrFail();
 
@@ -181,11 +189,11 @@ class Relations extends ResourcesBase
      *
      * @param string $relation Relation name or ID
      * @param string $type Object type name
-     * @param string $side Relation side, 'left' or 'right'
+     * @param \BEdita\Core\Model\Enum\RelationTypeSide|string $side Relation side, 'left' or 'right'
      * @param array $options Table locator options
      * @return void
      */
-    public static function removeRelationType(string $relation, string $type, string $side, array $options = []): void
+    public static function removeRelationType(string $relation, string $type, RelationTypeSide|string $side, array $options = []): void
     {
         $relation = static::getTable('Relations', $options)
             ->get($relation);
@@ -231,7 +239,7 @@ class Relations extends ResourcesBase
     protected static function updateTypes(EntityInterface $relation, array $data, array $options): void
     {
         $id = $relation->get('id');
-        foreach (['left', 'right'] as $side) {
+        foreach (RelationTypeSide::values() as $side) {
             $newTypes = (array)Hash::get($data, $side);
             if (!empty($newTypes)) {
                 $currTypes = (array)Hash::extract($relation, sprintf('%s_object_types.{n}.name', $side));
@@ -256,7 +264,7 @@ class Relations extends ResourcesBase
             empty($data['right']) || !is_array($data['right'])
         ) {
             throw new BadRequestException(
-                __d('bedita', 'Missing left/right relation types')
+                __d('bedita', 'Missing left/right relation types'),
             );
         }
     }

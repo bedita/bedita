@@ -12,9 +12,10 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\ORM\Inheritance;
 
+use AppendIterator;
+use ArrayIterator;
 use BEdita\Core\ORM\Association\RelatedTo;
 use Cake\Datasource\EntityInterface;
 use Cake\ORM\Association;
@@ -39,14 +40,14 @@ class AssociationCollection extends CakeAssociationCollection
      *
      * @var \Cake\ORM\AssociationCollection
      */
-    protected $innerCollection;
+    protected CakeAssociationCollection $innerCollection;
 
     /**
      * Table instance.
      *
      * @var \BEdita\Core\ORM\Inheritance\Table
      */
-    protected $table;
+    protected Table $table;
 
     /**
      * Class constructor.
@@ -74,7 +75,7 @@ class AssociationCollection extends CakeAssociationCollection
      *
      * @return \Cake\ORM\AssociationCollection
      */
-    protected function inheritedAssociations()
+    protected function inheritedAssociations(): CakeAssociationCollection
     {
         $innerCollection = clone $this->innerCollection;
         foreach ($innerCollection as $association) {
@@ -96,9 +97,9 @@ class AssociationCollection extends CakeAssociationCollection
      * conventions being applied against the new table.
      *
      * @param \Cake\ORM\Association|null $association Association being inherited.
-     * @return \Cake\ORM\Association
+     * @return \Cake\ORM\Association|null
      */
-    protected function inheritAssociation(?Association $association = null)
+    protected function inheritAssociation(?Association $association = null): ?Association
     {
         if ($association === null) {
             return $association;
@@ -166,9 +167,9 @@ class AssociationCollection extends CakeAssociationCollection
     /**
      * {@inheritDoc}
      *
-     * @param bool $alias Should removal be cascaded to parent table's associations?
+     * @param bool $cascade Should removal be cascaded to parent table's associations?
      */
-    public function remove($alias, $cascade = true): void
+    public function remove(string $alias, $cascade = true): void
     {
         parent::remove($alias);
         if ($cascade) {
@@ -202,8 +203,8 @@ class AssociationCollection extends CakeAssociationCollection
      */
     public function getIterator(): Traversable
     {
-        $iterator = new \AppendIterator();
-        $iterator->append(new \ArrayIterator($this->_items));
+        $iterator = new AppendIterator();
+        $iterator->append(new ArrayIterator($this->_items));
         $iterator->append($this->inheritedAssociations()->getIterator());
 
         return $iterator;

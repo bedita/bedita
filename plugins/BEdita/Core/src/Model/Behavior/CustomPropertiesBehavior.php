@@ -12,12 +12,13 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Model\Behavior;
 
 use BEdita\Core\Exception\BadFilterException;
 use BEdita\Core\Model\Entity\ObjectEntity;
+use BEdita\Core\Model\Entity\ObjectType;
 use BEdita\Core\Model\Validation\Validation;
+use BEdita\Core\ORM\QueryFilterTrait;
 use Cake\Collection\CollectionInterface;
 use Cake\Database\Driver\Mysql;
 use Cake\Database\Driver\Postgres;
@@ -26,7 +27,7 @@ use Cake\Database\Expression\QueryExpression;
 use Cake\Datasource\EntityInterface;
 use Cake\Event\EventInterface;
 use Cake\ORM\Behavior;
-use Cake\ORM\Query;
+use Cake\ORM\Query\SelectQuery;
 use Cake\ORM\TableRegistry;
 use Cake\Utility\Hash;
 
@@ -37,10 +38,12 @@ use Cake\Utility\Hash;
  */
 class CustomPropertiesBehavior extends Behavior
 {
+    use QueryFilterTrait;
+
     /**
      * @inheritDoc
      */
-    protected $_defaultConfig = [
+    protected array $_defaultConfig = [
         'field' => 'custom_props',
         'filter' => [
             'number' => FILTER_VALIDATE_FLOAT,
@@ -60,9 +63,9 @@ class CustomPropertiesBehavior extends Behavior
      * The custom properties available.
      * It is an array with properties name as key and Property entity as value
      *
-     * @var array
+     * @var array|null
      */
-    protected $available = null;
+    protected ?array $available = null;
 
     /**
      * @inheritDoc
@@ -81,9 +84,9 @@ class CustomPropertiesBehavior extends Behavior
      * Getter for object type.
      *
      * @param array $args Method arguments.
-     * @return \BEdita\Core\Model\Entity\ObjectType
+     * @return \BEdita\Core\Model\Entity\ObjectType|null
      */
-    protected function objectType(...$args)
+    protected function objectType(array ...$args): ?ObjectType
     {
         return $this->table()->behaviors()->call('objectType', $args);
     }
@@ -91,9 +94,9 @@ class CustomPropertiesBehavior extends Behavior
     /**
      * Get available properties for object type
      *
-     * @return \BEdita\Core\Model\Entity\Property[]
+     * @return array<\BEdita\Core\Model\Entity\Property>
      */
-    public function getAvailable()
+    public function getAvailable(): array
     {
         if ($this->available !== null) {
             return $this->available;
@@ -105,8 +108,8 @@ class CustomPropertiesBehavior extends Behavior
         }
 
         $this->available = TableRegistry::getTableLocator()->get('Properties')
-            ->find('type', ['dynamic'])
-            ->find('objectType', [$objectType->id])
+            ->find('type', propType: 'dynamic')
+            ->find('objectType', for: $objectType->id)
             ->where(['enabled' => true, 'is_static' => false])
             ->all()
             ->indexBy('name')
@@ -120,7 +123,7 @@ class CustomPropertiesBehavior extends Behavior
      *
      * @return array
      */
-    public function getDefaultValues()
+    public function getDefaultValues(): array
     {
         return array_fill_keys(array_keys($this->getAvailable()), null);
     }
@@ -129,18 +132,24 @@ class CustomPropertiesBehavior extends Behavior
      * Set custom properties keys as main properties
      *
      * @param \Cake\Event\EventInterface $event Fired event.
-     * @param \Cake\ORM\Query $query Query object instance.
-     * @return \Cake\ORM\Query
+     * @param \Cake\ORM\Query\SelectQuery $query Query object instance.
+     * @return void
      */
-    public function beforeFind(EventInterface $event, Query $query): Query
+    public function beforeFind(EventInterface $event, SelectQuery $query): void
     {
-        return $query->formatResults(
-            function (CollectionInterface $results) {
-                return $results->map(function ($row) {
-                    return $this->promoteProperties($row);
-                });
-            },
-            Query::PREPEND
+        $event->setResult(
+            $query->formatResults(
+                function (CollectionInterface $results) {
+                    return $results->map(function ($row) {
+                        if (!is_array($row) && !$row instanceof EntityInterface) {
+                            return $row;
+                        }
+
+                        return $this->promoteProperties($row);
+                    });
+                },
+                SelectQuery::PREPEND,
+            ),
         );
     }
 
@@ -149,13 +158,13 @@ class CustomPropertiesBehavior extends Behavior
      *
      * @param \Cake\Event\EventInterface $event Fired event.
      * @param \Cake\Datasource\EntityInterface $entity Entity.
-     * @return false|void
+     * @return void
      */
-    public function beforeSave(EventInterface $event, EntityInterface $entity)
+    public function beforeSave(EventInterface $event, EntityInterface $entity): void
     {
         $this->demoteProperties($entity);
         if ($entity->hasErrors()) {
-            return false;
+            $event->setResult(false);
         }
     }
 
@@ -166,7 +175,7 @@ class CustomPropertiesBehavior extends Behavior
      * @param \Cake\Datasource\EntityInterface|array $entity The entity or the array to work on
      * @return \Cake\Datasource\EntityInterface|array
      */
-    protected function promoteProperties($entity)
+    protected function promoteProperties(EntityInterface|array $entity): EntityInterface|array
     {
         $field = $this->getConfig('field');
         if ((!is_array($entity) && !($entity instanceof EntityInterface)) || !$this->isFieldSet($entity, $field)) {
@@ -195,14 +204,14 @@ class CustomPropertiesBehavior extends Behavior
      * @param array $customProps Custom properties array
      * @return \Cake\Datasource\EntityInterface|array
      */
-    protected function setupCustomProps($entity, array $customProps)
+    protected function setupCustomProps(EntityInterface|array $entity, array $customProps): EntityInterface|array
     {
         if (is_array($entity)) {
             return array_merge($entity, $customProps);
         }
 
-        /** @var \Cake\Datasource\EntityInterface $entity */
-        $entity->set($customProps, ['guard' => false])->clean();
+        /** @var \Cake\ORM\Entity $entity */
+        $entity->patch($customProps, ['guard' => false])->clean();
         $readOnlyProps = array_filter(Hash::combine((array)$this->available, '{s}.name', '{s}.read_only'));
         $entity->setAccess(array_keys($readOnlyProps), false);
 
@@ -256,7 +265,7 @@ class CustomPropertiesBehavior extends Behavior
      * @param array $schema Property JSON Schema
      * @return mixed
      */
-    protected function formatValue($value, array $schema)
+    protected function formatValue(mixed $value, array $schema): mixed
     {
         if ($value === null) {
             return null;
@@ -291,7 +300,7 @@ class CustomPropertiesBehavior extends Behavior
      * @param string $field The field being looked for.
      * @return bool
      */
-    protected function isFieldSet($entity, $field): bool
+    protected function isFieldSet(EntityInterface|array $entity, string $field): bool
     {
         if ($entity instanceof ObjectEntity) {
             return $entity->hasProperty($field);
@@ -303,12 +312,19 @@ class CustomPropertiesBehavior extends Behavior
     /**
      * Finder for custom property.
      *
-     * @param \Cake\ORM\Query $query Query object instance.
-     * @param array $options Options.
-     * @return \Cake\ORM\Query
+     * The following are equivalent:
+     * ```
+     * $table->find('customProp', value: ['prop_name' => 'prop_value']);
+     * $table->find('customProp', ...['prop_name' => 'prop_value']);
+     * $table->find('customProp', prop_name: 'prop_value');
+     * ```
+     *
+     * @param \Cake\ORM\Query\SelectQuery $query Query object instance.
+     * @param mixed $args Named arguments. If `value` is present it will be used.
+     * @return \Cake\ORM\Query\SelectQuery
      * @throws \Cake\Http\Exception\BadRequestException When
      */
-    public function findCustomProp(Query $query, array $options): Query
+    public function findCustomProp(SelectQuery $query, mixed ...$args): SelectQuery
     {
         $driver = $query->getConnection()->getDriver();
         // Check if driver is supported
@@ -316,6 +332,7 @@ class CustomPropertiesBehavior extends Behavior
             throw new BadFilterException(__d('bedita', 'customProp finder isn\'t supported for this datasource'));
         }
 
+        $options = $args['value'] ?? $args;
         $available = $this->getAvailable();
         $options = array_intersect_key($options, $available);
         if (empty($options)) {
@@ -323,47 +340,129 @@ class CustomPropertiesBehavior extends Behavior
             throw new BadFilterException(__d('bedita', 'Invalid data'));
         }
 
-        foreach ($options as $key => &$value) {
+        $conditions = $this->setupConditions($options, $driver);
+
+        return $query->where(function (QueryExpression $exp) use ($conditions, $query, $driver) {
+
+            return $exp->and(array_map(function ($key) use ($conditions, $query, $driver) {
+                $field = $this->table()->aliasField($this->getConfig('field'));
+                $fieldExp = $this->expressionField($field, $key, $driver);
+                $operation = $conditions[$key];
+                $operator = key($operation);
+                $value = $operation[$operator];
+
+                return $this->operatorExpression($query->newExpr(), $operator, $fieldExp, $value);
+            }, array_keys($conditions)));
+        });
+    }
+
+    /**
+     * Setup conditions for custom properties filtering.
+     * An array of conditions is returned with this structure:
+     *
+     * ```
+     * [
+     *     <property1> => [<operator1> => <expressionValue1>],
+     *     <property2> => [<operator2> => <expressionValue2>],
+     * ]
+     * ...
+     *
+     * Where `<expressionValue1>` and `<expressionValue2>` are database driver specific expressions.
+     *
+     * @param array $options Filter options.
+     * @param object $driver Database driver.
+     * @return array
+     */
+    protected function setupConditions(array $options, object $driver): array
+    {
+        $conditions = [];
+        $available = $this->getAvailable();
+        foreach ($options as $key => $value) {
+            if ($value === null) {
+                $conditions[$key] = ['null' => true];
+                continue;
+            }
+            $in = [];
             /** @var \BEdita\Core\Model\Entity\Property $property */
             $property = Hash::get($available, $key);
-            $value = $this->formatValue($value, $property->property_type->params);
+            $schema = [];
+            if ($property && $property->property_type) {
+                $schema = (array)$property->property_type->params;
+            }
+
+            if (!is_array($value)) {
+                if (is_string($value) && strpos($value, ',') !== false) {
+                    $value = explode(',', $value);
+                } else {
+                    $conditions[$key] = ['eq' => $this->expressionValue($value, $schema, $driver)];
+                    continue;
+                }
+            }
+            foreach ($value as $operator => $v) {
+                if (is_numeric($operator)) {
+                    $in[] = $this->expressionValue($v, $schema, $driver);
+                    continue;
+                }
+
+                if ($operator === 'in' || $operator === 'notin' || $operator === 'nin') {
+                    $v = is_array($v) ? $v : [$v];
+                    $expValue = array_map(fn($i) => $this->expressionValue($i, $schema, $driver), $v);
+                } else {
+                    $expValue = $this->expressionValue($v, $schema, $driver);
+                }
+                $conditions[$key] = [$operator => $expValue];
+            }
+
+            if (!empty($in)) {
+                $conditions[$key] = ['in' => $in];
+            }
         }
-        unset($value);
 
-        return $query->where(function (QueryExpression $exp, Query $query) use ($options, $driver) {
-            $field = $this->table()->aliasField($this->getConfig('field'));
+        return $conditions;
+    }
 
-            return $exp->and(array_map(
-                function ($key, $value) use ($field, $query, $driver) {
-                    if ($driver instanceof Mysql) {
-                        // MySQL syntax using JSON_EXTRACT and JSON_UNQUOTE
-                        return $query->expr()->eq(
-                            new FunctionExpression(
-                                'JSON_UNQUOTE',
-                                [
-                                    new FunctionExpression(
-                                        'JSON_EXTRACT',
-                                        [$field => 'identifier', sprintf('$.%s', $key)]
-                                    ),
-                                ]
-                            ),
-                            new FunctionExpression('JSON_UNQUOTE', [json_encode($value)]) // trick to normalize values compared
-                        );
-                    }
-                    // PostgreSQL syntax with native JSON column using ->> operator
-                    // For PostgreSQL's ->> operator, we need to handle value formatting correctly
-                    $compareValue = is_string($value) ? $value : json_encode($value); // Use json_encode to handle formatting
-                    [$key, $type] = $query->getConnection()->cast($key, 'string');
+    /**
+     * Get expression for a property field.
+     *
+     * @param string $field Field name.
+     * @param string $key Property name.
+     * @param object $driver Database driver.
+     * @return \Cake\Database\Expression\FunctionExpression|string
+     */
+    protected function expressionField(string $field, string $key, object $driver): FunctionExpression|string
+    {
+        if ($driver instanceof Mysql) {
+            return new FunctionExpression(
+                'JSON_UNQUOTE',
+                [
+                    new FunctionExpression(
+                        'JSON_EXTRACT',
+                        [$field => 'identifier', sprintf('$.%s', $key)],
+                    ),
+                ],
+            );
+        }
 
-                    // Use ->> operator directly on JSON column
-                    return $query->expr()->eq(
-                        sprintf('%s->>%s', $field, $query->getConnection()->getDriver()->quote($key, $type)),
-                        $compareValue
-                    );
-                },
-                array_keys($options),
-                $options
-            ));
-        });
+        // Postgres field
+        return sprintf('%s->>%s', $field, $driver->quote($key));
+    }
+
+    /**
+     * Get expression value for a property value.
+     *
+     * @param mixed $value Property value.
+     * @param array $schema Property JSON Schema.
+     * @param object $driver Database driver.
+     * @return \Cake\Database\Expression\FunctionExpression|string
+     */
+    protected function expressionValue(mixed $value, array $schema, object $driver): FunctionExpression|string
+    {
+        $value = $this->formatValue($value, $schema);
+        $value = is_string($value) ? $value : json_encode($value);
+        if ($driver instanceof Mysql) {
+            return new FunctionExpression('JSON_UNQUOTE', [$value]);
+        }
+
+        return $value;
     }
 }

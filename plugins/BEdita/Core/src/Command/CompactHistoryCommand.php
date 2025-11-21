@@ -14,26 +14,34 @@ declare(strict_types=1);
  */
 namespace BEdita\Core\Command;
 
+use BEdita\Core\Model\Entity\History;
 use BEdita\Core\Model\Table\HistoryTable;
+use BEdita\Core\Model\Table\ObjectsTable;
 use Cake\Command\Command;
 use Cake\Console\Arguments;
 use Cake\Console\ConsoleIo;
 use Cake\Console\ConsoleOptionParser;
-use Cake\ORM\Query;
+use Cake\ORM\Query\SelectQuery;
 use Generator;
 
 /**
  * CompactHistory command: remove duplicates.
  *
  * @since 5.40.0
- * @property \BEdita\Core\Model\Table\ObjectsTable $Objects
  */
 class CompactHistoryCommand extends Command
 {
     /**
      * @inheritDoc
      */
-    public $defaultTable = 'Objects';
+    public ?string $defaultTable = 'Objects';
+
+    /**
+     * Objects table
+     *
+     * @var \BEdita\Core\Model\Table\ObjectsTable
+     */
+    public ObjectsTable $Objects;
 
     /**
      * History table
@@ -118,8 +126,11 @@ class CompactHistoryCommand extends Command
      */
     public function initialize(): void
     {
-        $this->History = $this->Objects->getBehavior('History')->Table;
-        $application = $this->fetchTable('Applications')->find()->orderAsc('id')->firstOrFail();
+        $this->Objects = $this->fetchTable();
+        /** @var \BEdita\Core\Model\Behavior\HistoryBehavior $historyBehavior */
+        $historyBehavior = $this->Objects->getBehavior('History');
+        $this->History = $historyBehavior->Table;
+        $application = $this->fetchTable('Applications')->find()->orderByAsc('id')->firstOrFail();
         $this->appId = $application->get('id');
     }
 
@@ -182,7 +193,7 @@ class CompactHistoryCommand extends Command
                     $this->History->aliasField('resource_id') => $objectId,
                     $this->History->aliasField('resource_type') => 'objects',
                 ])
-                ->orderDesc($this->History->aliasField('created'))
+                ->orderByDesc($this->History->aliasField('created'))
                 ->toArray();
             if (count($items) > $this->versions) {
                 $toDelete = array_slice($items, $this->versions);
@@ -196,8 +207,8 @@ class CompactHistoryCommand extends Command
                     sprintf(
                         'Fixed "versions" on resource ID [%d]: removed %d records',
                         $objectId,
-                        count($toDelete)
-                    )
+                        count($toDelete),
+                    ),
                 );
 
                 return true;
@@ -216,6 +227,7 @@ class CompactHistoryCommand extends Command
         $processed = 0;
         $stack = [];
         foreach ($this->objectsGenerator($query) as $current) {
+            /** @var \BEdita\Core\Model\Entity\History $current */
             $processed++;
             if ($prev === null) {
                 $prev = $current;
@@ -245,8 +257,8 @@ class CompactHistoryCommand extends Command
             sprintf(
                 'Fixed "duplicated" on resource ID [%d]: removed %d records',
                 $objectId,
-                count($duplicated)
-            )
+                count($duplicated),
+            ),
         );
 
         return true;
@@ -259,10 +271,10 @@ class CompactHistoryCommand extends Command
      * @param \BEdita\Core\Model\Entity\History $history2 History entity
      * @return bool
      */
-    protected function compare($history1, $history2)
+    protected function compare(History $history1, History $history2): bool
     {
-        $h1 = $history1->user_action . '-' . json_encode($history1->changed);
-        $h2 = $history2->user_action . '-' . json_encode($history2->changed);
+        $h1 = $history1->user_action->value . '-' . json_encode($history1->changed);
+        $h2 = $history2->user_action->value . '-' . json_encode($history2->changed);
 
         return $h1 === $h2;
     }
@@ -270,10 +282,10 @@ class CompactHistoryCommand extends Command
     /**
      * Objects generator.
      *
-     * @param \Cake\ORM\Query $query Query object
+     * @param \Cake\ORM\Query\SelectQuery $query Query object
      * @return \Generator
      */
-    protected function objectsGenerator(Query $query): Generator
+    protected function objectsGenerator(SelectQuery $query): Generator
     {
         $pageSize = self::PAGE_SIZE;
         $pages = ceil($query->count() / $pageSize);
@@ -294,7 +306,7 @@ class CompactHistoryCommand extends Command
      * @param \Cake\Console\ConsoleIo $io Console IO
      * @return void
      */
-    protected function processHistory($prev, $current, &$duplicated, &$stack, $io): void
+    protected function processHistory(History $prev, History $current, array &$duplicated, array &$stack, ConsoleIo $io): void
     {
         switch (count($stack)) {
             case 0:
@@ -309,7 +321,7 @@ class CompactHistoryCommand extends Command
                 break;
         }
         foreach ($stack as $i => $h) {
-            $io->verbose(sprintf(':: History ID %d: %s', $h->id, $h->user_action . '-' . json_encode($h->changed)));
+            $io->verbose(sprintf(':: History ID %d: %s', $h->id, $h->user_action->value . '-' . json_encode($h->changed)));
             if ($i === 0) {
                 continue;
             }

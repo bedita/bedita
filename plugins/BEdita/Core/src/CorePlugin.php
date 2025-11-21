@@ -24,10 +24,10 @@ class CorePlugin extends BasePlugin
     /**
      * @inheritDoc
      */
-    protected $middlewareEnabled = false;
+    protected bool $middlewareEnabled = false;
 
     /**
      * @inheritDoc
      */
-    protected $routesEnabled = false;
+    protected bool $routesEnabled = false;
 }

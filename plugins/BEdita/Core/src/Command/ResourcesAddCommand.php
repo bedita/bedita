@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Command;
 
 use Cake\Command\Command;
@@ -21,6 +20,7 @@ use Cake\Console\ConsoleIo;
 use Cake\Console\ConsoleOptionParser;
 use Cake\Datasource\EntityInterface;
 use Cake\ORM\Locator\LocatorAwareTrait;
+use Cake\ORM\Table;
 use Cake\Utility\Inflector;
 
 /**
@@ -35,32 +35,26 @@ class ResourcesAddCommand extends Command
      *
      * @var \Cake\Console\Arguments
      */
-    protected $args;
+    protected Arguments $args;
 
     /**
      * Console IO
      *
      * @var \Cake\Console\ConsoleIo
      */
-    protected $io;
+    protected ConsoleIo $io;
 
     /**
      * Async jobs table
      *
-     * @var \BEdita\Core\Model\Table\AsyncJobsTable
+     * @var \Cake\ORM\Table
      */
-    protected $table;
+    protected Table $table;
 
     /**
-     * {@inheritDoc}
-     *
-     * @codeCoverageIgnore
+     * @inheritDoc
      */
-    public function __construct()
-    {
-        $this->setName('cake resources_add');
-        parent::__construct();
-    }
+    protected string $name = 'cake resources_add';
 
     /**
      * @inheritDoc
@@ -93,7 +87,7 @@ class ResourcesAddCommand extends Command
         $this->args = $args;
         $this->io = $io;
         $this->table = $this->fetchTable(Inflector::camelize($type));
-        $entity = $this->table->newEntity([]);
+        $entity = $this->table->newEmptyEntity();
         if ($type === 'endpoint_permissions') {
             $this->setupEndpointPermissionEntity($entity);
         } else {
@@ -111,7 +105,7 @@ class ResourcesAddCommand extends Command
      * @param \Cake\Datasource\EntityInterface $entity Entity to add
      * @return void
      */
-    protected function setupDefaultEntity(EntityInterface $entity)
+    protected function setupDefaultEntity(EntityInterface $entity): void
     {
         $name = $this->io->ask('Resource name');
         if (empty($name)) {
@@ -128,7 +122,7 @@ class ResourcesAddCommand extends Command
      * @param \Cake\Datasource\EntityInterface $entity Entity to add
      * @return void
      */
-    protected function setupEndpointPermissionEntity(EntityInterface $entity)
+    protected function setupEndpointPermissionEntity(EntityInterface $entity): void
     {
         $fieldsTables = [
             'application_id' => 'Applications',

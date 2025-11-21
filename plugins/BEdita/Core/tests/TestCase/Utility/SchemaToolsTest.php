@@ -12,18 +12,16 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\Utility;
 
-use BEdita\Core\Utility\Database;
 use BEdita\Core\Utility\SchemaTools;
 use Cake\TestSuite\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
 
 /**
- * {@see BEdita\Core\Utility\SchemaTools}  Test Case
- *
- * @coversDefaultClass \BEdita\Core\Utility\SchemaTools
+ * {@see BEdita\Core\Utility\SchemaTools} Test Case
  */
+#[CoversClass(SchemaTools::class)]
 class SchemaToolsTest extends TestCase
 {
     /**
@@ -31,7 +29,7 @@ class SchemaToolsTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.Objects',
         'plugin.BEdita/Core.Locations',
@@ -48,7 +46,6 @@ class SchemaToolsTest extends TestCase
      * Test `getPrimaryFields` method
      *
      * @return void
-     * @covers ::getPrimaryFields()
      */
     public function testGetPrimaryFields(): void
     {
@@ -63,7 +60,6 @@ class SchemaToolsTest extends TestCase
      * Test `getUniqueFields` method
      *
      * @return void
-     * @covers ::getUniqueFields()
      */
     public function testGetUniqueFields(): void
     {
@@ -71,10 +67,7 @@ class SchemaToolsTest extends TestCase
         $schema = $table->getSchema();
         $actual = SchemaTools::getUniqueFields($schema, ['count' => 1]);
         $expected = ['api_key', 'name'];
-        $info = Database::basicInfo();
-        if ($info['vendor'] === 'sqlite') {
-            $expected = [];
-        }
+        sort($actual);
         static::assertEquals($expected, $actual);
     }
 
@@ -82,7 +75,6 @@ class SchemaToolsTest extends TestCase
      * Test `getNullableFields` method
      *
      * @return void
-     * @covers ::getNullableFields()
      */
     public function testGetNullableFields(): void
     {

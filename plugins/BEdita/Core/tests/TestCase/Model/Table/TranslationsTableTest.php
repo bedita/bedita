@@ -12,19 +12,23 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\Model\Table;
 
 use BEdita\Core\Exception\BadFilterException;
+use BEdita\Core\Model\Table\TranslationsTable;
 use Cake\Core\Configure;
 use Cake\ORM\Association\BelongsTo;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Hash;
+use Exception;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
- * @coversDefaultClass \BEdita\Core\Model\Table\TranslationsTable
+ * {@see \BEdita\Core\Model\Table\TranslationsTable} Test Case
  */
+#[CoversClass(TranslationsTable::class)]
 class TranslationsTableTest extends TestCase
 {
     /**
@@ -39,7 +43,7 @@ class TranslationsTableTest extends TestCase
      *
      * @var string[]
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.Relations',
         'plugin.BEdita/Core.RelationTypes',
@@ -73,7 +77,6 @@ class TranslationsTableTest extends TestCase
      * Test initialization.
      *
      * @return void
-     * @coversNothing
      */
     public function testInitialize()
     {
@@ -87,7 +90,7 @@ class TranslationsTableTest extends TestCase
      *
      * @return array
      */
-    public function validationProvider()
+    public static function validationProvider(): array
     {
         return [
             'ok' => [
@@ -105,7 +108,7 @@ class TranslationsTableTest extends TestCase
                 [
                     'object_id.integer',
                     'lang.scalar',
-                    'status.inList',
+                    'status.enum',
                     'translated_fields.array',
                 ],
                 [
@@ -136,9 +139,8 @@ class TranslationsTableTest extends TestCase
      * @param string[] $expected Expected errors.
      * @param array $data Data.
      * @return void
-     * @dataProvider validationProvider()
-     * @coversNothing
      */
+    #[DataProvider('validationProvider')]
     public function testValidation(array $expected, array $data)
     {
         $entity = $this->Translations->newEmptyEntity();
@@ -153,7 +155,7 @@ class TranslationsTableTest extends TestCase
      *
      * @return array
      */
-    public function findTypeProvider(): array
+    public static function findTypeProvider(): array
     {
         return [
             'documents' => [
@@ -185,19 +187,17 @@ class TranslationsTableTest extends TestCase
      * @param array|\Exception $expected Expected results.
      * @param string $type Type to filter for.
      * @return void
-     * @dataProvider findTypeProvider
-     * @covers ::findType()
-     * @covers ::typeId()
      */
+    #[DataProvider('findTypeProvider')]
     public function testFindType($expected, array $types): void
     {
-        if ($expected instanceof \Exception) {
+        if ($expected instanceof Exception) {
             $this->expectException(get_class($expected));
             $this->expectExceptionCode($expected->getCode());
             $this->expectExceptionMessage($expected->getMessage());
         }
 
-        $result = $this->Translations->find('list')->find('type', $types)->toArray();
+        $result = $this->Translations->find('list')->find('type', objectTypes: $types)->toArray();
         $result = array_keys($result);
         sort($result);
 
@@ -209,7 +209,7 @@ class TranslationsTableTest extends TestCase
      *
      * @return array
      */
-    public function findAvailableProvider(): array
+    public static function findAvailableProvider(): array
     {
         return [
             'no status' => [
@@ -232,9 +232,8 @@ class TranslationsTableTest extends TestCase
      * @param int $expected Expected results.
      * @param string $statusLevel Configuration to write.
      * @return void
-     * @dataProvider findAvailableProvider()
-     * @covers ::findAvailable()
      */
+    #[DataProvider('findAvailableProvider')]
     public function testFindAvailable(int $expected, ?string $statusLevel = null): void
     {
         if (!empty($statusLevel)) {

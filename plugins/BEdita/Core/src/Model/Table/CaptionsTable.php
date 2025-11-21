@@ -14,7 +14,8 @@ declare(strict_types=1);
  */
 namespace BEdita\Core\Model\Table;
 
-use Cake\Database\Schema\TableSchemaInterface;
+use BEdita\Core\Model\Enum\CaptionStatus;
+use Cake\Database\Type\EnumType;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
@@ -27,16 +28,16 @@ use Phinx\Db\Adapter\MysqlAdapter;
  * @method \BEdita\Core\Model\Entity\Caption newEmptyEntity()
  * @method \BEdita\Core\Model\Entity\Caption newEntity(array $data, array $options = [])
  * @method \BEdita\Core\Model\Entity\Caption[] newEntities(array $data, array $options = [])
- * @method \BEdita\Core\Model\Entity\Caption get($primaryKey, $options = [])
- * @method \BEdita\Core\Model\Entity\Caption findOrCreate($search, ?callable $callback = null, $options = [])
+ * @method \BEdita\Core\Model\Entity\Caption get(mixed $primaryKey, array|string $finder = 'all', \Psr\SimpleCache\CacheInterface|string|null $cache = null, \Closure|string|null $cacheKey = null, mixed ...$args)
+ * @method \BEdita\Core\Model\Entity\Caption findOrCreate(\Cake\ORM\Query\SelectQuery|callable|array $search, ?callable $callback = null, array $options = [])
  * @method \BEdita\Core\Model\Entity\Caption patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
  * @method \BEdita\Core\Model\Entity\Caption[] patchEntities(iterable $entities, array $data, array $options = [])
- * @method \BEdita\Core\Model\Entity\Caption|false save(\Cake\Datasource\EntityInterface $entity, $options = [])
- * @method \BEdita\Core\Model\Entity\Caption saveOrFail(\Cake\Datasource\EntityInterface $entity, $options = [])
- * @method \BEdita\Core\Model\Entity\Caption[]|\Cake\Datasource\ResultSetInterface|false saveMany(iterable $entities, $options = [])
- * @method \BEdita\Core\Model\Entity\Caption[]|\Cake\Datasource\ResultSetInterface saveManyOrFail(iterable $entities, $options = [])
- * @method \BEdita\Core\Model\Entity\Caption[]|\Cake\Datasource\ResultSetInterface|false deleteMany(iterable $entities, $options = [])
- * @method \BEdita\Core\Model\Entity\Caption[]|\Cake\Datasource\ResultSetInterface deleteManyOrFail(iterable $entities, $options = [])
+ * @method \BEdita\Core\Model\Entity\Caption|false save(\Cake\Datasource\EntityInterface $entity, array $options = [])
+ * @method \BEdita\Core\Model\Entity\Caption saveOrFail(\Cake\Datasource\EntityInterface $entity, array $options = [])
+ * @method \BEdita\Core\Model\Entity\Caption[]|\Cake\Datasource\ResultSetInterface<\BEdita\Core\Model\Entity\Caption>|false saveMany(iterable $entities, array $options = [])
+ * @method \BEdita\Core\Model\Entity\Caption[]|\Cake\Datasource\ResultSetInterface<\BEdita\Core\Model\Entity\Caption> saveManyOrFail(iterable $entities, array $options = [])
+ * @method \BEdita\Core\Model\Entity\Caption[]|\Cake\Datasource\ResultSetInterface<\BEdita\Core\Model\Entity\Caption>|false deleteMany(iterable $entities, array $options = [])
+ * @method \BEdita\Core\Model\Entity\Caption[]|\Cake\Datasource\ResultSetInterface<\BEdita\Core\Model\Entity\Caption> deleteManyOrFail(iterable $entities, array $options = [])
  * @mixin \Cake\ORM\Behavior\TimestampBehavior
  */
 class CaptionsTable extends Table
@@ -55,6 +56,9 @@ class CaptionsTable extends Table
         $this->setTable('captions');
         $this->setDisplayField('label');
         $this->setPrimaryKey('id');
+        $this->getSchema()
+            ->setColumnType('params', 'json')
+            ->setColumnType('status', EnumType::from(CaptionStatus::class));
 
         $this->addBehavior('Timestamp');
 
@@ -78,7 +82,7 @@ class CaptionsTable extends Table
             ->naturalNumber('id')
             ->allowEmptyString('id', null, 'create')
 
-            ->inList('status', ['on', 'off', 'draft'])
+            ->enum('status', CaptionStatus::class)
             ->notEmptyString('status')
 
             ->allowEmptyString('label')
@@ -108,15 +112,5 @@ class CaptionsTable extends Table
         $rules->add($rules->existsIn(['object_id'], 'Objects'));
 
         return $rules;
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @codeCoverageIgnore
-     */
-    public function getSchema(): TableSchemaInterface
-    {
-        return parent::getSchema()->setColumnType('params', 'json');
     }
 }

@@ -14,21 +14,19 @@ declare(strict_types=1);
  */
 namespace BEdita\API\Test\TestCase\Controller\Admin;
 
+use BEdita\API\Controller\Admin\SysinfoController;
 use BEdita\API\TestSuite\IntegrationTestCase;
 use BEdita\Core\Utility\System;
 use Cake\Core\Configure;
+use PHPUnit\Framework\Attributes\CoversClass;
 
-/**
- * @coversDefaultClass \BEdita\API\Controller\Admin\SysinfoController
- */
+#[CoversClass(SysinfoController::class)]
 class SysinfoControllerTest extends IntegrationTestCase
 {
     /**
      * Test `index` method with user not admin.
      *
      * @return void
-     * @covers ::index()
-     * @covers ::initialize()
      */
     public function testIndexNoAdmin()
     {
@@ -42,8 +40,6 @@ class SysinfoControllerTest extends IntegrationTestCase
      * Test `index` method.
      *
      * @return void
-     * @covers ::index()
-     * @covers ::initialize()
      */
     public function testIndex()
     {
@@ -75,14 +71,12 @@ class SysinfoControllerTest extends IntegrationTestCase
      * Test `HEAD` request.
      *
      * @return void
-     * @covers ::index()
-     * @covers ::initialize()
      */
     public function testHeadRequest()
     {
-        $this->configRequestHeaders('HEAD', ['Accept' => '*/*']);
-        $this->_sendRequest('/admin/sysinfo', 'HEAD');
-        $this->assertResponseCode(406);
+        $this->configRequestHeaders('HEAD', $this->getUserAuthHeader() + ['Accept' => '*/*']);
+        $this->head('/admin/sysinfo');
+        $this->assertResponseCode(405);
         $this->assertContentType('application/vnd.api+json');
         $this->assertResponseNotEmpty();
     }

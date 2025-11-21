@@ -20,7 +20,7 @@ use BEdita\Core\Model\Entity\Folder;
 use BEdita\Core\Model\Entity\ObjectEntity;
 use BEdita\Core\Model\Table\RolesTable;
 use Cake\ORM\Locator\LocatorAwareTrait;
-use Cake\ORM\Query;
+use Cake\ORM\Query\SelectQuery;
 use Cake\Utility\Hash;
 
 /**
@@ -35,7 +35,7 @@ class ObjectPolicy implements BeforePolicyInterface
     /**
      * @inheritDoc
      */
-    public function before(?IdentityInterface $identity, $resource, $action)
+    public function before(?IdentityInterface $identity, $resource, $action): ?bool
     {
         if ($identity === null) {
             return null;
@@ -88,7 +88,7 @@ class ObjectPolicy implements BeforePolicyInterface
         $parents = $this->fetchTable('Folders')
             ->find('available')
             ->contain(['Permissions.Roles'])
-            ->innerJoinWith('Children', fn (Query $q) => $q->where(['Children.id' => $object->id]))
+            ->innerJoinWith('Children', fn(SelectQuery $q) => $q->where(['Children.id' => $object->id]))
             ->toArray();
 
         foreach ($parents as $parent) {

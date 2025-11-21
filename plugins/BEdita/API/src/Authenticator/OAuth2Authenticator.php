@@ -21,7 +21,7 @@ class OAuth2Authenticator extends FormAuthenticator
     /**
      * @inheritDoc
      */
-    protected $_defaultConfig = [
+    protected array $_defaultConfig = [
         'fields' => [
             'auth_provider' => 'auth_provider',
             'provider_username' => 'provider_username',

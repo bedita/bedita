@@ -12,19 +12,20 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\Model\Table;
 
 use BEdita\Core\Model\Table\AppConfigTable;
 use BEdita\Core\State\CurrentApplication;
 use Cake\TestSuite\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * {@see \BEdita\Core\Model\Table\AppConfigTable} Test Case
  *
- * @coversDefaultClass \BEdita\Core\Model\Table\AppConfigTable
  * @since 5.0.0
  */
+#[CoversClass(AppConfigTable::class)]
 class AppConfigTableTest extends TestCase
 {
     /**
@@ -39,7 +40,7 @@ class AppConfigTableTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.Applications',
         'plugin.BEdita/Core.Config',
     ];
@@ -66,11 +67,9 @@ class AppConfigTableTest extends TestCase
      * Test `initialize` method.
      *
      * @return void
-     * @covers ::initialize()
      */
     public function testInitialize(): void
     {
-        $this->AppConfig->initialize([]);
         $this->assertEquals('config', $this->AppConfig->getTable());
         $this->assertEquals('id', $this->AppConfig->getPrimaryKey());
         $this->assertTrue($this->AppConfig->behaviors()->has('ResourceName'));
@@ -81,7 +80,7 @@ class AppConfigTableTest extends TestCase
      *
      * @return array
      */
-    public function validationProvider(): array
+    public static function validationProvider(): array
     {
         return [
             'valid' => [
@@ -108,9 +107,8 @@ class AppConfigTableTest extends TestCase
      * @param bool $expected Expected result.
      * @param array $data Data to be validated.
      * @return void
-     * @dataProvider validationProvider
-     * @covers ::validationDefault()
      */
+    #[DataProvider('validationProvider')]
     public function testValidation($expected, array $data): void
     {
         $config = $this->AppConfig->newEntity($data);
@@ -128,7 +126,6 @@ class AppConfigTableTest extends TestCase
      * Test `all` finder
      *
      * @return void
-     * @covers ::findAll()
      */
     public function testFindAll(): void
     {
@@ -147,7 +144,6 @@ class AppConfigTableTest extends TestCase
      * Test `newEmptyEntity` method
      *
      * @return void
-     * @covers ::newEmptyEntity()
      */
     public function testNewEmptyEntity(): void
     {

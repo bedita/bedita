@@ -12,32 +12,35 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Model\Table;
 
 use BEdita\Core\State\CurrentApplication;
 use Cake\Database\Expression\QueryExpression;
-use Cake\Http\Exception\BadRequestException;
-use Cake\ORM\Query;
+use Cake\ORM\Query\SelectQuery;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
-use Cake\Utility\Hash;
 use Cake\Validation\Validator;
 
 /**
  * Config Model - used to handle configuration data in DB
  *
- * @property \BEdita\Core\Model\Table\ApplicationsTable&\Cake\ORM\Association\BelongsTo $Applications
- * @method \BEdita\Core\Model\Entity\Config get($primaryKey, $options = [])
- * @method \BEdita\Core\Model\Entity\Config newEntity($data = null, array $options = [])
+ * @property \Cake\ORM\Table&\Cake\ORM\Association\BelongsTo $Applications
+ * @method \BEdita\Core\Model\Entity\Config get(mixed $primaryKey, array|string $finder = 'all', \Psr\SimpleCache\CacheInterface|string|null $cache = null, \Closure|string|null $cacheKey = null, mixed ...$args)
+ * @method \BEdita\Core\Model\Entity\Config newEntity(array $data, array $options = [])
  * @method \BEdita\Core\Model\Entity\Config[] newEntities(array $data, array $options = [])
- * @method \BEdita\Core\Model\Entity\Config|false save(\Cake\Datasource\EntityInterface $entity, $options = [])
- * @method \BEdita\Core\Model\Entity\Config saveOrFail(\Cake\Datasource\EntityInterface $entity, $options = [])
+ * @method \BEdita\Core\Model\Entity\Config|false save(\Cake\Datasource\EntityInterface $entity, array $options = [])
+ * @method \BEdita\Core\Model\Entity\Config saveOrFail(\Cake\Datasource\EntityInterface $entity, array $options = [])
  * @method \BEdita\Core\Model\Entity\Config patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
- * @method \BEdita\Core\Model\Entity\Config[] patchEntities($entities, array $data, array $options = [])
- * @method \BEdita\Core\Model\Entity\Config findOrCreate($search, callable $callback = null, $options = [])
- * @method \Cake\ORM\Query queryCache(\Cake\ORM\Query $query, string $key)
+ * @method \BEdita\Core\Model\Entity\Config[] patchEntities(iterable $entities, array $data, array $options = [])
+ * @method \BEdita\Core\Model\Entity\Config findOrCreate(\Cake\ORM\Query\SelectQuery|callable|array $search, ?callable $callback = null, array $options = [])
+ * @method \Cake\ORM\Query\SelectQuery queryCache(\Cake\ORM\Query\SelectQuery $query, string $key)
  * @mixin \Cake\ORM\Behavior\TimestampBehavior
+ * @method \BEdita\Core\Model\Entity\Config newEmptyEntity()
+ * @method \BEdita\Core\Model\Entity\Config[]|\Cake\Datasource\ResultSetInterface<\BEdita\Core\Model\Entity\Config>|false saveMany(iterable $entities, array $options = [])
+ * @method \BEdita\Core\Model\Entity\Config[]|\Cake\Datasource\ResultSetInterface<\BEdita\Core\Model\Entity\Config> saveManyOrFail(iterable $entities, array $options = [])
+ * @method \BEdita\Core\Model\Entity\Config[]|\Cake\Datasource\ResultSetInterface<\BEdita\Core\Model\Entity\Config>|false deleteMany(iterable $entities, array $options = [])
+ * @method \BEdita\Core\Model\Entity\Config[]|\Cake\Datasource\ResultSetInterface<\BEdita\Core\Model\Entity\Config> deleteManyOrFail(iterable $entities, array $options = [])
+ * @mixin \BEdita\Core\Model\Behavior\QueryCacheBehavior
  * @since 4.0.0
  */
 class ConfigTable extends Table
@@ -105,10 +108,10 @@ class ConfigTable extends Table
      * Common configuration (where `application_id` is NULL)
      * and configuration of the current application is returned.
      *
-     * @param \Cake\ORM\Query $query Query object instance.
-     * @return \Cake\ORM\Query
+     * @param \Cake\ORM\Query\SelectQuery $query Query object instance.
+     * @return \Cake\ORM\Query\SelectQuery
      */
-    protected function findMine(Query $query)
+    public function findMine(SelectQuery $query): SelectQuery
     {
         return $query->where(function (QueryExpression $exp) {
             return $exp->or(function (QueryExpression $exp) {
@@ -124,30 +127,29 @@ class ConfigTable extends Table
 
     /**
      * Finder for configuration by name and optional application name or id.
-     * Options array MUST be:
-     *  - an associative array with `name` and optionally `application` (application name) or `application_id`
-     *  - a non empty indexed array, the first element is then used as `name`
      *
-     * @param \Cake\ORM\Query $query Query object instance.
-     * @param array $options Options array.
-     * @return \Cake\ORM\Query
+     * @param \Cake\ORM\Query\SelectQuery $query Query object instance.
+     * @param string $name The configuration name.
+     * @param string|null $application The application name.
+     * @param int|null $application_id The application ID.
+     * @return \Cake\ORM\Query\SelectQuery
      */
-    protected function findName(Query $query, array $options): Query
-    {
-        if (empty($options[0]) && empty($options['name'])) {
-            throw new BadRequestException(__d('bedita', 'Missing mandatory option "name"'));
-        }
-        $name = (string)Hash::get($options, 'name', Hash::get($options, '0'));
+    public function findName(
+        SelectQuery $query,
+        string $name,
+        ?string $application = null,
+        ?int $application_id = null,
+    ): SelectQuery {
         $query = $query->where([$this->aliasField('name') => $name]);
-        if (empty($options['application']) && empty($options['application_id'])) {
+        if (empty($application) && empty($application_id)) {
             return $query;
         }
 
-        return $query->innerJoinWith('Applications', function (Query $query) use ($options) {
-            if (!empty($options['application'])) {
-                $conditions = [$this->Applications->aliasField('name') => $options['application']];
+        return $query->innerJoinWith('Applications', function (SelectQuery $query) use ($application, $application_id) {
+            if (!empty($application)) {
+                $conditions = [$this->Applications->aliasField('name') => $application];
             } else {
-                $conditions = [$this->Applications->aliasField('id') => $options['application_id']];
+                $conditions = [$this->Applications->aliasField('id') => $application_id];
             }
 
             return $query->where($conditions);
@@ -158,14 +160,14 @@ class ConfigTable extends Table
      * Alias for `name` finder.
      * Used to load entity in `BEdita\Core\Utility\Resources`
      *
-     * @param \Cake\ORM\Query $query Query object instance.
-     * @param array $options Options array.
-     * @return \Cake\ORM\Query
+     * @param \Cake\ORM\Query\SelectQuery $query Query object instance.
+     * @param string|int $args Arguments.
+     * @return \Cake\ORM\Query\SelectQuery
      * @codeCoverageIgnore
      */
-    protected function findResource(Query $query, array $options): Query
+    protected function findResource(SelectQuery $query, string|int ...$args): SelectQuery
     {
-        return $query->find('name', $options);
+        return $query->find('name', ...$args);
     }
 
     /**
@@ -173,9 +175,9 @@ class ConfigTable extends Table
      *
      * @param int|null $applicationId Application ID.
      * @param string|null $context Config context.
-     * @return \Cake\ORM\Query
+     * @return \Cake\ORM\Query\SelectQuery
      */
-    public function fetchConfig(?int $applicationId, ?string $context): Query
+    public function fetchConfig(?int $applicationId, ?string $context): SelectQuery
     {
         $query = $this->find()
             ->select(['name', 'content'])
@@ -193,7 +195,7 @@ class ConfigTable extends Table
 
         return $this->queryCache(
             $query,
-            sprintf('config_%s_%s', $applicationId ?: 'any', $context ?: 'any')
+            sprintf('config_%s_%s', $applicationId ?: 'any', $context ?: 'any'),
         );
     }
 }

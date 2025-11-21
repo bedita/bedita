@@ -12,23 +12,23 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\Model\Action;
 
 use BEdita\Core\Exception\InvalidDataException;
 use BEdita\Core\Model\Action\ChangeCredentialsRequestAction;
 use BEdita\Core\Model\Entity\AsyncJob;
 use BEdita\Core\Model\Entity\User;
+use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\Event\Event;
 use Cake\Event\EventManager;
 use Cake\Mailer\TransportFactory;
 use Cake\TestSuite\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
 
 /**
  * {@see \BEdita\Core\Model\Action\ChangeCredentialsRequestAction} Test Case
- *
- * @covers \BEdita\Core\Model\Action\ChangeCredentialsRequestAction
  */
+#[CoversClass(ChangeCredentialsRequestAction::class)]
 class ChangeCredentialsRequestActionTest extends TestCase
 {
     /**
@@ -36,7 +36,7 @@ class ChangeCredentialsRequestActionTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.Objects',
         'plugin.BEdita/Core.Profiles',
@@ -118,7 +118,7 @@ class ChangeCredentialsRequestActionTest extends TestCase
      */
     public function testExecuteFail()
     {
-        $this->expectException(\Cake\Datasource\Exception\RecordNotFoundException::class);
+        $this->expectException(RecordNotFoundException::class);
         $data = [
             'contact' => 'mr.gustavo@example.com',
             'change_url' => 'http://users.example.com',

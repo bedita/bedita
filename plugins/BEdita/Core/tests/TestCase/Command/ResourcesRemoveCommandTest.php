@@ -12,20 +12,21 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\Command;
 
+use BEdita\Core\Command\ResourcesRemoveCommand;
 use BEdita\Core\Job\ServiceRegistry;
 use Cake\Command\Command;
 use Cake\Console\TestSuite\ConsoleIntegrationTestTrait;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Inflector;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * {@see BEdita\Core\Command\ResourcesRemoveCommand} Test Case
- *
- * @coversDefaultClass \BEdita\Core\Command\ResourcesRemoveCommand
  */
+#[CoversClass(ResourcesRemoveCommand::class)]
 class ResourcesRemoveCommandTest extends TestCase
 {
     use ConsoleIntegrationTestTrait;
@@ -35,7 +36,7 @@ class ResourcesRemoveCommandTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.PropertyTypes',
         'plugin.BEdita/Core.Properties',
@@ -54,18 +55,10 @@ class ResourcesRemoveCommandTest extends TestCase
     /**
      * @inheritDoc
      */
-    protected function setUp(): void
-    {
-        parent::setUp();
-        $this->useCommandRunner();
-    }
-
-    /**
-     * @inheritDoc
-     */
     public function tearDown(): void
     {
         parent::tearDown();
+
         ServiceRegistry::reset();
     }
 
@@ -73,8 +66,6 @@ class ResourcesRemoveCommandTest extends TestCase
      * Test buildOptionParser method
      *
      * @return void
-     * @covers ::buildOptionParser()
-     * @covers ::getDescription()
      */
     public function testBuildOptionParser()
     {
@@ -92,7 +83,7 @@ class ResourcesRemoveCommandTest extends TestCase
      *
      * @return array
      */
-    public function executeProvider(): array
+    public static function executeProvider(): array
     {
         return [
             'remove application (n)' => [
@@ -154,9 +145,8 @@ class ResourcesRemoveCommandTest extends TestCase
      * @param array $input Input data.
      * @param int $expectedCountDiff Expected resource count difference.
      * @return void
-     * @covers ::execute()
-     * @dataProvider executeProvider()
      */
+    #[DataProvider('executeProvider')]
     public function testExecute(string $resourceId, string $resourceType, array $input, int $expectedCountDiff): void
     {
         $tableName = Inflector::camelize($resourceType);
@@ -182,20 +172,18 @@ class ResourcesRemoveCommandTest extends TestCase
      * Test remove resource with wrong type
      *
      * @return void
-     * @covers ::execute()
      */
     public function testExecuteWrongType(): void
     {
         $this->exec('resources_remove "First app" --type wrong', ['y']);
         $this->assertExitCode(Command::CODE_ERROR);
-        $this->assertErrorContains('"wrong" is not a valid value for --type. Please use one of "applications, roles, endpoints, endpoint_permissions"');
+        $this->assertErrorContains('`wrong` is not a valid value for `--type`. Please use one of `applications|roles|endpoints|endpoint_permissions`');
     }
 
     /**
      * Test remove resource not found
      *
      * @return void
-     * @covers ::execute()
      */
     public function testExecuteResourceNotFound(): void
     {

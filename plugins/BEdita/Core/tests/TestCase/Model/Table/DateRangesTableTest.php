@@ -12,18 +12,19 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\Model\Table;
 
-use Cake\I18n\FrozenTime;
+use BEdita\Core\Model\Table\DateRangesTable;
+use Cake\I18n\DateTime;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * {@see \BEdita\Core\Model\Table\DateRangesTable} Test Case
- *
- * @coversDefaultClass \BEdita\Core\Model\Table\DateRangesTable
  */
+#[CoversClass(DateRangesTable::class)]
 class DateRangesTableTest extends TestCase
 {
     /**
@@ -38,7 +39,7 @@ class DateRangesTableTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.Objects',
         'plugin.BEdita/Core.DateRanges',
@@ -67,17 +68,16 @@ class DateRangesTableTest extends TestCase
      * Test marshalling of new entities.
      *
      * @return void
-     * @coversNothing
      */
-    public function testMarshal()
+    public function testMarshal(): void
     {
         $dateRange = $this->DateRanges->newEntity([
             'start_date' => '2017-01-01',
             'end_date' => '2017-01-10T17:18:19Z',
         ]);
 
-        static::assertInstanceOf(FrozenTime::class, $dateRange->start_date);
-        static::assertInstanceOf(FrozenTime::class, $dateRange->end_date);
+        static::assertInstanceOf(DateTime::class, $dateRange->start_date);
+        static::assertInstanceOf(DateTime::class, $dateRange->end_date);
     }
 
     /**
@@ -85,7 +85,7 @@ class DateRangesTableTest extends TestCase
      *
      * @return array
      */
-    public function findDateProvider()
+    public static function findDateProvider(): array
     {
         return [
             'startAfter' => [
@@ -152,15 +152,13 @@ class DateRangesTableTest extends TestCase
      * Test `dateRanges` finder.
      *
      * @param array $conditions Date conditions.
-     * @param array|false $numExpected Number of expected results.
+     * @param int $numExpected Number of expected results.
      * @return void
-     * @dataProvider findDateProvider
-     * @covers ::findDateRanges()
-     * @covers ::fromToDateFilter()
      */
-    public function testFindDate($conditions, $numExpected)
+    #[DataProvider('findDateProvider')]
+    public function testFindDate(array $conditions, int $numExpected): void
     {
-        $result = $this->DateRanges->find('dateRanges', $conditions)->toArray();
+        $result = $this->DateRanges->find('dateRanges', ...$conditions)->toArray();
 
         static::assertEquals($numExpected, count($result));
     }
@@ -168,15 +166,12 @@ class DateRangesTableTest extends TestCase
     /**
      * Test date ranges finder failure.
      *
-     * @covers ::findDateRanges()
+     * @return void
      */
-    public function testFindDateFail()
+    public function testFindDateFail(): void
     {
-        $conditions = ['what_date' => ['lt' => '2017-01-01']];
-
         $this->expectException('BEdita\Core\Exception\BadFilterException');
-
-        $this->DateRanges->find('dateRanges', $conditions)->toArray();
+        $this->DateRanges->find('dateRanges', start_date: null)->toArray();
     }
 
     /**
@@ -184,7 +179,7 @@ class DateRangesTableTest extends TestCase
      *
      * @return array
      */
-    public function fromToDateFilterProvider()
+    public static function fromToDateFilterProvider(): array
     {
         return [
             'from ok' => [
@@ -232,18 +227,13 @@ class DateRangesTableTest extends TestCase
      * Test `dateRanges` finder with `from_date` and `to_date`
      *
      * @param array $conditions Date conditions.
-     * @param array|false $numExpected Number of expected results.
+     * @param int $numExpected Number of expected results.
      * @return void
-     * @dataProvider fromToDateFilterProvider
-     * @covers ::fromToDateFilter()
-     * @covers ::getTime()
-     * @covers ::fromDateFilter()
-     * @covers ::toDateFilter()
-     * @covers ::betweenDatesFilter()
      */
-    public function testFromToDateFilter($conditions, $numExpected)
+    #[DataProvider('fromToDateFilterProvider')]
+    public function testFromToDateFilter(array $conditions, int $numExpected): void
     {
-        $result = $this->DateRanges->find('dateRanges', $conditions)->toArray();
+        $result = $this->DateRanges->find('dateRanges', ...$conditions)->toArray();
 
         static::assertEquals($numExpected, count($result));
     }
@@ -251,12 +241,11 @@ class DateRangesTableTest extends TestCase
     /**
      * Test `getTime` failure.
      *
-     * @covers ::getTime()
+     * @return void
      */
-    public function testGetTimeFailure()
+    public function testGetTimeFailure(): void
     {
-        $conditions = ['from_date' => 'gustavo'];
         $this->expectException('BEdita\Core\Exception\BadFilterException');
-        $this->DateRanges->find('dateRanges', $conditions)->toArray();
+        $this->DateRanges->find('dateRanges', from_date: 'gustavo')->toArray();
     }
 }

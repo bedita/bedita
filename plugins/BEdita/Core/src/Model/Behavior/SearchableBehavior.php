@@ -16,16 +16,16 @@ namespace BEdita\Core\Model\Behavior;
 
 use ArrayObject;
 use BEdita\Core\Exception\BadFilterException;
-use BEdita\Core\Search\Adapter\SimpleAdapter;
 use BEdita\Core\Search\BaseAdapter;
 use BEdita\Core\Search\SearchRegistry;
 use Cake\Core\Configure;
 use Cake\Datasource\EntityInterface;
 use Cake\Event\EventInterface;
 use Cake\ORM\Behavior;
-use Cake\ORM\Query;
+use Cake\ORM\Query\SelectQuery;
 use Cake\Utility\Hash;
 use RuntimeException;
+use UnexpectedValueException;
 
 /**
  * Behavior to add text-based search to model.
@@ -35,17 +35,9 @@ use RuntimeException;
 class SearchableBehavior extends Behavior
 {
     /**
-     * {@inheritDoc}
-     *
-     * Deprecated configuration keys:
-     * - 'minLength' => 3,
-     * - 'maxWords' => 10,
-     * - 'columnTypes' => ['string', 'text'],
-     * - 'fields' => ['*' => 1]
-     *
-     * if present they are used in `SimpleAdapter` for backward compatibility.
+     * @inheritDoc
      */
-    protected $_defaultConfig = [
+    protected array $_defaultConfig = [
         'operationName' => [
             'Model.afterSave' => 'edit',
             'Model.afterDelete' => 'delete',
@@ -59,9 +51,9 @@ class SearchableBehavior extends Behavior
     /**
      * The Search adapters registry instance.
      *
-     * @var \BEdita\Core\Search\SearchRegistry
+     * @var \BEdita\Core\Search\SearchRegistry|null
      */
-    protected $searchRegistry = null;
+    protected ?SearchRegistry $searchRegistry = null;
 
     /**
      * Get operation name for the entity being saved or deleted.
@@ -80,8 +72,8 @@ class SearchableBehavior extends Behavior
         }
 
         if ($operationName !== null && !is_string($operationName)) {
-            throw new \UnexpectedValueException(
-                sprintf('Operation name must be string or null, got %s', gettype($operationName))
+            throw new UnexpectedValueException(
+                sprintf('Operation name must be string or null, got %s', gettype($operationName)),
             );
         }
 
@@ -205,70 +197,26 @@ class SearchableBehavior extends Behavior
         $adapter = $searchRegistry->load($name, (array)Configure::read(sprintf('Search.adapters.%s', $name)));
         $this->table()->dispatchEvent('SearchAdapter.initialize', [$this->table()], $adapter);
 
-        // backward compatibility
-        if ($adapter instanceof SimpleAdapter) {
-            $this->fitSimpleAdapterConf($adapter);
-        }
-
         return $adapter;
     }
 
     /**
      * Finder for query search.
      *
-     * @param \Cake\ORM\Query $query Query object instance.
-     * @param array $options Options.
-     * @return \Cake\ORM\Query
+     * @param \Cake\ORM\Query\SelectQuery $query Query object instance.
+     * @param string $string The text to search.
+     * @param bool $exact Whether to perform an exact search.
+     * @return \Cake\ORM\Query\SelectQuery
      */
-    public function findQuery(Query $query, array $options)
+    public function findQuery(SelectQuery $query, string $string, bool $exact = false): SelectQuery
     {
-        $options += [
-            'exact' => false,
-        ];
-
-        $text = $options['string'] ?? $options[0] ?? null;
-        if (!isset($text) || !is_string($text)) {
-            // Bad filter options.
+        if (empty($string)) {
             throw new BadFilterException([
                 'title' => __d('bedita', 'Invalid data'),
                 'detail' => 'query filter requires a non-empty query string',
             ]);
         }
 
-        unset($options[0], $options['string']);
-
-        return $this->getAdapter()->search($query, $text, $options);
-    }
-
-    /**
-     * Fit configuration of `SimpleAdapter` to maintain backward compatibility with 5.x.
-     *
-     * @param \BEdita\Core\Search\Adapter\SimpleAdapter $adapter The adapter.
-     * @return void
-     */
-    protected function fitSimpleAdapterConf(SimpleAdapter $adapter): void
-    {
-        $config = array_intersect_key(
-            $this->getConfig(),
-            array_flip(['minLength', 'maxWords'])
-        );
-        $adapter->setConfig($config);
-
-        // Config keys that must be overridden
-        foreach (['columnTypes', 'fields'] as $key) {
-            $conf = $this->getConfig($key);
-            if (!is_array($conf)) {
-                continue;
-            }
-
-            // `fields` key in SimpleAdapter is changed.
-            // It is now a list of fields without unused priority.
-            if ($key === 'fields') {
-                deprecationWarning('"fields" must be a list of strings. Unused priorities have been removed.');
-                $conf = array_keys($conf);
-            }
-
-            $adapter->setConfig($key, $conf, false);
-        }
+        return $this->getAdapter()->search($query, $string, compact('exact'));
     }
 }

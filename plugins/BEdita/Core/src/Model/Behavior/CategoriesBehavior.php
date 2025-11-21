@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Model\Behavior;
 
 use BEdita\Core\Model\Entity\Tag;
@@ -37,7 +36,7 @@ class CategoriesBehavior extends Behavior
      * @param \Cake\Datasource\EntityInterface $entity Entity.
      * @return void
      */
-    public function beforeSave(EventInterface $event, EntityInterface $entity)
+    public function beforeSave(EventInterface $event, EntityInterface $entity): void
     {
         if ($entity->get('tags')) {
             $this->prepareData('tags', $entity);
@@ -89,13 +88,9 @@ class CategoriesBehavior extends Behavior
     protected function fetchCategories(EntityInterface $entity, EntityInterface $objectType): array
     {
         $data = (array)$entity->get('categories');
-        $options = [
-            'names' => Hash::extract($data, '{n}.name'),
-            'typeId' => (int)$objectType->get('id'),
-        ];
 
         return TableRegistry::getTableLocator()->get('Categories')
-                ->find('ids', $options)
+                ->find('ids', names: Hash::extract($data, '{n}.name'), typeId: (int)$objectType->get('id'))
                 ->toArray();
     }
 
@@ -112,7 +107,7 @@ class CategoriesBehavior extends Behavior
             function ($item) {
                 return $this->checkTag($item);
             },
-            (array)$entity->get('tags')
+            (array)$entity->get('tags'),
         ));
     }
 

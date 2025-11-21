@@ -12,22 +12,22 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\Model\Entity;
 
+use Authentication\PasswordHasher\DefaultPasswordHasher;
 use BEdita\Core\Model\Entity\User;
 use BEdita\Core\Utility\JsonApiSerializable;
-use Cake\Auth\DefaultPasswordHasher;
-use Cake\I18n\FrozenTime;
+use Cake\I18n\DateTime;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Hash;
+use InvalidArgumentException;
+use PHPUnit\Framework\Attributes\CoversClass;
 
 /**
  * {@see \BEdita\Core\Model\Entity\User} Test Case
- *
- * @coversDefaultClass \BEdita\Core\Model\Entity\User
  */
+#[CoversClass(User::class)]
 class UserTest extends TestCase
 {
     /**
@@ -42,7 +42,7 @@ class UserTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.Relations',
         'plugin.BEdita/Core.RelationTypes',
@@ -81,7 +81,6 @@ class UserTest extends TestCase
      * Test accessible properties.
      *
      * @return void
-     * @covers ::__construct()
      */
     public function testAccessible()
     {
@@ -94,7 +93,7 @@ class UserTest extends TestCase
         ];
         $user = $this->Users->patchEntity($user, $data);
         if (!($user instanceof User)) {
-            throw new \InvalidArgumentException();
+            throw new InvalidArgumentException();
         }
 
         static::assertEquals(1, $user->id);
@@ -106,13 +105,12 @@ class UserTest extends TestCase
      * Test hidden properties.
      *
      * @return void
-     * @covers ::__construct()
      */
     public function testHidden()
     {
         $user = $this->Users->get(1);
         if (!($user instanceof User)) {
-            throw new \InvalidArgumentException();
+            throw new InvalidArgumentException();
         }
 
         static::assertNotEmpty($user->password_hash);
@@ -123,7 +121,6 @@ class UserTest extends TestCase
      * Test setter method for `password`.
      *
      * @return void
-     * @covers ::_setPassword()
      */
     public function testSetPassword()
     {
@@ -134,7 +131,7 @@ class UserTest extends TestCase
         ];
         $user = $this->Users->patchEntity($user, $data);
         if (!($user instanceof User)) {
-            throw new \InvalidArgumentException();
+            throw new InvalidArgumentException();
         }
 
         static::assertNull($user->password);
@@ -146,19 +143,18 @@ class UserTest extends TestCase
      * Test setter method for `password_hash`.
      *
      * @return void
-     * @covers ::_setPasswordHash()
      */
     public function testSetPasswordHash()
     {
         $user = $this->Users->get(1);
-        $now = FrozenTime::now();
+        $now = DateTime::now();
 
         $data = [
             'password_hash' => 'myPassword',
         ];
         $user = $this->Users->patchEntity($user, $data);
         if (!($user instanceof User)) {
-            throw new \InvalidArgumentException();
+            throw new InvalidArgumentException();
         }
 
         static::assertNotEquals('myPassword', $user->password_hash);
@@ -171,15 +167,13 @@ class UserTest extends TestCase
      * Test getter for JSON API meta fields.
      *
      * @return void
-     * @covers ::getMeta()
-     * @covers ::getExternalAuthMeta()
      */
     public function testGetMeta(): void
     {
         $user = $this->Users->get(5);
         $user = $user->jsonApiSerialize(
             JsonApiSerializable::JSONAPIOPT_EXCLUDE_LINKS |
-            JsonApiSerializable::JSONAPIOPT_EXCLUDE_RELATIONSHIPS
+            JsonApiSerializable::JSONAPIOPT_EXCLUDE_RELATIONSHIPS,
         );
 
         static::assertArrayHasKey('external_auth', $user['meta']);
@@ -190,8 +184,6 @@ class UserTest extends TestCase
      * Test that external_auth is null for entity withoud id.
      *
      * @return void
-     * @covers ::getMeta()
-     * @covers ::getExternalAuthMeta()
      */
     public function testGetMetaMissingUserId(): void
     {
@@ -200,7 +192,7 @@ class UserTest extends TestCase
         $user->created_by = 1;
         $user = $user->jsonApiSerialize(
             JsonApiSerializable::JSONAPIOPT_EXCLUDE_LINKS |
-            JsonApiSerializable::JSONAPIOPT_EXCLUDE_RELATIONSHIPS
+            JsonApiSerializable::JSONAPIOPT_EXCLUDE_RELATIONSHIPS,
         );
 
         static::assertArrayHasKey('external_auth', $user['meta']);

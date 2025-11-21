@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Model\Entity;
 
 use Cake\ORM\Entity;
@@ -22,7 +21,7 @@ use Cake\ORM\Entity;
  *
  * @property int $relation_id
  * @property int $object_type_id
- * @property string $side
+ * @property \BEdita\Core\Model\Enum\RelationTypeSide $side
  *
  * @property \BEdita\Core\Model\Entity\Relation $relation
  * @property \BEdita\Core\Model\Entity\ObjectType $object_type
@@ -32,7 +31,7 @@ class RelationType extends Entity
     /**
      * @inheritDoc
      */
-    protected $_accessible = [
+    protected array $_accessible = [
         '*' => true,
     ];
 }

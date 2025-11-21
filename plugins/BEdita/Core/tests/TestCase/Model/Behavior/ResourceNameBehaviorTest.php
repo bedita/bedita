@@ -14,14 +14,17 @@ declare(strict_types=1);
  */
 namespace BEdita\Core\Test\TestCase\Model\Behavior;
 
+use BEdita\Core\Model\Behavior\ResourceNameBehavior;
 use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\TestSuite\TestCase;
+use Exception;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * {@see \BEdita\Core\Model\Behavior\ResourceNameBehavior} Test Case
- *
- * @coversDefaultClass \BEdita\Core\Model\Behavior\ResourceNameBehavior
  */
+#[CoversClass(ResourceNameBehavior::class)]
 class ResourceNameBehaviorTest extends TestCase
 {
     /**
@@ -29,7 +32,7 @@ class ResourceNameBehaviorTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.Relations',
         'plugin.BEdita/Core.RelationTypes',
@@ -48,7 +51,7 @@ class ResourceNameBehaviorTest extends TestCase
      *
      * @return array
      */
-    public function getIdProvider()
+    public static function getIdProvider(): array
     {
         return [
             'id' => [
@@ -64,15 +67,11 @@ class ResourceNameBehaviorTest extends TestCase
                 'first role',
             ],
             'notFound' => [
-                new RecordNotFoundException('Record not found in table "roles"'),
+                new RecordNotFoundException('Record not found in table `roles`'),
                 'this-name-doesnt-exist',
             ],
-            'null' => [
-                new \InvalidArgumentException('Expression `Roles.name` is missing operator (IS, IS NOT) with `null` value.'),
-                null,
-            ],
             'emptyString' => [
-                new RecordNotFoundException('Record not found in table "roles"'),
+                new RecordNotFoundException('Record not found in table `roles`'),
                 '',
             ],
         ];
@@ -84,13 +83,12 @@ class ResourceNameBehaviorTest extends TestCase
      * @param mixed $expected The expected result.
      * @param int|string $name The unique resource identifier.
      * @return void
-     * @dataProvider getIdProvider
-     * @covers ::getId()
      */
+    #[DataProvider('getIdProvider')]
     public function testGetId($expected, $name)
     {
         $Roles = $this->fetchTable('Roles');
-        if ($expected instanceof \Exception) {
+        if ($expected instanceof Exception) {
             $this->expectException(get_class($expected));
             $this->expectExceptionCode($expected->getCode());
             $this->expectExceptionMessage($expected->getMessage());

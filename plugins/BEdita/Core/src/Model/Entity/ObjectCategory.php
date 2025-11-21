@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Model\Entity;
 
 use BEdita\Core\Utility\JsonApiSerializable;
@@ -24,8 +23,7 @@ use Cake\ORM\Entity;
  * @property int $id
  * @property int $object_id
  * @property int $category_id
- * @property string|null $params
- *
+ * @property array|null $params
  * @property \BEdita\Core\Model\Entity\ObjectEntity $object
  * @property \BEdita\Core\Model\Entity\Category $category
  */
@@ -36,7 +34,7 @@ class ObjectCategory extends Entity implements JsonApiSerializable
     /**
      * @inheritDoc
      */
-    protected $_accessible = [
+    protected array $_accessible = [
         '*' => true,
         'id' => false,
     ];

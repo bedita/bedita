@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\Utility;
 
 use BEdita\Core\Utility\Relations;
@@ -20,12 +19,12 @@ use Cake\Http\Exception\BadRequestException;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Hash;
+use PHPUnit\Framework\Attributes\CoversClass;
 
 /**
  * {@see \BEdita\Core\Utility\Relations} Test Case
- *
- * @coversDefaultClass \BEdita\Core\Utility\Relations
  */
+#[CoversClass(Relations::class)]
 class RelationsTest extends TestCase
 {
     /**
@@ -33,7 +32,7 @@ class RelationsTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.Relations',
         'plugin.BEdita/Core.RelationTypes',
@@ -59,9 +58,7 @@ class RelationsTest extends TestCase
     /**
      * Test `create` method.
      *
-     * @covers ::create()
-     * @covers ::validate()
-     * @covers ::addTypes()
+     * @return void
      */
     public function testCreate()
     {
@@ -75,8 +72,7 @@ class RelationsTest extends TestCase
     /**
      * Test `remove` method.
      *
-     * @covers ::remove()
-     * @covers ::removeTypes()
+     * @return void
      */
     public function testRemove()
     {
@@ -90,7 +86,7 @@ class RelationsTest extends TestCase
     /**
      * Test `addRelationType` method.
      *
-     * @covers ::addRelationType()
+     * @return void
      */
     public function testAddRelationType()
     {
@@ -108,7 +104,7 @@ class RelationsTest extends TestCase
     /**
      * Test `removeRelationType` method.
      *
-     * @covers ::removeRelationType()
+     * @return void
      */
     public function testRemoveRelationType()
     {
@@ -126,7 +122,7 @@ class RelationsTest extends TestCase
     /**
      * Test `validate` failure.
      *
-     * @covers ::validate()
+     * @return void
      */
     public function testValidate()
     {
@@ -140,8 +136,7 @@ class RelationsTest extends TestCase
     /**
      * Test `update` method.
      *
-     * @covers ::update()
-     * @covers ::updateTypes()
+     * @return void
      */
     public function testUpdate()
     {

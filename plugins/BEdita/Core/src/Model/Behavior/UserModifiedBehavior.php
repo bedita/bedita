@@ -12,13 +12,13 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Model\Behavior;
 
 use BEdita\Core\Utility\LoggedUser;
 use Cake\Datasource\EntityInterface;
 use Cake\Event\Event;
 use Cake\ORM\Behavior;
+use UnexpectedValueException;
 
 /**
  * UserModified behavior
@@ -41,7 +41,7 @@ class UserModifiedBehavior extends Behavior
      *
      * @var array
      */
-    protected $_defaultConfig = [
+    protected array $_defaultConfig = [
         'implementedFinders' => [],
         'implementedMethods' => [
             'userId' => 'userId',
@@ -60,7 +60,7 @@ class UserModifiedBehavior extends Behavior
      *
      * @var int|null
      */
-    protected $userId = null;
+    protected ?int $userId = null;
 
     /**
      * @inheritDoc
@@ -73,15 +73,16 @@ class UserModifiedBehavior extends Behavior
     }
 
     /**
-     * There is only one event handler, it can be configured to be called for any event
+     * There is only one event handler, it can be configured to be called for any event.
+     * Set event result to `true` irrespective of the behavior logic, the save will not be prevented.
      *
      * @param \Cake\Event\EventInterface $event Event instance.
      * @param \Cake\Datasource\EntityInterface $entity Entity instance.
      * @throws \UnexpectedValueException if a field's when value is misdefined
-     * @return bool Returns true irrespective of the behavior logic, the save will not be prevented.
+     * @return void
      * @throws \UnexpectedValueException When the value for an event is not 'always', 'new' or 'existing'
      */
-    public function handleEvent(Event $event, EntityInterface $entity)
+    public function handleEvent(Event $event, EntityInterface $entity): void
     {
         $eventName = $event->getName();
         $events = $this->_config['events'];
@@ -90,8 +91,8 @@ class UserModifiedBehavior extends Behavior
 
         foreach ($events[$eventName] as $field => $when) {
             if (!in_array($when, ['always', 'new', 'existing'])) {
-                throw new \UnexpectedValueException(
-                    sprintf('When should be one of "always", "new" or "existing". The passed value "%s" is invalid', $when)
+                throw new UnexpectedValueException(
+                    sprintf('When should be one of "always", "new" or "existing". The passed value "%s" is invalid', $when),
                 );
             }
             if (
@@ -103,7 +104,7 @@ class UserModifiedBehavior extends Behavior
             }
         }
 
-        return true;
+        $event->setResult(true);
     }
 
     /**
@@ -120,11 +121,11 @@ class UserModifiedBehavior extends Behavior
      * Set the user ID to the given ID, or if not passed the current logged user ID.
      *
      * @param int|null $userId Timestamp
-     * @return int
+     * @return int|null
      */
-    public function userId($userId = null)
+    public function userId(?int $userId = null): ?int
     {
-        if ($userId) {
+        if ($userId !== null) {
             $this->userId = $userId;
         } elseif ($this->userId === null) {
             $this->userId = LoggedUser::id();
@@ -144,7 +145,7 @@ class UserModifiedBehavior extends Behavior
      * @param string $eventName Event name.
      * @return bool true if a field is updated, false if no action performed
      */
-    public function touchUser(EntityInterface $entity, $eventName = 'Model.beforeSave')
+    public function touchUser(EntityInterface $entity, string $eventName = 'Model.beforeSave'): bool
     {
         $events = $this->_config['events'];
         if (empty($events[$eventName])) {
@@ -172,7 +173,7 @@ class UserModifiedBehavior extends Behavior
      * @param string $field Field name
      * @return void
      */
-    protected function updateField($entity, $field)
+    protected function updateField(EntityInterface $entity, string $field): void
     {
         if ($entity->isDirty($field)) {
             return;

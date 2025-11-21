@@ -24,12 +24,12 @@ class JsonSchemaTableFixture extends TestFixture
     /**
      * @inheritDoc
      */
-    public $table = 'json_schema_table';
+    public string $table = 'json_schema_table';
 
     /**
      * @inheritDoc
      */
-    public $records = [
+    public array $records = [
         [
             'name' => 'first record',
             'json_field' => '["json","array"]',

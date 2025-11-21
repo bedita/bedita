@@ -12,10 +12,9 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Database\Type;
 
-use Cake\Database\DriverInterface;
+use Cake\Database\Driver;
 use Cake\Database\Type\JsonType;
 
 /**
@@ -28,8 +27,24 @@ class JsonObjectType extends JsonType
     /**
      * @inheritDoc
      */
-    public function toPHP($value, DriverInterface $driver)
+    public function toPHP(mixed $value, Driver $driver): mixed
     {
         return json_decode((string)$value, false);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function manyToPHP(array $values, array $fields, Driver $driver): array
+    {
+        foreach ($fields as $field) {
+            if (!isset($values[$field])) {
+                continue;
+            }
+
+            $values[$field] = json_decode($values[$field], false);
+        }
+
+        return $values;
     }
 }

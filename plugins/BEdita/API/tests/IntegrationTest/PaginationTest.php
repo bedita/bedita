@@ -12,21 +12,23 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\API\Test\IntegrationTest;
 
 use BEdita\API\TestSuite\IntegrationTestCase;
 use Cake\Core\Configure;
+use PHPUnit\Framework\Attributes\CoversNothing;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * Test on paginator options.
  */
+#[CoversNothing]
 class PaginationTest extends IntegrationTestCase
 {
     /**
      * @inheritDoc
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.Locations',
         'plugin.BEdita/Core.Media',
     ];
@@ -36,7 +38,7 @@ class PaginationTest extends IntegrationTestCase
      *
      * @return array
      */
-    public function optionsProvider()
+    public static function optionsProvider(): array
     {
         return [
             'default' => [
@@ -140,9 +142,8 @@ class PaginationTest extends IntegrationTestCase
      * @param array $expected Expected pagination.
      * @param array $options Pagination options.
      * @return void
-     * @dataProvider optionsProvider
-     * @coversNothing
      */
+    #[DataProvider('optionsProvider')]
     public function testOptions(array $expected, array $options = [], string $query = '')
     {
         Configure::write('Pagination', $options);

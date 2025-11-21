@@ -12,18 +12,19 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\Model\Entity;
 
 use BEdita\Core\Model\Entity\Application;
+use BEdita\Core\Model\Table\ApplicationsTable;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
+use InvalidArgumentException;
+use PHPUnit\Framework\Attributes\CoversClass;
 
 /**
  * {@see \BEdita\Core\Model\Entity\Application} Test Case
- *
- * @coversDefaultClass \BEdita\Core\Model\Entity\Application
  */
+#[CoversClass(Application::class)]
 class ApplicationTest extends TestCase
 {
     /**
@@ -31,14 +32,14 @@ class ApplicationTest extends TestCase
      *
      * @var \BEdita\Core\Model\Table\ApplicationsTable
      */
-    public $Applications;
+    public ApplicationsTable $Applications;
 
     /**
      * Fixtures
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.Applications',
     ];
 
@@ -66,7 +67,6 @@ class ApplicationTest extends TestCase
      * Test accessible properties.
      *
      * @return void
-     * @coversNothing
      */
     public function testAccessible()
     {
@@ -84,7 +84,7 @@ class ApplicationTest extends TestCase
         ];
         $application = $this->Applications->patchEntity($application, $data);
         if (!($application instanceof Application)) {
-            throw new \InvalidArgumentException();
+            throw new InvalidArgumentException();
         }
 
         $this->assertEquals(1, $application->id);

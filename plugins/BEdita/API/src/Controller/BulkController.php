@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\API\Controller;
 
 use Authorization\IdentityInterface;
@@ -92,7 +91,7 @@ class BulkController extends JsonBaseController
                         'id' => (int)$id,
                         'message' => sprintf('Endpoint "%s" cannot be used for bulk edit: abstract or disabled', $type),
                     ],
-                    $map[$type]
+                    $map[$type],
                 ));
                 unset($map[$type]);
                 continue;
@@ -103,7 +102,7 @@ class BulkController extends JsonBaseController
                         'id' => (int)$id,
                         'message' => sprintf('User cannot access "%s" endpoint', $type),
                     ],
-                    $map[$type]
+                    $map[$type],
                 ));
                 unset($map[$type]);
                 continue;
@@ -120,7 +119,7 @@ class BulkController extends JsonBaseController
                     if (!$user->can('update', $entity)) {
                         throw new MethodNotAllowedException(sprintf('User cannot save "%s" %s', $type, $entity->get('id')));
                     }
-                    $typesTable->getConnection()->transactional(function () use ($entity, $payload, $typesTable, &$saved) {
+                    $typesTable->getConnection()->transactional(function () use ($entity, $payload, $typesTable, &$saved): void {
                         $entity = $typesTable->patchEntity($entity, $payload);
                         $typesTable->saveOrFail($entity);
                         $saved[] = $entity->get('id');

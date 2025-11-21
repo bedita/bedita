@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Command;
 
 use Cake\Command\Command;
@@ -33,14 +32,14 @@ class CheckFilesystemCommand extends Command
      *
      * @var \Cake\Console\Arguments
      */
-    protected $args;
+    protected Arguments $args;
 
     /**
      * Console IO
      *
      * @var \Cake\Console\ConsoleIo
      */
-    protected $io;
+    protected ConsoleIo $io;
 
     /**
      * {@inheritDoc}
@@ -139,16 +138,16 @@ class CheckFilesystemCommand extends Command
      * @param string $user Name of user to check permissions for.
      * @return bool
      */
-    protected function checkPaths(array $paths, $user): bool
+    protected function checkPaths(array $paths, string $user): bool
     {
         // Get info about HTTP daemon user.
         $user = posix_getpwnam($user);
         $group = posix_getgrgid($user['gid']);
         $this->io->verbose(
-            sprintf('=====> Detected webserver user: <info>%s</info> (ID: <info>%d</info>)', $user['name'], $user['uid'])
+            sprintf('=====> Detected webserver user: <info>%s</info> (ID: <info>%d</info>)', $user['name'], $user['uid']),
         );
         $this->io->verbose(
-            sprintf('=====> Detected webserver group: <info>%s</info> (ID: <info>%d</info>)', $group['name'], $group['gid'])
+            sprintf('=====> Detected webserver group: <info>%s</info> (ID: <info>%d</info>)', $group['name'], $group['gid']),
         );
 
         // Check paths.
@@ -168,10 +167,10 @@ class CheckFilesystemCommand extends Command
             $ownerUser = posix_getpwuid(fileowner($path));
             $ownerGroup = posix_getgrgid(filegroup($path));
             $this->io->verbose(
-                sprintf('=====> Detected owner user: <info>%s</info> (ID: <info>%d</info>)', $ownerUser['name'], $ownerUser['uid'])
+                sprintf('=====> Detected owner user: <info>%s</info> (ID: <info>%d</info>)', $ownerUser['name'], $ownerUser['uid']),
             );
             $this->io->verbose(
-                sprintf('=====> Detected owner group: <info>%s</info> (ID: <info>%d</info>)', $ownerGroup['name'], $ownerGroup['gid'])
+                sprintf('=====> Detected owner group: <info>%s</info> (ID: <info>%d</info>)', $ownerGroup['name'], $ownerGroup['gid']),
             );
 
             // Check permissions for owner. Might not be accurate, but it might help spot issues.

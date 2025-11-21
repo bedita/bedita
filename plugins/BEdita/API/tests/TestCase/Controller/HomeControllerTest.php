@@ -14,27 +14,25 @@ declare(strict_types=1);
  */
 namespace BEdita\API\Test\TestCase\Controller;
 
+use BEdita\API\Controller\HomeController;
 use BEdita\API\TestSuite\IntegrationTestCase;
 use BEdita\Core\State\CurrentApplication;
 use BEdita\Core\Utility\LoggedUser;
 use Cake\Cache\Cache;
 use Cake\Core\Configure;
 use Cake\Utility\Hash;
+use PHPUnit\Framework\Attributes\CoversClass;
 
 /**
- * @coversDefaultClass \BEdita\API\Controller\HomeController
+ * {@see \BEdita\API\Controller\HomeController} Test Case
  */
+#[CoversClass(HomeController::class)]
 class HomeControllerTest extends IntegrationTestCase
 {
     /**
      * Test index method.
      *
      * @return void
-     * @covers ::index()
-     * @covers ::endpointFeatures()
-     * @covers ::objectTypesEndpoints()
-     * @covers ::checkAuthorization()
-     * @covers ::unloggedAuthorized()
      */
     public function testIndex()
     {
@@ -438,9 +436,6 @@ class HomeControllerTest extends IntegrationTestCase
      * Test `/home` endpoint with blocked `/documents` endpoint
      *
      * @return void
-     * @covers ::index()
-     * @covers ::endpointFeatures()
-     * @covers ::checkAuthorization()
      */
     public function testBlockedEndpoint(): void
     {
@@ -451,7 +446,7 @@ class HomeControllerTest extends IntegrationTestCase
         // setup new permission to block `/documents` endpoint
         $EndpointPermissions = $this->fetchTable('EndpointPermissions');
         $EndpointPermissions->deleteAll([]);
-        $permission = $EndpointPermissions->newEntity([]);
+        $permission = $EndpointPermissions->newEmptyEntity();
         $permission->permission = 0b0000;
         $permission->application_id = 1;
         $permission->endpoint_id = $endpoint->id;

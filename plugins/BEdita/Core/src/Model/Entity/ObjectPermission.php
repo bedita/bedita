@@ -23,7 +23,7 @@ use Cake\ORM\Entity;
  * @property int $id
  * @property int $object_id
  * @property int $role_id
- * @property \Cake\I18n\FrozenTime $created
+ * @property \Cake\I18n\DateTime $created
  * @property int $created_by
  *
  * @property \BEdita\Core\Model\Entity\ObjectEntity $object
@@ -37,7 +37,7 @@ class ObjectPermission extends Entity implements JsonApiSerializable
     /**
      * @inheritDoc
      */
-    protected $_accessible = [
+    protected array $_accessible = [
         '*' => true,
         'id' => false,
         'created' => false,
@@ -47,7 +47,7 @@ class ObjectPermission extends Entity implements JsonApiSerializable
     /**
      * @inheritDoc
      */
-    protected $_hidden = [
+    protected array $_hidden = [
         'created_by_user',
     ];
 

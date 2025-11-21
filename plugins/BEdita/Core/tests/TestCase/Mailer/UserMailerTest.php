@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\Mailer;
 
 use BEdita\Core\Mailer\UserMailer;
@@ -22,10 +21,15 @@ use Cake\Mailer\MailerAwareTrait;
 use Cake\Mailer\TransportFactory;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
+use Exception;
+use LogicException;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
- * @coversDefaultClass \BEdita\Core\Mailer\UserMailer
+ * {@see \BEdita\Core\Mailer\UserMailer} Test Case
  */
+#[CoversClass(UserMailer::class)]
 class UserMailerTest extends TestCase
 {
     use MailerAwareTrait;
@@ -42,7 +46,7 @@ class UserMailerTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.AsyncJobs',
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.PropertyTypes',
@@ -98,7 +102,7 @@ class UserMailerTest extends TestCase
      *
      * @return array
      */
-    public function signupProvider()
+    public static function signupProvider(): array
     {
         return [
             'ok' => [
@@ -111,24 +115,15 @@ class UserMailerTest extends TestCase
                 ],
             ],
             'missing user' => [
-                new \LogicException('Parameter "params.user" missing'),
+                new LogicException('Parameter "params.user" missing'),
                 [
                     'params' => [
-                        'activationUrl' => 'http://example.com',
-                    ],
-                ],
-            ],
-            'invalid user entity' => [
-                new \LogicException('Invalid user, it must be an User Entity'),
-                [
-                    'params' => [
-                        'user' => ['id' => 1],
                         'activationUrl' => 'http://example.com',
                     ],
                 ],
             ],
             'missing activationUrl' => [
-                new \LogicException('Parameter "params.activationUrl" missing'),
+                new LogicException('Parameter "params.activationUrl" missing'),
                 [
                     'params' => [
                         'userId' => 5,
@@ -144,14 +139,11 @@ class UserMailerTest extends TestCase
      * @param mixed $expected
      * @param array $options
      * @return void
-     * @dataProvider signupProvider
-     * @covers ::signup()
-     * @covers ::checkUser()
-     * @covers ::getProjectName()
      */
+    #[DataProvider('signupProvider')]
     public function testSignup($expected, $options)
     {
-        if ($expected instanceof \Exception) {
+        if ($expected instanceof Exception) {
             $this->expectException(get_class($expected));
             $this->expectExceptionMessage($expected->getMessage());
         }
@@ -169,8 +161,6 @@ class UserMailerTest extends TestCase
      * Test fail sending email to user without email
      *
      * @return void
-     * @covers ::signup()
-     * @covers ::checkUser()
      */
     public function testSignupMissingUserEmail()
     {
@@ -179,7 +169,7 @@ class UserMailerTest extends TestCase
         $user->email = null;
         $Users->save($user);
 
-        $this->expectException(\LogicException::class);
+        $this->expectException(LogicException::class);
         $this->expectExceptionMessage('User email missing');
 
         $options = [
@@ -197,7 +187,7 @@ class UserMailerTest extends TestCase
      *
      * @return array
      */
-    public function welcomeProvider()
+    public static function welcomeProvider(): array
     {
         return [
             'ok' => [
@@ -209,16 +199,8 @@ class UserMailerTest extends TestCase
                 ],
             ],
             'missing user' => [
-                new \LogicException('Parameter "params.user" missing'),
+                new LogicException('Parameter "params.user" missing'),
                 [],
-            ],
-            'invalid user entity' => [
-                new \LogicException('Invalid user, it must be an User Entity'),
-                [
-                    'params' => [
-                        'user' => ['id' => 1],
-                    ],
-                ],
             ],
         ];
     }
@@ -229,13 +211,11 @@ class UserMailerTest extends TestCase
      * @param mixed $expected
      * @param array $options
      * @return void
-     * @dataProvider welcomeProvider
-     * @covers ::welcome()
-     * @covers ::checkUser()
      */
+    #[DataProvider('welcomeProvider')]
     public function testWelcome($expected, $options)
     {
-        if ($expected instanceof \Exception) {
+        if ($expected instanceof Exception) {
             $this->expectException(get_class($expected));
             $this->expectExceptionMessage($expected->getMessage());
         }
@@ -254,7 +234,7 @@ class UserMailerTest extends TestCase
      *
      * @return array
      */
-    public function changeRequestProvider()
+    public static function changeRequestProvider(): array
     {
         return [
             'ok' => [
@@ -267,7 +247,7 @@ class UserMailerTest extends TestCase
                 ],
             ],
             'missing userId' => [
-                new \LogicException('Parameter "params.user" missing'),
+                new LogicException('Parameter "params.user" missing'),
                 [
                     'params' => [
                         'changeUrl' => 'http://example.com',
@@ -275,7 +255,7 @@ class UserMailerTest extends TestCase
                 ],
             ],
             'missing changeUrl' => [
-                new \LogicException('Parameter "params.changeUrl" missing'),
+                new LogicException('Parameter "params.changeUrl" missing'),
                 [
                     'params' => [
                         'userId' => 1,
@@ -291,13 +271,11 @@ class UserMailerTest extends TestCase
      * @param mixed $expected
      * @param array $options
      * @return void
-     * @dataProvider changeRequestProvider
-     * @covers ::changeRequest()
-     * @covers ::checkUser()
      */
+    #[DataProvider('changeRequestProvider')]
     public function testChangeRequest($expected, $options)
     {
-        if ($expected instanceof \Exception) {
+        if ($expected instanceof Exception) {
             $this->expectException(get_class($expected));
             $this->expectExceptionMessage($expected->getMessage());
         }
@@ -316,7 +294,7 @@ class UserMailerTest extends TestCase
      *
      * @return array
      */
-    public function getProjectNameProvider()
+    public static function getProjectNameProvider(): array
     {
         return [
             'default' => [
@@ -336,20 +314,18 @@ class UserMailerTest extends TestCase
      * @param string $expected The project name expected
      * @param string $configured The project name to put in configuration
      * @return void
-     * @dataProvider getProjectNameProvider
-     * @covers ::getProjectName()
      */
+    #[DataProvider('getProjectNameProvider')]
     public function testGetProjectName($expected, $configured)
     {
         Configure::write('Project.name', $configured);
 
         $mailer = new class extends UserMailer {
-            // make method public in
-            public function getProjectName()
+            public function getPublicProjectName()
             {
                 return parent::getProjectName();
             }
         };
-        static::assertEquals($expected, $mailer->getProjectName());
+        static::assertEquals($expected, $mailer->getPublicProjectName());
     }
 }

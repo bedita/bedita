@@ -12,18 +12,18 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\Utility;
 
 use BEdita\Core\Utility\Resources;
+use BEdita\Core\Utility\ResourcesBase;
 use Cake\Http\Exception\BadRequestException;
 use Cake\TestSuite\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
 
 /**
  * {@see \BEdita\Core\Utility\ResourcesBase} Test Case
- *
- * @coversDefaultClass \BEdita\Core\Utility\ResourcesBase
  */
+#[CoversClass(ResourcesBase::class)]
 class ResourcesBaseTest extends TestCase
 {
     /**
@@ -31,7 +31,7 @@ class ResourcesBaseTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.Objects',
         'plugin.BEdita/Core.Relations',
@@ -41,7 +41,7 @@ class ResourcesBaseTest extends TestCase
     /**
      * Test `getTable` method.
      *
-     * @covers ::getTable()
+     * @return void
      */
     public function testGetTable(): void
     {
@@ -59,7 +59,7 @@ class ResourcesBaseTest extends TestCase
     /**
      * Test `getTable` method failure.
      *
-     * @covers ::getTable()
+     * @return void
      */
     public function testGetTableFail(): void
     {

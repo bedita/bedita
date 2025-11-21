@@ -12,28 +12,27 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\API\Test\TestCase\Controller;
 
+use BEdita\API\Controller\TreesController;
 use BEdita\API\Test\TestConstants;
 use BEdita\API\TestSuite\IntegrationTestCase;
 use Cake\Core\Configure;
 use Cake\ORM\TableRegistry;
 use Cake\Utility\Hash;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
- * @coversDefaultClass \BEdita\API\Controller\TreesController
+ * {@see \BEdita\API\Controller\TreesController} Test Case
  */
+#[CoversClass(TreesController::class)]
 class TreesControllerTest extends IntegrationTestCase
 {
     /**
      * Test `index` method.
      *
      * @return void
-     * @covers ::index()
-     * @covers ::initialize()
-     * @covers ::loadObject()
-     * @covers ::getContain()
      */
     public function testIndex(): void
     {
@@ -130,7 +129,7 @@ class TreesControllerTest extends IntegrationTestCase
      *
      * @return void
      */
-    public function treesProvider(): array
+    public static function treesProvider(): array
     {
         $error = [
             'status' => '404',
@@ -181,13 +180,8 @@ class TreesControllerTest extends IntegrationTestCase
      * Test trees path check methods.
      *
      * @return void
-     * @dataProvider treesProvider()
-     * @covers ::checkPath()
-     * @covers ::pathDetails()
-     * @covers ::objectDetails()
-     * @covers ::parents()
-     * @covers ::loadTreesNode()
      */
+    #[DataProvider('treesProvider')]
     public function testTrees($expected, $path): void
     {
         $this->configRequestHeaders();
@@ -213,8 +207,6 @@ class TreesControllerTest extends IntegrationTestCase
      * Test `include` query string.
      *
      * @return void
-     * @covers ::getContain()
-     * @covers ::findAssociation()
      */
     public function testInclude(): void
     {
@@ -238,7 +230,6 @@ class TreesControllerTest extends IntegrationTestCase
      * Test `include` failure.
      *
      * @return void
-     * @covers ::findAssociation()
      */
     public function testIncludeFail(): void
     {
@@ -262,7 +253,6 @@ class TreesControllerTest extends IntegrationTestCase
      * Test failure when parent folder is in trashcan.
      *
      * @return void
-     * @covers ::pathDetails()
      */
     public function testParentDeleted(): void
     {
@@ -288,7 +278,6 @@ class TreesControllerTest extends IntegrationTestCase
      * Test failure when parent folder has unavailable status.
      *
      * @return void
-     * @covers ::pathDetails()
      */
     public function testParentStatus(): void
     {
@@ -316,7 +305,6 @@ class TreesControllerTest extends IntegrationTestCase
      * Test check path failure on folders.
      *
      * @return void
-     * @covers ::checkPath()
      */
     public function testcheckPathFolderFail(): void
     {
@@ -328,7 +316,7 @@ class TreesControllerTest extends IntegrationTestCase
                     'type' => 'folders',
                     'id' => '12',
                 ],
-            ])
+            ]),
         );
         $this->assertResponseCode(200);
 

@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Model\Table;
 
 use BEdita\Core\Model\Entity\ObjectType;
@@ -22,7 +21,7 @@ use Cake\Cache\Cache;
 use Cake\Database\Connection;
 use Cake\Database\Driver\Postgres;
 use Cake\Database\Expression\FunctionExpression;
-use Cake\Database\Query;
+use Cake\Database\Query\SelectQuery;
 use Cake\Database\Schema\TableSchema;
 use Cake\Log\Log;
 use Cake\ORM\Table;
@@ -61,7 +60,7 @@ class StaticPropertiesTable extends Table
         // to the database is closed. Doing so, we never explicitly drop a temporary table.
         $this->setTable(sprintf(
             'static_properties_%016x',
-            function_exists('random_int') ? random_int(0, PHP_INT_MAX) : mt_rand(0, PHP_INT_MAX)
+            function_exists('random_int') ? random_int(0, PHP_INT_MAX) : mt_rand(0, PHP_INT_MAX),
         ));
 
         // Create the temporary table.
@@ -73,7 +72,7 @@ class StaticPropertiesTable extends Table
             // zero columns, and the ORM will fail to create new entities and persist them.
             // This query must be executed _after_ the temporary table has been created, because the namespace
             // is not present at all until at least one temporary table has been created.
-            $schema = (new Query($this->getConnection()))
+            $schema = (new SelectQuery($this->getConnection()))
                 ->select(['nspname'])
                 ->from(['pg_namespace'])
                 ->where([
@@ -93,7 +92,7 @@ class StaticPropertiesTable extends Table
      *
      * @return void
      */
-    protected function createTable()
+    protected function createTable(): void
     {
         Log::debug('Using temporary table for static properties'); // Log for statistics purposes... :/
 
@@ -103,7 +102,7 @@ class StaticPropertiesTable extends Table
             return preg_replace(
                 '/^properties_/',
                 sprintf('%s_', str_replace('_', '', $tableName)),
-                $indexOrConstraint
+                $indexOrConstraint,
             );
         };
 
@@ -130,7 +129,7 @@ class StaticPropertiesTable extends Table
         }
         foreach ($schema->constraints() as $constraint) {
             $attributes = $schema->getConstraint($constraint);
-            if (empty($attributes['type']) || $attributes['type'] === $schema::CONSTRAINT_FOREIGN) {
+            if (empty($attributes['type']) || $attributes['type'] === TableSchema::CONSTRAINT_FOREIGN) {
                 // Temporary tables can't have foreign key constraints in MySQL.
                 // https://dev.mysql.com/doc/refman/5.7/en/create-table-foreign-keys.html
                 continue;
@@ -140,7 +139,7 @@ class StaticPropertiesTable extends Table
 
         // Execute SQL to create table. In MySQL the transaction is completely useless,
         // because `CREATE TABLE` implicitly implies a commit.
-        $this->getConnection()->transactional(function (Connection $connection) use ($table) {
+        $this->getConnection()->transactional(function (Connection $connection) use ($table): void {
             foreach ($table->createSql($connection) as $statement) {
                 $connection->execute($statement);
             }
@@ -154,14 +153,14 @@ class StaticPropertiesTable extends Table
      *
      * @return void
      */
-    protected function addSchemaDetails()
+    protected function addSchemaDetails(): void
     {
         $properties = Cache::remember(
             'static_properties',
             function () {
                 return $this->ObjectTypes->find()
                     ->contain(['Parent'])
-                    ->order([
+                    ->orderBy([
                         $this->ObjectTypes->aliasField('tree_left') => 'ASC', // Ensure parent tables are processed first!
                     ])
                     ->all()
@@ -171,16 +170,16 @@ class StaticPropertiesTable extends Table
                             foreach ($tables as $table) {
                                 $accumulator = array_merge(
                                     $accumulator,
-                                    $this->prepareTableFields($objectType, $table)
+                                    $this->prepareTableFields($objectType, $table),
                                 );
                             }
 
                             return $accumulator;
                         },
-                        []
+                        [],
                     );
             },
-            ObjectTypesTable::CACHE_CONFIG
+            ObjectTypesTable::CACHE_CONFIG,
         );
         $this->saveMany($properties);
     }
@@ -189,9 +188,9 @@ class StaticPropertiesTable extends Table
      * List models that are specific for the object type.
      *
      * @param \BEdita\Core\Model\Entity\ObjectType $objectType Object type to be described.
-     * @return \Cake\ORM\Table[]
+     * @return array<\Cake\ORM\Table>
      */
-    protected function listOwnTables(ObjectType $objectType)
+    protected function listOwnTables(ObjectType $objectType): array
     {
         $table = TableRegistry::getTableLocator()->get($objectType->alias);
         $tables = [$table];
@@ -199,7 +198,7 @@ class StaticPropertiesTable extends Table
             $tables = array_merge($tables, $table->inheritedTables());
         }
 
-        if (!$objectType->has('parent')) {
+        if (!$objectType->hasValue('parent')) {
             // Object type does not have a parent.
             return $tables;
         }
@@ -220,7 +219,7 @@ class StaticPropertiesTable extends Table
                 $tables,
                 function (Table $table) use ($commonTables) {
                     return !in_array($table, $commonTables, true);
-                }
+                },
             ); // `array_diff($tables, $table->commonInheritance($parentTable))` does not work. :(
         }
 
@@ -236,12 +235,12 @@ class StaticPropertiesTable extends Table
      *
      * @param \BEdita\Core\Model\Entity\ObjectType $objectType Object type to be described.
      * @param \Cake\ORM\Table $table Table object.
-     * @return \BEdita\Core\Model\Entity\Property[]
+     * @return array<\BEdita\Core\Model\Entity\Property>
      */
-    protected function prepareTableFields(ObjectType $objectType, Table $table)
+    protected function prepareTableFields(ObjectType $objectType, Table $table): array
     {
         $schema = $table->getSchema();
-        $sampleEntity = $table->newEntity([]);
+        $sampleEntity = $table->newEmptyEntity();
         $hiddenProperties = $sampleEntity->getHidden();
 
         $properties = [];

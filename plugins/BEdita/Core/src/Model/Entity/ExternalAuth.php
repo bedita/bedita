@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Model\Entity;
 
 use BEdita\Core\Utility\JsonApiSerializable;
@@ -26,10 +25,10 @@ use Cake\ORM\Entity;
  * @property \BEdita\Core\Model\Entity\User $user
  * @property int $auth_provider_id
  * @property \BEdita\Core\Model\Entity\AuthProvider $auth_provider
- * @property string $provider_username
- * @property string $params
- * @property \Cake\I18n\Time $created
- * @property \Cake\I18n\Time $modified
+ * @property string|null $provider_username
+ * @property array|null $params
+ * @property \Cake\I18n\DateTime|null $created
+ * @property \Cake\I18n\DateTime|null $modified
  * @since 4.0.0
  */
 class ExternalAuth extends Entity implements JsonApiSerializable
@@ -39,7 +38,7 @@ class ExternalAuth extends Entity implements JsonApiSerializable
     /**
      * @inheritDoc
      */
-    protected $_accessible = [
+    protected array $_accessible = [
         '*' => true,
         'id' => false,
         'created' => false,

@@ -11,17 +11,17 @@
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
+use Migrations\BaseMigration;
 
-use Migrations\AbstractMigration;
-
-class LocationsTable extends AbstractMigration
+class LocationsTable extends BaseMigration
 {
+    public bool $autoId = false;
 
-    public $autoId = false;
-
+    /**
+     * @inheritDoc
+     */
     public function up()
     {
-
         $this->table('locations')
             ->addColumn('id', 'integer', [
                 'default' => null,
@@ -102,7 +102,7 @@ class LocationsTable extends AbstractMigration
                 'id'
             );
 
-        $this->dropTable('locations');
+        $this->table('locations')->drop()->save();
     }
 }
 

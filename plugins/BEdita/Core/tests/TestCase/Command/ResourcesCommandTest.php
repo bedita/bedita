@@ -12,21 +12,22 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\Command;
 
+use BEdita\Core\Command\ResourcesCommand;
 use BEdita\Core\Job\ServiceRegistry;
 use BEdita\Core\Model\Entity\EndpointPermission;
 use Cake\Command\Command;
 use Cake\Console\TestSuite\ConsoleIntegrationTestTrait;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Inflector;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * {@see BEdita\Core\Command\ResourcesCommand} Test Case
- *
- * @coversDefaultClass \BEdita\Core\Command\ResourcesCommand
  */
+#[CoversClass(ResourcesCommand::class)]
 class ResourcesCommandTest extends TestCase
 {
     use ConsoleIntegrationTestTrait;
@@ -36,7 +37,7 @@ class ResourcesCommandTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.PropertyTypes',
         'plugin.BEdita/Core.Properties',
@@ -55,18 +56,10 @@ class ResourcesCommandTest extends TestCase
     /**
      * @inheritDoc
      */
-    protected function setUp(): void
-    {
-        parent::setUp();
-        $this->useCommandRunner();
-    }
-
-    /**
-     * @inheritDoc
-     */
     public function tearDown(): void
     {
         parent::tearDown();
+
         ServiceRegistry::reset();
     }
 
@@ -74,10 +67,8 @@ class ResourcesCommandTest extends TestCase
      * Test buildOptionParser method
      *
      * @return void
-     * @covers ::buildOptionParser()
-     * @covers ::getDescription()
      */
-    public function testBuildOptionParser()
+    public function testBuildOptionParser(): void
     {
         $this->exec('resources --help');
         $this->assertOutputContains('Resources management command. Available subcommands: add, edit, ls, rm');
@@ -95,11 +86,8 @@ class ResourcesCommandTest extends TestCase
      * Test execute on `resources --help`
      *
      * @return void
-     * @covers ::buildOptionParser()
-     * @covers ::execute()
-     * @covers ::getDescription()
      */
-    public function testHelp()
+    public function testHelp(): void
     {
         $this->exec('resources add --help');
         $this->assertOutputContains('Resources management command. Available subcommands: add, edit, ls, rm');
@@ -117,7 +105,6 @@ class ResourcesCommandTest extends TestCase
      * Test add resource
      *
      * @return void
-     * @covers ::execute()
      */
     public function testAddResource(): void
     {
@@ -137,7 +124,7 @@ class ResourcesCommandTest extends TestCase
      *
      * @return array
      */
-    public function addProvider(): array
+    public static function addProvider(): array
     {
         return [
             'role' => [
@@ -168,16 +155,15 @@ class ResourcesCommandTest extends TestCase
      * @param string $name Resource name.
      * @param string $description Resource description.
      * @return void
-     * @dataProvider addProvider()
-     * @covers ::execute()
      */
+    #[DataProvider('addProvider')]
     public function testAddDefault($expected, $type, $name, $description = ''): void
     {
         $input = array_filter(
             [$name, $description],
             function ($val) {
                 return !is_null($val);
-            }
+            },
         );
         $this->exec(sprintf('resources add -t %s', $type), $input);
 
@@ -198,7 +184,7 @@ class ResourcesCommandTest extends TestCase
      *
      * @return array
      */
-    public function addPermissionProvider(): array
+    public static function addPermissionProvider(): array
     {
         return [
             [
@@ -227,9 +213,8 @@ class ResourcesCommandTest extends TestCase
      * @param string $read Read permission
      * @param string $write Write permission
      * @return void
-     * @dataProvider addPermissionProvider
-     * @covers ::execute()
      */
+    #[DataProvider('addPermissionProvider')]
     public function testAddPermission($application, $endpoint, $role, $read, $write): void
     {
         $this->exec('resources add -t endpoint_permissions', [$application, $endpoint, $role, $read, $write]);
@@ -250,7 +235,6 @@ class ResourcesCommandTest extends TestCase
      * Test edit resource
      *
      * @return void
-     * @covers ::execute()
      */
     public function testEditResource(): void
     {
@@ -273,7 +257,7 @@ class ResourcesCommandTest extends TestCase
      *
      * @return array
      */
-    public function editProvider(): array
+    public static function editProvider(): array
     {
         return [
             'Applications.api_key' => [
@@ -298,9 +282,8 @@ class ResourcesCommandTest extends TestCase
      * @param string $field Field to be updated.
      * @param mixed|null $value New field value.
      * @return void
-     * @dataProvider editProvider
-     * @covers ::execute()
      */
+    #[DataProvider('editProvider')]
     public function testEdit($type, $resId, $field, $value = null): void
     {
         $table = $this->fetchTable(Inflector::camelize($type));
@@ -315,7 +298,7 @@ class ResourcesCommandTest extends TestCase
             [$value],
             function ($val) {
                 return !is_null($val);
-            }
+            },
         );
         $this->exec(sprintf('resources edit -t %s -f %s "%s"', $type, $field, $resId), $input);
 
@@ -333,7 +316,6 @@ class ResourcesCommandTest extends TestCase
      * Test edit failure
      *
      * @return void
-     * @covers ::execute()
      */
     public function testEditFail(): void
     {
@@ -346,7 +328,6 @@ class ResourcesCommandTest extends TestCase
      * Test list resources
      *
      * @return void
-     * @covers ::execute()
      */
     public function testListResources(): void
     {
@@ -363,7 +344,7 @@ class ResourcesCommandTest extends TestCase
      *
      * @return array
      */
-    public function listProvider(): array
+    public static function listProvider(): array
     {
         return [
             'applications' => [
@@ -387,9 +368,8 @@ class ResourcesCommandTest extends TestCase
      * @param int $expected Expected count.
      * @param string $type Resource type.
      * @return void
-     * @dataProvider listProvider()
-     * @covers ::execute()
      */
+    #[DataProvider('listProvider')]
     public function testList($expected, $type): void
     {
         $this->exec(sprintf('resources ls -t %s', $type));
@@ -403,7 +383,6 @@ class ResourcesCommandTest extends TestCase
      * Test remove resource
      *
      * @return void
-     * @covers ::execute()
      */
     public function testRmResource(): void
     {
@@ -426,7 +405,7 @@ class ResourcesCommandTest extends TestCase
      *
      * @return array
      */
-    public function removeProvider(): array
+    public static function removeProvider(): array
     {
         return [
             'no confirm' => [
@@ -454,9 +433,8 @@ class ResourcesCommandTest extends TestCase
      * @param int|string $id Resource ID or name.
      * @param string $answer Given answer (y/n).
      * @return void
-     * @dataProvider removeProvider()
-     * @covers ::execute()
      */
+    #[DataProvider('removeProvider')]
     public function testRemove($expected, $id, $answer): void
     {
         $countBefore = $this->fetchTable('Applications')->find()->count();
@@ -479,7 +457,6 @@ class ResourcesCommandTest extends TestCase
      * Test error on missing subcommand
      *
      * @return void
-     * @covers ::execute()
      */
     public function testNoSubcommand(): void
     {

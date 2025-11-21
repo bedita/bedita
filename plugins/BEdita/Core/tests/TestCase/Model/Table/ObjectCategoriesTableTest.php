@@ -12,18 +12,19 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\Model\Table;
 
+use BEdita\Core\Model\Table\ObjectCategoriesTable;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Hash;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * {@see \BEdita\Core\Model\Table\ObjectCategoriesTable} Test Case
- *
- * @coversDefaultClass \BEdita\Core\Model\Table\ObjectCategoriesTable
  */
+#[CoversClass(ObjectCategoriesTable::class)]
 class ObjectCategoriesTableTest extends TestCase
 {
     /**
@@ -38,7 +39,7 @@ class ObjectCategoriesTableTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.Relations',
         'plugin.BEdita/Core.RelationTypes',
@@ -75,7 +76,7 @@ class ObjectCategoriesTableTest extends TestCase
      *
      * @return array
      */
-    public function validationProvider()
+    public static function validationProvider(): array
     {
         return [
             'ok' => [
@@ -102,12 +103,11 @@ class ObjectCategoriesTableTest extends TestCase
      * @param string[] $expected Expected errors.
      * @param array $data Data.
      * @return void
-     * @dataProvider validationProvider
-     * @covers ::validationDefault()
      */
+    #[DataProvider('validationProvider')]
     public function testValidation(array $expected, array $data)
     {
-        $entity = $this->ObjectCategories->newEntity([]);
+        $entity = $this->ObjectCategories->newEmptyEntity();
         $entity = $this->ObjectCategories->patchEntity($entity, $data);
         $errors = array_keys(Hash::flatten($entity->getErrors()));
 
@@ -119,7 +119,7 @@ class ObjectCategoriesTableTest extends TestCase
      *
      * @return array
      */
-    public function buildRulesProvider()
+    public static function buildRulesProvider(): array
     {
         return [
             'inValidObject' => [
@@ -145,9 +145,8 @@ class ObjectCategoriesTableTest extends TestCase
      * @param bool $expected Expected result.
      * @param array $data Data to be validated.
      * @return void
-     * @dataProvider buildRulesProvider
-     * @covers ::buildRules()
      */
+    #[DataProvider('buildRulesProvider')]
     public function testBuildRules($expected, array $data)
     {
         $entity = $this->ObjectCategories->newEntity($data, ['validate' => false]);

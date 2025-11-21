@@ -12,22 +12,29 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Model\Entity;
 
 /**
- * App Config Entity.
- *
  * {@inheritDoc}
  *
+ * App Config Entity.
+ *
  * @since 5.0.0
+ * @property int $id
+ * @property string $name
+ * @property string $context
+ * @property string $content
+ * @property \Cake\I18n\DateTime $created
+ * @property \Cake\I18n\DateTime $modified
+ * @property int|null $application_id
+ * @property \BEdita\Core\Model\Entity\Application|null $application
  */
 class AppConfig extends Config
 {
     /**
      * @inheritDoc
      */
-    protected $_hidden = [
+    protected array $_hidden = [
         'application_id',
         'context',
     ];

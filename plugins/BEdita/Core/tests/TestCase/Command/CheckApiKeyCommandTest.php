@@ -12,19 +12,19 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\Command;
 
+use BEdita\Core\Command\CheckApiKeyCommand;
 use BEdita\Core\Model\Table\ApplicationsTable;
 use Cake\Command\Command;
 use Cake\Console\TestSuite\ConsoleIntegrationTestTrait;
 use Cake\TestSuite\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
 
 /**
  * {@see BEdita\Core\Command\CheckApiKeyCommand} Test Case
- *
- * @coversDefaultClass \BEdita\Core\Command\CheckApiKeyCommand
  */
+#[CoversClass(CheckApiKeyCommand::class)]
 class CheckApiKeyCommandTest extends TestCase
 {
     use ConsoleIntegrationTestTrait;
@@ -34,14 +34,14 @@ class CheckApiKeyCommandTest extends TestCase
      *
      * @var \BEdita\Core\Model\Table\ApplicationsTable
      */
-    public $Applications;
+    public ApplicationsTable $Applications;
 
     /**
      * Fixtures
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.Applications',
     ];
 
@@ -51,7 +51,6 @@ class CheckApiKeyCommandTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->useCommandRunner();
         $this->Applications = $this->fetchTable('Applications');
     }
 
@@ -68,7 +67,6 @@ class CheckApiKeyCommandTest extends TestCase
      * Test help
      *
      * @return void
-     * @covers ::getDescription()
      */
     public function testHelp(): void
     {
@@ -82,7 +80,6 @@ class CheckApiKeyCommandTest extends TestCase
      * Test execution when default application is missing.
      *
      * @return void
-     * @covers ::execute()
      */
     public function testExecuteMissingApplication()
     {
@@ -98,7 +95,6 @@ class CheckApiKeyCommandTest extends TestCase
      * Test execution when default application has empty API key.
      *
      * @return void
-     * @covers ::execute()
      */
     public function testExecuteApplicationEmptyApiKey()
     {
@@ -114,7 +110,6 @@ class CheckApiKeyCommandTest extends TestCase
      * Test execution when everything looks OK.
      *
      * @return void
-     * @covers ::execute()
      */
     public function testExecuteOk()
     {

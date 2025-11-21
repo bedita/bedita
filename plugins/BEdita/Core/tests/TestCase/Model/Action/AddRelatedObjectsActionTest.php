@@ -12,10 +12,12 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\Model\Action;
 
+use ArrayObject;
 use BEdita\Core\Model\Action\AddRelatedObjectsAction;
+use BEdita\Core\Model\Action\AssociatedTrait;
+use BEdita\Core\Model\Action\UpdateRelatedObjectsAction;
 use BEdita\Core\ORM\Association\RelatedTo;
 use BEdita\Core\Utility\LoggedUser;
 use Cake\Database\Expression\QueryExpression;
@@ -25,12 +27,19 @@ use Cake\Http\Exception\BadRequestException;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Inflector;
+use Exception;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\CoversTrait;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
- * @covers \BEdita\Core\Model\Action\AddRelatedObjectsAction
- * @covers \BEdita\Core\Model\Action\UpdateRelatedObjectsAction
- * @covers \BEdita\Core\Model\Action\AssociatedTrait
+ * {@see \BEdita\Core\Model\Action\AddRelatedObjectsAction} Test Case
+ * {@see \BEdita\Core\Model\Action\UpdateRelatedObjectsAction} Test Case
+ * {@see \BEdita\Core\Model\Action\AssociatedTrait} Test Case
  */
+#[CoversClass(AddRelatedObjectsAction::class)]
+#[CoversClass(UpdateRelatedObjectsAction::class)]
+#[CoversTrait(AssociatedTrait::class)]
 class AddRelatedObjectsActionTest extends TestCase
 {
     /**
@@ -38,7 +47,7 @@ class AddRelatedObjectsActionTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.Relations',
         'plugin.BEdita/Core.RelationTypes',
@@ -78,7 +87,7 @@ class AddRelatedObjectsActionTest extends TestCase
      *
      * @return array
      */
-    public function invocationProvider()
+    public static function invocationProvider(): array
     {
         return [
             'nothingToDo' => [
@@ -175,11 +184,11 @@ class AddRelatedObjectsActionTest extends TestCase
      * @param int $id Entity to update relations for.
      * @param int[] $related Related entity(-ies).
      * @return void
-     * @dataProvider invocationProvider()
      */
+    #[DataProvider('invocationProvider')]
     public function testInvocation($expected, $objectType, $relation, $id, array $related)
     {
-        if ($expected instanceof \Exception) {
+        if ($expected instanceof Exception) {
             $this->expectException(get_class($expected));
             $this->expectExceptionMessage($expected->getMessage());
         }
@@ -214,7 +223,7 @@ class AddRelatedObjectsActionTest extends TestCase
             static::assertSame('add', $event->getData('action'));
             static::assertSame($association, $event->getData('association'));
             static::assertSame($entity, $event->getData('entity'));
-            static::assertInstanceOf(\ArrayObject::class, $event->getData('relatedEntities'));
+            static::assertInstanceOf(ArrayObject::class, $event->getData('relatedEntities'));
             $rel = is_object($relatedEntities) ? [$relatedEntities] : (array)$relatedEntities;
             static::assertSameSize($rel, $event->getData('relatedEntities'));
             $n = count($rel);
@@ -262,7 +271,7 @@ class AddRelatedObjectsActionTest extends TestCase
      *
      * @return array
      */
-    public function linkEntitiesRelatedToOtherObjectProvider(): array
+    public static function linkEntitiesRelatedToOtherObjectProvider(): array
     {
         return [
             'direct' => [
@@ -285,13 +294,13 @@ class AddRelatedObjectsActionTest extends TestCase
      * @param string $tableName The table name of object id
      * @param string $relation The relation to use
      * @return void
-     * @dataProvider linkEntitiesRelatedToOtherObjectProvider()
      */
+    #[DataProvider('linkEntitiesRelatedToOtherObjectProvider')]
     public function testLinkEntitiesRelatedToOtherObject(int $id, string $tableName, string $relation): void
     {
         $Table = TableRegistry::getTableLocator()->get($tableName);
         $association = $Table->associations()->getByProperty($relation);
-        $relatedEntities = $Table->get($id, ['contain' => [$association->getName()]])->get($relation);
+        $relatedEntities = $Table->get($id, contain: [$association->getName()])->get($relation);
 
         // create new entity
         $entity = $Table->newEntity(['title' => 'Test Object']);
@@ -300,7 +309,7 @@ class AddRelatedObjectsActionTest extends TestCase
         $action = new AddRelatedObjectsAction(compact('association'));
         $action(compact('entity', 'relatedEntities'));
 
-        $entity = $Table->get($entity->id, ['contain' => [$association->getName()]]);
+        $entity = $Table->get($entity->id, contain: [$association->getName()]);
 
         $expected = collection($relatedEntities)->sortBy('id')->extract('id')->toList();
         $actual = collection($entity->get($relation))->sortBy('id')->extract('id')->toList();

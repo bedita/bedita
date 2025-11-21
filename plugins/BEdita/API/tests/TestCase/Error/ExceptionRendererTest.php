@@ -12,9 +12,9 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\API\Test\TestCase\Error;
 
+use BEdita\API\Error\ExceptionRenderer;
 use BEdita\Core\Exception\InvalidDataException;
 use Cake\Core\Configure;
 use Cake\Core\Exception\CakeException;
@@ -25,10 +25,14 @@ use Cake\Http\Exception\NotFoundException;
 use Cake\Http\Response;
 use Cake\TestSuite\TestCase;
 use Exception;
+use LogicException;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
- * @coversDefaultClass \BEdita\API\Error\ExceptionRenderer
+ * {@see \BEdita\API\Error\ExceptionRenderer} Test Case
  */
+#[CoversClass(ExceptionRenderer::class)]
 class ExceptionRendererTest extends TestCase
 {
     /**
@@ -68,7 +72,7 @@ class ExceptionRendererTest extends TestCase
      *
      * @return array
      */
-    public function errorDetailsProvider()
+    public static function errorDetailsProvider(): array
     {
         return [
             'simple' => [
@@ -107,12 +111,12 @@ class ExceptionRendererTest extends TestCase
                 'err title',
             ],
             'previous exception' => [
-                new BadRequestException('Bad', 400, new \LogicException('Logic Error')),
+                new BadRequestException('Bad', 400, new LogicException('Logic Error')),
                 'Bad',
                 'Logic Error',
             ],
             'not a Cake exception' => [
-                new \LogicException('hello'),
+                new LogicException('hello'),
                 'hello',
             ],
         ];
@@ -126,13 +130,8 @@ class ExceptionRendererTest extends TestCase
      * @param string $detail Additional details.
      * @param string $code Error code.
      * @return void
-     * @dataProvider errorDetailsProvider
-     * @covers ::render()
-     * @covers ::_message()
-     * @covers ::_template()
-     * @covers ::errorDetail()
-     * @covers ::appErrorCode()
      */
+    #[DataProvider('errorDetailsProvider')]
     public function testErrorDetails($exception, $title, $detail = '', $code = '')
     {
         $renderer = new MyExceptionRenderer($exception);
@@ -159,7 +158,7 @@ class ExceptionRendererTest extends TestCase
      *
      * @return array
      */
-    public function renderJsonProvider()
+    public static function renderJsonProvider(): array
     {
         return [
             'debugOn' => [
@@ -204,9 +203,8 @@ class ExceptionRendererTest extends TestCase
      * @param array $config The configuration to use.
      * @param bool $unloadPlugin If unload BEdita/API before render.
      * @return void
-     * @dataProvider renderJsonProvider
-     * @coversNothing
      */
+    #[DataProvider('renderJsonProvider')]
     public function testRenderJson($accept, $config, $unloadPlugin = false)
     {
         Configure::write($config);
@@ -229,9 +227,8 @@ class ExceptionRendererTest extends TestCase
      * @param array $config The configuration to use.
      * @param bool $unloadPlugin If unload BEdita/API before render.
      * @return void
-     * @dataProvider renderJsonProvider
-     * @covers ::_outputMessageSafe()
      */
+    #[DataProvider('renderJsonProvider')]
     public function testRenderJsonSafe($accept, $config, $unloadPlugin = false)
     {
         Configure::write($config);
@@ -255,9 +252,9 @@ class ExceptionRendererTest extends TestCase
     /**
      * Perform some asserts to check JSON response
      *
-     * @param \BEdita\API\Error\ExceptionRenderer $renderer
-     * @param \Cake\Http\Response $response
-     * @param int $debug
+     * @param \BEdita\API\Test\TestCase\Error\MyExceptionRenderer $renderer The exception renderer
+     * @param \Cake\Http\Response $response The response object
+     * @param int $debug Debug mode
      * @return void
      */
     protected function checkResponseJson(MyExceptionRenderer $renderer, Response $response, $debug)

@@ -24,7 +24,7 @@ class FakeArticlesTagsFixture extends TestFixture
     /**
      * @inheritDoc
      */
-    public $records = [
+    public array $records = [
         ['fake_article_id' => 1, 'fake_tag_id' => 1],
         ['fake_article_id' => 2, 'fake_tag_id' => 2],
     ];

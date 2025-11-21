@@ -12,22 +12,26 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\Model\Action;
 
+use BEdita\Core\Exception\BadFilterException;
 use BEdita\Core\Model\Action\ListEntitiesAction;
 use BEdita\Core\ORM\Inheritance\Table;
 use Cake\Database\Driver\Mysql;
 use Cake\Database\Driver\Postgres;
 use Cake\Datasource\ConnectionManager;
-use Cake\I18n\FrozenTime;
-use Cake\ORM\Query;
+use Cake\I18n\DateTime;
+use Cake\ORM\Query\SelectQuery;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
+use Exception;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
- * @coversDefaultClass \BEdita\Core\Model\Action\ListEntitiesAction
+ * {@see \BEdita\Core\Model\Action\ListEntitiesAction} Test Case
  */
+#[CoversClass(ListEntitiesAction::class)]
 class ListEntitiesActionTest extends TestCase
 {
     /**
@@ -35,7 +39,7 @@ class ListEntitiesActionTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.FakeAnimals',
         'plugin.BEdita/Core.FakeArticles',
         'plugin.BEdita/Core.FakeMammals',
@@ -47,6 +51,7 @@ class ListEntitiesActionTest extends TestCase
         'plugin.BEdita/Core.Objects',
         'plugin.BEdita/Core.Profiles',
         'plugin.BEdita/Core.Users',
+        'plugin.BEdita/Core.Locations',
         'plugin.BEdita/Core.Media',
         'plugin.BEdita/Core.Streams',
     ];
@@ -69,7 +74,7 @@ class ListEntitiesActionTest extends TestCase
      *
      * @return array
      */
-    public function parseFilterProvider()
+    public static function parseFilterProvider(): array
     {
         return [
             'normal' => [
@@ -106,9 +111,8 @@ class ListEntitiesActionTest extends TestCase
      * @param array $expected Expected result.
      * @param string $filter Filter to be parsed
      * @return void
-     * @dataProvider parseFilterProvider()
-     * @covers ::parseFilter()
      */
+    #[DataProvider('parseFilterProvider')]
     public function testParseFilter(array $expected, $filter)
     {
         $result = ListEntitiesAction::parseFilter($filter);
@@ -121,7 +125,7 @@ class ListEntitiesActionTest extends TestCase
      *
      * @return array
      */
-    public function executeProvider()
+    public static function executeProvider(): array
     {
         return [
             'plain' => [
@@ -130,7 +134,7 @@ class ListEntitiesActionTest extends TestCase
                         'id' => 1,
                         'name' => 'cat',
                         'legs' => 4,
-                        'modified' => new FrozenTime('2018-02-20 09:50:00'),
+                        'modified' => new DateTime('2018-02-20 09:50:00'),
                     ],
                     [
                         'id' => 2,
@@ -153,7 +157,7 @@ class ListEntitiesActionTest extends TestCase
                         'id' => 1,
                         'name' => 'cat',
                         'legs' => 4,
-                        'modified' => new FrozenTime('2018-02-20 09:50:00'),
+                        'modified' => new DateTime('2018-02-20 09:50:00'),
                     ],
                     [
                         'id' => 2,
@@ -176,7 +180,7 @@ class ListEntitiesActionTest extends TestCase
                         'id' => 1,
                         'name' => 'cat',
                         'legs' => 4,
-                        'modified' => new FrozenTime('2018-02-20 09:50:00'),
+                        'modified' => new DateTime('2018-02-20 09:50:00'),
                     ],
                 ],
                 'fake_articles=1',
@@ -187,7 +191,7 @@ class ListEntitiesActionTest extends TestCase
                         'id' => 1,
                         'name' => 'cat',
                         'legs' => 4,
-                        'modified' => new FrozenTime('2018-02-20 09:50:00'),
+                        'modified' => new DateTime('2018-02-20 09:50:00'),
                     ],
                 ],
                 ['fake_articles' => [1, 2] ],
@@ -198,7 +202,7 @@ class ListEntitiesActionTest extends TestCase
                         'id' => 1,
                         'name' => 'cat',
                         'legs' => 4,
-                        'modified' => new FrozenTime('2018-02-20 09:50:00'),
+                        'modified' => new DateTime('2018-02-20 09:50:00'),
                         'subclass' => 'Eutheria',
                     ],
                 ],
@@ -207,9 +211,8 @@ class ListEntitiesActionTest extends TestCase
                 ],
                 'FakeMammals',
             ],
-            'finder1' => [
-                [
-                ],
+            'filter finder not found' => [
+                new BadFilterException('Invalid data'),
                 [
                     'byName' => ['name' => 'not_found_relation'],
                 ],
@@ -223,29 +226,45 @@ class ListEntitiesActionTest extends TestCase
                 ],
                 'Users',
             ],
+            'find mine no inheritance' => [
+                [
+                ],
+                [
+                    'mine' => true,
+                ],
+                'News',
+            ],
+            'wrong named argument' => [
+                new BadFilterException('Invalid data'),
+                [
+                    'geo' => ['banana' => 'yeah'],
+                ],
+                'Locations',
+            ],
         ];
     }
 
     /**
      * Test command execution.
      *
-     * @param array $expected Expected results.
+     * @param array|\Exception $expected Expected results.
      * @param mixed $filter Filter.
      * @param string $table Table name.
      * @return void
-     * @dataProvider executeProvider()
-     * @covers ::initialize()
-     * @covers ::buildFilter()
-     * @covers ::execute()
      */
-    public function testExecute(array $expected, $filter, $table = 'FakeAnimals')
+    #[DataProvider('executeProvider')]
+    public function testExecute(array|Exception $expected, mixed $filter, string $table = 'FakeAnimals'): void
     {
+        if ($expected instanceof Exception) {
+            $this->expectException(get_class($expected));
+            $this->expectExceptionMessage($expected->getMessage());
+        }
         $table = TableRegistry::getTableLocator()->get($table);
         $action = new ListEntitiesAction(compact('table'));
 
         $result = $action(compact('filter'));
 
-        static::assertInstanceOf(Query::class, $result);
+        static::assertInstanceOf(SelectQuery::class, $result);
         static::assertEquals($expected, $result->enableHydration(false)->toArray());
     }
 
@@ -253,9 +272,6 @@ class ListEntitiesActionTest extends TestCase
      * Test command execution with custom prop filter.
      *
      * @return void
-     * @covers ::initialize()
-     * @covers ::buildFilter()
-     * @covers ::execute()
      */
     public function testFilterCustomProp(): void
     {
@@ -266,7 +282,7 @@ class ListEntitiesActionTest extends TestCase
         $action = new ListEntitiesAction(compact('table'));
 
         $result = $action(['filter' => ['media_property' => true]]);
-        static::assertInstanceOf(Query::class, $result);
+        static::assertInstanceOf(SelectQuery::class, $result);
 
         $result = $result->toArray();
         static::assertCount(1, $result);
@@ -277,9 +293,6 @@ class ListEntitiesActionTest extends TestCase
      * Test command execution with contained entities.
      *
      * @return void
-     * @covers ::initialize()
-     * @covers ::buildFilter()
-     * @covers ::execute()
      */
     public function testExecuteContain()
     {
@@ -288,7 +301,7 @@ class ListEntitiesActionTest extends TestCase
                 'id' => 1,
                 'name' => 'cat',
                 'legs' => 4,
-                'modified' => new FrozenTime('2018-02-20 09:50:00'),
+                'modified' => new DateTime('2018-02-20 09:50:00'),
                 'fake_articles' => [
                     [
                         'id' => 1,
@@ -326,7 +339,7 @@ class ListEntitiesActionTest extends TestCase
 
         $result = $action(compact('contain'));
 
-        static::assertInstanceOf(Query::class, $result);
+        static::assertInstanceOf(SelectQuery::class, $result);
         static::assertEquals($expected, $result->enableHydration(false)->toArray());
     }
 
@@ -334,8 +347,6 @@ class ListEntitiesActionTest extends TestCase
      * Test filter error.
      *
      * @return void
-     * @covers ::buildFilter()
-     * @covers ::execute()
      */
     public function testBadFilter()
     {

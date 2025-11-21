@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\API\Test\TestCase\Datasource;
 
 use BEdita\API\Datasource\JsonApiPaginator;
@@ -22,10 +21,14 @@ use Cake\Http\Exception\BadRequestException;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Hash;
+use Exception;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
- * @coversDefaultClass \BEdita\API\Datasource\JsonApiPaginator
+ * {@see \BEdita\API\Datasource\JsonApiPaginator} Test Case
  */
+#[CoversClass(JsonApiPaginator::class)]
 class JsonApiPaginatorTest extends TestCase
 {
     /**
@@ -33,7 +36,7 @@ class JsonApiPaginatorTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.Relations',
         'plugin.BEdita/Core.RelationTypes',
@@ -45,7 +48,7 @@ class JsonApiPaginatorTest extends TestCase
      *
      * @return array
      */
-    public function checkLimitProvider()
+    public static function checkLimitProvider(): array
     {
         return [
             'default' => [
@@ -54,6 +57,9 @@ class JsonApiPaginatorTest extends TestCase
                     'limit' => 20,
                     'maxLimit' => 100,
                     'allowedParameters' => ['page', 'page_size', 'sort'],
+                    'sortableFields' => null,
+                    'finder' => 'all',
+                    'scope' => null,
                 ],
                 [],
             ],
@@ -63,6 +69,9 @@ class JsonApiPaginatorTest extends TestCase
                     'limit' => 5,
                     'maxLimit' => 100,
                     'allowedParameters' => ['page', 'page_size', 'sort'],
+                    'sortableFields' => null,
+                    'finder' => 'all',
+                    'scope' => null,
                 ],
                 [
                     'limit' => 5,
@@ -74,6 +83,9 @@ class JsonApiPaginatorTest extends TestCase
                     'limit' => 5,
                     'maxLimit' => 100,
                     'allowedParameters' => ['page', 'page_size', 'sort'],
+                    'sortableFields' => null,
+                    'finder' => 'all',
+                    'scope' => null,
                 ],
                 [
                     'page_size' => 5,
@@ -88,9 +100,8 @@ class JsonApiPaginatorTest extends TestCase
      * @param array $expected Expected result.
      * @param array $options Paginator options.
      * @return void
-     * @dataProvider checkLimitProvider()
-     * @covers ::checkLimit()
      */
+    #[DataProvider('checkLimitProvider')]
     public function testCheckLimit(array $expected, array $options)
     {
         $paginator = new JsonApiPaginator();
@@ -105,7 +116,7 @@ class JsonApiPaginatorTest extends TestCase
      *
      * @return array
      */
-    public function validateSortProvider()
+    public static function validateSortProvider(): array
     {
         return [
             'default' => [
@@ -158,12 +169,11 @@ class JsonApiPaginatorTest extends TestCase
      * @param array|\Exception $expected Expected result.
      * @param string|null $sort `sort` query parameter in request.
      * @return void
-     * @dataProvider validateSortProvider()
-     * @covers ::validateSort()
      */
+    #[DataProvider('validateSortProvider')]
     public function testValidateSort($expected, $sort = null)
     {
-        if ($expected instanceof \Exception) {
+        if ($expected instanceof Exception) {
             $this->expectException(get_class($expected));
             $this->expectExceptionCode($expected->getCode());
             $this->expectExceptionMessage($expected->getMessage());
@@ -179,14 +189,12 @@ class JsonApiPaginatorTest extends TestCase
 
     /**
      * Test `paginate()` method.
-     *
-     * @covers ::paginate()
      */
     public function testPaginate()
     {
         $paginator = new JsonApiPaginator();
 
-        $query = TableRegistry::getTableLocator()->get('Roles')->find()->order('id');
+        $query = TableRegistry::getTableLocator()->get('Roles')->find()->orderBy('id');
         $params = ['sort' => '-name'];
         $res = $paginator->paginate($query, $params);
 

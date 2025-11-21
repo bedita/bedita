@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\API\Test\TestCase\Controller;
 
 use Authentication\AuthenticationService;
@@ -23,23 +22,25 @@ use BEdita\API\Controller\AppController;
 use BEdita\API\Policy\EndpointPolicy;
 use BEdita\API\Test\TestConstants;
 use BEdita\API\TestSuite\IntegrationTestCase;
+use BEdita\Core\Test\Utility\TestArraySubsetTrait;
 use Cake\Core\Configure;
-use Cake\Http\Exception\NotAcceptableException;
 use Cake\Http\ServerRequest;
-use DMS\PHPUnitExtensions\ArraySubset\ArraySubsetAsserts;
+use Exception;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
- * @coversDefaultClass \BEdita\API\Controller\AppController
+ * {@see \BEdita\API\Controller\AppController} Test Case
  */
+#[CoversClass(AppController::class)]
 class AppControllerTest extends IntegrationTestCase
 {
-    use ArraySubsetAsserts;
+    use TestArraySubsetTrait;
 
     /**
      * Test API meta info header.
      *
      * @return void
-     * @covers ::initialize()
      */
     public function testMetaInfo()
     {
@@ -60,7 +61,7 @@ class AppControllerTest extends IntegrationTestCase
      *
      * @return array
      */
-    public function isIdentityRequiredProvider()
+    public static function isIdentityRequiredProvider(): array
     {
         return [
             'ok' => [
@@ -80,12 +81,11 @@ class AppControllerTest extends IntegrationTestCase
      * @param true|\Exception $expected Expected success.
      * @param string $method Request method.
      * @return void
-     * @dataProvider isIdentityRequiredProvider
-     * @covers ::isIdentityRequired()
      */
+    #[DataProvider('isIdentityRequiredProvider')]
     public function testIsIdentityRequired($expected, $method): void
     {
-        if ($expected instanceof \Exception) {
+        if ($expected instanceof Exception) {
             $this->expectException(get_class($expected));
             $this->expectExceptionCode($expected->getCode());
             $this->expectExceptionMessage($expected->getMessage());
@@ -113,65 +113,9 @@ class AppControllerTest extends IntegrationTestCase
     }
 
     /**
-     * Data provider for `testCheckAccept` test case.
-     *
-     * @return array
-     */
-    public function checkAcceptProvider()
-    {
-        return [
-            'ok' => [
-                true,
-                'application/vnd.api+json',
-            ],
-            'error (dramatic music)' => [
-                new NotAcceptableException('Bad request content type "gustavo/supporto"'),
-                'gustavo/supporto',
-            ],
-        ];
-    }
-
-    /**
-     * Test accepted content types in `beforeFilter()` method.
-     *
-     * @param true|\Exception $expected Expected success.
-     * @param string $accept Value of "Accept" header.
-     * @return void
-     * @dataProvider checkAcceptProvider
-     * @covers ::checkAcceptable()
-     * @covers ::beforeFilter()
-     */
-    public function testCheckAccept($expected, $accept)
-    {
-        if ($expected instanceof \Exception) {
-            $this->expectException(get_class($expected));
-            $this->expectExceptionCode($expected->getCode());
-            $this->expectExceptionMessage($expected->getMessage());
-        }
-
-        $request = new ServerRequest([
-            'environment' => [
-                'HTTP_ACCEPT' => $accept,
-                'REQUEST_METHOD' => 'GET',
-            ],
-        ]);
-        $request = $request->withAttribute('authentication', new AuthenticationService())
-            ->withAttribute('authorization', new AuthorizationService(new MapResolver([
-                ServerRequest::class => EndpointPolicy::class,
-            ])));
-
-        $controller = new AppController($request);
-
-        $controller->dispatchEvent('Controller.initialize');
-
-        static::assertTrue($expected);
-    }
-
-    /**
      * Test included resources.
      *
      * @return void
-     * @covers ::prepareInclude()
      */
     public function testInclude()
     {
@@ -418,7 +362,7 @@ class AppControllerTest extends IntegrationTestCase
      *
      * @return array
      */
-    public function includeErrorProvider()
+    public static function includeErrorProvider(): array
     {
         return [
             'not a string' => [
@@ -446,9 +390,8 @@ class AppControllerTest extends IntegrationTestCase
      * @param string $expectedErrorTitle Expected error message.
      * @param mixed $include `include` query parameter.
      * @return void
-     * @dataProvider includeErrorProvider()
-     * @covers ::prepareInclude()
      */
+    #[DataProvider('includeErrorProvider')]
     public function testIncludeError($expectedStatus, $expectedErrorTitle, $include)
     {
         $expected = [
@@ -470,7 +413,6 @@ class AppControllerTest extends IntegrationTestCase
      * Test that no resources are included unless asked.
      *
      * @return void
-     * @covers ::prepareInclude()
      */
     public function testIncludeEmpty()
     {

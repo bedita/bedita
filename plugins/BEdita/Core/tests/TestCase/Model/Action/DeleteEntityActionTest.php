@@ -12,18 +12,17 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\Model\Action;
 
 use BEdita\Core\Model\Action\DeleteEntityAction;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
 
 /**
  * {@see \BEdita\Core\Model\Action\DeleteEntityAction} Test Case
- *
- * @coversDefaultClass \BEdita\Core\Model\Action\DeleteEntityAction
  */
+#[CoversClass(DeleteEntityAction::class)]
 class DeleteEntityActionTest extends TestCase
 {
     /**
@@ -31,7 +30,7 @@ class DeleteEntityActionTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.FakeAnimals',
     ];
 
@@ -39,8 +38,6 @@ class DeleteEntityActionTest extends TestCase
      * Test command execution.
      *
      * @return void
-     * @covers ::initialize()
-     * @covers ::execute()
      */
     public function testExecute()
     {

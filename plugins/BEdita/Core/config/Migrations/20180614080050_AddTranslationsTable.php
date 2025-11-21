@@ -11,21 +11,20 @@
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
 
-use Migrations\AbstractMigration;
+use Migrations\BaseMigration;
 
 /**
  * Migration class to create `translations` table.
  */
-class AddTranslationsTable extends AbstractMigration
+class AddTranslationsTable extends BaseMigration
 {
-
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
-    public $autoId = false;
+    public bool $autoId = false;
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function up()
     {

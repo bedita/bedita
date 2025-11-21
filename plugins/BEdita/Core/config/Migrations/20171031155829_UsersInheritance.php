@@ -1,12 +1,12 @@
 <?php
 
 use Cake\ORM\Table;
-use Migrations\AbstractMigration;
+use Migrations\BaseMigration;
 
 /**
  * Fix `users` inheritance => from `objects` instead of `profiles`.
  */
-class UsersInheritance extends AbstractMigration
+class UsersInheritance extends BaseMigration
 {
     /**
      * {@inheritDoc}
@@ -16,7 +16,7 @@ class UsersInheritance extends AbstractMigration
         // Using a clean CakePHP table object to use Tree behavior.
         $table = new Table([
             'table' => 'object_types',
-            'connection' => $this->getAdapter()->getCakeConnection(),
+            'connection' => $this->getAdapter()->getConnection(),
         ]);
 
         $table->updateAll(

@@ -12,19 +12,22 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\Model\Table;
 
-use BEdita\Core\Exception\BadFilterException;
 use BEdita\Core\Model\Table\ObjectTypesTable;
+use BEdita\Core\Model\Table\RelationsTable;
 use Cake\Cache\Cache;
 use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
+use Exception;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
- * @coversDefaultClass \BEdita\Core\Model\Table\RelationsTable
+ * {@see \BEdita\Core\Model\Table\RelationsTable} Test Case
  */
+#[CoversClass(RelationsTable::class)]
 class RelationsTableTest extends TestCase
 {
     /**
@@ -39,7 +42,7 @@ class RelationsTableTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.Objects',
         'plugin.BEdita/Core.Relations',
@@ -82,7 +85,7 @@ class RelationsTableTest extends TestCase
      *
      * @return array
      */
-    public function validationProvider()
+    public static function validationProvider(): array
     {
         return [
             'valid' => [
@@ -138,13 +141,12 @@ class RelationsTableTest extends TestCase
      * @param bool $expected Expected result.
      * @param array $data Data to be validated.
      * @return void
-     * @dataProvider validationProvider
-     * @coversNothing
      */
+    #[DataProvider('validationProvider')]
     public function testValidation($expected, array $data)
     {
         if (empty($data['id'])) {
-            $objectType = $this->Relations->newEntity([]);
+            $objectType = $this->Relations->newEmptyEntity();
         } else {
             $objectType = $this->Relations->get($data['id']);
         }
@@ -159,24 +161,20 @@ class RelationsTableTest extends TestCase
      *
      * @return array
      */
-    public function findByNameProvider()
+    public static function findByNameProvider(): array
     {
         return [
-            'error' => [
-                new BadFilterException('Missing required parameter "name"'),
-                [],
-            ],
             'name' => [
                 [1],
-                ['name' => 'test'],
+                'test',
             ],
             'inverse name' => [
                 [1],
-                ['name' => 'InverseTest'],
+                'InverseTest',
             ],
             'not found' => [
                 [],
-                ['name' => 'relation_does_not_exist'],
+                'relation_does_not_exist',
             ],
         ];
     }
@@ -184,21 +182,20 @@ class RelationsTableTest extends TestCase
     /**
      * Test finder by relation name.
      *
-     * @param array|\Exception $expected Expected results.
-     * @param array $options Finder options.
+     * @param array $expected Expected results.
+     * @param string $name Relation name.
      * @return void
-     * @covers ::findByName()
-     * @dataProvider findByNameProvider()
      */
-    public function testFindByName($expected, array $options)
+    #[DataProvider('findByNameProvider')]
+    public function testFindByName(array $expected, string $name): void
     {
-        if ($expected instanceof \Exception) {
+        if ($expected instanceof Exception) {
             $this->expectException(get_class($expected));
             $this->expectExceptionMessage($expected->getMessage());
         }
 
         $result = $this->Relations
-            ->find('byName', $options)
+            ->find('byName', name: $name)
             ->all()
             ->extract('id')
             ->toArray();
@@ -212,7 +209,6 @@ class RelationsTableTest extends TestCase
      * Test after save callback.
      *
      * @return void
-     * @covers ::afterSave()
      */
     public function testInvalidateCacheAfterSave()
     {
@@ -238,7 +234,6 @@ class RelationsTableTest extends TestCase
      * Test before save callback on an existing entity.
      *
      * @return void
-     * @covers ::beforeSave()
      */
     public function testBeforeSaveExisting()
     {
@@ -263,7 +258,6 @@ class RelationsTableTest extends TestCase
      * Test before save callback with a new entity.
      *
      * @return void
-     * @covers ::beforeSave()
      */
     public function testBeforeSave()
     {
@@ -281,7 +275,6 @@ class RelationsTableTest extends TestCase
      * Test after delete callback.
      *
      * @return void
-     * @covers ::afterDelete()
      */
     public function testInvalidateCacheAfterDelete()
     {
@@ -307,7 +300,7 @@ class RelationsTableTest extends TestCase
      *
      * @return array
      */
-    public function getProvider()
+    public static function getProvider(): array
     {
         return [
             'int' => [
@@ -327,7 +320,7 @@ class RelationsTableTest extends TestCase
                 'inverse_test',
             ],
             'notFoundString' => [
-                new RecordNotFoundException('Record not found in table "relations"'),
+                new RecordNotFoundException('Record not found in table `relations`'),
                 'not_exists',
             ],
         ];
@@ -340,12 +333,11 @@ class RelationsTableTest extends TestCase
      * @param int|\Exception $expected The expected result
      * @param int|string $search The search value
      * @return void
-     * @dataProvider getProvider
-     * @covers ::get()
      */
+    #[DataProvider('getProvider')]
     public function testGet($expected, $search)
     {
-        if ($expected instanceof \Exception) {
+        if ($expected instanceof Exception) {
             $this->expectException(get_class($expected));
             $this->expectExceptionMessage($expected->getMessage());
         }

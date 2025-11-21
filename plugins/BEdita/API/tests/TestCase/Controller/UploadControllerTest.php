@@ -12,16 +12,18 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\API\Test\TestCase\Controller;
 
+use BEdita\API\Controller\UploadController;
 use BEdita\API\TestSuite\IntegrationTestCase;
 use BEdita\Core\Test\Utility\TestFilesystemTrait;
 use Cake\ORM\TableRegistry;
+use PHPUnit\Framework\Attributes\CoversClass;
 
 /**
- * @coversDefaultClass \BEdita\API\Controller\UploadController
+ * {@see \BEdita\API\Controller\UploadController} Test Case
  */
+#[CoversClass(UploadController::class)]
 class UploadControllerTest extends IntegrationTestCase
 {
     use TestFilesystemTrait;
@@ -29,7 +31,7 @@ class UploadControllerTest extends IntegrationTestCase
     /**
      * @inheritDoc
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.Streams',
     ];
 
@@ -55,8 +57,6 @@ class UploadControllerTest extends IntegrationTestCase
      * Test `upload` method.
      *
      * @return void
-     * @covers ::upload()
-     * @covers ::initialize()
      */
     public function testUpload()
     {
@@ -91,7 +91,6 @@ class UploadControllerTest extends IntegrationTestCase
      * Test `upload` failure.
      *
      * @return void
-     * @covers ::upload()
      */
     public function testUploadFail()
     {

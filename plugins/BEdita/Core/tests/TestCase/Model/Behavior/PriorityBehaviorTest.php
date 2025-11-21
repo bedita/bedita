@@ -12,18 +12,19 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\Model\Behavior;
 
+use BEdita\Core\Model\Behavior\PriorityBehavior;
 use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * {@see \BEdita\Core\Model\Behavior\PriorityBehavior} Test Case
- *
- * @coversDefaultClass \BEdita\Core\Model\Behavior\PriorityBehavior
  */
+#[CoversClass(PriorityBehavior::class)]
 class PriorityBehaviorTest extends TestCase
 {
     /**
@@ -31,7 +32,7 @@ class PriorityBehaviorTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.Objects',
         'plugin.BEdita/Core.Relations',
@@ -44,7 +45,7 @@ class PriorityBehaviorTest extends TestCase
      *
      * @return array
      */
-    public function initializeProvider()
+    public static function initializeProvider(): array
     {
         return [
             'default' => [
@@ -89,9 +90,8 @@ class PriorityBehaviorTest extends TestCase
      * @param array $expected Expected result.
      * @param array $config Configuration.
      * @return void
-     * @covers ::initialize()
-     * @dataProvider initializeProvider()
      */
+    #[DataProvider('initializeProvider')]
     public function testInitialize(array $expected, array $config = [])
     {
         $table = TableRegistry::getTableLocator()->get('MyTable', ['className' => Table::class]);
@@ -107,16 +107,13 @@ class PriorityBehaviorTest extends TestCase
      * Test setting of priority before entity is saved using `ObjectRelations` table
      *
      * @return void
-     * @covers ::beforeSave()
-     * @covers ::updateEntityPriorities()
-     * @covers ::maxValue()
      */
     public function testBeforeSave()
     {
         $table = TableRegistry::getTableLocator()->get('ObjectRelations');
 
-        $entity = $table->newEntity([]);
-        $entity->set([
+        $entity = $table->newEmptyEntity();
+        $entity->patch([
             'left_id' => 9,
             'relation_id' => 3,
             'right_id' => 10,
@@ -136,10 +133,6 @@ class PriorityBehaviorTest extends TestCase
      * Test priorities sorting before entity is saved using `ObjectRelations` table
      *
      * @return void
-     * @covers ::_getConditions()
-     * @covers ::beforeSave()
-     * @covers ::updateEntityPriorities()
-     * @covers ::expand()
      */
     public function testExpand()
     {
@@ -150,7 +143,7 @@ class PriorityBehaviorTest extends TestCase
                 'left_id' => 2,
                 'relation_id' => 1,
             ])
-            ->order(['priority'])
+            ->orderBy(['priority'])
             ->all()
             ->toList();
 
@@ -161,7 +154,7 @@ class PriorityBehaviorTest extends TestCase
         static::assertSame(7, $entities[2]->get('right_id'));
         static::assertSame(3, $entities[2]->get('priority'));
 
-        $entities[2]->set(['priority' => 1]);
+        $entities[2]->patch(['priority' => 1]);
         $table->save($entities[2]);
 
         $entities = $table->find()
@@ -169,7 +162,7 @@ class PriorityBehaviorTest extends TestCase
                 'left_id' => 2,
                 'relation_id' => 1,
             ])
-            ->order(['priority'])
+            ->orderBy(['priority'])
             ->all()
             ->toList();
 
@@ -185,10 +178,6 @@ class PriorityBehaviorTest extends TestCase
      * Test priorities sorting before entity is saved using `ObjectRelations` table
      *
      * @return void
-     * @covers ::_getConditions()
-     * @covers ::beforeSave()
-     * @covers ::updateEntityPriorities()
-     * @covers ::compact()
      */
     public function testCompact()
     {
@@ -199,7 +188,7 @@ class PriorityBehaviorTest extends TestCase
                 'left_id' => 2,
                 'relation_id' => 1,
             ])
-            ->order(['priority'])
+            ->orderBy(['priority'])
             ->all()
             ->toList();
 
@@ -210,7 +199,7 @@ class PriorityBehaviorTest extends TestCase
         static::assertSame(7, $entities[2]->get('right_id'));
         static::assertSame(3, $entities[2]->get('priority'));
 
-        $entities[0]->set(['priority' => 3]);
+        $entities[0]->patch(['priority' => 3]);
         $table->save($entities[0]);
 
         $entities = $table->find()
@@ -218,7 +207,7 @@ class PriorityBehaviorTest extends TestCase
                 'left_id' => 2,
                 'relation_id' => 1,
             ])
-            ->order(['priority'])
+            ->orderBy(['priority'])
             ->all()
             ->toList();
 
@@ -234,9 +223,6 @@ class PriorityBehaviorTest extends TestCase
      * Test priorities compaction before entity is deleted using `ObjectRelations` table
      *
      * @return void
-     * @covers ::_getConditions()
-     * @covers ::beforeDelete()
-     * @covers ::compactEntityField()
      */
     public function testBeforeDelete()
     {
@@ -247,7 +233,7 @@ class PriorityBehaviorTest extends TestCase
                 'left_id' => 2,
                 'relation_id' => 1,
             ])
-            ->order(['priority'])
+            ->orderBy(['priority'])
             ->all()
             ->toList();
 
@@ -265,7 +251,7 @@ class PriorityBehaviorTest extends TestCase
                 'left_id' => 2,
                 'relation_id' => 1,
             ])
-            ->order(['priority'])
+            ->orderBy(['priority'])
             ->all()
             ->toList();
 
@@ -280,7 +266,7 @@ class PriorityBehaviorTest extends TestCase
      *
      * @return array
      */
-    public function compactEntityFieldProvider()
+    public static function compactEntityFieldProvider(): array
     {
         return [
             'empty scope' => [
@@ -331,10 +317,8 @@ class PriorityBehaviorTest extends TestCase
      * @param array $config the config
      * @param bool $expected The expected result
      * @return void
-     * @covers ::_getConditions()
-     * @covers ::compactEntityField()
-     * @dataProvider compactEntityFieldProvider()
      */
+    #[DataProvider('compactEntityFieldProvider')]
     public function testCompactEntityField(array $entityData, string $field, array $config, bool $expected)
     {
         $table = TableRegistry::getTableLocator()->get('ObjectRelations');
@@ -348,7 +332,7 @@ class PriorityBehaviorTest extends TestCase
      *
      * @return array
      */
-    public function updateEntityPrioritiesProvider()
+    public static function updateEntityPrioritiesProvider(): array
     {
         return [
             'empty scope' => [
@@ -432,10 +416,8 @@ class PriorityBehaviorTest extends TestCase
      * @param array $config the config
      * @param bool $expected The expected result
      * @return void
-     * @covers ::_getConditions()
-     * @covers ::updateEntityPriorities()
-     * @dataProvider updateEntityPrioritiesProvider()
      */
+    #[DataProvider('updateEntityPrioritiesProvider')]
     public function testUpdateEntityPriorities(?array $entityData, ?int $actualValue, int $previousValue, string $field, array $config, bool $expected)
     {
         $table = TableRegistry::getTableLocator()->get('ObjectRelations');

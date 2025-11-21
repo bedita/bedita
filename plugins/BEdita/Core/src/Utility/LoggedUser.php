@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Utility;
 
 use BEdita\Core\Model\Table\RolesTable;
@@ -40,7 +39,7 @@ class LoggedUser
      *
      * @var array
      */
-    private $userData = [];
+    private array $userData = [];
 
     /**
      * User admin data: id and roles.
@@ -61,7 +60,7 @@ class LoggedUser
      *
      * @return array
      */
-    public static function getUser()
+    public static function getUser(): array
     {
         return static::getInstance()->userData;
     }
@@ -71,7 +70,7 @@ class LoggedUser
      *
      * @return int|null Logged user ID, or `null` if no current user is set.
      */
-    public static function id()
+    public static function id(): ?int
     {
         return Hash::get(static::getInstance()->userData, 'id');
     }
@@ -82,7 +81,7 @@ class LoggedUser
      * @param array $userData User data array.
      * @return void
      */
-    public static function setUser($userData)
+    public static function setUser(array $userData): void
     {
         if (!empty($userData['id'])) {
             static::getInstance()->userData = $userData;
@@ -94,7 +93,7 @@ class LoggedUser
      *
      * @return void
      */
-    public static function setUserAdmin()
+    public static function setUserAdmin(): void
     {
         static::getInstance()->setUser(static::ADMIN_DATA);
     }
@@ -114,7 +113,7 @@ class LoggedUser
      *
      * @return void
      */
-    public static function resetUser()
+    public static function resetUser(): void
     {
         static::getInstance()->userData = [];
     }

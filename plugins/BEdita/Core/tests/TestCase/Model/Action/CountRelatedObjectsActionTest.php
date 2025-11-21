@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\Model\Action;
 
 use BEdita\Core\Model\Action\CountRelatedObjectsAction;
@@ -20,12 +19,13 @@ use Cake\ORM\Locator\LocatorAwareTrait;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Hash;
 use Cake\Utility\Inflector;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * {@see \BEdita\Core\Model\Action\CountRelatedObjectsAction} Test Case
- *
- * @coversDefaultClass \BEdita\Core\Model\Action\CountRelatedObjectsAction
  */
+#[CoversClass(CountRelatedObjectsAction::class)]
 class CountRelatedObjectsActionTest extends TestCase
 {
     use LocatorAwareTrait;
@@ -33,7 +33,7 @@ class CountRelatedObjectsActionTest extends TestCase
     /**
      * @inheritDoc
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.Relations',
         'plugin.BEdita/Core.RelationTypes',
@@ -69,7 +69,7 @@ class CountRelatedObjectsActionTest extends TestCase
      *
      * @return array
      */
-    public function executeProvider(): array
+    public static function executeProvider(): array
     {
         return [
             'no count' => [
@@ -379,21 +379,12 @@ class CountRelatedObjectsActionTest extends TestCase
      * @param array $contain The contain option
      * @param mixed $count Relations to count
      * @return void
-     * @covers ::execute()
-     * @covers ::extractIds()
-     * @covers ::getRelationsList()
-     * @covers ::filterCount()
-     * @covers ::countRelations()
-     * @covers ::hydrateCount()
-     * @covers ::groupResultCountById()
-     * @covers ::searchEntitiesById()
-     * @covers ::searchEntitiesInProperties()
-     * @dataProvider executeProvider
      */
+    #[DataProvider('executeProvider')]
     public function testExecute(array $expected, array $contain, $count): void
     {
         $Documents = $this->getTableLocator()->get('Documents');
-        $entities = $Documents->find('type', ['documents'])
+        $entities = $Documents->find('type', value: ['documents'])
             ->contain($contain)
             ->toArray();
 
@@ -439,8 +430,6 @@ class CountRelatedObjectsActionTest extends TestCase
      * it will return an empty array
      *
      * @return void
-     * @covers ::execute()
-     * @covers ::extractIds()
      */
     public function testNotObjectEntity(): void
     {
@@ -456,8 +445,6 @@ class CountRelatedObjectsActionTest extends TestCase
      * Test that passing empty count will return empty array.
      *
      * @return void
-     * @covers ::execute()
-     * @covers ::filterCount()
      */
     public function testEmptyCount(): void
     {
@@ -471,12 +458,11 @@ class CountRelatedObjectsActionTest extends TestCase
      * Test that setting `hydrate` to false the entity will be untouched.
      *
      * @return void
-     * @covers ::execute()
      */
     public function testNoHydrate(): void
     {
         $Documents = $this->getTableLocator()->get('Documents');
-        $entities = $Documents->find('type', ['documents'])->toArray();
+        $entities = $Documents->find('type', value: ['documents'])->toArray();
         $count = 'test';
 
         $action = new CountRelatedObjectsAction(['hydrate' => false]);
@@ -492,8 +478,6 @@ class CountRelatedObjectsActionTest extends TestCase
      * Test that the entities hydration was skipped if missing `id` or `count`.
      *
      * @return void
-     * @covers ::execute()
-     * @covers ::hydrateCount()
      */
     public function testHydrateCountNotValidCountData(): void
     {
@@ -533,8 +517,6 @@ class CountRelatedObjectsActionTest extends TestCase
      * Test that entity count won't be hydrated if id of count data is not found.
      *
      * @return void
-     * @covers ::hydrateCount()
-     * @covers ::searchEntitiesById()
      */
     public function testHydrateCountNotFoundObject(): void
     {

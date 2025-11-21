@@ -24,7 +24,7 @@ class RolesUsersFixture extends TestFixture
     /**
      * @inheritDoc
      */
-    public $records = [
+    public array $records = [
         [
             'role_id' => 1,
             'user_id' => 1,

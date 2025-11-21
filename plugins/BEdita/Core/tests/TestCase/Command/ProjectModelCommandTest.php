@@ -19,12 +19,12 @@ use BEdita\Core\Test\TestCase\Utility\ProjectModelTest;
 use Cake\Console\TestSuite\ConsoleIntegrationTestTrait;
 use Cake\Core\Configure;
 use Cake\TestSuite\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
 
 /**
  * {@see \BEdita\Core\Command\ProjectModelCommand} Test Case
- *
- * @coversDefaultClass \BEdita\Core\Command\ProjectModelCommand
  */
+#[CoversClass(ProjectModelCommand::class)]
 class ProjectModelCommandTest extends TestCase
 {
     use ConsoleIntegrationTestTrait;
@@ -34,7 +34,7 @@ class ProjectModelCommandTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.Applications',
         'plugin.BEdita/Core.Roles',
         'plugin.BEdita/Core.ObjectTypes',
@@ -47,21 +47,9 @@ class ProjectModelCommandTest extends TestCase
     ];
 
     /**
-     * setUp method
-     *
-     * @return void
-     */
-    public function setUp(): void
-    {
-        parent::setUp();
-        $this->useCommandRunner();
-    }
-
-    /**
      * Test buildOptionParser method
      *
      * @return void
-     * @covers ::buildOptionParser()
      */
     public function testBuildOptionParser()
     {
@@ -74,8 +62,6 @@ class ProjectModelCommandTest extends TestCase
      * Test execute method
      *
      * @return void
-     * @covers ::execute()
-     * @covers ::modelFilePath()
      */
     public function testExecute(): void
     {
@@ -92,8 +78,6 @@ class ProjectModelCommandTest extends TestCase
      * Test file load failure
      *
      * @return void
-     * @covers ::modelFilePath()
-     * @covers ::execute()
      */
     public function testFileFail(): void
     {
@@ -106,8 +90,6 @@ class ProjectModelCommandTest extends TestCase
      * Test default file failure
      *
      * @return void
-     * @covers ::execute()
-     * @covers ::modelFilePath()
      */
     public function testDefaultFileFail(): void
     {
@@ -120,8 +102,6 @@ class ProjectModelCommandTest extends TestCase
      * Test default file failure
      *
      * @return void
-     * @covers ::execute()
-     * @covers ::modelFilePath()
      */
     public function testPluginFailure2(): void
     {
@@ -135,7 +115,6 @@ class ProjectModelCommandTest extends TestCase
      * Test default file failure
      *
      * @return void
-     * @covers ::execute()
      */
     public function testContentFailure(): void
     {
@@ -151,8 +130,6 @@ class ProjectModelCommandTest extends TestCase
      * Test remove from model
      *
      * @return void
-     * @covers ::execute()
-     * @covers ::remove()
      */
     public function testRemove(): void
     {
@@ -170,7 +147,6 @@ class ProjectModelCommandTest extends TestCase
      * Test update model items
      *
      * @return void
-     * @covers ::execute()
      */
     public function testUpdate(): void
     {
@@ -194,7 +170,6 @@ class ProjectModelCommandTest extends TestCase
      * Test prepareContent method
      *
      * @return void
-     * @covers ::prepareContent()
      */
     public function testPrepareContent(): void
     {
@@ -225,7 +200,6 @@ class ProjectModelCommandTest extends TestCase
      * Test modelFileFromFolder method
      *
      * @return void
-     * @covers ::modelFileFromFolder()
      */
     public function testModelFileFromFolder(): void
     {

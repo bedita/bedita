@@ -26,12 +26,14 @@ use Cake\Http\ServerRequest;
 use Cake\Queue\QueueManager;
 use Cake\Routing\Middleware\RoutingMiddleware;
 use Cake\TestSuite\TestCase;
+use Exception;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * {@see BEdita\API\App\Application} Test Case
- *
- * @coversDefaultClass \BEdita\API\App\BaseApplication
  */
+#[CoversClass(BaseApplication::class)]
 class BaseApplicationTest extends TestCase
 {
     /**
@@ -39,7 +41,7 @@ class BaseApplicationTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.AuthProviders',
     ];
 
@@ -47,7 +49,6 @@ class BaseApplicationTest extends TestCase
      * Test `middleware` method
      *
      * @return void
-     * @covers ::middleware()
      */
     public function testMiddleware(): void
     {
@@ -68,8 +69,6 @@ class BaseApplicationTest extends TestCase
      * Test `bootstrap` method
      *
      * @return void
-     * @covers ::bootstrap()
-     * @covers ::bootstrapCli()
      */
     public function testBootstrap(): void
     {
@@ -94,7 +93,7 @@ class BaseApplicationTest extends TestCase
      *
      * @return array
      */
-    public function configPluginsProvider(): array
+    public static function configPluginsProvider(): array
     {
         return [
             'simple' => [
@@ -135,10 +134,8 @@ class BaseApplicationTest extends TestCase
      * Test `addConfigPlugins` method using `Bake` Plugin
      *
      * @return void
-     * @covers ::addConfigPlugins()
-     * @covers ::addConfigPlugin()
-     * @dataProvider configPluginsProvider
      */
+    #[DataProvider('configPluginsProvider')]
     public function testConfigPlugins(bool $expected, array $config, bool $debug = false): void
     {
         $currDebug = Configure::read('debug');
@@ -161,7 +158,6 @@ class BaseApplicationTest extends TestCase
      * Test `getAuthorizationService` method
      *
      * @return void
-     * @covers ::getAuthorizationService()
      */
     public function testGetAuthorizationService(): void
     {
@@ -178,7 +174,7 @@ class BaseApplicationTest extends TestCase
      *
      * @return array
      */
-    public function authenticationServiceProvider(): array
+    public static function authenticationServiceProvider(): array
     {
         return [
             'default' => [
@@ -242,14 +238,8 @@ class BaseApplicationTest extends TestCase
      * @param array $expected Expected result.
      * @param array $config Request configuration.
      * @return void
-     * @dataProvider authenticationServiceProvider
-     * @covers ::getAuthenticationService()
-     * @covers ::loginAuthentication()
-     * @covers ::loadAuthProviders()
-     * @covers ::passwordGrantType()
-     * @covers ::refreshTokenGrantType()
-     * @covers ::clientCredentialsGrantType()
      */
+    #[DataProvider('authenticationServiceProvider')]
     public function testGetAuthenticationService(array $expected, array $config): void
     {
         $app = new class (CONFIG) extends BaseApplication {
@@ -259,6 +249,7 @@ class BaseApplicationTest extends TestCase
             'url' => 'auth',
         ];
         $request = new ServerRequest(array_merge($defaultConf, $config));
+        /** @var \Authentication\AuthenticationService $service */
         $service = $app->getAuthenticationService($request);
 
         static::assertInstanceOf(AuthenticationService::class, $service);
@@ -266,7 +257,8 @@ class BaseApplicationTest extends TestCase
 
         static::assertTrue($service->authenticators()->has($expected[0]));
         if (!empty($expected[1])) {
-            static::assertTrue($service->identifiers()->has($expected[1]));
+            $authenticator = $service->authenticators()->get($expected[0]);
+            static::assertTrue($authenticator->getIdentifier()->has($expected[1]));
         }
     }
 
@@ -275,7 +267,7 @@ class BaseApplicationTest extends TestCase
      *
      * @return array
      */
-    public function loadAuthProvidersProvider(): array
+    public static function loadAuthProvidersProvider(): array
     {
         return [
             'ok' => [
@@ -298,13 +290,11 @@ class BaseApplicationTest extends TestCase
      * @param array|\Exception $expected Expected result.
      * @param string $authProvider Auth provider name.
      * @return void
-     * @dataProvider loadAuthProvidersProvider
-     * @covers ::loadAuthProviders()
-     * @covers ::loginAuthentication()
      */
+    #[DataProvider('loadAuthProvidersProvider')]
     public function testLoadAuthProviders($expected, string $authProvider): void
     {
-        if ($expected instanceof \Exception) {
+        if ($expected instanceof Exception) {
             $this->expectException(get_class($expected));
             $this->expectExceptionMessage($expected->getMessage());
         }
@@ -318,11 +308,13 @@ class BaseApplicationTest extends TestCase
             ],
         ];
         $request = new ServerRequest($config);
+        /** @var \Authentication\AuthenticationService $service */
         $service = $app->getAuthenticationService($request);
 
         static::assertInstanceOf(AuthenticationService::class, $service);
         static::assertNotNull($service);
         static::assertTrue($service->authenticators()->has($expected[0]));
-        static::assertTrue($service->identifiers()->has($expected[1]));
+        $authenticator = $service->authenticators()->get($expected[0]);
+        static::assertTrue($authenticator->getIdentifier()->has($expected[1]));
     }
 }

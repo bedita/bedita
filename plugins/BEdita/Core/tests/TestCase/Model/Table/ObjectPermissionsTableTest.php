@@ -14,17 +14,20 @@ declare(strict_types=1);
  */
 namespace BEdita\Core\Test\TestCase\Model\Table;
 
+use BEdita\Core\Model\Table\ObjectPermissionsTable;
 use BEdita\Core\Utility\LoggedUser;
 use Cake\Http\Exception\ForbiddenException;
 use Cake\ORM\Association\BelongsTo;
 use Cake\ORM\Behavior\TimestampBehavior;
 use Cake\TestSuite\TestCase;
+use Exception;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * {@see \BEdita\Core\Model\Table\ObjectPermissionsTable} Test Case
- *
- * @coversDefaultClass \BEdita\Core\Model\Table\ObjectPermissionsTable
  */
+#[CoversClass(ObjectPermissionsTable::class)]
 class ObjectPermissionsTableTest extends TestCase
 {
     /**
@@ -39,7 +42,7 @@ class ObjectPermissionsTableTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.Objects',
         'plugin.BEdita/Core.Profiles',
@@ -77,7 +80,6 @@ class ObjectPermissionsTableTest extends TestCase
      * Test initialize method
      *
      * @return void
-     * @coversNothing
      */
     public function testInitialize()
     {
@@ -96,7 +98,7 @@ class ObjectPermissionsTableTest extends TestCase
      *
      * @return array
      */
-    public function buildRulesProvider()
+    public static function buildRulesProvider(): array
     {
         return [
             'invalidObject' => [
@@ -132,9 +134,8 @@ class ObjectPermissionsTableTest extends TestCase
      * @param bool $expected Expected result.
      * @param array $data Data to be validated.
      * @return void
-     * @dataProvider buildRulesProvider
-     * @coversNothing
      */
+    #[DataProvider('buildRulesProvider')]
     public function testBuildRules($expected, array $data): void
     {
         $entity = $this->ObjectPermissions->newEntity($data, ['accessibleFields' => ['created_by' => true]]);
@@ -147,7 +148,7 @@ class ObjectPermissionsTableTest extends TestCase
      *
      * @return array
      */
-    public function beforeSaveProvider(): array
+    public static function beforeSaveProvider(): array
     {
         return [
             'admin' => [
@@ -213,13 +214,11 @@ class ObjectPermissionsTableTest extends TestCase
      * @param array $user The logged user data
      * @param array $data Object permission data
      * @return void
-     * @covers ::beforeSave()
-     * @covers ::isEditable()
-     * @dataProvider beforeSaveProvider
      */
+    #[DataProvider('beforeSaveProvider')]
     public function testBeforeSave($expected, array $user, array $data): void
     {
-        if ($expected instanceof \Exception) {
+        if ($expected instanceof Exception) {
             $this->expectExceptionObject($expected);
         }
 
@@ -240,12 +239,10 @@ class ObjectPermissionsTableTest extends TestCase
      * Test save is ok when permission is set on object and user has grant.
      *
      * @return void
-     * @covers ::beforeSave()
-     * @covers ::isEditable()
      */
     public function testBeforeSaveWithPermissionOk(): void
     {
-        $user = $this->fetchTable('Users')->get(5, ['contain' => 'Roles']);
+        $user = $this->fetchTable('Users')->get(5, contain: 'Roles');
         LoggedUser::setUser($user->toArray());
         $ObjectTypes = $this->fetchTable('ObjectTypes');
         /** @var \BEdita\Core\Model\Entity\ObjectType $ot */
@@ -274,7 +271,7 @@ class ObjectPermissionsTableTest extends TestCase
      *
      * @return array
      */
-    public function beforeDeleteProvider(): array
+    public static function beforeDeleteProvider(): array
     {
         return [
             'admin' => [
@@ -302,13 +299,11 @@ class ObjectPermissionsTableTest extends TestCase
      * @param mixed $expected The expected result
      * @param array $user The logged user data
      * @return void
-     * @covers ::beforeDelete()
-     * @covers ::isEditable()
-     * @dataProvider beforeDeleteProvider
      */
+    #[DataProvider('beforeDeleteProvider')]
     public function testBeforeDelete($expected, array $user): void
     {
-        if ($expected instanceof \Exception) {
+        if ($expected instanceof Exception) {
             $this->expectExceptionObject($expected);
         }
 

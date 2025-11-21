@@ -15,20 +15,23 @@ declare(strict_types=1);
 namespace BEdita\API\Test\IntegrationTest;
 
 use BEdita\API\TestSuite\IntegrationTestCase;
+use BEdita\Core\Test\Utility\TestArraySubsetTrait;
 use Cake\ORM\TableRegistry;
-use DMS\PHPUnitExtensions\ArraySubset\ArraySubsetAsserts;
+use PHPUnit\Framework\Attributes\CoversNothing;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * Test new object types creation, along with objects implementations
  */
+#[CoversNothing]
 class NewObjectTypesTest extends IntegrationTestCase
 {
-    use ArraySubsetAsserts;
+    use TestArraySubsetTrait;
 
     /**
      * @inheritDoc
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.Media',
         'plugin.BEdita/Core.Streams',
     ];
@@ -36,7 +39,7 @@ class NewObjectTypesTest extends IntegrationTestCase
     /**
      * Data provider for `testNewTypes`
      */
-    public function newTypesProvider()
+    public static function newTypesProvider(): array
     {
         return [
             'cats' => [
@@ -68,9 +71,9 @@ class NewObjectTypesTest extends IntegrationTestCase
      *
      * @param $typeData array New object type intpu data
      * @param $attributes array New object attributes
-     * @dataProvider newTypesProvider
-     * @coversNothing
+     * @return void
      */
+    #[DataProvider('newTypesProvider')]
     public function testNewTypes($typeData, $attributes)
     {
         $lastId = $this->lastObjectId();

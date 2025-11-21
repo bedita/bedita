@@ -12,27 +12,30 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\Model\Action;
 
 use BEdita\Core\Model\Action\SignupUserAction;
 use BEdita\Core\Model\Action\SignupUserActivationAction;
 use BEdita\Core\Model\Entity\AsyncJob;
 use BEdita\Core\Model\Entity\User;
+use BEdita\Core\Model\Enum\ObjectEntityStatus;
 use Cake\Core\Configure;
 use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\Event\Event;
 use Cake\Event\EventManager;
 use Cake\Http\Exception\BadRequestException;
 use Cake\Http\Exception\ConflictException;
-use Cake\I18n\FrozenTime;
+use Cake\I18n\DateTime;
 use Cake\Mailer\TransportFactory;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
- * @covers \BEdita\Core\Model\Action\SignupUserActivationAction
+ * {@see \BEdita\Core\Model\Action\SignupUserActivationAction} Test Case
  */
+#[CoversClass(SignupUserActivationAction::class)]
 class SignupUserActivationActionTest extends TestCase
 {
     /**
@@ -40,7 +43,7 @@ class SignupUserActivationActionTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.PropertyTypes',
         'plugin.BEdita/Core.Properties',
@@ -94,7 +97,7 @@ class SignupUserActivationActionTest extends TestCase
      *
      * @return array
      */
-    public function executeFailureProvider()
+    public static function executeFailureProvider(): array
     {
         return [
             'missing uuid' => [
@@ -102,7 +105,7 @@ class SignupUserActivationActionTest extends TestCase
                 [],
             ],
             'async job completed' => [
-                new RecordNotFoundException('Record not found in table "async_jobs"'),
+                new RecordNotFoundException('Record not found in table `async_jobs`'),
                 [
                     'uuid' => '1e2d1c66-c0bb-47d7-be5a-5bc92202333e',
                 ],
@@ -114,7 +117,7 @@ class SignupUserActivationActionTest extends TestCase
                 ],
             ],
             'async job not valid user_id' => [
-                new RecordNotFoundException('Record not found in table "users"'),
+                new RecordNotFoundException('Record not found in table `users`'),
                 [
                     'uuid' => '427ece75-71fb-4aca-bfab-1214cd98495a',
                 ],
@@ -128,8 +131,8 @@ class SignupUserActivationActionTest extends TestCase
      * @param \Exception $expected The exception expected
      * @param array $data The data given to action
      * @return void
-     * @dataProvider executeFailureProvider
      */
+    #[DataProvider('executeFailureProvider')]
     public function testExecuteFailure($expected, $data)
     {
         $this->expectException(get_class($expected));
@@ -156,7 +159,7 @@ class SignupUserActivationActionTest extends TestCase
         [$user, $asyncJob] = $this->signup();
 
         $user->status = 'on';
-        $user->verified = new FrozenTime();
+        $user->verified = new DateTime();
         $Users = TableRegistry::getTableLocator()->get('Users');
         $Users->save($user);
 
@@ -179,7 +182,7 @@ class SignupUserActivationActionTest extends TestCase
 
         static::assertEquals(1, $user->created_by);
         static::assertEquals(1, $user->modified_by);
-        static::assertEquals('draft', $user->status);
+        static::assertEquals(ObjectEntityStatus::Draft, $user->status);
 
         $eventDispatched = 0;
         EventManager::instance()->on('Auth.signupActivation', function (...$arguments) use (&$eventDispatched) {
@@ -198,7 +201,7 @@ class SignupUserActivationActionTest extends TestCase
 
         static::assertEquals($user->id, $user->created_by);
         static::assertEquals($user->id, $user->modified_by);
-        static::assertEquals('on', $user->status);
+        static::assertEquals(ObjectEntityStatus::On, $user->status);
         static::assertNotNull($user->verified);
         static::assertSame(1, $eventDispatched, 'Event not dispatched');
 
@@ -231,7 +234,7 @@ class SignupUserActivationActionTest extends TestCase
 
         /** @var \BEdita\Core\Model\Entity\AsyncJob $asyncJob */
         $asyncJob = $this->AsyncJobs->find()
-            ->order(['AsyncJobs.created' => 'DESC'])
+            ->orderBy(['AsyncJobs.created' => 'DESC'])
             ->first();
 
         $user = $this->Users->get($asyncJob->payload['user_id']);

@@ -24,12 +24,13 @@ use Cake\Error\Middleware\ErrorHandlerMiddleware;
 use Cake\Error\Renderer\WebExceptionRenderer;
 use Cake\Http\MiddlewareQueue;
 use Cake\TestSuite\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * {@see \BEdita\API\APIPlugin} Test Case.
- *
- * @coversDefaultClass \BEdita\API\APIPlugin
  */
+#[CoversClass(APIPlugin::class)]
 class APIPluginTest extends TestCase
 {
     /**
@@ -37,7 +38,7 @@ class APIPluginTest extends TestCase
      *
      * @return array
      */
-    public function bootstrapProvider(): array
+    public static function bootstrapProvider(): array
     {
         return [
             'conf ok' => [ExceptionRenderer::class],
@@ -50,10 +51,8 @@ class APIPluginTest extends TestCase
      *
      * @param string $exceptionRendererClass The exception renderer class
      * @return void
-     * @covers ::bootstrap()
-     * @covers ::ensureExceptionRenderer()
-     * @dataProvider bootstrapProvider()
      */
+    #[DataProvider('bootstrapProvider')]
     public function testBootstrap(string $exceptionRendererClass): void
     {
         Configure::write('Error.exceptionRenderer', $exceptionRendererClass);
@@ -70,7 +69,6 @@ class APIPluginTest extends TestCase
      * Test `middleware` method
      *
      * @return void
-     * @covers ::middleware()
      */
     public function testMiddleware(): void
     {

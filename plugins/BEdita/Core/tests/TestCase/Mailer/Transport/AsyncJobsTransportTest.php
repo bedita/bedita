@@ -12,31 +12,32 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\Mailer\Transport;
 
 use BEdita\Core\Job\Service\MailService;
-use Cake\Mailer\Email;
+use BEdita\Core\Mailer\Transport\AsyncJobsTransport;
+use BEdita\Core\Test\Utility\TestArraySubsetTrait;
 use Cake\Mailer\Mailer;
 use Cake\Mailer\TransportFactory;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Hash;
-use DMS\PHPUnitExtensions\ArraySubset\ArraySubsetAsserts;
+use PHPUnit\Framework\Attributes\CoversClass;
 
 /**
- * @coversDefaultClass \BEdita\Core\Mailer\Transport\AsyncJobsTransport
+ * {@see \BEdita\Core\Mailer\Transport\AsyncJobsTransport} Test Case
  */
+#[CoversClass(AsyncJobsTransport::class)]
 class AsyncJobsTransportTest extends TestCase
 {
-    use ArraySubsetAsserts;
+    use TestArraySubsetTrait;
 
     /**
      * Fixtures
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.AsyncJobs',
     ];
 
@@ -90,24 +91,16 @@ class AsyncJobsTransportTest extends TestCase
      * Test creation of asynchronous jobs.
      *
      * @return void
-     * @covers ::send()
      */
     public function testSend()
     {
         $before = $this->AsyncJobs->find()->count();
 
-         /* @phpstan-ignore-next-line */
-        Email::deliver(
-            ['evermannella@example.org' => 'Evermannella'],
-            'Re Have you installed the latest version of Synapse?',
-            [
-                'Not yet. Please write a story on our Scrum board.',
-                '',
-                'Regards,',
-                'Evermannella @ ChiaLab srl',
-            ],
-            'test'
-        );
+        $mailer = new Mailer();
+        $mailer->setTo(['evermannella@example.org' => 'Evermannella'])
+            ->setSubject('Re: Have you installed the latest version of Synapse?')
+            ->setProfile('test')
+            ->deliver("Not yet. Please write a story on our Scrum board.\n\nRegards,\nEvermannella @ ChiaLab srl");
 
         $after = $this->AsyncJobs->find()->count();
         $mailJobs = $this->AsyncJobs->find()->where(['service' => 'mail'])->count();
@@ -120,7 +113,6 @@ class AsyncJobsTransportTest extends TestCase
      * Test creation of asynchronous jobs.
      *
      * @return void
-     * @covers ::send()
      */
     public function testSendPriority()
     {
@@ -130,13 +122,11 @@ class AsyncJobsTransportTest extends TestCase
             'priority' => 1000,
         ]);
 
-        /* @phpstan-ignore-next-line */
-        Email::deliver(
-            ['evermannella@example.org' => 'Evermannella'],
-            'Re: Have you installed the latest version of Synapse?',
-            "Not yet. Please write a story on our Scrum board.\r\n\r\nRegards,\r\nEvermannella @ ChiaLab srl",
-            'test'
-        );
+        $mailer = new Mailer();
+        $mailer->setTo(['evermannella@example.org' => 'Evermannella'])
+            ->setSubject('Re: Have you installed the latest version of Synapse?')
+            ->setProfile('test')
+            ->deliver("Not yet. Please write a story on our Scrum board.\n\nRegards,\nEvermannella @ ChiaLab srl");
 
         /** @var \BEdita\Core\Model\Entity\AsyncJob $asyncJob */
         $asyncJob = $this->AsyncJobs->find()->where(['service' => 'mail'])->first();
@@ -149,7 +139,6 @@ class AsyncJobsTransportTest extends TestCase
      * Test creation of asynchronous jobs and later real email sending.
      *
      * @return void
-     * @coversNothing
      */
     public function testAsyncSend()
     {
@@ -167,13 +156,11 @@ class AsyncJobsTransportTest extends TestCase
             ],
         ];
 
-        /* @phpstan-ignore-next-line */
-        Email::deliver(
-            ['evermannella@example.org' => 'Evermannella'],
-            'Re: Have you installed the latest version of Synapse?',
-            "Not yet. Please write a story on our Scrum board.\r\n\r\nRegards,\r\nEvermannella @ ChiaLab srl",
-            'test'
-        );
+        $mailer = new Mailer();
+        $mailer->setTo(['evermannella@example.org' => 'Evermannella'])
+            ->setSubject('Re: Have you installed the latest version of Synapse?')
+            ->setProfile('test')
+            ->deliver("Not yet. Please write a story on our Scrum board.\n\nRegards,\nEvermannella @ ChiaLab srl");
 
         /** @var \BEdita\Core\Model\Entity\AsyncJob $asyncJob */
         $asyncJob = $this->AsyncJobs->find()->where(['service' => 'mail'])->first();

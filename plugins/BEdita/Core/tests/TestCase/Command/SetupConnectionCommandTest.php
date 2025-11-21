@@ -12,9 +12,10 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\Command;
 
+use BEdita\Core\Command\SetupConnectionCommand;
+use BEdita\Core\Test\Utility\TestArraySubsetTrait;
 use Cake\Command\Command;
 use Cake\Console\TestSuite\ConsoleIntegrationTestTrait;
 use Cake\Database\Connection;
@@ -23,17 +24,16 @@ use Cake\Datasource\ConnectionManager;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Hash;
 use Cake\Utility\Text;
-use DMS\PHPUnitExtensions\ArraySubset\ArraySubsetAsserts;
+use PHPUnit\Framework\Attributes\CoversClass;
 
 /**
  * {@see BEdita\Core\Command\SetupConnectionCommand} Test Case
- *
- * @coversDefaultClass \BEdita\Core\Command\SetupConnectionCommand
  */
+#[CoversClass(SetupConnectionCommand::class)]
 class SetupConnectionCommandTest extends TestCase
 {
     use ConsoleIntegrationTestTrait;
-    use ArraySubsetAsserts;
+    use TestArraySubsetTrait;
 
     /**
      * Name for temporary connection.
@@ -48,15 +48,6 @@ class SetupConnectionCommandTest extends TestCase
      * @var string
      */
     public const TEMP_FILE = TMP . 'app.temp.php';
-
-    /**
-     * @inheritDoc
-     */
-    protected function setUp(): void
-    {
-        parent::setUp();
-        $this->useCommandRunner();
-    }
 
     /**
      * @inheritDoc
@@ -76,8 +67,6 @@ class SetupConnectionCommandTest extends TestCase
      * Test buildOptionParser method
      *
      * @return void
-     * @covers ::buildOptionParser()
-     * @covers ::getDescription()
      */
     public function testBuildOptionParser(): void
     {
@@ -100,7 +89,6 @@ class SetupConnectionCommandTest extends TestCase
      * Test execution when specified connection is **NOT** a valid connection object.
      *
      * @return void
-     * @covers ::execute()
      */
     public function testExecuteUnknownConnectionType(): void
     {
@@ -119,9 +107,6 @@ class SetupConnectionCommandTest extends TestCase
      * Test execution when connection is already configured and we're **NOT** able to connect.
      *
      * @return void
-     * @covers ::execute()
-     * @covers ::isConnectionConfigured()
-     * @covers ::checkCanConnect()
      */
     public function testExecuteConfiguredFail(): void
     {
@@ -149,9 +134,6 @@ class SetupConnectionCommandTest extends TestCase
      * Test execution when connection is already configured and we're able to connect.
      *
      * @return void
-     * @covers ::execute()
-     * @covers ::isConnectionConfigured()
-     * @covers ::checkCanConnect()
      */
     public function testExecuteConfiguredOk(): void
     {
@@ -167,10 +149,6 @@ class SetupConnectionCommandTest extends TestCase
      * provided credentials.
      *
      * @return void
-     * @covers ::execute()
-     * @covers ::isConnectionConfigured()
-     * @covers ::readConnectionParams()
-     * @covers ::checkCanConnect()
      */
     public function testExecuteInteractiveFail(): void
     {
@@ -217,11 +195,6 @@ class SetupConnectionCommandTest extends TestCase
      * Test execution when connection is not yet configured and the provided configuration file is **NOT** valid.
      *
      * @return void
-     * @covers ::execute()
-     * @covers ::isConnectionConfigured()
-     * @covers ::readConnectionParams()
-     * @covers ::checkCanConnect()
-     * @covers ::saveConnectionConfig()
      */
     public function testExecuteInteractiveInvalidFile(): void
     {
@@ -259,7 +232,7 @@ class SetupConnectionCommandTest extends TestCase
         // Invoke task.
         $this->exec(
             sprintf('setup_connection --connection %s --config-file %s', static::TEMP_CONNECTION, TMP . Text::uuid()),
-            $returnValues
+            $returnValues,
         );
 
         $this->assertExitCode(Command::CODE_ERROR);
@@ -270,11 +243,6 @@ class SetupConnectionCommandTest extends TestCase
      * Test execution when connection is not yet configured and everything goes alright.
      *
      * @return void
-     * @covers ::execute()
-     * @covers ::isConnectionConfigured()
-     * @covers ::readConnectionParams()
-     * @covers ::checkCanConnect()
-     * @covers ::saveConnectionConfig()
      */
     public function testExecuteInteractiveOk(): void
     {
@@ -282,7 +250,7 @@ class SetupConnectionCommandTest extends TestCase
         file_put_contents(
             static::TEMP_FILE,
             file_get_contents(CONFIG . 'app_local.example.php'),
-            EXTR_OVERWRITE | LOCK_EX
+            EXTR_OVERWRITE | LOCK_EX,
         );
 
         // Setup temporary configuration.
@@ -322,7 +290,7 @@ class SetupConnectionCommandTest extends TestCase
         // Invoke task.
         $this->exec(
             sprintf('setup_connection --connection %s --config-file %s', static::TEMP_CONNECTION, static::TEMP_FILE),
-            $returnValues
+            $returnValues,
         );
 
         $this->assertExitCode(Command::CODE_SUCCESS);
@@ -348,11 +316,6 @@ class SetupConnectionCommandTest extends TestCase
      * Test execution when connection is not yet configured and everything goes alright with an unattended run.
      *
      * @return void
-     * @covers ::execute()
-     * @covers ::isConnectionConfigured()
-     * @covers ::readConnectionParams()
-     * @covers ::checkCanConnect()
-     * @covers ::saveConnectionConfig()
      */
     public function testExecuteNonInteractiveOk(): void
     {
@@ -360,7 +323,7 @@ class SetupConnectionCommandTest extends TestCase
         file_put_contents(
             static::TEMP_FILE,
             file_get_contents(CONFIG . 'app_local.example.php'),
-            EXTR_OVERWRITE | LOCK_EX
+            EXTR_OVERWRITE | LOCK_EX,
         );
 
         // Setup temporary configuration.
@@ -431,9 +394,9 @@ class SetupConnectionCommandTest extends TestCase
                 ' ',
                 array_merge(
                     ['setup_connection', '--connection', static::TEMP_CONNECTION, '--config-file', static::TEMP_FILE],
-                    $cliOptions
-                )
-            )
+                    $cliOptions,
+                ),
+            ),
         );
 
         $this->assertExitCode(Command::CODE_SUCCESS);
@@ -459,11 +422,6 @@ class SetupConnectionCommandTest extends TestCase
      * Test execution when connection is not yet configured and everything goes alright with an unattended run.
      *
      * @return void
-     * @covers ::execute()
-     * @covers ::isConnectionConfigured()
-     * @covers ::readConnectionParams()
-     * @covers ::checkCanConnect()
-     * @covers ::saveConnectionConfig()
      */
     public function testExecuteSyntaxError(): void
     {
@@ -472,7 +430,7 @@ class SetupConnectionCommandTest extends TestCase
         file_put_contents(
             static::TEMP_FILE,
             $fileContents,
-            EXTR_OVERWRITE | LOCK_EX
+            EXTR_OVERWRITE | LOCK_EX,
         );
 
         // Setup temporary configuration.
@@ -540,9 +498,9 @@ class SetupConnectionCommandTest extends TestCase
                 ' ',
                 array_merge(
                     ['setup_connection', '--connection', static::TEMP_CONNECTION, '--config-file', static::TEMP_FILE],
-                    $cliOptions
-                )
-            )
+                    $cliOptions,
+                ),
+            ),
         );
 
         $this->assertExitCode(Command::CODE_ERROR);

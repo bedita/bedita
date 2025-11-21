@@ -15,15 +15,15 @@ declare(strict_types=1);
 namespace BEdita\Core\Test\TestCase\Database\Type;
 
 use BEdita\Core\Database\Type\DateTimeType;
-use Cake\I18n\FrozenTime;
+use Cake\I18n\DateTime;
 use Cake\TestSuite\TestCase;
-use DateTime;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * {@see \BEdita\Core\Database\Type\DateTimeType} Test Case
- *
- * @coversDefaultClass \BEdita\Core\Database\Type\DateTimeType
  */
+#[CoversClass(DateTimeType::class)]
 class DateTimeTypeTest extends TestCase
 {
     /**
@@ -31,7 +31,7 @@ class DateTimeTypeTest extends TestCase
      *
      * @return array
      */
-    public function marshalSuccessProvider()
+    public static function marshalSuccessProvider(): array
     {
         return [
             [
@@ -102,21 +102,19 @@ class DateTimeTypeTest extends TestCase
      *
      * @param \DateTimeInterface|string $expected Expected result
      * @param mixed $input Input data to be marshaled.
-     * @param bool $useImmutable Should immutable datetime objects be used?
      * @return void
-     * @dataProvider marshalSuccessProvider
-     * @covers ::marshalDateTime
      */
-    public function testMarshalSuccess($expected, $input)
+    #[DataProvider('marshalSuccessProvider')]
+    public function testMarshalSuccess($expected, $input): void
     {
         $dateTimeType = new DateTimeType();
 
         $result = $dateTimeType->marshal($input);
         if (is_string($expected)) {
             static::assertInstanceOf($dateTimeType->getDateTimeClassName(), $result);
-            $expected = FrozenTime::parse($expected);
+            $expected = DateTime::parse($expected);
         }
-        static::assertSame($expected->getTimestamp(), $result->getTimestamp());
+        static::assertSame($expected->format('U'), $result->format('U'));
     }
 
     /**
@@ -124,7 +122,7 @@ class DateTimeTypeTest extends TestCase
      *
      * @return array
      */
-    public function marshalFailureProvider()
+    public static function marshalFailureProvider(): array
     {
         return [
             [
@@ -144,10 +142,9 @@ class DateTimeTypeTest extends TestCase
      *
      * @param mixed $input Input data to be marshaled.
      * @return void
-     * @dataProvider marshalFailureProvider
-     * @covers ::marshalDateTime
      */
-    public function testMarshalFailure($input)
+    #[DataProvider('marshalFailureProvider')]
+    public function testMarshalFailure($input): void
     {
         $dateTimeType = new DateTimeType();
         $result = $dateTimeType->marshal($input);
@@ -159,10 +156,8 @@ class DateTimeTypeTest extends TestCase
      * Test empty string `marshal`
      *
      * @return void
-     * @covers ::marshal
-     * @covers ::marshalDateTime
      */
-    public function testMarshalEmpty()
+    public function testMarshalEmpty(): void
     {
         $dateTimeType = new DateTimeType();
         $result = $dateTimeType->marshal('');

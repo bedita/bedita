@@ -12,15 +12,18 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Model\Action;
 
 use BEdita\Core\Exception\InvalidDataException;
 use BEdita\Core\Exception\UserExistsException;
 use BEdita\Core\Mailer\UserMailerTrait;
 use BEdita\Core\Model\Entity\AsyncJob;
+use BEdita\Core\Model\Entity\AuthProvider;
 use BEdita\Core\Model\Entity\User;
+use BEdita\Core\Model\Enum\ObjectEntityStatus;
+use BEdita\Core\Model\Table\AsyncJobsTable;
 use BEdita\Core\Model\Table\RolesTable;
+use BEdita\Core\Model\Table\UsersTable;
 use BEdita\Core\Model\Validation\Validation;
 use BEdita\Core\Utility\LoggedUser;
 use BEdita\Core\Utility\OAuth2;
@@ -29,11 +32,12 @@ use Cake\Event\EventDispatcherTrait;
 use Cake\Event\EventInterface;
 use Cake\Event\EventListenerInterface;
 use Cake\Http\Exception\UnauthorizedException;
-use Cake\I18n\FrozenTime;
+use Cake\I18n\DateTime;
 use Cake\ORM\TableRegistry;
 use Cake\Routing\Router;
 use Cake\Utility\Hash;
 use Cake\Validation\Validator;
+use Exception;
 
 /**
  * Command to signup a user.
@@ -58,21 +62,21 @@ class SignupUserAction extends BaseAction implements EventListenerInterface
      *
      * @var \BEdita\Core\Model\Table\UsersTable
      */
-    protected $Users;
+    protected UsersTable $Users;
 
     /**
      * The AsyncJobs table
      *
      * @var \BEdita\Core\Model\Table\AsyncJobsTable
      */
-    protected $AsyncJobs;
+    protected AsyncJobsTable $AsyncJobs;
 
     /**
      * The RolesTable table
      *
      * @var \BEdita\Core\Model\Table\RolesTable
      */
-    protected $Roles;
+    protected RolesTable $Roles;
 
     /**
      * Default configuration.
@@ -84,7 +88,7 @@ class SignupUserAction extends BaseAction implements EventListenerInterface
      *
      * @var array
      */
-    protected $_defaultConfig = [
+    protected array $_defaultConfig = [
         'activation_url' => null,
         'roles' => null,
         'defaultRoles' => null,
@@ -94,7 +98,7 @@ class SignupUserAction extends BaseAction implements EventListenerInterface
     /**
      * @inheritDoc
      */
-    protected function initialize(array $config)
+    protected function initialize(array $config): void
     {
         $this->Users = TableRegistry::getTableLocator()->get('Users');
         $this->AsyncJobs = TableRegistry::getTableLocator()->get('AsyncJobs');
@@ -111,7 +115,7 @@ class SignupUserAction extends BaseAction implements EventListenerInterface
      * @throws \Cake\Http\Exception\BadRequestException When validation of URL options fails
      * @throws \Cake\Http\Exception\UnauthorizedException Upon external authorization check failure.
      */
-    public function execute(array $data = [])
+    public function execute(array $data = []): User
     {
         $this->setConfig((array)Configure::read('Signup'));
 
@@ -144,7 +148,7 @@ class SignupUserAction extends BaseAction implements EventListenerInterface
             } else {
                 $this->dispatchEvent('Auth.signupActivation', [$user], $this->Users);
             }
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             // if async job or send mail fail remove user created and re-throw the exception
             $this->Users->delete($user);
 
@@ -154,6 +158,7 @@ class SignupUserAction extends BaseAction implements EventListenerInterface
         $statusLevel = Configure::read('Status.level');
         Configure::delete('Status.level');
 
+        /** @var \BEdita\Core\Model\Entity\User $user */
         $user = (new GetObjectAction(['table' => $this->Users]))->execute(['primaryKey' => $user->id, 'contain' => 'Roles']);
         Configure::write('Status.level', $statusLevel);
 
@@ -166,7 +171,7 @@ class SignupUserAction extends BaseAction implements EventListenerInterface
      * @param array $data Input data
      * @return array Normalized array
      */
-    protected function normalizeInput(array $data)
+    protected function normalizeInput(array $data): array
     {
         if (!empty($data['data']['data']['attributes'])) {
             $meta = !empty($data['data']['data']['meta']) ? $data['data']['data']['meta'] : [];
@@ -185,7 +190,7 @@ class SignupUserAction extends BaseAction implements EventListenerInterface
      * @param array $data The data to validate
      * @return array
      */
-    protected function validate(array $data)
+    protected function validate(array $data): array
     {
         $validator = new Validator();
         $validator->setProvider('bedita', Validation::class);
@@ -215,8 +220,8 @@ class SignupUserAction extends BaseAction implements EventListenerInterface
 
         if (!empty($this->getConfig('roles'))) {
             $validator
-            ->requirePresence('roles')
-            ->notEmptyArray('roles');
+                ->requirePresence('roles')
+                ->notEmptyArray('roles');
         }
 
         $validator->add('roles', 'validateRoles', [
@@ -230,10 +235,10 @@ class SignupUserAction extends BaseAction implements EventListenerInterface
      * Validate roles against allowed signup roles configured.
      * In addtion roles can't contain ADMIN_ROLE.
      *
-     * @param string|array $roles The roles to check
-     * @return true|string
+     * @param array|string $roles The roles to check
+     * @return string|true
      */
-    public function validateRoles($roles)
+    public function validateRoles(string|array $roles): bool|string
     {
         $allowedRoles = (array)$this->getConfig('roles');
         if (empty($allowedRoles) && !empty($roles)) {
@@ -270,16 +275,16 @@ class SignupUserAction extends BaseAction implements EventListenerInterface
      * @return \BEdita\Core\Model\Entity\User|bool User created or `false` on error
      * @throws \Cake\Http\Exception\UnauthorizedException Upon external authorization check failure.
      */
-    protected function createUser(array $data)
+    protected function createUser(array $data): User|bool
     {
         if (!LoggedUser::getUser()) {
             // use user 1 (admin) role 1 (admin / unchangeable)
             LoggedUser::setUserAdmin();
         }
 
-        $status = 'draft';
+        $status = ObjectEntityStatus::Draft;
         if ($this->getConfig('requireActivation') === false) {
-            $status = 'on';
+            $status = ObjectEntityStatus::On;
         }
 
         if (empty($data['auth_provider'])) {
@@ -288,7 +293,7 @@ class SignupUserAction extends BaseAction implements EventListenerInterface
 
         $authProvider = $this->checkExternalAuth($data);
 
-        $user = $this->createUserEntity($data, 'on', 'signupExternal', true);
+        $user = $this->createUserEntity($data, ObjectEntityStatus::On, 'signupExternal', true);
 
         // create `ExternalAuth` entry
         $this->Users->dispatchEvent('Auth.externalAuth', [
@@ -305,26 +310,26 @@ class SignupUserAction extends BaseAction implements EventListenerInterface
      * Create User entity.
      *
      * @param array $data The signup data
-     * @param string $status User `status`, `on` or `draft`
+     * @param \BEdita\Core\Model\Enum\ObjectEntityStatus $status User `status`, `on` or `draft`
      * @param string $validate Validation options to use
      * @param bool $verified Add `verified` value to entity
      * @return \BEdita\Core\Model\Entity\User The User entity created
      * @throws \Cake\Http\Exception\BadRequestException When some data is invalid.
      */
-    protected function createUserEntity(array $data, $status, $validate, bool $verified = false)
+    protected function createUserEntity(array $data, ObjectEntityStatus $status, string $validate, bool $verified = false): User
     {
         if ($this->Users->exists(['username' => $data['username']])) {
             $this->dispatchEvent('Auth.signupUserExists', [$data], $this->Users);
             throw new UserExistsException(
-                __d('bedita', 'User "{0}" already registered', $data['username'])
+                __d('bedita', 'User "{0}" already registered', $data['username']),
             );
         }
         $action = new SaveEntityAction(['table' => $this->Users]);
 
         $data['status'] = $status;
-        $entity = $this->Users->newEntity([]);
+        $entity = $this->Users->newEmptyEntity();
         if ($verified === true) {
-            $entity->set('verified', FrozenTime::now());
+            $entity->set('verified', DateTime::now());
         }
         $entityOptions = compact('validate');
 
@@ -343,7 +348,7 @@ class SignupUserAction extends BaseAction implements EventListenerInterface
      * @return \BEdita\Core\Model\Entity\AuthProvider AuthProvider entity
      * @throws \Cake\Http\Exception\UnauthorizedException Upon external authorization check failure.
      */
-    protected function checkExternalAuth(array $data)
+    protected function checkExternalAuth(array $data): AuthProvider
     {
         /** @var \BEdita\Core\Model\Entity\AuthProvider|null $authProvider */
         $authProvider = TableRegistry::getTableLocator()->get('AuthProviders')->find('enabled')
@@ -362,7 +367,7 @@ class SignupUserAction extends BaseAction implements EventListenerInterface
             $providerResponse = $this->getOAuth2Response(
                 $authProvider->get('url'),
                 $data['access_token'],
-                $options
+                $options,
             );
             if (!$authProvider->checkAuthorization($providerResponse, $data['provider_username'])) {
                 throw new UnauthorizedException(__d('bedita', 'External auth failed'));
@@ -393,7 +398,7 @@ class SignupUserAction extends BaseAction implements EventListenerInterface
      * @param array $data The signup data
      * @return void
      */
-    protected function addRoles(User $entity, array $data)
+    protected function addRoles(User $entity, array $data): void
     {
         $signupRoles = Hash::get($data, 'roles');
         if (empty($signupRoles)) {
@@ -410,9 +415,9 @@ class SignupUserAction extends BaseAction implements EventListenerInterface
      * Load requested roles.
      *
      * @param array $roles Requested role names
-     * @return \BEdita\Core\Model\Entity\Role[] requested role entities
+     * @return array<\BEdita\Core\Model\Entity\Role> requested role entities
      */
-    protected function loadRoles(array $roles)
+    protected function loadRoles(array $roles): array
     {
         return $this->Roles->find()
             ->where(['name IN' => $roles])
@@ -426,18 +431,18 @@ class SignupUserAction extends BaseAction implements EventListenerInterface
      * @param \BEdita\Core\Model\Entity\User $user The user created
      * @return \BEdita\Core\Model\Entity\AsyncJob
      */
-    protected function createSignupJob(User $user)
+    protected function createSignupJob(User $user): AsyncJob
     {
         $action = new SaveEntityAction(['table' => $this->AsyncJobs]);
 
         return $action([
-            'entity' => $this->AsyncJobs->newEntity([]),
+            'entity' => $this->AsyncJobs->newEmptyEntity(),
             'data' => [
                 'service' => 'signup',
                 'payload' => [
                     'user_id' => $user->id,
                 ],
-                'scheduled_from' => new FrozenTime('1 day'),
+                'scheduled_from' => new DateTime('1 day'),
                 'priority' => 1,
             ],
         ]);
@@ -452,7 +457,7 @@ class SignupUserAction extends BaseAction implements EventListenerInterface
      * @param string $activationUrl URL to be used for activation.
      * @return void
      */
-    public function sendMail(EventInterface $event, User $user, AsyncJob $job, $activationUrl)
+    public function sendMail(EventInterface $event, User $user, AsyncJob $job, string $activationUrl): void
     {
         if (empty($user->get('email'))) {
             return;
@@ -471,7 +476,7 @@ class SignupUserAction extends BaseAction implements EventListenerInterface
      * @param \BEdita\Core\Model\Entity\User $user The user
      * @return void
      */
-    public function sendActivationMail(EventInterface $event, User $user)
+    public function sendActivationMail(EventInterface $event, User $user): void
     {
         $options = [
             'params' => compact('user'),
@@ -486,7 +491,7 @@ class SignupUserAction extends BaseAction implements EventListenerInterface
      * @param array $urlOptions The options used to build activation url
      * @return string
      */
-    protected function getActivationUrl(AsyncJob $job, array $urlOptions)
+    protected function getActivationUrl(AsyncJob $job, array $urlOptions): string
     {
         $baseUrl = $urlOptions['activation_url'];
         $redirectUrl = empty($urlOptions['redirect_url']) ? '' : '&redirect_url=' . rawurlencode($urlOptions['redirect_url']);

@@ -49,7 +49,7 @@ class CorsMiddleware implements MiddlewareInterface
      *
      * @var array
      */
-    protected $corsConfig = [
+    protected array $corsConfig = [
         'allowOrigin' => false,
         'allowMethods' => false,
         'allowHeaders' => false,
@@ -66,7 +66,7 @@ class CorsMiddleware implements MiddlewareInterface
      * @see self::corsConfig
      * @param array|null $corsConfig CORS configuration
      */
-    public function __construct($corsConfig = null)
+    public function __construct(?array $corsConfig = null)
     {
         if (empty($corsConfig) || !is_array($corsConfig)) {
             return;
@@ -100,7 +100,7 @@ class CorsMiddleware implements MiddlewareInterface
      *
      * @return bool
      */
-    public function isConfigured()
+    public function isConfigured(): bool
     {
         return (bool)array_filter($this->corsConfig);
     }

@@ -1,14 +1,26 @@
 <?php
 declare(strict_types=1);
 
+/**
+ * BEdita, API-first content management framework
+ * Copyright 2025 Chialab Srl
+ *
+ * This file is part of BEdita: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
+ */
 namespace BEdita\Core\Command;
 
 use BEdita\Core\Model\Entity\User;
+use BEdita\Core\Model\Enum\ObjectEntityStatus;
 use Cake\Command\Command;
 use Cake\Console\Arguments;
 use Cake\Console\ConsoleIo;
 use Cake\Console\ConsoleOptionParser;
-use Cake\ORM\Query;
+use Cake\ORM\Query\SelectQuery;
 
 /**
  * Command to list external authentication records for a user.
@@ -55,13 +67,13 @@ class UserExternalAuthListCommand extends Command
             ->find()
             ->contain(['AuthProviders', 'Users']);
         if ($args->getOption('provider') !== null) {
-            $query = $query->find('authProvider', ['auth_provider' => $args->getOption('provider')]);
+            $query = $query->find('authProvider', authProvider: $args->getOption('provider'));
         }
         $user = $this->getUser($args);
         if ($user !== null) {
             $query = $query->innerJoinWith(
                 'Users',
-                fn (Query $q): Query => $q->where(['Users.id' => $user->id]),
+                fn(SelectQuery $q): SelectQuery => $q->where(['Users.id' => $user->id]),
             );
         }
 
@@ -98,7 +110,7 @@ class UserExternalAuthListCommand extends Command
     {
         $query = $this->fetchTable('Users')->find()
             ->where([
-                'status IN' => ['on', 'draft'],
+                'status IN' => [ObjectEntityStatus::On->value, ObjectEntityStatus::Draft->value],
                 'deleted' => false,
                 'blocked' => false,
             ])

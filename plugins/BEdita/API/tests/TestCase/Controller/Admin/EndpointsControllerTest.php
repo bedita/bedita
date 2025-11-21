@@ -12,26 +12,25 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\API\Test\TestCase\Controller\Admin;
 
+use BEdita\API\Controller\Admin\EndpointsController;
+use BEdita\API\Error\ExceptionRenderer;
 use BEdita\API\TestSuite\IntegrationTestCase;
+use BEdita\Core\Test\Utility\TestArraySubsetTrait;
 use Cake\ORM\TableRegistry;
-use DMS\PHPUnitExtensions\ArraySubset\ArraySubsetAsserts;
+use PHPUnit\Framework\Attributes\CoversClass;
 
-/**
- * @coversDefaultClass \BEdita\API\Controller\Admin\EndpointsController
- */
+#[CoversClass(EndpointsController::class)]
+#[CoversClass(ExceptionRenderer::class)]
 class EndpointsControllerTest extends IntegrationTestCase
 {
-    use ArraySubsetAsserts;
+    use TestArraySubsetTrait;
 
     /**
      * Test index method.
      *
      * @return void
-     * @covers ::index()
-     * @covers ::initialize()
      */
     public function testIndex()
     {
@@ -121,8 +120,6 @@ class EndpointsControllerTest extends IntegrationTestCase
      * Test index method.
      *
      * @return void
-     * @covers ::resource()
-     * @covers ::initialize()
      */
     public function testEmpty()
     {
@@ -163,8 +160,6 @@ class EndpointsControllerTest extends IntegrationTestCase
      * Test view method.
      *
      * @return void
-     * @covers ::resource()
-     * @covers ::initialize()
      */
     public function testSingle()
     {
@@ -202,7 +197,6 @@ class EndpointsControllerTest extends IntegrationTestCase
      * Test view method with name as argument.
      *
      * @return void
-     * @covers ::getResourceId()
      */
     public function testSingleName()
     {
@@ -215,9 +209,6 @@ class EndpointsControllerTest extends IntegrationTestCase
      * Test view method.
      *
      * @return void
-     * @covers ::resource()
-     * @covers ::initialize()
-     * @covers \BEdita\API\Error\ExceptionRenderer
      */
     public function testMissing()
     {
@@ -250,9 +241,6 @@ class EndpointsControllerTest extends IntegrationTestCase
      * Test add method.
      *
      * @return void
-     * @covers ::index()
-     * @covers ::initialize()
-     * @covers ::resourceUrl()
      */
     public function testAdd()
     {
@@ -271,7 +259,7 @@ class EndpointsControllerTest extends IntegrationTestCase
 
         $endpoint = TableRegistry::getTableLocator()->get('Endpoints')
             ->find()
-            ->order(['id' => 'DESC'])
+            ->orderBy(['id' => 'DESC'])
             ->first();
 
         $this->assertHeader('Location', 'http://api.example.com/admin/endpoints/' . $endpoint->id);
@@ -284,8 +272,6 @@ class EndpointsControllerTest extends IntegrationTestCase
      * Test add method with invalid data.
      *
      * @return void
-     * @covers ::index()
-     * @covers ::initialize()
      */
     public function testAddInvalid()
     {
@@ -311,8 +297,6 @@ class EndpointsControllerTest extends IntegrationTestCase
      * Test edit method.
      *
      * @return void
-     * @covers ::resource()
-     * @covers ::initialize()
      */
     public function testEdit()
     {
@@ -339,8 +323,6 @@ class EndpointsControllerTest extends IntegrationTestCase
      * Test edit method with ID conflict.
      *
      * @return void
-     * @covers ::resource()
-     * @covers ::initialize()
      */
     public function testEditConflict()
     {
@@ -367,8 +349,6 @@ class EndpointsControllerTest extends IntegrationTestCase
      * Test delete method.
      *
      * @return void
-     * @covers ::resource()
-     * @covers ::initialize()
      */
     public function testDelete()
     {

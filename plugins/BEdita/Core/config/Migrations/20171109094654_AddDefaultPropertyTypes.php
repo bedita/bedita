@@ -1,10 +1,10 @@
 <?php
-use Migrations\AbstractMigration;
+use Migrations\BaseMigration;
 
 /**
  * Add default property types.
  */
-class AddDefaultPropertyTypes extends AbstractMigration
+class AddDefaultPropertyTypes extends BaseMigration
 {
 
     /**

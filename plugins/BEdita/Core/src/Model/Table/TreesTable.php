@@ -14,23 +14,24 @@ declare(strict_types=1);
  */
 namespace BEdita\Core\Model\Table;
 
+use ArrayObject;
 use BEdita\Core\Exception\LockedResourceException;
 use BEdita\Core\Model\Entity\Tree;
 use BEdita\Core\Model\Validation\Validation;
 use Cake\Core\Configure;
 use Cake\Database\Driver\Mysql;
 use Cake\Database\Expression\QueryExpression;
-use Cake\Database\Schema\TableSchemaInterface;
 use Cake\Datasource\EntityInterface;
 use Cake\Event\EventInterface;
 use Cake\Http\Exception\BadRequestException;
 use Cake\Http\Exception\NotFoundException;
-use Cake\ORM\Query;
+use Cake\ORM\Query\SelectQuery;
 use Cake\ORM\Rule\IsUnique;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Utility\Text;
 use Cake\Validation\Validator;
+use stdClass;
 
 /**
  * Trees Model
@@ -40,14 +41,20 @@ use Cake\Validation\Validator;
  * @property \Cake\ORM\Association\BelongsTo|\BEdita\Core\Model\Table\ObjectsTable $RootObjects
  * @property \Cake\ORM\Association\BelongsTo|\BEdita\Core\Model\Table\TreesTable $ParentNode
  * @property \Cake\ORM\Association\HasMany|\BEdita\Core\Model\Table\TreesTable $ChildNodes
- * @method \BEdita\Core\Model\Entity\Tree get($primaryKey, $options = [])
- * @method \BEdita\Core\Model\Entity\Tree newEntity($data = null, array $options = [])
+ * @method \BEdita\Core\Model\Entity\Tree get(mixed $primaryKey, array|string $finder = 'all', \Psr\SimpleCache\CacheInterface|string|null $cache = null, \Closure|string|null $cacheKey = null, mixed ...$args)
+ * @method \BEdita\Core\Model\Entity\Tree newEntity(array $data, array $options = [])
  * @method \BEdita\Core\Model\Entity\Tree[] newEntities(array $data, array $options = [])
- * @method \BEdita\Core\Model\Entity\Tree|bool save(\Cake\Datasource\EntityInterface $entity, $options = [])
+ * @method \BEdita\Core\Model\Entity\Tree|false save(\Cake\Datasource\EntityInterface $entity, array $options = [])
  * @method \BEdita\Core\Model\Entity\Tree patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
- * @method \BEdita\Core\Model\Entity\Tree[] patchEntities($entities, array $data, array $options = [])
- * @method \BEdita\Core\Model\Entity\Tree findOrCreate($search, callable $callback = null, $options = [])
+ * @method \BEdita\Core\Model\Entity\Tree[] patchEntities(iterable $entities, array $data, array $options = [])
+ * @method \BEdita\Core\Model\Entity\Tree findOrCreate(\Cake\ORM\Query\SelectQuery|callable|array $search, ?callable $callback = null, array $options = [])
  * @mixin \BEdita\Core\Model\Behavior\TreeBehavior
+ * @method \BEdita\Core\Model\Entity\Tree newEmptyEntity()
+ * @method \BEdita\Core\Model\Entity\Tree saveOrFail(\Cake\Datasource\EntityInterface $entity, array $options = [])
+ * @method \BEdita\Core\Model\Entity\Tree[]|\Cake\Datasource\ResultSetInterface<\BEdita\Core\Model\Entity\Tree>|false saveMany(iterable $entities, array $options = [])
+ * @method \BEdita\Core\Model\Entity\Tree[]|\Cake\Datasource\ResultSetInterface<\BEdita\Core\Model\Entity\Tree> saveManyOrFail(iterable $entities, array $options = [])
+ * @method \BEdita\Core\Model\Entity\Tree[]|\Cake\Datasource\ResultSetInterface<\BEdita\Core\Model\Entity\Tree>|false deleteMany(iterable $entities, array $options = [])
+ * @method \BEdita\Core\Model\Entity\Tree[]|\Cake\Datasource\ResultSetInterface<\BEdita\Core\Model\Entity\Tree> deleteManyOrFail(iterable $entities, array $options = [])
  */
 class TreesTable extends Table
 {
@@ -63,6 +70,7 @@ class TreesTable extends Table
         $this->setTable('trees');
         $this->setDisplayField('id');
         $this->setPrimaryKey('id');
+        $this->getSchema()->setColumnType('params', 'json');
 
         // associations with objects
         $this->belongsTo('Objects', [
@@ -148,9 +156,9 @@ class TreesTable extends Table
      * Validate children parameters using JSON Schema.
      *
      * @param mixed $value Value being validated.
-     * @return true|string
+     * @return string|true
      */
-    public static function jsonSchema($value)
+    public static function jsonSchema(mixed $value): string|bool
     {
         $schema = Configure::read('ChildrenParams');
         if (empty($schema)) {
@@ -158,7 +166,7 @@ class TreesTable extends Table
         }
 
         $success = Validation::jsonSchema($value, $schema);
-        if ($success !== true && $value === null && Validation::jsonSchema(new \stdClass(), $schema) === true) {
+        if ($success !== true && $value === null && Validation::jsonSchema(new stdClass(), $schema) === true) {
             // For the sake of validation, `null` is equivalent to empty object.
             $success = true;
         }
@@ -179,12 +187,12 @@ class TreesTable extends Table
         $rules->add($rules->existsIn(
             ['parent_id'],
             'ParentObjects',
-            ['allowNullableNulls' => true]
+            ['allowNullableNulls' => true],
         ));
         $rules->add($rules->existsIn(
             ['parent_node_id'],
             'ParentNode',
-            ['allowNullableNulls' => true]
+            ['allowNullableNulls' => true],
         ));
 
         $rules->add(
@@ -193,7 +201,7 @@ class TreesTable extends Table
             [
                 'errorField' => 'parent_id',
                 'message' => __d('bedita', 'parent_id must be null or corresponding to a folder'),
-            ]
+            ],
         );
 
         $rules->add(
@@ -202,7 +210,7 @@ class TreesTable extends Table
             [
                 'errorField' => 'object_id',
                 'message' => __d('bedita', 'Folders cannot be made ubiquitous, other objects cannot appear twice in the same folder'),
-            ]
+            ],
         );
 
         return $rules;
@@ -214,7 +222,7 @@ class TreesTable extends Table
      * @param \BEdita\Core\Model\Entity\Tree $entity The tree entity to validate
      * @return bool
      */
-    public function isParentValid(Tree $entity)
+    public function isParentValid(Tree $entity): bool
     {
         // if parent_id is null then the object_id must refer to a folder (root)
         if ($entity->parent_id === null) {
@@ -230,7 +238,7 @@ class TreesTable extends Table
      * @param \BEdita\Core\Model\Entity\Tree $entity The tree entity to validate.
      * @return bool
      */
-    public function isPositionUnique(Tree $entity)
+    public function isPositionUnique(Tree $entity): bool
     {
         $rule = new IsUnique(['parent_id', 'object_id']);
         if ($this->isFolder($entity->object_id)) {
@@ -247,7 +255,7 @@ class TreesTable extends Table
      * @param \Cake\Datasource\EntityInterface $entity The entity persisted
      * @return void
      */
-    public function beforeRules(EventInterface $event, EntityInterface $entity)
+    public function beforeRules(EventInterface $event, EntityInterface $entity): void
     {
         if (empty($entity->get('slug'))) {
             $entity->set('slug', $this->Objects->get($entity->get('object_id'))->uname);
@@ -265,7 +273,7 @@ class TreesTable extends Table
      * @param \BEdita\Core\Model\Entity\Tree $entity The entity persisted
      * @return void
      */
-    public function afterSave(EventInterface $event, Tree $entity)
+    public function afterSave(EventInterface $event, Tree $entity): void
     {
         if ($entity->has('position')) {
             if ($this->moveAt($entity, $entity->get('position')) === false) {
@@ -280,7 +288,7 @@ class TreesTable extends Table
                 [
                     'object_id' => $entity->object_id,
                     'id !=' => $entity->id,
-                ]
+                ],
             );
         }
 
@@ -295,7 +303,7 @@ class TreesTable extends Table
                 'tree_left >' => $entity->tree_left,
                 'tree_right <' => $entity->tree_right,
                 'root_id !=' => $entity->root_id,
-            ]
+            ],
         );
     }
 
@@ -309,7 +317,7 @@ class TreesTable extends Table
      * @throws \BEdita\Core\Exception\LockedResourceException Throws an exception when the delete operation would
      *  leave an orphaned folder.
      */
-    public function beforeDelete(EventInterface $event, Tree $entity, \ArrayObject $options)
+    public function beforeDelete(EventInterface $event, Tree $entity, ArrayObject $options): void
     {
         if (empty($options['_primary'])) {
             return;
@@ -324,11 +332,15 @@ class TreesTable extends Table
     /**
      * Check if a given ID is the ID of a Folder.
      *
-     * @param int $id ID of object being checked.
+     * @param int|null $id ID of object being checked.
      * @return bool
      */
-    protected function isFolder($id)
+    protected function isFolder(?int $id): bool
     {
+        if ($id === null) {
+            return false;
+        }
+
         static $foldersType = null;
         if ($foldersType === null) {
             $foldersType = $this->Objects->ObjectTypes->get('folders')->id;
@@ -341,32 +353,19 @@ class TreesTable extends Table
     }
 
     /**
-     * @inheritDoc
-     */
-    public function getSchema(): TableSchemaInterface
-    {
-        return parent::getSchema()
-            ->setColumnType('params', 'json');
-    }
-
-    /**
      * Find path nodes from object id.
      *
-     * @param \Cake\ORM\Query $query Query object instance.
-     * @param array $options Array with object id as first element.
-     * @return \Cake\ORM\Query
+     * @param \Cake\ORM\Query\SelectQuery $query Query object instance.
+     * @param int $objectId The object id.
+     * @return \Cake\ORM\Query\SelectQuery
      */
-    protected function findPathNodes(Query $query, array $options)
+    protected function findPathNodes(SelectQuery $query, int $objectId): SelectQuery
     {
-        if (empty($options)) {
-            throw new BadRequestException(__d('bedita', 'Missing required parameter "{0}"', 'object id'));
-        }
-
         $lft = $this->aliasField('tree_left');
         $rgt = $this->aliasField('tree_right');
         $node = $this->find()
             ->select([$lft, $rgt])
-            ->where(['object_id' => $options[0]])
+            ->where(['object_id' => $objectId])
             ->disableHydration()
             ->firstOrFail();
 
@@ -381,11 +380,11 @@ class TreesTable extends Table
 
         return $query
             ->where(
-                fn (QueryExpression $exp): QueryExpression => $exp
+                fn(QueryExpression $exp): QueryExpression => $exp
                     ->lte($lft, $node['tree_left'])
-                    ->gte($rgt, $node['tree_right'])
+                    ->gte($rgt, $node['tree_right']),
             )
-            ->orderAsc($lft);
+            ->orderByAsc($lft);
     }
 
     /**

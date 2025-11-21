@@ -12,20 +12,23 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\Model\Entity;
 
 use BEdita\Core\Model\Entity\Endpoint;
 use BEdita\Core\Model\Entity\ObjectType;
+use BEdita\Core\Model\Table\EndpointsTable;
 use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
+use Exception;
+use InvalidArgumentException;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * {@see \BEdita\Core\Model\Entity\Endpoint} Test Case
- *
- * @coversDefaultClass \BEdita\Core\Model\Entity\Endpoint
  */
+#[CoversClass(Endpoint::class)]
 class EndpointTest extends TestCase
 {
     /**
@@ -33,14 +36,14 @@ class EndpointTest extends TestCase
      *
      * @var \BEdita\Core\Model\Table\EndpointsTable
      */
-    public $Endpoints;
+    public EndpointsTable $Endpoints;
 
     /**
      * Fixtures
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.Relations',
         'plugin.BEdita/Core.RelationTypes',
@@ -73,7 +76,6 @@ class EndpointTest extends TestCase
      * Test accessible properties.
      *
      * @return void
-     * @coversNothing
      */
     public function testAccessible()
     {
@@ -89,7 +91,7 @@ class EndpointTest extends TestCase
         ];
         $endpoint = $this->Endpoints->patchEntity($endpoint, $data);
         if (!($endpoint instanceof Endpoint)) {
-            throw new \InvalidArgumentException();
+            throw new InvalidArgumentException();
         }
 
         $this->assertEquals(1, $endpoint->id);
@@ -102,7 +104,7 @@ class EndpointTest extends TestCase
      *
      * @return array
      */
-    public function setObjectTypeNameProvider(): array
+    public static function setObjectTypeNameProvider(): array
     {
         return [
             'null' => [
@@ -118,7 +120,7 @@ class EndpointTest extends TestCase
                 'document',
             ],
             'not valid name' => [
-                new RecordNotFoundException('Record not found in table "object_types"'),
+                new RecordNotFoundException('Record not found in table `object_types`'),
                 'dontfindme',
             ],
         ];
@@ -130,12 +132,11 @@ class EndpointTest extends TestCase
      * @param mixed $expected The expected data
      * @param string $name The object type name
      * @return void
-     * @covers ::_setObjectTypeName()
-     * @dataProvider setObjectTypeNameProvider()
      */
+    #[DataProvider('setObjectTypeNameProvider')]
     public function testSetObjectTypeName($expected, ?string $name): void
     {
-        if ($expected instanceof \Exception) {
+        if ($expected instanceof Exception) {
             $this->expectException(RecordNotFoundException::class);
             $this->expectExceptionMessage($expected->getMessage());
         }

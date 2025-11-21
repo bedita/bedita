@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Filesystem;
 
 use BEdita\Core\Filesystem\Exception\InvalidStreamException;
@@ -36,16 +35,16 @@ class Thumbnail
     /**
      * Thumbnail registry.
      *
-     * @var \BEdita\Core\Filesystem\ThumbnailRegistry
+     * @var \BEdita\Core\Filesystem\ThumbnailRegistry|null
      */
-    protected static $_registry;
+    protected static ?ThumbnailRegistry $_registry;
 
     /**
      * An array mapping URL schemes to fully qualified Thumbnail generator class names.
      *
      * @var array
      */
-    protected static $_dsnClassMap = [
+    protected static array $_dsnClassMap = [
         'glide' => GlideGenerator::class,
         'async' => AsyncGenerator::class,
     ];
@@ -81,7 +80,7 @@ class Thumbnail
      * @param string $name Name of generator to get.
      * @return \BEdita\Core\Filesystem\GeneratorInterface
      */
-    public static function getGenerator($name): GeneratorInterface
+    public static function getGenerator(string $name): GeneratorInterface
     {
         $registry = static::getRegistry();
 
@@ -96,10 +95,10 @@ class Thumbnail
      * Generate a thumbnail for a stream.
      *
      * @param \BEdita\Core\Model\Entity\Stream $stream Stream to generate thumbnail for.
-     * @param string|array $options Preset name, or array of thumbnail options.
+     * @param array|string $options Preset name, or array of thumbnail options.
      * @return array Generated thumbnail URL and ready status.
      */
-    public static function get(Stream $stream, $options = 'default'): array
+    public static function get(Stream $stream, string|array $options = 'default'): array
     {
         if ($stream->get('private_url')) {
             return [
@@ -136,10 +135,10 @@ class Thumbnail
     /**
      * Get options for thumbnail generation.
      *
-     * @param string|array $options Preset name, or array of options.
+     * @param array|string $options Preset name, or array of options.
      * @return array
      */
-    protected static function getOptions($options): array
+    protected static function getOptions(string|array $options): array
     {
         if (is_string($options)) {
             $key = sprintf('Thumbnails.presets.%s', $options);

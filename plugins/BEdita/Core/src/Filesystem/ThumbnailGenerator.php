@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Filesystem;
 
 use Cake\Core\InstanceConfigTrait;
@@ -31,7 +30,7 @@ abstract class ThumbnailGenerator implements GeneratorInterface
      *
      * @var array
      */
-    protected $_defaultConfig = [];
+    protected array $_defaultConfig = [];
 
     /**
      * Initialize filesystem adapter class.

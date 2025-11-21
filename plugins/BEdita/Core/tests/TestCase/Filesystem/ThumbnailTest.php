@@ -12,10 +12,10 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\Filesystem;
 
 use BEdita\Core\Filesystem\Exception\InvalidStreamException;
+use BEdita\Core\Filesystem\Exception\InvalidThumbnailOptionsException;
 use BEdita\Core\Filesystem\Thumbnail;
 use BEdita\Core\Filesystem\ThumbnailGenerator;
 use BEdita\Core\Filesystem\ThumbnailRegistry;
@@ -24,10 +24,15 @@ use BEdita\Core\Test\TestCase\Filesystem\Thumbnail\TestGenerator;
 use BEdita\Core\Utility\Text;
 use Cake\Core\Configure;
 use Cake\TestSuite\TestCase;
+use Exception;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
+use RuntimeException;
 
 /**
- * @coversDefaultClass \BEdita\Core\Filesystem\Thumbnail
+ * {@see \BEdita\Core\Filesystem\Thumbnail} Test Case
  */
+#[CoversClass(Thumbnail::class)]
 class ThumbnailTest extends TestCase
 {
     /**
@@ -62,7 +67,7 @@ class ThumbnailTest extends TestCase
         $this->originalRegistry = Thumbnail::getRegistry();
         $this->originalConfig = array_combine(
             $keys,
-            array_map([Thumbnail::class, 'getConfig'], $keys)
+            array_map([Thumbnail::class, 'getConfig'], $keys),
         );
 
         Thumbnail::setRegistry(null);
@@ -90,7 +95,6 @@ class ThumbnailTest extends TestCase
      * Test `setRegistry` method.
      *
      * @return void
-     * @covers ::setRegistry()
      */
     public function testSetRegistry()
     {
@@ -105,7 +109,6 @@ class ThumbnailTest extends TestCase
      * Test `getRegistry` method.
      *
      * @return void
-     * @covers ::getRegistry()
      */
     public function testGetRegistry()
     {
@@ -121,7 +124,6 @@ class ThumbnailTest extends TestCase
      * Test `getGenerator` with a generator that hasn't been loaded yet.
      *
      * @return void
-     * @covers ::getGenerator()
      */
     public function testGetGeneratorNotLoaded()
     {
@@ -139,7 +141,6 @@ class ThumbnailTest extends TestCase
      * Test `getGenerator` with a generator that has already been loaded.
      *
      * @return void
-     * @covers ::getGenerator()
      */
     public function testGetGeneratorLoaded()
     {
@@ -157,7 +158,7 @@ class ThumbnailTest extends TestCase
      *
      * @return array
      */
-    public function getProvider()
+    public static function getProvider(): array
     {
         return [
             'existing' => [
@@ -194,9 +195,9 @@ class ThumbnailTest extends TestCase
                 new InvalidStreamException(),
             ],
             'other error' => [
-                new \RuntimeException('Some exception', -1),
+                new RuntimeException('Some exception', -1),
                 false,
-                new \RuntimeException('Some exception', -1),
+                new RuntimeException('Some exception', -1),
             ],
         ];
     }
@@ -210,13 +211,11 @@ class ThumbnailTest extends TestCase
      *      of its generation? `true` for successful synchronous generation, `false` for successful
      *      asynchronous generation, exception for errors.
      * @return void
-     * @dataProvider getProvider()
-     * @covers ::get()
-     * @covers ::getOptions()
      */
+    #[DataProvider('getProvider')]
     public function testGet($expected, $exists, $result = null)
     {
-        if ($expected instanceof \Exception) {
+        if ($expected instanceof Exception) {
             $this->expectException(get_class($expected));
             $this->expectExceptionCode($expected->getCode());
             $this->expectExceptionMessage($expected->getMessage());
@@ -230,8 +229,8 @@ class ThumbnailTest extends TestCase
         $stream = new Stream(['uuid' => Text::uuid()]);
 
         $mock = $this->getMockBuilder(ThumbnailGenerator::class)
-            ->onlyMethods(['getUrl', 'exists', 'generate'])
-            ->getMockForAbstractClass();
+            ->getMock();
+        $mock->method('initialize')->willReturn(true);
         $mock->expects(static::once())
             ->method('getUrl')
             ->with($stream, $options)
@@ -244,7 +243,7 @@ class ThumbnailTest extends TestCase
             ->method('generate');
         if (!$exists) {
             $invocation = $invocation->with($stream, $options);
-            if ($result instanceof \Exception) {
+            if ($result instanceof Exception) {
                 $invocation->willThrowException($result);
             } else {
                 $invocation->willReturn($result);
@@ -262,11 +261,10 @@ class ThumbnailTest extends TestCase
      * Test `getOptions` method with a missing preset.
      *
      * @return void
-     * @covers ::getOptions()
      */
     public function testGetOptionsMissingPreset()
     {
-        $this->expectException(\BEdita\Core\Filesystem\Exception\InvalidThumbnailOptionsException::class);
+        $this->expectException(InvalidThumbnailOptionsException::class);
         $this->expectExceptionCode('400');
         $this->expectExceptionMessage('Preset "gustavo" not found');
         Configure::delete('Thumbnails.presets.gustavo');
@@ -278,11 +276,10 @@ class ThumbnailTest extends TestCase
      * Test `getOptions` method with custom options disallowed.
      *
      * @return void
-     * @covers ::getOptions()
      */
     public function testGetOptionsCustomNotAllowed()
     {
-        $this->expectException(\BEdita\Core\Filesystem\Exception\InvalidThumbnailOptionsException::class);
+        $this->expectException(InvalidThumbnailOptionsException::class);
         $this->expectExceptionCode('400');
         $this->expectExceptionMessage('Thumbnails can only be generated for one of the configured presets');
         Configure::write('Thumbnails.allowAny', false);
@@ -294,15 +291,14 @@ class ThumbnailTest extends TestCase
      * Test `delete` method.
      *
      * @return void
-     * @covers ::delete()
      */
     public function testDelete()
     {
         $stream = new Stream(['uuid' => Text::uuid()]);
 
         $mock = $this->getMockBuilder(ThumbnailGenerator::class)
-            ->onlyMethods(['delete'])
-            ->getMockForAbstractClass();
+            ->getMock();
+        $mock->method('initialize')->willReturn(true);
         $mock->expects(static::once())
             ->method('delete')
             ->with($stream);
@@ -315,7 +311,6 @@ class ThumbnailTest extends TestCase
     /**
      * Test `get` with private URL
      *
-     * @covers ::get()
      * @return void
      */
     public function testGetPrivateUrl(): void

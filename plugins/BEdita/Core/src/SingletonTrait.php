@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core;
 
 /**
@@ -62,7 +61,7 @@ trait SingletonTrait
      *
      * @return static|null
      */
-    final public static function getInstance()
+    final public static function getInstance(): ?static
     {
         if (static::$uniqueInstance === null) {
             static::$uniqueInstance = new static();

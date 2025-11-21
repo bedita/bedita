@@ -25,14 +25,16 @@ use Cake\Queue\Job\Message;
 use Cake\TestSuite\TestCase;
 use Enqueue\Null\NullConnectionFactory;
 use Enqueue\Null\NullMessage;
+use Exception;
 use Interop\Queue\Processor;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 use RuntimeException;
 
 /**
  * {@see \BEdita\Core\Job\QueueJob} Test Case
- *
- * @coversDefaultClass \BEdita\Core\Job\QueueJob
  */
+#[CoversClass(QueueJob::class)]
 class QueueJobTest extends TestCase
 {
     /**
@@ -47,7 +49,7 @@ class QueueJobTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.AsyncJobs',
     ];
 
@@ -72,9 +74,10 @@ class QueueJobTest extends TestCase
             ->getMock();
 
         $method = $service->method('run');
-        $method->will(static::returnValue($return));
-        if ($return instanceof \Exception) {
+        if ($return instanceof Exception) {
             $method->willThrowException($return);
+        } else {
+            $method->willReturn($return);
         }
 
         return $service;
@@ -100,7 +103,7 @@ class QueueJobTest extends TestCase
      *
      * @return array
      */
-    public function executeProvider(): array
+    public static function executeProvider(): array
     {
         return [
             'ok' => [
@@ -140,10 +143,8 @@ class QueueJobTest extends TestCase
      * @param bool|\Exception $return Service return value
      * @param string $uuid Job UUID
      * @return void
-     * @dataProvider executeProvider
-     * @covers ::execute()
-     * @covers ::run()
      */
+    #[DataProvider('executeProvider')]
     public function testExecute(string $expected, $return, string $uuid = self::TEST_UUID): void
     {
         ServiceRegistry::set('example', $this->getMockService($return));
@@ -159,7 +160,6 @@ class QueueJobTest extends TestCase
      * Test the case when the service fails and then the job is missing.
      *
      * @return void
-     * @covers ::execute()
      */
     public function testServiceFailsThenMissingAsyncJob(): void
     {

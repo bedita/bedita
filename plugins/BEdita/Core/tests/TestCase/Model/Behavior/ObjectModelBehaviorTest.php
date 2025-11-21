@@ -12,30 +12,36 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\Model\Behavior;
 
+use BEdita\Core\Model\Behavior\ObjectModelBehavior;
+use BEdita\Core\Model\Table\ObjectsTable;
 use Cake\ORM\Locator\LocatorAwareTrait;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Hash;
+use PHPUnit\Framework\Attributes\CoversClass;
 
 /**
  * {@see \BEdita\Core\Model\Behavior\ObjectModelBehavior} Test Case
- *
- * @property \BEdita\Core\Model\Table\ObjectsTable $Documents
- * @coversDefaultClass \BEdita\Core\Model\Behavior\ObjectModelBehavior
  */
-#[\AllowDynamicProperties]
+#[CoversClass(ObjectModelBehavior::class)]
 class ObjectModelBehaviorTest extends TestCase
 {
     use LocatorAwareTrait;
+
+    /**
+     * Instance of Documents table
+     *
+     * @var \BEdita\Core\Model\Table\ObjectsTable
+     */
+    protected ObjectsTable $Documents;
 
     /**
      * Fixtures
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.FakeAnimals',
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.PropertyTypes',
@@ -52,7 +58,7 @@ class ObjectModelBehaviorTest extends TestCase
     /**
      * Test `initialize` method.
      *
-     * @covers ::initialize()
+     * @return void
      */
     public function testInitialize(): void
     {
@@ -67,7 +73,7 @@ class ObjectModelBehaviorTest extends TestCase
     /**
      * Test `addRelated` method.
      *
-     * @covers ::addRelated()
+     * @return void
      */
     public function testAddRelated(): void
     {
@@ -76,7 +82,7 @@ class ObjectModelBehaviorTest extends TestCase
         $related = $this->Documents->get(2);
         $this->Documents->addRelated($entity, 'test', [$related]);
 
-        $entity = $this->Documents->get(3, ['contain' => 'Test']);
+        $entity = $this->Documents->get(3, contain: 'Test');
         $ids = Hash::extract($entity->get('test'), '{n}.id');
         sort($ids);
         static::assertEquals([2, 4], $ids);
@@ -85,7 +91,7 @@ class ObjectModelBehaviorTest extends TestCase
     /**
      * Test `replaceRelated` method.
      *
-     * @covers ::replaceRelated()
+     * @return void
      */
     public function testReplaceRelated(): void
     {
@@ -94,7 +100,7 @@ class ObjectModelBehaviorTest extends TestCase
         $related = $this->Documents->get(2);
         $this->Documents->replaceRelated($entity, 'test', [$related]);
 
-        $entity = $this->Documents->get(3, ['contain' => 'Test']);
+        $entity = $this->Documents->get(3, contain: 'Test');
         $ids = Hash::extract($entity->get('test'), '{n}.id');
         static::assertEquals([2], $ids);
     }
@@ -102,7 +108,7 @@ class ObjectModelBehaviorTest extends TestCase
     /**
      * Test `removeRelated` method.
      *
-     * @covers ::removeRelated()
+     * @return void
      */
     public function testRemoveRelated(): void
     {
@@ -111,7 +117,7 @@ class ObjectModelBehaviorTest extends TestCase
         $related = $this->Documents->get(4);
         $this->Documents->removeRelated($entity, 'test', [$related]);
 
-        $entity = $this->Documents->get(3, ['contain' => 'Test']);
+        $entity = $this->Documents->get(3, contain: 'Test');
         $ids = Hash::extract($entity->get('test'), '{n}.id');
         static::assertEquals([], $ids);
     }

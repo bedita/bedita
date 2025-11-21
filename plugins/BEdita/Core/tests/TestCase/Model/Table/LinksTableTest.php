@@ -12,18 +12,19 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\Model\Table;
 
+use BEdita\Core\Model\Table\LinksTable;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Hash;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * {@see \BEdita\Core\Model\Table\LinksTable} Test Case
- *
- * @coversDefaultClass \BEdita\Core\Model\Table\LinksTable
  */
+#[CoversClass(LinksTable::class)]
 class LinksTableTest extends TestCase
 {
     /**
@@ -38,7 +39,7 @@ class LinksTableTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.Relations',
         'plugin.BEdita/Core.RelationTypes',
@@ -51,7 +52,7 @@ class LinksTableTest extends TestCase
      *
      * @return array
      */
-    public function validationProvider()
+    public static function validationProvider(): array
     {
         return [
             'ok' => [
@@ -72,14 +73,12 @@ class LinksTableTest extends TestCase
      * @param string[] $expected Expected errors.
      * @param array $data Data.
      * @return void
-     * @dataProvider validationProvider()
-     * @covers ::initialize()
-     * @covers ::validationDefault()
      */
+    #[DataProvider('validationProvider')]
     public function testValidation(array $expected, array $data)
     {
         $this->Links = TableRegistry::getTableLocator()->get('Links');
-        $entity = $this->Links->newEntity([]);
+        $entity = $this->Links->newEmptyEntity();
         $entity = $this->Links->patchEntity($entity, $data);
         $errors = array_keys(Hash::flatten($entity->getErrors()));
 

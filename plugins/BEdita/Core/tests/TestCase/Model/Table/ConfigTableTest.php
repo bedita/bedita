@@ -12,21 +12,21 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\Model\Table;
 
+use BEdita\Core\Model\Table\ConfigTable;
 use BEdita\Core\State\CurrentApplication;
 use Cake\Cache\Cache;
-use Cake\Http\Exception\BadRequestException;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Hash;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * {@see \BEdita\Core\Model\Table\ConfigTable} Test Case
- *
- * @coversDefaultClass \BEdita\Core\Model\Table\ConfigTable
  */
+#[CoversClass(ConfigTable::class)]
 class ConfigTableTest extends TestCase
 {
     /**
@@ -41,7 +41,7 @@ class ConfigTableTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.Applications',
         'plugin.BEdita/Core.Config',
     ];
@@ -69,11 +69,9 @@ class ConfigTableTest extends TestCase
      * Test initialization.
      *
      * @return void
-     * @coversNothing
      */
     public function testInitialization()
     {
-        $this->Config->initialize([]);
         $this->assertEquals('config', $this->Config->getTable());
         $this->assertEquals('id', $this->Config->getPrimaryKey());
     }
@@ -83,7 +81,7 @@ class ConfigTableTest extends TestCase
      *
      * @return array
      */
-    public function validationProvider()
+    public static function validationProvider(): array
     {
         return [
             'valid' => [
@@ -118,9 +116,8 @@ class ConfigTableTest extends TestCase
      * @param bool $expected Expected result.
      * @param array $data Data to be validated.
      * @return void
-     * @dataProvider validationProvider
-     * @coversNothing
      */
+    #[DataProvider('validationProvider')]
     public function testValidation($expected, array $data)
     {
         $config = $this->Config->newEntity($data);
@@ -138,7 +135,6 @@ class ConfigTableTest extends TestCase
      * Test `mine` finder
      *
      * @return void
-     * @covers ::findMine()
      */
     public function testFindMine()
     {
@@ -160,7 +156,7 @@ class ConfigTableTest extends TestCase
      *
      * @return array
      */
-    public function findNameProvider()
+    public static function findNameProvider(): array
     {
         return [
             'simple' => [
@@ -196,45 +192,27 @@ class ConfigTableTest extends TestCase
                     'name' => 'KeyName',
                 ],
             ],
-            'non assoc array' => [
-                1,
-                [
-                    'appVal',
-                ],
-            ],
-            'bad' => [
-                new BadRequestException('Missing mandatory option "name"'),
-                [
-                    'gustavo' => 'KeyName',
-                ],
-            ],
         ];
     }
 
     /**
      * Test `name` finder
      *
-     * @dataProvider findNameProvider
-     * @covers ::findName()
-     * @param int|\Exception $expected Result number or Exception.
+     * @param int $expected Result number.
      * @param array $data Find options.
      * @return void
      */
+    #[DataProvider('findNameProvider')]
     public function testFindName($expected, array $data)
     {
-        if ($expected instanceof \Exception) {
-            $this->expectException(get_class($expected));
-            $this->expectExceptionMessage($expected->getMessage());
-        }
-
-        $config = $this->Config->find('name', $data)->toArray();
+        $config = $this->Config->find('name', ...$data)->toArray();
         static::assertEquals($expected, count($config));
     }
 
     /**
      * Data provider for `testFetchConfig`
      */
-    public function fetchConfigProvider(): array
+    public static function fetchConfigProvider(): array
     {
         return [
             'group2' => [
@@ -267,9 +245,8 @@ class ConfigTableTest extends TestCase
      * @param int|null $appId Application ID.
      * @param string|null $context Context key.
      * @return void
-     * @dataProvider fetchConfigProvider
-     * @covers ::fetchConfig()
      */
+    #[DataProvider('fetchConfigProvider')]
     public function testFetchConfig(array $expected, ?int $appId, ?string $context): void
     {
         $cacheConf = $this->Config->behaviors()->get('QueryCache')->getConfig('cacheConfig');

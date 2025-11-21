@@ -17,10 +17,12 @@ namespace BEdita\API\Test\TestCase\Event;
 use BEdita\API\Event\CommonEventHandler;
 use Cake\Event\EventManager;
 use Cake\TestSuite\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
 
 /**
- * @coversDefaultClass \BEdita\API\Event\CommonEventHandler
+ * {@see \BEdita\API\Event\CommonEventHandler} Test Case
  */
+#[CoversClass(CommonEventHandler::class)]
 class CommonEventHandlerTest extends TestCase
 {
     /**
@@ -28,14 +30,12 @@ class CommonEventHandlerTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.FakeAnimals',
     ];
 
     /**
      * Test implemented events
-     *
-     * @covers ::implementedEvents()
      */
     public function testImplementedEvents()
     {

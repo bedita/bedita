@@ -12,16 +12,20 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Exception;
 
-use Cake\Core\Exception\CakeException as Exception;
+use Cake\Http\Exception\HttpException;
 
 /**
  * Exception raised when an already existing user is found.
  */
-class UserExistsException extends Exception
+class UserExistsException extends HttpException
 {
+    /**
+     * @inheritDoc
+     */
+    protected int $_defaultCode = 400;
+
     /**
      * Application error code
      *
@@ -38,7 +42,7 @@ class UserExistsException extends Exception
      */
     public function __construct(string $message, ?array $details = null)
     {
-        parent::__construct($message, 400);
+        parent::__construct($message);
         $this->_attributes['code'] = static::BE_USER_EXISTS;
         $this->_attributes['detail'] = $details;
     }

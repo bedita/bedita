@@ -14,11 +14,14 @@ declare(strict_types=1);
  */
 namespace BEdita\API\Test\TestCase\Controller;
 
+use BEdita\API\Controller\ObjectPermissionsController;
 use BEdita\API\TestSuite\IntegrationTestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
 
 /**
- * @coversDefaultClass \BEdita\API\Controller\ObjectPermissionsController
+ * {@see \BEdita\API\Controller\ObjectPermissionsController} Test Case
  */
+#[CoversClass(ObjectPermissionsController::class)]
 class ObjectPermissionsControllerTest extends IntegrationTestCase
 {
     /**
@@ -26,7 +29,7 @@ class ObjectPermissionsControllerTest extends IntegrationTestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.ObjectPermissions',
     ];
 
@@ -34,7 +37,6 @@ class ObjectPermissionsControllerTest extends IntegrationTestCase
      * Test index method.
      *
      * @return void
-     * @coversNothing
      */
     public function testIndex(): void
     {
@@ -85,7 +87,6 @@ class ObjectPermissionsControllerTest extends IntegrationTestCase
      * Test view method.
      *
      * @return void
-     * @coversNothing
      */
     public function testSingle(): void
     {
@@ -121,7 +122,6 @@ class ObjectPermissionsControllerTest extends IntegrationTestCase
      * Test add method.
      *
      * @return void
-     * @coversNothing
      */
     public function testAdd(): void
     {
@@ -147,7 +147,6 @@ class ObjectPermissionsControllerTest extends IntegrationTestCase
      * Test edit method.
      *
      * @return void
-     * @covers ::initialize()
      */
     public function testEdit(): void
     {
@@ -170,7 +169,6 @@ class ObjectPermissionsControllerTest extends IntegrationTestCase
      * Test delete method.
      *
      * @return void
-     * @coversNothing
      */
     public function testDelete(): void
     {

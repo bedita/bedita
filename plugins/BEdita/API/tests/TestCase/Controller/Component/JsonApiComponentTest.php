@@ -12,11 +12,13 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\API\Test\TestCase\Controller\Component;
 
 use BEdita\API\Controller\Component\JsonApiComponent;
 use BEdita\API\Network\Exception\UnsupportedMediaTypeException;
+use BEdita\API\View\JsonApiFallbackView;
+use BEdita\API\View\JsonApiNegotiationRequiredView;
+use BEdita\API\View\JsonApiView;
 use Cake\Controller\ComponentRegistry;
 use Cake\Controller\Controller;
 use Cake\Event\Event;
@@ -25,10 +27,11 @@ use Cake\Http\ServerRequest;
 use Cake\ORM\TableRegistry;
 use Cake\Routing\Router;
 use Cake\TestSuite\TestCase;
+use Exception;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
-/**
- * @coversDefaultClass \BEdita\API\Controller\Component\JsonApiComponent
- */
+#[CoversClass(JsonApiComponent::class)]
 class JsonApiComponentTest extends TestCase
 {
     /**
@@ -36,7 +39,7 @@ class JsonApiComponentTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.Relations',
         'plugin.BEdita/Core.RelationTypes',
@@ -63,7 +66,7 @@ class JsonApiComponentTest extends TestCase
      *
      * @return array
      */
-    public function initializeProvider()
+    public static function initializeProvider(): array
     {
         return [
             'default' => [
@@ -85,22 +88,25 @@ class JsonApiComponentTest extends TestCase
      * @param string $expectedMimeType Expected response MIME Type.
      * @param array $config Component configuration.
      * @return void
-     * @dataProvider initializeProvider
-     * @covers ::initialize()
      */
-    public function testInitialize($expectedMimeType, array $config)
+    #[DataProvider('initializeProvider')]
+    public function testInitialize(string $expectedMimeType, array $config): void
     {
-        $component = new JsonApiComponent(new ComponentRegistry(new Controller()), $config);
-
+        $component = new JsonApiComponent(new ComponentRegistry(new Controller(new ServerRequest())), $config);
+        $viewClasses = $component->getController()->viewClasses();
+        $expected = [
+            JsonApiView::class,
+            JsonApiFallbackView::class,
+            JsonApiNegotiationRequiredView::class,
+        ];
+        static::assertEquals($expected, $viewClasses);
         static::assertEquals($expectedMimeType, $component->getController()->getResponse()->getHeaderLine('content-type'));
-        static::assertArrayHasKey('jsonapi', $component->RequestHandler->getConfig('viewClassMap'));
     }
 
     /**
      * Test component `getLinks()` method.
      *
      * @return void
-     * @covers ::getLinks()
      */
     public function testLinks()
     {
@@ -126,11 +132,33 @@ class JsonApiComponentTest extends TestCase
     }
 
     /**
+     * Test `getMeta()` with no pagination data.
+     *
+     * @return void
+     */
+    public function testGetMetaEmpty(): void
+    {
+        $request = new ServerRequest([
+            'params' => [
+                'plugin' => 'BEdita/API',
+                'controller' => 'Roles',
+                'action' => 'index',
+                '_method' => 'GET',
+            ],
+            'base' => '/',
+            'url' => 'roles',
+        ]);
+        $controller = new Controller($request);
+        $component = new JsonApiComponent(new ComponentRegistry($controller), []);
+        static::assertEquals([], $component->getMeta());
+    }
+
+    /**
      * Data provider for `testPagination` test case.
      *
      * @return array
      */
-    public function paginationProvider()
+    public static function paginationProvider(): array
     {
         return [
             'default' => [
@@ -208,10 +236,8 @@ class JsonApiComponentTest extends TestCase
      * @param array $expectedMeta Expected meta array.
      * @param array $query Request query params.
      * @return void
-     * @dataProvider paginationProvider
-     * @covers ::getLinks()
-     * @covers ::getMeta()
      */
+    #[DataProvider('paginationProvider')]
     public function testPagination(array $expectedLinks, array $expectedMeta, array $query)
     {
         $request = new ServerRequest([
@@ -226,7 +252,7 @@ class JsonApiComponentTest extends TestCase
             'query' => $query,
         ]);
         $controller = new Controller($request);
-        $controller->paginate(TableRegistry::getTableLocator()->get('Roles'));
+        $controller->set('result', $controller->paginate(TableRegistry::getTableLocator()->get('Roles')));
         $component = new JsonApiComponent(new ComponentRegistry($controller), []);
 
         static::assertEquals($expectedLinks, $component->getLinks());
@@ -240,9 +266,8 @@ class JsonApiComponentTest extends TestCase
      * @param array $expectedMeta Expected meta array.
      * @param array $query Request query params.
      * @return void
-     * @dataProvider paginationProvider
-     * @covers ::beforeRender()
      */
+    #[DataProvider('paginationProvider')]
     public function testBeforeRender(array $expectedLinks, array $expectedMeta, array $query)
     {
         $base = [
@@ -261,7 +286,7 @@ class JsonApiComponentTest extends TestCase
             'query' => $query,
         ]);
         $controller = new Controller($request);
-        $controller->paginate(TableRegistry::getTableLocator()->get('Roles'));
+        $controller->set('result', $controller->paginate(TableRegistry::getTableLocator()->get('Roles')));
         $controller->set([
             '_links' => $base,
             '_meta' => $base,
@@ -278,7 +303,6 @@ class JsonApiComponentTest extends TestCase
      * Test `error()` method.
      *
      * @return void
-     * @covers ::error()
      */
     public function testError()
     {
@@ -292,7 +316,7 @@ class JsonApiComponentTest extends TestCase
             ],
         ];
 
-        $controller = new Controller();
+        $controller = new Controller(new ServerRequest());
         $component = new JsonApiComponent(new ComponentRegistry($controller), []);
 
         $component->error(500, 'Example error', 'Example description', 'my-code', ['key' => 'Example metadata']);
@@ -305,7 +329,7 @@ class JsonApiComponentTest extends TestCase
      *
      * @return array
      */
-    public function beforeFilterProvider()
+    public static function beforeFilterProvider(): array
     {
         return [
             'valid' => [
@@ -341,22 +365,20 @@ class JsonApiComponentTest extends TestCase
      * @param \Excepion|array $expected Exception or expected parsed array.
      * @param string $input Input to be parsed.
      * @return void
-     * @dataProvider beforeFilterProvider
-     * @covers ::beforeFilter()
-     * @covers ::parseInput()
      */
+    #[DataProvider('beforeFilterProvider')]
     public function testParseJsonInput($expected, array $input, array $config = []): void
     {
-        if ($expected instanceof \Exception) {
+        if ($expected instanceof Exception) {
             $this->expectException(get_class($expected));
             $this->expectExceptionMessage($expected->getMessage());
         }
 
-        $component = new JsonApiComponent(new ComponentRegistry(new Controller()));
+        $component = new JsonApiComponent(new ComponentRegistry(new Controller(new ServerRequest())));
         $component->setConfig($config);
         $request = $component->getController()->getRequest();
         $component->getController()->setRequest(
-            $request->withParsedBody($input)->withHeader('Content-Type', 'application/json')
+            $request->withParsedBody($input)->withHeader('Content-Type', 'application/json'),
         );
 
         $component->beforeFilter(new Event('test'));
@@ -371,7 +393,7 @@ class JsonApiComponentTest extends TestCase
      *
      * @return array
      */
-    public function allowedResourceTypesProvider()
+    public static function allowedResourceTypesProvider(): array
     {
         return [
             'single' => [
@@ -427,10 +449,8 @@ class JsonApiComponentTest extends TestCase
      * @param mixed $types Allowed types.
      * @param array $data Data to be checked.
      * @return void
-     * @dataProvider allowedResourceTypesProvider
-     * @covers ::allowedResourceTypes()
-     * @covers ::startup()
      */
+    #[DataProvider('allowedResourceTypesProvider')]
     public function testAllowedResourceTypes($expected, $types, array $data)
     {
         if (!$expected) {
@@ -459,7 +479,7 @@ class JsonApiComponentTest extends TestCase
      *
      * @return array
      */
-    public function checkMediaTypeProvider()
+    public static function checkMediaTypeProvider(): array
     {
         return [
             'ok' => [
@@ -487,12 +507,11 @@ class JsonApiComponentTest extends TestCase
      * @param string $accept Value of "Accept" header.
      * @param bool $checkMediaType Is media type check enabled?
      * @return void
-     * @dataProvider checkMediaTypeProvider
-     * @covers ::startup()
      */
+    #[DataProvider('checkMediaTypeProvider')]
     public function testCheckMediaType($expected, $accept, $checkMediaType)
     {
-        if ($expected instanceof \Exception) {
+        if ($expected instanceof Exception) {
             $this->expectException(get_class($expected));
             $this->expectExceptionCode($expected->getCode());
             $this->expectExceptionMessage($expected->getMessage());
@@ -518,7 +537,7 @@ class JsonApiComponentTest extends TestCase
      *
      * @return array
      */
-    public function allowClientGeneratedIdsProvider()
+    public static function allowClientGeneratedIdsProvider(): array
     {
         return [
             'single' => [
@@ -562,10 +581,8 @@ class JsonApiComponentTest extends TestCase
      * @param bool $expected Expected success.
      * @param array $data Data to be checked.
      * @return void
-     * @dataProvider allowClientGeneratedIdsProvider
-     * @covers ::allowClientGeneratedIds()
-     * @covers ::startup()
      */
+    #[DataProvider('allowClientGeneratedIdsProvider')]
     public function testAllowClientGeneratedIds($expected, array $data)
     {
         if (!$expected) {

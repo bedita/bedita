@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Job\Service;
 
 use BEdita\Core\Filesystem\Thumbnail;
@@ -21,6 +20,7 @@ use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\Log\Log;
 use Cake\ORM\TableRegistry;
 use Cake\Utility\Hash;
+use Exception;
 
 /**
  * Service to handle asynchronous generation of thumbnails.
@@ -32,7 +32,7 @@ class ThumbnailService implements JobService
     /**
      * @inheritDoc
      */
-    public function run(array $payload, array $options = [])
+    public function run(array $payload, array $options = []): bool
     {
         try {
             /** @var \BEdita\Core\Model\Table\StreamsTable $table */
@@ -48,7 +48,7 @@ class ThumbnailService implements JobService
             Log::info(sprintf('Thumbnail service could not find stream "%s"', Hash::get($payload, 'uuid')));
 
             return true;
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             // Another error occurred. Log the error, and mark job as failed.
             Log::error($e->getMessage());
 

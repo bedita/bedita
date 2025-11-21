@@ -12,15 +12,16 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Job;
 
+use AllowDynamicProperties;
 use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\Log\LogTrait;
 use Cake\ORM\Locator\LocatorAwareTrait;
 use Cake\Queue\Job\JobInterface;
 use Cake\Queue\Job\Message;
 use Cake\Utility\Hash;
+use Exception;
 use Interop\Queue\Processor;
 
 /**
@@ -28,7 +29,7 @@ use Interop\Queue\Processor;
  *
  * @property \BEdita\Core\Model\Table\AsyncJobsTable $AsyncJobs
  */
-#[\AllowDynamicProperties]
+#[AllowDynamicProperties]
 class QueueJob implements JobInterface
 {
     use LocatorAwareTrait;
@@ -72,7 +73,7 @@ class QueueJob implements JobInterface
      * @param string $uuid Job UUID.
      * @return bool
      */
-    protected function run($uuid): bool
+    protected function run(string $uuid): bool
     {
         $asyncJob = $this->AsyncJobs->lock($uuid);
         $success = false;
@@ -81,7 +82,7 @@ class QueueJob implements JobInterface
             $result = $asyncJob->run();
             $success = is_bool($result) ? $result : (bool)Hash::get((array)$result, 'success');
             $messages = is_array($result) ? (array)Hash::get($result, 'messages') : [];
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $messages[] = $e->getMessage();
             $this->log(sprintf('Error running job "%s" - %s', $uuid, $e->getMessage()), 'error');
         } finally {

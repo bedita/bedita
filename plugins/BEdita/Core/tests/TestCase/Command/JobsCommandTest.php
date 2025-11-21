@@ -14,18 +14,21 @@ declare(strict_types=1);
  */
 namespace BEdita\Core\Test\TestCase\Command;
 
+use BadMethodCallException;
+use BEdita\Core\Command\JobsCommand;
 use BEdita\Core\Job\JobService;
 use BEdita\Core\Job\ServiceRegistry;
 use Cake\Command\Command;
 use Cake\Console\TestSuite\ConsoleIntegrationTestTrait;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Text;
+use Exception;
+use PHPUnit\Framework\Attributes\CoversClass;
 
 /**
  * {@see BEdita\Core\Command\JobsCommand} Test Case
- *
- * @coversDefaultClass \BEdita\Core\Command\JobsCommand
  */
+#[CoversClass(JobsCommand::class)]
 class JobsCommandTest extends TestCase
 {
     use ConsoleIntegrationTestTrait;
@@ -35,18 +38,9 @@ class JobsCommandTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.AsyncJobs',
     ];
-
-    /**
-     * @inheritDoc
-     */
-    protected function setUp(): void
-    {
-        parent::setUp();
-        $this->useCommandRunner();
-    }
 
     /**
      * @inheritDoc
@@ -69,9 +63,10 @@ class JobsCommandTest extends TestCase
             ->getMock();
 
         $method = $service->method('run');
-        $method->will(static::returnValue($return));
-        if ($return instanceof \Exception) {
+        if ($return instanceof Exception) {
             $method->willThrowException($return);
+        } else {
+            $method->willReturn($return);
         }
 
         return $service;
@@ -81,7 +76,6 @@ class JobsCommandTest extends TestCase
      * Test buildOptionParser method
      *
      * @return void
-     * @covers ::buildOptionParser()
      */
     public function testBuildOptionParser()
     {
@@ -98,8 +92,6 @@ class JobsCommandTest extends TestCase
      * Test `process` method via `jobs run <uuid>`.
      *
      * @return void
-     * @covers ::execute()
-     * @covers ::process()
      */
     public function testRetrocompatibility(): void
     {
@@ -115,8 +107,6 @@ class JobsCommandTest extends TestCase
      * Test `process` method.
      *
      * @return void
-     * @covers ::execute()
-     * @covers ::process()
      */
     public function testProcess()
     {
@@ -132,8 +122,6 @@ class JobsCommandTest extends TestCase
      * Test `process` method with invalid job.
      *
      * @return void
-     * @covers ::execute()
-     * @covers ::process()
      */
     public function testProcessInvalid()
     {
@@ -149,12 +137,10 @@ class JobsCommandTest extends TestCase
      * Test `process` method with smooth failure.
      *
      * @return void
-     * @covers ::execute()
-     * @covers ::process()
      */
     public function testProcessFailException()
     {
-        $exception = new \BadMethodCallException('example');
+        $exception = new BadMethodCallException('example');
         $uuid = 'd6bb8c84-6b29-432e-bb84-c3c4b2c1b99c';
         ServiceRegistry::set('example', $this->getMockService($exception));
         $this->exec(sprintf('jobs process %s', $uuid));
@@ -167,8 +153,6 @@ class JobsCommandTest extends TestCase
      * Test `process` method with smooth failure.
      *
      * @return void
-     * @covers ::execute()
-     * @covers ::process()
      */
     public function testProcessFailSmooth()
     {
@@ -183,8 +167,6 @@ class JobsCommandTest extends TestCase
      * Test `process` method with fail hard mode.
      *
      * @return void
-     * @covers ::execute()
-     * @covers ::process()
      */
     public function testProcessFailHard()
     {
@@ -199,8 +181,6 @@ class JobsCommandTest extends TestCase
      * Test run pending jobs.
      *
      * @return void
-     * @covers ::execute()
-     * @covers ::pending()
      */
     public function testPending()
     {
@@ -218,8 +198,6 @@ class JobsCommandTest extends TestCase
      * Test run pending jobs with no pending jobs to run.
      *
      * @return void
-     * @covers ::execute()
-     * @covers ::pending()
      */
     public function testPendingEmpty()
     {
@@ -234,8 +212,6 @@ class JobsCommandTest extends TestCase
      * Test run pending jobs with fail hard mode.
      *
      * @return void
-     * @covers ::execute()
-     * @covers ::pending()
      */
     public function testPendingFailHard()
     {

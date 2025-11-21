@@ -1,7 +1,7 @@
 <?php
 
 use Cake\Utility\Text;
-use Migrations\AbstractSeed;
+use Migrations\BaseSeed;
 
 /**
  * Create new application from env vars:
@@ -14,26 +14,24 @@ use Migrations\AbstractSeed;
  *  - If an application `name` with same value (BEDITA_APP_NAME or `manager`)
  * is found an hash suffix is added.
  */
-class ApplicationFromEnvSeed extends AbstractSeed
+class ApplicationFromEnvSeed extends BaseSeed
 {
 
     /**
      * {@inheritDoc}
      */
-    public function run()
+    public function run(): void
     {
         $apiKey = getenv('BEDITA_API_KEY');
         if (empty($apiKey)) {
-            echo "Mandatory environment variable missing: BEDITA_API_KEY\n";
-            echo 'No data seeded!';
-
-            return -1;
+            $this->io->error('Mandatory environment variable missing: BEDITA_API_KEY');
+            $this->io->abort('No data seeded!');
         }
-        $appName = getenv('BEDITA_APP_NAME') ? getenv('BEDITA_APP_NAME') : 'manager';
 
+        $appName = getenv('BEDITA_APP_NAME') ? getenv('BEDITA_APP_NAME') : 'manager';
         $appRow = $this->fetchAll(sprintf("SELECT id FROM applications where api_key='%s'", $apiKey));
         if (!empty($appRow)) {
-            return 0;
+            return;
         }
 
         $row = [

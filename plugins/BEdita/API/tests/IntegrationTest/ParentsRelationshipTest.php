@@ -17,12 +17,13 @@ namespace BEdita\API\Test\IntegrationTest;
 use BEdita\API\TestSuite\IntegrationTestCase;
 use Cake\ORM\TableRegistry;
 use Cake\Utility\Hash;
+use PHPUnit\Framework\Attributes\CoversNothing;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * Test operations on `parents` relationships.
- *
- * @coversNothing
  */
+#[CoversNothing]
 class ParentsRelationshipTest extends IntegrationTestCase
 {
     /**
@@ -80,12 +81,9 @@ class ParentsRelationshipTest extends IntegrationTestCase
         // POST: add 3 folders as parents relationships
         $foldersTable = TableRegistry::getTableLocator()->get('Folders');
         $folders = $foldersTable
-            ->find('list', [
-                'keyField' => 'uname',
-                'valueField' => 'id',
-            ])
+            ->find('list', keyField: 'uname', valueField: 'id')
             ->where(['object_type_id' => $foldersTable->objectType()->id])
-            ->order(['id' => 'ASC'])
+            ->orderBy(['id' => 'ASC'])
             ->limit(3)
             ->toArray();
 
@@ -187,7 +185,6 @@ class ParentsRelationshipTest extends IntegrationTestCase
      * Test deleted objects as `parent`
      *
      * @return void
-     * @coversNothing
      */
     public function testDeletedParent()
     {
@@ -226,7 +223,6 @@ class ParentsRelationshipTest extends IntegrationTestCase
      * Test setting an object's parent with position.
      *
      * @return void
-     * @coversNothing
      */
     public function testSetParentPosition()
     {
@@ -245,9 +241,9 @@ class ParentsRelationshipTest extends IntegrationTestCase
         $this->post('/documents/2/relationships/parents', json_encode(compact('data')));
         $this->assertResponseCode(200);
 
-        $childrenIds = $this->Trees->find('list', ['valueField' => 'object_id'])
+        $childrenIds = $this->Trees->find('list', valueField: 'object_id')
             ->where(['parent_id' => 12])
-            ->order(['tree_left' => 'ASC'])
+            ->orderBy(['tree_left' => 'ASC'])
             ->all()
             ->toList();
 
@@ -259,15 +255,15 @@ class ParentsRelationshipTest extends IntegrationTestCase
      *
      * @return array
      */
-    public function setParentPositionInvalidProvider()
+    public static function setParentPositionInvalidProvider(): array
     {
         return [
             'zero' => [
-                '[position.notEquals]: The provided value is invalid',
+                '[position.notEquals]: The provided value must not be equal to `0`',
                 0,
             ],
             'invalid string' => [
-                '[position.inList]: The provided value is invalid',
+                '[position.inList]: The provided value must be one of: `first, last`',
                 'gustavo',
             ],
             'empty' => [
@@ -283,9 +279,8 @@ class ParentsRelationshipTest extends IntegrationTestCase
      * @param string $expected Expected error.
      * @param int|string $position Desired position.
      * @return void
-     * @dataProvider setParentPositionInvalidProvider()
-     * @coversNothing
      */
+    #[DataProvider('setParentPositionInvalidProvider')]
     public function testSetParentPositionInvalid($expected, $position)
     {
         $this->configRequestHeaders('POST', $this->getUserAuthHeader());
@@ -306,9 +301,9 @@ class ParentsRelationshipTest extends IntegrationTestCase
         static::assertEquals('Invalid data', $result['error']['title']);
         static::assertEquals($expected, $result['error']['detail']);
 
-        $childrenIds = $this->Trees->find('list', ['valueField' => 'object_id'])
+        $childrenIds = $this->Trees->find('list', valueField: 'object_id')
             ->where(['parent_id' => 12])
-            ->order(['tree_left' => 'ASC'])
+            ->orderBy(['tree_left' => 'ASC'])
             ->all()
             ->toList();
 
@@ -319,7 +314,6 @@ class ParentsRelationshipTest extends IntegrationTestCase
      * Test `meta.relation` content in GET `parents` and GET `parent` response
      *
      * @return void
-     * @coversNothing
      */
     public function testParentsMeta()
     {

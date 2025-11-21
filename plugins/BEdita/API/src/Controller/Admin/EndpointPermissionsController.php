@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\API\Controller\Admin;
 
 /**
@@ -26,5 +25,5 @@ class EndpointPermissionsController extends AdminController
     /**
      * @inheritDoc
      */
-    public $defaultTable = 'EndpointPermissions';
+    public ?string $defaultTable = 'EndpointPermissions';
 }

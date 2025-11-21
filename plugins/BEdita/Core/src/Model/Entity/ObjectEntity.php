@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Model\Entity;
 
 use BEdita\Core\Utility\JsonApiSerializable;
@@ -31,12 +30,12 @@ use Cake\Utility\Hash;
  * @property int $object_type_id
  * @property bool $deleted
  * @property string $type
- * @property string $status
+ * @property \BEdita\Core\Model\Enum\ObjectEntityStatus $status
  * @property string $uname
  * @property bool $locked
- * @property \Cake\I18n\Time|\Cake\I18n\FrozenTime $created
- * @property \Cake\I18n\Time|\Cake\I18n\FrozenTime $modified
- * @property \Cake\I18n\Time|\Cake\I18n\FrozenTime $published
+ * @property \Cake\I18n\Time|\Cake\I18n\DateTime $created
+ * @property \Cake\I18n\Time|\Cake\I18n\DateTime $modified
+ * @property \Cake\I18n\Time|\Cake\I18n\DateTime $published
  * @property string $title
  * @property string $description
  * @property string $body
@@ -45,8 +44,8 @@ use Cake\Utility\Hash;
  * @property string $lang
  * @property int $created_by
  * @property int $modified_by
- * @property \Cake\I18n\Time|\Cake\I18n\FrozenTime $publish_start
- * @property \Cake\I18n\Time|\Cake\I18n\FrozenTime $publish_end
+ * @property \Cake\I18n\Time|\Cake\I18n\DateTime $publish_start
+ * @property \Cake\I18n\Time|\Cake\I18n\DateTime $publish_end
  * @property array $perms
  *
  * @property \BEdita\Core\Model\Entity\ObjectType $object_type
@@ -70,14 +69,14 @@ class ObjectEntity extends Entity implements JsonApiSerializable
     /**
      * Extra inline associations.
      *
-     * @var string[]
+     * @var array<string>
      */
-    protected static $extraInlineAssociations = [];
+    protected static array $extraInlineAssociations = [];
 
     /**
      * @inheritDoc
      */
-    protected $_accessible = [
+    protected array $_accessible = [
         '*' => true,
         'id' => false,
         'object_type_id' => false,
@@ -96,7 +95,7 @@ class ObjectEntity extends Entity implements JsonApiSerializable
     /**
      * @inheritDoc
      */
-    protected $_virtual = [
+    protected array $_virtual = [
         'type',
         'perms',
     ];
@@ -104,7 +103,7 @@ class ObjectEntity extends Entity implements JsonApiSerializable
     /**
      * @inheritDoc
      */
-    protected $_hidden = [
+    protected array $_hidden = [
         'created_by_user',
         'modified_by_user',
         'object_type_id',
@@ -121,7 +120,7 @@ class ObjectEntity extends Entity implements JsonApiSerializable
      *
      * @var array
      */
-    protected $notTranslatable = [
+    protected array $notTranslatable = [
         'custom_props',
         'extra',
         'lang',
@@ -139,7 +138,7 @@ class ObjectEntity extends Entity implements JsonApiSerializable
      * @param bool $virtual Include virtual (default false)
      * @return bool
      */
-    public function hasProperty(string $property, bool $hidden = true, bool $virtual = false)
+    public function hasProperty(string $property, bool $hidden = true, bool $virtual = false): bool
     {
         if ($hidden && !$virtual) {
             return array_key_exists($property, $this->_fields);
@@ -205,7 +204,7 @@ class ObjectEntity extends Entity implements JsonApiSerializable
     /**
      * Add extra associations
      *
-     * @param string[] $associations list of associations names
+     * @param array<string> $associations list of associations names
      * @return void
      */
     public static function setExtraInlineAssociations(array $associations, bool $merge = true): void
@@ -216,7 +215,7 @@ class ObjectEntity extends Entity implements JsonApiSerializable
     /**
      * @inheritDoc
      */
-    protected static function listAssociations(Table $Table, array $hidden = [])
+    protected static function listAssociations(Table $Table, array $hidden = []): array
     {
         $associations = static::jsonApiListAssociations($Table, $hidden);
         $associations = array_diff($associations, ['date_ranges', 'categories', 'tags', 'captions'], static::$extraInlineAssociations);
@@ -237,7 +236,7 @@ class ObjectEntity extends Entity implements JsonApiSerializable
         $entity = $this;
         $table = $this->getTable();
         if ($table->getRegistryAlias() !== $this->getSource()) {
-            $entity = $table->newEntity([]);
+            $entity = $table->newEmptyEntity();
         }
 
         $associations = $entity::listAssociations($table, $entity->getHidden());
@@ -249,7 +248,7 @@ class ObjectEntity extends Entity implements JsonApiSerializable
                     'relationship' => $relationship,
                     'id' => $this->getId(),
                 ],
-                true
+                true,
             );
             $related = Router::url(
                 [
@@ -258,10 +257,10 @@ class ObjectEntity extends Entity implements JsonApiSerializable
                     'relationship' => $relationship,
                     'related_id' => $this->getId(),
                 ],
-                true
+                true,
             );
 
-            if ($this->has($relationship)) {
+            if ($this->has($relationship) && $this->get($relationship) !== null) {
                 $entities = $this->get($relationship);
                 $data = $this->getIncluded($entities);
                 if (!is_array($entities)) {
@@ -313,7 +312,7 @@ class ObjectEntity extends Entity implements JsonApiSerializable
      *
      * @return void
      */
-    protected function loadObjectType()
+    protected function loadObjectType(): void
     {
         if (!$this->object_type) {
             try {
@@ -328,9 +327,9 @@ class ObjectEntity extends Entity implements JsonApiSerializable
     /**
      * Getter for `type` virtual property.
      *
-     * @return string
+     * @return string|null
      */
-    protected function _getType()
+    protected function _getType(): ?string
     {
         $this->loadObjectType();
         if (!$this->object_type) {
@@ -344,9 +343,9 @@ class ObjectEntity extends Entity implements JsonApiSerializable
      * Setter for `type` virtual property.
      *
      * @param string $type Object type name.
-     * @return string
+     * @return string|null
      */
-    protected function _setType($type)
+    protected function _setType(string $type): ?string
     {
         try {
             $this->object_type = TableRegistry::getTableLocator()->get('ObjectTypes')->get($type);

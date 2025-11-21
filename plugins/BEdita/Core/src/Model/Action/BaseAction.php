@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Model\Action;
 
 use Cake\Core\InstanceConfigTrait;
@@ -31,7 +30,7 @@ abstract class BaseAction
      *
      * @var array
      */
-    protected $_defaultConfig = [];
+    protected array $_defaultConfig = [];
 
     /**
      * Base action constructor.
@@ -51,7 +50,7 @@ abstract class BaseAction
      * @param array $config Configuration.
      * @return void
      */
-    protected function initialize(array $config)
+    protected function initialize(array $config): void
     {
     }
 
@@ -61,7 +60,7 @@ abstract class BaseAction
      * @param array $data Data.
      * @return mixed
      */
-    abstract public function execute(array $data = []);
+    abstract public function execute(array $data = []): mixed;
 
     /**
      * Magic method to make action object invokable.
@@ -69,7 +68,7 @@ abstract class BaseAction
      * @param array $data Data.
      * @return mixed
      */
-    final public function __invoke(array $data = [])
+    final public function __invoke(array $data = []): mixed
     {
         return $this->execute($data);
     }

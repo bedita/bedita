@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\ORM\Inheritance;
 
 use Cake\Database\TypeFactory;
@@ -53,7 +52,7 @@ class Marshaller extends CakeMarshaller
      * @param array $data The data that has to be marshalled
      * @return array
      */
-    protected function buildTablePropertyMap(CakeTable $table, array $data)
+    protected function buildTablePropertyMap(CakeTable $table, array $data): array
     {
         $map = [];
         $schema = $table->getSchema();

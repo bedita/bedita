@@ -12,19 +12,19 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\ORM;
 
 use BEdita\Core\ORM\QueryFilterTrait;
-use Cake\ORM\Query;
+use Cake\ORM\Query\SelectQuery;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
+use PHPUnit\Framework\Attributes\CoversTrait;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * {@see BEdita\Core\ORM\QueryFilterTrait} Test Case
- *
- * @coversDefaultClass \BEdita\Core\ORM\QueryFilterTrait
  */
+#[CoversTrait(QueryFilterTrait::class)]
 class QueryFilterTraitTest extends TestCase
 {
     use QueryFilterTrait;
@@ -34,7 +34,7 @@ class QueryFilterTraitTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.FakeAnimals',
     ];
 
@@ -60,7 +60,7 @@ class QueryFilterTraitTest extends TestCase
      *
      * @return array
      */
-    public function fieldsFilterProvider()
+    public static function fieldsFilterProvider(): array
     {
         return [
             'more' => [
@@ -202,13 +202,11 @@ class QueryFilterTraitTest extends TestCase
      * @param array $options Options.
      * @param array|false $numExpected Number of expected results.
      * @return void
-     * @dataProvider fieldsFilterProvider
-     * @covers ::fieldsFilter()
-     * @covers ::operatorExpression()
      */
+    #[DataProvider('fieldsFilterProvider')]
     public function testFieldsFilter($options, $numExpected)
     {
-        $query = new Query($this->fakeAnimals->getConnection(), $this->fakeAnimals);
+        $query = new SelectQuery($this->fakeAnimals);
         $query = $this->fieldsFilter($query, $options);
         $found = $query->toArray();
         static::assertEquals(count($found), $numExpected);

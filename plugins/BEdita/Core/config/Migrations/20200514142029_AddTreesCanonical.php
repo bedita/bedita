@@ -1,10 +1,10 @@
 <?php
-use Migrations\AbstractMigration;
+use Migrations\BaseMigration;
 
 /**
  * Add `trees.canonical` https://github.com/bedita/bedita/issues/1690
  */
-class AddTreesCanonical extends AbstractMigration
+class AddTreesCanonical extends BaseMigration
 {
     /**
      * {@inheritDoc}

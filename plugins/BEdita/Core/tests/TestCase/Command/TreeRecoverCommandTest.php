@@ -12,10 +12,11 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\Command;
 
 use BEdita\Core\Command\TreeRecoverCommand;
+use BEdita\Core\Model\Table\CategoriesTable;
+use BEdita\Core\Model\Table\TreesTable;
 use Cake\Command\Command;
 use Cake\Console\TestSuite\ConsoleIntegrationTestTrait;
 use Cake\Database\Expression\ComparisonExpression;
@@ -23,26 +24,37 @@ use Cake\Datasource\EntityInterface;
 use Cake\ORM\Locator\LocatorAwareTrait;
 use Cake\ORM\Table;
 use Cake\TestSuite\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
 
 /**
  * {@see \BEdita\Core\Command\TreeRecoverCommand} Test Case
- *
- * @property \BEdita\Core\Model\Table\TreesTable $Trees
- * @property \BEdita\Core\Model\Table\CategoriesTable $Categories
- * @covers \BEdita\Core\Command\TreeRecoverCommand
  */
-#[\AllowDynamicProperties]
+#[CoversClass(TreeRecoverCommand::class)]
 class TreeRecoverCommandTest extends TestCase
 {
     use ConsoleIntegrationTestTrait;
     use LocatorAwareTrait;
 
     /**
+     * Trees instance
+     *
+     * @var \BEdita\Core\Model\Table\TreesTable
+     */
+    protected TreesTable $Trees;
+
+    /**
+     * Categories instance
+     *
+     * @var \BEdita\Core\Model\Table\CategoriesTable
+     */
+    protected CategoriesTable $Categories;
+
+    /**
      * Fixtures
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.Objects',
         'plugin.BEdita/Core.Trees',
@@ -59,7 +71,6 @@ class TreeRecoverCommandTest extends TestCase
         parent::setUp();
 
         $this->cleanupConsoleTrait();
-        $this->useCommandRunner();
         $this->Trees = $this->fetchTable('Trees');
         $this->Categories = $this->fetchTable('Categories');
     }
@@ -93,7 +104,7 @@ class TreeRecoverCommandTest extends TestCase
                 'tree_left' => new ComparisonExpression('id', 2, 'integer', '*'),
                 'tree_right' => new ComparisonExpression(new ComparisonExpression('id', 2, 'integer', '*'), 1, 'integer', '+'),
             ],
-            []
+            [],
         );
     }
 

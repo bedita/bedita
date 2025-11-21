@@ -12,10 +12,10 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Utility;
 
 use Cake\Utility\Text as CakeText;
+use LogicException;
 
 /**
  * Text handling utilities.
@@ -69,11 +69,11 @@ class Text extends CakeText
      * @return string
      * @copyright Matt Farina MIT License https://github.com/lootils/uuid/blob/master/LICENSE
      */
-    protected static function uuidToBin($uuid)
+    protected static function uuidToBin(string $uuid): string
     {
         static $pattern = '/^\{?[0-9a-f]{8}\-?[0-9a-f]{4}\-?[0-9a-f]{4}\-?[0-9a-f]{4}\-?[0-9a-f]{12}\}?$/i';
         if (preg_match($pattern, $uuid) !== 1) {
-            throw new \LogicException(__d('bedita', 'The UUID provided for the namespace is not valid.'));
+            throw new LogicException(__d('bedita', 'The UUID provided for the namespace is not valid.'));
         }
 
         // Get hexadecimal components of namespace
@@ -98,7 +98,7 @@ class Text extends CakeText
      * @see https://www.ietf.org/rfc/rfc4122.txt
      * @copyright Matt Farina MIT License https://github.com/lootils/uuid/blob/master/LICENSE
      */
-    public static function uuid5($name, $namespace = self::UUID_NIL)
+    public static function uuid5(string $name, string $namespace = self::UUID_NIL): string
     {
         $bin = static::uuidToBin($namespace);
 
@@ -118,7 +118,7 @@ class Text extends CakeText
             // two most significant bits holds zero and one for variant DCE1.1
             (hexdec(substr($hash, 16, 4)) & 0x3fff) | 0x8000,
             // 48 bits for "node"
-            substr($hash, 20, 12)
+            substr($hash, 20, 12),
         );
     }
 }

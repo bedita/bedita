@@ -14,11 +14,12 @@ declare(strict_types=1);
  */
 namespace BEdita\Core\Model\Entity;
 
+use BadMethodCallException;
 use BEdita\Core\Job\ServiceRegistry;
 use BEdita\Core\Utility\JsonApiSerializable;
 use Cake\Event\EventDispatcherInterface;
 use Cake\Event\EventDispatcherTrait;
-use Cake\I18n\FrozenTime;
+use Cake\I18n\DateTime;
 use Cake\ORM\Entity;
 
 /**
@@ -27,16 +28,16 @@ use Cake\ORM\Entity;
  * @property string $uuid
  * @property string $service
  * @property int $priority
- * @property array $payload
- * @property \Cake\I18n\Time $scheduled_from
- * @property \Cake\I18n\Time $expires
+ * @property array|null $payload
+ * @property \Cake\I18n\DateTime|null $scheduled_from
+ * @property \Cake\I18n\DateTime|null $expires
  * @property int $max_attempts
- * @property \Cake\I18n\Time $locked_until
- * @property \Cake\I18n\Time $created
- * @property \Cake\I18n\Time $modified
- * @property \Cake\I18n\Time $completed
+ * @property \Cake\I18n\DateTime|null $locked_until
+ * @property \Cake\I18n\DateTime $created
+ * @property \Cake\I18n\DateTime $modified
+ * @property \Cake\I18n\DateTime|null $completed
  * @property string $status
- * @property array $results
+ * @property array|null $results
  * @since 4.0.0
  */
 class AsyncJob extends Entity implements JsonApiSerializable, EventDispatcherInterface
@@ -47,7 +48,7 @@ class AsyncJob extends Entity implements JsonApiSerializable, EventDispatcherInt
     /**
      * @inheritDoc
      */
-    protected $_accessible = [
+    protected array $_accessible = [
         'uuid' => true,
         'service' => true,
         'priority' => true,
@@ -61,7 +62,7 @@ class AsyncJob extends Entity implements JsonApiSerializable, EventDispatcherInt
     /**
      * @inheritDoc
      */
-    protected $_virtual = [
+    protected array $_virtual = [
         'status',
     ];
 
@@ -70,13 +71,13 @@ class AsyncJob extends Entity implements JsonApiSerializable, EventDispatcherInt
      *
      * @return string
      */
-    protected function _getStatus()
+    protected function _getStatus(): string
     {
         if ($this->completed !== null) {
             return 'completed';
         }
 
-        $now = new FrozenTime();
+        $now = new DateTime();
         if ($this->locked_until !== null && $this->locked_until->greaterThanOrEquals($now)) {
             return 'locked';
         }
@@ -97,10 +98,10 @@ class AsyncJob extends Entity implements JsonApiSerializable, EventDispatcherInt
      * @return bool
      * @throws \BadMethodCallException Throws an exception if job hasn't been locked.
      */
-    public function run(array $options = [])
+    public function run(array $options = []): bool
     {
         if ($this->status !== 'locked') {
-            throw new \BadMethodCallException('Only locked jobs can be run');
+            throw new BadMethodCallException('Only locked jobs can be run');
         }
 
         $service = ServiceRegistry::get($this->service);

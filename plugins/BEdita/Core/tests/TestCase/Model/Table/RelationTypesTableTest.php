@@ -12,17 +12,20 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\Model\Table;
 
 use BEdita\Core\Model\Table\ObjectTypesTable;
+use BEdita\Core\Model\Table\RelationTypesTable;
 use Cake\Cache\Cache;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
- * @coversDefaultClass \BEdita\Core\Model\Table\RelationTypesTable
+ * {@see \BEdita\Core\Model\Table\RelationTypesTable} Test Case
  */
+#[CoversClass(RelationTypesTable::class)]
 class RelationTypesTableTest extends TestCase
 {
     /**
@@ -37,7 +40,7 @@ class RelationTypesTableTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.Relations',
         'plugin.BEdita/Core.RelationTypes',
@@ -79,7 +82,7 @@ class RelationTypesTableTest extends TestCase
      *
      * @return array
      */
-    public function validationProvider()
+    public static function validationProvider(): array
     {
         return [
             'validLeft' => [
@@ -115,12 +118,11 @@ class RelationTypesTableTest extends TestCase
      * @param bool $expected Expected result.
      * @param array $data Data to be validated.
      * @return void
-     * @dataProvider validationProvider
-     * @coversNothing
      */
+    #[DataProvider('validationProvider')]
     public function testValidation($expected, array $data)
     {
-        $objectType = $this->RelationTypes->newEntity([]);
+        $objectType = $this->RelationTypes->newEmptyEntity();
         $this->RelationTypes->patchEntity($objectType, $data);
 
         $success = $this->RelationTypes->save($objectType);
@@ -131,7 +133,6 @@ class RelationTypesTableTest extends TestCase
      * Test after save callback.
      *
      * @return void
-     * @covers ::afterSave()
      */
     public function testInvalidateCacheAfterSave()
     {
@@ -160,7 +161,6 @@ class RelationTypesTableTest extends TestCase
      * Test after delete callback.
      *
      * @return void
-     * @covers ::afterDelete()
      */
     public function testInvalidateCacheAfterDelete()
     {

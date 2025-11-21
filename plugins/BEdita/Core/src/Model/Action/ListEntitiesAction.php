@@ -12,21 +12,25 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Model\Action;
 
 use BEdita\Core\Exception\BadFilterException;
+use BEdita\Core\ORM\FinderFilterInterface;
+use BEdita\Core\ORM\FinderFilterTrait;
 use BEdita\Core\ORM\QueryFilterTrait;
-use Cake\ORM\Query;
+use Cake\ORM\Query\SelectQuery;
+use Cake\ORM\Table;
 use Cake\Utility\Inflector;
+use Error;
 
 /**
  * Command to list entities.
  *
  * @since 4.0.0
  */
-class ListEntitiesAction extends BaseAction
+class ListEntitiesAction extends BaseAction implements FinderFilterInterface
 {
+    use FinderFilterTrait;
     use QueryFilterTrait;
 
     /**
@@ -34,12 +38,12 @@ class ListEntitiesAction extends BaseAction
      *
      * @var \Cake\ORM\Table
      */
-    protected $Table;
+    protected Table $Table;
 
     /**
      * @inheritDoc
      */
-    protected function initialize(array $data)
+    protected function initialize(array $data): void
     {
         $this->Table = $this->getConfig('table');
     }
@@ -47,10 +51,10 @@ class ListEntitiesAction extends BaseAction
     /**
      * Parse a filter string.
      *
-     * @param string $filter Filter string.
+     * @param mixed $filter Filter string.
      * @return array
      */
-    public static function parseFilter($filter)
+    public static function parseFilter(mixed $filter): array
     {
         if (is_array($filter)) {
             return $filter;
@@ -82,25 +86,35 @@ class ListEntitiesAction extends BaseAction
     /**
      * Build a filter and return modified query object.
      *
-     * @param \Cake\ORM\Query $query Query object instance.
+     * @param \Cake\ORM\Query\SelectQuery $query Query object instance.
      * @param array $filter Filter data.
-     * @return \Cake\ORM\Query
+     * @return \Cake\ORM\Query\SelectQuery
      * @throws \BEdita\Core\Exception\BadFilterException
      */
-    protected function buildFilter(Query $query, array $filter)
+    protected function buildFilter(SelectQuery $query, array $filter): SelectQuery
     {
         $customPropsOptions = [];
         foreach ($filter as $key => $value) {
             $variableKey = Inflector::variable($key);
-            if ($this->Table->hasFinder($variableKey)) {
-                // Finder.
-                if ($value === true) {
-                    $value = [];
+            $hasFinder = $this->Table instanceof FinderFilterInterface
+                ? $this->Table->hasFilter($variableKey)
+                : $this->hasFilter($variableKey, $this->Table);
+
+            if ($hasFinder) {
+                try {
+                    $query = $this->Table instanceof FinderFilterInterface
+                        ? $this->Table->callFilter($variableKey, $query, $value)
+                        : $this->callFilter($variableKey, $query, $value, $this->Table);
+
+                    continue;
+                } catch (Error $e) {
+                    if (strpos($e->getMessage(), 'Unknown named parameter') !== false) {
+                        throw new BadFilterException([
+                            'title' => __d('bedita', 'Invalid data'),
+                            'detail' => sprintf('Filter %s error: %s', $key, $e->getMessage()),
+                        ]);
+                    }
                 }
-
-                $query = $query->find($variableKey, (array)$value);
-
-                continue;
             }
 
             $camelizedKey = Inflector::camelize($key);
@@ -117,9 +131,9 @@ class ListEntitiesAction extends BaseAction
                     ->distinct(array_map(
                         // Avoid duplicate results when INNER JOIN-ing hasMany associations and similar.
                         [$this->Table, 'aliasField'],
-                        (array)$this->Table->getPrimaryKey()
+                        (array)$this->Table->getPrimaryKey(),
                     ))
-                    ->innerJoinWith($camelizedKey, function (Query $query) use ($conditions) {
+                    ->innerJoinWith($camelizedKey, function (SelectQuery $query) use ($conditions) {
                         return $query->where($conditions);
                     });
 
@@ -152,7 +166,7 @@ class ListEntitiesAction extends BaseAction
         }
 
         if (!empty($customPropsOptions)) {
-            $query = $query->find('customProp', $customPropsOptions);
+            $query = $query->find('customProp', ...$customPropsOptions);
         }
 
         return $query;
@@ -161,9 +175,9 @@ class ListEntitiesAction extends BaseAction
     /**
      * {@inheritDoc}
      *
-     * @return \Cake\ORM\Query
+     * @return \Cake\ORM\Query\SelectQuery
      */
-    public function execute(array $data = [])
+    public function execute(array $data = []): SelectQuery
     {
         $query = $this->Table->find();
 

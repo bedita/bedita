@@ -15,12 +15,11 @@ declare(strict_types=1);
 namespace BEdita\Core\ORM\Inheritance;
 
 use BadMethodCallException;
-use BEdita\Core\ORM\Inheritance\Query\DeleteQuery;
-use BEdita\Core\ORM\Inheritance\Query\InsertQuery;
-use BEdita\Core\ORM\Inheritance\Query\SelectQuery;
-use BEdita\Core\ORM\Inheritance\Query\UpdateQuery;
+use BEdita\Core\ORM\FinderFilterInterface;
+use BEdita\Core\ORM\FinderFilterTrait;
+use BEdita\Core\ORM\Inheritance\Query\QueryFactory;
 use Cake\ORM\Marshaller as CakeMarshaller;
-use Cake\ORM\Query as CakeQuery;
+use Cake\ORM\Query\SelectQuery as CakeSelectQuery;
 use Cake\ORM\Table as CakeTable;
 use Cake\ORM\TableRegistry;
 
@@ -33,14 +32,29 @@ use Cake\ORM\TableRegistry;
  *
  * @since 4.0.0
  */
-class Table extends CakeTable
+class Table extends CakeTable implements FinderFilterInterface
 {
+    use FinderFilterTrait {
+        hasFilter as private privateHasFilter;
+        callFilter as private privateCallFilter;
+    }
+
     /**
      * Table that is being inherited by this one.
      *
      * @var \Cake\ORM\Table|string|null
      */
-    protected $inheritedTable = null;
+    protected CakeTable|string|null $inheritedTable = null;
+
+    /**
+     * @inheritDoc
+     */
+    public function __construct($config = [])
+    {
+        $config['queryFactory'] = new QueryFactory();
+
+        parent::__construct($config);
+    }
 
     /**
      * {@inheritDoc}
@@ -64,52 +78,12 @@ class Table extends CakeTable
     }
 
     /**
-     * @inheritDoc
-     */
-    public function query(): CakeQuery
-    {
-        return new Query($this->getConnection(), $this); // @phpstan-ignore-line
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function deleteQuery(): DeleteQuery
-    {
-        return new DeleteQuery($this->getConnection(), $this);
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function insertQuery(): InsertQuery
-    {
-        return new InsertQuery($this->getConnection(), $this);
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function selectQuery(): SelectQuery
-    {
-        return new SelectQuery($this->getConnection(), $this);
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function updateQuery(): UpdateQuery
-    {
-        return new UpdateQuery($this->getConnection(), $this);
-    }
-
-    /**
      * Configure this table to inherit from another table.
      *
-     * @param string|\Cake\ORM\Table $associated The extended table. It can be either a registry alias or an instance.
+     * @param \Cake\ORM\Table|string $associated The extended table. It can be either a registry alias or an instance.
      * @return $this
      */
-    public function extensionOf($associated)
+    public function extensionOf(string|CakeTable $associated)
     {
         // If it is an alias, immediately load the instance.
         if (is_string($associated)) {
@@ -136,7 +110,7 @@ class Table extends CakeTable
      * @param bool $nested If it must check nested inheritance
      * @return bool
      */
-    public function isTableInherited($tableName, $nested = false)
+    public function isTableInherited(string $tableName, bool $nested = false): bool
     {
         if ($nested) {
             $inheritedTables = $this->inheritedTables();
@@ -157,7 +131,7 @@ class Table extends CakeTable
      *
      * @return \Cake\ORM\Table|null
      */
-    public function inheritedTable()
+    public function inheritedTable(): ?CakeTable
     {
         if (is_string($this->inheritedTable)) {
             $this->extensionOf(TableRegistry::getTableLocator()->get($this->inheritedTable));
@@ -169,9 +143,9 @@ class Table extends CakeTable
     /**
      * Return the inherited tables from current Table.
      *
-     * @return \Cake\ORM\Table[]
+     * @return array<\Cake\ORM\Table>
      */
-    public function inheritedTables()
+    public function inheritedTables(): array
     {
         $inheritedTable = $this->inheritedTable();
         if ($inheritedTable === null) {
@@ -189,9 +163,9 @@ class Table extends CakeTable
      * Find all common tables in inheritance chain.
      *
      * @param \Cake\ORM\Table $table Table to compare current table to.
-     * @return \Cake\ORM\Table[]
+     * @return array<\Cake\ORM\Table>
      */
-    public function commonInheritance(CakeTable $table)
+    public function commonInheritance(CakeTable $table): array
     {
         if (!($table instanceof self)) {
             return in_array($table, $this->inheritedTables(), true) ? [$table] : [];
@@ -199,11 +173,11 @@ class Table extends CakeTable
 
         $inherited = array_merge(
             array_reverse($this->inheritedTables()),
-            [$this]
+            [$this],
         );
         $table = array_merge(
             array_reverse($table->inheritedTables()),
-            [$table]
+            [$table],
         );
 
         $common = [];
@@ -236,10 +210,10 @@ class Table extends CakeTable
     /**
      * @inheritDoc
      */
-    public function callFinder($type, CakeQuery $query, array $options = []): CakeQuery
+    public function callFinder(string $type, CakeSelectQuery $query, mixed ...$args): CakeSelectQuery
     {
         if (parent::hasFinder($type)) {
-            return parent::callFinder($type, $query, $options);
+            return parent::callFinder($type, $query, ...$args);
         }
 
         $inheritedTable = $this->inheritedTable();
@@ -249,14 +223,14 @@ class Table extends CakeTable
             try {
                 return $inheritedTable
                     ->setAlias($this->getAlias())
-                    ->callFinder($type, $query, $options);
+                    ->callFinder($type, $query, ...$args);
             } finally {
                 $inheritedTable->setAlias($originalAlias);
             }
         }
 
         throw new BadMethodCallException(
-            sprintf('Unknown finder method "%s"', $type)
+            sprintf('Unknown finder method `%s`', $type),
         );
     }
 
@@ -277,6 +251,56 @@ class Table extends CakeTable
         }
 
         return $inheritedTable->hasField($field);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function hasFilter(string $name): bool
+    {
+        $found = $this->privateHasFilter($name);
+        if ($found === true) {
+            return true;
+        }
+
+        $inheritedTable = $this->inheritedTable();
+        if ($inheritedTable === null) {
+            return false;
+        }
+
+        if ($inheritedTable instanceof FinderFilterInterface) {
+            return $inheritedTable->hasFilter($name);
+        }
+
+        return $this->privateHasFilter($name, $inheritedTable);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function callFilter(string $name, CakeSelectQuery $query, mixed $value): CakeSelectQuery
+    {
+        $filter = $this->getFilter($name);
+        if ($filter !== null) {
+            return $this->invokeFilter($filter, $query, $value);
+        }
+
+        $inheritedTable = $this->inheritedTable();
+        if ($inheritedTable === null) {
+            throw new BadMethodCallException(sprintf('Unknown filter method `%s`', $name));
+        }
+
+        $originalAlias = $inheritedTable->getAlias();
+        $inheritedTable->setAlias($this->getAlias());
+        try {
+            if ($inheritedTable instanceof FinderFilterInterface) {
+                return $inheritedTable->callFilter($name, $query, $value);
+            }
+
+            return $this->privateCallFilter($name, $query, $value, $inheritedTable);
+        } finally {
+            $inheritedTable->setAlias($originalAlias);
+        }
     }
 
     /**

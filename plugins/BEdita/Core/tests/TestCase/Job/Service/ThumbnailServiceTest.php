@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\Job\Service;
 
 use BEdita\Core\Filesystem\Thumbnail;
@@ -21,11 +20,14 @@ use BEdita\Core\Job\Service\ThumbnailService;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Text;
-use PHPUnit\Framework\MockObject\Rule\InvocationOrder;
+use Exception;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
- * @coversDefaultClass \BEdita\Core\Job\Service\ThumbnailService
+ * {@see \BEdita\Core\Job\Service\ThumbnailService} Test Case
  */
+#[CoversClass(ThumbnailService::class)]
 class ThumbnailServiceTest extends TestCase
 {
     /**
@@ -33,7 +35,7 @@ class ThumbnailServiceTest extends TestCase
      *
      * @var string[]
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.Objects',
         'plugin.BEdita/Core.Media',
@@ -72,7 +74,7 @@ class ThumbnailServiceTest extends TestCase
         $this->originalRegistry = Thumbnail::getRegistry();
         $this->originalConfig = array_combine(
             $keys,
-            array_map([Thumbnail::class, 'getConfig'], $keys)
+            array_map([Thumbnail::class, 'getConfig'], $keys),
         );
 
         Thumbnail::setRegistry(null);
@@ -105,12 +107,12 @@ class ThumbnailServiceTest extends TestCase
      *
      * @return array
      */
-    public function runProvider()
+    public static function runProvider(): array
     {
         return [
             'ok' => [
                 true,
-                static::once(),
+                fn(self $testCase) => $testCase->once(),
                 [
                     'uuid' => 'e5afe167-7341-458d-a1e6-042e8791b0fe',
                     'generator' => 'test',
@@ -121,7 +123,7 @@ class ThumbnailServiceTest extends TestCase
             ],
             'not found' => [
                 true,
-                static::never(),
+                fn(self $testCase) => $testCase->never(),
                 [
                     'uuid' => Text::uuid(), // This UUID does not exist.
                     'generator' => 'test',
@@ -132,7 +134,7 @@ class ThumbnailServiceTest extends TestCase
             ],
             'error' => [
                 false,
-                static::once(),
+                fn(self $testCase) => $testCase->once(),
                 [
                     'uuid' => 'e5afe167-7341-458d-a1e6-042e8791b0fe',
                     'generator' => 'test',
@@ -149,25 +151,25 @@ class ThumbnailServiceTest extends TestCase
      * Test `run` method.
      *
      * @param bool $expected Expected result.
-     * @param \PHPUnit\Framework\MockObject\Rule\InvocationOrder $count Invocation count of base generator method.
+     * @param callable $count Callable that returns InvokedCountMatcher of base generator method.
      * @param array $payload Async job payload.
      * @param bool $shouldThrow Should the base generator throw an exception when invoked?
      * @return void
-     * @dataProvider runProvider()
-     * @covers ::run()
      */
-    public function testRun($expected, InvocationOrder $count, array $payload, $shouldThrow = false)
+    #[DataProvider('runProvider')]
+    public function testRun($expected, callable $count, array $payload, $shouldThrow = false)
     {
         $stream = $this->Streams->find()->where(['uuid' => $payload['uuid']])->first();
 
         $generator = $this->getMockBuilder(ThumbnailGenerator::class)
-            ->onlyMethods(['generate'])
-            ->getMockForAbstractClass();
-        $method = $generator->expects($count)
+            ->getMock();
+        $generator->method('initialize')
+            ->willReturn(true);
+        $method = $generator->expects($count($this))
             ->method('generate')
             ->with($stream, $payload['options']);
         if ($shouldThrow) {
-            $method->willThrowException(new \Exception('This is an exception'));
+            $method->willThrowException(new Exception('This is an exception'));
         } else {
             $method->willReturn(true);
         }

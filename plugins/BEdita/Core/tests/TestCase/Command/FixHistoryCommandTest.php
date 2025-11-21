@@ -14,14 +14,15 @@ declare(strict_types=1);
  */
 namespace BEdita\Core\Test\TestCase\Command;
 
+use BEdita\Core\Command\FixHistoryCommand;
 use Cake\Console\TestSuite\ConsoleIntegrationTestTrait;
 use Cake\TestSuite\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
 
 /**
  * {@see BEdita\Core\Command\FixHistoryCommand} Test Case
- *
- * @coversDefaultClass \BEdita\Core\Command\FixHistoryCommand
  */
+#[CoversClass(FixHistoryCommand::class)]
 class FixHistoryCommandTest extends TestCase
 {
     use ConsoleIntegrationTestTrait;
@@ -31,7 +32,7 @@ class FixHistoryCommandTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.Applications',
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.PropertyTypes',
@@ -48,21 +49,9 @@ class FixHistoryCommandTest extends TestCase
     ];
 
     /**
-     * setUp method
-     *
-     * @return void
-     */
-    public function setUp(): void
-    {
-        parent::setUp();
-        $this->useCommandRunner();
-    }
-
-    /**
      * Test buildOptionParser method
      *
      * @return void
-     * @covers ::buildOptionParser()
      */
     public function testBuildOptionParser()
     {
@@ -75,13 +64,6 @@ class FixHistoryCommandTest extends TestCase
      * Test `execute` method
      *
      * @return void
-     * @covers ::execute()
-     * @covers ::initialize()
-     * @covers ::fixHistoryCreate()
-     * @covers ::fixHistoryUpdate()
-     * @covers ::historyEntity()
-     * @covers ::missingHistoryQuery()
-     * @covers ::objectsGenerator()
      */
     public function testExecute(): void
     {
@@ -95,10 +77,6 @@ class FixHistoryCommandTest extends TestCase
      * Test `execute` with `id` and `type` option
      *
      * @return void
-     * @covers ::execute()
-     * @covers ::objectDetails()
-     * @covers ::joinConditions()
-     * @covers ::missingHistoryQuery()
      */
     public function testOptionsExecute(): void
     {

@@ -12,15 +12,14 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Model\Table;
 
 use BEdita\Core\Exception\BadFilterException;
+use BEdita\Core\Model\Entity\AuthProvider;
 use BEdita\Core\Utility\LoggedUser;
-use Cake\Database\Schema\TableSchemaInterface;
 use Cake\Datasource\EntityInterface;
 use Cake\Event\EventInterface;
-use Cake\ORM\Query;
+use Cake\ORM\Query\SelectQuery;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Utility\Hash;
@@ -31,13 +30,20 @@ use Cake\Validation\Validator;
  *
  * @property \Cake\ORM\Association\BelongsTo $Users
  * @property \Cake\ORM\Association\BelongsTo $AuthProviders
- * @method \BEdita\Core\Model\Entity\ExternalAuth get($primaryKey, $options = [])
- * @method \BEdita\Core\Model\Entity\ExternalAuth newEntity($data = null, array $options = [])
+ * @method \BEdita\Core\Model\Entity\ExternalAuth get(mixed $primaryKey, array|string $finder = 'all', \Psr\SimpleCache\CacheInterface|string|null $cache = null, \Closure|string|null $cacheKey = null, mixed ...$args)
+ * @method \BEdita\Core\Model\Entity\ExternalAuth newEntity(array $data, array $options = [])
  * @method \BEdita\Core\Model\Entity\ExternalAuth[] newEntities(array $data, array $options = [])
- * @method \BEdita\Core\Model\Entity\ExternalAuth|bool save(\Cake\Datasource\EntityInterface $entity, $options = [])
+ * @method \BEdita\Core\Model\Entity\ExternalAuth|false save(\Cake\Datasource\EntityInterface $entity, array $options = [])
  * @method \BEdita\Core\Model\Entity\ExternalAuth patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
- * @method \BEdita\Core\Model\Entity\ExternalAuth[] patchEntities($entities, array $data, array $options = [])
- * @method \BEdita\Core\Model\Entity\ExternalAuth findOrCreate($search, callable $callback = null, $options = [])
+ * @method \BEdita\Core\Model\Entity\ExternalAuth[] patchEntities(iterable $entities, array $data, array $options = [])
+ * @method \BEdita\Core\Model\Entity\ExternalAuth findOrCreate(\Cake\ORM\Query\SelectQuery|callable|array $search, ?callable $callback = null, array $options = [])
+ * @method \BEdita\Core\Model\Entity\ExternalAuth newEmptyEntity()
+ * @method \BEdita\Core\Model\Entity\ExternalAuth saveOrFail(\Cake\Datasource\EntityInterface $entity, array $options = [])
+ * @method \BEdita\Core\Model\Entity\ExternalAuth[]|\Cake\Datasource\ResultSetInterface<\BEdita\Core\Model\Entity\ExternalAuth>|false saveMany(iterable $entities, array $options = [])
+ * @method \BEdita\Core\Model\Entity\ExternalAuth[]|\Cake\Datasource\ResultSetInterface<\BEdita\Core\Model\Entity\ExternalAuth> saveManyOrFail(iterable $entities, array $options = [])
+ * @method \BEdita\Core\Model\Entity\ExternalAuth[]|\Cake\Datasource\ResultSetInterface<\BEdita\Core\Model\Entity\ExternalAuth>|false deleteMany(iterable $entities, array $options = [])
+ * @method \BEdita\Core\Model\Entity\ExternalAuth[]|\Cake\Datasource\ResultSetInterface<\BEdita\Core\Model\Entity\ExternalAuth> deleteManyOrFail(iterable $entities, array $options = [])
+ * @mixin \Cake\ORM\Behavior\TimestampBehavior
  * @since 4.0.0
  */
 class ExternalAuthTable extends Table
@@ -54,6 +60,7 @@ class ExternalAuthTable extends Table
         $this->setTable('external_auth');
         $this->setPrimaryKey('id');
         $this->setDisplayField('provider_username');
+        $this->getSchema()->setColumnType('params', 'json');
 
         $this->addBehavior('Timestamp');
 
@@ -103,23 +110,13 @@ class ExternalAuthTable extends Table
     }
 
     /**
-     * {@inheritDoc}
-     *
-     * @codeCoverageIgnore
-     */
-    public function getSchema(): TableSchemaInterface
-    {
-        return parent::getSchema()->setColumnType('params', 'json');
-    }
-
-    /**
      * Create user before saving if none was set.
      *
      * @param \Cake\Event\EventInterface $event beforeSave event instance.
      * @param \Cake\Datasource\EntityInterface $entity Entity.
-     * @return bool
+     * @return void
      */
-    public function beforeSave(EventInterface $event, EntityInterface $entity)
+    public function beforeSave(EventInterface $event, EntityInterface $entity): void
     {
         if (!$entity->has('user_id')) {
             /** @var \BEdita\Core\Model\Entity\AuthProvider $authProvider*/
@@ -142,43 +139,42 @@ class ExternalAuthTable extends Table
                     $user
                         ->set('created_by', $user->id)
                         ->set('modified_by', $user->id),
-                    ['atomic' => false]
+                    ['atomic' => false],
                 );
             }
 
             $entity->set($this->Users->getForeignKey(), $user->id);
         }
 
-        return true;
+        $event->setResult(true);
     }
 
     /**
      * Find external auth by their auth provider.
      *
-     * @param \Cake\ORM\Query $query Query object instance.
-     * @param array $options Additional options.
-     * @return \Cake\ORM\Query
+     * @param \Cake\ORM\Query\SelectQuery $query Query object instance.
+     * @param \BEdita\Core\Model\Entity\AuthProvider|array|string|int $authProvider Auth provider data.
+     * @return \Cake\ORM\Query\SelectQuery
      */
-    protected function findAuthProvider(Query $query, array $options = [])
+    protected function findAuthProvider(SelectQuery $query, AuthProvider|array|string|int $authProvider): SelectQuery
     {
-        if (empty($options['auth_provider'])) {
+        if (empty($authProvider)) {
             throw new BadFilterException([
                 'title' => __d('bedita', 'Invalid data'),
-                'detail' => '"auth_provider" parameter missing',
+                'detail' => '"authProvider" can not be empty',
             ]);
         }
 
-        $authProvider = $options['auth_provider'];
         if (is_string($authProvider)) {
             return $query
-                ->innerJoinWith('AuthProviders', function (Query $query) use ($authProvider) {
+                ->innerJoinWith('AuthProviders', function (SelectQuery $query) use ($authProvider) {
                     return $query->where([
                         $this->AuthProviders->aliasField('name') => $authProvider,
                     ]);
                 });
         }
 
-        if (!empty($authProvider['id'])) {
+        if (!is_int($authProvider) && !empty($authProvider['id'])) {
             $authProvider = $authProvider['id'];
         }
 
@@ -190,28 +186,27 @@ class ExternalAuthTable extends Table
     /**
      * Find enabled external auth by user.
      *
-     * @param \Cake\ORM\Query $query Query object instance.
-     * @param array $options Additional options.
-     * @return \Cake\ORM\Query
+     * @param \Cake\ORM\Query\SelectQuery $query Query object instance.
+     * @param array|string|int $user The user data.
+     * @return \Cake\ORM\Query\SelectQuery
      * @throws \BEdita\Core\Exception\BadFilterException If missing `$options` data
      */
-    protected function findUser(Query $query, array $options = []): Query
+    protected function findUser(SelectQuery $query, array|string|int $user): SelectQuery
     {
-        if (empty($options['user'])) {
+        if (empty($user)) {
             throw new BadFilterException([
                 'title' => __d('bedita', 'Invalid data'),
-                'detail' => '"user" parameter missing',
+                'detail' => '"user" can not be empty',
             ]);
         }
 
-        $user = $options['user'];
         if (!empty($user['id'])) {
             $user = $user['id'];
         }
 
         return $query
             ->contain('AuthProviders')
-            ->innerJoinWith('AuthProviders', function (Query $q) {
+            ->innerJoinWith('AuthProviders', function (SelectQuery $q) {
                 return $q->where(['AuthProviders.enabled' => true]);
             })
             ->where(['ExternalAuth.user_id' => $user]);

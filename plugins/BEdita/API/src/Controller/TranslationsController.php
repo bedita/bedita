@@ -29,12 +29,12 @@ class TranslationsController extends ResourcesController
     /**
      * @inheritDoc
      */
-    public $defaultTable = 'Translations';
+    public ?string $defaultTable = 'Translations';
 
     /**
      * @inheritDoc
      */
-    protected $_defaultConfig = [
+    protected array $_defaultConfig = [
         'allowedAssociations' => [
             'object' => [],
         ],
@@ -43,14 +43,14 @@ class TranslationsController extends ResourcesController
     /**
      * @inheritDoc
      */
-    protected function getAvailableUrl($relationship)
+    protected function getAvailableUrl($relationship): string
     {
         return Router::url(
             [
                 '_name' => 'api:objects:index',
                 'object_type' => 'objects',
             ],
-            true
+            true,
         );
     }
 
@@ -59,7 +59,7 @@ class TranslationsController extends ResourcesController
      *
      * @return \BEdita\Core\Model\Action\ListRelatedObjectsAction
      */
-    protected function getAssociatedAction(Association $association)
+    protected function getAssociatedAction(Association $association): ListRelatedObjectsAction
     {
         return new ListRelatedObjectsAction(compact('association'));
     }

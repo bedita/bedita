@@ -1,21 +1,21 @@
 <?php
 
 use Cake\Database\Expression\QueryExpression;
-use Migrations\AbstractMigration;
+use Migrations\BaseMigration;
 use Phinx\Db\Adapter\MysqlAdapter;
 
 /**
  * Split tags and categories into their own tables.
  */
-class CreateTagsTable extends AbstractMigration
+class CreateTagsTable extends BaseMigration
 {
     /**
      * @inheritDoc
      */
-    public $autoId = false;
+    public bool $autoId = false;
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function up()
     {
@@ -112,12 +112,12 @@ class CreateTagsTable extends AbstractMigration
         /*
          * Move tags from `categories` to `tags`.
          */
-        $this->transactional(function () {
-            $this->getQueryBuilder()
+        $this->transactional(function (): void {
+            $this->getInsertBuilder()
                 ->insert(['name', 'label', 'created', 'modified'])
                 ->into('tags')
                 ->values(
-                    $this->getQueryBuilder()
+                    $this->getSelectBuilder()
                         ->select(['name', 'label', 'created', 'modified'])
                         ->from('categories')
                         ->where(function (QueryExpression $exp): QueryExpression {
@@ -125,11 +125,11 @@ class CreateTagsTable extends AbstractMigration
                         })
                 )
                 ->execute();
-            $this->getQueryBuilder()
+            $this->getInsertBuilder()
                 ->insert(['object_id', 'tag_id'])
                 ->into('object_tags')
                 ->values(
-                    $this->getQueryBuilder()
+                    $this->getSelectBuilder()
                         ->select(['object_categories.object_id', 'tags.id'])
                         ->from('object_categories')
                         ->innerJoin('categories', function (QueryExpression $exp) {
@@ -141,7 +141,7 @@ class CreateTagsTable extends AbstractMigration
                         })
                 )
                 ->execute();
-            $this->getQueryBuilder()
+            $this->getDeleteBuilder()
                 ->delete('categories')
                 ->where(function (QueryExpression $exp) {
                     return $exp->isNull('object_type_id');
@@ -173,20 +173,20 @@ class CreateTagsTable extends AbstractMigration
          * Add categories_objecttypesid_fk foreign key
          */
         $this->table('categories')->addForeignKey(
-                'object_type_id',
-                'object_types',
-                'id',
-                [
-                    'constraint' => 'categories_objecttypesid_fk',
-                    'update' => 'NO_ACTION',
-                    'delete' => 'CASCADE',
-                ]
-            )
-            ->update();
+            'object_type_id',
+            'object_types',
+            'id',
+            [
+                'constraint' => 'categories_objecttypesid_fk',
+                'update' => 'NO_ACTION',
+                'delete' => 'CASCADE',
+            ]
+        )
+        ->update();
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function down()
     {
@@ -228,21 +228,21 @@ class CreateTagsTable extends AbstractMigration
         /*
          * Move tags from `tags` to `categories`.
          */
-        $this->transactional(function () {
-            $this->getQueryBuilder()
+        $this->transactional(function (): void {
+            $this->getInsertBuilder()
                 ->insert(['name', 'label', 'created', 'modified'])
                 ->into('categories')
                 ->values(
-                    $this->getQueryBuilder()
+                    $this->getSelectBuilder()
                         ->select(['name', 'label', 'created', 'modified'])
                         ->from('tags')
                 )
                 ->execute();
-            $this->getQueryBuilder()
+            $this->getInsertBuilder()
                 ->insert(['object_id', 'category_id'])
                 ->into('object_categories')
                 ->values(
-                    $this->getQueryBuilder()
+                    $this->getSelectBuilder()
                         ->select(['object_tags.object_id', 'categories.id'])
                         ->from('object_tags')
                         ->innerJoin('tags', function (QueryExpression $exp) {

@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\Utility;
 
 use BEdita\Core\Utility\Resources;
@@ -21,13 +20,15 @@ use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Hash;
 use Cake\Utility\Inflector;
+use Exception;
 use InvalidArgumentException;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * {@see \BEdita\Core\Utility\Resources} Test Case
- *
- * @coversDefaultClass \BEdita\Core\Utility\Resources
  */
+#[CoversClass(Resources::class)]
 class ResourcesTest extends TestCase
 {
     /**
@@ -35,7 +36,7 @@ class ResourcesTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.PropertyTypes',
         'plugin.BEdita/Core.Properties',
@@ -62,7 +63,7 @@ class ResourcesTest extends TestCase
      *
      * @return array
      */
-    public function createProvider(): array
+    public static function createProvider(): array
     {
         return [
             'roles' => [
@@ -145,7 +146,9 @@ class ResourcesTest extends TestCase
                         'description' => 'handle pets with care',
                     ],
                 ],
-                'endpoints with object type',
+            ],
+            'endpoints with object type' => [
+                'endpoints',
                 [
                     [
                         'name' => 'pets',
@@ -218,9 +221,8 @@ class ResourcesTest extends TestCase
      * @param string $type Resource type.
      * @param array $data Resource data.
      * @return void
-     * @covers ::create()
-     * @dataProvider createProvider
      */
+    #[DataProvider('createProvider')]
     public function testCreate(string $type, array $data): void
     {
         $result = Resources::create($type, $data);
@@ -230,12 +232,12 @@ class ResourcesTest extends TestCase
     /**
      * Test `create` method with invalid name.
      *
-     * @covers ::create()
+     * @return void
      */
     public function testCreateInvalidCategory(): void
     {
         $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('Invalid resource data: {"name":{"regex":"The provided value is invalid"}}');
+        $this->expectExceptionMessage('Invalid resource data: {"name":{"regex":"The provided value must match against the pattern `\/^[a-z0-9][a-z0-9-_]{1,50}$\/`"}}');
         Resources::create('categories', [
             [
                 'name' => 'società',
@@ -246,12 +248,12 @@ class ResourcesTest extends TestCase
     /**
      * Test `create` method with invalid name.
      *
-     * @covers ::create()
+     * @return void
      */
     public function testCreateInvalidRole(): void
     {
         $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('Invalid resource data: {"name":{"regex":"The provided value is invalid"}}');
+        $this->expectExceptionMessage('Invalid resource data: {"name":{"regex":"The provided value must match against the pattern `\/^[a-z][a-z0-9_]{1,200}$\/`"}}');
         Resources::create('roles', [
             [
                 'name' => 'invalid name',
@@ -264,7 +266,7 @@ class ResourcesTest extends TestCase
      *
      * @return array
      */
-    public function removeProvider(): array
+    public static function removeProvider(): array
     {
         return [
             'roles' => [
@@ -366,9 +368,8 @@ class ResourcesTest extends TestCase
      * @param string $type Resource type.
      * @param array $data Resource data.
      * @return void
-     * @covers ::remove()
-     * @dataProvider removeProvider
      */
+    #[DataProvider('removeProvider')]
     public function testRemove(string $type, array $data): void
     {
         Resources::remove($type, $data);
@@ -386,7 +387,7 @@ class ResourcesTest extends TestCase
         }
 
         foreach ($data as $options) {
-            static::assertCount(0, $Table->find('resource', $options));
+            static::assertCount(0, $Table->find('resource', ...$options));
         }
     }
 
@@ -395,7 +396,7 @@ class ResourcesTest extends TestCase
      *
      * @return array
      */
-    public function updateProvider(): array
+    public static function updateProvider(): array
     {
         return [
             'roles' => [
@@ -472,7 +473,9 @@ class ResourcesTest extends TestCase
                         'enabled' => 1,
                     ],
                 ],
-                'endpoints with object type',
+            ],
+            'endpoints with object type' => [
+                'endpoints',
                 [
                     [
                         'name' => 'disabled',
@@ -511,11 +514,8 @@ class ResourcesTest extends TestCase
      * @param string $type Resource type.
      * @param array $data Resource data.
      * @return void
-     * @covers ::update()
-     * @covers ::loadEntity()
-     * @covers ::findCondition()
-     * @dataProvider updateProvider
      */
+    #[DataProvider('updateProvider')]
     public function testUpdate(string $type, array $data): void
     {
         $result = Resources::update($type, $data);
@@ -528,7 +528,7 @@ class ResourcesTest extends TestCase
                 ->where(['name IN' => Hash::extract($data, '{n}.name')])
                 ->toArray();
         } else {
-            $resources = $Table->find('resource', $data[0])->toArray();
+            $resources = $Table->find('resource', ...$data[0])->toArray();
         }
 
         static::assertEquals(count($data), count($resources));
@@ -545,7 +545,7 @@ class ResourcesTest extends TestCase
     /**
      * Test `findCondition` method failure.
      *
-     * @covers ::findCondition()
+     * @return void
      */
     public function testFindConditionFail()
     {
@@ -560,7 +560,7 @@ class ResourcesTest extends TestCase
      *
      * @return array
      */
-    public function saveProvider(): array
+    public static function saveProvider(): array
     {
         return [
             'simple' => [
@@ -628,11 +628,9 @@ class ResourcesTest extends TestCase
      * @param array $resources Resource save input data.
      * @param \Exception|null $exception Expected expection.
      * @return void
-     * @covers ::save()
-     * @covers ::saveType()
-     * @dataProvider saveProvider
      */
-    public function testSave(array $resources, ?\Exception $exception = null): void
+    #[DataProvider('saveProvider')]
+    public function testSave(array $resources, ?Exception $exception = null): void
     {
         if ($exception) {
             $this->expectException(get_class($exception));

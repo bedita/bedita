@@ -12,11 +12,11 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\API\Test\TestCase\Utility;
 
 use BEdita\API\Test\TestConstants;
 use BEdita\API\Utility\JsonApi;
+use BEdita\Core\Model\Enum\ObjectEntityStatus;
 use BEdita\Core\Utility\JsonApiSerializable;
 use Cake\Datasource\EntityInterface;
 use Cake\Event\Event;
@@ -25,10 +25,14 @@ use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Hash;
+use InvalidArgumentException;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
- * @coversDefaultClass \BEdita\API\Utility\JsonApi
+ * {@see \BEdita\Core\Utility\JsonApi} Test Case
  */
+#[CoversClass(JsonApi::class)]
 class JsonApiTest extends TestCase
 {
     /**
@@ -43,7 +47,7 @@ class JsonApiTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.PropertyTypes',
         'plugin.BEdita/Core.Relations',
@@ -86,7 +90,7 @@ class JsonApiTest extends TestCase
      *
      * @return array
      */
-    public function formatDataProvider()
+    public static function formatDataProvider(): array
     {
         return [
             'multipleQueryItems' => [
@@ -520,11 +524,8 @@ class JsonApiTest extends TestCase
      * @param callable $items A callable that returns the items to be converted.
      * @param int $options Format data options
      * @return void
-     * @dataProvider formatDataProvider
-     * @covers ::formatData()
-     * @covers ::metaSchema()
-     * @covers ::dispatchEvent()
      */
+    #[DataProvider('formatDataProvider')]
     public function testFormatData($expected, callable $items, $options = 0)
     {
         if ($expected === false) {
@@ -542,7 +543,7 @@ class JsonApiTest extends TestCase
      *
      * @return array
      */
-    public function parseDataProvider()
+    public static function parseDataProvider(): array
     {
         return [
             'singleItem' => [
@@ -648,10 +649,8 @@ class JsonApiTest extends TestCase
      * @param array|bool $expected Expected result. If `false`, an exception is expected.
      * @param array $items Items to be parsed.
      * @return void
-     * @dataProvider parseDataProvider
-     * @covers ::parseData
-     * @covers ::parseItem
      */
+    #[DataProvider('parseDataProvider')]
     public function testParseData($expected, array $items)
     {
         if ($expected === false) {
@@ -667,7 +666,6 @@ class JsonApiTest extends TestCase
      * Test generation of relationships links.
      *
      * @return void
-     * @covers ::formatData
      */
     public function testFallbackLinks()
     {
@@ -756,7 +754,9 @@ class JsonApiTest extends TestCase
             ],
         ];
 
-        $result = JsonApi::formatData(TableRegistry::getTableLocator()->get('Documents')->get(2));
+        /** @var \BEdita\Core\Model\Entity\ObjectEntity $document */
+        $document = TableRegistry::getTableLocator()->get('Documents')->get(2);
+        $result = JsonApi::formatData($document);
         $result = json_decode(json_encode($result), true);
 
         static::assertEquals($expected, $result);
@@ -767,7 +767,7 @@ class JsonApiTest extends TestCase
      *
      * @return array
      */
-    public function schemaInfoProvider()
+    public static function schemaInfoProvider(): array
     {
         return [
             'roles' => [
@@ -792,9 +792,8 @@ class JsonApiTest extends TestCase
      * Test `schemaInfo` method
      *
      * @return void
-     * @covers ::schemaInfo
-     * @dataProvider schemaInfoProvider
      */
+    #[DataProvider('schemaInfoProvider')]
     public function testSchemaInfo($type, $expected)
     {
         $result = JsonApi::schemaInfo($type);
@@ -805,8 +804,6 @@ class JsonApiTest extends TestCase
      * Test `JsonApi.beforeFormatData` event.
      *
      * @return void
-     * @covers ::formatData()
-     * @covers ::dispatchEvent()
      */
     public function testBeforeFormatEvent(): void
     {
@@ -817,26 +814,24 @@ class JsonApiTest extends TestCase
             $item = $items[0];
 
             static::assertInstanceOf(EntityInterface::class, $item);
-            static::assertEquals('on', $item->get('status'));
+            static::assertEquals(ObjectEntityStatus::On, $item->get('status'));
 
-            $item->set('status', 'off');
-
-            return $items;
+            $item->set('status', ObjectEntityStatus::Off);
+            $event->setResult($items);
         });
 
+        /** @var \BEdita\Core\Model\Entity\ObjectEntity $document */
         $document = TableRegistry::getTableLocator()->get('Documents')->get(2);
         $result = JsonApi::formatData($document);
 
         static::assertEquals(1, $dispatchedEvent);
-        static::assertEquals('off', Hash::get($result, 'attributes.status'));
+        static::assertEquals(ObjectEntityStatus::Off, Hash::get($result, 'attributes.status'));
     }
 
     /**
      * Test `JsonApi.afterFormatData` event.
      *
      * @return void
-     * @covers ::formatData()
-     * @covers ::dispatchEvent()
      */
     public function testAfterFormatDataEvent(): void
     {
@@ -850,16 +845,15 @@ class JsonApiTest extends TestCase
             }
 
             $data = Hash::insert($data, '{n}.meta.after_format', true);
-
-            return $data;
+            $event->setResult($data);
         });
 
-        $document = TableRegistry::getTableLocator()->get('Documents')
-            ->find('type', ['documents'])
+        $documents = TableRegistry::getTableLocator()->get('Documents')
+            ->find('type', value: ['documents'])
             ->limit(2)
-            ->all();
+            ->toArray();
 
-        $result = JsonApi::formatData($document);
+        $result = JsonApi::formatData($documents);
         $expected = [true, true];
         static::assertEquals(1, $dispatchedEvent);
         static::assertEquals($expected, Hash::extract($result, '{n}.meta.after_format'));
@@ -869,11 +863,10 @@ class JsonApiTest extends TestCase
      * Test that an exception was raised if some item was not serializable.
      *
      * @return void
-     * @covers ::formatData()
      */
     public function testNotJsonSerializable(): void
     {
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage(sprintf('Objects must implement "%s", got "array" instead', JsonApiSerializable::class));
 
         JsonApi::formatData(['name' => 'Gustavo']);

@@ -1,15 +1,15 @@
 <?php
 declare(strict_types=1);
 
-use Migrations\AbstractMigration;
+use Migrations\BaseMigration;
 use Phinx\Db\Adapter\MysqlAdapter;
 
 /**
  * Migration for `captions` table.
  */
-class CreateCaptions extends AbstractMigration
+class CreateCaptions extends BaseMigration
 {
-    public $autoId = false;
+    public bool $autoId = false;
 
     /**
      * Change Method.
@@ -19,7 +19,7 @@ class CreateCaptions extends AbstractMigration
      *
      * @return void
      */
-    public function change()
+    public function change(): void
     {
         $limit = null;
         if ($this->getAdapter()->getAdapterType() === 'mysql') {

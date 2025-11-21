@@ -12,22 +12,24 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\API\Test\IntegrationTest;
 
 use BEdita\API\TestSuite\IntegrationTestCase;
 use Cake\ORM\TableRegistry;
 use Cake\Utility\Hash;
+use PHPUnit\Framework\Attributes\CoversNothing;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * Test on `uname` field
  */
+#[CoversNothing]
 class UniqueNameTest extends IntegrationTestCase
 {
     /**
      * @inheritDoc
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.Locations',
     ];
 
@@ -36,7 +38,7 @@ class UniqueNameTest extends IntegrationTestCase
      *
      * @return array
      */
-    public function doubleInsertProvider()
+    public static function doubleInsertProvider(): array
     {
         return [
             'sameTitle' => [
@@ -56,9 +58,8 @@ class UniqueNameTest extends IntegrationTestCase
      *
      * @param array $attributes Object attributes.
      * @return void
-     * @dataProvider doubleInsertProvider
-     * @coversNothing
      */
+    #[DataProvider('doubleInsertProvider')]
     public function testDoubleInsert(array $attributes)
     {
         $authHeader = $this->getUserAuthHeader();
@@ -97,7 +98,6 @@ class UniqueNameTest extends IntegrationTestCase
      * Test unique name customization.
      *
      * @return void
-     * @coversNothing
      */
     public function testCustomBehavior()
     {
@@ -132,7 +132,6 @@ class UniqueNameTest extends IntegrationTestCase
      * Test invalid numeric unique name.
      *
      * @return void
-     * @coversNothing
      */
     public function testInvalidNumericUname(): void
     {
@@ -162,7 +161,6 @@ class UniqueNameTest extends IntegrationTestCase
      * Test invalid numeric unique name.
      *
      * @return void
-     * @coversNothing
      */
     public function testPostNumericTitle(): void
     {
@@ -190,7 +188,6 @@ class UniqueNameTest extends IntegrationTestCase
      * Test invalid numeric unique name updating an object.
      *
      * @return void
-     * @coversNothing
      */
     public function testUpdateInvalidNumericUname(): void
     {

@@ -2,20 +2,21 @@
 declare(strict_types=1);
 
 use Cake\Database\Expression\QueryExpression;
-use Migrations\AbstractMigration;
+use Cake\Database\Query;
+use Migrations\BaseMigration;
 
-class TreesSlugNotNullable extends AbstractMigration
+class TreesSlugNotNullable extends BaseMigration
 {
     /**
      * @inheritDoc
      */
     public function up(): void
     {
-        $this->getQueryBuilder()
+        $this->getQueryBuilder(Query::TYPE_UPDATE)
             ->update('trees')
             ->set(
                 'slug',
-                $this->getQueryBuilder()
+                $this->getQueryBuilder(Query::TYPE_SELECT)
                     ->select('objects.uname')
                     ->from('objects')
                     ->where(

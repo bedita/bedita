@@ -12,16 +12,19 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\Model\Behavior;
 
+use BEdita\Core\Model\Behavior\ObjectTypeBehavior;
 use BEdita\Core\Model\Entity\ObjectType;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
- * @coversDefaultClass \BEdita\Core\Model\Behavior\ObjectTypeBehavior
+ * {@see \BEdita\Core\Model\Behavior\ObjectTypeBehavior} Test Case
  */
+#[CoversClass(ObjectTypeBehavior::class)]
 class ObjectTypeBehaviorTest extends TestCase
 {
     /**
@@ -29,7 +32,7 @@ class ObjectTypeBehaviorTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.Relations',
         'plugin.BEdita/Core.RelationTypes',
@@ -41,7 +44,7 @@ class ObjectTypeBehaviorTest extends TestCase
      *
      * @return array
      */
-    public function objectTypeProvider()
+    public static function objectTypeProvider(): array
     {
         return [
             'getter' => [
@@ -68,16 +71,14 @@ class ObjectTypeBehaviorTest extends TestCase
      * @param string $table Table.
      * @param int|string|null $objectType Object type being set.
      * @return void
-     * @dataProvider objectTypeProvider()
-     * @covers ::objectType()
      */
+    #[DataProvider('objectTypeProvider')]
     public function testObjectType($expected, $table, $objectType = null)
     {
         $table = TableRegistry::getTableLocator()->get($table);
         if (!$table->hasBehavior('ObjectType')) {
             $table->addBehavior('BEdita/Core.ObjectType');
         }
-        $behavior = $table->behaviors()->get('ObjectType');
 
         static::assertTrue($table->behaviors()->hasMethod('objectType'));
 

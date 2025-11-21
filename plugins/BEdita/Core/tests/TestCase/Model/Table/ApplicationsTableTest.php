@@ -12,21 +12,24 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\Model\Table;
 
+use BadMethodCallException;
+use BEdita\Core\Exception\ImmutableResourceException;
 use BEdita\Core\Model\Table\ApplicationsTable;
 use BEdita\Core\State\CurrentApplication;
 use Cake\Cache\Cache;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Hash;
+use Exception;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * {@see \BEdita\Core\Model\Table\ApplicationsTable} Test Case
- *
- * @coversDefaultClass \BEdita\Core\Model\Table\ApplicationsTable
  */
+#[CoversClass(ApplicationsTable::class)]
 class ApplicationsTableTest extends TestCase
 {
     /**
@@ -48,7 +51,7 @@ class ApplicationsTableTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.Applications',
         'plugin.BEdita/Core.Config',
@@ -86,11 +89,9 @@ class ApplicationsTableTest extends TestCase
      * Test initialize method
      *
      * @return void
-     * @covers ::initialize()
      */
     public function testInitialize()
     {
-        $this->Applications->initialize([]);
         $this->assertEquals('applications', $this->Applications->getTable());
         $this->assertEquals('id', $this->Applications->getPrimaryKey());
         $this->assertEquals('name', $this->Applications->getDisplayField());
@@ -105,7 +106,7 @@ class ApplicationsTableTest extends TestCase
      *
      * @return array
      */
-    public function validationProvider()
+    public static function validationProvider(): array
     {
         return [
             'valid' => [
@@ -165,9 +166,8 @@ class ApplicationsTableTest extends TestCase
      * @param bool $expected Expected result.
      * @param array $data Data to be validated.
      * @return void
-     * @dataProvider validationProvider
-     * @coversNothing
      */
+    #[DataProvider('validationProvider')]
     public function testValidation($expected, array $data)
     {
         $application = $this->Applications->newEntity($data);
@@ -184,7 +184,7 @@ class ApplicationsTableTest extends TestCase
      *
      * @return array
      */
-    public function apiKeyGenerationProvider()
+    public static function apiKeyGenerationProvider(): array
     {
         return [
             'new' => [
@@ -212,11 +212,8 @@ class ApplicationsTableTest extends TestCase
      * @param string $apiKey The api key to set. Empty to leave unchanged on update or auto generation on create
      * @param bool $update If the operation is an update or create
      * @return void
-     * @covers ::beforeSave()
-     * @covers ::beforeDelete()
-     * @covers ::generateApiKey()
-     * @dataProvider apiKeyGenerationProvider
      */
+    #[DataProvider('apiKeyGenerationProvider')]
     public function testApiKeyGeneration($apiKey, $update)
     {
         if ($update) {
@@ -261,7 +258,7 @@ class ApplicationsTableTest extends TestCase
      *
      * @return array
      */
-    public function findApiKeyProvider()
+    public static function findApiKeyProvider(): array
     {
         return [
             'found' => [
@@ -277,8 +274,8 @@ class ApplicationsTableTest extends TestCase
                 'invalid',
             ],
             'badMethodException' => [
-                new \BadMethodCallException('Required option "apiKey" must be a not empty string'),
-                ['this', 'is', 'not', 'a', 'string'],
+                new BadMethodCallException('Required option "apiKey" must be a not empty string'),
+                '',
             ],
         ];
     }
@@ -289,17 +286,16 @@ class ApplicationsTableTest extends TestCase
      * @param int|\Exception $expected Expected count.
      * @param string $apiKey API key.
      * @return void
-     * @covers ::findApiKey()
-     * @dataProvider findApiKeyProvider()
      */
-    public function testFindApiKey($expected, $apiKey)
+    #[DataProvider('findApiKeyProvider')]
+    public function testFindApiKey(int|Exception $expected, string $apiKey): void
     {
-        if ($expected instanceof \Exception) {
+        if ($expected instanceof Exception) {
             $this->expectException(get_class($expected));
             $this->expectExceptionMessage($expected->getMessage());
         }
 
-        $count = $this->Applications->find('apiKey', compact('apiKey'))->count();
+        $count = $this->Applications->find('apiKey', apiKey: $apiKey)->count();
 
         static::assertSame($expected, $count);
     }
@@ -309,7 +305,7 @@ class ApplicationsTableTest extends TestCase
      *
      * @return array
      */
-    public function findCredentialsProvider(): array
+    public static function findCredentialsProvider(): array
     {
         return [
             'no secret' => [
@@ -326,8 +322,10 @@ class ApplicationsTableTest extends TestCase
                 ],
             ],
             'badMethodException' => [
-                new \BadMethodCallException('Required option "client_id" must be a not empty string'),
-                [],
+                new BadMethodCallException('Required option "clientId" must be a not empty string'),
+                [
+                    'client_id' => '',
+                ],
             ],
         ];
     }
@@ -338,21 +336,20 @@ class ApplicationsTableTest extends TestCase
      * @param int|\Exception $expected Expected count.
      * @param array $options Finder options.
      * @return void
-     * @dataProvider findCredentialsProvider()
-     * @covers ::findCredentials()
      */
-    public function testFindCredentials($expected, $options)
+    #[DataProvider('findCredentialsProvider')]
+    public function testFindCredentials(int|Exception $expected, array $options): void
     {
         $app = $this->Applications->get(2);
         $app->set('enabled', true);
         $this->Applications->saveOrFail($app);
 
-        if ($expected instanceof \Exception) {
+        if ($expected instanceof Exception) {
             $this->expectException(get_class($expected));
             $this->expectExceptionMessage($expected->getMessage());
         }
 
-        $result = $this->Applications->find('credentials', $options)->first();
+        $result = $this->Applications->find('credentials', ...$options)->first();
 
         static::assertEquals($expected, Hash::get($result, 'id'));
     }
@@ -361,7 +358,6 @@ class ApplicationsTableTest extends TestCase
      * Test `afterDelete` method
      *
      * @return void
-     * @coversNothing
      */
     public function testAfterDelete(): void
     {
@@ -370,7 +366,7 @@ class ApplicationsTableTest extends TestCase
         $app->set('enabled', true);
         $this->Applications->saveOrFail($app);
 
-        $app = $this->Applications->find('apiKey', compact('apiKey'))->first();
+        $app = $this->Applications->find('apiKey', apiKey: $apiKey)->first();
         $cacheConf = $this->Applications->behaviors()->get('QueryCache')->getConfig('cacheConfig');
         $read = Cache::read(sprintf('app_%s', $apiKey), $cacheConf);
         static::assertNotEmpty($read);
@@ -385,11 +381,10 @@ class ApplicationsTableTest extends TestCase
      * Test `afterSave` method
      *
      * @return void
-     * @coversNothing
      */
     public function testAfterSave(): void
     {
-        $app = $this->Applications->find('apiKey', ['apiKey' => API_KEY])->first();
+        $app = $this->Applications->find('apiKey', apiKey: API_KEY)->first();
         $cacheConf = $this->Applications->behaviors()->get('QueryCache')->getConfig('cacheConfig');
         $read = Cache::read(sprintf('app_%s', API_KEY), $cacheConf);
         static::assertNotEmpty($read);
@@ -406,11 +401,10 @@ class ApplicationsTableTest extends TestCase
      * Test exception removing default application
      *
      * @return void
-     * @covers ::beforeDelete()
      */
     public function testDeleteDefaultApplication()
     {
-        $this->expectException(\BEdita\Core\Exception\ImmutableResourceException::class);
+        $this->expectException(ImmutableResourceException::class);
         $this->expectExceptionCode('403');
         $this->expectExceptionMessage('Could not delete "Application" 1');
         $application = $this->Applications->get(ApplicationsTable::DEFAULT_APPLICATION);
@@ -421,11 +415,10 @@ class ApplicationsTableTest extends TestCase
      * Test exception removing current application
      *
      * @return void
-     * @covers ::beforeDelete()
      */
     public function testDeleteCurrentApplication()
     {
-        $this->expectException(\BEdita\Core\Exception\ImmutableResourceException::class);
+        $this->expectException(ImmutableResourceException::class);
         $this->expectExceptionCode('403');
         $this->expectExceptionMessage('Could not delete "Application" 2');
         $application = $this->Applications->get(2);
@@ -437,11 +430,10 @@ class ApplicationsTableTest extends TestCase
      * Test exception disabling default application
      *
      * @return void
-     * @covers ::beforeSave()
      */
     public function testDisableDefaultApplication()
     {
-        $this->expectException(\BEdita\Core\Exception\ImmutableResourceException::class);
+        $this->expectException(ImmutableResourceException::class);
         $this->expectExceptionCode('403');
         $this->expectExceptionMessage('Could not disable "Application" 1');
         $application = $this->Applications->get(ApplicationsTable::DEFAULT_APPLICATION);
@@ -453,11 +445,10 @@ class ApplicationsTableTest extends TestCase
      * Test exception disabling current application in use
      *
      * @return void
-     * @covers ::beforeSave()
      */
     public function testDisableCurrentApplication()
     {
-        $this->expectException(\BEdita\Core\Exception\ImmutableResourceException::class);
+        $this->expectException(ImmutableResourceException::class);
         $this->expectExceptionCode('403');
         $this->expectExceptionMessage('Could not disable "Application" 2');
         $application = $this->Applications->get(2);
@@ -472,7 +463,6 @@ class ApplicationsTableTest extends TestCase
      * Test `findEnabled` method
      *
      * @return void
-     * @covers ::findEnabled()
      */
     public function testFindEnabled()
     {

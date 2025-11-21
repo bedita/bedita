@@ -14,13 +14,17 @@ declare(strict_types=1);
  */
 namespace BEdita\Core\Test\TestCase\Model\Table;
 
+use BEdita\Core\Model\Table\HistoryTable;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Hash;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
- * @coversDefaultClass \BEdita\Core\Model\Table\HistoryTable
+ * {@see \BEdita\Core\Model\Table\HistoryTable} Test Case
  */
+#[CoversClass(HistoryTable::class)]
 class HistoryTableTest extends TestCase
 {
     /**
@@ -35,7 +39,7 @@ class HistoryTableTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.History',
     ];
 
@@ -68,7 +72,7 @@ class HistoryTableTest extends TestCase
      *
      * @return array
      */
-    public function validationProvider()
+    public static function validationProvider(): array
     {
         return [
             'ok' => [
@@ -96,9 +100,8 @@ class HistoryTableTest extends TestCase
      * @param string[] $expected Expected errors.
      * @param array $data Data.
      * @return void
-     * @dataProvider validationProvider
-     * @covers ::validationDefault()
      */
+    #[DataProvider('validationProvider')]
     public function testValidation(array $expected, array $data)
     {
         $entity = $this->History->newEmptyEntity();

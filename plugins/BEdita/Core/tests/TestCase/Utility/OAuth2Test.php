@@ -12,19 +12,19 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\Utility;
 
 use BEdita\Core\Utility\OAuth2;
 use Cake\Http\Client\Adapter\Stream;
 use Cake\Http\Client\Response;
 use Cake\TestSuite\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * {@see \BEdita\Core\Utility\OAuth2} Test Case
- *
- * @coversDefaultClass \BEdita\Core\Utility\OAuth2
  */
+#[CoversClass(OAuth2::class)]
 class OAuth2Test extends TestCase
 {
     /**
@@ -32,7 +32,7 @@ class OAuth2Test extends TestCase
      *
      * @return array
      */
-    public function responseProvider(): array
+    public static function responseProvider(): array
     {
         return [
             'default' => [
@@ -53,11 +53,8 @@ class OAuth2Test extends TestCase
      * Test `response` method
      *
      * @return void
-     * @dataProvider responseProvider
-     * @covers ::response()
-     * @covers ::getQuery()
-     * @covers ::getHeaders()
      */
+    #[DataProvider('responseProvider')]
     public function testResponse(array $expected, string $body, array $options = []): void
     {
         $response = new Response([], $body);

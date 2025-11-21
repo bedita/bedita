@@ -12,9 +12,10 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Model\Behavior;
 
+use ArrayObject;
+use BEdita\Core\Model\Enum\HistoryUserAction;
 use BEdita\Core\State\CurrentApplication;
 use BEdita\Core\Utility\LoggedUser;
 use Cake\Core\Configure;
@@ -24,9 +25,9 @@ use Cake\Database\Expression\QueryExpression;
 use Cake\Datasource\EntityInterface;
 use Cake\Event\EventInterface;
 use Cake\ORM\Behavior;
-use Cake\ORM\Query;
+use Cake\ORM\Query\SelectQuery;
+use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
-use Cake\Utility\Hash;
 
 /**
  * History behavior
@@ -39,7 +40,7 @@ class HistoryBehavior extends Behavior
     /**
      * @inheritDoc
      */
-    protected $_defaultConfig = [
+    protected array $_defaultConfig = [
         'table' => 'History',
         'exclude' => [
             'id',
@@ -59,9 +60,9 @@ class HistoryBehavior extends Behavior
     /**
      *  History table
      *
-     * @var \Cake\ORM\Table
+     * @var \Cake\ORM\Table|null
      */
-    public $Table = null;
+    public ?Table $Table = null;
 
     /**
      * The changed properties.
@@ -69,7 +70,7 @@ class HistoryBehavior extends Behavior
      *
      * @var array
      */
-    protected $changed = [];
+    protected array $changed = [];
 
     /**
      * Retrieve changed properties array
@@ -77,7 +78,7 @@ class HistoryBehavior extends Behavior
      * @return array
      * @codeCoverageIgnore
      */
-    public function getChanged()
+    public function getChanged(): array
     {
         return $this->changed;
     }
@@ -107,14 +108,14 @@ class HistoryBehavior extends Behavior
      * @param \ArrayObject $data The input data being saved
      * @return void
      */
-    public function beforeMarshal(EventInterface $event, \ArrayObject $data)
+    public function beforeMarshal(EventInterface $event, ArrayObject $data): void
     {
         $this->changed = $data->getArrayCopy();
         $exclude = (array)$this->getConfig('exclude');
         $this->changed = array_diff_key($this->changed, array_flip($exclude));
         $obfuscate = array_intersect_key(
             (array)$this->getConfig('obfuscate'),
-            $this->changed
+            $this->changed,
         );
         $this->changed = array_merge($this->changed, $obfuscate);
     }
@@ -160,7 +161,7 @@ class HistoryBehavior extends Behavior
     protected function historyEntity(EntityInterface $entity): EntityInterface
     {
         /** @var \BEdita\Core\Model\Entity\History $history */
-        $history = $this->Table->newEntity([]);
+        $history = $this->Table->newEmptyEntity();
         $history->resource_id = $entity->get('id');
         $history->resource_type = $this->getConfig('resource_type');
         $history->application_id = CurrentApplication::getApplicationId();
@@ -176,23 +177,23 @@ class HistoryBehavior extends Behavior
      * 'remove' action defined in in `afterDelete`
      *
      * @param \Cake\Datasource\EntityInterface $entity Object entity.
-     * @return string
+     * @return \BEdita\Core\Model\Enum\HistoryUserAction
      */
-    protected function entityUserAction(EntityInterface $entity): string
+    protected function entityUserAction(EntityInterface $entity): HistoryUserAction
     {
         if ($entity->isNew()) {
-            return 'create';
+            return HistoryUserAction::Create;
         }
 
         if ($entity->isDirty('deleted')) {
             if ($entity->get('deleted')) {
-                return 'trash';
+                return HistoryUserAction::Trash;
             } else {
-                return 'restore';
+                return HistoryUserAction::Restore;
             }
         }
 
-        return 'update';
+        return HistoryUserAction::Update;
     }
 
     /**
@@ -210,7 +211,7 @@ class HistoryBehavior extends Behavior
 
         /** @var \BEdita\Core\Model\Entity\History $history */
         $history = $this->historyEntity($entity);
-        $history->user_action = 'remove';
+        $history->user_action = HistoryUserAction::Remove;
         $this->Table->saveOrFail($history);
     }
 
@@ -218,13 +219,12 @@ class HistoryBehavior extends Behavior
      * Finder for editor objects in history: object created or modifed by a user looking at history data.
      * Logged user id is used if no id is present in options array.
      *
-     * @param \Cake\ORM\Query $query Query object instance.
-     * @param array $options Options containing user id
-     * @return \Cake\ORM\Query
+     * @param \Cake\ORM\Query\SelectQuery $query Query object instance.
+     * @param string|int|null $editorId User id
+     * @return \Cake\ORM\Query\SelectQuery
      */
-    public function findHistoryEditor(Query $query, array $options): Query
+    public function findHistoryEditor(SelectQuery $query, int|string|null $editorId = null): SelectQuery
     {
-        $editorId = Hash::get($options, '0');
         if (empty($editorId)) {
             $editorId = LoggedUser::id();
         }
@@ -246,7 +246,7 @@ class HistoryBehavior extends Behavior
 
         return $query->innerJoin(
             ['HistoryItems' => $subQuery],
-            $query->expr()->eq($field, new IdentifierExpression($this->table()->aliasField('id')))
+            $query->expr()->eq($field, new IdentifierExpression($this->table()->aliasField('id'))),
         );
     }
 }

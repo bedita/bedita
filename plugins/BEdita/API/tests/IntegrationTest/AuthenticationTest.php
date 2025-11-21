@@ -12,28 +12,38 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\API\Test\IntegrationTest;
 
 use BEdita\API\TestSuite\IntegrationTestCase;
+use BEdita\Core\Utility\LoggedUser;
 use Cake\ORM\Locator\LocatorAwareTrait;
 use Cake\Utility\Hash;
+use PHPUnit\Framework\Attributes\CoversNothing;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * Tests on /auth endpoint.
- *
- * @coversNothing
  */
+#[CoversNothing]
 class AuthenticationTest extends IntegrationTestCase
 {
     use LocatorAwareTrait;
+
+    /**
+     * @inheritDoc
+     */
+    public function setUp(): void
+    {
+        parent::setUp();
+        LoggedUser::resetUser();
+    }
 
     /**
      * Data provider for `testAuth` method.
      *
      * @return array
      */
-    public function authProvider(): array
+    public static function authProvider(): array
     {
         return [
             'client credentials' => [
@@ -61,9 +71,8 @@ class AuthenticationTest extends IntegrationTestCase
      * @param array $data Post data.
      * @param array $headers Additional headers.
      * @return void
-     * @dataProvider authProvider
-     * @coversNothing
      */
+    #[DataProvider('authProvider')]
     public function testAuth(array $data, array $headers = []): void
     {
         $headers += [
@@ -104,7 +113,6 @@ class AuthenticationTest extends IntegrationTestCase
      * Test /auth response with wrong formatted token.
      *
      * @return void
-     * @coversNothing
      */
     public function testBadToken(): void
     {
@@ -114,16 +122,16 @@ class AuthenticationTest extends IntegrationTestCase
             'Content-Type' => 'application/json',
             'Authorization' => 'Bearer gustavo',
         ];
-        $this->configRequest(compact('headers'));
+        $this->configRequestHeaders('POST', $headers);
         $this->post('/auth', json_encode(['grant_type' => 'refresh_token']));
 
-        $this->assertResponseCode(403);
+        $this->assertResponseCode(401);
         $this->assertContentType('application/vnd.api+json');
         $this->assertResponseNotEmpty();
         $body = json_decode((string)$this->_response->getBody(), true);
 
         static::assertArrayHasKey('error', $body);
-        static::assertEquals('403', $body['error']['status']);
+        static::assertEquals('401', $body['error']['status']);
     }
 
     /**

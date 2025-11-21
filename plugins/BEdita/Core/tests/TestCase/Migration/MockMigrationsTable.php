@@ -14,7 +14,7 @@ declare(strict_types=1);
  */
 namespace BEdita\Core\Test\TestCase\Migration;
 
-use Migrations\Table;
+use Migrations\Db\Table;
 
 class MockMigrationsTable extends Table
 {
@@ -53,7 +53,7 @@ class MockMigrationsTable extends Table
     /**
      * @inheritDoc
      */
-    public function update()
+    public function update(): void
     {
     }
 }

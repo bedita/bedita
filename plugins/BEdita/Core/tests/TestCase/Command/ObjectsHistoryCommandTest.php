@@ -12,18 +12,19 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\Command;
 
+use BEdita\Core\Command\ObjectsHistoryCommand;
 use Cake\Console\TestSuite\ConsoleIntegrationTestTrait;
 use Cake\Event\EventManager;
 use Cake\TestSuite\TestCase;
+use Exception;
+use PHPUnit\Framework\Attributes\CoversClass;
 
 /**
  * {@see BEdita\Core\Command\ObjectsHistoryCommand} Test Case
- *
- * @coversDefaultClass \BEdita\Core\Command\ObjectsHistoryCommand
  */
+#[CoversClass(ObjectsHistoryCommand::class)]
 class ObjectsHistoryCommandTest extends TestCase
 {
     use ConsoleIntegrationTestTrait;
@@ -33,7 +34,7 @@ class ObjectsHistoryCommandTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.PropertyTypes',
         'plugin.BEdita/Core.Properties',
@@ -44,19 +45,9 @@ class ObjectsHistoryCommandTest extends TestCase
     ];
 
     /**
-     * @inheritDoc
-     */
-    protected function setUp(): void
-    {
-        parent::setUp();
-        $this->useCommandRunner();
-    }
-
-    /**
      * Test buildOptionParser method
      *
      * @return void
-     * @covers ::buildOptionParser()
      */
     public function testBuildOptionParser(): void
     {
@@ -76,10 +67,6 @@ class ObjectsHistoryCommandTest extends TestCase
      * Test `execute` method
      *
      * @return void
-     * @covers ::execute()
-     * @covers ::read()
-     * @covers ::fetchQuery()
-     * @covers ::historyIterator()
      */
     public function testExecute(): void
     {
@@ -94,10 +81,6 @@ class ObjectsHistoryCommandTest extends TestCase
      * Test `execute` method, by types
      *
      * @return void
-     * @covers ::execute()
-     * @covers ::read()
-     * @covers ::fetchQuery()
-     * @covers ::historyIterator()
      */
     public function testExecuteByTypes(): void
     {
@@ -112,15 +95,11 @@ class ObjectsHistoryCommandTest extends TestCase
      * Test `delete` method, with exception
      *
      * @return void
-     * @covers ::execute()
-     * @covers ::delete()
-     * @covers ::fetchQuery()
-     * @covers ::historyIterator()
      */
     public function testDeleteWithException(): void
     {
         $throwError = function () {
-            throw new \Exception('An error');
+            throw new Exception('An error');
         };
         // add listener to global event manager
         EventManager::instance()->on('Model.beforeDelete', $throwError);
@@ -139,10 +118,6 @@ class ObjectsHistoryCommandTest extends TestCase
      * Test `delete` method, with no exception
      *
      * @return void
-     * @covers ::execute()
-     * @covers ::delete()
-     * @covers ::fetchQuery()
-     * @covers ::historyIterator()
      */
     public function testDeleteWithNoException(): void
     {

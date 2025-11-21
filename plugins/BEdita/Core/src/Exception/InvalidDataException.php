@@ -12,16 +12,20 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Exception;
 
-use Cake\Core\Exception\CakeException as Exception;
+use Cake\Http\Exception\HttpException;
 
 /**
  * Exception raised when invalid data are passed to Model/ORM classes
  */
-class InvalidDataException extends Exception
+class InvalidDataException extends HttpException
 {
+    /**
+     * @inheritDoc
+     */
+    protected int $_defaultCode = 400;
+
     /**
      * {@inheritDoc}
      *
@@ -31,7 +35,7 @@ class InvalidDataException extends Exception
      */
     public function __construct(string $message, ?array $details = null)
     {
-        parent::__construct($message, 400);
+        parent::__construct($message);
         $this->_attributes['detail'] = $details;
     }
 }

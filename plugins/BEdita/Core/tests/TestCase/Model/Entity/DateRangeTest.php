@@ -12,17 +12,22 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\Model\Entity;
 
 use BEdita\Core\Model\Entity\DateRange;
-use Cake\I18n\FrozenTime;
+use BEdita\Core\Model\Table\DateRangesTable;
+use Cake\I18n\DateTime;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
+use Exception;
+use LogicException;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
- * @coversDefaultClass \BEdita\Core\Model\Entity\DateRange
+ * {@see \BEdita\Core\Model\Entity\DateRange} Test Case
  */
+#[CoversClass(DateRange::class)]
 class DateRangeTest extends TestCase
 {
     /**
@@ -30,7 +35,7 @@ class DateRangeTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.Objects',
         'plugin.BEdita/Core.DateRanges',
@@ -41,7 +46,7 @@ class DateRangeTest extends TestCase
      *
      * @var \BEdita\Core\Model\Table\DateRangesTable
      */
-    protected $DateRanges;
+    protected DateRangesTable $DateRanges;
 
     /**
      * @inheritDoc
@@ -58,7 +63,7 @@ class DateRangeTest extends TestCase
      *
      * @return array
      */
-    public function isBeforeProvider()
+    public static function isBeforeProvider(): array
     {
         return [
             [
@@ -181,9 +186,8 @@ class DateRangeTest extends TestCase
      * @param array $dateRange1 Date Range 1.
      * @param array $dateRange2 Date Range 2.
      * @return void
-     * @covers ::isBefore()
-     * @dataProvider isBeforeProvider()
      */
+    #[DataProvider('isBeforeProvider')]
     public function testIsBefore($expected, array $dateRange1, array $dateRange2)
     {
         $dateRange1 = $this->DateRanges->newEntity($dateRange1);
@@ -199,7 +203,7 @@ class DateRangeTest extends TestCase
      *
      * @return array
      */
-    public function isAfterProvider()
+    public static function isAfterProvider(): array
     {
         return [
             [
@@ -322,9 +326,8 @@ class DateRangeTest extends TestCase
      * @param array $dateRange1 Date Range 1.
      * @param array $dateRange2 Date Range 2.
      * @return void
-     * @covers ::isAfter()
-     * @dataProvider isAfterProvider()
      */
+    #[DataProvider('isAfterProvider')]
     public function testIsAfter($expected, array $dateRange1, array $dateRange2)
     {
         $dateRange1 = $this->DateRanges->newEntity($dateRange1);
@@ -340,7 +343,7 @@ class DateRangeTest extends TestCase
      *
      * @return array
      */
-    public function normalizeProvider()
+    public static function normalizeProvider(): array
     {
         return [
             'empty' => [
@@ -432,9 +435,8 @@ class DateRangeTest extends TestCase
      * @param array $expected Expected result.
      * @param array $dateRanges Date Ranges.
      * @return void
-     * @covers ::normalize()
-     * @dataProvider normalizeProvider()
      */
+    #[DataProvider('normalizeProvider')]
     public function testNormalize(array $expected, array $dateRanges)
     {
         $expected = $this->DateRanges->newEntities($expected);
@@ -458,7 +460,6 @@ class DateRangeTest extends TestCase
      * Test case for union method.
      *
      * @return void
-     * @covers ::union()
      */
     public function testUnion()
     {
@@ -525,7 +526,7 @@ class DateRangeTest extends TestCase
      *
      * @return array
      */
-    public function diffProvider()
+    public static function diffProvider(): array
     {
         return [
             'empty' => [
@@ -636,9 +637,8 @@ class DateRangeTest extends TestCase
      * @param array $dateRanges1 Date Ranges.
      * @param array $dateRanges2 Date Ranges.
      * @return void
-     * @covers ::diff()
-     * @dataProvider diffProvider()
      */
+    #[DataProvider('diffProvider')]
     public function testDiff(array $expected, array $dateRanges1, array $dateRanges2)
     {
         $expected = $this->DateRanges->newEntities($expected);
@@ -658,25 +658,25 @@ class DateRangeTest extends TestCase
      *
      * @return array
      */
-    public function checkWellFormedProvider()
+    public static function checkWellFormedProvider(): array
     {
         return [
             'not a date range' => [
-                new \LogicException('Invalid Date Range entity class: expected "BEdita\Core\Model\Entity\DateRange", got "resource"'),
+                new LogicException('Invalid Date Range entity class: expected "BEdita\Core\Model\Entity\DateRange", got "resource"'),
                 [
                     fopen(__FILE__, 'r'),
                 ],
                 false,
             ],
             'not a date range /2' => [
-                new \LogicException('Invalid Date Range entity class: expected "BEdita\Core\Model\Entity\DateRange", got "Cake\ORM\TableRegistry"'),
+                new LogicException('Invalid Date Range entity class: expected "BEdita\Core\Model\Entity\DateRange", got "Cake\ORM\TableRegistry"'),
                 [
                     new TableRegistry(),
                 ],
                 false,
             ],
             'invalid start date' => [
-                new \LogicException('Invalid "start_date": expected "DateTimeInterface", got "NULL"'),
+                new LogicException('Invalid "start_date": expected "DateTimeInterface", got "NULL"'),
                 [
                     [
                         'start_date' => null,
@@ -685,10 +685,10 @@ class DateRangeTest extends TestCase
                 ],
             ],
             'invalid end date' => [
-                new \LogicException('Invalid "end_date": expected "DateTimeInterface", got "string"'),
+                new LogicException('Invalid "end_date": expected "DateTimeInterface", got "string"'),
                 [
                     new DateRange([
-                        'start_date' => new FrozenTime(),
+                        'start_date' => new DateTime(),
                         'end_date' => 'better than yesterday, worse than tomorrow',
                     ]),
                 ],
@@ -713,12 +713,11 @@ class DateRangeTest extends TestCase
      * @param array $dateRanges Date Ranges.
      * @param bool $marshal Should entities be marshalled first?
      * @return void
-     * @covers ::checkWellFormed()
-     * @dataProvider checkWellFormedProvider()
      */
+    #[DataProvider('checkWellFormedProvider')]
     public function testCheckWellFormed($expected, array $dateRanges, $marshal = true)
     {
-        if ($expected instanceof \Exception) {
+        if ($expected instanceof Exception) {
             $this->expectException(get_class($expected));
             $this->expectExceptionMessage($expected->getMessage());
         }

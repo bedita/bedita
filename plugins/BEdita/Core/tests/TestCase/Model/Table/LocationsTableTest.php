@@ -12,18 +12,19 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\Model\Table;
 
+use BEdita\Core\Model\Table\LocationsTable;
 use BEdita\Core\Utility\LoggedUser;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * {@see \BEdita\Core\Model\Table\LocationsTable} Test Case
- *
- * @coversDefaultClass \BEdita\Core\Model\Table\LocationsTable
  */
+#[CoversClass(LocationsTable::class)]
 class LocationsTableTest extends TestCase
 {
     /**
@@ -38,7 +39,7 @@ class LocationsTableTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.History',
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.Objects',
@@ -82,7 +83,7 @@ class LocationsTableTest extends TestCase
      *
      * @return array
      */
-    public function saveProvider()
+    public static function saveProvider(): array
     {
         return [
             'valid' => [
@@ -117,9 +118,8 @@ class LocationsTableTest extends TestCase
      * @param bool $changed
      * @param array $data
      * @return void
-     * @dataProvider saveProvider
-     * @coversNothing
      */
+    #[DataProvider('saveProvider')]
     public function testSave(bool $changed, array $data)
     {
         $entity = $this->Locations->newEntity($data);

@@ -12,10 +12,11 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Model\Action;
 
+use BEdita\Core\Model\Entity\ObjectType;
 use Cake\Datasource\Exception\InvalidPrimaryKeyException;
+use Cake\ORM\Table;
 use Cake\Utility\Hash;
 
 /**
@@ -30,19 +31,19 @@ class GetObjectAction extends BaseAction
      *
      * @var \Cake\ORM\Table
      */
-    protected $Table;
+    protected Table $Table;
 
     /**
      * Object type.
      *
      * @var \BEdita\Core\Model\Entity\ObjectType|null
      */
-    protected $objectType;
+    protected ?ObjectType $objectType = null;
 
     /**
      * @inheritDoc
      */
-    protected function initialize(array $data)
+    protected function initialize(array $data): void
     {
         $this->Table = $this->getConfig('table');
         $this->objectType = $this->getConfig('objectType');
@@ -51,7 +52,7 @@ class GetObjectAction extends BaseAction
     /**
      * @inheritDoc
      */
-    public function execute(array $data = [])
+    public function execute(array $data = []): mixed
     {
         // Prepare conditions and contained associations.
         $conditions = $this->getPrimaryKeyConditions($data);
@@ -74,10 +75,10 @@ class GetObjectAction extends BaseAction
             if (!empty($assoc)) {
                 $query = $query->contain($assoc);
             }
-            $query = $query->find('type', (array)$this->objectType->id);
+            $query = $query->find('type', value: (array)$this->objectType->id);
         }
         if (!empty($data['lang'])) {
-            $query = $query->find('translations', ['lang' => $data['lang']]);
+            $query = $query->find('translations', lang: $data['lang']);
         }
 
         return $query->firstOrFail();
@@ -92,7 +93,7 @@ class GetObjectAction extends BaseAction
      * @param array $data Action data.
      * @return array
      */
-    protected function getPrimaryKeyConditions(array $data)
+    protected function getPrimaryKeyConditions(array $data): array
     {
         $key = array_map([$this->Table, 'aliasField'], (array)$this->Table->getPrimaryKey());
         $primaryKey = (array)$data['primaryKey'];
@@ -105,7 +106,7 @@ class GetObjectAction extends BaseAction
             throw new InvalidPrimaryKeyException(sprintf(
                 'Record not found in table "%s" with primary key [%s]',
                 $this->Table->getTable(),
-                implode(', ', $primaryKey)
+                implode(', ', $primaryKey),
             ));
         }
         $conditions = array_combine($key, $primaryKey);

@@ -17,15 +17,18 @@ namespace BEdita\Core\Test\TestCase\Model\Table;
 use BEdita\Core\Exception\BadFilterException;
 use BEdita\Core\Model\Entity\Property;
 use BEdita\Core\Model\Entity\StaticProperty;
+use BEdita\Core\Model\Table\PropertiesTable;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use Cake\Validation\Validation;
+use Exception;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * {@see \BEdita\Core\Model\Table\PropertiesTable} Test Case
- *
- * @coversDefaultClass \BEdita\Core\Model\Table\PropertiesTable
  */
+#[CoversClass(PropertiesTable::class)]
 class PropertiesTableTest extends TestCase
 {
     /**
@@ -40,7 +43,7 @@ class PropertiesTableTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.PropertyTypes',
         'plugin.BEdita/Core.Properties',
@@ -77,11 +80,9 @@ class PropertiesTableTest extends TestCase
      * Test initialization.
      *
      * @return void
-     * @coversNothing
      */
     public function testInitialization()
     {
-        $this->Properties->initialize([]);
         static::assertEquals('properties', $this->Properties->getTable());
         static::assertEquals('id', $this->Properties->getPrimaryKey());
         static::assertEquals('name', $this->Properties->getDisplayField());
@@ -96,7 +97,7 @@ class PropertiesTableTest extends TestCase
      *
      * @return array
      */
-    public function validationProvider()
+    public static function validationProvider(): array
     {
         return [
             'valid' => [
@@ -122,12 +123,11 @@ class PropertiesTableTest extends TestCase
      * @param bool $expected Expected result.
      * @param array $data Data to be validated.
      * @return void
-     * @dataProvider validationProvider
-     * @coversNothing
      */
+    #[DataProvider('validationProvider')]
     public function testValidation($expected, array $data)
     {
-        $property = $this->Properties->newEntity([]);
+        $property = $this->Properties->newEmptyEntity();
         $this->Properties->patchEntity($property, $data);
         $property->object_type_id = 1;
         $property->property_type_id = 1;
@@ -147,25 +147,32 @@ class PropertiesTableTest extends TestCase
      *
      * @return array
      */
-    public function findObjectTypeProvider()
+    public static function findObjectTypeProvider(): array
     {
         return [
             'objects' => [
                 [],
-                ['objects'],
+                'objects',
             ],
             'documents' => [
                 [
                     'another_title',
                     'another_description',
                 ],
-                ['documents'],
+                'documents',
+            ],
+            'documents by id' => [
+                [
+                    'another_title',
+                    'another_description',
+                ],
+                2,
             ],
             'media' => [
                 [
                     'media_property',
                 ],
-                ['media'],
+                'media',
             ],
             'files' => [
                 [
@@ -174,7 +181,7 @@ class PropertiesTableTest extends TestCase
                     'media_property',
                     'files_property',
                 ],
-                ['files'],
+                'files',
             ],
             'profiles' => [
                 [
@@ -183,22 +190,14 @@ class PropertiesTableTest extends TestCase
                     'number_of_friends',
                     'street_address',
                 ],
-                ['profiles'],
+                'profiles',
             ],
             'users' => [
                 [
                     'another_username',
                     'another_email',
                 ],
-                ['users'],
-            ],
-            'too few' => [
-                new BadFilterException(__d('bedita', 'Missing object type to get properties for')),
-                [],
-            ],
-            'too many' => [
-                new BadFilterException(__d('bedita', 'Missing object type to get properties for')),
-                ['gustavo', 'supporto'],
+                'users',
             ],
         ];
     }
@@ -207,21 +206,14 @@ class PropertiesTableTest extends TestCase
      * Test finder by object type.
      *
      * @param array|\Exception $expected List of expected properties names.
-     * @param array $options Options to be passed to finder.
+     * @param string|int $for Name or id passed to finder.
      * @return void
-     * @dataProvider findObjectTypeProvider()
-     * @covers ::findObjectType()
      */
-    public function testFindObjectType($expected, array $options)
+    #[DataProvider('findObjectTypeProvider')]
+    public function testFindObjectType($expected, string|int $for)
     {
-        if ($expected instanceof \Exception) {
-            $this->expectException(get_class($expected));
-            $this->expectExceptionCode($expected->getCode());
-            $this->expectExceptionMessage($expected->getMessage());
-        }
-
-        $result = $this->Properties->find('objectType', $options)
-            ->find('type', ['dynamic'])
+        $result = $this->Properties->find('objectType', for: $for)
+            ->find('type', propType: 'dynamic')
             ->all()
             ->extract('name')
             ->toList();
@@ -238,7 +230,7 @@ class PropertiesTableTest extends TestCase
      *
      * @return array
      */
-    public function findTypeProvider()
+    public static function findTypeProvider(): array
     {
         $objects = [
             'id',
@@ -338,20 +330,19 @@ class PropertiesTableTest extends TestCase
      * @param string $objectType Object type to find properties for
      * @param string $type Type of properties to be returned.
      * @return void
-     * @dataProvider findTypeProvider()
-     * @covers ::findType()
      */
+    #[DataProvider('findTypeProvider')]
     public function testFindType($expected, $objectType, $type = 'both')
     {
-        if ($expected instanceof \Exception) {
+        if ($expected instanceof Exception) {
             $this->expectException(get_class($expected));
             $this->expectExceptionCode($expected->getCode());
             $this->expectExceptionMessage($expected->getMessage());
         }
 
         $count = 0;
-        $result = $this->Properties->find('objectType', [$objectType])
-            ->find('type', [$type])
+        $result = $this->Properties->find('objectType', for: $objectType)
+            ->find('type', propType: $type)
             ->where(['enabled' => true])
             ->all()
             ->each(function ($row) use (&$count) {
@@ -381,7 +372,6 @@ class PropertiesTableTest extends TestCase
      * Test that by default both static and custom properties are returned.
      *
      * @return void
-     * @covers ::beforeFind()
      */
     public function testBeforeFindDefault()
     {
@@ -419,7 +409,7 @@ class PropertiesTableTest extends TestCase
             'media_property',
         ];
 
-        $result = $this->Properties->find('objectType', ['media'])
+        $result = $this->Properties->find('objectType', for: 'media')
             ->all()
             ->extract('name')
             ->toList();
@@ -435,7 +425,6 @@ class PropertiesTableTest extends TestCase
      * Test that default options do not overwrite user-defined options.
      *
      * @return void
-     * @covers ::beforeFind()
      */
     public function testBeforeFindDoNotOverwrite()
     {
@@ -444,8 +433,8 @@ class PropertiesTableTest extends TestCase
             'media_property',
         ];
 
-        $result = $this->Properties->find('objectType', ['media'])
-            ->find('type', ['dynamic'])
+        $result = $this->Properties->find('objectType', for: 'media')
+            ->find('type', propType: 'dynamic')
             ->all()
             ->extract('name')
             ->toList();
@@ -460,7 +449,7 @@ class PropertiesTableTest extends TestCase
      *
      * @return array
      */
-    public function findResourceProvider(): array
+    public static function findResourceProvider(): array
     {
         return [
             'property' => [
@@ -470,10 +459,11 @@ class PropertiesTableTest extends TestCase
                     'object_type_name' => 'documents',
                 ],
             ],
-            'no name' => [
-                new BadFilterException('Missing required parameter "name"'),
+            'property with alternative `object`' => [
+                1,
                 [
-                    'object_type_name' => 'documents',
+                    'name' => 'another_title',
+                    'object' => 'documents',
                 ],
             ],
             'no type' => [
@@ -491,16 +481,15 @@ class PropertiesTableTest extends TestCase
      * @param int $expected The value expected
      * @param array $options The options for the finder
      * @return void
-     * @covers ::findResource()
-     * @dataProvider findResourceProvider()
      */
+    #[DataProvider('findResourceProvider')]
     public function testFindResource($expected, $options)
     {
-        if ($expected instanceof \Exception) {
+        if ($expected instanceof Exception) {
             $this->expectException(get_class($expected));
             $this->expectExceptionMessage($expected->getMessage());
         }
-        $query = $this->Properties->find('resource', $options);
+        $query = $this->Properties->find('resource', ...$options);
         $entity = $query->first();
         static::assertEquals(1, $query->count());
         static::assertEquals($expected, $entity->id);

@@ -12,20 +12,21 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\Command;
 
+use BEdita\Core\Command\ResourcesModifyCommand;
 use BEdita\Core\Job\ServiceRegistry;
 use Cake\Command\Command;
 use Cake\Console\TestSuite\ConsoleIntegrationTestTrait;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Inflector;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * {@see BEdita\Core\Command\ResourcesModifyCommand} Test Case
- *
- * @coversDefaultClass \BEdita\Core\Command\ResourcesModifyCommand
  */
+#[CoversClass(ResourcesModifyCommand::class)]
 class ResourcesModifyCommandTest extends TestCase
 {
     use ConsoleIntegrationTestTrait;
@@ -35,7 +36,7 @@ class ResourcesModifyCommandTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.PropertyTypes',
         'plugin.BEdita/Core.Properties',
@@ -54,18 +55,10 @@ class ResourcesModifyCommandTest extends TestCase
     /**
      * @inheritDoc
      */
-    protected function setUp(): void
-    {
-        parent::setUp();
-        $this->useCommandRunner();
-    }
-
-    /**
-     * @inheritDoc
-     */
     public function tearDown(): void
     {
         parent::tearDown();
+
         ServiceRegistry::reset();
     }
 
@@ -73,8 +66,6 @@ class ResourcesModifyCommandTest extends TestCase
      * Test buildOptionParser method
      *
      * @return void
-     * @covers ::buildOptionParser()
-     * @covers ::getDescription()
      */
     public function testBuildOptionParser()
     {
@@ -94,7 +85,7 @@ class ResourcesModifyCommandTest extends TestCase
      *
      * @return array
      */
-    public function executeProvider(): array
+    public static function executeProvider(): array
     {
         return [
             'modify application api_key' => [
@@ -152,9 +143,8 @@ class ResourcesModifyCommandTest extends TestCase
      * @param array $input Input data.
      * @param array $expectedResource Expected resource data.
      * @return void
-     * @covers ::execute()
-     * @dataProvider executeProvider()
      */
+    #[DataProvider('executeProvider')]
     public function testExecute(string $resourceId, string $resourceType, string $resourceField, array $input, array $expectedResource): void
     {
         $tableName = Inflector::camelize($resourceType);
@@ -182,7 +172,6 @@ class ResourcesModifyCommandTest extends TestCase
      * Test modify resource with missing type required options
      *
      * @return void
-     * @covers ::execute()
      */
     public function testExecuteEmptyType(): void
     {
@@ -195,7 +184,6 @@ class ResourcesModifyCommandTest extends TestCase
      * Test modify resource with missing field required options
      *
      * @return void
-     * @covers ::execute()
      */
     public function testExecuteEmptyField(): void
     {
@@ -208,33 +196,30 @@ class ResourcesModifyCommandTest extends TestCase
      * Test modify resource with wrong type
      *
      * @return void
-     * @covers ::execute()
      */
     public function testExecuteWrongType(): void
     {
         $this->exec('resources_modify "First app" --type wrong --field description', ['A sample description']);
         $this->assertExitCode(Command::CODE_ERROR);
-        $this->assertErrorContains('"wrong" is not a valid value for --type. Please use one of "applications, roles, endpoints"');
+        $this->assertErrorContains('`wrong` is not a valid value for `--type`. Please use one of `applications|roles|endpoints`');
     }
 
     /**
      * Test modify resource with wrong field
      *
      * @return void
-     * @covers ::execute()
      */
     public function testExecuteWrongField(): void
     {
         $this->exec('resources_modify "First app" --type applications --field wrong', ['A sample description']);
         $this->assertExitCode(Command::CODE_ERROR);
-        $this->assertErrorContains('"wrong" is not a valid value for --field. Please use one of "api_key, description, enabled, name, unchangeable"');
+        $this->assertErrorContains('`wrong` is not a valid value for `--field`. Please use one of `api_key|description|enabled|name|unchangeable`');
     }
 
     /**
      * Test modify resource not found
      *
      * @return void
-     * @covers ::execute()
      */
     public function testExecuteResourceNotFound(): void
     {

@@ -19,7 +19,7 @@ use BEdita\Core\ORM\Inheritance\Table as InheritanceTable;
 use BEdita\Core\Search\BaseAdapter;
 use Cake\Database\Expression\QueryExpression;
 use Cake\Datasource\EntityInterface;
-use Cake\ORM\Query;
+use Cake\ORM\Query\SelectQuery;
 use Cake\ORM\Table;
 use Cake\Utility\Hash;
 use Cake\Validation\Validator;
@@ -35,7 +35,7 @@ class SimpleAdapter extends BaseAdapter
     /**
      * @inheritDoc
      */
-    protected $_defaultConfig = [
+    protected array $_defaultConfig = [
         'minLength' => 3,
         'maxWords' => 10,
         'columnTypes' => [
@@ -49,16 +49,16 @@ class SimpleAdapter extends BaseAdapter
      * Get all fields whose column type is amongst those allowed in `columnTypes` configuration key.
      *
      * @param \Cake\ORM\Table $table Table object.
-     * @return string[]
+     * @return array<string>
      */
-    protected function getAllFields(Table $table)
+    protected function getAllFields(Table $table): array
     {
         $columnTypes = $this->getConfig('columnTypes');
         $fields = array_filter( // Filter fields that are of a searchable type.
             $table->getSchema()->columns(),
             function ($column) use ($columnTypes, $table) {
                 return in_array($table->getSchema()->getColumnType($column), $columnTypes);
-            }
+            },
         );
 
         if ($table instanceof InheritanceTable && $table->inheritedTable() !== null) {
@@ -75,7 +75,7 @@ class SimpleAdapter extends BaseAdapter
      * @param \Cake\ORM\Table $table The table
      * @return array
      */
-    protected function getFields(Table $table)
+    protected function getFields(Table $table): array
     {
         $fields = (array)$this->getConfig('fields');
         $allFields = $this->getAllFields($table);
@@ -130,15 +130,15 @@ class SimpleAdapter extends BaseAdapter
             $words = preg_split('/\W+/', $text); // Split words.
         }
         $words = array_unique(array_map( // Escape `%` and `\` characters in words.
-            fn (string $word): string => str_replace(
+            fn(string $word): string => str_replace(
                 ['%', '\\'],
                 ['\\%', '\\\\'],
                 $word,
             ),
             array_filter( // Filter out words that are too short.
                 $words,
-                fn (string $word): bool => mb_strlen($word) >= $minLength,
-            )
+                fn(string $word): bool => mb_strlen($word) >= $minLength,
+            ),
         ));
 
         return $words;
@@ -147,7 +147,7 @@ class SimpleAdapter extends BaseAdapter
     /**
      * @inheritDoc
      */
-    public function search(Query $query, string $text, array $options = []): Query
+    public function search(SelectQuery $query, string $text, array $options = []): SelectQuery
     {
         $words = $this->prepareText($text, $options);
         $errors = $this->getValidator()->validate(compact('words'));
@@ -178,7 +178,7 @@ class SimpleAdapter extends BaseAdapter
                 foreach ($words as $word) {
                     $exp->like(
                         $field,
-                        sprintf('%%%s%%', $word)
+                        sprintf('%%%s%%', $word),
                     );
                 }
 

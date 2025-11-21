@@ -20,12 +20,13 @@ use BEdita\API\Policy\ObjectsResolver;
 use BEdita\Core\Model\Entity\ObjectEntity;
 use BEdita\Core\Model\Entity\Role;
 use Cake\TestSuite\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * {@see \BEdita\API\Policy\ObjectsResolver} Test Case.
- *
- * @coversDefaultClass \BEdita\API\Policy\ObjectsResolver
  */
+#[CoversClass(ObjectsResolver::class)]
 class ObjectsResolverTest extends TestCase
 {
     /**
@@ -33,7 +34,7 @@ class ObjectsResolverTest extends TestCase
      *
      * @return array
      */
-    public function getPolicyProvider(): array
+    public static function getPolicyProvider(): array
     {
         $notFoundResource = new Role();
 
@@ -55,9 +56,8 @@ class ObjectsResolverTest extends TestCase
      * @param string|\Authorization\Policy\Exception\MissingPolicyException $expected
      * @param mixed $resource
      * @return void
-     * @covers ::getPolicy()
-     * @dataProvider getPolicyProvider
      */
+    #[DataProvider('getPolicyProvider')]
     public function testGetPolicy($expected, $resource): void
     {
         if ($expected instanceof MissingPolicyException) {

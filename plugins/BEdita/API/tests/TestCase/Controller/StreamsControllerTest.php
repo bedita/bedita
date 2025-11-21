@@ -12,26 +12,29 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\API\Test\TestCase\Controller;
 
+use BEdita\API\Controller\StreamsController;
 use BEdita\API\TestSuite\IntegrationTestCase;
+use BEdita\Core\Test\Utility\TestArraySubsetTrait;
 use BEdita\Core\Test\Utility\TestFilesystemTrait;
 use Cake\Validation\Validation;
-use DMS\PHPUnitExtensions\ArraySubset\ArraySubsetAsserts;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
- * @coversDefaultClass \BEdita\API\Controller\StreamsController
+ * {@see \BEdita\API\Controller\StreamsController} Test Case
  */
+#[CoversClass(StreamsController::class)]
 class StreamsControllerTest extends IntegrationTestCase
 {
-    use ArraySubsetAsserts;
+    use TestArraySubsetTrait;
     use TestFilesystemTrait;
 
     /**
      * @inheritDoc
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.Streams',
     ];
 
@@ -60,8 +63,6 @@ class StreamsControllerTest extends IntegrationTestCase
      * Test that `GET` requests work.
      *
      * @return void
-     * @covers ::resource()
-     * @covers ::getResourceId()
      */
     public function testGet()
     {
@@ -78,7 +79,6 @@ class StreamsControllerTest extends IntegrationTestCase
      * Test that `PATCH` requests are actually forbidden.
      *
      * @return void
-     * @covers ::resource()
      */
     public function testPatch()
     {
@@ -99,7 +99,7 @@ class StreamsControllerTest extends IntegrationTestCase
 
         $this->assertResponseContains(__d(
             'bedita',
-            'You are not allowed to update existing streams, please delete and re-upload'
+            'You are not allowed to update existing streams, please delete and re-upload',
         ));
     }
 
@@ -107,8 +107,6 @@ class StreamsControllerTest extends IntegrationTestCase
      * Test `upload` method.
      *
      * @return void
-     * @covers ::upload()
-     * @covers ::initialize()
      */
     public function testUpload()
     {
@@ -153,7 +151,7 @@ class StreamsControllerTest extends IntegrationTestCase
      *
      * @return array
      */
-    public function linkStreamProvider()
+    public static function linkStreamProvider(): array
     {
         return [
             'not a media' => [
@@ -179,9 +177,8 @@ class StreamsControllerTest extends IntegrationTestCase
      * @param string $type Type of object to be linked.
      * @param int $id ID of object to be linked.
      * @return void
-     * @dataProvider linkStreamProvider()
-     * @covers ::initialize()
      */
+    #[DataProvider('linkStreamProvider')]
     public function testLinkStream($expected, $uuid, $type, $id)
     {
         $this->configRequestHeaders('PATCH', $this->getUserAuthHeader());
@@ -195,8 +192,6 @@ class StreamsControllerTest extends IntegrationTestCase
      * Test `download` method.
      *
      * @return void
-     * @covers ::download()
-     * @covers ::checkAcceptable()
      */
     public function testDownload(): void
     {
@@ -211,23 +206,25 @@ class StreamsControllerTest extends IntegrationTestCase
     }
 
     /**
-     * Test that `checkAcceptable()` method.
+     * Test content negotiation.
      *
      * @return void
-     * @covers ::checkAcceptable()
      */
-    public function testCheckAcceptable()
+    public function testContentNegotiation()
     {
         $this->configRequestHeaders('GET', ['Accept' => 'text/plain']);
         $this->get('/streams');
         $this->assertResponseCode(406);
+
+        $this->configRequestHeaders('GET', ['Accept' => 'application/json']);
+        $this->get('/streams');
+        $this->assertResponseCode(200);
     }
 
     /**
      * Test {@see \BEdita\API\Controller\StreamsController::clone()} action.
      *
      * @return void
-     * @covers ::clone()
      */
     public function testClone(): void
     {

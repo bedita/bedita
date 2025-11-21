@@ -24,7 +24,7 @@ class FakeMammalsFixture extends TestFixture
     /**
      * @inheritDoc
      */
-    public $records = [
+    public array $records = [
         ['subclass' => 'Eutheria'],
         ['subclass' => 'Marsupial'],
     ];

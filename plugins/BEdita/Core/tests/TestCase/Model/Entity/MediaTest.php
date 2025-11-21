@@ -12,17 +12,18 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\Model\Entity;
 
+use BEdita\Core\Model\Entity\Media;
+use BEdita\Core\Model\Table\MediaTable;
 use BEdita\Core\Test\Utility\TestFilesystemTrait;
 use Cake\TestSuite\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
 
 /**
  * {@see \BEdita\Core\Model\Entity\Media} Test Case
- *
- * @coversDefaultClass \BEdita\Core\Model\Entity\Media
  */
+#[CoversClass(Media::class)]
 class MediaTest extends TestCase
 {
     use TestFilesystemTrait;
@@ -32,7 +33,7 @@ class MediaTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.PropertyTypes',
         'plugin.BEdita/Core.Properties',
@@ -51,7 +52,7 @@ class MediaTest extends TestCase
      *
      * @var \BEdita\Core\Model\Table\MediaTable
      */
-    protected $Files;
+    protected MediaTable $Files;
 
     /**
      * @inheritDoc
@@ -78,12 +79,10 @@ class MediaTest extends TestCase
      * Test virtual properties.
      *
      * @return void
-     * @covers ::__construct()
-     * @covers ::_getMediaUrl()
      */
     public function testMediaUrl()
     {
-        $media = $this->Files->get(14, ['contain' => ['Streams']]);
+        $media = $this->Files->get(14, contain: ['Streams']);
 
         $url = $media->get('media_url');
         static::assertNotEmpty($url);
@@ -94,7 +93,6 @@ class MediaTest extends TestCase
      * Test empty media url and provider url fallback in case of no streams.
      *
      * @return void
-     * @covers ::_getMediaUrl()
      */
     public function testGetMediaUrl()
     {

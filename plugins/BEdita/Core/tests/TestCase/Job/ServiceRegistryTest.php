@@ -17,12 +17,13 @@ namespace BEdita\Core\Test\TestCase\Job;
 use BEdita\Core\Job\JobService;
 use BEdita\Core\Job\ServiceRegistry;
 use Cake\TestSuite\TestCase;
+use LogicException;
+use PHPUnit\Framework\Attributes\CoversClass;
 
 /**
  * {@see \BEdita\Core\Job\ServiceRegistry} Test Case
- *
- * @coversDefaultClass \BEdita\Core\Job\ServiceRegistry
  */
+#[CoversClass(ServiceRegistry::class)]
 class ServiceRegistryTest extends TestCase
 {
     /**
@@ -47,7 +48,7 @@ class ServiceRegistryTest extends TestCase
             ->getMock();
 
         $service->method('run')
-            ->will(static::returnValue($return));
+            ->willReturn($return);
 
         return $service;
     }
@@ -56,7 +57,6 @@ class ServiceRegistryTest extends TestCase
      * Test getService method
      *
      * @return void
-     * @covers ::get()
      */
     public function testGet()
     {
@@ -87,11 +87,10 @@ class ServiceRegistryTest extends TestCase
      * Test getService failure
      *
      * @return void
-     * @covers ::get()
      */
     public function testGetFail()
     {
-        $this->expectException(\LogicException::class);
+        $this->expectException(LogicException::class);
         ServiceRegistry::get('gustavo');
     }
 
@@ -99,7 +98,6 @@ class ServiceRegistryTest extends TestCase
      * Test register method
      *
      * @return void
-     * @covers ::set()
      */
     public function testSet()
     {
@@ -118,8 +116,6 @@ class ServiceRegistryTest extends TestCase
      * Test registry reset.
      *
      * @return void
-     * @covers ::reset()
-     * @covers ::keys()
      */
     public function testReset()
     {

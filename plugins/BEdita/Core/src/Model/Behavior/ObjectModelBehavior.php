@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Model\Behavior;
 
 use BEdita\Core\Model\Action\AddRelatedObjectsAction;
@@ -68,7 +67,7 @@ class ObjectModelBehavior extends Behavior
                      * @param string|\BEdita\Core\Model\Entity\ObjectType $ot Object type.
                      * @return string
                      */
-                    fn ($ot): string => is_string($ot) ? $ot : $ot->name
+                    fn($ot): string => is_string($ot) ? $ot : $ot->name,
                 )
                 ->toList(),
         ]);

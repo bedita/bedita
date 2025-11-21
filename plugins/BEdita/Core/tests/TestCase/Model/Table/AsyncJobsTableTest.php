@@ -17,14 +17,18 @@ namespace BEdita\Core\Test\TestCase\Model\Table;
 use BEdita\Core\Model\Entity\AsyncJob;
 use BEdita\Core\Model\Table\AsyncJobsTable;
 use Cake\Datasource\ConnectionManager;
-use Cake\I18n\FrozenTime;
+use Cake\Datasource\Exception\RecordNotFoundException;
+use Cake\I18n\DateTime;
 use Cake\ORM\TableRegistry;
 use Cake\Queue\QueueManager;
 use Cake\TestSuite\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
- * @coversDefaultClass \BEdita\Core\Model\Table\AsyncJobsTable
+ * {@see \BEdita\Core\Model\Table\AsyncJobsTable} Test Case
  */
+#[CoversClass(AsyncJobsTable::class)]
 class AsyncJobsTableTest extends TestCase
 {
     /**
@@ -39,7 +43,7 @@ class AsyncJobsTableTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.AsyncJobs',
     ];
 
@@ -90,7 +94,6 @@ class AsyncJobsTableTest extends TestCase
      * Test default connection name.
      *
      * @return void
-     * @covers ::defaultConnectionName()
      */
     public function testDefaultConnectionName()
     {
@@ -107,7 +110,6 @@ class AsyncJobsTableTest extends TestCase
      * Test locking.
      *
      * @return void
-     * @covers ::lock()
      */
     public function testLock()
     {
@@ -139,11 +141,10 @@ class AsyncJobsTableTest extends TestCase
      * Test locking a job that is not pending.
      *
      * @return void
-     * @covers ::lock()
      */
     public function testLockNotPending()
     {
-        $this->expectException(\Cake\Datasource\Exception\RecordNotFoundException::class);
+        $this->expectException(RecordNotFoundException::class);
         $this->AsyncJobs->lock('6407afa6-96a3-4aeb-90c1-1541756efdef');
     }
 
@@ -151,7 +152,6 @@ class AsyncJobsTableTest extends TestCase
      * Test unlocking a job after successful execution.
      *
      * @return void
-     * @covers ::unlock()
      */
     public function testUnlockSuccess()
     {
@@ -186,7 +186,6 @@ class AsyncJobsTableTest extends TestCase
      * Test unlocking a job after failed execution.
      *
      * @return void
-     * @covers ::unlock()
      */
     public function testUnlockFail()
     {
@@ -221,7 +220,6 @@ class AsyncJobsTableTest extends TestCase
      * Test finder for pending jobs.
      *
      * @return void
-     * @covers ::findPending()
      */
     public function testFindPending()
     {
@@ -248,7 +246,6 @@ class AsyncJobsTableTest extends TestCase
      * Test finder for failed jobs.
      *
      * @return void
-     * @covers ::findFailed()
      */
     public function testFindFailed()
     {
@@ -272,7 +269,6 @@ class AsyncJobsTableTest extends TestCase
      * Test finder for completed jobs.
      *
      * @return void
-     * @covers ::findCompleted()
      */
     public function testFindCompleted()
     {
@@ -291,7 +287,6 @@ class AsyncJobsTableTest extends TestCase
      * Test finder for incomplete jobs.
      *
      * @return void
-     * @covers ::findIncomplete()
      */
     public function testFindIncomplete()
     {
@@ -331,7 +326,6 @@ class AsyncJobsTableTest extends TestCase
      * Test finder for pending jobs sorted by priority.
      *
      * @return void
-     * @covers ::findPriority()
      */
     public function testFindPriority()
     {
@@ -356,7 +350,6 @@ class AsyncJobsTableTest extends TestCase
      * Test finder for pending jobs sorted by priority and filtering by service type.
      *
      * @return void
-     * @covers ::findPriority()
      */
     public function testFindPriorityFilterService()
     {
@@ -366,7 +359,7 @@ class AsyncJobsTableTest extends TestCase
             ],
         ];
 
-        $actual = $this->AsyncJobs->find('priority', ['service' => 'example2'])->find('list')->toArray();
+        $actual = $this->AsyncJobs->find('priority', service: 'example2')->find('list')->toArray();
 
         static::assertSame($expected, $actual);
     }
@@ -375,7 +368,6 @@ class AsyncJobsTableTest extends TestCase
      * Test finder for pending jobs sorted by priority and filtering by priority.
      *
      * @return void
-     * @covers ::findPriority()
      */
     public function testFindPriorityFilterPriority()
     {
@@ -388,7 +380,7 @@ class AsyncJobsTableTest extends TestCase
             ],
         ];
 
-        $actual = $this->AsyncJobs->find('priority', ['priority' => 5])->find('list')->toArray();
+        $actual = $this->AsyncJobs->find('priority', priority: 5)->find('list')->toArray();
 
         static::assertSame($expected, $actual);
     }
@@ -397,7 +389,6 @@ class AsyncJobsTableTest extends TestCase
      * Test `afterSave` method.
      *
      * @return void
-     * @covers ::afterSave()
      */
     public function testAfterSave(): void
     {
@@ -415,7 +406,7 @@ class AsyncJobsTableTest extends TestCase
             'queue' => 'test',
         ]);
 
-        $now = FrozenTime::now();
+        $now = DateTime::now();
         $scheduledFrom = $now->addHours(1);
         $expires = $now->addHours(2);
         $entity = $this->AsyncJobs->newEntity([
@@ -447,7 +438,7 @@ class AsyncJobsTableTest extends TestCase
      *
      * @return array
      */
-    public function updateResultsProvider(): array
+    public static function updateResultsProvider(): array
     {
         return [
             'success false, some message' => [
@@ -486,9 +477,8 @@ class AsyncJobsTableTest extends TestCase
      * @param array $messages The messages
      * @param array $expected The expected result
      * @return void
-     * @covers ::updateResults()
-     * @dataProvider updateResultsProvider()
      */
+    #[DataProvider('updateResultsProvider')]
     public function testUpdateResults(bool $success, array $messages, array $expected): void
     {
         $entity = $this->AsyncJobs->newEntity(['service' => 'example2']);

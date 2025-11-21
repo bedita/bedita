@@ -23,13 +23,17 @@ use Cake\Controller\ComponentRegistry;
 use Cake\Controller\Controller;
 use Cake\Http\ServerRequest;
 use Cake\TestSuite\TestCase;
+use Exception;
 use Firebase\JWT\ExpiredException;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\CoversMethod;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * AuthenticationComponent Test Case
- *
- * @coversDefaultClass \BEdita\API\Controller\Component\AuthenticationComponent
  */
+#[CoversClass(AuthenticationComponent::class)]
+#[CoversMethod(ExpiredTokenException::class, '__construct')]
 class AuthenticationComponentTest extends TestCase
 {
     /**
@@ -37,7 +41,7 @@ class AuthenticationComponentTest extends TestCase
      *
      * @return array
      */
-    public function checkExpiredTokenProvider()
+    public static function checkExpiredTokenProvider(): array
     {
         return [
             'ok' => [
@@ -53,7 +57,7 @@ class AuthenticationComponentTest extends TestCase
                 new Result(
                     null,
                     ResultInterface::FAILURE_CREDENTIALS_INVALID,
-                    ['exception' => new ExpiredException()]
+                    ['exception' => new ExpiredException()],
                 ),
             ],
         ];
@@ -65,14 +69,11 @@ class AuthenticationComponentTest extends TestCase
      * @param true|\Exception $expected Expected success.
      * @param \Authorization\Policy\ResultInterface|null $result Authentication result.
      * @return void
-     * @dataProvider checkExpiredTokenProvider
-     * @covers ::checkExpiredToken()
-     * @covers ::initialize()
-     * @covers \BEdita\API\Exception\ExpiredTokenException::__construct()
      */
+    #[DataProvider('checkExpiredTokenProvider')]
     public function testCheckExpiredToken($expected, ?ResultInterface $result): void
     {
-        if ($expected instanceof \Exception) {
+        if ($expected instanceof Exception) {
             $this->expectException(get_class($expected));
             $this->expectExceptionCode($expected->getCode());
             $this->expectExceptionMessage($expected->getMessage());

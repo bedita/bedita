@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\Model\Behavior;
 
 use BEdita\Core\Model\Behavior\UniqueNameBehavior;
@@ -22,12 +21,13 @@ use Cake\Event\Event;
 use Cake\ORM\Entity;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * {@see \BEdita\Core\Model\Behavior\UniqueNameBehavior} Test Case
- *
- * @coversDefaultClass \BEdita\Core\Model\Behavior\UniqueNameBehavior
  */
+#[CoversClass(UniqueNameBehavior::class)]
 class UniqueNameBehaviorTest extends TestCase
 {
     /**
@@ -35,7 +35,7 @@ class UniqueNameBehaviorTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.PropertyTypes',
         'plugin.BEdita/Core.Properties',
@@ -74,7 +74,7 @@ class UniqueNameBehaviorTest extends TestCase
      *
      * @return array
      */
-    public function uniqueUserProvider()
+    public static function uniqueUserProvider(): array
     {
         return [
             'simple' => [
@@ -102,13 +102,12 @@ class UniqueNameBehaviorTest extends TestCase
      * @param string $username Username.
      * @param string $uname Expected unique name.
      * @return void
-     * @dataProvider uniqueUserProvider
-     * @covers ::uniqueName()
      */
+    #[DataProvider('uniqueUserProvider')]
     public function testUniqueUser($username, $uname)
     {
         $Users = TableRegistry::getTableLocator()->get('Users');
-        $user = $Users->newEntity([]);
+        $user = $Users->newEmptyEntity();
 
         $user = $Users->patchEntity($user, compact('username'));
         $Users->uniqueName($user);
@@ -123,7 +122,7 @@ class UniqueNameBehaviorTest extends TestCase
      *
      * @return array
      */
-    public function uniqueNameProvider()
+    public static function uniqueNameProvider(): array
     {
         return [
             'mix' => [
@@ -147,9 +146,8 @@ class UniqueNameBehaviorTest extends TestCase
      * @param string $value Original uname.
      * @param string $expected Expected sanitized uname.
      * @return void
-     * @dataProvider uniqueNameProvider
-     * @covers ::uniqueName()
      */
+    #[DataProvider('uniqueNameProvider')]
     public function testUniqueName($value, $expected)
     {
         $behavior = TableRegistry::getTableLocator()->get('Objects')->behaviors()->get('UniqueName');
@@ -164,7 +162,7 @@ class UniqueNameBehaviorTest extends TestCase
      *
      * @return array
      */
-    public function generateUniqueUserProvider()
+    public static function generateUniqueUserProvider(): array
     {
         return [
             'defaultConfig' => [
@@ -209,13 +207,12 @@ class UniqueNameBehaviorTest extends TestCase
      * @param string $name Full name.
      * @param array $config Configuration.
      * @return void
-     * @dataProvider generateUniqueUserProvider
-     * @covers ::generateUniqueName()
      */
+    #[DataProvider('generateUniqueUserProvider')]
     public function testGenerateUniqueName($username, $name, $config)
     {
         $Users = TableRegistry::getTableLocator()->get('Users');
-        $user = $Users->newEntity([]);
+        $user = $Users->newEmptyEntity();
         $Users->patchEntity($user, compact('username', 'name'));
         $behavior = $Users->behaviors()->get('UniqueName');
         $uname1 = $behavior->generateUniqueName($user, false, $config);
@@ -228,7 +225,6 @@ class UniqueNameBehaviorTest extends TestCase
      * Test generate unique name when title is numeric.
      *
      * @return array
-     * @covers ::generateUniqueName()
      */
     public function testGenerateUniqueNameFromNumericTitle(): void
     {
@@ -245,7 +241,7 @@ class UniqueNameBehaviorTest extends TestCase
      *
      * @return array
      */
-    public function regenerateUniqueNameProvider()
+    public static function regenerateUniqueNameProvider(): array
     {
         return [
             'providedUname' => [
@@ -269,13 +265,12 @@ class UniqueNameBehaviorTest extends TestCase
      * @param string $uname Uname.
      * @param string $title Title.
      * @return void
-     * @dataProvider regenerateUniqueNameProvider
-     * @covers ::generateUniqueName()
      */
+    #[DataProvider('regenerateUniqueNameProvider')]
     public function testRegenerateUniqueName($uname, $title)
     {
         $Folders = TableRegistry::getTableLocator()->get('Folders');
-        $folder = $Folders->newEntity([]);
+        $folder = $Folders->newEmptyEntity();
         $Folders->patchEntity($folder, compact('uname', 'title'));
         $behavior = $Folders->behaviors()->get('UniqueName');
         $generated = $behavior->generateUniqueName($folder, true);
@@ -292,7 +287,7 @@ class UniqueNameBehaviorTest extends TestCase
      *
      * @return array
      */
-    public function uniqueNameExistsProvider()
+    public static function uniqueNameExistsProvider(): array
     {
         return [
             'uname exists, id null' => [
@@ -330,9 +325,8 @@ class UniqueNameBehaviorTest extends TestCase
      * @param int|null $id ID to exclude.
      * @param bool $expected Expected result.
      * @return void
-     * @dataProvider uniqueNameExistsProvider
-     * @covers ::uniqueNameExists()
      */
+    #[DataProvider('uniqueNameExistsProvider')]
     public function testUniqueNameExists($uname, $id, $expected)
     {
         $Users = TableRegistry::getTableLocator()->get('Users');
@@ -347,7 +341,7 @@ class UniqueNameBehaviorTest extends TestCase
      *
      * @return array
      */
-    public function uniqueFromValueProvider()
+    public static function uniqueFromValueProvider(): array
     {
         return [
             'simpleNoConf' => [
@@ -391,9 +385,8 @@ class UniqueNameBehaviorTest extends TestCase
      * @param array $cfg Configuration.
      * @param bool $regenerate Should unique name be regenerated?
      * @return void
-     * @dataProvider uniqueFromValueProvider
-     * @covers ::uniqueNameFromValue()
      */
+    #[DataProvider('uniqueFromValueProvider')]
     public function testUniqueNameFromValue($value, $expected, array $cfg, $regenerate)
     {
         $behavior = TableRegistry::getTableLocator()->get('Objects')->behaviors()->get('UniqueName');
@@ -410,7 +403,6 @@ class UniqueNameBehaviorTest extends TestCase
      * test uniqueName() conflicts / missing
      *
      * @return void
-     * @covers ::uniqueName()
      */
     public function testUniqueNameMissing()
     {
@@ -438,7 +430,6 @@ class UniqueNameBehaviorTest extends TestCase
      * Test `uniqueName()` when `uname` is valid an unchanged
      *
      * @return void
-     * @covers ::uniqueName()
      */
     public function testUniqueNameUnchanged(): void
     {
@@ -454,7 +445,6 @@ class UniqueNameBehaviorTest extends TestCase
      * Test `uniqueName()` when `uname` is unchanged and not in entity
      *
      * @return void
-     * @covers ::uniqueName()
      */
     public function testUniqueNameIgnore(): void
     {
@@ -474,7 +464,6 @@ class UniqueNameBehaviorTest extends TestCase
      * test generate uname before rules
      *
      * @return void
-     * @covers ::beforeRules()
      */
     public function testBeforeRules()
     {
@@ -488,7 +477,7 @@ class UniqueNameBehaviorTest extends TestCase
             static::assertNotEmpty($uname);
             static::assertEquals('uh-la-la', $uname);
 
-            return false;
+            $event->setResult(false);
         });
 
         $Documents->save($entity);
@@ -498,11 +487,11 @@ class UniqueNameBehaviorTest extends TestCase
      * Test unique name max lenght
      *
      * @return void
-     * @coversNothing
      */
     public function testUniqueNameMaxLen()
     {
-        $Documents = TableRegistry::getTableLocator()->get('Documents');
+        $Documents = $this->fetchTable('Documents');
+        /** @var \BEdita\Core\Model\Behavior\UniqueNameBehavior $behavior */
         $behavior = $Documents->behaviors()->get('UniqueName');
 
         // check internal uname generation lenght

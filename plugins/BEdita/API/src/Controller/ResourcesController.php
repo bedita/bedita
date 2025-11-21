@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\API\Controller;
 
 use BEdita\API\Model\Action\UpdateAssociatedAction;
@@ -32,10 +31,11 @@ use Cake\Datasource\EntityInterface;
 use Cake\Http\Exception\ConflictException;
 use Cake\Http\Exception\InternalErrorException;
 use Cake\Http\Exception\NotFoundException;
+use Cake\Http\Response;
 use Cake\ORM\Association;
 use Cake\ORM\Association\BelongsTo;
 use Cake\ORM\Association\HasOne;
-use Cake\ORM\Query;
+use Cake\ORM\Query\SelectQuery;
 use Cake\ORM\Table;
 use Cake\Routing\Router;
 use Cake\Utility\Inflector;
@@ -58,7 +58,7 @@ abstract class ResourcesController extends AppController
      *
      * @var array
      */
-    protected $_defaultConfig = [
+    protected array $_defaultConfig = [
         'allowedAssociations' => [],
     ];
 
@@ -67,7 +67,7 @@ abstract class ResourcesController extends AppController
      *
      * @var \Cake\ORM\Table
      */
-    protected $Table;
+    protected Table $Table;
 
     /**
      * @inheritDoc
@@ -76,22 +76,19 @@ abstract class ResourcesController extends AppController
     {
         parent::initialize();
 
-        if (isset($this->JsonApi)) {
+        if ($this->components()->has('JsonApi')) {
             $this->JsonApi->setConfig('resourceTypes', [Inflector::underscore($this->name)]);
 
             if ($this->request->getParam('action') === 'relationships') {
                 $this->JsonApi->setConfig(
                     'resourceTypes',
                     $this->getConfig(sprintf('allowedAssociations.%s', $this->request->getParam('relationship'))),
-                    false
+                    false,
                 );
                 $this->JsonApi->setConfig('clientGeneratedIds', true);
             }
         }
-        // set $defaultTable if $modelClass attribute is used
-        if (empty($this->defaultTable) && !empty($this->modelClass)) {
-            $this->defaultTable = $this->modelClass;
-        }
+
         if (empty($this->Table)) {
             $this->Table = $this->fetchTable();
         }
@@ -131,9 +128,9 @@ abstract class ResourcesController extends AppController
      * If the request is a `POST` request, this action creates a new resource.
      * If the request is a `DELETE` request, this action deletes existing resources.
      *
-     * @return void
+     * @return \Cake\Http\Response|null
      */
-    public function index()
+    public function index(): ?Response
     {
         $this->request->allowMethod(['get', 'post', 'delete']);
 
@@ -165,7 +162,7 @@ abstract class ResourcesController extends AppController
                 ->withStatus(201)
                 ->withHeader(
                     'Location',
-                    $this->resourceUrl($data, $primaryKey)
+                    $this->resourceUrl($data, $primaryKey),
                 );
         } else {
             // List existing entities.
@@ -181,6 +178,8 @@ abstract class ResourcesController extends AppController
 
         $this->set(compact('data'));
         $this->setSerialize(['data']);
+
+        return null;
     }
 
     /**
@@ -190,7 +189,7 @@ abstract class ResourcesController extends AppController
      * @param string $primaryKey Primary key name
      * @return string Requested URL
      */
-    protected function resourceUrl(EntityInterface $entity, $primaryKey)
+    protected function resourceUrl(EntityInterface $entity, string $primaryKey): string
     {
         $prefix = 'api:resources';
         if ($entity instanceof JsonApiSerializable) {
@@ -203,7 +202,7 @@ abstract class ResourcesController extends AppController
                 'controller' => $this->name,
                 'id' => $entity->get($primaryKey),
             ],
-            true
+            true,
         );
     }
 
@@ -214,10 +213,10 @@ abstract class ResourcesController extends AppController
      * If the request is a `PATCH` request, this action updates an existing resource.
      * If the request is a `DELETE` request, this action deletes an existing resource.
      *
-     * @param mixed $id Entity ID.
+     * @param string $id Entity ID.
      * @return \Cake\Http\Response|null
      */
-    public function resource($id)
+    public function resource(string $id): ?Response
     {
         $this->request->allowMethod(['get', 'patch', 'delete']);
 
@@ -263,7 +262,7 @@ abstract class ResourcesController extends AppController
      * @param string|int $id Resource identifier, can be ID or name.
      * @return string
      */
-    protected function getResourceId($id): string
+    protected function getResourceId(string|int $id): string
     {
         if ($this->fetchTable()->behaviors()->has('ResourceName')) {
             return (string)$this->fetchTable()->getId($id);
@@ -279,7 +278,7 @@ abstract class ResourcesController extends AppController
      *
      * @return void
      */
-    public function related()
+    public function related(): void
     {
         $this->request->allowMethod(['get']);
 
@@ -293,7 +292,7 @@ abstract class ResourcesController extends AppController
         $action = $this->getAssociatedAction($association);
         $data = $action->execute(['primaryKey' => $relatedId] + compact('filter', 'contain'));
 
-        if ($data instanceof Query) {
+        if ($data instanceof SelectQuery) {
             $data = $this->paginate($data);
         }
 
@@ -311,7 +310,7 @@ abstract class ResourcesController extends AppController
      * @param \Cake\ORM\Association $association The association to use.
      * @return \BEdita\Core\Model\Action\ListAssociatedAction
      */
-    protected function getAssociatedAction(Association $association)
+    protected function getAssociatedAction(Association $association): ListAssociatedAction
     {
         return new ListAssociatedAction(compact('association'));
     }
@@ -322,7 +321,7 @@ abstract class ResourcesController extends AppController
      * @param \Cake\ORM\Association $association The association.
      * @return void
      */
-    protected function setRelationshipsAllowedMethods(Association $association)
+    protected function setRelationshipsAllowedMethods(Association $association): void
     {
         $allowedMethods = ['get', 'post', 'patch', 'delete'];
         if ($association instanceof BelongsTo || $association instanceof HasOne) {
@@ -342,7 +341,7 @@ abstract class ResourcesController extends AppController
      *
      * @return \Cake\Http\Response|null
      */
-    public function relationships()
+    public function relationships(): ?Response
     {
         $id = $this->request->getParam('id');
         $relationship = $this->request->getParam('relationship');
@@ -370,7 +369,7 @@ abstract class ResourcesController extends AppController
                 $action = $this->getAssociatedAction($association);
                 $data = $action(['primaryKey' => $id, 'list' => true, 'filter' => $filter]);
 
-                if ($data instanceof Query) {
+                if ($data instanceof SelectQuery) {
                     $data = $this->paginate($data);
                 }
 
@@ -407,9 +406,9 @@ abstract class ResourcesController extends AppController
      * @param string $relationship Relationship name.
      * @return string|null
      */
-    protected function getAvailableUrl($relationship)
+    protected function getAvailableUrl(string $relationship): ?string
     {
-        $destinationEntity = $this->findAssociation($relationship)->getTarget()->newEntity([]);
+        $destinationEntity = $this->findAssociation($relationship)->getTarget()->newEmptyEntity();
         if (!($destinationEntity instanceof JsonApiSerializable)) {
             return null;
         }
@@ -424,7 +423,7 @@ abstract class ResourcesController extends AppController
                 '_name' => $destinationEntity->routeNamePrefix() . ':index',
                 'controller' => Inflector::camelize($jsonApiData['type']),
             ],
-            true
+            true,
         );
     }
 }

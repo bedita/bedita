@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\Model\Action;
 
 use BEdita\Core\Exception\InvalidDataException;
@@ -20,6 +19,7 @@ use BEdita\Core\Exception\UserExistsException;
 use BEdita\Core\Model\Action\SignupUserAction;
 use BEdita\Core\Model\Entity\AsyncJob;
 use BEdita\Core\Model\Entity\User;
+use BEdita\Core\Model\Enum\ObjectEntityStatus;
 use Cake\Core\Configure;
 use Cake\Core\Exception\CakeException;
 use Cake\Event\Event;
@@ -30,10 +30,14 @@ use Cake\Mailer\TransportFactory;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Hash;
+use Exception;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
- * @covers \BEdita\Core\Model\Action\SignupUserAction
+ * {@see \BEdita\Core\Model\Action\SignupUserAction} Test Case
  */
+#[CoversClass(SignupUserAction::class)]
 class SignupUserActionTest extends TestCase
 {
     /**
@@ -41,7 +45,7 @@ class SignupUserActionTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.PropertyTypes',
         'plugin.BEdita/Core.Properties',
@@ -83,7 +87,7 @@ class SignupUserActionTest extends TestCase
      *
      * @return array
      */
-    public function executeProvider()
+    public static function executeProvider(): array
     {
         return [
             'ok' => [
@@ -144,7 +148,7 @@ class SignupUserActionTest extends TestCase
             'missing activation_url' => [
                 new InvalidDataException(
                     'Invalid data',
-                    ['activation_url' => ['_required' => 'This field is required']]
+                    ['activation_url' => ['_required' => 'This field is required']],
                 ),
                 [
                     'data' => [
@@ -157,7 +161,7 @@ class SignupUserActionTest extends TestCase
             'activation url invalid' => [
                 new InvalidDataException(
                     'Invalid data',
-                    ['activation_url' => ['customUrl' => 'The provided value is invalid']]
+                    ['activation_url' => ['customUrl' => 'The provided value is invalid']],
                 ),
                 [
                     'data' => [
@@ -171,7 +175,7 @@ class SignupUserActionTest extends TestCase
             'activation url invalid 2' => [
                 new InvalidDataException(
                     'Invalid data',
-                    ['activation_url' => ['customUrl' => 'The provided value is invalid']]
+                    ['activation_url' => ['customUrl' => 'The provided value is invalid']],
                 ),
                 [
                     'data' => [
@@ -191,8 +195,8 @@ class SignupUserActionTest extends TestCase
      * @param bool|\Exception $expected Expected result.
      * @param array $data Action data.
      * @return void
-     * @dataProvider executeProvider
      */
+    #[DataProvider('executeProvider')]
     public function testExecute($expected, array $data)
     {
         $eventDispatched = 0;
@@ -206,7 +210,7 @@ class SignupUserActionTest extends TestCase
             static::assertTrue(is_string($arguments[3]));
         });
 
-        if ($expected instanceof \Exception) {
+        if ($expected instanceof Exception) {
             $this->expectException(get_class($expected));
         }
 
@@ -223,7 +227,7 @@ class SignupUserActionTest extends TestCase
 
         static::assertTrue((bool)$result);
         static::assertInstanceOf(User::class, $result);
-        static::assertSame('draft', $result->status);
+        static::assertSame(ObjectEntityStatus::Draft, $result->status);
         static::assertSame(1, $eventDispatched, 'Event not dispatched');
     }
 
@@ -232,7 +236,7 @@ class SignupUserActionTest extends TestCase
      *
      * @return array
      */
-    public function executeExtAuthProvider()
+    public static function executeExtAuthProvider(): array
     {
         return [
             'ok' => [
@@ -308,7 +312,7 @@ class SignupUserActionTest extends TestCase
 
         static::assertTrue((bool)$result);
         static::assertInstanceOf(User::class, $result);
-        static::assertSame('draft', $result->status);
+        static::assertSame(ObjectEntityStatus::Draft, $result->status);
         static::assertSame($data['username'], $result->username);
         Configure::delete('Status.level');
     }
@@ -319,11 +323,11 @@ class SignupUserActionTest extends TestCase
      * @param array|\Exception $expected Expected result.
      * @param array $data Action data.
      * @return void
-     * @dataProvider executeExtAuthProvider
      */
+    #[DataProvider('executeExtAuthProvider')]
     public function testExecuteExtAuth($expected, array $data, array $oauthResponse)
     {
-        if ($expected instanceof \Exception) {
+        if ($expected instanceof Exception) {
             $this->expectException(get_class($expected));
             $this->expectExceptionMessage($expected->getMessage());
         }
@@ -349,7 +353,7 @@ class SignupUserActionTest extends TestCase
 
         static::assertTrue((bool)$result);
         static::assertInstanceOf(User::class, $result);
-        static::assertSame('on', $result->status);
+        static::assertSame(ObjectEntityStatus::On, $result->status);
         static::assertNotEmpty($result->verified);
         static::assertSame(1, $eventDispatched, 'Event not dispatched');
     }
@@ -417,7 +421,7 @@ class SignupUserActionTest extends TestCase
             'access_token' => 'incredibly-long-string',
         ];
         $action = new SignupUserAction();
-        $result = $action(compact('data'));
+        $action(compact('data'));
     }
 
     /**
@@ -464,7 +468,7 @@ class SignupUserActionTest extends TestCase
         $result = $action($data);
 
         static::assertInstanceOf(User::class, $result);
-        static::assertSame('on', $result->status);
+        static::assertSame(ObjectEntityStatus::On, $result->status);
         static::assertSame(1, $eventDispatched, 'Event not dispatched');
     }
 
@@ -475,7 +479,7 @@ class SignupUserActionTest extends TestCase
      */
     public function testExceptionSendMail()
     {
-        $this->expectException(\Cake\Http\Exception\InternalErrorException::class);
+        $this->expectException(InternalErrorException::class);
         $data = [
             'data' => [
                 'username' => 'testsignup',
@@ -568,7 +572,7 @@ class SignupUserActionTest extends TestCase
      *
      * @return array
      */
-    public function rolesProvider()
+    public static function rolesProvider(): array
     {
         return [
             'roleAsFromConfig' => [
@@ -595,7 +599,7 @@ class SignupUserActionTest extends TestCase
                         'roles' => [
                             'validateRoles' => 'Roles are not allowed on signup',
                         ],
-                    ]
+                    ],
                 ),
                 [
                     'data' => [
@@ -617,7 +621,7 @@ class SignupUserActionTest extends TestCase
                         'roles' => [
                             'validateRoles' => 'first role not allowed on signup',
                         ],
-                    ]
+                    ],
                 ),
                 [
                     'data' => [
@@ -656,7 +660,7 @@ class SignupUserActionTest extends TestCase
                         'roles' => [
                             '_required' => 'This field is required',
                         ],
-                    ]
+                    ],
                 ),
                 [
                     'data' => [
@@ -679,7 +683,7 @@ class SignupUserActionTest extends TestCase
                         'roles' => [
                             '_empty' => 'This field cannot be left empty',
                         ],
-                    ]
+                    ],
                 ),
                 [
                     'data' => [
@@ -703,7 +707,7 @@ class SignupUserActionTest extends TestCase
                         'roles' => [
                             'validateRoles' => 'third_role, fourth_role not allowed on signup',
                         ],
-                    ]
+                    ],
                 ),
                 [
                     'data' => [
@@ -728,13 +732,13 @@ class SignupUserActionTest extends TestCase
      * @param bool|\Exception $expected Expected result.
      * @param array $data Action data.
      * @param array $config Signup configuration.
-     * @dataProvider rolesProvider
      * @return void
      */
+    #[DataProvider('rolesProvider')]
     public function testRoles($expected, array $data, array $config = [])
     {
         Configure::write('Signup', $config);
-        if ($expected instanceof \Exception) {
+        if ($expected instanceof Exception) {
             $this->expectException(get_class($expected));
             $this->expectExceptionCode($expected->getCode());
         }

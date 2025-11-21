@@ -12,14 +12,16 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\API\Test\IntegrationTest;
 
 use BEdita\API\TestSuite\IntegrationTestCase;
+use PHPUnit\Framework\Attributes\CoversNothing;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * Test that the inherited properties are correctly marshalled into main entity.
  */
+#[CoversNothing]
 class MarshallInheritedPropertiesTest extends IntegrationTestCase
 {
     /**
@@ -27,7 +29,7 @@ class MarshallInheritedPropertiesTest extends IntegrationTestCase
      *
      * @return array
      */
-    public function marshallProvider()
+    public static function marshallProvider(): array
     {
         return [
             'date' => [
@@ -59,9 +61,8 @@ class MarshallInheritedPropertiesTest extends IntegrationTestCase
      * @param array $attributes The attributes to save
      * @param array $expected The expected results
      * @return void
-     * @dataProvider marshallProvider()
-     * @coversNothing
      */
+    #[DataProvider('marshallProvider')]
     public function testMarshall($attributes, $expected)
     {
         $data = [

@@ -1,10 +1,10 @@
 <?php
-use Migrations\AbstractMigration;
+use Migrations\BaseMigration;
 
 /**
  * Make `auth_providers.url` and `auth_providers.params` columns nullable.
  */
-class MakeAuthProvidersSettingsNullable extends AbstractMigration
+class MakeAuthProvidersSettingsNullable extends BaseMigration
 {
 
     /**

@@ -12,9 +12,9 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\ORM\Inheritance;
 
+use ArrayObject;
 use Cake\Datasource\EntityInterface;
 use Cake\Event\EventInterface;
 use Cake\Event\EventListenerInterface;
@@ -33,7 +33,7 @@ class InheritanceEventHandler implements EventListenerInterface
      *
      * @var array
      */
-    protected $excludeDescendantsSave = [
+    protected array $excludeDescendantsSave = [
         'tags',
         'categories',
     ];
@@ -80,7 +80,7 @@ class InheritanceEventHandler implements EventListenerInterface
      * @param string $operation The operation being run. Either 'create', 'update' or 'delete'.
      * @return void
      */
-    public function afterRules(EventInterface $event, EntityInterface $entity, \ArrayObject $options, $result, $operation)
+    public function afterRules(EventInterface $event, EntityInterface $entity, ArrayObject $options, bool $result, string $operation): void
     {
         if ($result === true && empty($options['_inheritanceRulesErrors'])) {
             return;
@@ -93,7 +93,7 @@ class InheritanceEventHandler implements EventListenerInterface
         }
 
         // Prepare parent entity.
-        $parentEntity = $inheritedTable->newEntity([]);
+        $parentEntity = $inheritedTable->newEmptyEntity();
         $parentEntity->setNew($entity->isNew());
         $parentEntity = $this->toParent($entity, $parentEntity, $table, $inheritedTable);
         $options['_inheritanceRulesErrors'] = true;
@@ -109,19 +109,21 @@ class InheritanceEventHandler implements EventListenerInterface
      * @param \Cake\Event\EventInterface $event Dispatched event.
      * @param \Cake\Datasource\EntityInterface $entity Entity.
      * @param \ArrayObject $options Save options.
-     * @return bool
+     * @return void
      */
-    public function beforeSave(EventInterface $event, EntityInterface $entity, \ArrayObject $options)
+    public function beforeSave(EventInterface $event, EntityInterface $entity, ArrayObject $options): void
     {
         /** @var \BEdita\Core\ORM\Inheritance\Table $table */
         $table = $event->getSubject();
         $inheritedTable = $table->inheritedTable();
         if ($inheritedTable === null) {
-            return true;
+            $event->setResult(true);
+
+            return;
         }
 
         // Prepare parent entity.
-        $parentEntity = $inheritedTable->newEntity([]);
+        $parentEntity = $inheritedTable->newEmptyEntity();
         $parentEntity->setNew($entity->isNew());
         $parentEntity = $this->toParent($entity, $parentEntity, $table, $inheritedTable);
         if (!$parentEntity->isDirty()) {
@@ -132,19 +134,19 @@ class InheritanceEventHandler implements EventListenerInterface
         $options = ['atomic' => false, '_inherited' => true] + $options->getArrayCopy();
         $options['associated'] = array_diff_key(
             $options['associated'],
-            array_flip(array_diff($table->associations()->keys(), $inheritedTable->associations()->keys()))
+            array_flip(array_diff($table->associations()->keys(), $inheritedTable->associations()->keys())),
         );
 
         if ($inheritedTable->save($parentEntity, $options) === false) {
             $entity->setErrors($parentEntity->getErrors());
+            $event->setResult(false);
 
-            return false;
+            return;
         }
 
         // Copy results from parent entity.
         $this->toDescendant($entity, $parentEntity, $table, $inheritedTable);
-
-        return true;
+        $event->setResult(true);
     }
 
     /**
@@ -154,7 +156,7 @@ class InheritanceEventHandler implements EventListenerInterface
      * @param \Cake\Datasource\EntityInterface $entity Entity.
      * @return void
      */
-    public function afterSave(EventInterface $event, EntityInterface $entity)
+    public function afterSave(EventInterface $event, EntityInterface $entity): void
     {
         foreach ($this->excludeDescendantsSave as $item) {
             if ($entity->has('__' . $item)) {
@@ -174,7 +176,7 @@ class InheritanceEventHandler implements EventListenerInterface
      * @throws \Cake\ORM\Exception\PersistenceFailedException Throws an exception if delete operation on the
      *      parent table fails.
      */
-    public function afterDelete(EventInterface $event, EntityInterface $entity, \ArrayObject $options)
+    public function afterDelete(EventInterface $event, EntityInterface $entity, ArrayObject $options): void
     {
         /** @var \BEdita\Core\ORM\Inheritance\Table $table */
         $table = $event->getSubject();
@@ -184,7 +186,7 @@ class InheritanceEventHandler implements EventListenerInterface
         }
 
         // Prepare parent entity.
-        $parentEntity = $inheritedTable->newEntity([]);
+        $parentEntity = $inheritedTable->newEmptyEntity();
         $parentEntity->setNew(false);
         $parentEntity = $this->toParent($entity, $parentEntity, $table, $inheritedTable);
 
@@ -202,23 +204,23 @@ class InheritanceEventHandler implements EventListenerInterface
      * @param \Cake\ORM\Table $inheritedTable Inherited table.
      * @return \Cake\Datasource\EntityInterface Entity in inherited table.
      */
-    protected function toParent(EntityInterface $entity, EntityInterface $parent, CakeTable $table, CakeTable $inheritedTable)
+    protected function toParent(EntityInterface $entity, EntityInterface $parent, CakeTable $table, CakeTable $inheritedTable): EntityInterface
     {
         $properties = array_diff(
             array_merge(array_keys($entity->toArray()), $entity->getHidden()), // All properties.
-            $table->getSchema()->columns() // Remove columns of current table.
+            $table->getSchema()->columns(), // Remove columns of current table.
         );
-        $parent->set($entity->extract($properties), ['guard' => false]); // Copy properties.
+        $parent->patch($entity->extract($properties), ['guard' => false]); // Copy properties.
         foreach ($properties as $property) {
             $parent->setDirty($property, $entity->isDirty($property));
         }
         if (!$entity->isNew()) {
-            $parent->set(
+            $parent->patch(
                 array_combine(
                     (array)$inheritedTable->getPrimaryKey(),
-                    $entity->extract((array)$table->getPrimaryKey())
+                    $entity->extract((array)$table->getPrimaryKey()),
                 ),
-                ['guard' => false]
+                ['guard' => false],
             );
         }
 
@@ -234,7 +236,7 @@ class InheritanceEventHandler implements EventListenerInterface
      * @param \Cake\ORM\Table $inheritedTable Inherited table.
      * @return \Cake\Datasource\EntityInterface Entity in current table.
      */
-    protected function toDescendant(EntityInterface $entity, EntityInterface $parent, CakeTable $table, CakeTable $inheritedTable)
+    protected function toDescendant(EntityInterface $entity, EntityInterface $parent, CakeTable $table, CakeTable $inheritedTable): EntityInterface
     {
         $properties = array_merge(array_keys($parent->toArray()), $parent->getHidden()); // All properties.
         // Copy properties.
@@ -245,12 +247,12 @@ class InheritanceEventHandler implements EventListenerInterface
         }
 
         if ($entity->isNew()) {
-            $entity->set(
+            $entity->patch(
                 array_combine(
                     (array)$table->getPrimaryKey(),
-                    $parent->extract((array)$inheritedTable->getPrimaryKey())
+                    $parent->extract((array)$inheritedTable->getPrimaryKey()),
                 ),
-                ['guard' => false]
+                ['guard' => false],
             );
         }
 

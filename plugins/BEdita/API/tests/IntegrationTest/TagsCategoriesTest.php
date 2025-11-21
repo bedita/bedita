@@ -16,10 +16,13 @@ namespace BEdita\API\Test\IntegrationTest;
 
 use BEdita\API\TestSuite\IntegrationTestCase;
 use Cake\Utility\Hash;
+use PHPUnit\Framework\Attributes\CoversNothing;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * Test tags & categories
  */
+#[CoversNothing]
 class TagsCategoriesTest extends IntegrationTestCase
 {
     /**
@@ -27,7 +30,7 @@ class TagsCategoriesTest extends IntegrationTestCase
      *
      * @return array
      */
-    public function createProvider(): array
+    public static function createProvider(): array
     {
         return [
             'simple tag' => [
@@ -99,9 +102,8 @@ class TagsCategoriesTest extends IntegrationTestCase
      * @param string $type Object type
      * @param array $attributes New object attributes
      * @return void
-     * @dataProvider createProvider
-     * @coversNothing
      */
+    #[DataProvider('createProvider')]
     public function testCreate(array $expected, string $type, array $attributes): void
     {
         // Create object
@@ -137,7 +139,7 @@ class TagsCategoriesTest extends IntegrationTestCase
      *
      * @return array
      */
-    public function updateProvider(): array
+    public static function updateProvider(): array
     {
         return [
             'no cat' => [
@@ -232,9 +234,8 @@ class TagsCategoriesTest extends IntegrationTestCase
      * @param string $type Object type
      * @param array $attributes Object update attributes
      * @return void
-     * @dataProvider updateProvider
-     * @coversNothing
      */
+    #[DataProvider('updateProvider')]
     public function testUpdate(array $expected, string $type, string $id, array $attributes): void
     {
         // Patch object
@@ -267,7 +268,7 @@ class TagsCategoriesTest extends IntegrationTestCase
      *
      * @return array
      */
-    public function modelEndpointsProvider(): array
+    public static function modelEndpointsProvider(): array
     {
         return [
             'categories' => [
@@ -303,9 +304,8 @@ class TagsCategoriesTest extends IntegrationTestCase
      * @param array $expected Expected result
      * @param string $url Endpoint url
      * @return void
-     * @dataProvider modelEndpointsProvider
-     * @coversNothing
      */
+    #[DataProvider('modelEndpointsProvider')]
     public function testModelEndpoints(array $expected, string $url): void
     {
         $this->configRequestHeaders();
@@ -328,7 +328,6 @@ class TagsCategoriesTest extends IntegrationTestCase
      * Test `/model/categories` endpoint
      *
      * @return void
-     * @coversNothing
      */
     public function testCategoriesModel(): void
     {

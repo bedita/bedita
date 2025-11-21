@@ -14,7 +14,8 @@ declare(strict_types=1);
  */
 namespace BEdita\Core\Model\Table;
 
-use Cake\Database\Schema\TableSchemaInterface;
+use BEdita\Core\Model\Enum\HistoryUserAction;
+use Cake\Database\Type\EnumType;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
 
@@ -23,14 +24,19 @@ use Cake\Validation\Validator;
  *
  * @property \BEdita\Core\Model\Table\UsersTable&\Cake\ORM\Association\BelongsTo $Users
  * @property \BEdita\Core\Model\Table\ApplicationsTable&\Cake\ORM\Association\BelongsTo $Applications
- * @method \BEdita\Core\Model\Entity\History get($primaryKey, $options = [])
- * @method \BEdita\Core\Model\Entity\History newEntity($data = null, array $options = [])
+ * @method \BEdita\Core\Model\Entity\History get(mixed $primaryKey, array|string $finder = 'all', \Psr\SimpleCache\CacheInterface|string|null $cache = null, \Closure|string|null $cacheKey = null, mixed ...$args)
+ * @method \BEdita\Core\Model\Entity\History newEntity(array $data, array $options = [])
  * @method \BEdita\Core\Model\Entity\History[] newEntities(array $data, array $options = [])
- * @method \BEdita\Core\Model\Entity\History|false save(\Cake\Datasource\EntityInterface $entity, $options = [])
- * @method \BEdita\Core\Model\Entity\History saveOrFail(\Cake\Datasource\EntityInterface $entity, $options = [])
+ * @method \BEdita\Core\Model\Entity\History|false save(\Cake\Datasource\EntityInterface $entity, array $options = [])
+ * @method \BEdita\Core\Model\Entity\History saveOrFail(\Cake\Datasource\EntityInterface $entity, array $options = [])
  * @method \BEdita\Core\Model\Entity\History patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
- * @method \BEdita\Core\Model\Entity\History[] patchEntities($entities, array $data, array $options = [])
- * @method \BEdita\Core\Model\Entity\History findOrCreate($search, callable $callback = null, $options = [])
+ * @method \BEdita\Core\Model\Entity\History[] patchEntities(iterable $entities, array $data, array $options = [])
+ * @method \BEdita\Core\Model\Entity\History findOrCreate(\Cake\ORM\Query\SelectQuery|callable|array $search, ?callable $callback = null, array $options = [])
+ * @method \BEdita\Core\Model\Entity\History newEmptyEntity()
+ * @method \BEdita\Core\Model\Entity\History[]|\Cake\Datasource\ResultSetInterface<\BEdita\Core\Model\Entity\History>|false saveMany(iterable $entities, array $options = [])
+ * @method \BEdita\Core\Model\Entity\History[]|\Cake\Datasource\ResultSetInterface<\BEdita\Core\Model\Entity\History> saveManyOrFail(iterable $entities, array $options = [])
+ * @method \BEdita\Core\Model\Entity\History[]|\Cake\Datasource\ResultSetInterface<\BEdita\Core\Model\Entity\History>|false deleteMany(iterable $entities, array $options = [])
+ * @method \BEdita\Core\Model\Entity\History[]|\Cake\Datasource\ResultSetInterface<\BEdita\Core\Model\Entity\History> deleteManyOrFail(iterable $entities, array $options = [])
  * @mixin \Cake\ORM\Behavior\TimestampBehavior
  */
 class HistoryTable extends Table
@@ -49,6 +55,9 @@ class HistoryTable extends Table
         $this->setTable('history');
         $this->setDisplayField('id');
         $this->setPrimaryKey('id');
+        $this->getSchema()
+            ->setColumnType('changed', 'json')
+            ->setColumnType('user_action', EnumType::from(HistoryUserAction::class));
 
         $this->belongsTo('Users', [
             'foreignKey' => 'user_id',
@@ -76,23 +85,13 @@ class HistoryTable extends Table
             ->allowEmptyString('id', null, 'create');
 
         $validator
-            ->scalar('user_action')
-            ->allowEmptyString('user_action');
+            ->allowEmptyString('user_action')
+            ->enum('user_action', HistoryUserAction::class);
 
         $validator
             ->requirePresence('resource_id')
             ->notEmptyString('resource_id');
 
         return $validator;
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @codeCoverageIgnore
-     */
-    public function getSchema(): TableSchemaInterface
-    {
-        return parent::getSchema()->setColumnType('changed', 'json');
     }
 }

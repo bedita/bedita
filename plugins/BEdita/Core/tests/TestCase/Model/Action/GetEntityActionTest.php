@@ -12,17 +12,18 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\Model\Action;
 
 use BEdita\Core\Model\Action\GetEntityAction;
 use BEdita\Core\ORM\Inheritance\Table;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
 
 /**
- * @covers \BEdita\Core\Model\Action\GetEntityAction
+ * {@see \BEdita\Core\Model\Action\GetEntityAction} Test Case
  */
+#[CoversClass(GetEntityAction::class)]
 class GetEntityActionTest extends TestCase
 {
     /**
@@ -30,7 +31,7 @@ class GetEntityActionTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.FakeAnimals',
         'plugin.BEdita/Core.FakeArticles',
     ];
@@ -73,6 +74,6 @@ class GetEntityActionTest extends TestCase
 
         $result = $action(['primaryKey' => 1, 'contain' => ['FakeArticles']]);
 
-        static::assertEquals($table->get(1, ['contain' => ['FakeArticles']]), $result);
+        static::assertEquals($table->get(1, contain: ['FakeArticles']), $result);
     }
 }

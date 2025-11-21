@@ -12,21 +12,27 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\Filesystem;
 
+use BadMethodCallException;
 use BEdita\Core\Filesystem\Adapter\LocalAdapter;
 use BEdita\Core\Filesystem\FilesystemAdapter;
 use BEdita\Core\Filesystem\FilesystemRegistry;
 use Cake\TestSuite\TestCase;
+use Exception;
+use InvalidArgumentException;
 use League\Flysystem\DirectoryListing;
 use League\Flysystem\MountManager;
-use League\Flysystem\UnableToMountFilesystem;
 use League\Flysystem\UnableToResolveFilesystemMount;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
+use RuntimeException;
+use stdClass;
 
 /**
- * @coversDefaultClass \BEdita\Core\Filesystem\FilesystemRegistry
+ * {@see \BEdita\Core\Filesystem\FilesystemRegistry} Test Case
  */
+#[CoversClass(FilesystemRegistry::class)]
 class FilesystemRegistryTest extends TestCase
 {
     /**
@@ -43,7 +49,6 @@ class FilesystemRegistryTest extends TestCase
      * Test static configuration.
      *
      * @return void
-     * @coversNothing
      */
     public function testStaticConfiguration()
     {
@@ -74,13 +79,8 @@ class FilesystemRegistryTest extends TestCase
      *
      * @return array
      */
-    public function registryProvider()
+    public static function registryProvider(): array
     {
-        $failedInitialization = $this->getMockBuilder(FilesystemAdapter::class)->getMock();
-        $failedInitialization
-            ->method('initialize')
-            ->willReturn(false);
-
         return [
             'found' => [
                 LocalAdapter::class,
@@ -94,25 +94,16 @@ class FilesystemRegistryTest extends TestCase
                 ],
             ],
             'class not found' => [
-                new \BadMethodCallException('Filesystem adapter ThisDoesNotExist is not available.'),
+                new BadMethodCallException('Filesystem adapter ThisDoesNotExist is not available.'),
                 'BEdita/Core.ThisDoesNotExist',
             ],
             'bad instance' => [
-                new \RuntimeException(
-                    sprintf('Filesystem adapters must use %s as a base class.', FilesystemAdapter::class)
+                new RuntimeException(
+                    sprintf('Filesystem adapters must use %s as a base class.', FilesystemAdapter::class),
                 ),
                 'Bad',
                 [
-                    'className' => new \stdClass(),
-                ],
-            ],
-            'failed initialization' => [
-                new \RuntimeException(
-                    sprintf('Filesystem adapter %s is not properly configured', get_class($failedInitialization))
-                ),
-                'Bad',
-                [
-                    'className' => $failedInitialization,
+                    'className' => new stdClass(),
                 ],
             ],
         ];
@@ -125,14 +116,11 @@ class FilesystemRegistryTest extends TestCase
      * @param string $objectName Name of registry object.
      * @param array $config Adapter configuration.
      * @return void
-     * @dataProvider registryProvider()
-     * @covers ::_resolveClassName()
-     * @covers ::_throwMissingClassError()
-     * @covers ::_create()
      */
-    public function testRegistry($expected, $objectName, array $config = [])
+    #[DataProvider('registryProvider')]
+    public function testRegistry($expected, $objectName, array $config = []): void
     {
-        if ($expected instanceof \Exception) {
+        if ($expected instanceof Exception) {
             $this->expectException(get_class($expected));
             $this->expectExceptionCode($expected->getCode());
             $this->expectExceptionMessage($expected->getMessage());
@@ -146,10 +134,27 @@ class FilesystemRegistryTest extends TestCase
     }
 
     /**
+     * Test registry with invalid configuration.
+     *
+     * @return void
+     */
+    public function testRegistryFailInitialize(): void
+    {
+        $failedInitialization = $this->getMockBuilder(FilesystemAdapter::class)->getMock();
+        $failedInitialization
+            ->method('initialize')
+            ->willReturn(false);
+
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage(sprintf('Filesystem adapter %s is not properly configured', get_class($failedInitialization)));
+
+        FilesystemRegistry::getInstance()->load('Bad', ['className' => $failedInitialization]);
+    }
+
+    /**
      * Test getter.
      *
      * @return void
-     * @covers ::get()
      */
     public function testGet()
     {
@@ -176,20 +181,18 @@ class FilesystemRegistryTest extends TestCase
      * Test getter when adapter is missing.
      *
      * @return void
-     * @covers ::get()
      */
     public function testGetMissing()
     {
-        $result = FilesystemRegistry::getInstance()->get('missing');
-
-        static::assertNull($result);
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('Filesystem adapter "missing" is not available.');
+        FilesystemRegistry::getInstance()->get('missing');
     }
 
     /**
      * Test getter for mount manager.
      *
      * @return void
-     * @covers ::getMountManager()
      */
     public function testGetMountManager()
     {
@@ -217,7 +220,6 @@ class FilesystemRegistryTest extends TestCase
      * Test dropping all configurations.
      *
      * @return void
-     * @covers ::dropAll()
      */
     public function testDropAll()
     {
@@ -244,7 +246,7 @@ class FilesystemRegistryTest extends TestCase
      *
      * @return array
      */
-    public function getPublicUrlProvider()
+    public static function getPublicUrlProvider(): array
     {
         return [
             'ok' => [
@@ -255,13 +257,8 @@ class FilesystemRegistryTest extends TestCase
                 ],
             ],
             'missing prefix' => [
-                new \InvalidArgumentException('No prefix detected in path: path/image.png'),
+                new InvalidArgumentException('No prefix detected in path: path/image.png'),
                 'path/image.png',
-                [],
-            ],
-            'filesystem not found' => [
-                new UnableToMountFilesystem('No filesystem mounted with prefix missing'),
-                'missing://path/image.png',
                 [],
             ],
         ];
@@ -274,13 +271,11 @@ class FilesystemRegistryTest extends TestCase
      * @param string $path
      * @param array $config
      * @return void
-     * @dataProvider getPublicUrlProvider()
-     * @covers ::getPublicUrl()
-     * @covers ::getPrefixAndPath()
      */
+    #[DataProvider('getPublicUrlProvider')]
     public function testGetPublicUrl($expected, $path, array $config)
     {
-        if ($expected instanceof \Exception) {
+        if ($expected instanceof Exception) {
             $this->expectException(get_class($expected));
             $this->expectExceptionCode($expected->getCode());
             $this->expectExceptionMessage($expected->getMessage());

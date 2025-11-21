@@ -12,10 +12,9 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Database\Type;
 
-use Cake\Database\DriverInterface;
+use Cake\Database\Driver;
 use Cake\Database\Type\BoolType as CakeBoolType;
 use InvalidArgumentException;
 
@@ -29,10 +28,10 @@ class BoolType extends CakeBoolType
      * `true` and `false` as strings are accepted, other strings will cause an `InvalidArgumentException`
      *
      * @param mixed $value The value to convert.
-     * @param \Cake\Database\DriverInterface $driver The driver instance to convert with.
+     * @param \Cake\Database\Driver $driver The driver instance to convert with.
      * @return bool|null
      */
-    public function toDatabase($value, DriverInterface $driver): ?bool
+    public function toDatabase(mixed $value, Driver $driver): ?bool
     {
         try {
             return parent::toDatabase($value, $driver);

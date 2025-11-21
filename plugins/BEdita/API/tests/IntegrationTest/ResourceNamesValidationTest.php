@@ -15,10 +15,13 @@ declare(strict_types=1);
 namespace BEdita\API\Test\IntegrationTest;
 
 use BEdita\API\TestSuite\IntegrationTestCase;
+use PHPUnit\Framework\Attributes\CoversNothing;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * Integration test for resource names validations.
  */
+#[CoversNothing]
 class ResourceNamesValidationTest extends IntegrationTestCase
 {
     /**
@@ -26,7 +29,7 @@ class ResourceNamesValidationTest extends IntegrationTestCase
      *
      * @return array
      */
-    public function validateProvider(): array
+    public static function validateProvider(): array
     {
         return [
             'bad ptype' => [
@@ -91,9 +94,8 @@ class ResourceNamesValidationTest extends IntegrationTestCase
      * @param array $attributes Body data attributes
      * @param string $type The resource type
      * @return void
-     * @dataProvider validateProvider
-     * @coversNothing
      */
+    #[DataProvider('validateProvider')]
     public function testValidate(int $expected, string $endpoint, array $attributes, string $type): void
     {
         $this->configRequestHeaders('POST', $this->getUserAuthHeader());

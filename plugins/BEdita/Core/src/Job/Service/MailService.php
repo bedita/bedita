@@ -12,11 +12,10 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Job\Service;
 
 use BEdita\Core\Job\JobService;
-use BEdita\Core\Mailer\Email;
+use BEdita\Core\Mailer\Mailer;
 use Cake\Utility\Hash;
 
 /**
@@ -42,11 +41,11 @@ class MailService implements JobService
      * @param array $options Options for running this job.
      * @return array
      */
-    public function run(array $payload, array $options = [])
+    public function run(array $payload, array $options = []): array
     {
         $transport = Hash::get($options, 'transport', 'default');
 
-        $email = (new Email())
+        $email = (new Mailer())
             ->createFromArray($payload)
             ->setTransport($transport);
 

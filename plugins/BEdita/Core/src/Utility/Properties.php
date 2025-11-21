@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Utility;
 
 use Cake\Http\Exception\BadRequestException;
@@ -49,7 +48,7 @@ class Properties extends ResourcesBase
      *
      * @var array
      */
-    protected static $defaults = [
+    protected static array $defaults = [
         // since default usage is in migrations
         // don't commit transactions but let migrations do it
         'save' => [
@@ -174,7 +173,7 @@ class Properties extends ResourcesBase
         $diff = array_diff_key(array_flip($required), array_filter($data));
         if (!empty($diff)) {
             throw new BadRequestException(
-                __d('bedita', 'Missing mandatory property data "{0}"', implode(', ', array_keys($diff)))
+                __d('bedita', 'Missing mandatory property data "{0}"', implode(', ', array_keys($diff))),
             );
         }
     }

@@ -14,22 +14,24 @@ declare(strict_types=1);
  */
 namespace BEdita\API\Test\TestCase\Controller;
 
+use BEdita\API\Controller\AsyncJobsController;
 use BEdita\API\TestSuite\IntegrationTestCase;
+use BEdita\Core\Test\Utility\TestArraySubsetTrait;
 use Cake\ORM\TableRegistry;
-use DMS\PHPUnitExtensions\ArraySubset\ArraySubsetAsserts;
+use PHPUnit\Framework\Attributes\CoversClass;
 
 /**
- * @coversDefaultClass \BEdita\API\Controller\AsyncJobsController
+ * {@see \BEdita\API\Controller\AsyncJobsController} Test Case.
  */
+#[CoversClass(AsyncJobsController::class)]
 class AsyncJobsControllerTest extends IntegrationTestCase
 {
-    use ArraySubsetAsserts;
+    use TestArraySubsetTrait;
 
     /**
      * Test index method on GET.
      *
      * @return void
-     * @covers ::initialize()
      */
     public function testIndex(): void
     {
@@ -269,7 +271,6 @@ class AsyncJobsControllerTest extends IntegrationTestCase
      * Test index method on POST.
      *
      * @return void
-     * @covers ::initialize()
      */
     public function testAdd(): void
     {
@@ -285,7 +286,7 @@ class AsyncJobsControllerTest extends IntegrationTestCase
         $this->assertContentType('application/vnd.api+json');
         $asyncJob = TableRegistry::getTableLocator()->get('AsyncJobs')
             ->find()
-            ->order(['created' => 'DESC'])
+            ->orderBy(['created' => 'DESC'])
             ->first();
         $expected = array_merge(['uuid' => $asyncJob->get('uuid')], $data['attributes']);
         static::assertArraySubset($expected, $asyncJob->toArray());
@@ -295,7 +296,6 @@ class AsyncJobsControllerTest extends IntegrationTestCase
      * Test method not allowed exception on patch
      *
      * @return void
-     * @covers ::initialize()
      */
     public function testPatch(): void
     {
@@ -328,7 +328,6 @@ class AsyncJobsControllerTest extends IntegrationTestCase
      * Test method not allowed exception on delete
      *
      * @return void
-     * @covers ::initialize()
      */
     public function testDelete(): void
     {

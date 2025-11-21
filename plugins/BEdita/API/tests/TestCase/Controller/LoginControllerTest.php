@@ -12,20 +12,24 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\API\Test\TestCase\Controller;
 
+use BEdita\API\Controller\LoginController;
 use BEdita\API\TestSuite\IntegrationTestCase;
 use BEdita\Core\Model\Action\SaveEntityAction;
 use BEdita\Core\State\CurrentApplication;
 use Cake\Cache\Cache;
-use Cake\I18n\FrozenTime;
+use Cake\I18n\DateTime;
 use Cake\ORM\TableRegistry;
 use Cake\Utility\Hash;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Depends;
 
 /**
- * @coversDefaultClass \BEdita\API\Controller\LoginController
+ * {@see \BEdita\API\Controller\LoginController} Test Case
  */
+#[CoversClass(LoginController::class)]
 class LoginControllerTest extends IntegrationTestCase
 {
     /**
@@ -57,10 +61,6 @@ class LoginControllerTest extends IntegrationTestCase
      * Test login method.
      *
      * @return string A valid JWT.
-     * @covers ::login()
-     * @covers ::identify()
-     * @covers ::reducedUserData()
-     * @covers ::initialize()
      */
     public function testLoginOkJson()
     {
@@ -80,8 +80,8 @@ class LoginControllerTest extends IntegrationTestCase
 
         $lastLogin = TableRegistry::getTableLocator()->get('Users')->get(1)->get('last_login');
         static::assertNotNull($lastLogin);
-        static::assertEquals(FrozenTime::now()->timestamp, $lastLogin->timestamp, '');
-        static::assertEqualsWithDelta(FrozenTime::now()->timestamp, $lastLogin->timestamp, 1, '');
+        static::assertEquals(DateTime::now()->timestamp, $lastLogin->timestamp, '');
+        static::assertEqualsWithDelta(DateTime::now()->timestamp, $lastLogin->timestamp, 1, '');
 
         return $result['meta'];
     }
@@ -90,10 +90,6 @@ class LoginControllerTest extends IntegrationTestCase
      * Test login method.
      *
      * @return string A valid JWT.
-     * @covers ::login()
-     * @covers ::reducedUserData()
-     * @covers ::jwtTokens()
-     * @covers ::initialize()
      */
     public function testLoginOkForm()
     {
@@ -119,10 +115,8 @@ class LoginControllerTest extends IntegrationTestCase
      *
      * @param array $meta Login metadata.
      * @return void
-     * @depends testLoginOkJson
-     * @covers ::login()
-     * @covers ::identify()
      */
+    #[Depends('testLoginOkJson')]
     public function testSuccessfulRenew(array $meta): void
     {
         sleep(1);
@@ -150,10 +144,8 @@ class LoginControllerTest extends IntegrationTestCase
      *
      * @param array $meta Login metadata.
      * @return void
-     * @depends testLoginOkJson
-     * @covers ::login()
-     * @covers ::identify()
      */
+    #[Depends('testLoginOkJson')]
     public function testFailedRenew(array $meta): void
     {
         sleep(1);
@@ -188,8 +180,6 @@ class LoginControllerTest extends IntegrationTestCase
      * Test login method with invalid credentials
      *
      * @return void
-     * @covers ::login()
-     * @covers ::identify()
      */
     public function testFailedLogin()
     {
@@ -205,7 +195,7 @@ class LoginControllerTest extends IntegrationTestCase
 
         $user = $this->fetchTable('Users')->get(1);
         static::assertNotNull($user->last_login_err);
-        static::assertEqualsWithDelta(FrozenTime::now()->timestamp, $user->last_login_err->timestamp, 1, '');
+        static::assertEqualsWithDelta(DateTime::now()->timestamp, $user->last_login_err->timestamp, 1, '');
         static::assertEquals(2, $user->num_login_err);
     }
 
@@ -213,7 +203,6 @@ class LoginControllerTest extends IntegrationTestCase
      * Test client credentials grant
      *
      * @return array
-     * @covers ::identify()
      */
     public function testClientCredentials(): array
     {
@@ -235,9 +224,8 @@ class LoginControllerTest extends IntegrationTestCase
      *
      * @param array $meta Client credentials metadata.
      * @return void
-     * @depends testClientCredentials
-     * @covers ::identify()
      */
+    #[Depends('testClientCredentials')]
     public function testRenewClientCredentials(array $meta): void
     {
         sleep(1);
@@ -267,7 +255,6 @@ class LoginControllerTest extends IntegrationTestCase
      * Test client credentials renew failure
      *
      * @return void
-     * @covers ::identify()
      */
     public function testFailedRenewClientCredentials(): void
     {
@@ -319,7 +306,6 @@ class LoginControllerTest extends IntegrationTestCase
      * Test login method with wrong content type
      *
      * @return void
-     * @covers ::login()
      */
     public function testWrongContentTypeLogin(): void
     {
@@ -343,9 +329,6 @@ class LoginControllerTest extends IntegrationTestCase
      * Test login ok but authorization denied.
      *
      * @return void
-     * @covers ::login()
-     * @covers ::identify()
-     * @covers ::isIdentityRequired()
      */
     public function testLoginAuthorizationDenied(): void
     {
@@ -382,11 +365,8 @@ class LoginControllerTest extends IntegrationTestCase
      *
      * @param array $meta Login metadata.
      * @return void
-     * @depends testLoginOkJson
-     * @covers ::whoami()
-     * @covers ::isIdentityRequired()
-     * @covers ::userEntity()
      */
+    #[Depends('testLoginOkJson')]
     public function testLoggedUser(array $meta): void
     {
         $headers = [
@@ -414,10 +394,8 @@ class LoginControllerTest extends IntegrationTestCase
      * Test read logged user blocked failure.
      *
      * @return void
-     * @depends testLoginOkJson
-     * @covers ::whoami()
-     * @covers ::userEntity()
      */
+    #[Depends('testLoginOkJson')]
     public function testLoggedUserBlocked(array $meta): void
     {
         sleep(1);
@@ -449,9 +427,6 @@ class LoginControllerTest extends IntegrationTestCase
      * Test read logged user fail.
      *
      * @return void
-     * @covers ::whoami()
-     * @covers ::isIdentityRequired()
-     * @covers ::userEntity()
      */
     public function testLoggedUserFail(): void
     {
@@ -466,9 +441,8 @@ class LoginControllerTest extends IntegrationTestCase
      *
      * @param array $meta Login metadata.
      * @return void
-     * @depends testLoginOkJson
-     * @covers ::findAssociation()
      */
+    #[Depends('testLoginOkJson')]
     public function testFindAssociation(array $meta): void
     {
         $this->configRequest([
@@ -494,9 +468,8 @@ class LoginControllerTest extends IntegrationTestCase
      *
      * @param array $meta Login metadata.
      * @return void
-     * @depends testLoginOkJson
-     * @covers ::findAssociation()
      */
+    #[Depends('testLoginOkJson')]
     public function testFindAssociationError(array $meta): void
     {
         $this->configRequest([
@@ -535,9 +508,6 @@ class LoginControllerTest extends IntegrationTestCase
      * Test `change` request method
      *
      * @return void
-     * @covers ::change()
-     * @covers ::isIdentityRequired()
-     * @covers ::initialize()
      */
     public function testChangeRequest(): void
     {
@@ -565,13 +535,13 @@ class LoginControllerTest extends IntegrationTestCase
         $action = new SaveEntityAction(['table' => TableRegistry::getTableLocator()->get('AsyncJobs')]);
 
         return $action([
-            'entity' => TableRegistry::getTableLocator()->get('AsyncJobs')->newEntity([]),
+            'entity' => TableRegistry::getTableLocator()->get('AsyncJobs')->newEmptyEntity(),
             'data' => [
                 'service' => 'credentials_change',
                 'payload' => [
                     'user_id' => 1,
                 ],
-                'scheduled_from' => new FrozenTime('1 day'),
+                'scheduled_from' => new DateTime('1 day'),
                 'priority' => 1,
             ],
         ]);
@@ -581,8 +551,6 @@ class LoginControllerTest extends IntegrationTestCase
      * Test perform `change`
      *
      * @return void
-     * @covers ::change()
-     * @covers ::isIdentityRequired()
      */
     public function testPerformChange()
     {
@@ -609,9 +577,6 @@ class LoginControllerTest extends IntegrationTestCase
      * Test perform `change` with login
      *
      * @return void
-     * @covers ::change()
-     * @covers ::reducedUserData()
-     * @covers ::jwtTokens()
      */
     public function testPerformChangeLogin()
     {
@@ -642,10 +607,8 @@ class LoginControllerTest extends IntegrationTestCase
      *
      * @param array $meta Previous response metadata.
      * @return void
-     * @depends testLoginOkJson
-     * @covers ::update()
-     * @covers ::userEntity()
      */
+    #[Depends('testLoginOkJson')]
     public function testUpdate(array $meta)
     {
         // set email to NULL to be able to change it
@@ -685,10 +648,8 @@ class LoginControllerTest extends IntegrationTestCase
      *
      * @param array $meta Previous response metadata.
      * @return void
-     * @depends testLoginOkJson
-     * @covers ::update()
-     * @covers ::userEntity()
      */
+    #[Depends('testLoginOkJson')]
     public function testUpdateIgnore(array $meta)
     {
         $headers = [
@@ -719,7 +680,6 @@ class LoginControllerTest extends IntegrationTestCase
      * Login with deleted user method.
      *
      * @return void.
-     * @coversNothing
      */
     public function testDeletedLogin()
     {
@@ -745,7 +705,6 @@ class LoginControllerTest extends IntegrationTestCase
      * Login with blocked user method.
      *
      * @return void.
-     * @coversNothing
      */
     public function testBlockedLogin()
     {
@@ -773,7 +732,7 @@ class LoginControllerTest extends IntegrationTestCase
      *
      * @return array
      */
-    public function statusProvider()
+    public static function statusProvider(): array
     {
         return [
             'draft' => [
@@ -797,9 +756,8 @@ class LoginControllerTest extends IntegrationTestCase
      * @param bool $expected Is login successful?
      * @param string $status User `status`
      * @return void.
-     * @coversNothing
-     * @dataProvider statusProvider
      */
+    #[DataProvider('statusProvider')]
     public function testStatus($expected, $status)
     {
         $usersTable = TableRegistry::getTableLocator()->get('Users');
@@ -830,7 +788,7 @@ class LoginControllerTest extends IntegrationTestCase
      *
      * @return array
      */
-    public function passwordChangeProvider()
+    public static function passwordChangeProvider(): array
     {
         return [
             'missing' => [
@@ -881,9 +839,8 @@ class LoginControllerTest extends IntegrationTestCase
      * @param array $data Request body.
      * @param string $error Error title in response, if $expected is >= 400.
      * @return void.
-     * @covers ::checkPassword()
-     * @dataProvider passwordChangeProvider
      */
+    #[DataProvider('passwordChangeProvider')]
     public function testPasswordChange($expected, array $data, $error = null)
     {
         $this->configRequestHeaders('PATCH', $this->getUserAuthHeader() + ['Content-Type' => 'application/json']);
@@ -910,8 +867,6 @@ class LoginControllerTest extends IntegrationTestCase
      * Test `otp_request` grant.
      *
      * @return void
-     * @covers ::login()
-     * @covers ::identify()
      */
     public function testOTPRequestLogin()
     {
@@ -946,8 +901,6 @@ class LoginControllerTest extends IntegrationTestCase
      * Test `otp_request` failure.
      *
      * @return void
-     * @covers ::login()
-     * @covers ::identify()
      */
     public function testOTPRequestFail()
     {
@@ -973,8 +926,6 @@ class LoginControllerTest extends IntegrationTestCase
      * Test actual `otp` (One Time Password) login.
      *
      * @return void
-     * @covers ::login()
-     * @covers ::identify()
      */
     public function testOTPLogin()
     {
@@ -998,7 +949,6 @@ class LoginControllerTest extends IntegrationTestCase
      * Test `otp` login failure.
      *
      * @return void
-     * @covers ::login()
      */
     public function testOTPFail()
     {
@@ -1027,7 +977,7 @@ class LoginControllerTest extends IntegrationTestCase
      *
      * @return array
      */
-    public function optoutProvider()
+    public static function optoutProvider(): array
     {
         return [
             'ok' => [
@@ -1067,11 +1017,8 @@ class LoginControllerTest extends IntegrationTestCase
      * @param mixed $expected Expected result
      * @param array $data POST data
      * @return void
-     * @dataProvider optoutProvider()
-     * @covers ::optout()
-     * @covers ::initialize()
-     * @covers ::identify()
      */
+    #[DataProvider('optoutProvider')]
     public function testOptout($expected, $data)
     {
         $this->configRequestHeaders('POST', ['Content-Type' => 'application/json']);

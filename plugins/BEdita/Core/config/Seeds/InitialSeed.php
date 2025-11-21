@@ -1,10 +1,10 @@
 <?php
-use Migrations\AbstractSeed;
+use Migrations\BaseSeed;
 
 /**
  * Initial seed.
  */
-class InitialSeed extends AbstractSeed
+class InitialSeed extends BaseSeed
 {
     /**
      * Run Method.
@@ -16,7 +16,7 @@ class InitialSeed extends AbstractSeed
      *
      * @return void
      */
-    public function run()
+    public function run(): void
     {
     }
 }

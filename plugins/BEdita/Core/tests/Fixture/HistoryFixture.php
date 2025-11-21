@@ -26,14 +26,14 @@ class HistoryFixture extends TestFixture
     /**
      * @inheritDoc
      */
-    public $table = 'history';
+    public string $table = 'history';
 
     /**
      * Records
      *
      * @var array
      */
-    public $records = [
+    public array $records = [
         [
             'resource_id' => '2',
             'resource_type' => 'objects',

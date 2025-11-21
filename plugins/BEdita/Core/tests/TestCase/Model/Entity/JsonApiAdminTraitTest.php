@@ -12,17 +12,18 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\Model\Entity;
 
+use BEdita\Core\Model\Entity\JsonApiAdminTrait;
+use BEdita\Core\Model\Table\ApplicationsTable;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
+use PHPUnit\Framework\Attributes\CoversTrait;
 
 /**
  *  {@see \BEdita\Core\Model\Entity\JsonApiAdminTrait} Test Case
- *
- * @coversDefaultClass \BEdita\Core\Model\Entity\JsonApiAdminTrait
  */
+#[CoversTrait(JsonApiAdminTrait::class)]
 class JsonApiAdminTraitTest extends TestCase
 {
     /**
@@ -30,14 +31,14 @@ class JsonApiAdminTraitTest extends TestCase
      *
      * @var \BEdita\Core\Model\Table\ApplicationsTable
      */
-    public $Applications;
+    public ApplicationsTable $Applications;
 
     /**
      * Fixtures
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.Applications',
     ];
 
@@ -67,7 +68,6 @@ class JsonApiAdminTraitTest extends TestCase
      * Test getter for meta.
      *
      * @return void
-     * @covers ::getLinks()
      */
     public function testGetLinks()
     {

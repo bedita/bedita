@@ -12,27 +12,27 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\API\Test\TestCase\Controller\Component;
 
+use BEdita\API\Controller\Component\UploadComponent;
 use BEdita\API\TestSuite\IntegrationTestCase;
+use BEdita\Core\Test\Utility\TestArraySubsetTrait;
 use BEdita\Core\Test\Utility\TestFilesystemTrait;
 use Cake\Utility\Hash;
 use Cake\Validation\Validation;
-use DMS\PHPUnitExtensions\ArraySubset\ArraySubsetAsserts;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
-/**
- * @coversDefaultClass \BEdita\API\Controller\Component\UploadComponent
- */
+#[CoversClass(UploadComponent::class)]
 class UploadComponentTest extends IntegrationTestCase
 {
-    use ArraySubsetAsserts;
+    use TestArraySubsetTrait;
     use TestFilesystemTrait;
 
     /**
      * @inheritDoc
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.Streams',
     ];
 
@@ -59,7 +59,7 @@ class UploadComponentTest extends IntegrationTestCase
      *
      * @return array
      */
-    public function uploadProvider()
+    public static function uploadProvider(): array
     {
         return [
             'javascript' => [
@@ -91,10 +91,8 @@ class UploadComponentTest extends IntegrationTestCase
      *
      * @param array $data The file data.
      * @return void
-     * @dataProvider uploadProvider
-     * @covers ::upload()
-     * @covers ::beforeFilter()
      */
+    #[DataProvider('uploadProvider')]
     public function testUpload($data)
     {
         $fileName = Hash::get($data, 'fileName');
@@ -143,8 +141,6 @@ class UploadComponentTest extends IntegrationTestCase
      * Test upload method.
      *
      * @return void
-     * @covers ::upload()
-     * @covers ::beforeFilter()
      */
     public function testUploadBase64()
     {
@@ -194,7 +190,6 @@ class UploadComponentTest extends IntegrationTestCase
      * Test upload method with `private_url` query.
      *
      * @return void
-     * @covers ::upload()
      */
     public function testUploadPrivateUrl(): void
     {

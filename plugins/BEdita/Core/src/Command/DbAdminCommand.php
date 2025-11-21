@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Command;
 
 use Cake\Command\Command;
@@ -34,14 +33,14 @@ class DbAdminCommand extends Command
      *
      * @var \Cake\Console\Arguments
      */
-    protected $args;
+    protected Arguments $args;
 
     /**
      * Console IO
      *
      * @var \Cake\Console\ConsoleIo
      */
-    protected $io;
+    protected ConsoleIo $io;
 
     /**
      * Subcommands.

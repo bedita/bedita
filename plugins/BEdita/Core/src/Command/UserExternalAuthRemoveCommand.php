@@ -1,6 +1,17 @@
 <?php
 declare(strict_types=1);
 
+/**
+ * BEdita, API-first content management framework
+ * Copyright 2024 Channelweb Srl, Chialab Srl
+ *
+ * This file is part of BEdita: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
+ */
 namespace BEdita\Core\Command;
 
 use BEdita\Core\Model\Entity\ExternalAuth;
@@ -18,7 +29,7 @@ class UserExternalAuthRemoveCommand extends UserExternalAuthListCommand
     /**
      * @inheritDoc
      */
-    protected $defaultTable = 'Users';
+    protected ?string $defaultTable = 'Users';
 
     /**
      * {@inheritDoc}
@@ -80,7 +91,7 @@ class UserExternalAuthRemoveCommand extends UserExternalAuthListCommand
         /** @var \BEdita\Core\Model\Entity\ExternalAuth|false $externalAuth */
         $externalAuth = current(array_filter(
             $user->external_auth,
-            fn (ExternalAuth $auth) => $auth->{$field} == $value,
+            fn(ExternalAuth $auth) => $auth->{$field} == $value,
         ));
         if ($externalAuth === false) {
             $io->error('External auth record not found.');

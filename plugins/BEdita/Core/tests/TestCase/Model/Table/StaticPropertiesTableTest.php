@@ -12,25 +12,26 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\Model\Table;
 
 use BEdita\Core\Model\Entity\StaticProperty;
 use BEdita\Core\Model\Table\ObjectTypesTable;
+use BEdita\Core\Model\Table\StaticPropertiesTable;
+use BEdita\Core\Test\Utility\TestArraySubsetTrait;
 use Cake\Cache\Cache;
 use Cake\Database\Schema\TableSchema;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
-use DMS\PHPUnitExtensions\ArraySubset\ArraySubsetAsserts;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * {@see \BEdita\Core\Model\Table\StaticPropertiesTable} Test Case
- *
- * @coversDefaultClass \BEdita\Core\Model\Table\StaticPropertiesTable
  */
+#[CoversClass(StaticPropertiesTable::class)]
 class StaticPropertiesTableTest extends TestCase
 {
-    use ArraySubsetAsserts;
+    use TestArraySubsetTrait;
 
     /**
      * Test subject
@@ -44,7 +45,7 @@ class StaticPropertiesTableTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.PropertyTypes',
         'plugin.BEdita/Core.Properties',
@@ -81,7 +82,6 @@ class StaticPropertiesTableTest extends TestCase
      * Test table initialization.
      *
      * @return void
-     * @covers ::initialize()
      */
     public function testInitialize()
     {
@@ -99,7 +99,6 @@ class StaticPropertiesTableTest extends TestCase
      * Test creation of temporary table.
      *
      * @return void
-     * @covers ::createTable()
      */
     public function testCreateTable()
     {
@@ -160,7 +159,7 @@ class StaticPropertiesTableTest extends TestCase
      *
      * @return array
      */
-    public function addSchemaDetailsProvider()
+    public static function addSchemaDetailsProvider(): array
     {
         return [
             'objects.status' => [
@@ -253,11 +252,8 @@ class StaticPropertiesTableTest extends TestCase
      * @param array|null $expected Expected result.
      * @param array $conditions Conditions
      * @return void
-     * @dataProvider addSchemaDetailsProvider()
-     * @covers ::addSchemaDetails()
-     * @covers ::listOwnTables()
-     * @covers ::prepareTableFields()
      */
+    #[DataProvider('addSchemaDetailsProvider')]
     public function testAddSchemaDetails(?array $expected, array $conditions)
     {
         $result = TableRegistry::getTableLocator()->get('StaticProperties')->find()

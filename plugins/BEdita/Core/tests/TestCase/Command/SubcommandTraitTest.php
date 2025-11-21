@@ -12,18 +12,17 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\Command;
 
 use BEdita\Core\Command\SubcommandTrait;
 use Cake\Command\Command;
 use Cake\TestSuite\TestCase;
+use PHPUnit\Framework\Attributes\CoversTrait;
 
 /**
  *  {@see \BEdita\Core\Command\SubcommandTrait} Test Case
- *
- * @coversDefaultClass \BEdita\Core\Command\SubcommandTrait
  */
+#[CoversTrait(SubcommandTrait::class)]
 class SubcommandTraitTest extends TestCase
 {
     use SubcommandTrait;
@@ -66,7 +65,6 @@ class SubcommandTraitTest extends TestCase
      * Test `executeSubcommand` method
      *
      * @return void
-     * @covers ::executeSubcommand()
      */
     public function testExecuteSubcommand(): void
     {

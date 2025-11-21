@@ -12,10 +12,11 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Model\Table;
 
+use BEdita\Core\Model\Enum\RelationTypeSide;
 use Cake\Cache\Cache;
+use Cake\Database\Type\EnumType;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
@@ -23,15 +24,21 @@ use Cake\Validation\Validator;
 /**
  * RelationTypes Model
  *
- * @property \Cake\ORM\Association\BelongsTo $Relations
- * @property \Cake\ORM\Association\BelongsTo $ObjectTypes
- * @method \BEdita\Core\Model\Entity\RelationType get($primaryKey, $options = [])
- * @method \BEdita\Core\Model\Entity\RelationType newEntity($data = null, array $options = [])
+ * @property \Cake\ORM\Table&\Cake\ORM\Association\BelongsTo $Relations
+ * @property \Cake\ORM\Table&\Cake\ORM\Association\BelongsTo $ObjectTypes
+ * @method \BEdita\Core\Model\Entity\RelationType get(mixed $primaryKey, array|string $finder = 'all', \Psr\SimpleCache\CacheInterface|string|null $cache = null, \Closure|string|null $cacheKey = null, mixed ...$args)
+ * @method \BEdita\Core\Model\Entity\RelationType newEntity(array $data, array $options = [])
  * @method \BEdita\Core\Model\Entity\RelationType[] newEntities(array $data, array $options = [])
- * @method \BEdita\Core\Model\Entity\RelationType|bool save(\Cake\Datasource\EntityInterface $entity, $options = [])
+ * @method \BEdita\Core\Model\Entity\RelationType|false save(\Cake\Datasource\EntityInterface $entity, array $options = [])
  * @method \BEdita\Core\Model\Entity\RelationType patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
- * @method \BEdita\Core\Model\Entity\RelationType[] patchEntities($entities, array $data, array $options = [])
- * @method \BEdita\Core\Model\Entity\RelationType findOrCreate($search, callable $callback = null, $options = [])
+ * @method \BEdita\Core\Model\Entity\RelationType[] patchEntities(iterable $entities, array $data, array $options = [])
+ * @method \BEdita\Core\Model\Entity\RelationType findOrCreate(\Cake\ORM\Query\SelectQuery|callable|array $search, ?callable $callback = null, array $options = [])
+ * @method \BEdita\Core\Model\Entity\RelationType newEmptyEntity()
+ * @method \BEdita\Core\Model\Entity\RelationType saveOrFail(\Cake\Datasource\EntityInterface $entity, array $options = [])
+ * @method \BEdita\Core\Model\Entity\RelationType[]|\Cake\Datasource\ResultSetInterface<\BEdita\Core\Model\Entity\RelationType>|false saveMany(iterable $entities, array $options = [])
+ * @method \BEdita\Core\Model\Entity\RelationType[]|\Cake\Datasource\ResultSetInterface<\BEdita\Core\Model\Entity\RelationType> saveManyOrFail(iterable $entities, array $options = [])
+ * @method \BEdita\Core\Model\Entity\RelationType[]|\Cake\Datasource\ResultSetInterface<\BEdita\Core\Model\Entity\RelationType>|false deleteMany(iterable $entities, array $options = [])
+ * @method \BEdita\Core\Model\Entity\RelationType[]|\Cake\Datasource\ResultSetInterface<\BEdita\Core\Model\Entity\RelationType> deleteManyOrFail(iterable $entities, array $options = [])
  */
 class RelationTypesTable extends Table
 {
@@ -47,6 +54,8 @@ class RelationTypesTable extends Table
         $this->setTable('relation_types');
         $this->setDisplayField('relation_id');
         $this->setPrimaryKey(['relation_id', 'object_type_id', 'side']);
+        $this->getSchema()
+            ->setColumnType('side', EnumType::from(RelationTypeSide::class));
 
         $this->belongsTo('Relations', [
             'foreignKey' => 'relation_id',
@@ -68,7 +77,7 @@ class RelationTypesTable extends Table
     public function validationDefault(Validator $validator): Validator
     {
         $validator
-            ->inList('side', ['left', 'right'])
+            ->enum('side', RelationTypeSide::class)
             ->notEmptyString('side')
             ->requirePresence('side', 'create');
 
@@ -94,7 +103,7 @@ class RelationTypesTable extends Table
      *
      * @return void
      */
-    public function afterSave()
+    public function afterSave(): void
     {
         Cache::clear(ObjectTypesTable::CACHE_CONFIG);
     }
@@ -104,7 +113,7 @@ class RelationTypesTable extends Table
      *
      * @return void
      */
-    public function afterDelete()
+    public function afterDelete(): void
     {
         Cache::clear(ObjectTypesTable::CACHE_CONFIG);
     }

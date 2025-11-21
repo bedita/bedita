@@ -12,17 +12,25 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\Model\Entity;
 
+use BEdita\Core\Model\Entity\JsonApiTrait;
+use BEdita\Core\Model\Enum\RelationTypeSide;
+use BEdita\Core\Model\Table\ObjectsTable;
+use BEdita\Core\Model\Table\ObjectTypesTable;
+use BEdita\Core\Model\Table\RolesTable;
 use BEdita\Core\Utility\JsonApiSerializable;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Hash;
+use InvalidArgumentException;
+use PHPUnit\Framework\Attributes\CoversTrait;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
- * @coversDefaultClass \BEdita\Core\Model\Entity\JsonApiTrait
+ * {@see \BEdita\Core\Model\Entity\JsonApiTrait} Test Case
  */
+#[CoversTrait(JsonApiTrait::class)]
 class JsonApiTraitTest extends TestCase
 {
     /**
@@ -30,28 +38,28 @@ class JsonApiTraitTest extends TestCase
      *
      * @var \BEdita\Core\Model\Table\RolesTable
      */
-    public $Roles;
+    public RolesTable $Roles;
 
     /**
      * Helper table.
      *
      * @var \BEdita\Core\Model\Table\ObjectTypesTable
      */
-    public $ObjectTypes;
+    public ObjectTypesTable $ObjectTypes;
 
     /**
      * Helper table.
      *
      * @var \BEdita\Core\Model\Table\ObjectsTable
      */
-    public $Documents;
+    public ObjectsTable $Documents;
 
     /**
      * Fixtures
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.Relations',
         'plugin.BEdita/Core.RelationTypes',
@@ -100,14 +108,13 @@ class JsonApiTraitTest extends TestCase
     }
 
     /**
-     * Tet getter for table.
+     * Test getter for table.
      *
      * @return void
-     * @covers ::getTable()
      */
     public function testGetTable()
     {
-        $role = $this->Roles->newEntity([]);
+        $role = $this->Roles->newEmptyEntity();
         $table = $role->getTable();
 
         static::assertInstanceOf(get_class($this->Roles), $table);
@@ -117,7 +124,6 @@ class JsonApiTraitTest extends TestCase
      * Test getter for ID.
      *
      * @return void
-     * @covers ::getId()
      */
     public function testGetId()
     {
@@ -132,11 +138,10 @@ class JsonApiTraitTest extends TestCase
      * Test getter for type.
      *
      * @return void
-     * @covers ::getType()
      */
     public function testGetType()
     {
-        $role = $this->Roles->newEntity([])->jsonApiSerialize();
+        $role = $this->Roles->newEmptyEntity()->jsonApiSerialize();
 
         $type = $role['type'];
 
@@ -147,8 +152,6 @@ class JsonApiTraitTest extends TestCase
      * Test getter for attributes.
      *
      * @return void
-     * @covers ::getAttributes()
-     * @covers ::filterFields()
      */
     public function testGetAttributes()
     {
@@ -171,8 +174,6 @@ class JsonApiTraitTest extends TestCase
      * Test getter for meta.
      *
      * @return void
-     * @covers ::getLinks()
-     * @covers ::routeNamePrefix()
      */
     public function testGetLinks()
     {
@@ -191,8 +192,6 @@ class JsonApiTraitTest extends TestCase
      * Test getter for relationships.
      *
      * @return void
-     * @covers ::getRelationships()
-     * @covers ::listAssociations()
      */
     public function testGetRelationships()
     {
@@ -216,12 +215,10 @@ class JsonApiTraitTest extends TestCase
      * Test getter for relationships.
      *
      * @return void
-     * @covers ::getRelationships()
-     * @covers ::listAssociations()
      */
     public function testGetRelationshipsHidden()
     {
-        $role = $this->Roles->newEntity([]);
+        $role = $this->Roles->newEmptyEntity();
         $role->setHidden(['users' => true], true);
         $role = $role->jsonApiSerialize();
 
@@ -234,9 +231,6 @@ class JsonApiTraitTest extends TestCase
      * Test getter for relationships with included resources.
      *
      * @return void
-     * @covers ::getRelationships()
-     * @covers ::getIncluded()
-     * @covers ::listAssociations()
      */
     public function testGetRelationshipsIncluded()
     {
@@ -259,7 +253,7 @@ class JsonApiTraitTest extends TestCase
             ],
         ];
 
-        $role = $this->Roles->get(1, ['contain' => ['Users']])->jsonApiSerialize();
+        $role = $this->Roles->get(1, contain: ['Users'])->jsonApiSerialize();
 
         $relationships = $role['relationships'];
         $included = $role['included'];
@@ -272,9 +266,6 @@ class JsonApiTraitTest extends TestCase
      * Test getter for relationships with included resources.
      *
      * @return void
-     * @covers ::getRelationships()
-     * @covers ::getIncluded()
-     * @covers ::listAssociations()
      */
     public function testGetRelationshipsIncludedSingle()
     {
@@ -288,7 +279,7 @@ class JsonApiTraitTest extends TestCase
                             'relation' => [
                                 'relation_id' => 1,
                                 'object_type_id' => 2,
-                                'side' => 'left',
+                                'side' => RelationTypeSide::Left,
                             ],
                         ],
                     ],
@@ -299,7 +290,7 @@ class JsonApiTraitTest extends TestCase
                             'relation' => [
                                 'relation_id' => 4,
                                 'object_type_id' => 2,
-                                'side' => 'left',
+                                'side' => RelationTypeSide::Left,
                             ],
                         ],
                     ],
@@ -310,7 +301,7 @@ class JsonApiTraitTest extends TestCase
                             'relation' => [
                                 'relation_id' => 5,
                                 'object_type_id' => 2,
-                                'side' => 'left',
+                                'side' => RelationTypeSide::Left,
                             ],
                         ],
                     ],
@@ -329,7 +320,7 @@ class JsonApiTraitTest extends TestCase
                             'relation' => [
                                 'relation_id' => 1,
                                 'object_type_id' => 2,
-                                'side' => 'right',
+                                'side' => RelationTypeSide::Right,
                             ],
                         ],
                     ],
@@ -340,7 +331,7 @@ class JsonApiTraitTest extends TestCase
                             'relation' => [
                                 'relation_id' => 4,
                                 'object_type_id' => 2,
-                                'side' => 'right',
+                                'side' => RelationTypeSide::Right,
                             ],
                         ],
                     ],
@@ -351,7 +342,7 @@ class JsonApiTraitTest extends TestCase
                             'relation' => [
                                 'relation_id' => 5,
                                 'object_type_id' => 2,
-                                'side' => 'right',
+                                'side' => RelationTypeSide::Right,
                             ],
                         ],
                     ],
@@ -373,7 +364,7 @@ class JsonApiTraitTest extends TestCase
             ],
         ];
 
-        $objectType = $this->ObjectTypes->get(2, ['contain' => ['Parent', 'RightRelations', 'LeftRelations']])->jsonApiSerialize(JsonApiSerializable::JSONAPIOPT_EXCLUDE_META);
+        $objectType = $this->ObjectTypes->get(2, contain: ['Parent', 'RightRelations', 'LeftRelations'])->jsonApiSerialize(JsonApiSerializable::JSONAPIOPT_EXCLUDE_META);
 
         $relationships = $objectType['relationships'];
         $included = $objectType['included'];
@@ -386,9 +377,6 @@ class JsonApiTraitTest extends TestCase
      * Test getter for relationships with included resources.
      *
      * @return void
-     * @covers ::getRelationships()
-     * @covers ::getIncluded()
-     * @covers ::listAssociations()
      */
     public function testGetRelationshipsIncludedEmpty()
     {
@@ -415,7 +403,7 @@ class JsonApiTraitTest extends TestCase
             ],
         ];
 
-        $role = $this->Roles->get(2, ['contain' => ['Users']])->jsonApiSerialize();
+        $role = $this->Roles->get(2, contain: ['Users'])->jsonApiSerialize();
 
         $relationships = $role['relationships'];
 
@@ -427,13 +415,10 @@ class JsonApiTraitTest extends TestCase
      * Test getter for relationships with included resources.
      *
      * @return void
-     * @covers ::getRelationships()
-     * @covers ::getIncluded()
-     * @covers ::listAssociations()
      */
     public function testGetRelationshipsIncludedNotSerializable()
     {
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Objects must implement "BEdita\Core\Utility\JsonApiSerializable", got "string" instead');
         $role = $this->Roles->get(2);
         $role->users = 'Gustavo';
@@ -444,8 +429,6 @@ class JsonApiTraitTest extends TestCase
      * Test getter for meta fields.
      *
      * @return void
-     * @covers ::getMeta()
-     * @covers ::filterFields()
      */
     public function testGetMeta()
     {
@@ -478,8 +461,6 @@ class JsonApiTraitTest extends TestCase
      * Test getter for meta fields.
      *
      * @return void
-     * @covers ::getMeta()
-     * @covers ::customProps()
      */
     public function testGetMetaNotAccessible()
     {
@@ -496,8 +477,6 @@ class JsonApiTraitTest extends TestCase
      * Test getter for meta fields.
      *
      * @return void
-     * @covers ::getMeta()
-     * @covers ::customProps()
      */
     public function testGetMetaExtra()
     {
@@ -527,8 +506,6 @@ class JsonApiTraitTest extends TestCase
      * Test getter for meta fields.
      *
      * @return void
-     * @covers ::getMeta()
-     * @covers ::joinData()
      */
     public function testGetMetaEmptyJoinData()
     {
@@ -548,7 +525,7 @@ class JsonApiTraitTest extends TestCase
             'password_modified',
         ];
 
-        $user = $this->Roles->get(1, ['contain' => ['Users']])
+        $user = $this->Roles->get(1, contain: ['Users'])
             ->users[0]
             ->jsonApiSerialize();
 
@@ -565,11 +542,10 @@ class JsonApiTraitTest extends TestCase
      * Test `tree` join data.
      *
      * @return void
-     * @covers ::joinData()
      */
     public function testTreeJoinData(): void
     {
-        $folder = TableRegistry::getTableLocator()->get('Folders')->get(12, ['contain' => ['Children']]);
+        $folder = TableRegistry::getTableLocator()->get('Folders')->get(12, contain: ['Children']);
         $child = $folder->children[0]->jsonApiSerialize();
 
         $expected = [
@@ -586,7 +562,6 @@ class JsonApiTraitTest extends TestCase
      * Test missing join data.
      *
      * @return void
-     * @covers ::joinData()
      */
     public function testMissingJoinData(): void
     {
@@ -598,8 +573,6 @@ class JsonApiTraitTest extends TestCase
      * Test getter for meta fields.
      *
      * @return void
-     * @covers ::getMeta()
-     * @covers ::customProps()
      */
     public function testGetMetaJoinData()
     {
@@ -625,7 +598,7 @@ class JsonApiTraitTest extends TestCase
             'user_id',
         ];
 
-        $user = $this->Roles->get(1, ['contain' => ['Users']])
+        $user = $this->Roles->get(1, contain: ['Users'])
             ->users[0];
         $user->_joinData->setHidden([]);
         $user = $user->jsonApiSerialize();
@@ -648,7 +621,7 @@ class JsonApiTraitTest extends TestCase
      *
      * @return array
      */
-    public function jsonApiSerializeProvider()
+    public static function jsonApiSerializeProvider(): array
     {
         return [
             'full' => [
@@ -687,11 +660,9 @@ class JsonApiTraitTest extends TestCase
      * @param int $options JSON API serializer options.
      * @param array $fields Fields filter data.
      * @return void
-     * @covers ::jsonApiSerialize()
-     * @covers ::setSelected()
-     * @dataProvider jsonApiSerializeProvider()
      */
-    public function testJsonApiSerialize($excludedKeys, $options, $fields = null)
+    #[DataProvider('jsonApiSerializeProvider')]
+    public function testJsonApiSerialize($excludedKeys, $options, $fields = []): void
     {
         $expected = [
             'id' => '1',
@@ -730,7 +701,6 @@ class JsonApiTraitTest extends TestCase
      * Test that JSON API serializer includes relationships' join data.
      *
      * @return void
-     * @covers ::jsonApiSerialize()
      */
     public function testSerializeJoinData()
     {
@@ -755,7 +725,7 @@ class JsonApiTraitTest extends TestCase
      *
      * @return array
      */
-    public function metaCountProvider(): array
+    public static function metaCountProvider(): array
     {
         return [
             'count' => [
@@ -773,10 +743,8 @@ class JsonApiTraitTest extends TestCase
      * Test that `count` is present in meta of relationships
      *
      * @return void
-     * @covers ::jsonApiSerialize()
-     * @covers ::getRelationshipCount()
-     * @dataProvider metaCountProvider()
      */
+    #[DataProvider('metaCountProvider')]
     public function testJsonApiSerializeCount($expected, $count): void
     {
         $role = $this->Roles->get(1);
@@ -792,7 +760,6 @@ class JsonApiTraitTest extends TestCase
      * Test getter for meta fields.
      *
      * @return void
-     * @covers ::customProps()
      */
     public function testCustomProps()
     {

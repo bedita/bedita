@@ -14,6 +14,7 @@ declare(strict_types=1);
  */
 namespace BEdita\API\Test\TestCase\Middleware;
 
+use ArrayObject;
 use Authentication\AuthenticationServiceInterface;
 use Authentication\Authenticator\JwtAuthenticator;
 use Authentication\Identifier\JwtSubjectIdentifier;
@@ -28,12 +29,13 @@ use Cake\Http\Exception\UnauthorizedException;
 use Cake\Http\ServerRequest;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Hash;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * {@see \BEdita\API\Middleware\LoggedUserMiddleware} Test Case
- *
- * @coversDefaultClass \BEdita\API\Middleware\LoggedUserMiddleware
  */
+#[CoversClass(LoggedUserMiddleware::class)]
 class LoggedUserMiddlewareTest extends TestCase
 {
     use TestAuthHelperTrait;
@@ -41,7 +43,7 @@ class LoggedUserMiddlewareTest extends TestCase
     /**
      * @inheritDoc
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.Relations',
         'plugin.BEdita/Core.RelationTypes',
@@ -84,7 +86,6 @@ class LoggedUserMiddlewareTest extends TestCase
      * Test that no user was set without authentication service.
      *
      * @return void
-     * @covers ::process()
      */
     public function testInvalidService(): void
     {
@@ -101,7 +102,6 @@ class LoggedUserMiddlewareTest extends TestCase
      * Test that no user was set with empty identity.
      *
      * @return void
-     * @covers ::process()
      */
     public function testEmptyIdentity(): void
     {
@@ -119,7 +119,7 @@ class LoggedUserMiddlewareTest extends TestCase
      *
      * @return array
      */
-    public function unauthorizedProvider(): array
+    public static function unauthorizedProvider(): array
     {
         return [
             'auth' => ['/auth'],
@@ -132,9 +132,8 @@ class LoggedUserMiddlewareTest extends TestCase
      *
      * @param string $path The path to check.
      * @return void
-     * @covers ::process()
-     * @dataProvider unauthorizedProvider
      */
+    #[DataProvider('unauthorizedProvider')]
     public function testUnauthorized(string $path): void
     {
         $this->expectExceptionObject(new UnauthorizedException('Login request not successful'));
@@ -153,7 +152,7 @@ class LoggedUserMiddlewareTest extends TestCase
      *
      * @return array
      */
-    public function setupLoggedUserProvider(): array
+    public static function setupLoggedUserProvider(): array
     {
         return [
             'user with entity' => [
@@ -166,7 +165,7 @@ class LoggedUserMiddlewareTest extends TestCase
             ],
             'user with ArrayObject' => [
                 1,
-                new \ArrayObject(['id' => 1, 'username' => 'gustavo']),
+                new ArrayObject(['id' => 1, 'username' => 'gustavo']),
             ],
             'no user with array missing username' => [
                 null,
@@ -174,7 +173,7 @@ class LoggedUserMiddlewareTest extends TestCase
             ],
             'no user with ArrayObject missing username' => [
                 null,
-                new \ArrayObject(['id' => 1]),
+                new ArrayObject(['id' => 1]),
             ],
             'instance of Application' => [
                 null,
@@ -189,12 +188,8 @@ class LoggedUserMiddlewareTest extends TestCase
      * @param int|null $expected The expected user id
      * @param array|\ArrayObject|\BEdita\Core\Model\Entity\User $identityData The identity data.
      * @return void
-     * @covers ::process()
-     * @covers ::checkLoggedUser()
-     * @covers ::setupLoggedUser
-     * @covers ::checkPayload()
-     * @dataProvider setupLoggedUserProvider
      */
+    #[DataProvider('setupLoggedUserProvider')]
     public function testSetupLoggedUser($expected, $identityData): void
     {
         $identity = new Identity($identityData);
@@ -213,16 +208,12 @@ class LoggedUserMiddlewareTest extends TestCase
      * then a `\Cake\Http\Exception\UnauthorizedException` is thrown.
      *
      * @return void
-     * @covers ::process()
-     * @covers ::checkLoggedUser()
-     * @covers ::setupLoggedUser
-     * @covers ::checkPayload()
      */
     public function testUserRefreshTokenFail(): void
     {
         $this->expectExceptionObject(new UnauthorizedException('Login request not successful'));
 
-        $app = $this->fetchTable('Applications')->find('apiKey', ['apiKey' => API_KEY])->firstOrFail();
+        $app = $this->fetchTable('Applications')->find('apiKey', apiKey: API_KEY)->firstOrFail();
         $jwts = $this->generateJwtTokens(['id' => 666, 'username' => 'ovatsug'], $app);
 
         $refreshJwt = Hash::get($jwts, 'renew');

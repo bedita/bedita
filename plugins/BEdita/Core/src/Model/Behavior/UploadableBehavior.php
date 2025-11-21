@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Model\Behavior;
 
 use BEdita\Core\Filesystem\FilesystemRegistry;
@@ -32,7 +31,7 @@ class UploadableBehavior extends Behavior
     /**
      * @inheritDoc
      */
-    protected $_defaultConfig = [
+    protected array $_defaultConfig = [
         'files' => [
             [
                 'path' => 'path',
@@ -52,7 +51,7 @@ class UploadableBehavior extends Behavior
      * @param mixed $contents File contents.
      * @return void
      */
-    protected function write(MountManager $manager, string $path, $contents): void
+    protected function write(MountManager $manager, string $path, mixed $contents): void
     {
         if ($contents instanceof StreamInterface) {
             $contents = $contents->detach();
@@ -130,7 +129,7 @@ class UploadableBehavior extends Behavior
      * @param string $pathField Name of field in which path is stored.
      * @return bool
      */
-    protected function processDelete(Entity $entity, $pathField): bool
+    protected function processDelete(Entity $entity, string $pathField): bool
     {
         $manager = FilesystemRegistry::getMountManager();
         $path = $entity->get($pathField);

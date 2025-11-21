@@ -12,16 +12,16 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\Model\Entity;
 
+use BEdita\Core\Model\Entity\Tag;
 use Cake\TestSuite\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
 
 /**
  *  {@see \BEdita\Core\Model\Entity\Tag} Test Case
- *
- * @coversDefaultClass \BEdita\Core\Model\Entity\Tag
  */
+#[CoversClass(Tag::class)]
 class TagTest extends TestCase
 {
     /**
@@ -29,7 +29,7 @@ class TagTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.Tags',
     ];
 
@@ -37,7 +37,6 @@ class TagTest extends TestCase
      * Test `_getLabel` methods.
      *
      * @return void
-     * @covers ::_getLabel()
      */
     public function testGetLabel(): void
     {
@@ -49,8 +48,6 @@ class TagTest extends TestCase
      * Test `_setLabel` methods.
      *
      * @return void
-     * @covers ::_getLabel()
-     * @covers ::_setLabel()
      */
     public function testSetLabel(): void
     {

@@ -12,17 +12,20 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\Model\Action;
 
 use BEdita\Core\Model\Action\GetObjectAction;
 use Cake\Core\Configure;
+use Cake\Datasource\Exception\InvalidPrimaryKeyException;
+use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
 
 /**
- * @covers \BEdita\Core\Model\Action\GetObjectAction
+ * {@see \BEdita\Core\Model\Action\GetObjectAction} Test Case
  */
+#[CoversClass(GetObjectAction::class)]
 class GetObjectActionTest extends TestCase
 {
     /**
@@ -30,7 +33,7 @@ class GetObjectActionTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.Relations',
         'plugin.BEdita/Core.RelationTypes',
@@ -57,7 +60,7 @@ class GetObjectActionTest extends TestCase
 
         $result = $action(['primaryKey' => 9]);
 
-        static::assertEquals($table->get(9, ['contain' => ['ObjectTypes']]), $result);
+        static::assertEquals($table->get(9, contain: ['ObjectTypes']), $result);
     }
 
     /**
@@ -67,7 +70,7 @@ class GetObjectActionTest extends TestCase
      */
     public function testExecuteObjectTypeFilter()
     {
-        $this->expectException(\Cake\Datasource\Exception\RecordNotFoundException::class);
+        $this->expectException(RecordNotFoundException::class);
         $objectType = TableRegistry::getTableLocator()->get('ObjectTypes')->get('Events');
         $table = TableRegistry::getTableLocator()->get('Objects');
         $action = new GetObjectAction(compact('table', 'objectType'));
@@ -82,7 +85,7 @@ class GetObjectActionTest extends TestCase
      */
     public function testExecuteObjectDeleted()
     {
-        $this->expectException(\Cake\Datasource\Exception\RecordNotFoundException::class);
+        $this->expectException(RecordNotFoundException::class);
         $table = TableRegistry::getTableLocator()->get('Objects');
         $action = new GetObjectAction(compact('table'));
 
@@ -96,7 +99,7 @@ class GetObjectActionTest extends TestCase
      */
     public function testExecuteObjectDeletedLocked()
     {
-        $this->expectException(\Cake\Datasource\Exception\RecordNotFoundException::class);
+        $this->expectException(RecordNotFoundException::class);
         $table = TableRegistry::getTableLocator()->get('Objects');
         $action = new GetObjectAction(compact('table'));
 
@@ -108,9 +111,9 @@ class GetObjectActionTest extends TestCase
      *
      * @return void
      */
-    public function testExecuteObjectStatusNotAvailable()
+    public function testExecuteObjectEntityStatusNotAvailable()
     {
-        $this->expectException(\Cake\Datasource\Exception\RecordNotFoundException::class);
+        $this->expectException(RecordNotFoundException::class);
         Configure::write('Status.level', 'on');
 
         $table = TableRegistry::getTableLocator()->get('Objects');
@@ -126,7 +129,7 @@ class GetObjectActionTest extends TestCase
      */
     public function testExecuteInvalidPrimaryKey()
     {
-        $this->expectException(\Cake\Datasource\Exception\InvalidPrimaryKeyException::class);
+        $this->expectException(InvalidPrimaryKeyException::class);
         $this->expectExceptionMessage('Record not found in table "objects" with primary key [1, 2]');
         $table = TableRegistry::getTableLocator()->get('Objects');
         $action = new GetObjectAction(compact('table'));

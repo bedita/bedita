@@ -12,18 +12,18 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\API\Test\TestCase\Identifier;
 
 use BEdita\API\Identifier\OTPIdentifier;
 use BEdita\Core\State\CurrentApplication;
 use Cake\TestSuite\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * {@see \BEdita\API\Identifier\OTPIdentifier} Test Case.
- *
- * @coversDefaultClass \BEdita\API\Identifier\OTPIdentifier
  */
+#[CoversClass(OTPIdentifier::class)]
 class OTPIdentifierTest extends TestCase
 {
     /**
@@ -31,7 +31,7 @@ class OTPIdentifierTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.Applications',
         'plugin.BEdita/Core.Config',
         'plugin.BEdita/Core.ObjectTypes',
@@ -54,7 +54,7 @@ class OTPIdentifierTest extends TestCase
      *
      * @return array
      */
-    public function identifyProvider(): array
+    public static function identifyProvider(): array
     {
         return [
             'request ok' => [
@@ -146,11 +146,8 @@ class OTPIdentifierTest extends TestCase
      * @param array|null $expected Expected result.
      * @param array $credentials Request.
      * @return void
-     * @dataProvider identifyProvider
-     * @covers ::identify()
-     * @covers ::otpAccess()
-     * @covers ::otpRequest()
      */
+    #[DataProvider('identifyProvider')]
     public function testIdentify(?array $expected, array $credentials): void
     {
         CurrentApplication::setApplication($this->fetchTable('Applications')->get(1));
@@ -171,8 +168,6 @@ class OTPIdentifierTest extends TestCase
      * Test secret token generation
      *
      * @return void
-     * @covers ::generateSecretToken()
-     * @covers ::defaultSecretGenerator()
      */
     public function testGenerateSecret()
     {
@@ -186,7 +181,6 @@ class OTPIdentifierTest extends TestCase
      * Test custom secret token generation
      *
      * @return void
-     * @covers ::generateSecretToken()
      */
     public function testGenerateSecretCustom()
     {

@@ -12,16 +12,19 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\Model\Validation;
 
 use BEdita\Core\Model\Validation\LocationsValidator;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Hash;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
+use stdClass;
 
 /**
- * @coversDefaultClass \BEdita\Core\Model\Validation\LocationsValidator
+ * {@see \BEdita\Core\Model\Validation\LocationsValidator} Test Case
  */
+#[CoversClass(LocationsValidator::class)]
 class LocationsValidatorTest extends TestCase
 {
     /**
@@ -29,7 +32,7 @@ class LocationsValidatorTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.Relations',
         'plugin.BEdita/Core.RelationTypes',
@@ -42,7 +45,7 @@ class LocationsValidatorTest extends TestCase
      *
      * @return array
      */
-    public function validationProvider()
+    public static function validationProvider(): array
     {
         return [
             'empty' => [
@@ -67,7 +70,7 @@ class LocationsValidatorTest extends TestCase
             'invalid types' => [
                 [
                     'id.naturalNumber',
-                    'status.inList',
+                    'status.enum',
                     'uname.ascii',
                     'locked.boolean',
                     'deleted.boolean',
@@ -104,9 +107,8 @@ class LocationsValidatorTest extends TestCase
      * @param array $data Data being validated.
      * @param bool $newRecord Is this a new record?
      * @return void
-     * @dataProvider validationProvider()
-     * @coversNothing
      */
+    #[DataProvider('validationProvider')]
     public function testValidation(array $expected, array $data, $newRecord = true)
     {
         $validator = new LocationsValidator();
@@ -122,12 +124,12 @@ class LocationsValidatorTest extends TestCase
      *
      * @return array
      */
-    public function checkWktProvider()
+    public static function checkWktProvider(): array
     {
         return [
             'not a string' => [
                 'invalid Well-Known Text',
-                new \stdClass(),
+                new stdClass(),
             ],
             'random string' => [
                 'invalid Well-Known Text',
@@ -154,9 +156,8 @@ class LocationsValidatorTest extends TestCase
      * @param string|true $expected Expected result.
      * @param mixed $value Value being validated.
      * @return void
-     * @dataProvider checkWktProvider()
-     * @covers ::checkWkt()
      */
+    #[DataProvider('checkWktProvider')]
     public function testCheckWkt($expected, $value)
     {
         $result = LocationsValidator::checkWkt($value);
@@ -169,12 +170,12 @@ class LocationsValidatorTest extends TestCase
      *
      * @return array
      */
-    public function checkCoordinatesProvider()
+    public static function checkCoordinatesProvider(): array
     {
         return [
             'not an array' => [
                 'coordinates must be a pair of values',
-                new \stdClass(),
+                new stdClass(),
             ],
             'wrong length' => [
                 'coordinates must be a pair of values',
@@ -206,9 +207,8 @@ class LocationsValidatorTest extends TestCase
      * @param string|true $expected Expected result.
      * @param mixed $value Value being validated.
      * @return void
-     * @dataProvider checkCoordinatesProvider()
-     * @covers ::checkCoordinates()
      */
+    #[DataProvider('checkCoordinatesProvider')]
     public function testCheckCoordinates($expected, $value)
     {
         $result = LocationsValidator::checkCoordinates($value);

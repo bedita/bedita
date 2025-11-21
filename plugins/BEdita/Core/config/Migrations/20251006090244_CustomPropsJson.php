@@ -1,13 +1,13 @@
 <?php
 declare(strict_types=1);
 
-use Migrations\AbstractMigration;
+use Migrations\BaseMigration;
 
 /**
  * Migration to change `objects.custom_props` column type from TEXT to JSON/JSONB.
  * Uses JSON for MySQL/MariaDB and JSONB for PostgreSQL for better performance.
  */
-class CustomPropsJson extends AbstractMigration
+class CustomPropsJson extends BaseMigration
 {
     /**
      * @inheritDoc

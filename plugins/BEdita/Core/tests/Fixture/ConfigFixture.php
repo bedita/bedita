@@ -24,12 +24,12 @@ class ConfigFixture extends TestFixture
     /**
      * @inheritDoc
      */
-    public $table = 'config';
+    public string $table = 'config';
 
     /**
      * @inheritDoc
      */
-    public $records = [
+    public array $records = [
         [
             'name' => 'Name1',
             'context' => 'group1',

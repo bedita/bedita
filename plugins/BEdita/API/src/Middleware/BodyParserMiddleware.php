@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\API\Middleware;
 
 use Cake\Http\Middleware\BodyParserMiddleware as CakeBodyParserMiddleware;
@@ -35,13 +34,13 @@ class BodyParserMiddleware extends CakeBodyParserMiddleware
         if ($options['json']) {
             $this->addParser(
                 ['application/vnd.api+json'],
-                Closure::fromCallable([$this, 'decodeJson'])
+                Closure::fromCallable([$this, 'decodeJson']),
             );
         }
         if ($options['form']) {
             $this->addParser(
                 ['application/x-www-form-urlencoded'],
-                Closure::fromCallable([$this, 'decodeForm'])
+                Closure::fromCallable([$this, 'decodeForm']),
             );
         }
     }

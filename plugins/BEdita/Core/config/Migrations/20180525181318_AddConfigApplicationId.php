@@ -1,12 +1,12 @@
 <?php
-use Migrations\AbstractMigration;
+use Migrations\BaseMigration;
 
 /**
  * Add `config.application_id`.
  *
  * @see https://github.com/bedita/bedita/1486
  */
-class AddConfigApplicationId extends AbstractMigration
+class AddConfigApplicationId extends BaseMigration
 {
     /**
      * {@inheritDoc}

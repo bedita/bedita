@@ -12,18 +12,19 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\Model\Entity;
 
 use BEdita\Core\Model\Entity\Role;
+use BEdita\Core\Model\Table\RolesTable;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
+use InvalidArgumentException;
+use PHPUnit\Framework\Attributes\CoversClass;
 
 /**
  * {@see \BEdita\Core\Model\Entity\Role} Test Case
- *
- * @coversDefaultClass \BEdita\Core\Model\Entity\Role
  */
+#[CoversClass(Role::class)]
 class RoleTest extends TestCase
 {
     /**
@@ -31,14 +32,14 @@ class RoleTest extends TestCase
      *
      * @var \BEdita\Core\Model\Table\RolesTable
      */
-    public $Roles;
+    public RolesTable $Roles;
 
     /**
      * Fixtures
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.Roles',
     ];
 
@@ -66,7 +67,6 @@ class RoleTest extends TestCase
      * Test accessible properties.
      *
      * @return void
-     * @coversNothing
      */
     public function testAccessible()
     {
@@ -79,7 +79,7 @@ class RoleTest extends TestCase
         ];
         $role = $this->Roles->patchEntity($role, $data);
         if (!($role instanceof Role)) {
-            throw new \InvalidArgumentException();
+            throw new InvalidArgumentException();
         }
 
         $this->assertEquals(1, $role->id);

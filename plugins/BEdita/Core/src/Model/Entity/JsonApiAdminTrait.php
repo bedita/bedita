@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Model\Entity;
 
 /**
@@ -29,7 +28,7 @@ trait JsonApiAdminTrait
      *
      * @codeCoverageIgnore
      */
-    public function routeNamePrefix()
+    public function routeNamePrefix(): string
     {
         return 'api:admin:resources';
     }

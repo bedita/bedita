@@ -16,12 +16,12 @@ namespace BEdita\Core\Test\TestCase\Utility;
 
 use BEdita\Core\Utility\LoggedUser;
 use Cake\TestSuite\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
 
 /**
  * {@see \BEdita\Core\Utility\LoggedUser} Test Case
- *
- * @covers \BEdita\Core\Utility\LoggedUser
  */
+#[CoversClass(LoggedUser::class)]
 class LoggedUserTest extends TestCase
 {
     /**

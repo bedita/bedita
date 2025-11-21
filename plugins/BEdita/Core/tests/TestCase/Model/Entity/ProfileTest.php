@@ -12,18 +12,20 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\Model\Entity;
 
 use BEdita\Core\Model\Entity\Profile;
+use BEdita\Core\Model\Table\ProfilesTable;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
+use InvalidArgumentException;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * {@see \BEdita\Core\Model\Entity\Profile} Test Case
- *
- * @coversDefaultClass \BEdita\Core\Model\Entity\Profile
  */
+#[CoversClass(Profile::class)]
 class ProfileTest extends TestCase
 {
     /**
@@ -31,14 +33,14 @@ class ProfileTest extends TestCase
      *
      * @var \BEdita\Core\Model\Table\ProfilesTable
      */
-    public $Profiles;
+    public ProfilesTable $Profiles;
 
     /**
      * Fixtures
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.Relations',
         'plugin.BEdita/Core.RelationTypes',
@@ -73,7 +75,6 @@ class ProfileTest extends TestCase
      * Test accessible properties.
      *
      * @return void
-     * @coversNothing
      */
     public function testAccessible()
     {
@@ -85,7 +86,7 @@ class ProfileTest extends TestCase
         ];
         $profile = $this->Profiles->patchEntity($profile, $data);
         if (!($profile instanceof Profile)) {
-            throw new \InvalidArgumentException();
+            throw new InvalidArgumentException();
         }
 
         $this->assertEquals(4, $profile->id);
@@ -95,7 +96,6 @@ class ProfileTest extends TestCase
      * Test translatable properties.
      *
      * @return void
-     * @covers ::__construct()
      */
     public function testTranslatable(): void
     {
@@ -108,7 +108,7 @@ class ProfileTest extends TestCase
      *
      * @return array
      */
-    public function setUrlProvider(): array
+    public static function setUrlProvider(): array
     {
         return [
             'ok' => [
@@ -136,12 +136,11 @@ class ProfileTest extends TestCase
      * @param mixed $expected Expected result.
      * @param mixed $website Website value.
      * @return void
-     * @dataProvider setUrlProvider()
-     * @covers ::_setWebsite()
      */
+    #[DataProvider('setUrlProvider')]
     public function testSetUrl($expected, $website): void
     {
-        $profile = $this->Profiles->newEntity([]);
+        $profile = $this->Profiles->newEmptyEntity();
         $profile->website = $website;
 
         $actual = $profile->website;

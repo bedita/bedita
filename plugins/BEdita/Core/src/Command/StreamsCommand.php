@@ -15,13 +15,17 @@ declare(strict_types=1);
 namespace BEdita\Core\Command;
 
 use BEdita\Core\Model\Entity\Stream;
+use BEdita\Core\Model\Table\StreamsTable;
 use Cake\Command\Command;
 use Cake\Console\Arguments;
 use Cake\Console\ConsoleIo;
 use Cake\Console\ConsoleOptionParser;
 use Cake\Database\Expression\QueryExpression;
+use Cake\I18n\DateTime;
 use Cake\ORM\Locator\LocatorAwareTrait;
-use Cake\ORM\Query;
+use Cake\ORM\Query\SelectQuery;
+use Generator;
+use Throwable;
 
 /**
  * Streams command.
@@ -35,21 +39,21 @@ class StreamsCommand extends Command
      *
      * @var \Cake\Console\Arguments
      */
-    protected $args;
+    protected Arguments $args;
 
     /**
      * Console IO
      *
      * @var \Cake\Console\ConsoleIo
      */
-    protected $io;
+    protected ConsoleIo $io;
 
     /**
      * Streams table
      *
      * @var \BEdita\Core\Model\Table\StreamsTable
      */
-    protected $table;
+    protected StreamsTable $table;
 
     /**
      * @inheritDoc
@@ -65,7 +69,7 @@ class StreamsCommand extends Command
             ->addOption('days', [
                 'help' => 'Days to consider for stream research for orphans (remove data older than specified days)',
                 'required' => false,
-                'default' => 1,
+                'default' => '1',
             ])
             ->addOption('force', [
                 'help' => 'Force refreshing all streams, not only those with empty metadata',
@@ -100,7 +104,7 @@ class StreamsCommand extends Command
         $query = $this->table->find()
             ->where([
                 'object_id IS NULL',
-                'created <' => \Cake\I18n\FrozenTime::now()->subDays($days),
+                'created <' => DateTime::now()->subDays($days),
             ]);
         $count = 0;
         foreach ($query as $stream) {
@@ -157,9 +161,9 @@ class StreamsCommand extends Command
                 return false;
             }
             // ...and write it back, triggering Stream model's methods to read metadata from file
-            $stream->contents = $content;
+            $stream->set('contents', $content, ['asOriginal' => true]);
             $this->table->saveOrFail($stream);
-        } catch (\Throwable $t) {
+        } catch (Throwable $t) {
             $this->io->error(sprintf('  error updating stream %s (object %d): %s', $stream->uuid, $stream->object_id, $t->getMessage()));
 
             return false;
@@ -171,16 +175,16 @@ class StreamsCommand extends Command
     /**
      * Generator to paginate through all streams.
      *
-     * @param \Cake\ORM\Query $query Query to retrieve concerned streams
+     * @param \Cake\ORM\SelectQuery $query Query to retrieve concerned streams
      * @param int $limit Limit amount of objects retrieved with each internal iteration
-     * @return \Generator|\BEdita\Core\Model\Entity\Stream[]
+     * @return \Generator|array<\BEdita\Core\Model\Entity\Stream>
      */
-    protected function streamsGenerator(Query $query, int $limit = 100): \Generator
+    protected function streamsGenerator(SelectQuery $query, int $limit = 100): Generator
     {
         // Although `uuid` is not a monotonically increasing field, we will at most skip the streams that are created
         // AFTER we launch the script, and whose UUID is lexicographically less than the one we are currently
         // checking — but we still cover all streams created before our script starts!
-        $query = $query->orderAsc($this->table->aliasField('uuid'));
+        $query = $query->orderByAsc($this->table->aliasField('uuid'));
         $q = clone $query;
         do {
             $results = $q->limit($limit)->all();

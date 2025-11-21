@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Model\Entity;
 
 use BEdita\Core\Utility\JsonApiSerializable;
@@ -24,20 +23,23 @@ use Cake\Utility\Hash;
  * Category Entity
  *
  * @property int $id
- * @property int|null $object_type_id
+ * @property int $object_type_id
  * @property string $name
  * @property array|null $labels
  * @property int|null $parent_id
  * @property int|null $tree_left
  * @property int|null $tree_right
  * @property bool $enabled
- * @property \Cake\I18n\Time $created
- * @property \Cake\I18n\Time $modified
+ * @property \Cake\I18n\DateTime $created
+ * @property \Cake\I18n\DateTime $modified
  *
  * @property \BEdita\Core\Model\Entity\ObjectType $object_type
- * @property \BEdita\Core\Model\Entity\Category $parent_category
+ * @property \BEdita\Core\Model\Entity\Category|null $parent_category
  * @property \BEdita\Core\Model\Entity\Category[] $child_categories
  * @property \BEdita\Core\Model\Entity\ObjectCategory[] $object_categories
+ * @property-read string|null $object
+ * @property-read string|null $parent
+ * @property-read string|null $label
  */
 class Category extends Entity implements JsonApiSerializable
 {
@@ -47,7 +49,7 @@ class Category extends Entity implements JsonApiSerializable
     /**
      * @inheritDoc
      */
-    protected $_accessible = [
+    protected array $_accessible = [
         '*' => true,
         'created' => false,
         'modified' => false,
@@ -56,7 +58,7 @@ class Category extends Entity implements JsonApiSerializable
     /**
      * @inheritDoc
      */
-    protected $_hidden = [
+    protected array $_hidden = [
         'object_type_id',
         'object_type',
         '_joinData',
@@ -67,7 +69,7 @@ class Category extends Entity implements JsonApiSerializable
     /**
      * @inheritDoc
      */
-    protected $_virtual = [
+    protected array $_virtual = [
         'label',
         'object_type_name',
         'object',

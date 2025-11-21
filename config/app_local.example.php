@@ -81,7 +81,7 @@ return [
          * The test connection is used during the test suite.
          */
         'test' => [
-            'url' => env('DATABASE_TEST_URL', 'sqlite:///tmp/be5_tests.sqlite'),
+            'url' => env('DATABASE_TEST_URL', 'sqlite:///tmp/be6_tests.sqlite'),
         ],
     ],
 
@@ -153,7 +153,7 @@ return [
      * - `name` public name of the project, short expression recommended like `MyProject`, `Nope v1`
      */
     'Project' => [
-        'name' => env('PROJECT_NAME', 'BEdita 5'),
+        'name' => env('PROJECT_NAME', 'BEdita 6'),
     ],
 
     /**

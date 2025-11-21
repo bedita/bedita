@@ -24,12 +24,12 @@ class ExternalAuthFixture extends TestFixture
     /**
      * @inheritDoc
      */
-    public $table = 'external_auth';
+    public string $table = 'external_auth';
 
     /**
      * @inheritDoc
      */
-    public $records = [
+    public array $records = [
         [
             'user_id' => 1,
             'auth_provider_id' => 1,

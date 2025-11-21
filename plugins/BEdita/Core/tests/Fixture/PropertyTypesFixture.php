@@ -15,6 +15,7 @@ declare(strict_types=1);
 namespace BEdita\Core\Test\Fixture;
 
 use Cake\TestSuite\Fixture\TestFixture;
+use stdClass;
 
 /**
  * Fixture for `property_types` table.
@@ -24,7 +25,7 @@ class PropertyTypesFixture extends TestFixture
     /**
      * @inheritDoc
      */
-    public $table = 'property_types';
+    public string $table = 'property_types';
 
     /**
      * @inheritDoc
@@ -133,7 +134,7 @@ class PropertyTypesFixture extends TestFixture
             // 11
             [
                 'name' => 'json',
-                'params' => new \stdClass(),
+                'params' => new stdClass(),
                 'created' => '2019-11-01 09:23:43',
                 'modified' => '2019-11-01 09:23:43',
                 'core_type' => true,

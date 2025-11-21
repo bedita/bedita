@@ -12,18 +12,20 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\API\Test\TestCase\Identifier;
 
+use ArrayAccess;
 use Authentication\Identifier\Resolver\ResolverInterface;
 use BEdita\API\Identifier\UuidIdentifier;
+use Cake\Core\InstanceConfigTrait;
 use Cake\TestSuite\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * {@see \BEdita\API\Identifier\UuidIdentifier} Test Case.
- *
- * @coversDefaultClass \BEdita\API\Identifier\UuidIdentifier
  */
+#[CoversClass(UuidIdentifier::class)]
 class UuidIdentifierTest extends TestCase
 {
     /**
@@ -31,7 +33,7 @@ class UuidIdentifierTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.History',
         'plugin.BEdita/Core.PropertyTypes',
@@ -51,17 +53,17 @@ class UuidIdentifierTest extends TestCase
      *
      * @return array
      */
-    public function identifyProvider(): array
+    public static function identifyProvider(): array
     {
         return [
             'first' => [
-                'gustavo',
-                'gustavo',
+                ['name' => 'gustavo'],
+                ['name' => 'gustavo'],
             ],
             'second' => [
-                'gustavo',
-                '',
-                'gustavo',
+                ['name' => 'gustavo'],
+                null,
+                ['name' => 'gustavo'],
             ],
         ];
     }
@@ -69,23 +71,35 @@ class UuidIdentifierTest extends TestCase
     /**
      * Test `identify` method
      *
-     * @param string $expected Expected result
-     * @param string $find1 First string
-     * @param string $find2 Second string
+     * @param array $expected Expected result
+     * @param array|null $find1 First find
+     * @param array|null $find2 Second find
      * @return void
-     * @dataProvider identifyProvider
-     * @covers ::identify()
      */
-    public function testIdentify(string $expected, string $find1, string $find2 = ''): void
+    #[DataProvider('identifyProvider')]
+    public function testIdentify(array $expected, ?array $find1, ?array $find2 = null): void
     {
-        $resolver = $this->getMockBuilder(ResolverInterface::class)
-            ->onlyMethods(['find'])
-            ->addMethods(['setConfig'])
-            ->getMock();
-        $resolver->method('find')
-            ->willReturnOnConsecutiveCalls($find1, $find2);
-        $resolver->method('setConfig')
-            ->willReturn([]);
+        $resolver = new class ($find1, $find2) implements ResolverInterface {
+            use InstanceConfigTrait;
+
+            protected array $_defaultConfig = [];
+
+            public function __construct(protected ?array $find1, protected ?array $find2 = null)
+            {
+            }
+
+            public function find(array $conditions, string $type = self::TYPE_AND): ArrayAccess|array|null
+            {
+                $firstCall = $this->getConfig('find1');
+                if ($firstCall === null) {
+                    $this->setConfig('find1', 'done');
+
+                    return $this->find1;
+                }
+
+                return $this->find2;
+            }
+        };
 
         $authProvider = $this->fetchTable('AuthProviders')
             ->find()

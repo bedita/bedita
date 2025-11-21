@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Job;
 
 /**
@@ -33,7 +32,7 @@ interface JobService
      *
      * @param array $payload Input data for running this job.
      * @param array $options Options for running this job.
-     * @return bool|array
+     * @return array|bool
      */
-    public function run(array $payload, array $options = []);
+    public function run(array $payload, array $options = []): bool|array;
 }

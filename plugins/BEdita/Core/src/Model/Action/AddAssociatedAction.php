@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Model\Action;
 
 use ArrayObject;
@@ -20,6 +19,7 @@ use BEdita\Core\Exception\InvalidDataException;
 use Cake\Datasource\EntityInterface;
 use Cake\ORM\Association\BelongsToMany;
 use Cake\ORM\Association\HasMany;
+use RuntimeException;
 
 /**
  * Command to add links between entities.
@@ -35,11 +35,11 @@ class AddAssociatedAction extends UpdateAssociatedAction
      * Add new relations.
      *
      * @param \Cake\Datasource\EntityInterface $entity Source entity.
-     * @param \Cake\Datasource\EntityInterface|\Cake\Datasource\EntityInterface[]|null $relatedEntities Related entity(-ies).
+     * @param \Cake\Datasource\EntityInterface|array<\Cake\Datasource\EntityInterface>|null $relatedEntities Related entity(-ies).
      * @return int|false Number of updated relationships, or `false` on failure.
      * @throws \RuntimeException Throws an exception if an unsupported association is passed.
      */
-    protected function update(EntityInterface $entity, $relatedEntities)
+    protected function update(EntityInterface $entity, EntityInterface|array|null $relatedEntities): int|false
     {
         if ($this->Association instanceof BelongsToMany || $this->Association instanceof HasMany) {
             if ($relatedEntities === null) {
@@ -60,7 +60,7 @@ class AddAssociatedAction extends UpdateAssociatedAction
                     if ($relatedEntity->has('_joinData') && $relatedEntity->get('_joinData')->getErrors()) {
                         throw new InvalidDataException(
                             __d('bedita', 'Error linking entities'),
-                            (array)$relatedEntity->get('_joinData')->getErrors()
+                            (array)$relatedEntity->get('_joinData')->getErrors(),
                         );
                     }
                 }
@@ -70,8 +70,8 @@ class AddAssociatedAction extends UpdateAssociatedAction
             });
         }
 
-        throw new \RuntimeException(
-            __d('bedita', 'Unable to add additional links with association of type "{0}"', get_class($this->Association))
+        throw new RuntimeException(
+            __d('bedita', 'Unable to add additional links with association of type "{0}"', get_class($this->Association)),
         );
     }
 }

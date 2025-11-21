@@ -16,17 +16,26 @@ namespace BEdita\Core\Test\TestCase\Command;
 
 use BEdita\Core\Command\StreamsCommand;
 use BEdita\Core\Model\Entity\Stream;
+use BEdita\Core\Model\Table\StreamsTable;
 use BEdita\Core\Test\Utility\TestFilesystemTrait;
 use Cake\Command\Command;
+use Cake\Console\ConsoleIo;
 use Cake\Console\TestSuite\ConsoleIntegrationTestTrait;
-use Cake\ORM\Query;
+use Cake\Console\TestSuite\StubConsoleInput;
+use Cake\Console\TestSuite\StubConsoleOutput;
+use Cake\Datasource\EntityInterface;
+use Cake\Datasource\Exception\RecordNotFoundException;
+use Cake\ORM\Query\SelectQuery;
 use Cake\TestSuite\TestCase;
+use Generator;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
+use Throwable;
 
 /**
  * {@see BEdita\Core\Command\StreamsCommand} Test Case
- *
- * @coversDefaultClass \BEdita\Core\Command\StreamsCommand
  */
+#[CoversClass(StreamsCommand::class)]
 class StreamsCommandTest extends TestCase
 {
     use ConsoleIntegrationTestTrait;
@@ -37,7 +46,7 @@ class StreamsCommandTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.Relations',
         'plugin.BEdita/Core.RelationTypes',
@@ -51,7 +60,6 @@ class StreamsCommandTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->useCommandRunner();
         $this->filesystemSetup(true, true);
     }
 
@@ -68,7 +76,6 @@ class StreamsCommandTest extends TestCase
      * Test buildOptionParser method
      *
      * @return void
-     * @covers ::buildOptionParser()
      */
     public function testBuildOptionParser(): void
     {
@@ -82,10 +89,6 @@ class StreamsCommandTest extends TestCase
      * Test `refreshMetadata` method
      *
      * @return void
-     * @covers ::execute()
-     * @covers ::refreshMetadata()
-     * @covers ::updateStreamMetadata()
-     * @covers ::streamsGenerator()
      */
     public function testRefreshMetadata(): void
     {
@@ -99,7 +102,6 @@ class StreamsCommandTest extends TestCase
         $results = $Streams->find('all')->all();
         $data = $results->toList();
         foreach ($data as $entry) {
-            $entry['original_width'] = $entry['width'];
             if (preg_match('/image\//', $entry['mime_type']) && $entry['mime_type'] != 'image/svg+xml') {
                 $this->assertNotNull($entry['width']);
             }
@@ -110,10 +112,6 @@ class StreamsCommandTest extends TestCase
      * Test `refreshMetadata` method with --force option
      *
      * @return void
-     * @covers ::execute()
-     * @covers ::refreshMetadata()
-     * @covers ::updateStreamMetadata()
-     * @covers ::streamsGenerator()
      */
     public function testRefreshMetadataForce(): void
     {
@@ -125,10 +123,10 @@ class StreamsCommandTest extends TestCase
             try {
                 $content = $stream->contents;
                 if ($content !== null) {
-                    $stream->contents = $content;
+                    $stream->set('contents', $content, ['asOriginal' => true]);
                     $Streams->saveOrFail($stream);
                 }
-            } catch (\Throwable $t) {
+            } catch (Throwable $t) {
             }
         }
 
@@ -158,7 +156,7 @@ class StreamsCommandTest extends TestCase
      *
      * @return array
      */
-    public function removeOrphansProvider(): array
+    public static function removeOrphansProvider(): array
     {
         return [
             'basic test' => [
@@ -174,10 +172,8 @@ class StreamsCommandTest extends TestCase
      * @param int $expected Expected number of removed streams
      * @param int $days The days.
      * @return void
-     * @dataProvider removeOrphansProvider()
-     * @covers ::execute()
-     * @covers ::removeOrphans()
      */
+    #[DataProvider('removeOrphansProvider')]
     public function testRemoveOrphans(int $expected, int $days): void
     {
         /** \BEdita\Core\Model\Table\StreamsTable $Streams */
@@ -196,13 +192,12 @@ class StreamsCommandTest extends TestCase
      * Test `streamsGenerator` method
      *
      * @return void
-     * @covers ::streamsGenerator()
      */
     public function testStreamsGenerator(): void
     {
         $query = $this->fetchTable('Streams')->find()->where(['uuid' => '00000000-0000-0000-0000-000000000001']);
         $command = new class extends StreamsCommand {
-            public function getStreams(Query $query, int $limit = 100): \Generator
+            public function getStreams(SelectQuery $query, int $limit = 100): Generator
             {
                 $this->table = $this->fetchTable('Streams');
 
@@ -229,18 +224,17 @@ class StreamsCommandTest extends TestCase
      * Test `updateStreamMetadata` method on exception
      *
      * @return void
-     * @covers ::updateStreamMetadata()
      */
     public function testUpdateStreamMetadataException(): void
     {
         $command = new class extends StreamsCommand {
             public function update(Stream $stream): bool
             {
-                $this->io = new \Cake\Console\ConsoleIo();
-                $this->table = new class {
-                    public function saveOrFail(Stream $stream): Stream
+                $this->io = new ConsoleIo(new StubConsoleOutput(), new StubConsoleOutput(), new StubConsoleInput([]));
+                $this->table = new class (['alias' => 'TestStreamsCommandTable']) extends StreamsTable {
+                    public function saveOrFail(EntityInterface $entity, array $options = []): EntityInterface
                     {
-                        throw new \Cake\Datasource\Exception\RecordNotFoundException();
+                        throw new RecordNotFoundException();
                     }
                 };
 

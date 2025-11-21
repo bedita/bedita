@@ -12,19 +12,19 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\API\Test\TestCase\Identifier;
 
 use BEdita\API\Identifier\OAuth2Identifier;
 use Cake\Http\Client\Adapter\Stream;
 use Cake\Http\Client\Response;
 use Cake\TestSuite\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * {@see \BEdita\API\Identifier\OAuth2Identifier} Test Case.
- *
- * @coversDefaultClass \BEdita\API\Identifier\OAuth2Identifier
  */
+#[CoversClass(OAuth2Identifier::class)]
 class OAuth2IdentifierTest extends TestCase
 {
     /**
@@ -32,7 +32,7 @@ class OAuth2IdentifierTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.Applications',
         'plugin.BEdita/Core.Config',
         'plugin.BEdita/Core.ObjectTypes',
@@ -55,7 +55,7 @@ class OAuth2IdentifierTest extends TestCase
      *
      * @return array
      */
-    public function identifyProvider(): array
+    public static function identifyProvider(): array
     {
         return [
             'found' => [
@@ -122,10 +122,8 @@ class OAuth2IdentifierTest extends TestCase
      * @param array $credentials Request.
      * @param array $oauthResponse OAuth2 server response.
      * @return void
-     * @dataProvider identifyProvider
-     * @covers ::identify()
-     * @covers ::getOAuth2Response()
      */
+    #[DataProvider('identifyProvider')]
     public function testIdentify(?array $expected, array $credentials, array $oauthResponse = []): void
     {
         $authProvider = $this->fetchTable('AuthProviders')->find()
@@ -140,7 +138,7 @@ class OAuth2IdentifierTest extends TestCase
 
         $params = (array)$authProvider->get('params');
         $params['options'] = ['client' => ['adapter' => $mock, 'protocolVersion' => '2']];
-        $authProvider->set(compact('params'));
+        $authProvider->patch(compact('params'));
 
         $identifier = new OAuth2Identifier();
         $identifier->setConfig(compact('authProvider'));
@@ -157,7 +155,6 @@ class OAuth2IdentifierTest extends TestCase
      * Test `identify` method with callback.
      *
      * @return void
-     * @covers ::identify()
      */
     public function testIdentifyWithCallback(): void
     {

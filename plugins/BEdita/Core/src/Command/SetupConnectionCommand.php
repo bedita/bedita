@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Command;
 
 use Cake\Command\Command;
@@ -22,7 +21,6 @@ use Cake\Console\ConsoleOptionParser;
 use Cake\Database\Connection;
 use Cake\Database\Exception\MissingConnectionException;
 use Cake\Datasource\ConnectionManager;
-use Cake\Filesystem\File;
 use Cake\ORM\Locator\LocatorAwareTrait;
 use Cake\ORM\TableRegistry;
 use Cake\Utility\Hash;
@@ -39,14 +37,14 @@ class SetupConnectionCommand extends Command
      *
      * @var \Cake\Console\Arguments
      */
-    protected $args;
+    protected Arguments $args;
 
     /**
      * Console IO
      *
      * @var \Cake\Console\ConsoleIo
      */
-    protected $io;
+    protected ConsoleIo $io;
 
     /**
      * {@inheritDoc}
@@ -299,8 +297,9 @@ class SetupConnectionCommand extends Command
      */
     protected function saveConnectionConfig(Connection $connection): void
     {
-        $file = new File($this->args->getOption('config-file')); /* @phpstan-ignore-line */
-        if (!$file->exists() || !$file->readable() || !$file->writable()) {
+        $filePath = $this->args->getOption('config-file');
+        $fileExists = file_exists($filePath) && is_file($filePath) && is_readable($filePath) && is_writable($filePath);
+        if (!$fileExists) {
             $this->io->abort('Unable to read from or write to configuration file');
         }
 
@@ -317,14 +316,14 @@ class SetupConnectionCommand extends Command
             function ($value) {
                 return str_replace(['\'', '\\'], ['\\\'', '\\\\'], $value);
             },
-            $replace
+            $replace,
         );
 
         // Replace placeholders in current file's content.
         $contents = str_replace(
             array_keys($replace),
             array_values($replace),
-            $file->read()
+            file_get_contents($filePath),
         );
 
         // Open process to validate PHP syntax, and attach pipes to stdin, stdout and stderr.
@@ -336,7 +335,7 @@ class SetupConnectionCommand extends Command
                 1 => ['pipe', 'w'], // stdout (write-end on the process' side)
                 2 => ['pipe', 'w'], // stderr (write-end on the process' side)
             ],
-            $pipes // This array will contain the pipes as asked.
+            $pipes, // This array will contain the pipes as asked.
         );
         if (!is_resource($process)) {
             $this->io->verbose('<error>FAIL</error>');
@@ -360,11 +359,9 @@ class SetupConnectionCommand extends Command
         $this->io->verbose('<info>DONE</info>');
 
         // Write changes to disk.
-        if (!$file->write($contents)) {
+        if (!file_put_contents($filePath, $contents)) {
             $this->io->abort('Could not update configuration file');
         }
         $this->io->out('=====> <success>Configuration saved</success>');
-
-        $file->close();
     }
 }

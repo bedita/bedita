@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Model\Entity;
 
 use Cake\Validation\Validation;
@@ -73,7 +72,7 @@ class Profile extends ObjectEntity
      * @param mixed $website Website URL.
      * @return mixed
      */
-    protected function _setWebsite($website)
+    protected function _setWebsite(mixed $website): mixed
     {
         if (is_string($website) && Validation::url($website, false) && !Validation::url($website, true)) {
             return sprintf('http://%s', $website);

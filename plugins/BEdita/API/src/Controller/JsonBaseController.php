@@ -14,6 +14,9 @@ declare(strict_types=1);
  */
 namespace BEdita\API\Controller;
 
+use Cake\View\JsonView;
+use Cake\View\NegotiationRequiredView;
+
 /**
  * Base class for controllers handling pure `application/json` content-type, not using JSON API
  */
@@ -28,6 +31,18 @@ abstract class JsonBaseController extends AppController
         if ($this->components()->has('JsonApi')) {
             $this->components()->unload('JsonApi');
         }
-        $this->viewBuilder()->setClassName('Json');
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @codeCoverageIgnore
+     */
+    public function viewClasses(): array
+    {
+        return [
+            JsonView::class,
+            NegotiationRequiredView::class,
+        ];
     }
 }

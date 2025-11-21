@@ -17,6 +17,7 @@ namespace BEdita\API\Controller;
 use BEdita\Core\Model\Action\ListRelatedFoldersAction;
 use BEdita\Core\Model\Table\FoldersTable;
 use Cake\Http\Exception\NotFoundException;
+use Cake\Http\Response;
 use Cake\ORM\Association;
 use Cake\ORM\Table;
 use Cake\Utility\Hash;
@@ -33,12 +34,12 @@ class FoldersController extends ObjectsController
     /**
      * @inheritDoc
      */
-    public $defaultTable = 'Folders';
+    public ?string $defaultTable = 'Folders';
 
     /**
      * @inheritDoc
      */
-    protected $_defaultConfig = [
+    protected array $_defaultConfig = [
         'allowedAssociations' => [
             'parent' => ['folders'],
             'children' => [],
@@ -68,7 +69,7 @@ class FoldersController extends ObjectsController
     /**
      * @inheritDoc
      */
-    protected function getAvailableTypes($relationship)
+    protected function getAvailableTypes($relationship): array
     {
         if ($relationship === 'parent') {
             return ['folders'];
@@ -85,7 +86,7 @@ class FoldersController extends ObjectsController
      *
      * @return \BEdita\Core\Model\Action\ListRelatedFoldersAction
      */
-    protected function getAssociatedAction(Association $association)
+    protected function getAssociatedAction(Association $association): ListRelatedFoldersAction
     {
         return new ListRelatedFoldersAction(compact('association'));
     }
@@ -95,7 +96,7 @@ class FoldersController extends ObjectsController
      *
      * Folder with Parents association allows GET and PATCH
      */
-    protected function setRelationshipsAllowedMethods(Association $association)
+    protected function setRelationshipsAllowedMethods(Association $association): void
     {
         parent::setRelationshipsAllowedMethods($association);
 
@@ -108,7 +109,7 @@ class FoldersController extends ObjectsController
     /**
      * @inheritDoc
      */
-    public function relationships()
+    public function relationships(): ?Response
     {
         if ($this->request->getParam('relationship') === 'children' && in_array($this->request->getMethod(), ['POST', 'PATCH'])) {
             $this->request = $this->request->withParsedBody($this->getDataSortedByPosition());
@@ -127,7 +128,7 @@ class FoldersController extends ObjectsController
      *
      * @return array
      */
-    protected function getDataSortedByPosition()
+    protected function getDataSortedByPosition(): array
     {
         $data = $this->request->getData();
 
@@ -142,8 +143,12 @@ class FoldersController extends ObjectsController
                 return 1;
             }
 
-            $positionA = $this->positionToInt($positionA);
-            $positionB = $this->positionToInt($positionB);
+            if (is_string($positionA)) {
+                $positionA = $this->positionToInt($positionA);
+            }
+            if (is_string($positionB)) {
+                $positionB = $this->positionToInt($positionB);
+            }
 
             // if they have the same sign then sort desc
             if ($positionA * $positionB > 0) {
@@ -166,7 +171,7 @@ class FoldersController extends ObjectsController
      * @param string $position The position to parse as integer.
      * @return int
      */
-    protected function positionToInt($position)
+    protected function positionToInt(string $position): int
     {
         if ($position === 'first') {
             return 1;

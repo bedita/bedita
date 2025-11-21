@@ -21,6 +21,7 @@ use Cake\Console\ConsoleOptionParser;
 use Cake\Database\Expression\QueryExpression;
 use Cake\Datasource\EntityInterface;
 use Cake\Utility\Hash;
+use Exception;
 
 /**
  * Build search index command.
@@ -89,7 +90,7 @@ class BuildSearchIndexCommand extends Command
             $result = $this->fetchTable('ObjectTypes')
                 ->find()
                 ->where(['enabled' => true, 'is_abstract' => false])
-                ->orderAsc('name')
+                ->orderByAsc('name')
                 ->toArray();
             $types = (array)Hash::extract($result, '{n}.name');
         }
@@ -103,7 +104,7 @@ class BuildSearchIndexCommand extends Command
                     $indexed = $this->doIndexResource($entity, $adapters, $io);
                     $counter = $counter + $indexed;
                 }
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 $io->error($e->getMessage());
 
                 return Command::CODE_ERROR;
@@ -149,8 +150,8 @@ class BuildSearchIndexCommand extends Command
                     '> ID %s [%s] [Adapter: %s]',
                     $entity->id,
                     $entity->uname,
-                    get_class($adapter)
-                )
+                    get_class($adapter),
+                ),
             );
             $adapter->indexResource($entity, 'edit');
             $indexed++;
@@ -169,8 +170,8 @@ class BuildSearchIndexCommand extends Command
     protected function objectsIterator(Arguments $args, string $type): iterable
     {
         $table = $this->fetchTable('Objects');
-        $query = $table->find()->orderAsc($table->aliasField('id'))->limit(200);
-        $query = $query->find('type', [$type]);
+        $query = $table->find()->orderByAsc($table->aliasField('id'))->limit(200);
+        $query = $query->find('type', value: [$type]);
         $id = array_filter(explode(',', (string)$args->getOption('id')));
         if (!empty($id)) {
             $query = $query->where([$table->aliasField('id') . ' IN' => $id]);
@@ -181,12 +182,12 @@ class BuildSearchIndexCommand extends Command
         }
         $ancestor = (string)$args->getOption('ancestor');
         if (!empty($ancestor)) {
-            $query = $query->find('ancestor', [$ancestor]);
+            $query = $query->find('ancestor', parent: $ancestor);
         }
         $lastId = 0;
         while (true) {
             $q = clone $query;
-            $q = $q->where(fn (QueryExpression $exp): QueryExpression => $exp->gt($table->aliasField('id'), $lastId));
+            $q = $q->where(fn(QueryExpression $exp): QueryExpression => $exp->gt($table->aliasField('id'), $lastId));
             $results = $q->all();
             if ($results->isEmpty()) {
                 break;

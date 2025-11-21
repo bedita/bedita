@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Model\Entity;
 
 use BEdita\Core\Utility\JsonApiSerializable;
@@ -28,13 +27,13 @@ use Cake\Utility\Text;
  *
  * @property int $id
  * @property string $name
- * @property string $auth_class
+ * @property string|null $auth_class
  * @property string $slug
- * @property string $url
- * @property array $params
+ * @property string|null $url
+ * @property array|null $params
  * @property bool $enabled
- * @property \Cake\I18n\Time $created
- * @property \Cake\I18n\Time $modified
+ * @property \Cake\I18n\DateTime|null $created
+ * @property \Cake\I18n\DateTime|null $modified
  * @property \BEdita\Core\Model\Entity\ExternalAuth[] $external_auth
  * @since 4.0.0
  */
@@ -45,7 +44,7 @@ class AuthProvider extends Entity implements JsonApiSerializable
     /**
      * @inheritDoc
      */
-    protected $_accessible = [
+    protected array $_accessible = [
         '*' => true,
         'id' => false,
         'created' => false,
@@ -57,7 +56,7 @@ class AuthProvider extends Entity implements JsonApiSerializable
      *
      * @return string
      */
-    protected function _getSlug()
+    protected function _getSlug(): string
     {
         [, $name] = pluginSplit($this->name);
 
@@ -67,9 +66,9 @@ class AuthProvider extends Entity implements JsonApiSerializable
     /**
      * Get list of roles to be associated to users logging in with this auth provider.
      *
-     * @return \BEdita\Core\Model\Entity\Role[]
+     * @return array<\BEdita\Core\Model\Entity\Role>
      */
-    public function getRoles()
+    public function getRoles(): array
     {
         $roles = (array)Configure::read(sprintf('Roles.%s', $this->auth_class));
         if (empty($roles)) {
@@ -93,7 +92,7 @@ class AuthProvider extends Entity implements JsonApiSerializable
      * @param string $providerUsername Provider username to match
      * @return bool True on success, false on failure
      */
-    public function checkAuthorization($providerResponse, $providerUsername)
+    public function checkAuthorization(array $providerResponse, string $providerUsername): bool
     {
         $fieldPath = Hash::get($this->get('params'), 'provider_username_field', 'id');
         $userName = Hash::get($providerResponse, (string)$fieldPath);

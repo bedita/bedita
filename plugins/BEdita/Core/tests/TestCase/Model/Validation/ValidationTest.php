@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\Model\Validation;
 
 use BEdita\Core\Model\Validation\Validation;
@@ -20,19 +19,19 @@ use Cake\Core\Configure;
 use Cake\Core\Plugin;
 use Cake\TestSuite\TestCase;
 use DateTime;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * {@see \BEdita\Core\Model\Validation\Validation} Test Case
- *
- * @coversDefaultClass \BEdita\Core\Model\Validation\Validation
  */
+#[CoversClass(Validation::class)]
 class ValidationTest extends TestCase
 {
     /**
      * Test runtime cache.
      *
      * @return void
-     * @covers ::reservedWords()
      */
     public function testreserveWords()
     {
@@ -50,7 +49,7 @@ class ValidationTest extends TestCase
      *
      * @return array
      */
-    public function reservedProvider()
+    public static function reservedProvider(): array
     {
         return [
             'simple' => [
@@ -70,9 +69,8 @@ class ValidationTest extends TestCase
      * @param bool $expected Expected result.
      * @param string $value Test value.
      * @return void
-     * @dataProvider reservedProvider()
-     * @covers ::notReserved()
      */
+    #[DataProvider('reservedProvider')]
     public function testReserved($expected, $value)
     {
         $result = Validation::notReserved($value);
@@ -85,7 +83,7 @@ class ValidationTest extends TestCase
      *
      * @return array
      */
-    public function urlProvider()
+    public static function urlProvider(): array
     {
         return [
             'https://example.com' => [
@@ -113,9 +111,8 @@ class ValidationTest extends TestCase
      * @param bool $expected Expected result.
      * @param string $url URL being validated.
      * @return void
-     * @dataProvider urlProvider()
-     * @covers ::url()
      */
+    #[DataProvider('urlProvider')]
     public function testUrl($expected, $url)
     {
         $result = Validation::url($url);
@@ -128,7 +125,7 @@ class ValidationTest extends TestCase
      *
      * @return array
      */
-    public function jsonSchemaProvider()
+    public static function jsonSchemaProvider(): array
     {
         $schema = [
             'type' => 'object',
@@ -209,9 +206,8 @@ class ValidationTest extends TestCase
      * @param mixed $value Value being validated.
      * @param mixed $jsonSchema JSON Schema.
      * @return void
-     * @dataProvider jsonSchemaProvider()
-     * @covers ::jsonSchema()
      */
+    #[DataProvider('jsonSchemaProvider')]
     public function testJsonSchema($expected, $value, $jsonSchema)
     {
         $result = Validation::jsonSchema($value, $jsonSchema);
@@ -228,7 +224,7 @@ class ValidationTest extends TestCase
      *
      * @return array
      */
-    public function languageTagProvider()
+    public static function languageTagProvider(): array
     {
         return [
             'bad lang' => [
@@ -260,9 +256,8 @@ class ValidationTest extends TestCase
      * @param array $config I18n config.
      * @param string $lang Lang tag being validated.
      * @return void
-     * @dataProvider languageTagProvider()
-     * @covers ::languageTag()
      */
+    #[DataProvider('languageTagProvider')]
     public function testLanguageTag($expected, $config, $lang)
     {
         Configure::write('I18n', $config);
@@ -277,7 +272,7 @@ class ValidationTest extends TestCase
      *
      * @return array
      */
-    public function dateTimeProvider()
+    public static function dateTimeProvider(): array
     {
         return [
             'bad date' => [
@@ -321,9 +316,8 @@ class ValidationTest extends TestCase
      * @param bool|string $expected Expected result.
      * @param string|int $value Datetime validated.
      * @return void
-     * @dataProvider dateTimeProvider()
-     * @covers ::dateTime()
      */
+    #[DataProvider('dateTimeProvider')]
     public function testDateTime($expected, $value)
     {
         $result = Validation::dateTime($value);
@@ -334,7 +328,7 @@ class ValidationTest extends TestCase
     /**
      * Test `requireNull` validation.
      *
-     * @covers ::requireNull()
+     * @return void
      */
     public function testRequireNull()
     {

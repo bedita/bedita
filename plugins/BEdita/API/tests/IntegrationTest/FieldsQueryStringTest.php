@@ -16,10 +16,13 @@ namespace BEdita\API\Test\IntegrationTest;
 
 use BEdita\API\TestSuite\IntegrationTestCase;
 use Cake\Utility\Hash;
+use PHPUnit\Framework\Attributes\CoversNothing;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * Test Query String `fields`
  */
+#[CoversNothing]
 class FieldsQueryStringTest extends IntegrationTestCase
 {
     /**
@@ -27,7 +30,7 @@ class FieldsQueryStringTest extends IntegrationTestCase
      *
      * @return array
      */
-    public function fieldsProvider()
+    public static function fieldsProvider(): array
     {
         return [
             'simple' => [
@@ -70,9 +73,8 @@ class FieldsQueryStringTest extends IntegrationTestCase
      * @param array $attributes Expected response attributes
      * @param array $meta Expected response meta
      * @return void
-     * @dataProvider fieldsProvider
-     * @coversNothing
      */
+    #[DataProvider('fieldsProvider')]
     public function testFields($url, $attributes, $meta)
     {
         $this->configRequestHeaders();

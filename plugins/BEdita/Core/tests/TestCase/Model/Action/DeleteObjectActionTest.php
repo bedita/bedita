@@ -12,17 +12,18 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\Model\Action;
 
 use BEdita\Core\Model\Action\DeleteObjectAction;
 use BEdita\Core\Utility\LoggedUser;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
 
 /**
- * @covers \BEdita\Core\Model\Action\DeleteObjectAction
+ * {@see \BEdita\Core\Model\Action\DeleteObjectAction} Test Case
  */
+#[CoversClass(DeleteObjectAction::class)]
 class DeleteObjectActionTest extends TestCase
 {
     /**
@@ -30,7 +31,7 @@ class DeleteObjectActionTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.Relations',
         'plugin.BEdita/Core.RelationTypes',

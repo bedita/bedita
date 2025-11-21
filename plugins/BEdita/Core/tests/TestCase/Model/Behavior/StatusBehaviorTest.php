@@ -15,16 +15,20 @@ declare(strict_types=1);
 namespace BEdita\Core\Test\TestCase\Model\Behavior;
 
 use BEdita\Core\Exception\BadFilterException;
+use BEdita\Core\Model\Behavior\StatusBehavior;
+use BEdita\Core\Model\Enum\ObjectEntityStatus;
 use Cake\Core\Configure;
 use Cake\Http\Exception\BadRequestException;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
+use Exception;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * {@see \BEdita\Core\Model\Behavior\StatusBehavior} Test Case
- *
- * @coversDefaultClass \BEdita\Core\Model\Behavior\StatusBehavior
  */
+#[CoversClass(StatusBehavior::class)]
 class StatusBehaviorTest extends TestCase
 {
     /**
@@ -39,7 +43,7 @@ class StatusBehaviorTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.PropertyTypes',
         'plugin.BEdita/Core.Properties',
@@ -85,11 +89,11 @@ class StatusBehaviorTest extends TestCase
      *
      * @return array
      */
-    public function checkStatusProvider(): array
+    public static function checkStatusProvider(): array
     {
         return [
             'no conf' => [
-                'draft',
+                ObjectEntityStatus::Draft,
                 [
                     'status' => 'draft',
                 ],
@@ -103,7 +107,7 @@ class StatusBehaviorTest extends TestCase
                 'on',
             ],
             'ok' => [
-                'draft',
+                ObjectEntityStatus::Draft,
                 [
                     'status' => 'draft',
                 ],
@@ -119,12 +123,11 @@ class StatusBehaviorTest extends TestCase
      * @param string $config Status level config.
      * @param array $data Save input data.
      * @return void
-     * @dataProvider checkStatusProvider()
-     * @covers ::checkStatus()
      */
+    #[DataProvider('checkStatusProvider')]
     public function testCheckStatus($expected, array $data, string $config = ''): void
     {
-        if ($expected instanceof \Exception) {
+        if ($expected instanceof Exception) {
             $this->expectException(get_class($expected));
             $this->expectExceptionMessage($expected->getMessage());
         }
@@ -145,36 +148,28 @@ class StatusBehaviorTest extends TestCase
      *
      * @return array
      */
-    public function findStatusLevelProvider()
+    public static function findStatusLevelProvider(): array
     {
         return [
-            'too many options' => [
-                new BadFilterException('Invalid options for finder "status"'),
-                [1, 2, 3],
-            ],
-            'invalid array' => [
-                new BadFilterException('Invalid options for finder "status"'),
-                ['gustavo' => 'on'],
-            ],
             'on' => [
                 ['on'],
-                ['on'],
+                'on',
             ],
             'draft' => [
                 ['on', 'draft'],
-                ['draft'],
+                'draft',
             ],
             'off' => [
                 ['on', 'draft', 'off'],
-                ['off'],
+                'off',
             ],
             'all' => [
                 ['on', 'draft', 'off'],
-                ['all'],
+                'all',
             ],
             'invalid level' => [
                 new BadFilterException('Invalid options for finder "status"'),
-                ['invalid level'],
+                'invalid_level',
             ],
         ];
     }
@@ -183,14 +178,13 @@ class StatusBehaviorTest extends TestCase
      * Test `findStatusLevel()`.
      *
      * @param array $expected Expected result.
-     * @param array $options Finder options.
+     * @param string $level Status level.
      * @return void
-     * @dataProvider findStatusLevelProvider()
-     * @covers ::findStatusLevel()
      */
-    public function testFindStatus($expected, array $options)
+    #[DataProvider('findStatusLevelProvider')]
+    public function testFindStatus($expected, string $level)
     {
-        if ($expected instanceof \Exception) {
+        if ($expected instanceof Exception) {
             $this->expectException(get_class($expected));
             $this->expectExceptionCode($expected->getCode());
             $this->expectExceptionMessage($expected->getMessage());
@@ -202,7 +196,7 @@ class StatusBehaviorTest extends TestCase
         }
 
         $actual = $this->Objects->find('list')
-            ->find('statusLevel', $options)
+            ->find('statusLevel', level: $level)
             ->toArray();
         ksort($actual);
 

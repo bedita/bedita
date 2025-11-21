@@ -1,19 +1,19 @@
 <?php
-use Migrations\AbstractMigration;
+
+use Migrations\BaseMigration;
 
 /**
  * Make pluralized form the most significant column for `object_types` table.
  */
-class RemovePluralized extends AbstractMigration
+class RemovePluralized extends BaseMigration
 {
-
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
-    public $autoId = false;
+    public bool $autoId = false;
 
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
     public function up()
     {

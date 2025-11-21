@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\API\Model\Action;
 
 use BEdita\Core\Model\Table\ObjectsTable;
@@ -58,7 +57,7 @@ class UpdateRelatedAction extends UpdateAssociatedAction
             array_unique(Hash::extract($data, '{*}.id')),
             function (string $id): bool {
                 return !is_numeric($id);
-            }
+            },
         );
         if (empty($nonNumericIds)) {
             // Nothing to do.
@@ -89,12 +88,12 @@ class UpdateRelatedAction extends UpdateAssociatedAction
                     throw new RecordNotFoundException(
                         sprintf(
                             'Record not found in table "%s"',
-                            Hash::get($item, 'type', $table->getTable())
-                        )
+                            Hash::get($item, 'type', $table->getTable()),
+                        ),
                     );
                 }
                 $item['id'] = $map[$id];
-            }
+            },
         );
 
         return $data;

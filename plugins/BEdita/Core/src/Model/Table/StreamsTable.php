@@ -12,12 +12,10 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Model\Table;
 
 use BEdita\Core\Filesystem\Thumbnail;
 use BEdita\Core\Model\Entity\Stream;
-use Cake\Database\Schema\TableSchemaInterface;
 use Cake\Event\EventInterface;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
@@ -27,15 +25,21 @@ use Cake\Validation\Validator;
  * Streams Model
  *
  * @property \BEdita\Core\Model\Table\ObjectsTable|\Cake\ORM\Association\BelongsTo $Objects
- * @method \BEdita\Core\Model\Entity\Stream get($primaryKey, $options = [])
- * @method \BEdita\Core\Model\Entity\Stream newEntity($data = null, array $options = [])
+ * @method \BEdita\Core\Model\Entity\Stream get(mixed $primaryKey, array|string $finder = 'all', \Psr\SimpleCache\CacheInterface|string|null $cache = null, \Closure|string|null $cacheKey = null, mixed ...$args)
+ * @method \BEdita\Core\Model\Entity\Stream newEntity(array $data, array $options = [])
  * @method \BEdita\Core\Model\Entity\Stream[] newEntities(array $data, array $options = [])
- * @method \BEdita\Core\Model\Entity\Stream|bool save(\Cake\Datasource\EntityInterface $entity, $options = [])
+ * @method \BEdita\Core\Model\Entity\Stream|false save(\Cake\Datasource\EntityInterface $entity, array $options = [])
  * @method \BEdita\Core\Model\Entity\Stream patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
- * @method \BEdita\Core\Model\Entity\Stream[] patchEntities($entities, array $data, array $options = [])
- * @method \BEdita\Core\Model\Entity\Stream findOrCreate($search, callable $callback = null, $options = [])
+ * @method \BEdita\Core\Model\Entity\Stream[] patchEntities(iterable $entities, array $data, array $options = [])
+ * @method \BEdita\Core\Model\Entity\Stream findOrCreate(\Cake\ORM\Query\SelectQuery|callable|array $search, ?callable $callback = null, array $options = [])
  * @mixin \Cake\ORM\Behavior\TimestampBehavior
  * @mixin \BEdita\Core\Model\Behavior\UploadableBehavior
+ * @method \BEdita\Core\Model\Entity\Stream newEmptyEntity()
+ * @method \BEdita\Core\Model\Entity\Stream saveOrFail(\Cake\Datasource\EntityInterface $entity, array $options = [])
+ * @method \BEdita\Core\Model\Entity\Stream[]|\Cake\Datasource\ResultSetInterface<\BEdita\Core\Model\Entity\Stream>|false saveMany(iterable $entities, array $options = [])
+ * @method \BEdita\Core\Model\Entity\Stream[]|\Cake\Datasource\ResultSetInterface<\BEdita\Core\Model\Entity\Stream> saveManyOrFail(iterable $entities, array $options = [])
+ * @method \BEdita\Core\Model\Entity\Stream[]|\Cake\Datasource\ResultSetInterface<\BEdita\Core\Model\Entity\Stream>|false deleteMany(iterable $entities, array $options = [])
+ * @method \BEdita\Core\Model\Entity\Stream[]|\Cake\Datasource\ResultSetInterface<\BEdita\Core\Model\Entity\Stream> deleteManyOrFail(iterable $entities, array $options = [])
  * @since 4.0.0
  */
 class StreamsTable extends Table
@@ -52,6 +56,9 @@ class StreamsTable extends Table
         $this->setTable('streams');
         $this->setPrimaryKey('uuid');
         $this->setDisplayField('uri');
+        $this->getSchema()
+            ->setColumnType('uuid', 'uuid')
+            ->setColumnType('file_metadata', 'json');
 
         $this->addBehavior('Timestamp');
         $this->addBehavior('BEdita/Core.Uploadable', [
@@ -148,17 +155,6 @@ class StreamsTable extends Table
         $rules->add($rules->existsIn(['object_id'], 'Objects'));
 
         return $rules;
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @codeCoverageIgnore
-     */
-    public function getSchema(): TableSchemaInterface
-    {
-        return parent::getSchema()->setColumnType('uuid', 'uuid')
-            ->setColumnType('file_metadata', 'json');
     }
 
     /**

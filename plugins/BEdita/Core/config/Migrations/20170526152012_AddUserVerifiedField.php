@@ -11,14 +11,14 @@
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
 
-use Migrations\AbstractMigration;
+use Migrations\BaseMigration;
 
 /**
  * Add `verified` field to `users` table.
  *
  * @since 4.0.0
  */
-class AddUserVerifiedField extends AbstractMigration
+class AddUserVerifiedField extends BaseMigration
 {
     /**
      * {@inheritdoc}

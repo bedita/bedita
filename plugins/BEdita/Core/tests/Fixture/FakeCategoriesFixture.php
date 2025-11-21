@@ -36,7 +36,7 @@ class FakeCategoriesFixture extends TestFixture
      * - History of Art
      * ```
      */
-    public $records = [
+    public array $records = [
         [ // ID: 1
             'name' => 'Science',
             'parent_id' => null,

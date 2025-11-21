@@ -12,18 +12,20 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\Model\Behavior;
 
+use BEdita\Core\Model\Behavior\DataCleanupBehavior;
+use BEdita\Core\Model\Enum\ObjectEntityStatus;
 use Cake\Core\Configure;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * {@see \BEdita\Core\Model\Behavior\DataCleanupBehavior} Test Case
- *
- * @coversDefaultClass \BEdita\Core\Model\Behavior\DataCleanupBehavior
  */
+#[CoversClass(DataCleanupBehavior::class)]
 class DataCleanupBehaviorTest extends TestCase
 {
     /**
@@ -31,7 +33,7 @@ class DataCleanupBehaviorTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.Relations',
         'plugin.BEdita/Core.RelationTypes',
@@ -45,7 +47,7 @@ class DataCleanupBehaviorTest extends TestCase
      *
      * @return array
      */
-    public function cleanupProvider()
+    public static function cleanupProvider(): array
     {
         return [
             'status' => [
@@ -55,7 +57,7 @@ class DataCleanupBehaviorTest extends TestCase
                     'status' => null,
                 ],
                 [
-                    'status' => 'draft',
+                    'status' => ObjectEntityStatus::Draft,
                 ],
                 [],
             ],
@@ -66,7 +68,7 @@ class DataCleanupBehaviorTest extends TestCase
                     'status' => '',
                 ],
                 [
-                    'status' => 'draft',
+                    'status' => ObjectEntityStatus::Draft,
                 ],
                 [],
             ],
@@ -77,11 +79,11 @@ class DataCleanupBehaviorTest extends TestCase
                     'status' => '',
                 ],
                 [
-                    'status' => 'on',
+                    'status' => ObjectEntityStatus::On,
                 ],
                 [
                     'users' => [
-                        'status' => 'on',
+                        'status' => ObjectEntityStatus::On->value,
                     ],
                 ],
             ],
@@ -91,11 +93,11 @@ class DataCleanupBehaviorTest extends TestCase
                     'password_hash' => 'ipsum',
                 ],
                 [
-                    'status' => 'on',
+                    'status' => ObjectEntityStatus::On,
                 ],
                 [
                     'users' => [
-                        'status' => 'on',
+                        'status' => ObjectEntityStatus::On->value,
                     ],
                 ],
             ],
@@ -119,7 +121,7 @@ class DataCleanupBehaviorTest extends TestCase
                 ],
                 [
                     'users' => [
-                        'status' => 'on',
+                        'status' => ObjectEntityStatus::On->value,
                     ],
                 ],
             ],
@@ -134,10 +136,8 @@ class DataCleanupBehaviorTest extends TestCase
      * @param array $expected Expected result.
      * @param array $defaultValues Defaults values per type
      * @return void
-     * @dataProvider cleanupProvider
-     * @covers ::beforeMarshal()
-     * @covers ::defaultFields()
      */
+    #[DataProvider('cleanupProvider')]
     public function testDataCleanup(array $inputData, array $expected, array $defaultValues)
     {
         Configure::write('DefaultValues', $defaultValues);
@@ -154,7 +154,7 @@ class DataCleanupBehaviorTest extends TestCase
      *
      * @return array
      */
-    public function statusLevelProvider(): array
+    public static function statusLevelProvider(): array
     {
         return [
             'status' => [
@@ -164,7 +164,7 @@ class DataCleanupBehaviorTest extends TestCase
                     'status' => null,
                 ],
                 [
-                    'status' => 'draft',
+                    'status' => ObjectEntityStatus::Draft,
                 ],
                 'draft',
             ],
@@ -175,7 +175,7 @@ class DataCleanupBehaviorTest extends TestCase
                     'status' => '',
                 ],
                 [
-                    'status' => 'on',
+                    'status' => ObjectEntityStatus::On,
                 ],
                 'on',
             ],
@@ -186,7 +186,7 @@ class DataCleanupBehaviorTest extends TestCase
                     'status' => '',
                 ],
                 [
-                    'status' => 'draft',
+                    'status' => ObjectEntityStatus::Draft,
                 ],
             ],
         ];
@@ -199,9 +199,8 @@ class DataCleanupBehaviorTest extends TestCase
      * @param array $expected Expected result.
      * @param string $level Status level.
      * @return void
-     * @dataProvider statusLevelProvider
-     * @covers ::defaultFields()
      */
+    #[DataProvider('statusLevelProvider')]
     public function testStatusLevel(array $inputData, array $expected, string $level = ''): void
     {
         if (!empty($level)) {

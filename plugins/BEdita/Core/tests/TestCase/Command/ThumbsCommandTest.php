@@ -12,18 +12,18 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\Command;
 
+use BEdita\Core\Command\ThumbsCommand;
 use Cake\Console\TestSuite\ConsoleIntegrationTestTrait;
 use Cake\Core\Configure;
 use Cake\TestSuite\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
 
 /**
  * {@see BEdita\Core\Command\ThumbsCommand} Test Case
- *
- * @coversDefaultClass \BEdita\Core\Command\ThumbsCommand
  */
+#[CoversClass(ThumbsCommand::class)]
 class ThumbsCommandTest extends TestCase
 {
     use ConsoleIntegrationTestTrait;
@@ -33,7 +33,7 @@ class ThumbsCommandTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.PropertyTypes',
         'plugin.BEdita/Core.Properties',
@@ -53,7 +53,6 @@ class ThumbsCommandTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
-        $this->useCommandRunner();
         Configure::write('Thumbnails.allowAny', true);
     }
 
@@ -70,7 +69,6 @@ class ThumbsCommandTest extends TestCase
      * Test buildOptionParser method
      *
      * @return void
-     * @covers ::buildOptionParser()
      */
     public function testBuildOptionParser()
     {
@@ -82,9 +80,6 @@ class ThumbsCommandTest extends TestCase
      * Test `execute` method
      *
      * @return void
-     * @covers ::execute()
-     * @covers ::availablePresets()
-     * @covers ::imagesIterator()
      */
     public function testExecute(): void
     {
@@ -98,9 +93,6 @@ class ThumbsCommandTest extends TestCase
      * Test `execute` method with `--id` option
      *
      * @return void
-     * @covers ::execute()
-     * @covers ::availablePresets()
-     * @covers ::imagesIterator()
      */
     public function testExecuteId(): void
     {

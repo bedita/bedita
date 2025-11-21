@@ -12,16 +12,19 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\Model\Behavior;
 
 use BEdita\Core\Exception\BadFilterException;
+use BEdita\Core\Model\Behavior\GeometryBehavior;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
- * @coversDefaultClass \BEdita\Core\Model\Behavior\GeometryBehavior
+ * {@see \BEdita\Core\Model\Behavior\GeometryBehavior} Test Case
  */
+#[CoversClass(GeometryBehavior::class)]
 class GeometryBehaviorTest extends TestCase
 {
     /**
@@ -29,7 +32,7 @@ class GeometryBehaviorTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.PropertyTypes',
         'plugin.BEdita/Core.Properties',
@@ -85,7 +88,7 @@ class GeometryBehaviorTest extends TestCase
      *
      * @return array
      */
-    public function findGeoProvider()
+    public static function findGeoProvider(): array
     {
         return [
             'near point' => [
@@ -120,21 +123,17 @@ class GeometryBehaviorTest extends TestCase
      * Test findGeo finder method.
      *
      * @param array $conditions Date conditions.
-     * @param array|false $numExpected Number of expected results.
+     * @param int $numExpected Number of expected results.
      * @return void
-     * @dataProvider findGeoProvider
-     * @covers ::findGeo()
-     * @covers ::checkGeoSupport()
-     * @covers ::getDistanceExpression()
-     * @covers ::parseCoordinates()
      */
-    public function testFindGeo($conditions, $numExpected): void
+    #[DataProvider('findGeoProvider')]
+    public function testFindGeo(array $conditions, int $numExpected): void
     {
         if (!static::$geoSupport) {
             $this->expectException(BadFilterException::class);
         }
 
-        $result = $this->Locations->find('geo', $conditions)->toArray();
+        $result = $this->Locations->find('geo', ...$conditions)->toArray();
 
         if (static::$geoSupport) {
             static::assertEquals($numExpected, count($result));
@@ -148,12 +147,17 @@ class GeometryBehaviorTest extends TestCase
      *
      * @return array
      */
-    public function badGeoProvider()
+    public static function badGeoProvider(): array
     {
         return [
-            'gustavo' => [
+            'empty center string' => [
                 [
-                    'gustavo' => '44.4944876,11.3464721',
+                    'center' => '',
+                ],
+            ],
+            'empty center array' => [
+                [
+                    'center' => [],
                 ],
             ],
             'not geo' => [
@@ -184,13 +188,11 @@ class GeometryBehaviorTest extends TestCase
      *
      * @param array $conditions Filter options.
      * @return void
-     * @dataProvider badGeoProvider
-     * @covers ::findGeo()
-     * @covers ::parseCoordinates()
      */
-    public function testBadGeo($conditions)
+    #[DataProvider('badGeoProvider')]
+    public function testBadGeo(array $conditions): void
     {
-        $this->expectException(\BEdita\Core\Exception\BadFilterException::class);
-        $this->Locations->find('geo', $conditions)->toArray();
+        $this->expectException(BadFilterException::class);
+        $this->Locations->find('geo', ...$conditions)->toArray();
     }
 }

@@ -12,19 +12,21 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\Model\Table;
 
+use BEdita\Core\Model\Table\EndpointsTable;
 use Cake\Cache\Cache;
 use Cake\Http\Exception\NotFoundException;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
+use Exception;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
- * BEdita\Core\Model\Table\EndpointsTable Test Case
- *
- * @coversDefaultClass \BEdita\Core\Model\Table\EndpointsTable
+ * {@see BEdita\Core\Model\Table\EndpointsTable} Test Case
  */
+#[CoversClass(EndpointsTable::class)]
 class EndpointsTableTest extends TestCase
 {
     /**
@@ -39,7 +41,7 @@ class EndpointsTableTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.Endpoints',
         'plugin.BEdita/Core.Relations',
@@ -73,11 +75,9 @@ class EndpointsTableTest extends TestCase
      * Test initialize method
      *
      * @return void
-     * @covers ::initialize()
      */
     public function testInitialize()
     {
-        $this->Endpoints->initialize([]);
         $this->assertEquals('endpoints', $this->Endpoints->getTable());
         $this->assertEquals('id', $this->Endpoints->getPrimaryKey());
         $this->assertEquals('name', $this->Endpoints->getDisplayField());
@@ -92,7 +92,7 @@ class EndpointsTableTest extends TestCase
      *
      * @return array
      */
-    public function validationProvider()
+    public static function validationProvider(): array
     {
         return [
             'valid' => [
@@ -122,9 +122,8 @@ class EndpointsTableTest extends TestCase
      * @param bool $expected Expected result.
      * @param array $data Data to be validated.
      * @return void
-     * @dataProvider validationProvider
-     * @coversNothing
      */
+    #[DataProvider('validationProvider')]
     public function testValidation($expected, array $data)
     {
         $endpoint = $this->Endpoints->newEntity($data);
@@ -141,7 +140,7 @@ class EndpointsTableTest extends TestCase
      *
      * @return array
      */
-    public function buildRulesProvider()
+    public static function buildRulesProvider(): array
     {
         return [
             'wrongObjectType' => [
@@ -166,9 +165,8 @@ class EndpointsTableTest extends TestCase
      * @param bool $expected Expected result.
      * @param array $data Data to be validated.
      * @return void
-     * @dataProvider buildRulesProvider
-     * @coversNothing
      */
+    #[DataProvider('buildRulesProvider')]
     public function testBuildRules($expected, array $data)
     {
         $endpoint = $this->Endpoints->newEntity($data, ['validate' => false]);
@@ -181,7 +179,7 @@ class EndpointsTableTest extends TestCase
      *
      * @return array
      */
-    public function fetchIdProvider()
+    public static function fetchIdProvider(): array
     {
         return [
             '/auth' => [
@@ -213,14 +211,13 @@ class EndpointsTableTest extends TestCase
      * @param mixed $expected Expected endpoint ID, null, or exception.
      * @param string $path Request path.
      * @return void
-     * @dataProvider fetchIdProvider()
-     * @covers ::fetchId()
      */
+    #[DataProvider('fetchIdProvider')]
     public function testFetchId($expected, string $path): void
     {
         $cacheConf = $this->Endpoints->behaviors()->get('QueryCache')->getConfig('cacheConfig');
         Cache::clear($cacheConf);
-        if ($expected instanceof \Exception) {
+        if ($expected instanceof Exception) {
             $this->expectException(get_class($expected));
             $this->expectExceptionMessage($expected->getMessage());
         }

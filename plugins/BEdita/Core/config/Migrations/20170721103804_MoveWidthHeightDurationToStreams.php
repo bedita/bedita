@@ -11,14 +11,14 @@
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
 
-use Migrations\AbstractMigration;
+use Migrations\BaseMigration;
 
 /**
  * Move `width`, `height` and `duration` from `media` to `streams`. Add `provider_extra` to `media`.
  *
  * @since 4.0.0
  */
-class MoveWidthHeightDurationToStreams extends AbstractMigration
+class MoveWidthHeightDurationToStreams extends BaseMigration
 {
 
     /**

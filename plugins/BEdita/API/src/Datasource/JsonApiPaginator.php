@@ -12,18 +12,17 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\API\Datasource;
 
-use BEdita\Core\Model\Table\ObjectsTable;
+use BEdita\Core\Model\Enum\DateRangesSortField;
 use Cake\Database\Expression\FunctionExpression;
 use Cake\Database\Expression\OrderClauseExpression;
 use Cake\Datasource\Paging\NumericPaginator;
+use Cake\Datasource\Paging\PaginatedInterface;
 use Cake\Datasource\QueryInterface;
 use Cake\Datasource\RepositoryInterface;
-use Cake\Datasource\ResultSetInterface;
 use Cake\Http\Exception\BadRequestException;
-use Cake\ORM\Query;
+use Cake\ORM\Query\SelectQuery;
 
 /**
  * Handle model pagination using JSON API conventions.
@@ -35,11 +34,14 @@ class JsonApiPaginator extends NumericPaginator
     /**
      * @inheritDoc
      */
-    protected $_defaultConfig = [
+    protected array $_defaultConfig = [
         'page' => 1,
         'limit' => 20,
         'maxLimit' => 100,
         'allowedParameters' => ['page', 'page_size', 'sort'],
+        'sortableFields' => null,
+        'finder' => 'all',
+        'scope' => null,
     ];
 
     /**
@@ -50,14 +52,14 @@ class JsonApiPaginator extends NumericPaginator
     public const MAX_LIMIT = 500;
 
     /**
-     * Remove any other `order` clause if an explicit 'sort' is requested
-     *
      * {@inheritDoc}
+     *
+     * Remove any other `order` clause if an explicit 'sort' is requested
      */
-    public function paginate($object, array $params = [], array $settings = []): ResultSetInterface
+    public function paginate(mixed $object, array $params = [], array $settings = []): PaginatedInterface
     {
         if ($object instanceof QueryInterface && !empty($params['sort'])) {
-            $object->order([], Query::OVERWRITE);
+            $object->orderBy([], SelectQuery::OVERWRITE);
         }
 
         return parent::paginate($object, $params, $settings);
@@ -91,12 +93,12 @@ class JsonApiPaginator extends NumericPaginator
                 $options['direction'] = 'desc';
             }
             unset($options['order']);
-            if (in_array($options['sort'], ObjectsTable::DATERANGES_SORT_FIELDS)) {
+            if (in_array($options['sort'], DateRangesSortField::values())) {
                 $options['sortableFields'] = [$options['sort']];
             }
 
-            $sortableFields = $this->getSortableFields($options);
-            $canSortField = fn (string $field): bool => $sortableFields === null || in_array($field, $sortableFields, true);
+            $sortableFields = $options['sortableFields'] ?? null;
+            $canSortField = fn(string $field): bool => $sortableFields === null || in_array($field, $sortableFields, true);
             if ($options['sort'] === 'published' && $canSortField('publish_start')) {
                 $options['order'] = new OrderClauseExpression(
                     new FunctionExpression(

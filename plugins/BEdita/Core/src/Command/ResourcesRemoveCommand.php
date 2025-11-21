@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Command;
 
 use BEdita\Core\Model\Action\DeleteEntityAction;
@@ -21,6 +20,7 @@ use Cake\Console\Arguments;
 use Cake\Console\ConsoleIo;
 use Cake\Console\ConsoleOptionParser;
 use Cake\ORM\Locator\LocatorAwareTrait;
+use Cake\ORM\Table;
 use Cake\Utility\Inflector;
 
 /**
@@ -35,21 +35,21 @@ class ResourcesRemoveCommand extends Command
      *
      * @var \Cake\Console\Arguments
      */
-    protected $args;
+    protected Arguments $args;
 
     /**
      * Console IO
      *
      * @var \Cake\Console\ConsoleIo
      */
-    protected $io;
+    protected ConsoleIo $io;
 
     /**
-     * Async jobs table
+     * The table
      *
-     * @var \BEdita\Core\Model\Table\AsyncJobsTable
+     * @var \Cake\ORM\Table
      */
-    protected $table;
+    protected Table $table;
 
     /**
      * {@inheritDoc}
@@ -101,7 +101,7 @@ class ResourcesRemoveCommand extends Command
         $res = $this->io->askChoice(
             sprintf('You are REMOVING "%s" with name or id "%s" - are you sure?', $type, $id),
             ['y', 'n'],
-            'n'
+            'n',
         );
         if ($res !== 'y') {
             $this->io->info('No action performed');

@@ -12,19 +12,20 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\Model\Table;
 
+use BEdita\Core\Exception\ImmutableResourceException;
 use BEdita\Core\Model\Table\RolesTable;
 use BEdita\Core\Utility\LoggedUser;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * {@see \BEdita\Core\Model\Table\RolesTable} Test Case
- *
- * @coversDefaultClass \BEdita\Core\Model\Table\RolesTable
  */
+#[CoversClass(RolesTable::class)]
 class RolesTableTest extends TestCase
 {
     /**
@@ -39,7 +40,7 @@ class RolesTableTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.Relations',
         'plugin.BEdita/Core.RelationTypes',
@@ -79,11 +80,9 @@ class RolesTableTest extends TestCase
      * Test initialization.
      *
      * @return void
-     * @coversNothing
      */
     public function testInitialization()
     {
-        $this->Roles->initialize([]);
         $this->assertEquals('roles', $this->Roles->getTable());
         $this->assertEquals('id', $this->Roles->getPrimaryKey());
         $this->assertEquals('name', $this->Roles->getDisplayField());
@@ -99,7 +98,7 @@ class RolesTableTest extends TestCase
      *
      * @return array
      */
-    public function validationProvider()
+    public static function validationProvider(): array
     {
         return [
             'valid' => [
@@ -123,12 +122,11 @@ class RolesTableTest extends TestCase
      * @param bool $expected Expected result.
      * @param array $data Data to be validated.
      * @return void
-     * @dataProvider validationProvider
-     * @coversNothing
      */
+    #[DataProvider('validationProvider')]
     public function testValidation($expected, array $data)
     {
-        $role = $this->Roles->newEntity([]);
+        $role = $this->Roles->newEmptyEntity();
         $this->Roles->patchEntity($role, $data);
 
         $error = (bool)$role->getErrors();
@@ -144,7 +142,6 @@ class RolesTableTest extends TestCase
      * Test finder for my objects.
      *
      * @return void
-     * @covers ::findMine()
      */
     public function testFindMine()
     {
@@ -153,7 +150,7 @@ class RolesTableTest extends TestCase
         ];
 
         $result = $this->Roles->find('mine')
-            ->find('list', ['keyField' => 'id', 'valueField' => 'id'])
+            ->find('list', keyField: 'id', valueField: 'id')
             ->toArray();
 
         static::assertEquals($expected, $result);
@@ -162,11 +159,11 @@ class RolesTableTest extends TestCase
     /**
      * Test delete admin role
      *
-     * @covers ::beforeDelete
+     * @return void
      */
     public function testDeleteAdminRole()
     {
-        $this->expectException(\BEdita\Core\Exception\ImmutableResourceException::class);
+        $this->expectException(ImmutableResourceException::class);
         $this->expectExceptionCode('403');
         $this->expectExceptionMessage('Could not delete "Role" 1');
         $role = $this->Roles->get(RolesTable::ADMIN_ROLE);
@@ -176,7 +173,7 @@ class RolesTableTest extends TestCase
     /**
      * Test delete second role
      *
-     * @covers ::beforeDelete
+     * @return void
      */
     public function testDeleteSecondRole()
     {

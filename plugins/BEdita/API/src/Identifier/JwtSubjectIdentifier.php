@@ -14,6 +14,7 @@ declare(strict_types=1);
  */
 namespace BEdita\API\Identifier;
 
+use ArrayAccess;
 use Authentication\Identifier\JwtSubjectIdentifier as CakeJwtSubjectIdentifier;
 use Cake\Utility\Hash;
 
@@ -25,7 +26,7 @@ class JwtSubjectIdentifier extends CakeJwtSubjectIdentifier
     /**
      * @inheritDoc
      */
-    public function identify(array $data)
+    public function identify(array $data): ArrayAccess|array|null
     {
         $dataField = $this->getConfig('dataField');
 

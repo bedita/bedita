@@ -1,7 +1,7 @@
 <?php
-use Migrations\AbstractMigration;
+use Migrations\BaseMigration;
 
-class IncreaseLinksUrlMaxLength extends AbstractMigration
+class IncreaseLinksUrlMaxLength extends BaseMigration
 {
     /**
      * @inheritDoc

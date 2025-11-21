@@ -12,17 +12,20 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\API\Test\TestCase\Controller;
 
+use BEdita\API\Controller\BulkController;
 use BEdita\API\TestSuite\IntegrationTestCase;
+use BEdita\Core\Model\Enum\ObjectEntityStatus;
 use BEdita\Core\State\CurrentApplication;
 use BEdita\Core\Utility\LoggedUser;
 use Cake\Utility\Hash;
+use PHPUnit\Framework\Attributes\CoversClass;
 
 /**
- * @coversDefaultClass \BEdita\API\Controller\BulkController
+ * {@see \BEdita\API\Controller\BulkController} Test Case.
  */
+#[CoversClass(BulkController::class)]
 class BulkControllerTest extends IntegrationTestCase
 {
     /**
@@ -98,7 +101,6 @@ class BulkControllerTest extends IntegrationTestCase
      * Test index method on GET /bulk.
      *
      * @return void
-     * @covers ::index()
      */
     public function testIndex404(): void
     {
@@ -111,7 +113,6 @@ class BulkControllerTest extends IntegrationTestCase
      * Test index method on GET /bulk/edit.
      *
      * @return void
-     * @covers ::index()
      */
     public function testIndex405(): void
     {
@@ -128,9 +129,6 @@ class BulkControllerTest extends IntegrationTestCase
      * Test index method on POST /bulk/edit.
      *
      * @return void
-     * @covers ::index()
-     * @covers ::edit()
-     * @covers ::canAccessEndpoint()
      */
     public function testEdit(): void
     {
@@ -145,8 +143,6 @@ class BulkControllerTest extends IntegrationTestCase
      * Test index method on POST /bulk/edit with abstract type in payload.
      *
      * @return void
-     * @covers ::index()
-     * @covers ::edit()
      */
     public function testEditAbstractType(): void
     {
@@ -179,9 +175,6 @@ class BulkControllerTest extends IntegrationTestCase
      * Test index method on POST /bulk/edit with endpoint access not allowed for current user.
      *
      * @return void
-     * @covers ::index()
-     * @covers ::edit()
-     * @covers ::canAccessEndpoint()
      */
     public function testEditEndpointAccessFalse(): void
     {
@@ -257,9 +250,6 @@ class BulkControllerTest extends IntegrationTestCase
      * Test index method on POST /bulk/edit with object having perms that do not allow current user to edit it.
      *
      * @return void
-     * @covers ::index()
-     * @covers ::edit()
-     * @covers ::canAccessEndpoint()
      */
     public function testEditObjectWithPerms(): void
     {
@@ -295,7 +285,7 @@ class BulkControllerTest extends IntegrationTestCase
             ],
             [
                 'accessibleFields' => ['created_by' => true],
-            ]
+            ],
         );
         $ObjectPermissions->saveOrFail($entity);
 
@@ -341,10 +331,10 @@ class BulkControllerTest extends IntegrationTestCase
         // object 2 is locked, status cannot be changed
         $o1 = $this->fetchTable('Objects')->get(2);
         $firstOriginalStatus = $o1->get('status');
-        $this->assertEquals('on', $firstOriginalStatus);
+        $this->assertEquals(ObjectEntityStatus::On, $firstOriginalStatus);
         $o2 = $this->fetchTable('Objects')->get(3);
         $secondOriginalStatus = $o2->get('status');
-        $this->assertEquals('draft', $secondOriginalStatus);
+        $this->assertEquals(ObjectEntityStatus::Draft, $secondOriginalStatus);
         $this->configRequestHeaders('POST', $this->getUserAuthHeader($user, $password) + $this->headers);
         $map = [];
         $map[$o1->get('type')][] = $o1->get('id');
@@ -373,7 +363,7 @@ class BulkControllerTest extends IntegrationTestCase
         $this->assertEquals($firstOriginalStatus, $firstStatus);
         $o2 = $this->fetchTable('Objects')->get(3);
         $secondStatus = $o2->get('status');
-        $this->assertEquals('off', $secondStatus);
+        $this->assertEquals(ObjectEntityStatus::Off, $secondStatus);
         $this->configRequestHeaders('POST', $this->getUserAuthHeader($user, $password) + $this->headers);
         $this->post('/bulk/edit', json_encode([
             'data' => [
@@ -388,14 +378,13 @@ class BulkControllerTest extends IntegrationTestCase
         $this->assertResponseCode(200);
         $o2 = $this->fetchTable('Objects')->get(3);
         $secondStatus = $o2->get('status');
-        $this->assertEquals('draft', $secondStatus);
+        $this->assertEquals(ObjectEntityStatus::Draft, $secondStatus);
     }
 
     /**
      * Test that trying to save in bulk data referred to a wrong id for an object type then it is ignored.
      *
      * @return void
-     * @covers ::edit()
      */
     public function testWrongObjectType(): void
     {
@@ -439,6 +428,6 @@ class BulkControllerTest extends IntegrationTestCase
             ->firstOrFail();
 
         $this->assertEquals($originalStatusWrongObject, $wrongObject->get('status'));
-        $this->assertEquals('off', $event->get('status'));
+        $this->assertEquals(ObjectEntityStatus::Off, $event->get('status'));
     }
 }

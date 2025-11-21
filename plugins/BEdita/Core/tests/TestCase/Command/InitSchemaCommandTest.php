@@ -12,9 +12,9 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\Command;
 
+use BEdita\Core\Command\InitSchemaCommand;
 use Cake\Command\Command;
 use Cake\Console\TestSuite\ConsoleIntegrationTestTrait;
 use Cake\Core\Plugin;
@@ -22,13 +22,13 @@ use Cake\Database\Connection;
 use Cake\Database\Schema\TableSchema;
 use Cake\Datasource\ConnectionManager;
 use Cake\TestSuite\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
+use RuntimeException;
 
 /**
  * {@see BEdita\Core\Command\InitSchemaCommand} Test Case
- *
- * @coversDefaultClass \BEdita\Core\Command\InitSchemaCommand
- * @covers \BEdita\Core\Command\InitSchemaCommand
  */
+#[CoversClass(InitSchemaCommand::class)]
 class InitSchemaCommandTest extends TestCase
 {
     use ConsoleIntegrationTestTrait;
@@ -36,37 +36,30 @@ class InitSchemaCommandTest extends TestCase
     /**
      * @inheritDoc
      */
-    protected function setUp(): void
-    {
-        parent::setUp();
-        $this->useCommandRunner();
-        if (static::$fixtureManager !== null) {
-            static::$fixtureManager->shutDown();
-        }
-    }
-
-    /**
-     * @inheritDoc
-     */
     public function tearDown(): void
     {
-        ConnectionManager::get('default')
-            ->transactional(function (Connection $connection) {
-                $tables = $connection->getSchemaCollection()->listTables();
+        /** @var \Cake\Database\Connection $connection */
+        $connection = ConnectionManager::get('default');
+        $connection->transactional(function (Connection $connection) {
+            $tables = $connection->getSchemaCollection()->listTables();
 
-                foreach ($tables as $table) {
-                    $sql = $connection->getSchemaCollection()->describe($table)->dropConstraintSql($connection);
-                    foreach ($sql as $query) {
-                        $connection->updateQuery($query);
-                    }
+            foreach ($tables as $table) {
+                /** @var \Cake\Database\Schema\TableSchema $tableSchema */
+                $tableSchema = $connection->getSchemaCollection()->describe($table);
+                $sql = $tableSchema->dropConstraintSql($connection);
+                foreach ($sql as $query) {
+                    $connection->updateQuery($query);
                 }
-                foreach ($tables as $table) {
-                    $sql = $connection->getSchemaCollection()->describe($table)->dropSql($connection);
-                    foreach ($sql as $query) {
-                        $connection->updateQuery($query);
-                    }
+            }
+            foreach ($tables as $table) {
+                /** @var \Cake\Database\Schema\TableSchema $tableSchema */
+                $tableSchema = $connection->getSchemaCollection()->describe($table);
+                $sql = $tableSchema->dropSql($connection);
+                foreach ($sql as $query) {
+                    $connection->updateQuery($query);
                 }
-            });
+            }
+        });
         parent::tearDown();
     }
 
@@ -74,8 +67,6 @@ class InitSchemaCommandTest extends TestCase
      * Test buildOptionParser method
      *
      * @return void
-     * @covers ::buildOptionParser()
-     * @covers ::getDescription()
      */
     public function testBuildOptionParser(): void
     {
@@ -105,7 +96,7 @@ class InitSchemaCommandTest extends TestCase
     {
         $connection = ConnectionManager::get('default');
         if (!($connection instanceof Connection)) {
-            throw new \RuntimeException('Unable to use database connection');
+            throw new RuntimeException('Unable to use database connection');
         }
 
         $table = new TableSchema('foo_bar', ['foo' => ['type' => 'string', 'length' => 255, 'null' => true, 'default' => null]]);
@@ -128,7 +119,7 @@ class InitSchemaCommandTest extends TestCase
     {
         $connection = ConnectionManager::get('default');
         if (!($connection instanceof Connection)) {
-            throw new \RuntimeException('Unable to use database connection');
+            throw new RuntimeException('Unable to use database connection');
         }
 
         $table = new TableSchema('foo_bar', ['foo' => ['type' => 'string', 'length' => 255, 'null' => true, 'default' => null]]);

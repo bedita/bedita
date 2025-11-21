@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Command;
 
 use BEdita\Core\Event\ImageThumbsHandler;
@@ -22,7 +21,9 @@ use Cake\Console\ConsoleIo;
 use Cake\Console\ConsoleOptionParser;
 use Cake\Core\Configure;
 use Cake\Database\Expression\QueryExpression;
-use Cake\I18n\FrozenTime;
+use Cake\I18n\DateTime;
+use Exception;
+use Generator;
 
 /**
  * Command to update/create thumbnails for all images.
@@ -57,18 +58,18 @@ class ThumbsCommand extends Command
     public function execute(Arguments $args, ConsoleIo $io)
     {
         $handler = new ImageThumbsHandler();
-        $ids = (array)$args->getOption('id');
+        $ids = (array)$args->getArrayOption('id');
         $startAt = filter_var(
             $args->getOption('start-at'),
             FILTER_VALIDATE_INT,
             ['options' => ['min_range' => 1], 'flags' => FILTER_NULL_ON_FAILURE],
         );
-        $presets = (array)$args->getOption('preset') ?: ThumbsCommand::availablePresets();
+        $presets = (array)$args->getArrayOption('preset') ?: ThumbsCommand::availablePresets();
 
         $io->out(sprintf(
             '=====> Operation started at <info>%s</info>, using presets: %s',
-            FrozenTime::now()->toIso8601String(),
-            implode(', ', array_map(fn (string $preset) => sprintf('<comment>%s</comment>', $preset), $presets)),
+            DateTime::now()->toIso8601String(),
+            implode(', ', array_map(fn(string $preset) => sprintf('<comment>%s</comment>', $preset), $presets)),
         ));
 
         $success = $failed = 0;
@@ -85,7 +86,7 @@ class ThumbsCommand extends Command
                 $handler->updateThumbs($image, $stream, $presets);
                 $io->verbose('<success>DONE</success>');
                 $success++;
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 $io->verbose('<error>FAIL</error>');
                 $failed++;
             }
@@ -93,7 +94,7 @@ class ThumbsCommand extends Command
 
         $io->out(sprintf(
             '=====> Operation completed at <info>%s</info>: <success>%d</success> OK, <error>%d</error> failed',
-            FrozenTime::now()->toIso8601String(),
+            DateTime::now()->toIso8601String(),
             $success,
             $failed,
         ));
@@ -102,38 +103,38 @@ class ThumbsCommand extends Command
     /**
      * Retrieve thumbnail presets without 'async' generators
      *
-     * @return string[]
+     * @return array<string>
      */
     protected static function availablePresets(): array
     {
-        return array_keys(array_filter((array)Configure::read('Thumbnails.presets'), fn (array $preset) => !isset($preset['generator'])));
+        return array_keys(array_filter((array)Configure::read('Thumbnails.presets'), fn(array $preset) => !isset($preset['generator'])));
     }
 
     /**
      * Iterate through all images.
      *
-     * @param string[] $ids IDs to filter by.
+     * @param array<string> $ids IDs to filter by.
      * @param int|null $startAt ID to start with, for resuming an interrupted operation.
      * @return \Generator<\BEdita\Core\Model\Entity\Media>
      */
-    protected function imagesIterator(array $ids, ?int $startAt): \Generator
+    protected function imagesIterator(array $ids, ?int $startAt): Generator
     {
         $table = $this->fetchTable('Images');
         $id = $startAt ?? 0;
         $idField = $table->aliasField('id');
 
-        $query = $table->find('type', ['images'])
+        $query = $table->find('type', value: ['images'])
             ->matching('Streams')
             ->contain('Streams');
         if (!empty($ids)) {
-            $query = $query->where(fn (QueryExpression $exp): QueryExpression => $exp->in($idField, $ids));
+            $query = $query->where(fn(QueryExpression $exp): QueryExpression => $exp->in($idField, $ids));
         }
 
         do {
             $results = $query->cleanCopy()
-                ->where(fn (QueryExpression $exp): QueryExpression => $exp->gt('id', $id))
+                ->where(fn(QueryExpression $exp): QueryExpression => $exp->gt('id', $id))
                 ->limit(100)
-                ->orderAsc($idField)
+                ->orderByAsc($idField)
                 ->all();
 
             yield from $results;

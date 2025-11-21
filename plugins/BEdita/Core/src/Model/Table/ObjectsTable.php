@@ -12,24 +12,24 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Model\Table;
 
 use BEdita\Core\Exception\LockedResourceException;
 use BEdita\Core\Model\Entity\ObjectEntity;
+use BEdita\Core\Model\Enum\DateRangesSortField;
+use BEdita\Core\Model\Enum\ObjectEntityStatus;
 use BEdita\Core\Model\Validation\ObjectsValidator;
 use BEdita\Core\Search\SimpleSearchTrait;
 use BEdita\Core\Utility\LoggedUser;
 use Cake\Core\Configure;
 use Cake\Database\Expression\QueryExpression;
-use Cake\Database\Schema\TableSchemaInterface;
+use Cake\Database\Type\EnumType;
 use Cake\Datasource\EntityInterface;
 use Cake\Event\EventInterface;
-use Cake\I18n\FrozenTime;
-use Cake\ORM\Query;
+use Cake\I18n\DateTime;
+use Cake\ORM\Query\SelectQuery;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
-use Cake\Utility\Hash;
 
 /**
  * Objects Model
@@ -43,7 +43,7 @@ use Cake\Utility\Hash;
  * @property \BEdita\Core\Model\Table\TranslationsTable|\Cake\ORM\Association\HasMany $Translations
  * @property \BEdita\Core\Model\Table\ObjectPermissionsTable|\Cake\ORM\Association\HasMany $Permissions
  * @property \BEdita\Core\Model\Table\CaptionsTable|\Cake\ORM\Association\HasMany $Captions
- * @method \BEdita\Core\Model\Entity\ObjectEntity get($primaryKey, $options = [])
+ * @method \BEdita\Core\Model\Entity\ObjectEntity get(mixed $primaryKey, array|string $finder = 'all', \Psr\SimpleCache\CacheInterface|string|null $cache = null, \Closure|string|null $cacheKey = null, mixed ...$args)
  * @method \BEdita\Core\Model\Entity\ObjectEntity newEntity($data = null, array $options = [])
  * @method \BEdita\Core\Model\Entity\ObjectEntity[] newEntities(array $data, array $options = [])
  * @method \BEdita\Core\Model\Entity\ObjectEntity|bool save(\Cake\Datasource\EntityInterface $entity, $options = [])
@@ -65,7 +65,7 @@ class ObjectsTable extends Table
     /**
      * @inheritDoc
      */
-    protected $_validatorClass = ObjectsValidator::class;
+    protected string $_validatorClass = ObjectsValidator::class;
 
     /**
      * Special sort fields: virtual column names used for custom sort strategies
@@ -93,6 +93,10 @@ class ObjectsTable extends Table
         $this->setEntityClass(ObjectEntity::class);
         $this->setPrimaryKey('id');
         $this->setDisplayField('title');
+        $this->getSchema()
+            ->setColumnType('custom_props', 'json')
+            ->setColumnType('extra', 'json')
+            ->setColumnType('status', EnumType::from(ObjectEntityStatus::class));
 
         $this->addBehavior('BEdita/Core.ObjectModel');
         $this->addBehavior('BEdita/Core.Categories');
@@ -186,20 +190,22 @@ class ObjectsTable extends Table
      *
      * @param \Cake\Event\EventInterface $event Dispatched event.
      * @param \Cake\Datasource\EntityInterface $entity Entity being saved.
-     * @return bool
+     * @return void
      */
-    public function beforeSave(EventInterface $event, EntityInterface $entity)
+    public function beforeSave(EventInterface $event, EntityInterface $entity): void
     {
         $objectType = $this->ObjectTypes->get($entity->get('type'));
         if ($objectType->get('is_abstract') || !$objectType->get('enabled')) {
             // Cannot save objects of an abstract type.
-            return false;
+            $event->setResult(false);
+
+            return;
         }
         $this->checkStatus($entity);
         $this->checkLangTag($entity);
         $this->checkLocked($entity);
 
-        return true;
+        $event->setResult(true);
     }
 
     /**
@@ -208,7 +214,7 @@ class ObjectsTable extends Table
      * @param \Cake\Datasource\EntityInterface $entity Entity being saved.
      * @return void
      */
-    protected function checkLangTag(EntityInterface $entity)
+    protected function checkLangTag(EntityInterface $entity): void
     {
         if ($entity->isDirty('lang') && empty($entity->get('lang')) && Configure::check('I18n.default')) {
             $entity->set('lang', Configure::read('I18n.default'));
@@ -234,38 +240,41 @@ class ObjectsTable extends Table
     }
 
     /**
-     * {@inheritDoc}
-     *
-     * @codeCoverageIgnore
-     */
-    public function getSchema(): TableSchemaInterface
-    {
-        return parent::getSchema()
-            ->setColumnType('custom_props', 'json')
-            ->setColumnType('extra', 'json');
-    }
-
-    /**
      * Find by object type.
      *
      * You can pass a list of allowed object types to this finder:
      *
      * ```
-     * $table->find('type', [1, 'document', 'profiles', 1004]);
+     * $table->find('type', value: [1, 'document', 'profiles', 1004]);
      * ```
      *
-     * @param \Cake\ORM\Query $query Query object instance.
-     * @param array $options Array of acceptable object types.
-     * @return \Cake\ORM\Query
+     * If `value` named parameter is present it will be used otherwise you can specify the paramters to use.
+     * The following are equivalent:
+     *
+     * ```
+     * // example of equivalent signatures
+     * $table->find('type', value: 1);
+     * $table->find('type', value: ['eq' => 1]);
+     * $table->find('type', eq: 1);
+     *
+     * // other example of equivalent signatures
+     * $table->find('type', value: ['ne' => ['documents', 'profiles']]);
+     * $table->find('type', ne: ['documents', 'profiles']);
+     * ```
+     *
+     * @param \Cake\ORM\Query\SelectQuery $query Query object instance.
+     * @param array|string|int $args Named arguments. If `value` is present it will be used.
+     * @return \Cake\ORM\Query\SelectQuery
      */
-    protected function findType(Query $query, array $options)
+    public function findType(SelectQuery $query, array|string|int ...$args): SelectQuery
     {
+        $filter = $args['value'] ?? $args;
         $field = $this->aliasField($this->ObjectTypes->getForeignKey());
 
-        return $query->where(function (QueryExpression $exp) use ($field, $options) {
+        return $query->where(function (QueryExpression $exp) use ($field, $filter) {
             $in = [];
             $notIn = [];
-            foreach ($options as $key => $value) {
+            foreach ((array)$filter as $key => $value) {
                 if (!is_int($key) && !in_array($key, ['eq', '=', 'neq', 'ne', '!=', '<>'], true)) {
                     continue;
                 }
@@ -276,10 +285,10 @@ class ObjectsTable extends Table
                     $objectTypeIds = array_merge(
                         $objectTypeIds,
                         $this->ObjectTypes
-                            ->find('children', ['for' => $value->id])
-                            ->find('list', ['valueField' => $this->ObjectTypes->getPrimaryKey()])
+                            ->find('children', for: $value->id)
+                            ->find('list', valueField: $this->ObjectTypes->getPrimaryKey())
                             ->all()
-                            ->toList()
+                            ->toList(),
                     );
                 }
 
@@ -304,73 +313,82 @@ class ObjectsTable extends Table
     /**
      * Find by date range using `DateRanges` table findDate filter
      *
-     * @param \Cake\ORM\Query $query Query object instance.
-     * @param array $options Array of acceptable date range conditions.
-     * @return \Cake\ORM\Query
+     * @param \Cake\ORM\Query\SelectQuery $query Query object instance.
+     * @param array|string|null $start_date start date condition.
+     * @param array|string|null $end_date end date condition.
+     * @param string|null $from_date from date condition.
+     * @param string|null $to_date to date condition.
+     * @param \BEdita\Core\Model\Enum\DateRangesSortField|null $sortableField Special sortable field.
+     * @return \Cake\ORM\Query\SelectQuery
      */
-    protected function findDateRanges(Query $query, array $options)
-    {
-        $join = $this->dateRangesSubQueryJoin($query, $options);
-        if (!empty($join)) {
-            return $join;
+    public function findDateRanges(
+        SelectQuery $query,
+        array|string|null $start_date = null,
+        array|string|null $end_date = null,
+        ?string $from_date = null,
+        ?string $to_date = null,
+        ?DateRangesSortField $sortableField = null,
+    ): SelectQuery {
+        $options = array_filter(compact(
+            'start_date',
+            'end_date',
+            'from_date',
+            'to_date',
+        ));
+        if ($sortableField !== null) {
+            return $this->dateRangesSubQueryJoin($query, $sortableField, $options);
         }
 
         return $query->distinct([$this->aliasField($this->getPrimaryKey())])
-                ->innerJoinWith('DateRanges', function (Query $query) use ($options) {
-                    return $query->find('dateRanges', $options);
-                });
+            ->innerJoinWith('DateRanges', function (SelectQuery $query) use ($options) {
+                return $query->find('dateRanges', ...$options);
+            });
     }
 
     /**
-     * Create a date ranges subquery join if a special sort field is set.
+     * Create a date ranges subquery join using special sortable field.
      *
-     * @param \Cake\ORM\Query $query Query object instance.
-     * @param array $options Array of acceptable date range conditions.
-     * @return \Cake\ORM\Query|null
+     * @param \Cake\ORM\Query\SelectQuery $query Query object instance.
+     * @param \BEdita\Core\Model\Enum\DateRangesSortField $minMaxField Special sortable field.
+     * @param array $options Array of date range conditions.
+     * @return \Cake\ORM\Query\SelectQuery|null
      */
-    protected function dateRangesSubQueryJoin(Query $query, array $options): ?Query
-    {
-        $minMaxField = key(
-            array_intersect_key(
-                $options,
-                array_flip(self::DATERANGES_SORT_FIELDS)
-            )
-        );
-        if (empty($minMaxField)) {
-            return null;
-        }
-        unset($options[$minMaxField]);
+    protected function dateRangesSubQueryJoin(
+        SelectQuery $query,
+        DateRangesSortField $minMaxField,
+        array $options,
+    ): ?SelectQuery {
         $finder = 'dateRanges';
         if (empty($options)) {
             $finder = 'all';
         }
-        $subQuery = $this->DateRanges->find($finder, $options)
+        $subQuery = $this->DateRanges->find($finder, ...$options)
             ->select([
                 'date_ranges_object_id' => 'object_id',
-                'date_ranges_min_start_date' => $query->func()->min('start_date'),
-                'date_ranges_max_start_date' => $query->func()->max('start_date'),
-                'date_ranges_min_end_date' => $query->func()->min('end_date'),
-                'date_ranges_max_end_date' => $query->func()->max('end_date'),
+                DateRangesSortField::MIN_START_DATE->value => $query->func()->min('start_date'),
+                DateRangesSortField::MAX_START_DATE->value => $query->func()->max('start_date'),
+                DateRangesSortField::MIN_END_DATE->value => $query->func()->min('end_date'),
+                DateRangesSortField::MAX_END_DATE->value => $query->func()->max('end_date'),
             ])
-            ->group('object_id');
+            ->groupBy('object_id');
 
         return $query->distinct([
                 $this->aliasField($this->getPrimaryKey()),
-                $minMaxField,
+                $minMaxField->value,
             ])
             ->innerJoin(
                 ['DateBoundaries' => $subQuery],
-                ['DateBoundaries.date_ranges_object_id = ' . $this->aliasField($this->getPrimaryKey())]
+                ['DateBoundaries.date_ranges_object_id = ' . $this->aliasField($this->getPrimaryKey())],
             );
     }
 
     /**
      * Finder for my objects (i.e.: user created by logged-in user)
      *
-     * @param \Cake\ORM\Query $query Query object instance.
-     * @return \Cake\ORM\Query
+     * @param \Cake\ORM\Query\SelectQuery $query Query object instance.
+     * @return \Cake\ORM\Query\SelectQuery
      */
-    protected function findMine(Query $query)
+    public function findMine(SelectQuery $query): SelectQuery
     {
         return $query->where(function (QueryExpression $exp) {
             return $exp->eq($this->aliasField($this->CreatedByUsers->getForeignKey()), LoggedUser::id());
@@ -380,13 +398,13 @@ class ObjectsTable extends Table
     /**
      * Finder for objects having a certain `ancestor` on the tree.
      *
-     * @param \Cake\ORM\Query $query Query object instance.
-     * @param array $options Id or unique name of ancestor
-     * @return \Cake\ORM\Query
+     * @param \Cake\ORM\Query\SelectQuery $query Query object instance.
+     * @param string|int $parent Id or unique name of ancestor
+     * @return \Cake\ORM\Query\SelectQuery
      */
-    protected function findAncestor(Query $query, array $options)
+    public function findAncestor(SelectQuery $query, string|int $parent): SelectQuery
     {
-        $parentId = $this->getId((string)Hash::get($options, '0'));
+        $parentId = $this->getId($parent);
         $parentNode = $this->TreeNodes->find()
             ->where([
                 $this->TreeNodes->aliasField('object_id') => $parentId,
@@ -402,7 +420,7 @@ class ObjectsTable extends Table
                         return $exp
                             ->gt($this->TreeNodes->aliasField('tree_left'), $parentNode->get('tree_left'))
                             ->lt($this->TreeNodes->aliasField('tree_right'), $parentNode->get('tree_right'));
-                    })
+                    }),
             );
         });
     }
@@ -410,36 +428,36 @@ class ObjectsTable extends Table
     /**
      * Finder for objects having a certain `parent` on the tree.
      *
-     * @param \Cake\ORM\Query $query Query object instance.
-     * @param array $options Id or unique name of ancestor
-     * @return \Cake\ORM\Query
+     * @param \Cake\ORM\Query\SelectQuery $query Query object instance.
+     * @param string|int $value Id or unique name of ancestor
+     * @return \Cake\ORM\Query\SelectQuery
      */
-    protected function findParent(Query $query, array $options)
+    public function findParent(SelectQuery $query, string|int $parent): SelectQuery
     {
-        $parentId = $this->getId((string)Hash::get($options, '0'));
+        $parentId = $this->getId($parent);
 
         return $query
-            ->innerJoinWith('TreeNodes', function (Query $query) use ($parentId) {
+            ->innerJoinWith('TreeNodes', function (SelectQuery $query) use ($parentId) {
                 return $query->where([
                     $this->TreeNodes->aliasField('parent_id') => $parentId,
                 ]);
             })
-            ->order($this->TreeNodes->aliasField('tree_left'));
+            ->orderBy($this->TreeNodes->aliasField('tree_left'));
     }
 
     /**
      * Retrieve object translation for a language.
      *
-     * @param \Cake\ORM\Query $query Query object instance.
-     * @param array $options Lang options.
-     * @return \Cake\ORM\Query
+     * @param \Cake\ORM\Query\SelectQuery $query Query object instance.
+     * @param string $lang The translation language.
+     * @return \Cake\ORM\Query\SelectQuery
      */
-    protected function findTranslations(Query $query, array $options)
+    protected function findTranslations(SelectQuery $query, ?string $lang = null): SelectQuery
     {
-        return $query->contain('Translations', function (Query $query) use ($options) {
-            $query = $query->find('statusLevel', [Configure::read('Status.level', 'all')]);
-            if (isset($options['lang'])) {
-                $query = $query->where(['Translations.lang' => $options['lang']]);
+        return $query->contain('Translations', function (SelectQuery $query) use ($lang) {
+            $query = $query->find('statusLevel', level: Configure::read('Status.level', 'all'));
+            if ($lang !== null) {
+                $query = $query->where(['Translations.lang' => $lang]);
             }
 
             return $query;
@@ -451,10 +469,10 @@ class ObjectsTable extends Table
      *  - `status`, `publish_start` and `publish_end` should be acceptable via `findPublishable`
      *  - `deleted` should be 0
      *
-     * @param \Cake\ORM\Query $query Query object instance.
-     * @return \Cake\ORM\Query
+     * @param \Cake\ORM\Query\SelectQuery $query Query object instance.
+     * @return \Cake\ORM\Query\SelectQuery
      */
-    protected function findAvailable(Query $query): Query
+    protected function findAvailable(SelectQuery $query): SelectQuery
     {
         return $query->find('publishable')
             ->where([$this->aliasField('deleted') => 0]);
@@ -465,12 +483,12 @@ class ObjectsTable extends Table
      *  - `status` should be acceptable checking status 'level' configuration
      *  - `publish_start` and `publish_end` should be acceptable, checking 'Publish.checkDate' configuration
      *
-     * @param \Cake\ORM\Query $query Query object instance.
-     * @return \Cake\ORM\Query
+     * @param \Cake\ORM\Query\SelectQuery $query Query object instance.
+     * @return \Cake\ORM\Query\SelectQuery
      */
-    protected function findPublishable(Query $query): Query
+    protected function findPublishable(SelectQuery $query): SelectQuery
     {
-        $query = $query->find('statusLevel', [Configure::read('Status.level', 'all')]);
+        $query = $query->find('statusLevel', level: Configure::read('Status.level', 'all'));
         if ((bool)Configure::read('Publish.checkDate', false)) {
             $query = $query->find('publishDateAllowed');
         }
@@ -481,12 +499,12 @@ class ObjectsTable extends Table
     /**
      * Finder to check if `publish_start` and `publish_end` dates allow object publishing.
      *
-     * @param \Cake\ORM\Query $query Query object instance.
-     * @return \Cake\ORM\Query
+     * @param \Cake\ORM\Query\SelectQuery $query Query object instance.
+     * @return \Cake\ORM\Query\SelectQuery
      */
-    protected function findPublishDateAllowed(Query $query): Query
+    protected function findPublishDateAllowed(SelectQuery $query): SelectQuery
     {
-        $now = FrozenTime::now();
+        $now = DateTime::now();
 
         return $query->where(function (QueryExpression $exp) use ($now) {
             return $exp->and([
@@ -511,13 +529,12 @@ class ObjectsTable extends Table
     /**
      * Finder to get an object by ID or 'uname'
      *
-     * @param \Cake\ORM\Query $query Query object instance.
-     * @param array $options Array with ID or uname as first element.
-     * @return \Cake\ORM\Query
+     * @param \Cake\ORM\Query\SelectQuery $query Query object instance.
+     * @param string|int $id ID or uname.
+     * @return \Cake\ORM\Query\SelectQuery
      */
-    protected function findUnameId(Query $query, array $options)
+    protected function findUnameId(SelectQuery $query, string|int $id): SelectQuery
     {
-        $id = (string)Hash::get($options, '0');
         if (is_numeric($id)) {
             return $query->where([$this->aliasField('id') => (int)$id]);
         }
@@ -528,25 +545,25 @@ class ObjectsTable extends Table
     /**
      * Finder for categories by name.
      *
-     * @param \Cake\ORM\Query $query Query object instance.
-     * @param array $options Category names.
-     * @return \Cake\ORM\Query
+     * @param \Cake\ORM\Query\SelectQuery $query Query object instance.
+     * @param array<string>|string $name Category names.
+     * @return \Cake\ORM\Query\SelectQuery
      */
-    protected function findCategories(Query $query, array $options)
+    public function findCategories(SelectQuery $query, array|string $name): SelectQuery
     {
-        return $this->categoriesQuery('Categories', $query, $options);
+        return $this->categoriesQuery('Categories', $query, $name);
     }
 
     /**
      * Finder for tags by name.
      *
-     * @param \Cake\ORM\Query $query Query object instance.
-     * @param array $options Tag names.
-     * @return \Cake\ORM\Query
+     * @param \Cake\ORM\Query\SelectQuery $query Query object instance.
+     * @param array<string>|string $name Tag names.
+     * @return \Cake\ORM\Query\SelectQuery
      */
-    protected function findTags(Query $query, array $options)
+    public function findTags(SelectQuery $query, array|string $name): SelectQuery
     {
-        return $this->categoriesQuery('Tags', $query, $options);
+        return $this->categoriesQuery('Tags', $query, $name);
     }
 
     /**
@@ -554,23 +571,23 @@ class ObjectsTable extends Table
      * $options array MUST contain a list of category/tag names or a single element with a comma separated list.
      *
      * @param string $assoc Association name, 'Tags' or 'Categories'
-     * @param \Cake\ORM\Query $query Query object instance.
-     * @param array $options Tag or category names.
-     * @return \Cake\ORM\Query
+     * @param \Cake\ORM\Query\SelectQuery $query Query object instance.
+     * @param array<string>|string $name Tag or category names.
+     * @return \Cake\ORM\Query\SelectQuery
      */
-    protected function categoriesQuery(string $assoc, Query $query, array $options)
+    protected function categoriesQuery(string $assoc, SelectQuery $query, array|string $name): SelectQuery
     {
         /**
          * If a single element is passed with comma separated values
          * a new array is created fromm it.
          */
-        if (count($options) === 1) {
-            $options = array_filter(explode(',', reset($options)));
+        if (is_string($name)) {
+            $name = array_filter(explode(',', $name));
         }
 
         return $query->distinct([$this->aliasField('id')])
-            ->innerJoinWith($assoc, function (Query $query) use ($assoc, $options) {
-                return $query->where([sprintf('%s.name IN', $assoc) => $options]);
+            ->innerJoinWith($assoc, function (SelectQuery $query) use ($assoc, $name) {
+                return $query->where([sprintf('%s.name IN', $assoc) => $name]);
             });
     }
 }

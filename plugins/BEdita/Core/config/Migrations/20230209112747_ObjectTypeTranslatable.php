@@ -1,10 +1,20 @@
 <?php
 declare(strict_types=1);
 
-use Migrations\AbstractMigration;
+use Migrations\BaseMigration;
 
-class ObjectTypeTranslatable extends AbstractMigration
+class ObjectTypeTranslatable extends BaseMigration
 {
+    /**
+     * {@inheritDoc}
+     *
+     * @see https://github.com/cakephp/migrations/issues/741, https://github.com/cakephp/migrations/pull/745
+     */
+    public function useTransactions(): bool
+    {
+        return $this->getAdapter()->getAdapterType() === 'sqlite' ? false : parent::useTransactions();
+    }
+
     /**
      * @inheritDoc
      */

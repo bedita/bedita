@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\API\Test\TestCase\Policy;
 
 use Authentication\Identity as AuthenticationIdentity;
@@ -29,14 +28,16 @@ use Cake\Http\Exception\UnauthorizedException;
 use Cake\Http\ServerRequest;
 use Cake\ORM\Locator\LocatorAwareTrait;
 use Cake\TestSuite\TestCase;
+use Exception;
 use Laminas\Diactoros\Uri;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Psr\Http\Message\UriInterface;
 
 /**
  * {@see \BEdita\API\Policy\EndpointPolicy} Test Case.
- *
- * @coversDefaultClass \BEdita\API\Policy\EndpointPolicy
  */
+#[CoversClass(EndpointPolicy::class)]
 class EndpointPolicyTest extends TestCase
 {
     use LocatorAwareTrait;
@@ -46,7 +47,7 @@ class EndpointPolicyTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.Roles',
         'plugin.BEdita/Core.Endpoints',
@@ -69,7 +70,7 @@ class EndpointPolicyTest extends TestCase
      *
      * @return array
      */
-    public function canAccessProvider()
+    public static function canAccessProvider(): array
     {
         $service = new AuthorizationService(new MapResolver());
         $arrayIdentity = new AuthenticationIdentity([
@@ -142,20 +143,16 @@ class EndpointPolicyTest extends TestCase
      * @param string $requestMethod Request method.
      * @param string|null $attribute Request attribute to set.
      * @return void
-     * @dataProvider canAccessProvider()
-     * @covers ::canAccess()
-     * @covers ::checkPermissions()
-     * @covers ::getUser()
-     * @covers ::isAuthorized()
      */
+    #[DataProvider('canAccessProvider')]
     public function testCanAccess(
         $expected,
         UriInterface $uri,
         ?IdentityInterface $identity,
         $requestMethod = 'GET',
-        ?string $attribute = null
+        ?string $attribute = null,
     ) {
-        if ($expected instanceof \Exception) {
+        if ($expected instanceof Exception) {
             $this->expectException(get_class($expected));
             $this->expectExceptionMessage($expected->getMessage());
         }
@@ -179,8 +176,6 @@ class EndpointPolicyTest extends TestCase
      * Test default permissive behavior.
      *
      * @return void
-     * @covers ::canAccess()
-     * @covers ::checkPermissions()
      */
     public function testAllowByDefault()
     {
@@ -205,8 +200,6 @@ class EndpointPolicyTest extends TestCase
      * Test default permissive behavior on an unknown endpoint.
      *
      * @return void
-     * @covers ::canAccess()
-     * @covers ::checkPermissions()
      */
     public function testAllowByDefaultUnknownEndpoint()
     {
@@ -231,12 +224,10 @@ class EndpointPolicyTest extends TestCase
      * Test default block of anonymous writes on an endpoint unless explicitly allowed.
      *
      * @return void
-     * @covers ::canAccess()
-     * @covers ::checkPermissions()
      */
     public function testBlockAnonymousWritesByDefault()
     {
-        $this->expectException(\Cake\Http\Exception\UnauthorizedException::class);
+        $this->expectException(UnauthorizedException::class);
         $this->expectExceptionMessage('Unauthorized');
         // Ensure no permissions apply to anonymous user on `/home` endpoint.
         $this->fetchTable('EndpointPermissions')->deleteAll(['role_id IS' => null, 'endpoint_id' => 2]);
@@ -255,11 +246,10 @@ class EndpointPolicyTest extends TestCase
      * Test default block of anonymous actions.
      *
      * @return void
-     * @covers ::canAccess()
      */
     public function testBlockUnloggedByDefault()
     {
-        $this->expectException(\Cake\Http\Exception\UnauthorizedException::class);
+        $this->expectException(UnauthorizedException::class);
         $this->expectExceptionMessage('Unauthorized');
         // Ensure no permissions apply to anonymous user on `/home` endpoint.
         $this->fetchTable('EndpointPermissions')->deleteAll(['role_id IS' => null, 'endpoint_id' => 2]);

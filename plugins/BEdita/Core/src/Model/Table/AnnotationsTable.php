@@ -12,12 +12,10 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Model\Table;
 
 use BEdita\Core\Search\SimpleSearchTrait;
 use BEdita\Core\Utility\LoggedUser;
-use Cake\Database\Schema\TableSchemaInterface;
 use Cake\Datasource\EntityInterface;
 use Cake\Event\EventInterface;
 use Cake\Http\Exception\ForbiddenException;
@@ -30,15 +28,22 @@ use Cake\Validation\Validator;
  *
  * @property \Cake\ORM\Association\BelongsTo $Objects
  * @property \Cake\ORM\Association\BelongsTo $Users
- * @method \BEdita\Core\Model\Entity\Annotation get($primaryKey, $options = [])
- * @method \BEdita\Core\Model\Entity\Annotation newEntity($data = null, array $options = [])
+ * @method \BEdita\Core\Model\Entity\Annotation get(mixed $primaryKey, array|string $finder = 'all', \Psr\SimpleCache\CacheInterface|string|null $cache = null, \Closure|string|null $cacheKey = null, mixed ...$args)
+ * @method \BEdita\Core\Model\Entity\Annotation newEntity(array $data, array $options = [])
  * @method \BEdita\Core\Model\Entity\Annotation[] newEntities(array $data, array $options = [])
- * @method \BEdita\Core\Model\Entity\Annotation|bool save(\Cake\Datasource\EntityInterface $entity, $options = [])
+ * @method \BEdita\Core\Model\Entity\Annotation|false save(\Cake\Datasource\EntityInterface $entity, array $options = [])
  * @method \BEdita\Core\Model\Entity\Annotation patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
- * @method \BEdita\Core\Model\Entity\Annotation[] patchEntities($entities, array $data, array $options = [])
- * @method \BEdita\Core\Model\Entity\Annotation findOrCreate($search, callable $callback = null, $options = [])
+ * @method \BEdita\Core\Model\Entity\Annotation[] patchEntities(iterable $entities, array $data, array $options = [])
+ * @method \BEdita\Core\Model\Entity\Annotation findOrCreate(\Cake\ORM\Query\SelectQuery|callable|array $search, ?callable $callback = null, array $options = [])
  * @mixin \Cake\ORM\Behavior\TimestampBehavior
  * @mixin \BEdita\Core\Model\Behavior\UserModifiedBehavior
+ * @method \BEdita\Core\Model\Entity\Annotation newEmptyEntity()
+ * @method \BEdita\Core\Model\Entity\Annotation saveOrFail(\Cake\Datasource\EntityInterface $entity, array $options = [])
+ * @method \BEdita\Core\Model\Entity\Annotation[]|\Cake\Datasource\ResultSetInterface<\BEdita\Core\Model\Entity\Annotation>|false saveMany(iterable $entities, array $options = [])
+ * @method \BEdita\Core\Model\Entity\Annotation[]|\Cake\Datasource\ResultSetInterface<\BEdita\Core\Model\Entity\Annotation> saveManyOrFail(iterable $entities, array $options = [])
+ * @method \BEdita\Core\Model\Entity\Annotation[]|\Cake\Datasource\ResultSetInterface<\BEdita\Core\Model\Entity\Annotation>|false deleteMany(iterable $entities, array $options = [])
+ * @method \BEdita\Core\Model\Entity\Annotation[]|\Cake\Datasource\ResultSetInterface<\BEdita\Core\Model\Entity\Annotation> deleteManyOrFail(iterable $entities, array $options = [])
+ * @mixin \BEdita\Core\Model\Behavior\SearchableBehavior
  */
 class AnnotationsTable extends Table
 {
@@ -54,6 +59,7 @@ class AnnotationsTable extends Table
         $this->setTable('annotations');
         $this->setDisplayField('id');
         $this->setPrimaryKey('id');
+        $this->getSchema()->setColumnType('params', 'json');
 
         $this->addBehavior('Timestamp');
         $this->addBehavior('BEdita/Core.UserModified', [
@@ -118,16 +124,6 @@ class AnnotationsTable extends Table
     }
 
     /**
-     * {@inheritDoc}
-     *
-     * @codeCoverageIgnore
-     */
-    public function getSchema(): TableSchemaInterface
-    {
-        return parent::getSchema()->setColumnType('params', 'json');
-    }
-
-    /**
      * Before save checks:
      *  - `user_id` must match LoggedUser::id() on entity update
      *  - `object_id` cannot be modified
@@ -137,7 +133,7 @@ class AnnotationsTable extends Table
      * @return void
      * @throws \BEdita\Core\Exception\ForbiddenException on save check failure
      */
-    public function beforeSave(EventInterface $event, EntityInterface $entity)
+    public function beforeSave(EventInterface $event, EntityInterface $entity): void
     {
         if (!$entity->isNew() && $entity->get('user_id') !== LoggedUser::id()) {
             throw new ForbiddenException(
@@ -145,8 +141,8 @@ class AnnotationsTable extends Table
                     'bedita',
                     'Could not change annotation "{0}" of user "{1}"',
                     $entity->get('id'),
-                    $entity->get('user_id')
-                )
+                    $entity->get('user_id'),
+                ),
             );
         }
         if (!$entity->isNew() && $entity->isDirty('object_id')) {
@@ -154,8 +150,8 @@ class AnnotationsTable extends Table
                 __d(
                     'bedita',
                     'Could not change object id on annotation "{0}"',
-                    $entity->get('id')
-                )
+                    $entity->get('id'),
+                ),
             );
         }
     }
@@ -168,7 +164,7 @@ class AnnotationsTable extends Table
      * @return void
      * @throws \BEdita\Core\Exception\ForbiddenException on delete check failure
      */
-    public function beforeDelete(EventInterface $event, EntityInterface $entity)
+    public function beforeDelete(EventInterface $event, EntityInterface $entity): void
     {
         if ($entity->get('user_id') !== LoggedUser::id()) {
             throw new ForbiddenException(
@@ -176,8 +172,8 @@ class AnnotationsTable extends Table
                     'bedita',
                     'Could not delete annotation "{0}" of user "{1}"',
                     $entity->get('id'),
-                    $entity->get('user_id')
-                )
+                    $entity->get('user_id'),
+                ),
             );
         }
     }

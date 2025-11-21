@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Model\Entity;
 
 use Cake\ORM\Entity;
@@ -34,11 +33,10 @@ use Cake\ORM\TableRegistry;
  * @property string $slug
  * @property array|null $params
  * @property int|string $position
- *
  * @property \BEdita\Core\Model\Entity\ObjectEntity $object
  * @property \BEdita\Core\Model\Entity\ObjectEntity $parent_object
  * @property \BEdita\Core\Model\Entity\ObjectEntity $root_object
- * @property \BEdita\Core\Model\Entity\Tree $parent_node
+ * @property \BEdita\Core\Model\Entity\Tree|null $parent_node
  * @property \BEdita\Core\Model\Entity\Tree[] $child_nodes
  * @since 4.0.0
  */
@@ -47,7 +45,7 @@ class Tree extends Entity
     /**
      * @inheritDoc
      */
-    protected $_accessible = [
+    protected array $_accessible = [
         '*' => false,
         'object_id' => true,
         'parent_id' => true,
@@ -73,7 +71,7 @@ class Tree extends Entity
      * @param int|null $parentId The value to set
      * @return int|null
      */
-    protected function _setParentId($parentId)
+    protected function _setParentId(?int $parentId): ?int
     {
         if (array_key_exists('parent_id', $this->_fields) && $this->_fields['parent_id'] === $parentId) {
             return $parentId;
@@ -109,7 +107,7 @@ class Tree extends Entity
      * @param \BEdita\Core\Model\Entity\Folder|null $folder The folder entity to set as parent
      * @return \BEdita\Core\Model\Entity\Folder|null
      */
-    protected function _setParentObject(?Folder $folder = null)
+    protected function _setParentObject(?Folder $folder = null): ?Folder
     {
         $parentId = null;
         if ($folder !== null) {

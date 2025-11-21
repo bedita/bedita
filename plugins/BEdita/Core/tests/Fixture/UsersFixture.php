@@ -14,8 +14,8 @@ declare(strict_types=1);
  */
 namespace BEdita\Core\Test\Fixture;
 
-use Cake\Auth\DefaultPasswordHasher;
-use Cake\Auth\WeakPasswordHasher;
+use Authentication\PasswordHasher\DefaultPasswordHasher;
+use Authentication\PasswordHasher\LegacyPasswordHasher;
 use Cake\TestSuite\Fixture\TestFixture;
 
 /**
@@ -32,7 +32,7 @@ class UsersFixture extends TestFixture
             [
                 'id' => 1,
                 'username' => 'first user',
-                'password_hash' => (new WeakPasswordHasher(['hashType' => 'md5']))->hash('password1'),
+                'password_hash' => (new LegacyPasswordHasher(['hashType' => 'md5']))->hash('password1'),
                 'blocked' => 0,
                 'last_login' => null,
                 'last_login_err' => null,
@@ -54,7 +54,7 @@ class UsersFixture extends TestFixture
             [
                 'id' => 20,
                 'username' => 'third user',
-                'password_hash' => (new WeakPasswordHasher(['hashType' => 'md5']))->hash('password3'),
+                'password_hash' => (new LegacyPasswordHasher(['hashType' => 'md5']))->hash('password3'),
                 'blocked' => 0,
                 'last_login' => null,
                 'last_login_err' => null,

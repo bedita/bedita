@@ -12,12 +12,12 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Model\Entity;
 
 use BEdita\Core\Utility\JsonApiSerializable;
 use Cake\ORM\Entity;
 use Cake\Utility\Inflector;
+use stdClass;
 
 /**
  * Relation Entity
@@ -27,14 +27,14 @@ use Cake\Utility\Inflector;
  * @property string $label
  * @property string $inverse_name
  * @property string $inverse_label
- * @property string $description
- * @property array $params
+ * @property string|null $description
+ * @property string|null $params
  * @property string $alias
  * @property string $inverse_alias
- *
  * @property \BEdita\Core\Model\Entity\ObjectRelation[] $object_relations
  * @property \BEdita\Core\Model\Entity\ObjectType[] $left_object_types
  * @property \BEdita\Core\Model\Entity\ObjectType[] $right_object_types
+ * @property \BEdita\Core\Model\Entity\RelationType $_joinData
  */
 class Relation extends Entity implements JsonApiSerializable
 {
@@ -43,7 +43,7 @@ class Relation extends Entity implements JsonApiSerializable
     /**
      * @inheritDoc
      */
-    protected $_accessible = [
+    protected array $_accessible = [
         '*' => false,
         'name' => true,
         'label' => true,
@@ -56,7 +56,7 @@ class Relation extends Entity implements JsonApiSerializable
     /**
      * @inheritDoc
      */
-    protected $_hidden = [
+    protected array $_hidden = [
         'object_relations',
     ];
 
@@ -73,7 +73,7 @@ class Relation extends Entity implements JsonApiSerializable
      * @param string $name Relation name.
      * @return string
      */
-    protected function _setName($name)
+    protected function _setName(string $name): string
     {
         return Inflector::underscore($name);
     }
@@ -84,7 +84,7 @@ class Relation extends Entity implements JsonApiSerializable
      * @param string $inverseName Relation inverse name.
      * @return string
      */
-    protected function _setInverseName($inverseName)
+    protected function _setInverseName(string $inverseName): string
     {
         return Inflector::underscore($inverseName);
     }
@@ -94,7 +94,7 @@ class Relation extends Entity implements JsonApiSerializable
      *
      * @return string
      */
-    protected function _getAlias()
+    protected function _getAlias(): string
     {
         return Inflector::camelize($this->name);
     }
@@ -104,7 +104,7 @@ class Relation extends Entity implements JsonApiSerializable
      *
      * @return string
      */
-    protected function _getInverseAlias()
+    protected function _getInverseAlias(): string
     {
         return Inflector::camelize($this->inverse_name);
     }
@@ -113,13 +113,13 @@ class Relation extends Entity implements JsonApiSerializable
      * Magic setter for params.
      *
      * @param array $params Relation params.
-     * @return array
+     * @return array|null
      */
-    protected function _setParams($params)
+    protected function _setParams(?array $params): ?array
     {
         if (is_array($params) && !empty($params)) {
             $params = array_merge([
-                'definitions' => new \stdClass(),
+                'definitions' => new stdClass(),
                 '$schema' => self::DEFAULT_SCHEMA,
                 'type' => 'object',
             ], $params);

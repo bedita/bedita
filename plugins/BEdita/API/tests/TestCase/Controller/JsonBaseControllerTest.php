@@ -18,18 +18,17 @@ use Authentication\AuthenticationService;
 use BEdita\API\Controller\JsonBaseController;
 use Cake\Http\ServerRequest;
 use Cake\TestSuite\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
 
 /**
- * BEdita\API\Controller\JsonBaseController Test Case
- *
- * @coversDefaultClass  \BEdita\API\Controller\JsonBaseController
+ * {@see \BEdita\API\Controller\JsonBaseController} Test Case
  */
+#[CoversClass(JsonBaseController::class)]
 class JsonBaseControllerTest extends TestCase
 {
     /**
      * Test `initialize()` method
      *
-     * @covers ::initialize()
      * @return void
      */
     public function testInitialize(): void
@@ -48,8 +47,6 @@ class JsonBaseControllerTest extends TestCase
         $controller = new class ($request) extends JsonBaseController {
         };
 
-        static::assertEquals('Json', $controller->RequestHandler->getConfig('viewClassMap.json'));
         static::assertFalse($controller->components()->has('JsonApi'));
-        static::assertEquals('Json', $controller->viewBuilder()->getClassName());
     }
 }

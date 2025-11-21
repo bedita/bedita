@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Event;
 
 use BEdita\Core\Filesystem\Thumbnail;
@@ -90,7 +89,7 @@ class ImageThumbsHandler implements EventListenerInterface
             return;
         }
         $image = $this->fetchTable('Images')
-            ->find('type', ['images'])
+            ->find('type', value: ['images'])
             ->where(['id' => $objectId])
             ->first();
         if (empty($image) || !$image instanceof ObjectEntity) {

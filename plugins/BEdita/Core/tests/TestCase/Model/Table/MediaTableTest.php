@@ -15,16 +15,18 @@ declare(strict_types=1);
 namespace BEdita\Core\Test\TestCase\Model\Table;
 
 use BEdita\Core\Model\Action\SaveEntityAction;
+use BEdita\Core\Model\Table\MediaTable;
 use BEdita\Core\Test\Utility\TestFilesystemTrait;
 use BEdita\Core\Utility\LoggedUser;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * {@see BEdita\Core\Model\Table\MediaTable} Test Case
- *
- * @coversDefaultClass \BEdita\Core\Model\Table\MediaTable
  */
+#[CoversClass(MediaTable::class)]
 class MediaTableTest extends TestCase
 {
     use TestFilesystemTrait;
@@ -41,7 +43,7 @@ class MediaTableTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.History',
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.Objects',
@@ -88,7 +90,7 @@ class MediaTableTest extends TestCase
      *
      * @return array
      */
-    public function saveProvider()
+    public static function saveProvider(): array
     {
         return [
             'valid' => [
@@ -129,9 +131,8 @@ class MediaTableTest extends TestCase
      * @param bool $changed
      * @param array $data
      * @return void
-     * @dataProvider saveProvider
-     * @coversNothing
      */
+    #[DataProvider('saveProvider')]
     public function testSave(bool $changed, array $data)
     {
         $entity = $this->Media->newEntity($data);
@@ -151,8 +152,6 @@ class MediaTableTest extends TestCase
      * Test delete of a media with stream(s).
      *
      * @return void
-     * @covers ::beforeDelete()
-     * @covers ::afterDelete()
      */
     public function testDeleteMediaAndStream(): void
     {

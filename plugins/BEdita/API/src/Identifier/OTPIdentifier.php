@@ -14,10 +14,12 @@ declare(strict_types=1);
  */
 namespace BEdita\API\Identifier;
 
+use AllowDynamicProperties;
+use ArrayAccess;
 use Authentication\Identifier\AbstractIdentifier;
 use Authentication\Identifier\Resolver\ResolverAwareTrait;
 use Cake\Event\EventDispatcherTrait;
-use Cake\I18n\FrozenTime;
+use Cake\I18n\DateTime;
 use Cake\ORM\Locator\LocatorAwareTrait;
 use Cake\Utility\Hash;
 use Cake\Utility\Security;
@@ -26,7 +28,7 @@ use Cake\Utility\Text;
 /**
  * @property \BEdita\Core\Model\Table\UserTokensTable $UserTokens
  */
-#[\AllowDynamicProperties]
+#[AllowDynamicProperties]
 class OTPIdentifier extends AbstractIdentifier
 {
     use EventDispatcherTrait;
@@ -36,7 +38,7 @@ class OTPIdentifier extends AbstractIdentifier
     /**
      * @inheritDoc
      */
-    protected $_defaultConfig = [
+    protected array $_defaultConfig = [
         'resolver' => [
             'className' => 'Authentication.Orm',
             'userModel' => 'Users',
@@ -51,7 +53,7 @@ class OTPIdentifier extends AbstractIdentifier
     /**
      * @inheritDoc
      */
-    public function identify(array $credentials)
+    public function identify(array $credentials): ArrayAccess|array|null
     {
         $username = (string)Hash::get($credentials, 'username');
         if (empty($username)) {
@@ -81,7 +83,7 @@ class OTPIdentifier extends AbstractIdentifier
      * @param string $token The secret token
      * @return \ArrayAccess|array|null User data array on success, null on failure
      */
-    protected function otpAccess(string $username, string $authCode, string $token)
+    protected function otpAccess(string $username, string $authCode, string $token): ArrayAccess|array|null
     {
         $result = $this->getResolver()->find(compact('username'));
         if (empty($result)) {
@@ -113,7 +115,7 @@ class OTPIdentifier extends AbstractIdentifier
      * @param string $username User name
      * @return \ArrayAccess|array|null Authorization array on success, null on failure
      */
-    protected function otpRequest($username)
+    protected function otpRequest(string $username): ArrayAccess|array|null
     {
         $result = $this->getResolver()->find(compact('username'));
         if (empty($result)) {
@@ -127,7 +129,7 @@ class OTPIdentifier extends AbstractIdentifier
             'client_token' => $this->generateClientToken(),
             'secret_token' => $this->generateSecretToken(),
             'token_type' => 'otp',
-            'expires' => new FrozenTime($this->getConfig('expiry')),
+            'expires' => new DateTime($this->getConfig('expiry')),
         ];
 
         $entity = $this->UserTokens->newEntity($data);

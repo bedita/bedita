@@ -12,16 +12,19 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\ORM;
 
+use BEdita\Core\Model\Table\ObjectsTable;
 use BEdita\Core\ORM\Locator\TableLocator;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
- * @coversDefaultClass \BEdita\Core\ORM\Locator\TableLocator
+ * {@see \BEdita\Core\ORM\Locator\TableLocator} Test Case
  */
+#[CoversClass(TableLocator::class)]
 class TableLocatorTest extends TestCase
 {
     /**
@@ -29,7 +32,7 @@ class TableLocatorTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.Relations',
         'plugin.BEdita/Core.RelationTypes',
@@ -76,7 +79,7 @@ class TableLocatorTest extends TestCase
      *
      * @return array
      */
-    public function getClassNameProvider()
+    public static function getClassNameProvider(): array
     {
         return [
             'withPluginName' => [
@@ -96,7 +99,7 @@ class TableLocatorTest extends TestCase
                 'BEdita/Core.ThisTableDoesNotExists',
             ],
             'fallbackObjectType' => [
-                'BEdita\Core\Model\Table\ObjectsTable',
+                ObjectsTable::class,
                 'Documents',
             ],
         ];
@@ -109,9 +112,8 @@ class TableLocatorTest extends TestCase
      * @param string $alias Table alias.
      * @param array $options Table options.
      * @return void
-     * @dataProvider getClassNameProvider()
-     * @covers ::_getClassName()
      */
+    #[DataProvider('getClassNameProvider')]
     public function testGetClassName($expected, $alias, array $options = [])
     {
         $result = $this->TableLocator->get($alias, $options);

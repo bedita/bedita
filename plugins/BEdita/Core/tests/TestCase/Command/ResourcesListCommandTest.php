@@ -12,20 +12,21 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Test\TestCase\Command;
 
+use BEdita\Core\Command\ResourcesListCommand;
 use BEdita\Core\Job\ServiceRegistry;
 use Cake\Command\Command;
 use Cake\Console\TestSuite\ConsoleIntegrationTestTrait;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Inflector;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * {@see BEdita\Core\Command\ResourcesListCommand} Test Case
- *
- * @coversDefaultClass \BEdita\Core\Command\ResourcesListCommand
  */
+#[CoversClass(ResourcesListCommand::class)]
 class ResourcesListCommandTest extends TestCase
 {
     use ConsoleIntegrationTestTrait;
@@ -35,7 +36,7 @@ class ResourcesListCommandTest extends TestCase
      *
      * @var array
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.PropertyTypes',
         'plugin.BEdita/Core.Properties',
@@ -54,18 +55,10 @@ class ResourcesListCommandTest extends TestCase
     /**
      * @inheritDoc
      */
-    protected function setUp(): void
-    {
-        parent::setUp();
-        $this->useCommandRunner();
-    }
-
-    /**
-     * @inheritDoc
-     */
     public function tearDown(): void
     {
         parent::tearDown();
+
         ServiceRegistry::reset();
     }
 
@@ -73,8 +66,6 @@ class ResourcesListCommandTest extends TestCase
      * Test buildOptionParser method
      *
      * @return void
-     * @covers ::buildOptionParser()
-     * @covers ::getDescription()
      */
     public function testBuildOptionParser()
     {
@@ -91,7 +82,7 @@ class ResourcesListCommandTest extends TestCase
      *
      * @return array
      */
-    public function executeProvider(): array
+    public static function executeProvider(): array
     {
         return [
             'applications, no filter' => [
@@ -144,9 +135,8 @@ class ResourcesListCommandTest extends TestCase
      * @param string $resourceFilter Resource ID.
      * @param string $expected Expected output.
      * @return void
-     * @covers ::execute()
-     * @dataProvider executeProvider()
      */
+    #[DataProvider('executeProvider')]
     public function testExecute(string $resourceType, string $resourceFilter, string $expected): void
     {
         $tableName = Inflector::camelize($resourceType);
@@ -167,12 +157,11 @@ class ResourcesListCommandTest extends TestCase
      * Test list resource with wrong type
      *
      * @return void
-     * @covers ::execute()
      */
     public function testExecuteWrongType(): void
     {
         $this->exec('resources_list --type wrong', ['y']);
         $this->assertExitCode(Command::CODE_ERROR);
-        $this->assertErrorContains('"wrong" is not a valid value for --type. Please use one of "applications, roles, endpoints, endpoint_permissions"');
+        $this->assertErrorContains('`wrong` is not a valid value for `--type`. Please use one of `applications|roles|endpoints|endpoint_permissions`');
     }
 }

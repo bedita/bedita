@@ -21,10 +21,14 @@ use Cake\Database\Driver\Postgres;
 use Cake\Datasource\ConnectionManager;
 use Cake\ORM\Table;
 use Cake\TestSuite\TestCase;
+use Exception;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
- * @coversDefaultClass \BEdita\Core\Search\Adapter\SimpleAdapter
+ * {@see \BEdita\Core\Search\Adapter\SimpleAdapter} Test Case
  */
+#[CoversClass(SimpleAdapter::class)]
 class SimpleAdapterTest extends TestCase
 {
     /**
@@ -37,7 +41,7 @@ class SimpleAdapterTest extends TestCase
     /**
      * @inheritDoc
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.FakeAnimals',
         'plugin.BEdita/Core.FakeMammals',
         'plugin.BEdita/Core.FakeFelines',
@@ -75,7 +79,7 @@ class SimpleAdapterTest extends TestCase
      *
      * @return array
      */
-    public function getFieldsProvider()
+    public static function getFieldsProvider(): array
     {
         return [
             'default' => [
@@ -119,10 +123,8 @@ class SimpleAdapterTest extends TestCase
      * @param array $config Behavior configuration.
      * @param string $table Table.
      * @return void
-     * @dataProvider getFieldsProvider()
-     * @covers ::getAllFields()
-     * @covers ::getFields()
      */
+    #[DataProvider('getFieldsProvider')]
     public function testGetFields(array $expected, array $config = [], $table = 'FakeAnimals')
     {
         $table = $this->fetchTable($table);
@@ -148,7 +150,7 @@ class SimpleAdapterTest extends TestCase
      *
      * @return array
      */
-    public function searchProvider()
+    public static function searchProvider()
     {
         return [
             'basic' => [
@@ -254,18 +256,15 @@ class SimpleAdapterTest extends TestCase
      * @param string $tableName Table name
      * @param bool $caseInsensitive Whether test case relies on case-insensitive comparison.
      * @return void
-     * @dataProvider searchProvider()
-     * @covers ::search()
-     * @covers ::prepareText()
-     * @covers ::getValidator()
      */
+    #[DataProvider('searchProvider')]
     public function testSearch($expected, string $text, array $options = [], $tableName = 'FakeAnimals', array $fields = [], bool $caseInsensitive = false)
     {
         if ($caseInsensitive && ConnectionManager::get('default')->getDriver() instanceof Postgres) {
             static::markTestSkipped('Case-insensitive test cases are skipped on Postgres');
         }
 
-        if ($expected instanceof \Exception) {
+        if ($expected instanceof Exception) {
             $this->expectExceptionObject($expected);
         }
 

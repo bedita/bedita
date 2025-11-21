@@ -14,6 +14,7 @@ declare(strict_types=1);
  */
 namespace BEdita\Core\Configure\Engine;
 
+use AllowDynamicProperties;
 use Cake\Core\Configure\ConfigEngineInterface;
 use Cake\Database\Exception\DatabaseException;
 use Cake\ORM\Locator\LocatorAwareTrait;
@@ -34,7 +35,7 @@ use Cake\ORM\Locator\LocatorAwareTrait;
  * @since 4.0.0
  * @property \BEdita\Core\Model\Table\ConfigTable $Config
  */
-#[\AllowDynamicProperties]
+#[AllowDynamicProperties]
 class DatabaseConfig implements ConfigEngineInterface
 {
     use LocatorAwareTrait;
@@ -42,9 +43,9 @@ class DatabaseConfig implements ConfigEngineInterface
     /**
      * Application id
      *
-     * @var int
+     * @var int|null
      */
-    protected $applicationId = null;
+    protected ?int $applicationId = null;
 
     /**
      * Reserved keys not storable in database
@@ -58,7 +59,7 @@ class DatabaseConfig implements ConfigEngineInterface
      *
      * @param int $applicationId Application id
      */
-    public function __construct($applicationId = null)
+    public function __construct(?int $applicationId = null)
     {
         $this->applicationId = $applicationId;
         $this->Config = $this->fetchTable('Config');
@@ -72,7 +73,7 @@ class DatabaseConfig implements ConfigEngineInterface
      * @param string|null $key The group of parameters to read from database (see `config.context`).
      * @return array Parsed configuration values.
      */
-    public function read($key): array
+    public function read(?string $key): array
     {
         return $this->Config->fetchConfig($this->applicationId, $key)
             ->all()
@@ -99,7 +100,7 @@ class DatabaseConfig implements ConfigEngineInterface
      * @param array $data The data to write.
      * @return bool Success.
      */
-    public function dump($key, array $data): bool
+    public function dump(string $key, array $data): bool
     {
         $context = $key;
         $entities = [];
@@ -110,7 +111,7 @@ class DatabaseConfig implements ConfigEngineInterface
             $content = is_array($content) ? json_encode($content) : static::valueToString($content);
             $entities[] = $this->Config->newEntity(compact('name', 'context', 'content'));
         }
-        $this->Config->getConnection()->transactional(function () use ($entities) {
+        $this->Config->getConnection()->transactional(function () use ($entities): void {
             foreach ($entities as $entity) {
                 if (!$this->Config->save($entity, ['atomic' => false])) {
                     throw new DatabaseException(sprintf('Config save failed: %s', print_r($entity->getErrors(), true)));
@@ -127,7 +128,7 @@ class DatabaseConfig implements ConfigEngineInterface
      * @param mixed $value Value to export.
      * @return string String value for database.
      */
-    protected static function valueToString($value): string
+    protected static function valueToString(mixed $value): string
     {
         if ($value === null) {
             return 'null';
@@ -151,7 +152,7 @@ class DatabaseConfig implements ConfigEngineInterface
      * @param string $value Value to convert, if necessary.
      * @return mixed String Natural form value.
      */
-    protected static function valueFromString($value)
+    protected static function valueFromString(string $value): mixed
     {
         if ($value === 'NULL') {
             return null;

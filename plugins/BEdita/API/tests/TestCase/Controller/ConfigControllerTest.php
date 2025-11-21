@@ -14,18 +14,20 @@ declare(strict_types=1);
  */
 namespace BEdita\API\Test\TestCase\Controller;
 
+use BEdita\API\Controller\ConfigController;
 use BEdita\API\TestSuite\IntegrationTestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
 
 /**
- * @coversDefaultClass \BEdita\API\Controller\ConfigController
+ * {@see \BEdita\API\Controller\ConfigController} Test Case
  */
+#[CoversClass(ConfigController::class)]
 class ConfigControllerTest extends IntegrationTestCase
 {
     /**
      * Test index method.
      *
      * @return void
-     * @coversNothing
      */
     public function testIndex()
     {
@@ -79,7 +81,6 @@ class ConfigControllerTest extends IntegrationTestCase
      * Test view method with name as argument.
      *
      * @return void
-     * @covers ::getResourceId()
      */
     public function testSingleName()
     {

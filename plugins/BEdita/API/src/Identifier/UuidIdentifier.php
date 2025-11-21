@@ -14,6 +14,7 @@ declare(strict_types=1);
  */
 namespace BEdita\API\Identifier;
 
+use ArrayAccess;
 use Authentication\Identifier\TokenIdentifier;
 use Cake\ORM\Locator\LocatorAwareTrait;
 
@@ -24,7 +25,7 @@ class UuidIdentifier extends TokenIdentifier
     /**
      * @inheritDoc
      */
-    protected $_defaultConfig = [
+    protected array $_defaultConfig = [
         'tokenField' => 'token',
         'dataField' => self::CREDENTIAL_TOKEN,
         'resolver' => [
@@ -37,7 +38,7 @@ class UuidIdentifier extends TokenIdentifier
     /**
      * @inheritDoc
      */
-    public function identify(array $credentials)
+    public function identify(array $credentials): ArrayAccess|array|null
     {
         $authProvider = $this->getConfig('authProvider');
         $externalAuth = [

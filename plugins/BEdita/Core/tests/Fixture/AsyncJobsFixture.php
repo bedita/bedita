@@ -28,7 +28,7 @@ class AsyncJobsFixture extends TestFixture
      *
      * @var array
      */
-    public $records = [
+    public array $records = [
         [
             // Pending.
             'uuid' => 'd6bb8c84-6b29-432e-bb84-c3c4b2c1b99c',

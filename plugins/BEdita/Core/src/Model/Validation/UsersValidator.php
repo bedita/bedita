@@ -12,7 +12,6 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
 namespace BEdita\Core\Model\Validation;
 
 use Cake\ORM\TableRegistry;
@@ -71,7 +70,7 @@ class UsersValidator extends ProfilesValidator
      * @param mixed $value The value to check
      * @return bool
      */
-    public static function validUsername($value): bool
+    public static function validUsername(mixed $value): bool
     {
         if (!is_string($value)) {
             return false;
