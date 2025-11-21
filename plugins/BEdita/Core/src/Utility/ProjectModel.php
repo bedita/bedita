@@ -331,14 +331,10 @@ class ProjectModel
     protected static function configDiff(array $items, array $projectItems): array
     {
         $create = $update = $remove = $new = $current = [];
+        $current = Hash::combine($items, '{n}.application', '{n}');
+        $new = Hash::combine($projectItems, '{n}.application', '{n}');
         $currentKeys = array_unique(array_column($items, 'name'));
-        foreach ($currentKeys as $key) {
-            $current[$key] = Hash::extract($items, sprintf('{n}[name=%s]', $key));
-        }
         $newKeys = array_unique(array_column($projectItems, 'name'));
-        foreach ($newKeys as $key) {
-            $new[$key] = Hash::extract($projectItems, sprintf('{n}[name=%s]', $key));
-        }
         $allKeys = array_unique(array_merge($currentKeys, $newKeys));
         foreach ($allKeys as $key) {
             $newItems = (array)Hash::get($new, $key);
