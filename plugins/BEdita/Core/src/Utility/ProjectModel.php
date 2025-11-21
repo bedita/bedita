@@ -339,8 +339,6 @@ class ProjectModel
         foreach ($newKeys as $key) {
             $new[$key] = Hash::extract($projectItems, sprintf('{n}[name=%s]', $key));
         }
-        $currentKeys = array_unique(array_column($items, 'name'));
-        $newKeys = array_unique(array_column($projectItems, 'name'));
         $allKeys = array_unique(array_merge($currentKeys, $newKeys));
         foreach ($allKeys as $key) {
             $newItems = (array)Hash::get($new, $key);
