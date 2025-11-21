@@ -14,7 +14,9 @@ declare(strict_types=1);
  */
 namespace BEdita\Core\Model\Table;
 
+use BEdita\Core\Model\Enum\RelationTypeSide;
 use Cake\Cache\Cache;
+use Cake\Database\Type\EnumType;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
@@ -52,6 +54,8 @@ class RelationTypesTable extends Table
         $this->setTable('relation_types');
         $this->setDisplayField('relation_id');
         $this->setPrimaryKey(['relation_id', 'object_type_id', 'side']);
+        $this->getSchema()
+            ->setColumnType('side', EnumType::from(RelationTypeSide::class));
 
         $this->belongsTo('Relations', [
             'foreignKey' => 'relation_id',
@@ -73,7 +77,7 @@ class RelationTypesTable extends Table
     public function validationDefault(Validator $validator): Validator
     {
         $validator
-            ->inList('side', ['left', 'right'])
+            ->enum('side', RelationTypeSide::class)
             ->notEmptyString('side')
             ->requirePresence('side', 'create');
 

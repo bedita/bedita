@@ -15,6 +15,7 @@ declare(strict_types=1);
 namespace BEdita\Core\Test\TestCase\Model\Entity;
 
 use BEdita\Core\Model\Entity\ObjectType;
+use BEdita\Core\Model\Enum\RelationTypeSide;
 use BEdita\Core\Model\Table\ObjectTypesTable;
 use Cake\Event\Event;
 use Cake\ORM\TableRegistry;
@@ -239,7 +240,7 @@ class ObjectTypeTest extends TestCase
             'right' => [
                 ['inverse_test', 'inverse_test_simple', 'inverse_test_defaults'],
                 'documents',
-                'right',
+                RelationTypeSide::Right,
             ],
             'inherited' => [
                 ['inverse_test_abstract'],
@@ -253,11 +254,11 @@ class ObjectTypeTest extends TestCase
      *
      * @param string[] $expected List of expected relations.
      * @param string $name Object type name to get relations for.
-     * @param string $side Side to get relations for.
+     * @param \BEdita\Core\Model\Enum\RelationTypeSide|string $side Side to get relations for.
      * @return void
      */
     #[DataProvider('getRelationsByNameProvider')]
-    public function testGetRelationsByName($expected, $name, $side = 'both')
+    public function testGetRelationsByName(array $expected, string $name, RelationTypeSide|string $side = 'both')
     {
         $objectType = $this->ObjectTypes->get($name);
         $relations = array_keys($objectType->getRelations($side));

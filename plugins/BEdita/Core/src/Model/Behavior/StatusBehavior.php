@@ -14,6 +14,7 @@ declare(strict_types=1);
  */
 namespace BEdita\Core\Model\Behavior;
 
+use BackedEnum;
 use BEdita\Core\Exception\BadFilterException;
 use Cake\Core\Configure;
 use Cake\Database\Expression\QueryExpression;
@@ -58,6 +59,9 @@ class StatusBehavior extends Behavior
         }
         $level = Configure::read('Status.level');
         $status = $entity->get('status');
+        if ($status instanceof BackedEnum) {
+            $status = $status->value;
+        }
         if (($level === 'on' && $status !== 'on') || ($level === 'draft' && $status === 'off')) {
             throw new BadRequestException(__d(
                 'bedita',

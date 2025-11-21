@@ -14,6 +14,8 @@ declare(strict_types=1);
  */
 namespace BEdita\Core\Model\Table;
 
+use BEdita\Core\Model\Enum\CaptionStatus;
+use Cake\Database\Type\EnumType;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
@@ -54,7 +56,9 @@ class CaptionsTable extends Table
         $this->setTable('captions');
         $this->setDisplayField('label');
         $this->setPrimaryKey('id');
-        $this->getSchema()->setColumnType('params', 'json');
+        $this->getSchema()
+            ->setColumnType('params', 'json')
+            ->setColumnType('status', EnumType::from(CaptionStatus::class));
 
         $this->addBehavior('Timestamp');
 
@@ -78,7 +82,7 @@ class CaptionsTable extends Table
             ->naturalNumber('id')
             ->allowEmptyString('id', null, 'create')
 
-            ->inList('status', ['on', 'off', 'draft'])
+            ->enum('status', CaptionStatus::class)
             ->notEmptyString('status')
 
             ->allowEmptyString('label')

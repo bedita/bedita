@@ -186,7 +186,6 @@ class ParentsRelationshipTest extends IntegrationTestCase
      *
      * @return void
      */
-    #[CoversNothing]
     public function testDeletedParent()
     {
         // a deleted folder must not be listed in `parents`
@@ -225,7 +224,6 @@ class ParentsRelationshipTest extends IntegrationTestCase
      *
      * @return void
      */
-    #[CoversNothing]
     public function testSetParentPosition()
     {
         $this->configRequestHeaders('POST', $this->getUserAuthHeader());

@@ -15,6 +15,7 @@ declare(strict_types=1);
 namespace BEdita\Core\Test\TestCase\Model\Entity;
 
 use BEdita\Core\Model\Entity\JsonApiTrait;
+use BEdita\Core\Model\Enum\RelationTypeSide;
 use BEdita\Core\Model\Table\ObjectsTable;
 use BEdita\Core\Model\Table\ObjectTypesTable;
 use BEdita\Core\Model\Table\RolesTable;
@@ -278,7 +279,7 @@ class JsonApiTraitTest extends TestCase
                             'relation' => [
                                 'relation_id' => 1,
                                 'object_type_id' => 2,
-                                'side' => 'left',
+                                'side' => RelationTypeSide::Left,
                             ],
                         ],
                     ],
@@ -289,7 +290,7 @@ class JsonApiTraitTest extends TestCase
                             'relation' => [
                                 'relation_id' => 4,
                                 'object_type_id' => 2,
-                                'side' => 'left',
+                                'side' => RelationTypeSide::Left,
                             ],
                         ],
                     ],
@@ -300,7 +301,7 @@ class JsonApiTraitTest extends TestCase
                             'relation' => [
                                 'relation_id' => 5,
                                 'object_type_id' => 2,
-                                'side' => 'left',
+                                'side' => RelationTypeSide::Left,
                             ],
                         ],
                     ],
@@ -319,7 +320,7 @@ class JsonApiTraitTest extends TestCase
                             'relation' => [
                                 'relation_id' => 1,
                                 'object_type_id' => 2,
-                                'side' => 'right',
+                                'side' => RelationTypeSide::Right,
                             ],
                         ],
                     ],
@@ -330,7 +331,7 @@ class JsonApiTraitTest extends TestCase
                             'relation' => [
                                 'relation_id' => 4,
                                 'object_type_id' => 2,
-                                'side' => 'right',
+                                'side' => RelationTypeSide::Right,
                             ],
                         ],
                     ],
@@ -341,7 +342,7 @@ class JsonApiTraitTest extends TestCase
                             'relation' => [
                                 'relation_id' => 5,
                                 'object_type_id' => 2,
-                                'side' => 'right',
+                                'side' => RelationTypeSide::Right,
                             ],
                         ],
                     ],

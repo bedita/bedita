@@ -17,11 +17,13 @@ namespace BEdita\Core\Model\Table;
 use BEdita\Core\Exception\LockedResourceException;
 use BEdita\Core\Model\Entity\ObjectEntity;
 use BEdita\Core\Model\Enum\DateRangesSortField;
+use BEdita\Core\Model\Enum\ObjectEntityStatus;
 use BEdita\Core\Model\Validation\ObjectsValidator;
 use BEdita\Core\Search\SimpleSearchTrait;
 use BEdita\Core\Utility\LoggedUser;
 use Cake\Core\Configure;
 use Cake\Database\Expression\QueryExpression;
+use Cake\Database\Type\EnumType;
 use Cake\Datasource\EntityInterface;
 use Cake\Event\EventInterface;
 use Cake\I18n\DateTime;
@@ -93,7 +95,8 @@ class ObjectsTable extends Table
         $this->setDisplayField('title');
         $this->getSchema()
             ->setColumnType('custom_props', 'json')
-            ->setColumnType('extra', 'json');
+            ->setColumnType('extra', 'json')
+            ->setColumnType('status', EnumType::from(ObjectEntityStatus::class));
 
         $this->addBehavior('BEdita/Core.ObjectModel');
         $this->addBehavior('BEdita/Core.Categories');

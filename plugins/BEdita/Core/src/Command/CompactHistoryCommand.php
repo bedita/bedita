@@ -227,6 +227,7 @@ class CompactHistoryCommand extends Command
         $processed = 0;
         $stack = [];
         foreach ($this->objectsGenerator($query) as $current) {
+            /** @var \BEdita\Core\Model\Entity\History $current */
             $processed++;
             if ($prev === null) {
                 $prev = $current;
@@ -272,8 +273,8 @@ class CompactHistoryCommand extends Command
      */
     protected function compare(History $history1, History $history2): bool
     {
-        $h1 = $history1->user_action . '-' . json_encode($history1->changed);
-        $h2 = $history2->user_action . '-' . json_encode($history2->changed);
+        $h1 = $history1->user_action->value . '-' . json_encode($history1->changed);
+        $h2 = $history2->user_action->value . '-' . json_encode($history2->changed);
 
         return $h1 === $h2;
     }
@@ -320,7 +321,7 @@ class CompactHistoryCommand extends Command
                 break;
         }
         foreach ($stack as $i => $h) {
-            $io->verbose(sprintf(':: History ID %d: %s', $h->id, $h->user_action . '-' . json_encode($h->changed)));
+            $io->verbose(sprintf(':: History ID %d: %s', $h->id, $h->user_action->value . '-' . json_encode($h->changed)));
             if ($i === 0) {
                 continue;
             }

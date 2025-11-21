@@ -14,6 +14,7 @@ declare(strict_types=1);
  */
 namespace BEdita\Core\Model\Entity;
 
+use Cake\Database\Type\EnumType;
 use Cake\Database\TypeFactory;
 use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
@@ -176,6 +177,10 @@ class StaticProperty extends Property
 
         $type = TypeFactory::build($typeName);
         $driver = $this->table->getConnection()->getDriver();
+        if ($type instanceof EnumType) {
+            // For EnumType we need the string value, not the enum instance.
+            return $this->_fields['default'] = $default;
+        }
 
         return $this->_fields['default'] = $type->toPHP($default, $driver);
     }

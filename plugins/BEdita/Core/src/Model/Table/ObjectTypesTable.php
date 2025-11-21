@@ -15,6 +15,7 @@ declare(strict_types=1);
 namespace BEdita\Core\Model\Table;
 
 use BEdita\Core\Exception\BadFilterException;
+use BEdita\Core\Model\Enum\RelationTypeSide;
 use BEdita\Core\Model\Validation\ObjectTypesValidator;
 use BEdita\Core\ORM\Rule\IsUniqueAmongst;
 use BEdita\Core\Search\SimpleSearchTrait;
@@ -134,7 +135,7 @@ class ObjectTypesTable extends Table
             'foreignKey' => 'object_type_id',
             'targetForeignKey' => 'relation_id',
             'conditions' => [
-                $through->aliasField('side') => 'left',
+                $through->aliasField('side') => RelationTypeSide::Left->value,
             ],
         ]);
         $through = TableRegistry::getTableLocator()->get('RightRelationTypes', ['className' => 'RelationTypes']);
@@ -144,7 +145,7 @@ class ObjectTypesTable extends Table
             'foreignKey' => 'object_type_id',
             'targetForeignKey' => 'relation_id',
             'conditions' => [
-                $through->aliasField('side') => 'right',
+                $through->aliasField('side') => RelationTypeSide::Right->value,
             ],
         ]);
 
@@ -395,7 +396,7 @@ class ObjectTypesTable extends Table
      * This finder returns a list of object types that are allowed for the
      * relation specified by the required option `name`. You can specify the
      * side of the relation you want to retrieve allowed object types for by
-     * passing an additional option `side` (default: `'right'`).
+     * passing an additional option `side` (default: `\BEdita\Core\Model\Enum\RelationTypeSide::Right`).
      *
      * If the specified relation name is actually the name of an inverse relation,
      * this finder automatically takes care of "swapping" sides, always returning
@@ -410,7 +411,7 @@ class ObjectTypesTable extends Table
      *
      * // Find a list of object type names allowed on the "left" side of the inverse relation:
      * TableRegistry::getTableLocator()->get('ObjectTypes')
-     *     ->find('byRelation', name: 'my_inverse_relation', side: 'left')
+     *     ->find('byRelation', name: 'my_inverse_relation', side: RelationTypeSide::Left)
      *     ->find('list')
      *     ->toArray();
      *
@@ -422,6 +423,7 @@ class ObjectTypesTable extends Table
      * @param \Cake\ORM\Query\SelectQuery $query Query object.
      * @param string $name Additional options. The `name` key is required, while `side` is optional
      *      and assumed to be `'right'` by default.
+     * @param \BEdita\Core\Model\Enum\RelationTypeSide|string $side The side of the relation to retrieve allowed object types for.
      * @param bool $descendants Whether to include descendants of the allowed object types.
      * @return \Cake\ORM\Query\SelectQuery
      * @throws \LogicException When required parameters is empty.
@@ -429,7 +431,7 @@ class ObjectTypesTable extends Table
     public function findByRelation(
         SelectQuery $query,
         string $name,
-        string $side = 'right',
+        RelationTypeSide|string $side = RelationTypeSide::Right,
         bool $descendants = false,
     ): SelectQuery {
         if (empty($name)) {
@@ -437,9 +439,13 @@ class ObjectTypesTable extends Table
         }
         $name = Inflector::underscore($name);
 
+        if (is_string($side)) {
+            $side = RelationTypeSide::from($side);
+        }
+
         $leftField = 'inverse_name';
         $rightField = 'name';
-        if ($side !== 'right') {
+        if ($side !== RelationTypeSide::Right) {
             $leftField = 'name';
             $rightField = 'inverse_name';
         }

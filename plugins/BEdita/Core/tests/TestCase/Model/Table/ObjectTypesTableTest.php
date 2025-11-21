@@ -15,6 +15,7 @@ declare(strict_types=1);
 namespace BEdita\Core\Test\TestCase\Model\Table;
 
 use BEdita\Core\Exception\BadFilterException;
+use BEdita\Core\Model\Enum\RelationTypeSide;
 use BEdita\Core\Model\Table\ObjectTypesTable;
 use BEdita\Core\ORM\Rule\IsUniqueAmongst;
 use Cake\Cache\Cache;
@@ -506,7 +507,7 @@ class ObjectTypesTableTest extends TestCase
             ],
             'left' => [
                 ['documents'],
-                ['name' => 'test', 'side' => 'left'],
+                ['name' => 'test', 'side' => RelationTypeSide::Left],
             ],
             'inverse right' => [
                 ['documents'],
@@ -514,7 +515,7 @@ class ObjectTypesTableTest extends TestCase
             ],
             'inverse left' => [
                 ['documents', 'profiles'],
-                ['name' => 'inverse_test', 'side' => 'left'],
+                ['name' => 'inverse_test', 'side' => RelationTypeSide::Left],
             ],
             'with descendants' => [
                 ['media', 'files', 'images', 'videos'],

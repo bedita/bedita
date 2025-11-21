@@ -23,7 +23,7 @@ use Cake\ORM\Entity;
  * @property int $id
  * @property int $object_id
  * @property string $lang
- * @property string $status
+ * @property \BEdita\Core\Model\Enum\TranslationStatus $status
  * @property \Cake\I18n\DateTime $created
  * @property \Cake\I18n\DateTime $modified
  * @property int $created_by

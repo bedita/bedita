@@ -21,7 +21,7 @@ use Cake\ORM\Entity;
  *
  * @property int $id
  * @property int $object_id
- * @property string $status
+ * @property \BEdita\Core\Model\Enum\CaptionStatus $status
  * @property string|null $label
  * @property string|null $format
  * @property string|null $lang

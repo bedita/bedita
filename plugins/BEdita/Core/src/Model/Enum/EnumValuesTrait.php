@@ -14,17 +14,15 @@ declare(strict_types=1);
  */
 namespace BEdita\Core\Model\Enum;
 
-/**
- * DateRangesSortField enum.
- *
- * @since 6.0.0
- */
-enum DateRangesSortField: string
+trait EnumValuesTrait
 {
-    use EnumValuesTrait;
-
-    case MIN_START_DATE = 'date_ranges_min_start_date';
-    case MAX_START_DATE = 'date_ranges_max_start_date';
-    case MIN_END_DATE = 'date_ranges_min_end_date';
-    case MAX_END_DATE = 'date_ranges_max_end_date';
+    /**
+     * Get all possible values.
+     *
+     * @return array<string>
+     */
+    public static function values(): array
+    {
+        return array_map(fn(self $case): string => $case->value, self::cases());
+    }
 }

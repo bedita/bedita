@@ -14,6 +14,7 @@ declare(strict_types=1);
  */
 namespace BEdita\API\Controller;
 
+use BackedEnum;
 use BEdita\API\Model\Action\UpdateRelatedAction;
 use BEdita\Core\Exception\BadFilterException;
 use BEdita\Core\Model\Action\ActionTrait;
@@ -357,7 +358,16 @@ class ObjectsController extends ResourcesController
         $data = (array)$this->request->getData();
         $protectedFieldsChanged = array_filter(
             ['uname', 'status'],
-            fn(string $field): bool => Hash::check($data, $field) && $entity->get($field) !== Hash::get($data, $field),
+            function (string $field) use ($data, $entity): bool {
+                if (!Hash::check($data, $field)) {
+                    return false;
+                }
+
+                $fieldValue = $entity->get($field);
+                $dataValue = Hash::get($data, $field);
+
+                return $fieldValue instanceof BackedEnum ? $fieldValue->value !== $dataValue : $fieldValue !== $dataValue;
+            },
         );
 
         if (empty($protectedFieldsChanged) || $this->Authorization->can($entity, 'updateParents')) {

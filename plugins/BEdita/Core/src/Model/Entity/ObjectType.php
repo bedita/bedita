@@ -14,6 +14,7 @@ declare(strict_types=1);
  */
 namespace BEdita\Core\Model\Entity;
 
+use BEdita\Core\Model\Enum\RelationTypeSide;
 use BEdita\Core\Utility\JsonApiSerializable;
 use Cake\Datasource\EntityInterface;
 use Cake\Datasource\Exception\RecordNotFoundException;
@@ -258,21 +259,25 @@ class ObjectType extends Entity implements JsonApiSerializable, EventDispatcherI
     /**
      * Get all relations, including relations inherited from parent object types, indexed by their name.
      *
-     * @param string $side Filter relations by side this object type stays on. Either `left`, `right` or `both`.
+     * @param \BEdita\Core\Model\Enum\RelationTypeSide|string $side Filter relations by side this object type stays on. Either `left`, `right` or `both`.
      * @return array<\BEdita\Core\Model\Entity\Relation>
      */
-    public function getRelations(string $side = 'both'): array
+    public function getRelations(RelationTypeSide|string $side = 'both'): array
     {
         if ($side === 'both') {
-            return $this->getRelations('left') + $this->getRelations('right');
+            return $this->getRelations(RelationTypeSide::Left) + $this->getRelations(RelationTypeSide::Right);
+        }
+
+        if (is_string($side)) {
+            $side = RelationTypeSide::from($side);
         }
 
         $indexBy = 'name';
-        if ($side === 'right') {
+        if ($side === RelationTypeSide::Right) {
             $indexBy = 'inverse_name';
         }
 
-        $property = sprintf('%s_relations', $side);
+        $property = sprintf('%s_relations', $side->value);
 
         return collection($this->getFullInheritanceChain())
             ->unfold(function (self $objectType) use ($property): Generator {
@@ -424,12 +429,16 @@ class ObjectType extends Entity implements JsonApiSerializable, EventDispatcherI
      *  * label, params and related types as values
      *
      * @param array $relations Relations array
-     * @param string $side Relation side, 'left' or 'right'
+     * @param \BEdita\Core\Model\Enum\RelationTypeSide|string $side Relation side, 'left' or 'right'
      * @return array
      */
-    protected static function objectTypeRelations(array $relations, string $side): array
+    protected static function objectTypeRelations(array $relations, RelationTypeSide|string $side): array
     {
-        if ($side === 'left') {
+        if (is_string($side)) {
+            $side = RelationTypeSide::from($side);
+        }
+
+        if ($side === RelationTypeSide::Left) {
             $name = 'name';
             $label = 'label';
             $relTypes = 'right_object_types';

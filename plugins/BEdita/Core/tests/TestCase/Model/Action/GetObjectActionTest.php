@@ -111,7 +111,7 @@ class GetObjectActionTest extends TestCase
      *
      * @return void
      */
-    public function testExecuteObjectStatusNotAvailable()
+    public function testExecuteObjectEntityStatusNotAvailable()
     {
         $this->expectException(RecordNotFoundException::class);
         Configure::write('Status.level', 'on');

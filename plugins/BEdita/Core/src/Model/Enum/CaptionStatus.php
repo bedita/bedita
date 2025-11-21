@@ -15,16 +15,15 @@ declare(strict_types=1);
 namespace BEdita\Core\Model\Enum;
 
 /**
- * DateRangesSortField enum.
+ * CaptionStatus Enum
  *
  * @since 6.0.0
  */
-enum DateRangesSortField: string
+enum CaptionStatus: string
 {
     use EnumValuesTrait;
 
-    case MIN_START_DATE = 'date_ranges_min_start_date';
-    case MAX_START_DATE = 'date_ranges_max_start_date';
-    case MIN_END_DATE = 'date_ranges_min_end_date';
-    case MAX_END_DATE = 'date_ranges_max_end_date';
+    case On = 'on';
+    case Draft = 'draft';
+    case Off = 'off';
 }

@@ -19,6 +19,8 @@ use BEdita\Core\Search\Adapter\SimpleAdapter;
 use Cake\Command\Command;
 use Cake\Console\TestSuite\ConsoleIntegrationTestTrait;
 use Cake\Core\Configure;
+use Cake\Database\Driver\Postgres;
+use Cake\Datasource\ConnectionManager;
 use Cake\Datasource\EntityInterface;
 use Cake\TestSuite\TestCase;
 use Exception;
@@ -40,6 +42,36 @@ class BuildSearchIndexCommandTest extends TestCase
         'plugin.BEdita/Core.Objects',
         'plugin.BEdita/Core.Trees',
     ];
+
+    /**
+     * Store original Search config
+     *
+     * @var array|null
+     */
+    protected array|null $searchConf = null;
+
+    /**
+     * @inheritDoc
+     */
+    public function setUp(): void
+    {
+        parent::setUp();
+
+        $this->searchConf = Configure::read('Search');
+        $driver = ConnectionManager::get('default')->getDriver();
+        $this->skipIf($driver instanceof Postgres);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function tearDown(): void
+    {
+        parent::tearDown();
+
+        // restore Search config after each test
+        Configure::write('Search', $this->searchConf);
+    }
 
     /**
      * Test `buildOptionParser` method

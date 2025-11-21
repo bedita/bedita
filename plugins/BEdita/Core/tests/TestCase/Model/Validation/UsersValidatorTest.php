@@ -74,7 +74,7 @@ class UsersValidatorTest extends TestCase
             'invalid types' => [
                 [
                     'id.naturalNumber',
-                    'status.inList',
+                    'status.enum',
                     'uname.ascii',
                     'locked.boolean',
                     'deleted.boolean',
