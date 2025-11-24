@@ -23,7 +23,7 @@ jobs:
 
     steps:
       - name: 'Checkout current revision'
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: 'Setup PHP'
         uses: shivammathur/setup-php@v2
@@ -62,7 +62,7 @@ jobs:
 
     steps:
       - name: 'Checkout current revision'
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: 'Setup PHP'
         uses: 'shivammathur/setup-php@v2'
@@ -137,7 +137,7 @@ jobs:
 
     steps:
       - name: 'Checkout current revision'
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: 'Setup PHP'
         uses: shivammathur/setup-php@v2
@@ -175,7 +175,7 @@ jobs:
           env_vars: PHP_VERSION,DB_VENDOR
 
       - name: 'Archive code coverage results'
-        uses: 'actions/upload-artifact@v4'
+        uses: 'actions/upload-artifact@v5'
         with:
           name: 'PHP ${{ matrix.php }} with ${{ fromJson(matrix.db).vendor }}'
           path: 'clover.xml'
@@ -190,7 +190,7 @@ jobs:
 
     steps:
       - name: 'Checkout current revision'
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: 'Setup PHP'
         uses: shivammathur/setup-php@v2
