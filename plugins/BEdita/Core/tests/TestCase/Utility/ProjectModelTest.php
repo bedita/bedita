@@ -659,8 +659,8 @@ class ProjectModelTest extends TestCase
                     ['name' => 'Status', 'context' => 'core', 'content' => '{"level":"on"}', 'application' => 'second-app'],
                 ],
                 [
-                    ['name' => 'Status', 'context' => 'core', 'content' => '{"level":"draft"}', 'application' => 'first-app'],
                     ['name' => 'Status', 'context' => 'core', 'content' => '{"level":"on"}', 'application' => 'second-app'],
+                    ['name' => 'Status', 'context' => 'core', 'content' => '{"level":"draft"}', 'application' => 'first-app'],
                 ],
                 ['create' => [], 'update' => [], 'remove' => []],
             ],
