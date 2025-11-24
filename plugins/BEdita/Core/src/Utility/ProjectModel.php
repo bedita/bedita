@@ -330,7 +330,7 @@ class ProjectModel
      */
     protected static function configDiff(array $items, array $projectItems): array
     {
-        $create = $update = $remove = $new = $current = [];
+        $create = $update = $remove = [];
         foreach ($projectItems as $p) {
             $found = false;
             foreach ($items as $index => $c) {
