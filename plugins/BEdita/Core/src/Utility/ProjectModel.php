@@ -331,29 +331,23 @@ class ProjectModel
     protected static function configDiff(array $items, array $projectItems): array
     {
         $create = $update = $remove = $new = $current = [];
-        $currentKeys = array_unique(array_column($items, 'name'));
-        foreach ($currentKeys as $key) {
-            $current[$key] = Hash::extract($items, sprintf('{n}[name=%s]', $key));
+        foreach ($projectItems as $p) {
+            $found = false;
+            foreach ($items as $index => $c) {
+                if ($p['name'] === $c['name'] && $p['context'] === $c['context'] && $p['application'] === $c['application']) {
+                    $found = true;
+                    unset($items[$index]);
+                    if ($p['content'] !== $c['content']) {
+                        $update[] = $p;
+                    }
+                    break;
+                }
+            }
+            if (!$found) {
+                $create[] = $p;
+            }
         }
-        $newKeys = array_unique(array_column($projectItems, 'name'));
-        foreach ($newKeys as $key) {
-            $new[$key] = Hash::extract($projectItems, sprintf('{n}[name=%s]', $key));
-        }
-        $allKeys = array_unique(array_merge($currentKeys, $newKeys));
-        foreach ($allKeys as $key) {
-            $newItems = (array)Hash::get($new, $key);
-            $currItems = (array)Hash::get($current, $key);
-            // reorder items by name, context, application, content
-            usort($newItems, function ($a, $b) {
-                return strcmp($a['context'] . '|' . $a['application'] . '|' . $a['content'], $b['context'] . '|' . $b['application'] . '|' . $b['content']);
-            });
-            usort($currItems, function ($a, $b) {
-                return strcmp($a['context'] . '|' . $a['application'] . '|' . $a['content'], $b['context'] . '|' . $b['application'] . '|' . $b['content']);
-            });
-            $create = array_merge($create, array_values(array_diff_key($newItems, $currItems)));
-            $remove = array_merge($remove, array_values(array_diff_key($currItems, $newItems)));
-            $update = array_merge($update, array_values(static::itemsToUpdate($currItems, $newItems)));
-        }
+        $remove = array_values($items);
 
         return compact('create', 'update', 'remove');
     }
