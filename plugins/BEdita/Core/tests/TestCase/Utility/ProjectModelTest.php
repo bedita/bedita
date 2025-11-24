@@ -673,8 +673,8 @@ class ProjectModelTest extends TestCase
             ],
             'no changes' => [
                 [
-                    ['name' => 'Status', 'context' => 'core', 'content' => '{"level":"draft"}', 'application' => 'first-app'],
                     ['name' => 'Status', 'context' => 'core', 'content' => '{"level":"on"}', 'application' => 'second-app'],
+                    ['name' => 'Status', 'context' => 'core', 'content' => '{"level":"draft"}', 'application' => 'first-app'],
                 ],
                 [
                     ['name' => 'Status', 'context' => 'core', 'content' => '{"level":"draft"}', 'application' => 'first-app'],
