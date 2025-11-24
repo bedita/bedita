@@ -340,7 +340,6 @@ class ProjectModel
                     if ($p['content'] !== $c['content']) {
                         $update[] = $p;
                     }
-                    break;
                 }
             }
             if (!$found) {
