@@ -34,7 +34,6 @@ class DefaultApplication extends BaseMigration
         $this->table('applications')
             ->insert([
                 [
-                    'id' => 1,
                     'name' => 'manager',
                     'api_key' => ApplicationsTable::generateApiKey(),
                     'description' => 'Manager application',
