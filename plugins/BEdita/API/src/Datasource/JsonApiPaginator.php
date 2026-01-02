@@ -23,6 +23,9 @@ use Cake\Datasource\QueryInterface;
 use Cake\Datasource\RepositoryInterface;
 use Cake\Http\Exception\BadRequestException;
 use Cake\ORM\Query\SelectQuery;
+use Cake\ORM\Table;
+use Cake\Database\Driver\Mysql;
+use Cake\Database\Driver\Postgres;
 
 /**
  * Handle model pagination using JSON API conventions.
@@ -113,6 +116,29 @@ class JsonApiPaginator extends NumericPaginator
                     $options['direction'] ?? 'asc',
                 );
                 unset($options['sort'], $options['direction']);
+            }
+
+            if (
+                !empty($options['sort'])
+                && empty($options['order'])
+                && $object instanceof Table
+                && $object->behaviors()->has('CustomProperties')
+            ) {
+                /** @var \BEdita\Core\Model\Behavior\CustomPropertiesBehavior $behavior */
+                $behavior = $object->behaviors()->get('CustomProperties');
+                $available = $behavior->getAvailable();
+                $sortField = (string)$options['sort'];
+                if ($sortField !== '' && array_key_exists($sortField, $available)) {
+                    $driver = $object->getConnection()->getDriver();
+                    if ($driver instanceof Mysql || $driver instanceof Postgres) {
+                        $options['order'] = $behavior->customPropOrderClause(
+                            $sortField,
+                            (string)($options['direction'] ?? 'asc'),
+                            $driver,
+                        );
+                        unset($options['sort'], $options['direction']);
+                    }
+                }
             }
         }
 

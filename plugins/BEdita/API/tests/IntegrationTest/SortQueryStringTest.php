@@ -15,6 +15,9 @@ declare(strict_types=1);
 namespace BEdita\API\Test\IntegrationTest;
 
 use BEdita\API\TestSuite\IntegrationTestCase;
+use Cake\Database\Driver\Mysql;
+use Cake\Database\Driver\Postgres;
+use Cake\Datasource\ConnectionManager;
 use Cake\Utility\Hash;
 use PHPUnit\Framework\Attributes\CoversNothing;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -72,6 +75,12 @@ class SortQueryStringTest extends IntegrationTestCase
                 '/events',
                 'date_ranges_max_end_date',
             ],
+            'customPropSort' => [
+                200,
+                '/files',
+                'media_property',
+                true
+            ],
         ];
     }
 
@@ -81,13 +90,17 @@ class SortQueryStringTest extends IntegrationTestCase
      * @param int $expected The HTTP status code expected
      * @param string $endpoint The object type
      * @param string $sort The field on which sort
+     * @param bool $customProps Whether there's a custom properties sort
      * @return void
      */
     #[DataProvider('sortProvider')]
-    public function testSort($expected, $endpoint, $sort)
+    public function testSort($expected, $endpoint, $sort, $customProps = false): void
     {
         $sortedFields = [];
-
+        if ($customProps) {
+            $driver = ConnectionManager::get('default')->getDriver();
+            $this->skipUnless(($driver instanceof Mysql) || ($driver instanceof Postgres));
+        }
         // sort asc
         $this->configRequestHeaders();
         $url = sprintf('%s?sort=%s', $endpoint, $sort);

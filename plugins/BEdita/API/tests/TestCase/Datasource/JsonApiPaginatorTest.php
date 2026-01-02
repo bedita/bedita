@@ -17,6 +17,8 @@ namespace BEdita\API\Test\TestCase\Datasource;
 use BEdita\API\Datasource\JsonApiPaginator;
 use Cake\Database\Expression\FunctionExpression;
 use Cake\Database\Expression\OrderClauseExpression;
+use Cake\Database\Driver\Mysql;
+use Cake\Database\Driver\Postgres;
 use Cake\Http\Exception\BadRequestException;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
@@ -41,6 +43,10 @@ class JsonApiPaginatorTest extends TestCase
         'plugin.BEdita/Core.Relations',
         'plugin.BEdita/Core.RelationTypes',
         'plugin.BEdita/Core.Roles',
+        'plugin.BEdita/Core.Objects',
+        'plugin.BEdita/Core.Profiles',
+        'plugin.BEdita/Core.Properties',
+        'plugin.BEdita/Core.PropertyTypes',
     ];
 
     /**
@@ -185,6 +191,27 @@ class JsonApiPaginatorTest extends TestCase
         $options = $paginator->validateSort($repository, compact('sort'));
 
         static::assertEquals($expected, $options['order']);
+    }
+
+    /**
+     * Test `validateSort()` method with a CustomProperties key.
+     *
+     * @return void
+     */
+    public function testValidateSortCustomProperty()
+    {
+        $paginator = new JsonApiPaginator();
+        $repository = TableRegistry::getTableLocator()->get('Profiles')->find()->getRepository();
+
+        $driver = $repository->getConnection()->getDriver();
+        if (!($driver instanceof Mysql) && !($driver instanceof Postgres)) {
+            $this->expectException(BadRequestException::class);
+            $this->expectExceptionMessage('Unsupported sorting field');
+        }
+
+        $options = $paginator->validateSort($repository, ['sort' => 'another_surname']);
+
+        static::assertInstanceOf(OrderClauseExpression::class, $options['order']);
     }
 
     /**

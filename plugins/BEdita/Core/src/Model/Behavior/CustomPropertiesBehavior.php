@@ -23,6 +23,7 @@ use Cake\Collection\CollectionInterface;
 use Cake\Database\Driver\Mysql;
 use Cake\Database\Driver\Postgres;
 use Cake\Database\Expression\FunctionExpression;
+use Cake\Database\Expression\OrderClauseExpression;
 use Cake\Database\Expression\QueryExpression;
 use Cake\Datasource\EntityInterface;
 use Cake\Event\EventInterface;
@@ -52,6 +53,7 @@ class CustomPropertiesBehavior extends Behavior
         ],
         'implementedFinders' => [
             'customProp' => 'findCustomProp',
+            // 'customPropSort' => 'findCustomPropSort',
         ],
         'implementedMethods' => [
             'getCustomPropsAvailable' => 'getAvailable',
@@ -448,6 +450,47 @@ class CustomPropertiesBehavior extends Behavior
     }
 
     /**
+     * Finder for sorting on a custom property.
+     *
+     * The following are equivalent:
+     *
+     * ```
+     * $table->find('customPropSort', field: 'prop_name', direction: 'asc');
+     * $table->find('customPropSort', value: ['field' => 'prop_name', 'direction' => 'asc']);
+     * ```
+     *
+     * @param \Cake\ORM\Query\SelectQuery $query Query object instance.
+     * @param mixed $args Named arguments. If `value` is present it will be used.
+     * @return \Cake\ORM\Query\SelectQuery
+     * @throws \BEdita\Core\Exception\BadFilterException
+     */
+    // public function findCustomPropSort(SelectQuery $query, mixed ...$args): SelectQuery
+    // {
+    //     $options = (array)($args['value'] ?? $args);
+    //     $field = (string)Hash::get($options, 'field');
+    //     $direction = strtolower((string)Hash::get($options, 'direction', 'asc'));
+
+    //     if ($field === '') {
+    //         throw new BadFilterException(__d('bedita', 'Invalid data'));
+    //     }
+    //     if (!in_array($direction, ['asc', 'desc'], true)) {
+    //         throw new BadFilterException(__d('bedita', 'Invalid data'));
+    //     }
+
+    //     $available = $this->getAvailable();
+    //     if (!array_key_exists($field, $available)) {
+    //         throw new BadFilterException(__d('bedita', 'Invalid data'));
+    //     }
+
+    //     $driver = $query->getConnection()->getDriver();
+    //     if (!($driver instanceof Mysql) && !($driver instanceof Postgres)) {
+    //         throw new BadFilterException(__d('bedita', 'customPropSort finder isn\'t supported for this datasource'));
+    //     }
+
+    //     return $query->orderBy($this->customPropOrderClause($field, $direction, $driver));
+    // }
+
+    /**
      * Get expression value for a property value.
      *
      * @param mixed $value Property value.
@@ -464,5 +507,25 @@ class CustomPropertiesBehavior extends Behavior
         }
 
         return $value;
+    }
+
+    /**
+     * Get order clause expression for a custom property sorting.
+     *
+     * @param string $sortField Property name.
+     * @param string $direction Sort direction.
+     * @param object $driver Database driver.
+     * @return \Cake\Database\Expression\OrderClauseExpression
+     * @throws \BEdita\Core\Exception\BadFilterException
+     */
+    public function customPropOrderClause(string $sortField, string $direction, object $driver): OrderClauseExpression
+    {
+        if (!($driver instanceof Mysql) && !($driver instanceof Postgres)) {
+            throw new BadFilterException(__d('bedita', 'customPropSort finder isn\'t supported for this datasource'));
+        }
+        $field = $this->table()->aliasField($this->getConfig('field'));
+        $fieldExp = $this->expressionField($field, $sortField, $driver);
+
+        return new OrderClauseExpression($fieldExp,  strtoupper($direction));
     }
 }
