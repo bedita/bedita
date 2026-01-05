@@ -79,7 +79,7 @@ class SortQueryStringTest extends IntegrationTestCase
                 200,
                 '/files',
                 'media_property',
-                true
+                true,
             ],
         ];
     }

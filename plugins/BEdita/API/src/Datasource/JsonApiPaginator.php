@@ -15,6 +15,8 @@ declare(strict_types=1);
 namespace BEdita\API\Datasource;
 
 use BEdita\Core\Model\Enum\DateRangesSortField;
+use Cake\Database\Driver\Mysql;
+use Cake\Database\Driver\Postgres;
 use Cake\Database\Expression\FunctionExpression;
 use Cake\Database\Expression\OrderClauseExpression;
 use Cake\Datasource\Paging\NumericPaginator;
@@ -24,8 +26,6 @@ use Cake\Datasource\RepositoryInterface;
 use Cake\Http\Exception\BadRequestException;
 use Cake\ORM\Query\SelectQuery;
 use Cake\ORM\Table;
-use Cake\Database\Driver\Mysql;
-use Cake\Database\Driver\Postgres;
 
 /**
  * Handle model pagination using JSON API conventions.

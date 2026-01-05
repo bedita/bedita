@@ -15,10 +15,10 @@ declare(strict_types=1);
 namespace BEdita\API\Test\TestCase\Datasource;
 
 use BEdita\API\Datasource\JsonApiPaginator;
-use Cake\Database\Expression\FunctionExpression;
-use Cake\Database\Expression\OrderClauseExpression;
 use Cake\Database\Driver\Mysql;
 use Cake\Database\Driver\Postgres;
+use Cake\Database\Expression\FunctionExpression;
+use Cake\Database\Expression\OrderClauseExpression;
 use Cake\Http\Exception\BadRequestException;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
