@@ -81,6 +81,12 @@ class SortQueryStringTest extends IntegrationTestCase
                 'media_property',
                 true,
             ],
+            'numberCustomProp' => [
+                200,
+                '/profiles',
+                'number_of_friends',
+                true,
+            ],
         ];
     }
 
