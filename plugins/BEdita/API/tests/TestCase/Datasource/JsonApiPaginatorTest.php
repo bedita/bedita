@@ -198,7 +198,7 @@ class JsonApiPaginatorTest extends TestCase
      *
      * @return void
      */
-    public function testValidateSortCustomProperty()
+    public function testValidateSortCustomProperty(): void
     {
         $paginator = new JsonApiPaginator();
         $repository = TableRegistry::getTableLocator()->get('Profiles')->find()->getRepository();
