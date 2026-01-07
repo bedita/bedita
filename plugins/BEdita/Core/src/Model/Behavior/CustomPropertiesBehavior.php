@@ -445,7 +445,7 @@ class CustomPropertiesBehavior extends Behavior
         }
 
         // Postgres field
-        return sprintf('%s->>%s', $field, $driver->quote($key));
+        return sprintf('CAST(%s AS JSONB)->>%s', $field, $driver->quote($key));
     }
 
     /**
