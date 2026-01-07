@@ -15,6 +15,8 @@ declare(strict_types=1);
 namespace BEdita\API\Datasource;
 
 use BEdita\Core\Model\Enum\DateRangesSortField;
+use Cake\Database\Driver\Mysql;
+use Cake\Database\Driver\Postgres;
 use Cake\Database\Expression\FunctionExpression;
 use Cake\Database\Expression\OrderClauseExpression;
 use Cake\Datasource\Paging\NumericPaginator;
@@ -23,6 +25,7 @@ use Cake\Datasource\QueryInterface;
 use Cake\Datasource\RepositoryInterface;
 use Cake\Http\Exception\BadRequestException;
 use Cake\ORM\Query\SelectQuery;
+use Cake\ORM\Table;
 
 /**
  * Handle model pagination using JSON API conventions.
@@ -97,23 +100,8 @@ class JsonApiPaginator extends NumericPaginator
                 $options['sortableFields'] = [$options['sort']];
             }
 
-            $sortableFields = $options['sortableFields'] ?? null;
-            $canSortField = fn(string $field): bool => $sortableFields === null || in_array($field, $sortableFields, true);
-            if ($options['sort'] === 'published' && $canSortField('publish_start')) {
-                $options['order'] = new OrderClauseExpression(
-                    new FunctionExpression(
-                        'COALESCE',
-                        [
-                            $object->getAlias() . '.publish_start' => 'identifier',
-                            $object->getAlias() . '.created' => 'identifier',
-                        ],
-                        ['timestamp', 'timestamp'],
-                        'timestamp',
-                    ),
-                    $options['direction'] ?? 'asc',
-                );
-                unset($options['sort'], $options['direction']);
-            }
+            $this->handlePublishedSort($options, $object);
+            $this->handleCustomPropertiesSort($options, $object);
         }
 
         $options = parent::validateSort($object, $options);
@@ -123,5 +111,67 @@ class JsonApiPaginator extends NumericPaginator
         }
 
         return $options;
+    }
+
+    /**
+     * Handle 'published' sort field.
+     *
+     * @param array $options
+     * @param \Cake\Datasource\RepositoryInterface $object
+     * @return void
+     */
+    protected function handlePublishedSort(array &$options, RepositoryInterface $object): void
+    {
+        $sortableFields = $options['sortableFields'] ?? null;
+        $canSortField = fn(string $field): bool => $sortableFields === null || in_array($field, $sortableFields, true);
+
+        if ($options['sort'] === 'published' && $canSortField('publish_start')) {
+            $options['order'] = new OrderClauseExpression(
+                new FunctionExpression(
+                    'COALESCE',
+                    [
+                        $object->getAlias() . '.publish_start' => 'identifier',
+                        $object->getAlias() . '.created' => 'identifier',
+                    ],
+                    ['timestamp', 'timestamp'],
+                    'timestamp',
+                ),
+                $options['direction'] ?? 'asc',
+            );
+            unset($options['sort'], $options['direction']);
+        }
+    }
+
+    /**
+     * Handle custom properties sort field.
+     *
+     * @param array $options
+     * @param \Cake\Datasource\RepositoryInterface $object
+     * @return void
+     */
+    protected function handleCustomPropertiesSort(array &$options, RepositoryInterface $object): void
+    {
+        if (
+            !empty($options['sort'])
+            && empty($options['order'])
+            && $object instanceof Table
+            && $object->behaviors()->has('CustomProperties')
+        ) {
+            /** @var \BEdita\Core\Model\Behavior\CustomPropertiesBehavior $behavior */
+            $behavior = $object->behaviors()->get('CustomProperties');
+            $available = $behavior->getAvailable();
+            $sortField = (string)$options['sort'];
+            if ($sortField !== '' && array_key_exists($sortField, $available)) {
+                $driver = $object->getConnection()->getDriver();
+                if ($driver instanceof Mysql || $driver instanceof Postgres) {
+                    $options['order'] = $behavior->customPropOrderClause(
+                        $sortField,
+                        (string)($options['direction'] ?? 'asc'),
+                        $driver,
+                    );
+                    unset($options['sort'], $options['direction']);
+                }
+            }
+        }
     }
 }

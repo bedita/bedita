@@ -23,6 +23,7 @@ use Cake\Collection\CollectionInterface;
 use Cake\Database\Driver\Mysql;
 use Cake\Database\Driver\Postgres;
 use Cake\Database\Expression\FunctionExpression;
+use Cake\Database\Expression\OrderClauseExpression;
 use Cake\Database\Expression\QueryExpression;
 use Cake\Datasource\EntityInterface;
 use Cake\Event\EventInterface;
@@ -444,7 +445,7 @@ class CustomPropertiesBehavior extends Behavior
         }
 
         // Postgres field
-        return sprintf('%s->>%s', $field, $driver->quote($key));
+        return sprintf('CAST(%s AS JSONB)->>%s', $field, $driver->quote($key));
     }
 
     /**
@@ -464,5 +465,25 @@ class CustomPropertiesBehavior extends Behavior
         }
 
         return $value;
+    }
+
+    /**
+     * Get order clause expression for a custom property sorting.
+     *
+     * @param string $sortField Property name.
+     * @param string $direction Sort direction.
+     * @param object $driver Database driver.
+     * @return \Cake\Database\Expression\OrderClauseExpression
+     * @throws \BEdita\Core\Exception\BadFilterException
+     */
+    public function customPropOrderClause(string $sortField, string $direction, object $driver): OrderClauseExpression
+    {
+        if (!($driver instanceof Mysql) && !($driver instanceof Postgres)) {
+            throw new BadFilterException(__d('bedita', 'Custom property sorting is not supported for this datasource'));
+        }
+        $field = $this->table()->aliasField($this->getConfig('field'));
+        $fieldExp = $this->expressionField($field, $sortField, $driver);
+
+        return new OrderClauseExpression($fieldExp, strtoupper($direction));
     }
 }

@@ -20,6 +20,7 @@ use BEdita\Core\Test\Utility\TestFilesystemTrait;
 use Cake\Collection\CollectionInterface;
 use Cake\Database\Driver\Mysql;
 use Cake\Database\Driver\Postgres;
+use Cake\Database\Expression\OrderClauseExpression;
 use Cake\Datasource\ConnectionManager;
 use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
@@ -639,5 +640,28 @@ class CustomPropertiesBehaviorTest extends TestCase
             return;
         }
         $table->saveOrFail($entity);
+    }
+
+    /**
+     * Test `customPropOrderClause()` method.
+     *
+     * @throws \BEdita\Core\Exception\BadFilterException
+     * @return void
+     */
+    public function testCustomPropOrderClause(): void
+    {
+        $table = $this->getTableLocator()->get('Profiles');
+        /** @var CustomPropertiesBehavior $behavior */
+        $behavior = $table->behaviors()->get('CustomProperties');
+
+        $connection = ConnectionManager::get('default');
+        $driver = $connection->getDriver();
+        if (!($driver instanceof Mysql) && !($driver instanceof Postgres)) {
+            $this->expectException(BadFilterException::class);
+            $this->expectExceptionMessage('Custom property sorting is not supported for this datasource');
+        }
+
+        $orderClause = $behavior->customPropOrderClause('another_surname', 'asc', $driver);
+        static::assertInstanceOf(OrderClauseExpression::class, $orderClause);
     }
 }
