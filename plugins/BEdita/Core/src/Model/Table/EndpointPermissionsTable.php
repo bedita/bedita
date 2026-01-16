@@ -30,7 +30,7 @@ use Cake\Validation\Validator;
  * @property \Cake\ORM\Table&\Cake\ORM\Association\BelongsTo $Endpoints
  * @property \Cake\ORM\Table&\Cake\ORM\Association\BelongsTo $Applications
  * @property \Cake\ORM\Table&\Cake\ORM\Association\BelongsTo $Roles
- * @method \Cake\ORM\Query queryCache(\Cake\ORM\Query $query, string $key)
+ * @method \Cake\ORM\Query\SelectQuery queryCache(\Cake\ORM\Query\SelectQuery $query, string $key)
  * @method \BEdita\Core\Model\Entity\EndpointPermission newEmptyEntity()
  * @method \BEdita\Core\Model\Entity\EndpointPermission newEntity(array $data, array $options = [])
  * @method \BEdita\Core\Model\Entity\EndpointPermission[] newEntities(array $data, array $options = [])

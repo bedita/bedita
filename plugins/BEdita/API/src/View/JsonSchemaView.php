@@ -17,7 +17,7 @@ namespace BEdita\API\View;
 use Cake\View\JsonView;
 
 /**
- * A view class that is used for API JSON sche,aresponse.
+ * A view class that is used for API JSON schema response.
  *
  * @since 6.0.0
  */

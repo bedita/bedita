@@ -31,7 +31,7 @@ use Cake\Validation\Validator;
  * @method \BEdita\Core\Model\Entity\Endpoint patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
  * @method \BEdita\Core\Model\Entity\Endpoint[] patchEntities(iterable $entities, array $data, array $options = [])
  * @method \BEdita\Core\Model\Entity\Endpoint findOrCreate(\Cake\ORM\Query\SelectQuery|callable|array $search, ?callable $callback = null, array $options = [])
- * @method \Cake\ORM\Query queryCache(\Cake\ORM\Query $query, string $key)
+ * @method \Cake\ORM\Query\SelectQuery queryCache(\Cake\ORM\Query\SelectQuery $query, string $key)
  * @property \Cake\ORM\Table&\Cake\ORM\Association\BelongsTo $ObjectTypes
  * @property \Cake\ORM\Table&\Cake\ORM\Association\HasMany $EndpointPermissions
  * @mixin \Cake\ORM\Behavior\TimestampBehavior
