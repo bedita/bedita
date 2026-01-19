@@ -24,12 +24,12 @@
         "php": ">=8.3",
         "cakephp/authentication": "^3.3.2",
         "cakephp/authorization": "^3.4.1",
-        "cakephp/cakephp": "~5.2.9",
+        "cakephp/cakephp": "~5.3.0",
         "firebase/php-jwt": "^6.11"
     },
     "require-dev": {
         "cakephp/cakephp-codesniffer": "^5.3.0",
-        "phpunit/phpunit": "^11.5 || ^12.1"
+        "phpunit/phpunit": "^11.5.3 || ^12.1.3"
     },
     "autoload": {
         "psr-4": {
