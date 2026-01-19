@@ -60,7 +60,10 @@ class RelationsBehavior extends Behavior
      */
     protected function objectType(ObjectType|string|int|null $type = null): ObjectType
     {
-        return $this->table()->behaviors()->call('objectType', [$type]);
+        /** @var \BEdita\Core\Model\Behavior\ObjectTypeBehavior $objectTypeBehavior */
+        $objectTypeBehavior = $this->table()->getBehavior('ObjectType');
+
+        return $objectTypeBehavior->objectType($type);
     }
 
     /**
@@ -178,6 +181,7 @@ class RelationsBehavior extends Behavior
      *
      * @return array<\BEdita\Core\Model\Entity\Relation>
      * @deprecated Use `ObjectType::getRelations()` instead.
+     * @codeCoverageIgnore
      */
     public function getRelations(): array
     {

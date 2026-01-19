@@ -30,7 +30,6 @@ use Cake\Validation\Validator;
  * @property \Cake\ORM\Table&\Cake\ORM\Association\BelongsTo $Endpoints
  * @property \Cake\ORM\Table&\Cake\ORM\Association\BelongsTo $Applications
  * @property \Cake\ORM\Table&\Cake\ORM\Association\BelongsTo $Roles
- * @method \Cake\ORM\Query\SelectQuery queryCache(\Cake\ORM\Query\SelectQuery $query, string $key)
  * @method \BEdita\Core\Model\Entity\EndpointPermission newEmptyEntity()
  * @method \BEdita\Core\Model\Entity\EndpointPermission newEntity(array $data, array $options = [])
  * @method \BEdita\Core\Model\Entity\EndpointPermission[] newEntities(array $data, array $options = [])
@@ -267,7 +266,10 @@ class EndpointPermissionsTable extends Table
         $query = $this->find('byApplication', applicationId: $applicationId)
             ->find('byEndpoint', endpointIds: $endpointIds);
 
-        return $this->queryCache($query, $key)
+        /** @var \BEdita\Core\Model\Behavior\QueryCacheBehavior $queryCacheBehavior */
+        $queryCacheBehavior = $this->getBehavior('QueryCache');
+
+        return $queryCacheBehavior->queryCache($query, $key)
             ->count();
     }
 
@@ -284,13 +286,15 @@ class EndpointPermissionsTable extends Table
         $applicationId = CurrentApplication::getApplicationId();
         $endpointIds = array_filter([$endpointId]);
         $key = sprintf('perms_%d_%s_%s', (int)$strict, $applicationId ?: 'any', $endpointId ?: 'any');
+        /** @var \BEdita\Core\Model\Behavior\QueryCacheBehavior $queryCacheBehavior */
+        $queryCacheBehavior = $this->getBehavior('QueryCache');
 
         // anonymous user
         if ($user === null) {
             $query = $this->find('byApplication', applicationId: $applicationId, strict: $strict)
                 ->find('byEndpoint', endpointIds: $endpointIds, strict: $strict);
 
-            return $this->queryCache($query, $key)
+            return $queryCacheBehavior->queryCache($query, $key)
                 ->toArray();
         }
 
@@ -302,7 +306,7 @@ class EndpointPermissionsTable extends Table
             ->find('byEndpoint', endpointIds: $endpointIds, strict: $strict)
             ->find('byRole', roleIds: $roleIds);
 
-        return $this->queryCache($query, $key)
+        return $queryCacheBehavior->queryCache($query, $key)
             ->toArray();
     }
 }

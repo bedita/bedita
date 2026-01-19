@@ -56,9 +56,9 @@ class QueryCacheBehavior extends Behavior
     /**
      * Add query cache using configured cache config.
      *
-     * @param \Cake\ORM\SelectQuery $query Query object
+     * @param \Cake\ORM\Query\SelectQuery $query Query object
      * @param string $key Cache key
-     * @return \Cake\ORM\SelectQuery
+     * @return \Cake\ORM\Query\SelectQuery
      */
     public function queryCache(SelectQuery $query, string $key): SelectQuery
     {

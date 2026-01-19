@@ -64,7 +64,9 @@ class CloneObjectAction extends BaseAction
         }, ARRAY_FILTER_USE_KEY);
 
         return $this->Table->getConnection()->transactional(function () use ($sourceId, $attributes, $include) {
-            $objectType = $this->Table->objectType();
+            /** @var \BEdita\Core\Model\Behavior\ObjectTypeBehavior $objectTypeBehavior */
+            $objectTypeBehavior = $this->Table->getBehavior('ObjectType');
+            $objectType = $objectTypeBehavior->objectType();
             $contain = $objectType->get('associations');
             $action = new GetObjectAction(['table' => $this->Table]);
             $source = $action(['primaryKey' => $sourceId, 'contain' => $contain]);

@@ -104,10 +104,11 @@ class ObjectsController extends ResourcesController
 
         $this->initObjectModel();
 
-        $behaviorRegistry = $this->Table->behaviors();
-        if ($behaviorRegistry->hasMethod('objectType')) {
+        if ($this->Table->hasBehavior('objectType')) {
+            /** @var \BEdita\Core\Model\Behavior\ObjectTypeBehavior $objectTypeBehavior */
+            $objectTypeBehavior = $this->Table->getBehavior('ObjectType');
             /** @var \BEdita\Core\Model\Entity\ObjectType $objectType */
-            $objectType = $behaviorRegistry->call('objectType');
+            $objectType = $objectTypeBehavior->objectType();
             $this->setConfig('allowedAssociations', array_fill_keys($objectType->relations, []));
         }
 
@@ -193,7 +194,9 @@ class ObjectsController extends ResourcesController
         if ($table === null) {
             $objectType = $this->objectType;
         } elseif ($table->hasBehavior('ObjectType')) {
-            $objectType = $table->objectType();
+            /** @var \BEdita\Core\Model\Behavior\ObjectTypeBehavior $behavior */
+            $behavior = $table->getBehavior('ObjectType');
+            $objectType = $behavior->objectType();
         }
 
         if ($objectType instanceof ObjectType && $objectType->hasAssoc('Permissions')) {
@@ -289,7 +292,10 @@ class ObjectsController extends ResourcesController
     {
         $this->request->allowMethod(['get', 'patch', 'delete']);
 
-        $id = TableRegistry::getTableLocator()->get('Objects')->getId($id);
+        $objectsTable = $this->fetchTable('Objects');
+        /** @var \BEdita\Core\Model\Behavior\ResourceNameBehavior $resourceNameBehavior */
+        $resourceNameBehavior = $objectsTable->getBehavior('ResourceName');
+        $id = $resourceNameBehavior->getId($id);
         $contain = $this->prepareInclude($this->request->getQuery('include'));
 
         $action = new GetObjectAction(['table' => $this->Table, 'objectType' => $this->objectType]);
@@ -425,7 +431,10 @@ class ObjectsController extends ResourcesController
         $this->request->allowMethod(['get']);
 
         $relationship = $this->request->getParam('relationship');
-        $relatedId = TableRegistry::getTableLocator()->get('Objects')->getId($this->request->getParam('related_id'));
+        $objectsTable = $this->fetchTable('Objects');
+        /** @var \BEdita\Core\Model\Behavior\ResourceNameBehavior $resourceNameBehavior */
+        $resourceNameBehavior = $objectsTable->getBehavior('ResourceName');
+        $relatedId = $resourceNameBehavior->getId($this->request->getParam('related_id'));
 
         $association = $this->findAssociation($relationship);
         $filter = $this->prepareFilter();
@@ -453,7 +462,10 @@ class ObjectsController extends ResourcesController
      */
     public function relationships(): ?Response
     {
-        $id = TableRegistry::getTableLocator()->get('Objects')->getId($this->request->getParam('id'));
+        $objectsTable = $this->fetchTable('Objects');
+        /** @var \BEdita\Core\Model\Behavior\ResourceNameBehavior $resourceNameBehavior */
+        $resourceNameBehavior = $objectsTable->getBehavior('ResourceName');
+        $id = $resourceNameBehavior->getId($this->request->getParam('id'));
         $relationship = $this->request->getParam('relationship');
 
         $association = $this->findAssociation($relationship);

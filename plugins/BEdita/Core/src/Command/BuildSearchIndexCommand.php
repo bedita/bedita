@@ -141,7 +141,9 @@ class BuildSearchIndexCommand extends Command
     {
         $indexed = 0;
         $table = $this->fetchTable($entity->getSource());
-        foreach ($table->getSearchAdapters() as $adapter) {
+        /** @var \BEdita\Core\Model\Behavior\SearchableBehavior $searchableBehavior */
+        $searchableBehavior = $table->getBehavior('Searchable');
+        foreach ($searchableBehavior->getSearchAdapters() as $adapter) {
             if (!empty($adapters) && !in_array($adapter->getAlias(), $adapters)) {
                 continue;
             }

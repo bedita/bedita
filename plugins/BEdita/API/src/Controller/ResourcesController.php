@@ -264,8 +264,12 @@ abstract class ResourcesController extends AppController
      */
     protected function getResourceId(string|int $id): string
     {
-        if ($this->fetchTable()->behaviors()->has('ResourceName')) {
-            return (string)$this->fetchTable()->getId($id);
+        $table = $this->fetchTable();
+        if ($table->hasBehavior('ResourceName')) {
+            /** @var \BEdita\Core\Model\Behavior\ResourceNameBehavior $resourceNameBehavior */
+            $resourceNameBehavior = $table->getBehavior('ResourceName');
+
+            return (string)$resourceNameBehavior->getId($id);
         }
 
         return (string)$id;

@@ -136,7 +136,9 @@ class TreeBehaviorTest extends TestCase
             ->where(compact('name'))
             ->firstOrFail();
 
-        $position = $this->Table->getCurrentPosition($node);
+        /** @var \BEdita\Core\Model\Behavior\TreeBehavior $treeBehavior */
+        $treeBehavior = $this->Table->getBehavior('Tree');
+        $position = $treeBehavior->getCurrentPosition($node);
 
         static::assertSame($expected, $position);
     }
@@ -217,11 +219,13 @@ class TreeBehaviorTest extends TestCase
             ->where(compact('name'))
             ->firstOrFail();
 
-        $previousPosition = $this->Table->getCurrentPosition($node);
+        /** @var \BEdita\Core\Model\Behavior\TreeBehavior $treeBehavior */
+        $treeBehavior = $this->Table->getBehavior('Tree');
+        $previousPosition = $treeBehavior->getCurrentPosition($node);
         $previousIndexes = [$node->get('left_idx'), $node->get('right_idx')];
 
-        $result = $this->Table->moveAt($node, $position);
-        $finalPosition = $this->Table->getCurrentPosition($node);
+        $result = $treeBehavior->moveAt($node, $position);
+        $finalPosition = $treeBehavior->getCurrentPosition($node);
 
         if ($expected === false) {
             static::assertFalse($result);
@@ -271,8 +275,10 @@ class TreeBehaviorTest extends TestCase
         $count = count($currentPositions);
         $expected = array_reverse($currentPositions);
 
+        /** @var \BEdita\Core\Model\Behavior\TreeBehavior $treeBehavior */
+        $treeBehavior = $this->Table->getBehavior('Tree');
         foreach ($children as $child) {
-            $this->Table->moveAt($child, $count--);
+            $treeBehavior->moveAt($child, $count--);
         }
 
         $actual = $this->Table
@@ -291,7 +297,9 @@ class TreeBehaviorTest extends TestCase
      */
     public function testCheckIntegritySuccess(): void
     {
-        $errors = $this->Table->checkIntegrity();
+        /** @var \BEdita\Core\Model\Behavior\TreeBehavior $treeBehavior */
+        $treeBehavior = $this->Table->getBehavior('Tree');
+        $errors = $treeBehavior->checkIntegrity();
 
         static::assertEmpty($errors);
     }
@@ -308,7 +316,9 @@ class TreeBehaviorTest extends TestCase
             'Found record where left_idx >= right_idx',
         ];
 
-        $errors = $this->Table->checkIntegrity();
+        /** @var \BEdita\Core\Model\Behavior\TreeBehavior $treeBehavior */
+        $treeBehavior = $this->Table->getBehavior('Tree');
+        $errors = $treeBehavior->checkIntegrity();
 
         static::assertSame($expected, $errors);
     }
@@ -327,7 +337,9 @@ class TreeBehaviorTest extends TestCase
             'Found record where parent.left_idx + 1 != MIN(children.left_idx)',
         ];
 
-        $errors = $this->Table->checkIntegrity();
+        /** @var \BEdita\Core\Model\Behavior\TreeBehavior $treeBehavior */
+        $treeBehavior = $this->Table->getBehavior('Tree');
+        $errors = $treeBehavior->checkIntegrity();
 
         static::assertSame($expected, $errors);
     }
@@ -346,7 +358,9 @@ class TreeBehaviorTest extends TestCase
             'Found record where parent.right_idx - 1 != MAX(children.right_idx)',
         ];
 
-        $errors = $this->Table->checkIntegrity();
+        /** @var \BEdita\Core\Model\Behavior\TreeBehavior $treeBehavior */
+        $treeBehavior = $this->Table->getBehavior('Tree');
+        $errors = $treeBehavior->checkIntegrity();
 
         static::assertSame($expected, $errors);
     }
@@ -364,7 +378,9 @@ class TreeBehaviorTest extends TestCase
             'Found record where left_idx - 1 != MAX(previousSiblings.right_idx)',
         ];
 
-        $errors = $this->Table->checkIntegrity();
+        /** @var \BEdita\Core\Model\Behavior\TreeBehavior $treeBehavior */
+        $treeBehavior = $this->Table->getBehavior('Tree');
+        $errors = $treeBehavior->checkIntegrity();
 
         static::assertSame($expected, $errors);
     }
@@ -382,7 +398,9 @@ class TreeBehaviorTest extends TestCase
             'Found record where left_idx - 1 != MAX(previousSiblings.right_idx)',
         ];
 
-        $errors = $this->Table->checkIntegrity();
+        /** @var \BEdita\Core\Model\Behavior\TreeBehavior $treeBehavior */
+        $treeBehavior = $this->Table->getBehavior('Tree');
+        $errors = $treeBehavior->checkIntegrity();
 
         static::assertSame($expected, $errors);
     }
@@ -404,7 +422,9 @@ class TreeBehaviorTest extends TestCase
             $parentNode->child_categories[2],
         ]);
 
-        $errors = $this->Table->checkIntegrity();
+        /** @var \BEdita\Core\Model\Behavior\TreeBehavior $treeBehavior */
+        $treeBehavior = $this->Table->getBehavior('Tree');
+        $errors = $treeBehavior->checkIntegrity();
 
         static::assertEmpty($errors);
     }

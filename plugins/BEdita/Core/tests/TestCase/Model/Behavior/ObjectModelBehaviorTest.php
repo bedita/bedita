@@ -80,7 +80,9 @@ class ObjectModelBehaviorTest extends TestCase
         $this->Documents = $this->fetchTable('Documents');
         $entity = $this->Documents->get(3);
         $related = $this->Documents->get(2);
-        $this->Documents->addRelated($entity, 'test', [$related]);
+        /** @var \BEdita\Core\Model\Behavior\ObjectModelBehavior $objectModelBehavior */
+        $objectModelBehavior = $this->Documents->getBehavior('ObjectModel');
+        $objectModelBehavior->addRelated($entity, 'test', [$related]);
 
         $entity = $this->Documents->get(3, contain: 'Test');
         $ids = Hash::extract($entity->get('test'), '{n}.id');
@@ -98,7 +100,9 @@ class ObjectModelBehaviorTest extends TestCase
         $this->Documents = $this->fetchTable('Documents');
         $entity = $this->Documents->get(3);
         $related = $this->Documents->get(2);
-        $this->Documents->replaceRelated($entity, 'test', [$related]);
+        /** @var \BEdita\Core\Model\Behavior\ObjectModelBehavior $objectModelBehavior */
+        $objectModelBehavior = $this->Documents->getBehavior('ObjectModel');
+        $objectModelBehavior->replaceRelated($entity, 'test', [$related]);
 
         $entity = $this->Documents->get(3, contain: 'Test');
         $ids = Hash::extract($entity->get('test'), '{n}.id');
@@ -115,7 +119,9 @@ class ObjectModelBehaviorTest extends TestCase
         $this->Documents = $this->fetchTable('Documents');
         $entity = $this->Documents->get(3);
         $related = $this->Documents->get(4);
-        $this->Documents->removeRelated($entity, 'test', [$related]);
+        /** @var \BEdita\Core\Model\Behavior\ObjectModelBehavior $objectModelBehavior */
+        $objectModelBehavior = $this->Documents->getBehavior('ObjectModel');
+        $objectModelBehavior->removeRelated($entity, 'test', [$related]);
 
         $entity = $this->Documents->get(3, contain: 'Test');
         $ids = Hash::extract($entity->get('test'), '{n}.id');

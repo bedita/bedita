@@ -102,9 +102,13 @@ class RelatedTo extends BelongsToMany
             return $target;
         }
 
-        $objectType = $target->objectType();
+        /** @var \BEdita\Core\Model\Behavior\ObjectTypeBehavior $objectTypeBehavior */
+        $objectTypeBehavior = $target->getBehavior('ObjectType');
+        $objectType = $objectTypeBehavior->objectType();
         if ($objectType === null || $objectType->id !== $targetOT->id) {
-            $target->setupRelations(
+            /** @var \BEdita\Core\Model\Behavior\RelationsBehavior $relationsBehavior */
+            $relationsBehavior = $target->getBehavior('Relations');
+            $relationsBehavior->setupRelations(
                 $this->getTableLocator()->get('ObjectTypes')
                     ->get($targetOT->id),
             );
@@ -224,8 +228,10 @@ class RelatedTo extends BelongsToMany
         if (!$table->behaviors()->has('ObjectType')) {
             return false;
         }
+        /** @var \BEdita\Core\Model\Behavior\ObjectTypeBehavior $objectTypeBehavior */
+        $objectTypeBehavior = $table->getBehavior('ObjectType');
 
-        return $table->objectType()->is_abstract;
+        return $objectTypeBehavior->objectType()->is_abstract;
     }
 
     /**

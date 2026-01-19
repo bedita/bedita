@@ -49,7 +49,12 @@ class ObjectModelBehavior extends Behavior
         $table->addBehavior('BEdita/Core.CustomProperties');
         $table->addBehavior('BEdita/Core.UniqueName');
         $table->addBehavior('BEdita/Core.Relations');
-        $objectType = $this->table()->objectType();
+        $objectType = null;
+        if ($table->hasBehavior('ObjectType')) {
+            /** @var \BEdita\Core\Model\Behavior\ObjectTypeBehavior $objectTypeBehavior */
+            $objectTypeBehavior = $table->getBehavior('ObjectType');
+            $objectType = $objectTypeBehavior->objectType();
+        }
         $table->addBehavior('BEdita/Core.Searchable', [
             'operationName' => [
                 'Model.afterSave' => function (EventInterface $event, EntityInterface $entity): string {

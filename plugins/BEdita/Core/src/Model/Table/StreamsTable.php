@@ -204,7 +204,9 @@ class StreamsTable extends Table
 
         return $this->getConnection()->transactional(function () use ($clone, $stream): Stream {
             $clone = $this->saveOrFail($clone, ['atomic' => false]);
-            $this->copyFiles($stream, $clone);
+            /** @var \BEdita\Core\Model\Behavior\UploadableBehavior $uploadable */
+            $uploadable = $this->getBehavior('Uploadable');
+            $uploadable->copyFiles($stream, $clone);
 
             return $this->get($clone->get('uuid'));
         });

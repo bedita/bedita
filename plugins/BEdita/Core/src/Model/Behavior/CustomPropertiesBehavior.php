@@ -89,7 +89,10 @@ class CustomPropertiesBehavior extends Behavior
      */
     protected function objectType(array ...$args): ?ObjectType
     {
-        return $this->table()->behaviors()->call('objectType', $args);
+        /** @var \BEdita\Core\Model\Behavior\ObjectTypeBehavior $objectTypeBehavior */
+        $objectTypeBehavior = $this->table()->getBehavior('ObjectType');
+
+        return $objectTypeBehavior->objectType(...$args);
     }
 
     /**

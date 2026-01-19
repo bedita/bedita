@@ -326,7 +326,9 @@ class RelatedToTest extends TestCase
             static::assertContains($expectedAssoc, $actualAssociations);
         }
         if ($expectedOT !== null) {
-            $actualOT = $target->objectType();
+            /** @var \BEdita\Core\Model\Behavior\ObjectTypeBehavior $objectTypeBehavior */
+            $objectTypeBehavior = $target->getBehavior('ObjectType');
+            $actualOT = $objectTypeBehavior->objectType();
             static::assertInstanceOf(ObjectType::class, $actualOT);
             static::assertSame($expectedOT, $actualOT->name);
         }
