@@ -29,8 +29,22 @@ class UpdateTextToJsonType extends BaseMigration
      */
     public function up(): void
     {
+        $adapterType = $this->getAdapter()->getAdapterType();
+        $columnTypes = $this->getAdapter()->getColumnTypes();
+        if (!in_array('json', $columnTypes)) {
+            return;
+        }
+
+        if ($adapterType === 'sqlite') {
+            $this->dropForeignKeyForSqlite();
+        }
+
         foreach ($this->columnsToAlter as $tableName => $columns) {
             $this->textToJson($tableName, $columns);
+        }
+
+        if ($adapterType === 'sqlite') {
+            $this->restoreForeignKeyForSqlite();
         }
     }
 
@@ -38,35 +52,157 @@ class UpdateTextToJsonType extends BaseMigration
      * Alter columns of table to JSONB (Postgres) or JSON.
      * Skip if json is not a valid type for DB.
      *
-     * @param string $table The table name
+     * @param string $tableName The table name
      * @param array $columns List of columns to alter
      * @return void
      */
-    protected function textToJson(string $table, array $columns): void
+    protected function textToJson(string $tableName, array $columns): void
     {
         $adapterType = $this->getAdapter()->getAdapterType();
         $columnTypes = $this->getAdapter()->getColumnTypes();
-        if (!in_array('json', $columnTypes)) {
-            return;
-        }
-
+        $table = null;
         foreach ($columns as $columnName) {
             if ($adapterType === 'pgsql' && in_array('jsonb', $columnTypes)) {
                 // For PostgreSQL, use raw SQL with explicit casting
-                $this->execute(sprintf('ALTER TABLE %s ALTER COLUMN %s TYPE jsonb USING %s::jsonb', $table, $columnName, $columnName));
+                $this->execute(sprintf('ALTER TABLE %s ALTER COLUMN %s TYPE jsonb USING %s::jsonb', $tableName, $columnName, $columnName));
 
                 continue;
             }
 
-            $this->table($table)
+            $table = $this->table($tableName)
                 ->changeColumn($columnName, 'json', [
-                    'comment' => sprintf('%s %s (JSON format)', $table, $columnName),
+                    'comment' => sprintf('%s %s (JSON format)', $tableName, $columnName),
                     'default' => null,
                     'null' => true,
-                ])
-                ->update();
-
+                ]);
         }
+
+        if ($table !== null) {
+            $table->update();
+        }
+    }
+
+    /**
+     * Drop foreign keys for sqlite
+     *
+     * @return void
+     */
+    protected function dropForeignKeyForSqlite(): void
+    {
+        $this->table('objects')
+            ->dropForeignKey('object_type_id')
+            ->update();
+
+        $this->table('categories')
+            ->dropForeignKey('object_type_id')
+            ->update();
+
+        $this->table('endpoint_permissions')
+            ->dropForeignKey('endpoint_id')
+            ->update();
+
+        $this->table('endpoints')
+            ->dropForeignKey('object_type_id')
+            ->update();
+
+        $this->table('properties')
+            ->dropForeignKey('object_type_id')
+            ->update();
+
+
+        $this->table('relation_types')
+            ->dropForeignKey('object_type_id')
+            ->update();
+
+        // $this->table('object_types')
+        //     ->dropForeignKey('parent_id')
+        //     ->update();
+    }
+
+    /**
+     * Restore foreign keys for sqlite
+     *
+     * @return void
+     */
+    protected function restoreForeignKeyForSqlite(): void
+    {
+        $this->table('objects')
+            ->addForeignKey(
+                'object_type_id',
+                'object_types',
+                'id',
+                [
+                    'constraint' => 'objects_objtype_fk',
+                    'update' => 'NO_ACTION',
+                    'delete' => 'RESTRICT'
+                ]
+            )
+            ->update();
+
+        $this->table('categories')
+            ->addForeignKey(
+                'object_type_id',
+                'object_types',
+                'id',
+                [
+                    'constraint' => 'categories_objecttypesid_fk',
+                    'update' => 'NO_ACTION',
+                    'delete' => 'CASCADE',
+                ]
+            )
+            ->update();
+
+        $this->table('endpoints')
+            ->addForeignKey(
+                'object_type_id',
+                'object_types',
+                'id',
+                [
+                    'constraint' => 'endpoints_objecttypeid_fk',
+                    'update' => 'RESTRICT',
+                    'delete' => 'RESTRICT',
+                ]
+            )
+            ->update();
+
+        $this->table('relation_types')
+            ->addForeignKey(
+                'object_type_id',
+                'object_types',
+                'id',
+                [
+                    'constraint' => 'relationtypes_objtypeid_fk',
+                    'update' => 'NO_ACTION',
+                    'delete' => 'CASCADE',
+                ]
+            )
+            ->update();
+
+        $this->table('properties')
+            ->addForeignKey(
+                'object_type_id',
+                'object_types',
+                'id',
+                [
+                    'constraint' => 'properties_objtype_fk',
+                    'update' => 'RESTRICT',
+                    'delete' => 'CASCADE'
+                ]
+            )
+            ->update();
+
+        $this->table('endpoint_permissions')
+            ->addForeignKey(
+                'endpoint_id',
+                'endpoints',
+                'id',
+                [
+                    'constraint' => 'endpointpermissions_endpointid_fk',
+                    'update' => 'RESTRICT',
+                    'delete' => 'RESTRICT'
+                ]
+            )
+            ->update();
     }
 
     /**
@@ -78,6 +214,10 @@ class UpdateTextToJsonType extends BaseMigration
         $columnTypes = $this->getAdapter()->getColumnTypes();
         if (!in_array('json', $columnTypes)) {
             return;
+        }
+
+        if ($adapterType === 'sqlite') {
+            $this->dropForeignKeyForSqlite();
         }
 
         foreach ($this->columnsToAlter as $tableName => $columns) {
@@ -98,6 +238,10 @@ class UpdateTextToJsonType extends BaseMigration
                     ])
                     ->update();
             }
+        }
+
+        if ($adapterType === 'sqlite') {
+            $this->restoreForeignKeyForSqlite();
         }
     }
 }
