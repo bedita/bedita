@@ -110,7 +110,7 @@ class TreePathsControllerTest extends IntegrationTestCase
                 'schema' => [
                     'folders' => [
                         '$id' => 'http://api.example.com/model/schema/folders',
-                        'revision' => '3048758948',
+                        'revision' => '821097843',
                     ],
                 ],
             ],
