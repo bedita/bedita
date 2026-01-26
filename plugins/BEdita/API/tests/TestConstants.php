@@ -25,16 +25,16 @@ class TestConstants
      * @var array
      */
     public const SCHEMA_REVISIONS = [
-        'applications' => '3594165375',
-        'documents' => '1283690226',
-        'events' => '2652801567',
-        'files' => '1230722293',
-        'folders' => '3048758948',
-        'images' => '2267757429',
-        'locations' => '3886336330',
-        'profiles' => '3246067238',
-        'roles' => '122746925',
-        'users' => '880938681',
-        'videos' => '3778442185',
+        'applications' => '549590360',
+        'documents' => '711243664',
+        'events' => '2573168521',
+        'files' => '61843119',
+        'folders' => '960941387',
+        'images' => '377670688',
+        'locations' => '383128401',
+        'profiles' => '2929647885',
+        'roles' => '1165313018',
+        'users' => '3078046273',
+        'videos' => '820471986',
     ];
 }

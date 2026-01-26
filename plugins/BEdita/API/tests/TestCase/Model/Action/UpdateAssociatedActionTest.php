@@ -661,6 +661,12 @@ class UpdateAssociatedActionTest extends TestCase
             (array)$entity->get(Inflector::underscore($associationName)),
             '0._joinData.params',
         );
+        if (is_array($actualParams)) {
+            ksort($actualParams);
+        }
+        if (is_array($expectedParams)) {
+            ksort($expectedParams);
+        }
         static::assertSame($expectedParams, $actualParams);
     }
 }

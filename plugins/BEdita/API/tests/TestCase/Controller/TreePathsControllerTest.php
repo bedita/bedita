@@ -16,6 +16,7 @@ declare(strict_types=1);
 namespace BEdita\API\Test\TestCase\Controller;
 
 use BEdita\API\Controller\TreePathsController;
+use BEdita\API\Test\TestConstants;
 use BEdita\API\TestSuite\IntegrationTestCase;
 use Cake\ORM\TableRegistry;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -110,7 +111,7 @@ class TreePathsControllerTest extends IntegrationTestCase
                 'schema' => [
                     'folders' => [
                         '$id' => 'http://api.example.com/model/schema/folders',
-                        'revision' => '3048758948',
+                        'revision' => TestConstants::SCHEMA_REVISIONS['folders'],
                     ],
                 ],
             ],

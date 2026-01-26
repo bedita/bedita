@@ -112,10 +112,29 @@ class JsonSchema
         // remove 'description' from crc32 signature calculation -> not available in Sqlite
         $schemaNoDesc = Hash::remove($schema, 'properties.{*}.description');
         // properties order also differs between Sqlite and Mysql
-        ksort($schemaNoDesc['properties']);
+        static::ksortRecursive($schemaNoDesc);
         $schema['revision'] = sprintf('%u', crc32(json_encode($schemaNoDesc)));
 
         return $schema;
+    }
+
+    /**
+     * Recursively sort array by key.
+     *
+     * @param array $array Array to sort.
+     * @return void
+     */
+    protected static function ksortRecursive(array &$array): void
+    {
+        ksort($array);
+        foreach ($array as &$value) {
+            if ($value instanceof stdClass) {
+                $value = (array)$value;
+            }
+            if (is_array($value)) {
+                static::ksortRecursive($value);
+            }
+        }
     }
 
     /**
