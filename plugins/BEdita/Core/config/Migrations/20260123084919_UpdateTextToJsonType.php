@@ -21,7 +21,6 @@ class UpdateTextToJsonType extends BaseMigration
         'object_types' => ['associations', 'hidden'],
         'property_types' => ['params'],
         'relations' => ['params'],
-        'translations' => ['translated_fields'],
     ];
 
     /**
