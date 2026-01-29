@@ -22,6 +22,7 @@ use BEdita\Core\Model\Action\GetObjectAction;
 use BEdita\Core\Model\Action\SaveEntityAction;
 use BEdita\Core\Model\Entity\Application;
 use BEdita\Core\Model\Entity\User;
+use BEdita\Core\Model\Table\UsersTable;
 use Cake\Http\Exception\BadRequestException;
 use Cake\Http\Exception\NotFoundException;
 use Cake\Http\Exception\UnauthorizedException;
@@ -36,11 +37,17 @@ use Cake\Utility\Inflector;
  * Controller for `/auth` endpoint.
  *
  * @since 4.0.0
- * @property \BEdita\Core\Model\Table\UsersTable $Users
  */
 class LoginController extends AppController
 {
     use ActionTrait;
+
+    /**
+     * Users Table instance
+     *
+     * @var \BEdita\Core\Model\Table\UsersTable
+     */
+    protected UsersTable $Users;
 
     /**
      * Default password hasher settings.
