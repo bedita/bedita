@@ -16,7 +16,9 @@ namespace BEdita\Core\Job\Service;
 
 use BEdita\Core\Job\JobService;
 use BEdita\Core\Mailer\Mailer;
+use Cake\Log\Log;
 use Cake\Utility\Hash;
+use Exception;
 
 /**
  * Service to send single mail
@@ -33,25 +35,26 @@ class MailService implements JobService
      * Options can contain the following keys:
      *  - `transport`: mail transport to use (default: `'default'`).
      *
-     * Return result with keys:
-     * - `success` true
-     * - `email` Result from {@see \Cake\Mailer\Email::send()}.
-     *
      * @param array $payload Input data for this email job.
      * @param array $options Options for running this job.
-     * @return array
+     * @return bool Success.
      */
-    public function run(array $payload, array $options = []): array
+    public function run(array $payload, array $options = []): bool
     {
         $transport = Hash::get($options, 'transport', 'default');
 
-        $email = (new Mailer())
-            ->createFromArray($payload)
-            ->setTransport($transport);
+        try {
+            $email = (new Mailer())
+                ->createFromArray($payload)
+                ->setTransport($transport);
 
-        return [
-            'success' => true,
-            'email' => $email->sendRaw(),
-        ];
+            $email->sendRaw();
+
+            return true;
+        } catch (Exception $e) {
+            Log::error($e->getMessage());
+
+            return false;
+        }
     }
 }
