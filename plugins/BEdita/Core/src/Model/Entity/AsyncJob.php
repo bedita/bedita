@@ -95,10 +95,10 @@ class AsyncJob extends Entity implements JsonApiSerializable, EventDispatcherInt
      * Run this asynchronous job.
      *
      * @param array $options Additional options.
-     * @return bool
+     * @return bool|array
      * @throws \BadMethodCallException Throws an exception if job hasn't been locked.
      */
-    public function run(array $options = []): bool
+    public function run(array $options = []): bool|array
     {
         if ($this->status !== 'locked') {
             throw new BadMethodCallException('Only locked jobs can be run');
