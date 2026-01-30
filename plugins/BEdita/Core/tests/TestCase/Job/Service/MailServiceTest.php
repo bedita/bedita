@@ -17,6 +17,9 @@ namespace BEdita\Core\Test\TestCase\Job\Service;
 use BEdita\Core\Job\Service\MailService;
 use Cake\Mailer\TransportFactory;
 use Cake\TestSuite\TestCase;
+use Cake\Utility\Hash;
+use Exception;
+use LogicException;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 
@@ -58,7 +61,19 @@ class MailServiceTest extends TestCase
     {
         return [
             'simple' => [
-                true,
+                [
+                    'headers' => [
+                        'From: Gustavo <gustavo.supporto@example.org>',
+                        'To: Evermannella <evermannella@example.org>',
+                        'Subject: Re: Have you installed the latest version of Synapse?',
+                    ],
+                    'message' => [
+                        'Not yet. Please write a story on our Scrum board.',
+                        '',
+                        'Regards,',
+                        'Evermannella @ ChiaLab srl',
+                    ],
+                ],
                 [
                     'from' => ['gustavo.supporto@example.org' => 'Gustavo'],
                     'to' => ['evermannella@example.org' => 'Evermannella'],
@@ -72,7 +87,7 @@ class MailServiceTest extends TestCase
                 ],
             ],
             'missing' => [
-                false,
+                new LogicException('You need specify one destination on to, cc or bcc.'),
                 [],
             ],
         ];
@@ -88,9 +103,25 @@ class MailServiceTest extends TestCase
     #[DataProvider('runProvider')]
     public function testRun($expected, array $payload)
     {
+        if ($expected instanceof Exception) {
+            $this->expectException(get_class($expected));
+            $this->expectExceptionCode($expected->getCode());
+            $this->expectExceptionMessage($expected->getMessage());
+        }
+
         $mailService = new MailService();
         $result = $mailService->run($payload, ['transport' => 'test']);
+        $email = Hash::get($result, 'email');
+        array_walk($email, function (&$val) {
+            $val = explode("\r\n", $val);
+        });
 
-        static::assertEquals($expected, $result);
+        static::assertTrue(Hash::get($result, 'success'));
+        static::assertArrayHasKey('headers', $email);
+        foreach ($expected['headers'] as $header) {
+            static::assertContains($header, $email['headers']);
+        }
+        static::assertArrayHasKey('message', $email);
+        static::assertSame($expected['message'], $email['message']);
     }
 }
