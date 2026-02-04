@@ -15,8 +15,6 @@ declare(strict_types=1);
 namespace BEdita\API\Test\IntegrationTest;
 
 use BEdita\API\TestSuite\IntegrationTestCase;
-use Cake\Database\Driver\Postgres;
-use Cake\Datasource\ConnectionManager;
 use Cake\ORM\TableRegistry;
 use Cake\Utility\Hash;
 use PHPUnit\Framework\Attributes\CoversNothing;
@@ -269,7 +267,12 @@ class FilterQueryStringTest extends IntegrationTestCase
                 [
                     '8',
                 ],
-                true,
+            ],
+            'case insensitive locations' => [
+                '/locations?filter[query]=BolOGna',
+                [
+                    '8',
+                ],
             ],
             'users' => [
                 '/users?filter[query]=second',
@@ -378,16 +381,11 @@ class FilterQueryStringTest extends IntegrationTestCase
      *
      * @param string $url Url string.
      * @param array $expected Expected result.
-     * @param bool $caseInsensitive Whether test case relies on case-insensitive comparison.
      * @return void
      */
     #[DataProvider('searchFilterProvider')]
-    public function testSearchFilter($url, $expected, bool $caseInsensitive = false)
+    public function testSearchFilter($url, $expected)
     {
-        if ($caseInsensitive && ConnectionManager::get('default')->getDriver() instanceof Postgres) {
-            static::markTestSkipped('Case-insensitive test cases are skipped on Postgres');
-        }
-
         $this->configRequestHeaders();
         $this->get($url);
         $result = json_decode((string)$this->_response->getBody(), true);
