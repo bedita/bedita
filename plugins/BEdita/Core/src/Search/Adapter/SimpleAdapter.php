@@ -17,7 +17,10 @@ namespace BEdita\Core\Search\Adapter;
 use BEdita\Core\Exception\BadFilterException;
 use BEdita\Core\ORM\Inheritance\Table as InheritanceTable;
 use BEdita\Core\Search\BaseAdapter;
+use Cake\Database\Driver\Postgres;
+use Cake\Database\Expression\ComparisonExpression;
 use Cake\Database\Expression\QueryExpression;
+use Cake\Database\ExpressionInterface;
 use Cake\Datasource\EntityInterface;
 use Cake\ORM\Query\SelectQuery;
 use Cake\ORM\Table;
@@ -174,16 +177,33 @@ class SimpleAdapter extends BaseAdapter
 
         // Build query conditions.
         return $query
-            ->where(function (QueryExpression $exp) use ($field, $words) {
+            ->where(function (QueryExpression $exp, SelectQuery $query) use ($field, $words) {
                 foreach ($words as $word) {
-                    $exp->like(
-                        $field,
-                        sprintf('%%%s%%', $word),
-                    );
+                    $exp->add($this->buildLikeExpression($query, $field, $word));
                 }
 
                 return $exp;
             });
+    }
+
+    /**
+     * Build a case insensitive LIKE expression for the given field and word.
+     *
+     * @param \Cake\ORM\Query\SelectQuery $query The query
+     * @param \Cake\Database\ExpressionInterface|string $field The field to search
+     * @param string $word The word to search
+     * @return \Cake\Database\Expression\QueryExpression
+     */
+    protected function buildLikeExpression(SelectQuery $query, ExpressionInterface|string $field, string $word): QueryExpression
+    {
+        $word = sprintf('%%%s%%', $word);
+        $driver = $query->getConnection()->getDriver();
+        $exp = $query->expr();
+        if ($driver instanceof Postgres) {
+            return $exp->add(new ComparisonExpression($field, $word, null, 'ILIKE'));
+        }
+
+        return $exp->like($field, $word);
     }
 
     /**
