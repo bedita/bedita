@@ -496,9 +496,9 @@ class CountRelatedObjectsActionTest extends TestCase
             ],
         ];
 
-        $mock = $this->getMockBuilder(CountRelatedObjectsAction::class)
+        $mock = $this->getStubBuilder(CountRelatedObjectsAction::class)
             ->onlyMethods(['groupResultCountById'])
-            ->getMock();
+            ->getStub();
 
         $mock->method('groupResultCountById')
             ->willReturn($fakeResult);
@@ -529,9 +529,9 @@ class CountRelatedObjectsActionTest extends TestCase
             ],
         ];
 
-        $mock = $this->getMockBuilder(CountRelatedObjectsAction::class)
+        $mock = $this->getStubBuilder(CountRelatedObjectsAction::class)
             ->onlyMethods(['groupResultCountById'])
-            ->getMock();
+            ->getStub();
 
         $mock->method('groupResultCountById')
             ->willReturn($fakeResult);

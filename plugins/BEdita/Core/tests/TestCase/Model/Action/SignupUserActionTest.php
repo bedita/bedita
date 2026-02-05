@@ -341,9 +341,9 @@ class SignupUserActionTest extends TestCase
             static::assertInstanceOf(User::class, $arguments[1]);
         });
 
-        $action = $this->getMockBuilder(SignupUserAction::class)
+        $action = $this->getStubBuilder(SignupUserAction::class)
             ->onlyMethods(['getOAuth2Response'])
-            ->getMock();
+            ->getStub();
 
         $action
             ->method('getOAuth2Response')

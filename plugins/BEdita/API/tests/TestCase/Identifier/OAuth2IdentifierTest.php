@@ -131,8 +131,8 @@ class OAuth2IdentifierTest extends TestCase
             ->firstOrFail();
         // Mock OAuth2 response
         $response = new Response([], json_encode($oauthResponse));
-        $mock = $this->getMockBuilder(Stream::class)
-            ->getMock();
+        $mock = $this->getStubBuilder(Stream::class)
+            ->getStub();
         $mock->method('send')
             ->willReturn([$response]);
 

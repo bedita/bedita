@@ -106,7 +106,7 @@ class LoggedUserMiddlewareTest extends TestCase
     public function testEmptyIdentity(): void
     {
         $request = new ServerRequest();
-        $request = $request->withAttribute('authentication', $this->getMockForAuthenticationService());
+        $request = $request->withAttribute('authentication', $this->getStubForAuthenticationService());
         $handler = new TestRequestHandler();
         $middleware = new LoggedUserMiddleware();
         $middleware->process($request, $handler);
@@ -141,7 +141,7 @@ class LoggedUserMiddlewareTest extends TestCase
         $request = new ServerRequest([
             'url' => '/auth',
         ]);
-        $request = $request->withAttribute('authentication', $this->getMockForAuthenticationService());
+        $request = $request->withAttribute('authentication', $this->getStubForAuthenticationService());
         $handler = new TestRequestHandler();
         $middleware = new LoggedUserMiddleware();
         $middleware->process($request, $handler);
@@ -194,7 +194,7 @@ class LoggedUserMiddlewareTest extends TestCase
     {
         $identity = new Identity($identityData);
         $request = new ServerRequest();
-        $request = $request->withAttribute('authentication', $this->getMockForAuthenticationService($identity));
+        $request = $request->withAttribute('authentication', $this->getStubForAuthenticationService($identity));
         $handler = new TestRequestHandler();
         $middleware = new LoggedUserMiddleware();
         $middleware->process($request, $handler);
@@ -229,7 +229,7 @@ class LoggedUserMiddlewareTest extends TestCase
         $authProvider = new JwtAuthenticator(new JwtSubjectIdentifier());
         $authProvider->authenticate($request); // it needs to decode and set payload
         $identity = new Identity($app);
-        $request = $request->withAttribute('authentication', $this->getMockForAuthenticationService($identity, $authProvider));
+        $request = $request->withAttribute('authentication', $this->getStubForAuthenticationService($identity, $authProvider));
 
         $handler = new TestRequestHandler();
         $middleware = new LoggedUserMiddleware();

@@ -243,15 +243,15 @@ class UpdateAssociatedActionTest extends TestCase
         }
 
         $request = new ServerRequest();
-        $identityMock = $this->getMockBuilder(Identity::class)
+        $identityStub = $this->getStubBuilder(Identity::class)
             ->disableOriginalConstructor()
             ->onlyMethods(['can'])
-            ->getMock();
+            ->getStub();
 
-        $identityMock->method('can')->willReturn(true);
+        $identityStub->method('can')->willReturn(true);
 
         $request = $request->withParsedBody($data)
-            ->withAttribute('identity', $identityMock);
+            ->withAttribute('identity', $identityStub);
         $association = $this->fetchTable($table)->getAssociation($association);
         $parentAction = new SetAssociatedAction(compact('association'));
         $action = new UpdateAssociatedAction(['action' => $parentAction, 'request' => $request]);
@@ -294,15 +294,15 @@ class UpdateAssociatedActionTest extends TestCase
         $junction->saveOrFail($junctionEntity);
 
         $request = new ServerRequest();
-        $identityMock = $this->getMockBuilder(Identity::class)
+        $identityStub = $this->getStubBuilder(Identity::class)
             ->disableOriginalConstructor()
             ->onlyMethods(['can'])
-            ->getMock();
+            ->getStub();
 
-        $identityMock->method('can')->willReturn(true);
+        $identityStub->method('can')->willReturn(true);
 
         $request = $request
-            ->withAttribute('identity', $identityMock)
+            ->withAttribute('identity', $identityStub)
             ->withParsedBody([
                 [
                     'id' => 1,
@@ -353,15 +353,15 @@ class UpdateAssociatedActionTest extends TestCase
             ['id' => 2],
         ];
         $request = new ServerRequest();
-        $identityMock = $this->getMockBuilder(Identity::class)
+        $identityStub = $this->getStubBuilder(Identity::class)
             ->disableOriginalConstructor()
             ->onlyMethods(['can'])
-            ->getMock();
+            ->getStub();
 
-        $identityMock->method('can')->willReturn(false);
+        $identityStub->method('can')->willReturn(false);
 
         $request = $request->withParsedBody($data)
-            ->withAttribute('identity', $identityMock);
+            ->withAttribute('identity', $identityStub);
 
         $association = $this->fetchTable('FakeTags')->getAssociation('FakeArticles');
         $parentAction = new SetAssociatedAction(compact('association'));
@@ -384,26 +384,25 @@ class UpdateAssociatedActionTest extends TestCase
             ['id' => 2],
         ];
         $request = new ServerRequest();
-        $identityMock = $this->getMockBuilder(Identity::class)
+        $identityStub = $this->getStubBuilder(Identity::class)
             ->disableOriginalConstructor()
             ->onlyMethods(['can'])
-            ->getMock();
+            ->getStub();
 
-        $identityMock->method('can')->with('updateParents')->willReturn(false);
+        $identityStub->method('can')->with('updateParents')->willReturn(false);
 
         $request = $request->withParsedBody($data)
             ->withMethod('PATCH')
-            ->withAttribute('identity', $identityMock);
-
-        $associationMock = $this->getMockBuilder(HasMany::class)
+            ->withAttribute('identity', $identityStub);
+        $associationStub = $this->getStubBuilder(HasMany::class)
             ->setConstructorArgs(['Parents'])
             ->onlyMethods(['getSource', 'getTarget'])
-            ->getMock();
+            ->getStub();
 
-        $associationMock->method('getSource')->willReturn($this->fetchTable('FakeAnimals'));
-        $associationMock->method('getTarget')->willReturn($this->fetchTable('FakeArticles'));
+        $associationStub->method('getSource')->willReturn($this->fetchTable('FakeAnimals'));
+        $associationStub->method('getTarget')->willReturn($this->fetchTable('FakeArticles'));
 
-        $parentAction = new SetAssociatedAction(['association' => $associationMock]);
+        $parentAction = new SetAssociatedAction(['association' => $associationStub]);
         $action = new UpdateAssociatedAction(['action' => $parentAction, 'request' => $request]);
 
         $action(['primaryKey' => 1]);
@@ -421,15 +420,15 @@ class UpdateAssociatedActionTest extends TestCase
             ['id' => 2],
         ];
         $request = new ServerRequest();
-        $identityMock = $this->getMockBuilder(Identity::class)
+        $identityStub = $this->getStubBuilder(Identity::class)
             ->disableOriginalConstructor()
             ->onlyMethods(['can'])
-            ->getMock();
+            ->getStub();
 
-        $identityMock->method('can')->willThrowException(new MissingPolicyException('Missing policy'));
+        $identityStub->method('can')->willThrowException(new MissingPolicyException('Missing policy'));
 
         $request = $request->withParsedBody($data)
-            ->withAttribute('identity', $identityMock);
+            ->withAttribute('identity', $identityStub);
 
         $association = $this->fetchTable('FakeTags')->getAssociation('FakeArticles');
         $parentAction = new SetAssociatedAction(compact('association'));
@@ -639,13 +638,13 @@ class UpdateAssociatedActionTest extends TestCase
     {
         $Documents = $this->fetchTable('Documents');
         $association = $Documents->getAssociation($associationName);
-        $identityMock = $this->getMockBuilder(Identity::class)
+        $identityStub = $this->getStubBuilder(Identity::class)
             ->disableOriginalConstructor()
             ->onlyMethods(['can'])
-            ->getMock();
-        $identityMock->method('can')->willReturn(true);
+            ->getStub();
+        $identityStub->method('can')->willReturn(true);
         $request = (new ServerRequest())->withParsedBody($body)
-            ->withAttribute('identity', $identityMock);
+            ->withAttribute('identity', $identityStub);
         $parentAction = new AddRelatedObjectsAction(compact('association'));
         $action = new UpdateAssociatedAction(['action' => $parentAction, 'request' => $request]);
         $result = $action(compact('primaryKey'));

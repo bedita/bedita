@@ -2438,10 +2438,10 @@ class ObjectsControllerTest extends IntegrationTestCase
         $request = new ServerRequest(compact('environment', 'params'));
         $request = $request->withAttribute('authentication', new AuthenticationService());
 
-        $controller = $this->getMockBuilder(ObjectsController::class)
+        $controller = $this->getStubBuilder(ObjectsController::class)
             ->setConstructorArgs([$request])
             ->onlyMethods(['getAvailableTypes'])
-            ->getMock();
+            ->getStub();
 
         $controller
             ->method('getAvailableTypes')

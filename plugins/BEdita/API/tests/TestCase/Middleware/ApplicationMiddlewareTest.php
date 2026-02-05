@@ -103,8 +103,8 @@ class ApplicationMiddlewareTest extends TestCase
         static::assertNull(CurrentApplication::getApplication());
 
         $expected = $this->fetchTable('Applications')->find('apiKey', apiKey: API_KEY)->firstOrFail();
-        $serviceMock = $this->getMockForAuthenticationService(new Identity($expected));
-        $request = (new ServerRequest())->withAttribute('authentication', $serviceMock);
+        $serviceStub = $this->getStubForAuthenticationService(new Identity($expected));
+        $request = (new ServerRequest())->withAttribute('authentication', $serviceStub);
         $handler = new TestRequestHandler();
 
         $middleware = new ApplicationMiddleware();
@@ -174,8 +174,8 @@ class ApplicationMiddlewareTest extends TestCase
             $authProvider->authenticate($request); // decode jwt setting payload
         }
 
-        $serviceMock = $this->getMockForAuthenticationService(null, $authProvider);
-        $request = $request->withAttribute('authentication', $serviceMock);
+        $serviceStub = $this->getStubForAuthenticationService(null, $authProvider);
+        $request = $request->withAttribute('authentication', $serviceStub);
 
         $handler = new TestRequestHandler();
         $middleware = new ApplicationMiddleware();
@@ -206,9 +206,9 @@ class ApplicationMiddlewareTest extends TestCase
             ],
         ]);
 
-        $serviceMock = $this->getMockForAuthenticationService();
+        $serviceStub = $this->getStubForAuthenticationService();
         $request = $request->withData('grant_type', 'refresh_token')
-            ->withAttribute('authentication', $serviceMock);
+            ->withAttribute('authentication', $serviceStub);
 
         // before execute middleware disable the app
         $app->enabled = false;
@@ -235,8 +235,8 @@ class ApplicationMiddlewareTest extends TestCase
             ],
         ]);
 
-        $serviceMock = $this->getMockForAuthenticationService();
-        $request = $request->withAttribute('authentication', $serviceMock);
+        $serviceStub = $this->getStubForAuthenticationService();
+        $request = $request->withAttribute('authentication', $serviceStub);
 
         $handler = new TestRequestHandler();
         $middleware = new ApplicationMiddleware();
@@ -292,8 +292,8 @@ class ApplicationMiddlewareTest extends TestCase
 
         $middleware = new ApplicationMiddleware($config);
         $request = new ServerRequest();
-        $serviceMock = $this->getMockForAuthenticationService();
-        $request = $request->withAttribute('authentication', $serviceMock)
+        $serviceStub = $this->getStubForAuthenticationService();
+        $request = $request->withAttribute('authentication', $serviceStub)
             ->withAddedHeader($middleware->getConfig('apiKey.header'), $apiKey);
 
         $handler = new TestRequestHandler();

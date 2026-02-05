@@ -58,13 +58,13 @@ class OAuth2Test extends TestCase
     public function testResponse(array $expected, string $body, array $options = []): void
     {
         $response = new Response([], $body);
-        $mock = $this->getMockBuilder(Stream::class)
-            ->getMock();
-        $mock->method('send')
+        $stub = $this->getStubBuilder(Stream::class)
+            ->getStub();
+        $stub->method('send')
             ->willReturn([$response]);
 
         $oauth2 = new OAuth2();
-        $oauth2->setConfig('client', ['adapter' => $mock]);
+        $oauth2->setConfig('client', ['adapter' => $stub]);
         $data = $oauth2->response('https://oauth2.example.com', 'token-example', $options);
 
         static::assertEquals($expected, $data);

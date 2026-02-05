@@ -63,15 +63,15 @@ class QueueJobTest extends TestCase
     }
 
     /**
-     * Get mock service.
+     * Get stub service.
      *
      * @param bool|\Exception $return Return value for `run()` method.
-     * @return \BEdita\Core\Job\JobService|\PHPUnit\Framework\MockObject\MockObject
+     * @return \BEdita\Core\Job\JobService|\PHPUnit\Framework\MockObject\Stub
      */
-    protected function getMockService($return = true)
+    protected function getStubService($return = true)
     {
-        $service = $this->getMockBuilder(JobService::class)
-            ->getMock();
+        $service = $this->getStubBuilder(JobService::class)
+            ->getStub();
 
         $method = $service->method('run');
         if ($return instanceof Exception) {
@@ -147,7 +147,7 @@ class QueueJobTest extends TestCase
     #[DataProvider('executeProvider')]
     public function testExecute(string $expected, $return, string $uuid = self::TEST_UUID): void
     {
-        ServiceRegistry::set('example', $this->getMockService($return));
+        ServiceRegistry::set('example', $this->getStubService($return));
 
         $message = $this->createMessage(['data' => compact('uuid')]);
         $job = new QueueJob();
@@ -163,7 +163,7 @@ class QueueJobTest extends TestCase
      */
     public function testServiceFailsThenMissingAsyncJob(): void
     {
-        ServiceRegistry::set('example', $this->getMockService(false));
+        ServiceRegistry::set('example', $this->getStubService(false));
         $message = $this->createMessage(['data' => ['uuid' => self::TEST_UUID]]);
 
         $count = 0;

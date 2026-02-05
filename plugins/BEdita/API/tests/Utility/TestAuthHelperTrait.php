@@ -21,6 +21,7 @@ use BEdita\API\Utility\JWTHandler;
 use BEdita\Core\Model\Entity\Application;
 use BEdita\Core\State\CurrentApplication;
 use PHPUnit\Framework\MockObject\MockObject;
+use PHPUnit\Framework\MockObject\Stub;
 
 /**
  * Collection of useful authentication related methods.
@@ -45,27 +46,27 @@ trait TestAuthHelperTrait
     }
 
     /**
-     * Helper class for get mock of AuthenticationService.
+     * Helper class for get stub of AuthenticationService.
      *
      * @param \Authentication\Identity|null $identity The identity
      * @param \Authentication\Authenticator\AbstractAuthenticator|null $authenticator The successful authenticator
-     * @return \PHPUnit\Framework\MockObject\MockObject
+     * @return \PHPUnit\Framework\MockObject\Stub
      */
-    protected function getMockForAuthenticationService(?Identity $identity = null, ?AbstractAuthenticator $authenticator = null): MockObject
+    protected function getStubForAuthenticationService(?Identity $identity = null, ?AbstractAuthenticator $authenticator = null): Stub
     {
-        $serviceMock = $this->getMockBuilder(AuthenticationService::class)
+        $serviceStub = $this->getStubBuilder(AuthenticationService::class)
             ->disableOriginalConstructor()
             ->onlyMethods(['getIdentity', 'getAuthenticationProvider'])
-            ->getMock();
+            ->getStub();
 
-         $serviceMock
+         $serviceStub
             ->method('getIdentity')
             ->willReturn($identity);
 
-        $serviceMock
+        $serviceStub
             ->method('getAuthenticationProvider')
             ->willReturn($authenticator);
 
-        return $serviceMock;
+        return $serviceStub;
     }
 }

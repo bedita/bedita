@@ -72,7 +72,7 @@ class ImageThumbsHandlerTest extends TestCase
         return [
             'no presets' => [
                 [
-                    'entity' => static fn(self $testCase) => $testCase->getMockBuilder(Stream::class)->getMock(),
+                    'entity' => static fn(self $testCase) => $testCase->getStubBuilder(Stream::class)->getStub(),
                 ],
                 [],
                 false,
@@ -94,7 +94,7 @@ class ImageThumbsHandlerTest extends TestCase
             ],
             'presets, noImages' => [
                 [
-                    'entity' => static fn(self $testCase) => $testCase->getMockBuilder(Stream::class)->getMock(),
+                    'entity' => static fn(self $testCase) => $testCase->getStubBuilder(Stream::class)->getStub(),
                     'relatedEntities' => [],
                 ],
                 [
@@ -110,11 +110,11 @@ class ImageThumbsHandlerTest extends TestCase
             ],
             'presets, stream and images' => [
                 [
-                    'entity' => static fn(self $testCase) => $testCase->getMockBuilder(Stream::class)->getMock(),
+                    'entity' => static fn(self $testCase) => $testCase->getStubBuilder(Stream::class)->getStub(),
                     'relatedEntities' => static function (self $testCase) {
-                        $image = $testCase->getMockBuilder(ObjectEntity::class)
+                        $image = $testCase->getStubBuilder(ObjectEntity::class)
                             ->onlyMethods(['get'])
-                            ->getMock();
+                            ->getStub();
                         $image->method('get')->willReturn('images');
 
                         return [$image];
@@ -208,16 +208,11 @@ class ImageThumbsHandlerTest extends TestCase
      */
     public static function thumbnailsUpdateProvider(): array
     {
-        // $streamWithObjectId = $this->getMockBuilder(Stream::class)
-        //     ->onlyMethods(['get'])
-        //     ->getMock();
-        // $streamWithObjectId->method('get')->willReturn(999);
-
         return [
             'empty presets' => [
                 [
-                    'stream' => static fn(self $testCase) => $testCase->getMockBuilder(Stream::class)
-                        ->getMock()
+                    'stream' => static fn(self $testCase) => $testCase->getStubBuilder(Stream::class)
+                        ->getStub()
                         ->method('get')
                         ->willReturn(999),
                 ],
@@ -243,8 +238,8 @@ class ImageThumbsHandlerTest extends TestCase
             ],
             'presets, stream, no image' => [
                 [
-                    'stream' => static fn(self $testCase) => $testCase->getMockBuilder(Stream::class)
-                        ->getMock()
+                    'stream' => static fn(self $testCase) => $testCase->getStubBuilder(Stream::class)
+                        ->getStub()
                         ->method('get')
                         ->willReturn(999),
                 ],
@@ -262,8 +257,8 @@ class ImageThumbsHandlerTest extends TestCase
             ],
             'presets, stream, but image not found' => [
                 [
-                    'stream' => static fn(self $testCase) => $testCase->getMockBuilder(Stream::class)
-                        ->getMock()
+                    'stream' => static fn(self $testCase) => $testCase->getStubBuilder(Stream::class)
+                        ->getStub()
                         ->method('get')
                         ->willReturn(999),
                 ],
