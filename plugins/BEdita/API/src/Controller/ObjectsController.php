@@ -104,7 +104,7 @@ class ObjectsController extends ResourcesController
 
         $this->initObjectModel();
 
-        if ($this->Table->hasBehavior('objectType')) {
+        if ($this->Table->hasBehavior('ObjectType')) {
             /** @var \BEdita\Core\Model\Behavior\ObjectTypeBehavior $objectTypeBehavior */
             $objectTypeBehavior = $this->Table->getBehavior('ObjectType');
             /** @var \BEdita\Core\Model\Entity\ObjectType $objectType */
