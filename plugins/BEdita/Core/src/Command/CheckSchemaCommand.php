@@ -204,6 +204,9 @@ class CheckSchemaCommand extends Command
             if (is_array($value)) {
                 $value = new ArrayObject($value);
             }
+            if (!is_object($value) && !is_string($value)) {
+                continue;
+            }
             $validator->setProvider($key, $value);
         }
 
