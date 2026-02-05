@@ -20,7 +20,6 @@ use Authentication\Identity;
 use BEdita\API\Utility\JWTHandler;
 use BEdita\Core\Model\Entity\Application;
 use BEdita\Core\State\CurrentApplication;
-use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\MockObject\Stub;
 
 /**

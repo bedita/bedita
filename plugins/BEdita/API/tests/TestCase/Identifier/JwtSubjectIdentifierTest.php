@@ -17,7 +17,6 @@ namespace BEdita\API\Test\TestCase\Identifier;
 use Authentication\Identifier\Resolver\ResolverInterface;
 use BEdita\API\Identifier\JwtSubjectIdentifier;
 use Cake\TestSuite\TestCase;
-use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\CoversClass;
 
 /**
