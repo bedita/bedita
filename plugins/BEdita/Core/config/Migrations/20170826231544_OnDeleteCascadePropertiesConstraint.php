@@ -23,14 +23,10 @@ class OnDeleteCascadePropertiesConstraint extends BaseMigration
 
     public function up()
     {
-        // SQLite does not support drop foreign keys
-        if ($this->getAdapter()->getAdapterType() !== 'sqlite') {
-            $this->table('properties')
-                ->dropForeignKey([], 'properties_objtype_fk')
-                ->dropForeignKey([], 'properties_proptype_fk')
-                ->update();
-            return;
-        }
+        $this->table('properties')
+            ->dropForeignKey('object_type_id')
+            ->dropForeignKey('property_type_id')
+            ->update();
 
         $this->table('properties')
             ->addForeignKey(
