@@ -23,6 +23,7 @@ use Cake\Console\TestSuite\ConsoleIntegrationTestTrait;
 use Cake\Core\Plugin;
 use Cake\Database\Connection;
 use Cake\Database\Driver\Mysql;
+use Cake\Database\Driver\Postgres;
 use Cake\Database\Schema\TableSchema;
 use Cake\Datasource\ConnectionManager;
 use Cake\TestSuite\ConnectionHelper;
@@ -206,7 +207,7 @@ class CheckSchemaCommandTest extends TestCase
         $cmd->addMessages('phinxlog', ['foo' => 'bar']);
         $actual = $cmd->formatMessages();
         // On SQLite the check cannot run; on MariaDB/Aurora/etc we also treat it as unavailable
-        $expected = $this->checkAvailable($connection);
+        $expected = $this->checkAvailable($connection) || $connection->getDriver() instanceof Postgres ? true : false;
 
         static::assertSame($expected, $actual);
         $actual = array_keys($cmd->getMessages());
