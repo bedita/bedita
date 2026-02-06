@@ -45,8 +45,8 @@ class JsonApiPaginatorTest extends TestCase
         'plugin.BEdita/Core.Roles',
         'plugin.BEdita/Core.Objects',
         'plugin.BEdita/Core.Profiles',
-        'plugin.BEdita/Core.Properties',
         'plugin.BEdita/Core.PropertyTypes',
+        'plugin.BEdita/Core.Properties',
     ];
 
     /**

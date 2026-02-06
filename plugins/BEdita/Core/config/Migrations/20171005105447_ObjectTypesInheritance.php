@@ -1,5 +1,6 @@
 <?php
 
+use Cake\Cache\Cache;
 use Cake\ORM\Table;
 use Migrations\BaseMigration;
 
@@ -95,6 +96,7 @@ class ObjectTypesInheritance extends BaseMigration
             )
             ->update();
 
+        Cache::clearAll();
         // Populate tree data. We'll be using a clean CakePHP table object to be able to use Tree behavior.
         $adapter = $this->getAdapter();
         $table = new Table([
