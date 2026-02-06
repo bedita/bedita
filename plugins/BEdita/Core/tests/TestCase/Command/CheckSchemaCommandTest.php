@@ -205,11 +205,9 @@ class CheckSchemaCommandTest extends TestCase
         $cmd->checkConventions($connection);
         $cmd->addMessages('phinxlog', ['foo' => 'bar']);
         $actual = $cmd->formatMessages();
-        $expected = true;
-        $info = Database::basicInfo();
-        if ($info['vendor'] === 'sqlite') {
-            $expected = false;
-        }
+        // On SQLite the check cannot run; on MariaDB/Aurora/etc we also treat it as unavailable
+        $expected = $this->checkAvailable($connection);
+
         static::assertSame($expected, $actual);
         $actual = array_keys($cmd->getMessages());
         $messages = $cmd->getMessages();
