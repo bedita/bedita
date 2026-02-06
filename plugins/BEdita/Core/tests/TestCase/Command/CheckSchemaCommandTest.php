@@ -40,15 +40,6 @@ class CheckSchemaCommandTest extends TestCase
     use ConsoleIntegrationTestTrait;
 
     /**
-     * Fixtures
-     *
-     * @var array
-     */
-    protected array $fixtures = [
-        'plugin.BEdita/Core.FakeAnimals',
-    ];
-
-    /**
      * Test buildOptionParser method
      *
      * @return void
