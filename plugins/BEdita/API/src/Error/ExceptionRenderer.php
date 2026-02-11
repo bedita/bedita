@@ -14,11 +14,15 @@ declare(strict_types=1);
  */
 namespace BEdita\API\Error;
 
+use BEdita\API\Controller\ErrorController;
+use Cake\Controller\Controller;
 use Cake\Core\Configure;
 use Cake\Core\Exception\CakeException;
 use Cake\Error\Renderer\WebExceptionRenderer;
 use Cake\Http\Response;
 use Cake\Http\ServerRequest;
+use Cake\Http\ServerRequestFactory;
+use Cake\Routing\Router;
 use Cake\Utility\Hash;
 use Psr\Http\Message\ResponseInterface;
 use Throwable;
@@ -42,6 +46,23 @@ class ExceptionRenderer extends WebExceptionRenderer
         ServerRequest::addDetector('html', [
             'accept' => ['text/html', 'application/xhtml+xml', 'application/xhtml', 'text/xhtml'],
         ]);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected function _getController(): Controller
+    {
+        $request = $this->request;
+        $routerRequest = Router::getRequest();
+        // Fallback to the request in the router or make a new one from
+        // $_SERVER
+        $request ??= $routerRequest ?: ServerRequestFactory::fromGlobals();
+
+        $controller = new ErrorController($request);
+        $controller->startupProcess();
+
+        return $controller;
     }
 
     /**
