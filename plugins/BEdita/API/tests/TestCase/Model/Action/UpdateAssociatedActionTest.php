@@ -384,10 +384,10 @@ class UpdateAssociatedActionTest extends TestCase
             ['id' => 2],
         ];
         $request = new ServerRequest();
-        $identityStub = $this->getStubBuilder(Identity::class)
+        $identityStub = $this->getMockBuilder(Identity::class)
             ->disableOriginalConstructor()
             ->onlyMethods(['can'])
-            ->getStub();
+            ->getMock();
 
         $identityStub->method('can')->with('updateParents')->willReturn(false);
 
