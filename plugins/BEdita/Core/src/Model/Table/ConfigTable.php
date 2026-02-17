@@ -33,7 +33,6 @@ use Cake\Validation\Validator;
  * @method \BEdita\Core\Model\Entity\Config patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
  * @method \BEdita\Core\Model\Entity\Config[] patchEntities(iterable $entities, array $data, array $options = [])
  * @method \BEdita\Core\Model\Entity\Config findOrCreate(\Cake\ORM\Query\SelectQuery|callable|array $search, ?callable $callback = null, array $options = [])
- * @method \Cake\ORM\Query\SelectQuery queryCache(\Cake\ORM\Query\SelectQuery $query, string $key)
  * @mixin \Cake\ORM\Behavior\TimestampBehavior
  * @method \BEdita\Core\Model\Entity\Config newEmptyEntity()
  * @method \BEdita\Core\Model\Entity\Config[]|\Cake\Datasource\ResultSetInterface<\BEdita\Core\Model\Entity\Config>|false saveMany(iterable $entities, array $options = [])
@@ -193,7 +192,10 @@ class ConfigTable extends Table
                 return $exp->isNull($this->aliasField('application_id'));
             });
 
-        return $this->queryCache(
+        /** @var \BEdita\Core\Model\Behavior\QueryCacheBehavior $queryCacheBehavior */
+        $queryCacheBehavior = $this->getBehavior('QueryCache');
+
+        return $queryCacheBehavior->queryCache(
             $query,
             sprintf('config_%s_%s', $applicationId ?: 'any', $context ?: 'any'),
         );

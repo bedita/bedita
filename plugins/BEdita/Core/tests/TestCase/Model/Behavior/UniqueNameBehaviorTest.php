@@ -110,7 +110,9 @@ class UniqueNameBehaviorTest extends TestCase
         $user = $Users->newEmptyEntity();
 
         $user = $Users->patchEntity($user, compact('username'));
-        $Users->uniqueName($user);
+        /** @var \BEdita\Core\Model\Behavior\UniqueNameBehavior $behavior */
+        $behavior = $Users->behaviors()->get('UniqueName');
+        $behavior->uniqueName($user);
         $user->type = 'users';
         $Users->save($user);
 
@@ -150,6 +152,7 @@ class UniqueNameBehaviorTest extends TestCase
     #[DataProvider('uniqueNameProvider')]
     public function testUniqueName($value, $expected)
     {
+        /** @var \BEdita\Core\Model\Behavior\UniqueNameBehavior $behavior */
         $behavior = TableRegistry::getTableLocator()->get('Objects')->behaviors()->get('UniqueName');
         $entity = new Entity(['uname' => $value]);
         $behavior->uniqueName($entity);
@@ -214,6 +217,7 @@ class UniqueNameBehaviorTest extends TestCase
         $Users = TableRegistry::getTableLocator()->get('Users');
         $user = $Users->newEmptyEntity();
         $Users->patchEntity($user, compact('username', 'name'));
+        /** @var \BEdita\Core\Model\Behavior\UniqueNameBehavior $behavior */
         $behavior = $Users->behaviors()->get('UniqueName');
         $uname1 = $behavior->generateUniqueName($user, false, $config);
         $uname2 = $behavior->generateUniqueName($user, true, $config);
@@ -232,7 +236,9 @@ class UniqueNameBehaviorTest extends TestCase
         $profile = $Profiles->newEmptyEntity();
         $Profiles->patchEntity($profile, ['title' => '12345']);
         $config = ['sourceField' => 'title'];
-        $generatedUname = $Profiles->behaviors()->get('UniqueName')->generateUniqueName($profile, false, $config);
+        /** @var \BEdita\Core\Model\Behavior\UniqueNameBehavior $behavior */
+        $behavior = $Profiles->behaviors()->get('UniqueName');
+        $generatedUname = $behavior->generateUniqueName($profile, false, $config);
         static::assertIsNotNumeric($generatedUname);
     }
 
@@ -272,6 +278,7 @@ class UniqueNameBehaviorTest extends TestCase
         $Folders = TableRegistry::getTableLocator()->get('Folders');
         $folder = $Folders->newEmptyEntity();
         $Folders->patchEntity($folder, compact('uname', 'title'));
+        /** @var \BEdita\Core\Model\Behavior\UniqueNameBehavior $behavior */
         $behavior = $Folders->behaviors()->get('UniqueName');
         $generated = $behavior->generateUniqueName($folder, true);
 
@@ -330,6 +337,7 @@ class UniqueNameBehaviorTest extends TestCase
     public function testUniqueNameExists($uname, $id, $expected)
     {
         $Users = TableRegistry::getTableLocator()->get('Users');
+        /** @var \BEdita\Core\Model\Behavior\UniqueNameBehavior $behavior */
         $behavior = $Users->behaviors()->get('UniqueName');
         $result = $behavior->uniqueNameExists($uname, $id);
 
@@ -389,6 +397,7 @@ class UniqueNameBehaviorTest extends TestCase
     #[DataProvider('uniqueFromValueProvider')]
     public function testUniqueNameFromValue($value, $expected, array $cfg, $regenerate)
     {
+        /** @var \BEdita\Core\Model\Behavior\UniqueNameBehavior $behavior */
         $behavior = TableRegistry::getTableLocator()->get('Objects')->behaviors()->get('UniqueName');
         $result = $behavior->uniqueNameFromValue($value, $regenerate, $cfg);
 
@@ -407,6 +416,7 @@ class UniqueNameBehaviorTest extends TestCase
     public function testUniqueNameMissing()
     {
         $Documents = TableRegistry::getTableLocator()->get('Documents');
+        /** @var \BEdita\Core\Model\Behavior\UniqueNameBehavior $behavior */
         $behavior = $Documents->behaviors()->get('UniqueName');
 
         $data = ['title' => 'Some data', 'uname' => 'some-data'];
@@ -434,6 +444,7 @@ class UniqueNameBehaviorTest extends TestCase
     public function testUniqueNameUnchanged(): void
     {
         $Documents = TableRegistry::getTableLocator()->get('Documents');
+        /** @var \BEdita\Core\Model\Behavior\UniqueNameBehavior $behavior */
         $behavior = $Documents->behaviors()->get('UniqueName');
         $document = $Documents->get(2);
         $behavior->uniqueName($document);
@@ -453,6 +464,7 @@ class UniqueNameBehaviorTest extends TestCase
         $document->set('title', 'a new title');
         unset($document['uname']);
 
+        /** @var \BEdita\Core\Model\Behavior\UniqueNameBehavior $behavior */
         $behavior = $Documents->behaviors()->get('UniqueName');
         $behavior->uniqueName($document);
 

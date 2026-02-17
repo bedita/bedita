@@ -286,15 +286,15 @@ class AssociationCollectionTest extends TestCase
     #[DataProvider('inheritedAssociationsRelatedToProvider')]
     public function testInheritedAssociationsRelatedTo($expected, $isAbstract)
     {
-        $relatedToMock = $this->getMockBuilder(RelatedTo::class)
+        $relatedToStub = $this->getStubBuilder(RelatedTo::class)
             ->setConstructorArgs(['TestRelatedTo'])
             ->onlyMethods(['isSourceAbstract'])
-            ->getMock();
+            ->getStub();
 
-        $relatedToMock->method('isSourceAbstract')
+        $relatedToStub->method('isSourceAbstract')
             ->willReturn($isAbstract);
 
-        $this->fakeAnimals->associations()->add($relatedToMock->getName(), $relatedToMock);
+        $this->fakeAnimals->associations()->add($relatedToStub->getName(), $relatedToStub);
         $collection = new AssociationCollection($this->fakeMammals);
 
         static::assertEquals($expected, $collection->keys());
@@ -313,15 +313,15 @@ class AssociationCollectionTest extends TestCase
         $this->fakeMammals->associations()->remove('FakeFelines');
         $this->fakeFelines->extensionOf('FakeMammals');
 
-        $relatedToMock = $this->getMockBuilder(RelatedTo::class)
+        $relatedToStub = $this->getStubBuilder(RelatedTo::class)
             ->setConstructorArgs(['TestRelatedTo'])
             ->onlyMethods(['isSourceAbstract'])
-            ->getMock();
+            ->getStub();
 
-        $relatedToMock->method('isSourceAbstract')
+        $relatedToStub->method('isSourceAbstract')
             ->willReturn(false);
 
-        $this->fakeAnimals->associations()->add($relatedToMock->getName(), $relatedToMock);
+        $this->fakeAnimals->associations()->add($relatedToStub->getName(), $relatedToStub);
         $collection = new AssociationCollection($this->fakeFelines);
 
         static::assertEquals(['FakeArticles'], $collection->keys());

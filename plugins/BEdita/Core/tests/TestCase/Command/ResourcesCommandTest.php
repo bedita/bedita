@@ -72,7 +72,7 @@ class ResourcesCommandTest extends TestCase
     {
         $this->exec('resources --help');
         $this->assertOutputContains('Resources management command. Available subcommands: add, edit, ls, rm');
-        $this->assertOutputContains('cake resources [-f api_key|description|enabled|name|unchangeable] [-q] [-h] [-q] [-t] [-v] [<add|edit|ls|rm>] [<name|id>]');
+        $this->assertOutputContains('cake resources [-f api_key|description|enabled|name|unchangeable] [-e] [-h] [-q] [-t] [-v] [<add|edit|ls|rm>] [<name|id>]');
         $this->assertOutputContains('Field name');
         $this->assertOutputContains('api_key|description|enabled|name|unchangeable)');
         $this->assertOutputContains('List entities filtered by comma separated key=value pairs');
@@ -91,7 +91,7 @@ class ResourcesCommandTest extends TestCase
     {
         $this->exec('resources add --help');
         $this->assertOutputContains('Resources management command. Available subcommands: add, edit, ls, rm');
-        $this->assertOutputContains('cake resources [-f api_key|description|enabled|name|unchangeable] [-q] [-h] [-q] [-t] [-v] [<add|edit|ls|rm>] [<name|id>]');
+        $this->assertOutputContains('cake resources [-f api_key|description|enabled|name|unchangeable] [-e] [-h] [-q] [-t] [-v] [<add|edit|ls|rm>] [<name|id>]');
         $this->assertOutputContains('Field name');
         $this->assertOutputContains('api_key|description|enabled|name|unchangeable)');
         $this->assertOutputContains('List entities filtered by comma separated key=value pairs');

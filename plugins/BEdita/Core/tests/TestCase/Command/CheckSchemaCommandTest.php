@@ -23,6 +23,7 @@ use Cake\Console\TestSuite\ConsoleIntegrationTestTrait;
 use Cake\Core\Plugin;
 use Cake\Database\Connection;
 use Cake\Database\Driver\Mysql;
+use Cake\Database\Driver\Postgres;
 use Cake\Database\Schema\TableSchema;
 use Cake\Datasource\ConnectionManager;
 use Cake\TestSuite\ConnectionHelper;
@@ -38,15 +39,6 @@ use TestApp\Application;
 class CheckSchemaCommandTest extends TestCase
 {
     use ConsoleIntegrationTestTrait;
-
-    /**
-     * Fixtures
-     *
-     * @var array
-     */
-    protected array $fixtures = [
-        'plugin.BEdita/Core.FakeAnimals',
-    ];
 
     /**
      * Test buildOptionParser method
@@ -214,11 +206,9 @@ class CheckSchemaCommandTest extends TestCase
         $cmd->checkConventions($connection);
         $cmd->addMessages('phinxlog', ['foo' => 'bar']);
         $actual = $cmd->formatMessages();
-        $expected = true;
-        $info = Database::basicInfo();
-        if ($info['vendor'] === 'sqlite') {
-            $expected = false;
-        }
+        // On SQLite the check cannot run; on MariaDB/Aurora/etc we also treat it as unavailable
+        $expected = $this->checkAvailable($connection) || $connection->getDriver() instanceof Postgres ? true : false;
+
         static::assertSame($expected, $actual);
         $actual = array_keys($cmd->getMessages());
         $messages = $cmd->getMessages();

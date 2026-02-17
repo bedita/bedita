@@ -255,7 +255,7 @@ class FixHistoryCommand extends Command
      * @param bool $created Created flag, if true look for `create` action in history
      * @param int $from From ID
      * @param int $to To ID
-     * @return \Cake\ORM\Query
+     * @return \Cake\ORM\Query\SelectQuery
      */
     protected function missingHistoryQuery(bool $created, int $from, int $to): SelectQuery
     {

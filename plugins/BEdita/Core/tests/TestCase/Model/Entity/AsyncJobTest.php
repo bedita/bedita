@@ -159,7 +159,7 @@ class AsyncJobTest extends TestCase
      */
     public function testRun()
     {
-        $service = $this->getMockBuilder(JobService::class)->getMock();
+        $service = $this->getStubBuilder(JobService::class)->getStub();
         $service->method('run')->willReturn(true);
         ServiceRegistry::set('example', $service);
 

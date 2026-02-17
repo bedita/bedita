@@ -94,7 +94,9 @@ class ResourceNameBehaviorTest extends TestCase
             $this->expectExceptionMessage($expected->getMessage());
         }
 
-        $id = $Roles->getId($name);
+        /** @var \BEdita\Core\Model\Behavior\ResourceNameBehavior $resourceNameBehavior */
+        $resourceNameBehavior = $Roles->getBehavior('ResourceName');
+        $id = $resourceNameBehavior->getId($name);
         static::assertEquals($expected, $id);
     }
 }

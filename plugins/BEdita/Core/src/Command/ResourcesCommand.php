@@ -74,7 +74,7 @@ class ResourcesCommand extends Command
             ->addOption('filter', [
                 'help' => 'List entities filtered by comma separated key=value pairs',
                 'required' => false,
-                'short' => 'q',
+                'short' => 'e',
             ])
             ->addOption('field', [
                 'help' => 'Field name',

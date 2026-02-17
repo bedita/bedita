@@ -323,7 +323,9 @@ class PriorityBehaviorTest extends TestCase
     {
         $table = TableRegistry::getTableLocator()->get('ObjectRelations');
         $entity = $table->newEntity($entityData);
-        $actual = $table->compactEntityField($entity, $field, $config);
+        /** @var \BEdita\Core\Model\Behavior\PriorityBehavior $behavior */
+        $behavior = $table->getBehavior('Priority');
+        $actual = $behavior->compactEntityField($entity, $field, $config);
         static::assertSame($expected, $actual);
     }
 
@@ -424,6 +426,8 @@ class PriorityBehaviorTest extends TestCase
         $entityData[$field] = $previousValue;
         $entity = $table->newEntity($entityData);
         $entity->set($field, $actualValue);
-        static::assertSame($expected, $table->updateEntityPriorities($entity, $field, $config));
+        /** @var \BEdita\Core\Model\Behavior\PriorityBehavior $behavior */
+        $behavior = $table->getBehavior('Priority');
+        static::assertSame($expected, $behavior->updateEntityPriorities($entity, $field, $config));
     }
 }

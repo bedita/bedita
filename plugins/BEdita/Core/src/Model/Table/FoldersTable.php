@@ -71,8 +71,12 @@ class FoldersTable extends ObjectsTable
 
         // Ensure to setup object type also when an alias different from `Folders` is used.
         // For example `Parents` association defined in `ObjectsTable`
-        if ($this->objectType() === null) {
-            $this->setupRelations('folders');
+        /** @var \BEdita\Core\Model\Behavior\ObjectTypeBehavior $objectTypeBehavior */
+        $objectTypeBehavior = $this->getBehavior('ObjectType');
+        if ($objectTypeBehavior->objectType() === null) {
+            /** @var \BEdita\Core\Model\Behavior\RelationsBehavior $relationsBehavior */
+            $relationsBehavior = $this->getBehavior('Relations');
+            $relationsBehavior->setupRelations('folders');
         }
     }
 
@@ -230,10 +234,12 @@ class FoldersTable extends ObjectsTable
             return;
         }
 
+        /** @var \BEdita\Core\Model\Behavior\ObjectTypeBehavior $objectTypeBehavior */
+        $objectTypeBehavior = $this->getBehavior('ObjectType');
         $options['descendants'] = $this
             ->find('ancestor', parent: $entity->get('id'))
             ->where([
-                $this->aliasField('object_type_id') => $this->objectType()->id,
+                $this->aliasField('object_type_id') => $objectTypeBehavior->objectType()?->id,
             ])
             ->toArray();
     }
@@ -305,15 +311,19 @@ class FoldersTable extends ObjectsTable
             });
 
         // Update deleted field of descendants
+        /** @var \BEdita\Core\Model\Behavior\ObjectTypeBehavior $objectTypeBehavior */
+        $objectTypeBehavior = $this->getBehavior('ObjectType');
+        /** @var \BEdita\Core\Model\Behavior\UserModifiedBehavior $userModifiedBehavior */
+        $userModifiedBehavior = $this->getBehavior('UserModified');
         $this->updateAll(
             [
                 'deleted' => $folder->deleted,
                 'modified' => $this->timestamp(null, true),
-                'modified_by' => $this->userId(),
+                'modified_by' => $userModifiedBehavior->userId(),
             ],
             [
                 'id IN' => $descendantsToUpdate,
-                'object_type_id' => $this->objectType()->id,
+                'object_type_id' => $objectTypeBehavior->objectType()?->id,
                 'deleted IS NOT' => $folder->deleted,
             ],
         );

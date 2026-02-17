@@ -140,7 +140,7 @@ class FilesystemRegistryTest extends TestCase
      */
     public function testRegistryFailInitialize(): void
     {
-        $failedInitialization = $this->getMockBuilder(FilesystemAdapter::class)->getMock();
+        $failedInitialization = $this->getStubBuilder(FilesystemAdapter::class)->getStub();
         $failedInitialization
             ->method('initialize')
             ->willReturn(false);

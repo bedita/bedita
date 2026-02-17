@@ -98,7 +98,7 @@ class TreeCheckCommand extends Command
         if ($args->getOption('categories')) {
             /** @var \BEdita\Core\Model\Table\CategoriesTable $Categories */
             $Categories = $this->fetchTable('Categories');
-            $messages = $Categories->checkIntegrity();
+            $messages = $Categories->getBehavior('Tree')->checkIntegrity();
             if (!empty($messages)) {
                 $io->out('=====> <error>Categories tree is corrupt!</error>');
                 foreach ($messages as $msg) {

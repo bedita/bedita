@@ -47,7 +47,9 @@ class ListRelatedObjectsAction extends ListAssociatedAction
             $objectType = null;
             if (count($objectTypes) === 1) {
                 $objectType = current($objectTypes);
-                $table->setupRelations($objectType);
+                /** @var \BEdita\Core\Model\Behavior\RelationsBehavior $relationsBehavior */
+                $relationsBehavior = $table->getBehavior('Relations');
+                $relationsBehavior->setupRelations($objectType);
             }
             $this->ListAction = new ListObjectsAction(array_filter(compact('table', 'objectType')));
         } elseif (

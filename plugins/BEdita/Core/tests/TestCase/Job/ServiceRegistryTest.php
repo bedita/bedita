@@ -42,10 +42,10 @@ class ServiceRegistryTest extends TestCase
      * @param bool $return Return value for `run()` method.
      * @return \BEdita\Core\Job\JobService
      */
-    protected function getMockService($return = true)
+    protected function getStubService($return = true)
     {
-        $service = $this->getMockBuilder(JobService::class)
-            ->getMock();
+        $service = $this->getStubBuilder(JobService::class)
+            ->getStub();
 
         $service->method('run')
             ->willReturn($return);
@@ -101,7 +101,7 @@ class ServiceRegistryTest extends TestCase
      */
     public function testSet()
     {
-        $service = $this->getMockService();
+        $service = $this->getStubService();
 
         ServiceRegistry::set('example', $service);
         static::assertEquals(['example'], ServiceRegistry::keys());
@@ -119,7 +119,7 @@ class ServiceRegistryTest extends TestCase
      */
     public function testReset()
     {
-        ServiceRegistry::set('example', $this->getMockService());
+        ServiceRegistry::set('example', $this->getStubService());
         static::assertNotEmpty(ServiceRegistry::keys());
 
         ServiceRegistry::reset();

@@ -112,8 +112,10 @@ class FoldersTableTest extends TestCase
     public function testInitializeObjectType(): void
     {
         $Folders = $this->fetchTable('FolderAlias', ['className' => 'BEdita/Core.Folders']);
-        static::assertInstanceOf(ObjectType::class, $Folders->objectType());
-        static::assertEquals('folders', $Folders->objectType()->name);
+        /** @var \BEdita\Core\Model\Behavior\ObjectTypeBehavior $objectTypeBehavior */
+        $objectTypeBehavior = $Folders->getBehavior('ObjectType');
+        static::assertInstanceOf(ObjectType::class, $objectTypeBehavior->objectType());
+        static::assertEquals('folders', $objectTypeBehavior->objectType()->name);
     }
 
     /**
@@ -380,13 +382,16 @@ class FoldersTableTest extends TestCase
         $this->Folders->save($anotherSubfolder);
         $folderIds[] = $anotherSubfolder->id;
 
+        /** @var \BEdita\Core\Model\Behavior\ObjectTypeBehavior $objectTypeBehavior */
+        $objectTypeBehavior = $this->Folders->getBehavior('ObjectType');
+
         // get descendants not folders
         $notFoldersIds = $this->Folders
             ->find('ancestor', parent: $parentFolder->id)
             ->orderBy([$this->Folders->aliasField('id') => 'ASC'])
             ->find('list', keyField: 'id', valueField: 'id')
-            ->where(function (QueryExpression $exp) {
-                return $exp->not(['object_type_id' => $this->Folders->objectType()->id]);
+            ->where(function (QueryExpression $exp) use ($objectTypeBehavior) {
+                return $exp->not(['object_type_id' => $objectTypeBehavior->objectType()->id]);
             })
             ->toArray();
 
@@ -471,10 +476,12 @@ class FoldersTableTest extends TestCase
         $parent->deleted = true;
         $this->Folders->save($parent);
 
+        /** @var \BEdita\Core\Model\Behavior\ObjectTypeBehavior $objectTypeBehavior */
+        $objectTypeBehavior = $this->Folders->getBehavior('ObjectType');
         $children = $this->Folders
             ->find('ancestor', parent: 11)
             ->orderBy([$this->Folders->aliasField('id') => 'ASC'])
-            ->where(['object_type_id' => $this->Folders->objectType()->id])
+            ->where(['object_type_id' => $objectTypeBehavior->objectType()->id])
             ->toArray();
 
         static::assertNotEmpty($children);

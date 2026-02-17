@@ -52,15 +52,15 @@ class JobsCommandTest extends TestCase
     }
 
     /**
-     * Get mock service.
+     * Get stub service.
      *
      * @param bool|\Exception $return Return value for `run()` method.
      * @return \BEdita\Core\Job\JobService|\PHPUnit\Framework\MockObject\MockObject
      */
-    protected function getMockService($return = true)
+    protected function getStubService($return = true)
     {
-        $service = $this->getMockBuilder(JobService::class)
-            ->getMock();
+        $service = $this->getStubBuilder(JobService::class)
+            ->getStub();
 
         $method = $service->method('run');
         if ($return instanceof Exception) {
@@ -96,7 +96,7 @@ class JobsCommandTest extends TestCase
     public function testRetrocompatibility(): void
     {
         $uuid = 'd6bb8c84-6b29-432e-bb84-c3c4b2c1b99c';
-        ServiceRegistry::set('example', $this->getMockService());
+        ServiceRegistry::set('example', $this->getStubService());
         $this->exec(sprintf('jobs run %s', $uuid));
         $this->assertExitCode(Command::CODE_SUCCESS);
         $this->assertOutputContains('completed successfully');
@@ -111,7 +111,7 @@ class JobsCommandTest extends TestCase
     public function testProcess()
     {
         $uuid = 'd6bb8c84-6b29-432e-bb84-c3c4b2c1b99c';
-        ServiceRegistry::set('example', $this->getMockService());
+        ServiceRegistry::set('example', $this->getStubService());
         $this->exec(sprintf('jobs process %s', $uuid));
         $this->assertExitCode(Command::CODE_SUCCESS);
         $this->assertOutputContains('completed successfully');
@@ -126,7 +126,7 @@ class JobsCommandTest extends TestCase
     public function testProcessInvalid()
     {
         $uuid = Text::uuid(); // This UUID hopefully does not exist. :)
-        ServiceRegistry::set('example', $this->getMockService());
+        ServiceRegistry::set('example', $this->getStubService());
         $this->exec(sprintf('jobs process %s', $uuid));
         $this->assertExitCode(Command::CODE_ERROR);
         $this->assertOutputContains('Could not obtain lock');
@@ -142,7 +142,7 @@ class JobsCommandTest extends TestCase
     {
         $exception = new BadMethodCallException('example');
         $uuid = 'd6bb8c84-6b29-432e-bb84-c3c4b2c1b99c';
-        ServiceRegistry::set('example', $this->getMockService($exception));
+        ServiceRegistry::set('example', $this->getStubService($exception));
         $this->exec(sprintf('jobs process %s', $uuid));
         $this->assertExitCode(Command::CODE_SUCCESS);
         $this->assertErrorContains('BadMethodCallException with message "example"');
@@ -157,7 +157,7 @@ class JobsCommandTest extends TestCase
     public function testProcessFailSmooth()
     {
         $uuid = 'd6bb8c84-6b29-432e-bb84-c3c4b2c1b99c';
-        ServiceRegistry::set('example', $this->getMockService(false));
+        ServiceRegistry::set('example', $this->getStubService(false));
         $this->exec(sprintf('jobs process %s', $uuid));
         $this->assertExitCode(Command::CODE_SUCCESS);
         $this->assertErrorContains('failed');
@@ -171,7 +171,7 @@ class JobsCommandTest extends TestCase
     public function testProcessFailHard()
     {
         $uuid = 'd6bb8c84-6b29-432e-bb84-c3c4b2c1b99c';
-        ServiceRegistry::set('example', $this->getMockService(false));
+        ServiceRegistry::set('example', $this->getStubService(false));
         $this->exec(sprintf('jobs process -F %s', $uuid));
         $this->assertExitCode(Command::CODE_ERROR);
         $this->assertErrorContains('failed');
@@ -184,9 +184,9 @@ class JobsCommandTest extends TestCase
      */
     public function testPending()
     {
-        ServiceRegistry::set('example', $this->getMockService());
-        ServiceRegistry::set('example2', $this->getMockService());
-        ServiceRegistry::set('signup', $this->getMockService());
+        ServiceRegistry::set('example', $this->getStubService());
+        ServiceRegistry::set('example2', $this->getStubService());
+        ServiceRegistry::set('signup', $this->getStubService());
         $this->exec('jobs pending');
         $this->assertExitCode(Command::CODE_SUCCESS);
         $this->assertOutputContains('completed successfully');
@@ -201,7 +201,7 @@ class JobsCommandTest extends TestCase
      */
     public function testPendingEmpty()
     {
-        ServiceRegistry::set('example', $this->getMockService());
+        ServiceRegistry::set('example', $this->getStubService());
         $this->exec('jobs pending --limit 0');
         $this->assertExitCode(Command::CODE_SUCCESS);
         $this->assertOutputContains('Nothing to do');
@@ -215,7 +215,7 @@ class JobsCommandTest extends TestCase
      */
     public function testPendingFailHard()
     {
-        ServiceRegistry::set('example', $this->getMockService(false));
+        ServiceRegistry::set('example', $this->getStubService(false));
         $this->exec('jobs pending -F');
         $this->assertExitCode(Command::CODE_ERROR);
         $this->assertErrorContains('failed');

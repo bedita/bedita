@@ -39,7 +39,7 @@ class FilesystemAdapterTest extends TestCase
             'key' => 'value',
         ];
 
-        $leagueAdapter = $this->getMockBuilder(LeagueFilesystemAdapter::class)->getMock();
+        $leagueAdapter = $this->getStubBuilder(LeagueFilesystemAdapter::class)->getStub();
         $adapter = new class ($leagueAdapter) extends FilesystemAdapter {
             protected LeagueFilesystemAdapter $leagueAdapter;
 
@@ -67,7 +67,7 @@ class FilesystemAdapterTest extends TestCase
      */
     public function testGetInnerAdapter(): void
     {
-        $innerAdapter = $this->getMockBuilder(LeagueFilesystemAdapter::class)->getMock();
+        $innerAdapter = $this->getStubBuilder(LeagueFilesystemAdapter::class)->getStub();
         $config = [
             'baseUrl' => 'http://example.org',
             'key' => 'value',
@@ -134,7 +134,7 @@ class FilesystemAdapterTest extends TestCase
     #[DataProvider('getPublicUrlProvider')]
     public function testGetPublicUrl($expected, $baseUrl, $path)
     {
-        $leagueAdapter = $this->getMockBuilder(LeagueFilesystemAdapter::class)->getMock();
+        $leagueAdapter = $this->getStubBuilder(LeagueFilesystemAdapter::class)->getStub();
         $adapter = new class ($leagueAdapter) extends FilesystemAdapter {
             protected LeagueFilesystemAdapter $leagueAdapter;
 
@@ -162,7 +162,7 @@ class FilesystemAdapterTest extends TestCase
      */
     public function testGetVisibility()
     {
-        $leagueAdapter = $this->getMockBuilder(LeagueFilesystemAdapter::class)->getMock();
+        $leagueAdapter = $this->getStubBuilder(LeagueFilesystemAdapter::class)->getStub();
         $adapter = new class ($leagueAdapter) extends FilesystemAdapter {
             protected LeagueFilesystemAdapter $leagueAdapter;
 

@@ -93,8 +93,8 @@ class SetupConnectionCommandTest extends TestCase
     public function testExecuteUnknownConnectionType(): void
     {
         // Setup temporary configuration.
-        $connection = $this->getMockBuilder(ConnectionInterface::class)
-            ->getMock();
+        $connection = $this->getStubBuilder(ConnectionInterface::class)
+            ->getStub();
         ConnectionManager::setConfig(static::TEMP_CONNECTION, $connection);
 
         $this->exec(sprintf('setup_connection --connection %s', static::TEMP_CONNECTION));

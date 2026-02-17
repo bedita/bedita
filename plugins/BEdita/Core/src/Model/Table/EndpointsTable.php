@@ -31,7 +31,6 @@ use Cake\Validation\Validator;
  * @method \BEdita\Core\Model\Entity\Endpoint patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
  * @method \BEdita\Core\Model\Entity\Endpoint[] patchEntities(iterable $entities, array $data, array $options = [])
  * @method \BEdita\Core\Model\Entity\Endpoint findOrCreate(\Cake\ORM\Query\SelectQuery|callable|array $search, ?callable $callback = null, array $options = [])
- * @method \Cake\ORM\Query queryCache(\Cake\ORM\Query $query, string $key)
  * @property \Cake\ORM\Table&\Cake\ORM\Association\BelongsTo $ObjectTypes
  * @property \Cake\ORM\Table&\Cake\ORM\Association\HasMany $EndpointPermissions
  * @mixin \Cake\ORM\Behavior\TimestampBehavior
@@ -123,7 +122,10 @@ class EndpointsTable extends Table
             ->disableHydration()
             ->where([$this->aliasField('name') => $name]);
 
-        $endpoint = (array)$this->queryCache($query, sprintf('enpoint_%s', $name))
+        /** @var \BEdita\Core\Model\Behavior\QueryCacheBehavior $queryCacheBehavior */
+        $queryCacheBehavior = $this->getBehavior('QueryCache');
+
+        $endpoint = (array)$queryCacheBehavior->queryCache($query, sprintf('endpoint_%s', $name))
             ->first();
 
         if (isset($endpoint['enabled']) && $endpoint['enabled'] === false) {

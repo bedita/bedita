@@ -80,9 +80,9 @@ class ObjectTypeBehaviorTest extends TestCase
             $table->addBehavior('BEdita/Core.ObjectType');
         }
 
-        static::assertTrue($table->behaviors()->hasMethod('objectType'));
-
-        $objectType = $table->behaviors()->call('objectType', [$objectType]);
+        /** @var \BEdita\Core\Model\Behavior\ObjectTypeBehavior $objectTypeBehavior */
+        $objectTypeBehavior = $table->getBehavior('ObjectType');
+        $objectType = $objectTypeBehavior->objectType($objectType);
 
         if ($expected === null) {
             static::assertNull($objectType);

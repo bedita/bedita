@@ -201,7 +201,10 @@ class ObjectsTable extends Table
 
             return;
         }
-        $this->checkStatus($entity);
+
+        /** @var \BEdita\Core\Model\Behavior\StatusBehavior $statusBehavior */
+        $statusBehavior = $this->getBehavior('Status');
+        $statusBehavior->checkStatus($entity);
         $this->checkLangTag($entity);
         $this->checkLocked($entity);
 
@@ -404,7 +407,9 @@ class ObjectsTable extends Table
      */
     public function findAncestor(SelectQuery $query, string|int $parent): SelectQuery
     {
-        $parentId = $this->getId($parent);
+        /** @var \BEdita\Core\Model\Behavior\ResourceNameBehavior $resourceNameBehavior */
+        $resourceNameBehavior = $this->getBehavior('ResourceName');
+        $parentId = $resourceNameBehavior->getId($parent);
         $parentNode = $this->TreeNodes->find()
             ->where([
                 $this->TreeNodes->aliasField('object_id') => $parentId,
@@ -434,7 +439,9 @@ class ObjectsTable extends Table
      */
     public function findParent(SelectQuery $query, string|int $parent): SelectQuery
     {
-        $parentId = $this->getId($parent);
+        /** @var \BEdita\Core\Model\Behavior\ResourceNameBehavior $resourceNameBehavior */
+        $resourceNameBehavior = $this->getBehavior('ResourceName');
+        $parentId = $resourceNameBehavior->getId($parent);
 
         return $query
             ->innerJoinWith('TreeNodes', function (SelectQuery $query) use ($parentId) {

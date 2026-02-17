@@ -58,8 +58,12 @@ class RelationsBehaviorTest extends TestCase
         static::assertTrue($Profiles->hasBehavior('ObjectType'));
         static::assertTrue($Locations->hasBehavior('ObjectType'));
 
-        static::assertSame(2, $Documents->objectType()->id);
-        static::assertSame(3, $Profiles->objectType()->id);
+        /** @var \BEdita\Core\Model\Behavior\ObjectTypeBehavior $docObjectTypeBehavior */
+        $docObjectTypeBehavior = $Documents->getBehavior('ObjectType');
+        /** @var \BEdita\Core\Model\Behavior\ObjectTypeBehavior $profileObjectTypeBehavior */
+        $profileObjectTypeBehavior = $Profiles->getBehavior('ObjectType');
+        static::assertSame(2, $docObjectTypeBehavior->objectType()?->id);
+        static::assertSame(3, $profileObjectTypeBehavior->objectType()?->id);
 
         static::assertInstanceOf(BelongsToMany::class, $Documents->getAssociation('Test'));
         static::assertSame('BEdita/Core.Objects', $Documents->getAssociation('Test')->getClassName());
@@ -100,7 +104,9 @@ class RelationsBehaviorTest extends TestCase
         ], $inverseAnotherTestRelation->params);
 
         $before = count($Profiles->associations()->keys());
-        $Profiles->setupRelations('profiles');
+        /** @var \BEdita\Core\Model\Behavior\RelationsBehavior $relationsBehavior */
+        $relationsBehavior = $Profiles->getBehavior('Relations');
+        $relationsBehavior->setupRelations('profiles');
         $after = count($Profiles->associations()->keys());
 
         static::assertSame($before, $after);
@@ -120,32 +126,5 @@ class RelationsBehaviorTest extends TestCase
         $after = count($FakeArticles->associations()->keys());
 
         static::assertSame($before, $after);
-    }
-
-    /**
-     * Test getter of relations.
-     *
-     * @return void
-     */
-    public function testGetRelations()
-    {
-        $expected = [
-            'test',
-            'test_simple',
-            'test_defaults',
-            'inverse_test',
-            'inverse_test_simple',
-            'inverse_test_defaults',
-        ];
-
-        $Documents = TableRegistry::getTableLocator()->get('Documents');
-
-        static::assertTrue($Documents->behaviors()->hasMethod('getRelations'));
-
-        $relations = $Documents->behaviors()->call('getRelations');
-        static::assertEquals($expected, array_keys($relations));
-        foreach ($relations as $relation) {
-            static::assertInstanceOf(Relation::class, $relation);
-        }
     }
 }

@@ -95,8 +95,8 @@ class SaveEntityActionTest extends TestCase
         $this->expectException(InternalErrorException::class);
         $entity = TableRegistry::getTableLocator()->get('FakeAnimals')->get(1);
 
-        $table = $this->getMockBuilder(Table::class)
-            ->getMock();
+        $table = $this->getStubBuilder(Table::class)
+            ->getStub();
 
         $table->method('patchEntity')
             ->willReturn($entity);

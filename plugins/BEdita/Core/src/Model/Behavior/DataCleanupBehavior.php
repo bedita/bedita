@@ -60,8 +60,10 @@ class DataCleanupBehavior extends Behavior
         }
 
         $type = Inflector::underscore($this->_table->getAlias());
-        if ($this->_table->behaviors()->has('ObjectType') && $this->_table->objectType()) {
-             $type = $this->_table->objectType()->get('name');
+        if ($this->_table->behaviors()->has('ObjectType')) {
+            /** @var \BEdita\Core\Model\Behavior\ObjectTypeBehavior $objectModelBehavior */
+            $objectModelBehavior = $this->_table->getBehavior('ObjectType');
+            $type = $objectModelBehavior->objectType()?->get('name') ?? $type;
         }
         $fields = $this->defaultFields($type);
         foreach ($fields as $key => $value) {

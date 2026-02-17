@@ -106,10 +106,12 @@ class UserModifiedBehaviorTest extends TestCase
      */
     public function testUserId()
     {
-        static::assertSame(1, $this->Objects->userId());
+        /** @var \BEdita\Core\Model\Behavior\UserModifiedBehavior $behavior */
+        $behavior = $this->Objects->getBehavior('UserModified');
+        static::assertSame(1, $behavior->userId());
 
-        static::assertSame(99, $this->Objects->userId(99));
-        static::assertSame(99, $this->Objects->userId());
+        static::assertSame(99, $behavior->userId(99));
+        static::assertSame(99, $behavior->userId());
     }
 
     /**
@@ -174,8 +176,10 @@ class UserModifiedBehaviorTest extends TestCase
     #[Depends('testHandleEvent')]
     public function testTouchUser(ObjectEntity $object)
     {
-        $this->Objects->userId(99);
-        $this->Objects->touchUser($object);
+        /** @var \BEdita\Core\Model\Behavior\UserModifiedBehavior $behavior */
+        $behavior = $this->Objects->getBehavior('UserModified');
+        $behavior->userId(99);
+        $behavior->touchUser($object);
 
         static::assertSame(LoggedUser::id(), $object->created_by);
         static::assertSame(99, $object->modified_by);
@@ -191,8 +195,10 @@ class UserModifiedBehaviorTest extends TestCase
     {
         $object = $this->Objects->get(1);
 
-        $this->Objects->userId(99);
-        $this->Objects->touchUser($object, 'UnknownEvent');
+        /** @var \BEdita\Core\Model\Behavior\UserModifiedBehavior $behavior */
+        $behavior = $this->Objects->getBehavior('UserModified');
+        $behavior->userId(99);
+        $behavior->touchUser($object, 'UnknownEvent');
 
         static::assertSame(1, $object->created_by);
         static::assertSame(1, $object->modified_by);

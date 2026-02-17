@@ -32,9 +32,9 @@ class JwtSubjectIdentifierTest extends TestCase
      */
     public function testIdentify(): void
     {
-        $resolver = $this->getMockBuilder(ResolverInterface::class)
+        $resolver = $this->getStubBuilder(ResolverInterface::class)
             ->onlyMethods(['find'])
-            ->getMock();
+            ->getStub();
 
         $resolver->method('find')
             ->willReturn([]);

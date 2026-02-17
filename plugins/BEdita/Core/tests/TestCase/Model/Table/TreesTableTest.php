@@ -475,7 +475,9 @@ class TreesTableTest extends TestCase
         $node->set('position', $position);
         $this->Trees->save($node);
 
-        $currentPosition = $this->Trees->getCurrentPosition($node);
+        /** @var \BEdita\Core\Model\Behavior\TreeBehavior $treeBehavior */
+        $treeBehavior = $this->Trees->getBehavior('Tree');
+        $currentPosition = $treeBehavior->getCurrentPosition($node);
 
         static::assertSame($expected, $currentPosition);
     }

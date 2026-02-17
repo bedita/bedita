@@ -89,7 +89,10 @@ class CustomPropertiesBehavior extends Behavior
      */
     protected function objectType(array ...$args): ?ObjectType
     {
-        return $this->table()->behaviors()->call('objectType', $args);
+        /** @var \BEdita\Core\Model\Behavior\ObjectTypeBehavior $objectTypeBehavior */
+        $objectTypeBehavior = $this->table()->getBehavior('ObjectType');
+
+        return $objectTypeBehavior->objectType(...$args);
     }
 
     /**
@@ -352,7 +355,7 @@ class CustomPropertiesBehavior extends Behavior
                 $operator = key($operation);
                 $value = $operation[$operator];
 
-                return $this->operatorExpression($query->newExpr(), $operator, $fieldExp, $value);
+                return $this->operatorExpression($query->expr(), $operator, $fieldExp, $value);
             }, array_keys($conditions)));
         });
     }

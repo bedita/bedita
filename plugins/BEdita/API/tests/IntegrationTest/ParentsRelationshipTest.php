@@ -80,9 +80,11 @@ class ParentsRelationshipTest extends IntegrationTestCase
 
         // POST: add 3 folders as parents relationships
         $foldersTable = TableRegistry::getTableLocator()->get('Folders');
+        /** @var \BEdita\Core\Model\Behavior\ObjectTypeBehavior $objectTypeBehavior */
+        $objectTypeBehavior = $foldersTable->getBehavior('ObjectType');
         $folders = $foldersTable
             ->find('list', keyField: 'uname', valueField: 'id')
-            ->where(['object_type_id' => $foldersTable->objectType()->id])
+            ->where(['object_type_id' => $objectTypeBehavior->objectType()->id])
             ->orderBy(['id' => 'ASC'])
             ->limit(3)
             ->toArray();

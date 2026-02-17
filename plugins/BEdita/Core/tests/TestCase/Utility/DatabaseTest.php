@@ -43,8 +43,8 @@ class DatabaseTest extends TestCase
         }
 
         // test not valid Connection object
-        $mockConnection = $this->createMock('\Cake\Datasource\ConnectionInterface');
-        ConnectionManager::setConfig('__wrongConnection', $mockConnection);
+        $stubConnection = $this->createStub('\Cake\Datasource\ConnectionInterface');
+        ConnectionManager::setConfig('__wrongConnection', $stubConnection);
         $info = Database::basicInfo('__wrongConnection');
         static::assertEquals([], $info);
         ConnectionManager::drop('__wrongConnection');

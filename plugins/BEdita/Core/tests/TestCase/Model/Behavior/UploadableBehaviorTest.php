@@ -191,7 +191,9 @@ class UploadableBehaviorTest extends TestCase
         $copy = $this->Streams->newEmptyEntity();
         $copy->uri = $copy->filesystemPath();
 
-        $this->Streams->copyFiles($stream, $copy);
+        /** @var \BEdita\Core\Model\Behavior\UploadableBehavior $uploadable */
+        $uploadable = $this->Streams->getBehavior('Uploadable');
+        $uploadable->copyFiles($stream, $copy);
 
         static::assertTrue($manager->fileExists($copy->uri));
         static::assertSame($manager->read($stream->uri), $manager->read($copy->uri));

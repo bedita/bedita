@@ -276,7 +276,9 @@ class TreesTable extends Table
     public function afterSave(EventInterface $event, Tree $entity): void
     {
         if ($entity->has('position')) {
-            if ($this->moveAt($entity, $entity->get('position')) === false) {
+            /** @var \BEdita\Core\Model\Behavior\TreeBehavior $treeBehavior */
+            $treeBehavior = $this->getBehavior('Tree');
+            if ($treeBehavior->moveAt($entity, $entity->get('position')) === false) {
                 throw new BadRequestException(__d('bedita', 'Invalid position'));
             }
         }
