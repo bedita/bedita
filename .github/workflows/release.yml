@@ -3,7 +3,17 @@ name: Release
 on:
   pull_request_target:
     types: [closed]
-
+  workflow_dispatch:
+    inputs:
+      releaseType:
+        description: 'Release type'
+        required: true
+        default: 'patch'
+        type: choice
+        options:
+        - patch
+        - minor
+        - major
 jobs:
   release_job:
     uses: bedita/github-workflows/.github/workflows/release.yml@v2
