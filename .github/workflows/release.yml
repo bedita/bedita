@@ -20,6 +20,7 @@ jobs:
     with:
       main_branch: '5-salix'
       dist_branches: '["5-salix","4-cactus"]'
+      version_bump: ${{ inputs.releaseType }}
       version_ini_path: plugins/BEdita/Core/config/bedita.ini
       version_ini_prefix: "[BEdita]\nversion = "
 
