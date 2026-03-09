@@ -3713,6 +3713,25 @@ class ObjectsControllerTest extends IntegrationTestCase
     }
 
     /**
+     * Test creator/modifier users meta on objects endpoint without include parameter.
+     *
+     * @return void
+     * @covers ::prepareInclude()
+     */
+    public function testHistoryUsersWithoutInclude(): void
+    {
+        $this->configRequestHeaders();
+        $this->get('/documents/3');
+        $result = json_decode((string)$this->_response->getBody(), true);
+
+        $this->assertResponseCode(200);
+        $this->assertContentType('application/vnd.api+json');
+
+        static::assertNull(Hash::get($result, 'data.meta.created_by_user'));
+        static::assertNull(Hash::get($result, 'data.meta.modified_by_user'));
+    }
+
+    /**
      * Test listing streams for an object.
      *
      * @return void

@@ -190,10 +190,21 @@ class ObjectEntity extends Entity implements JsonApiSerializable
      * @param string $property Association property name
      * @return array
      */
-    protected function getHistoryUserMeta(string $property): array
+    protected function getHistoryUserMeta(string $property): ?array
     {
+        if (!$this->has($property)) {
+            return null;
+        }
+
         $user = $this->get($property);
+        if (!$user instanceof User || empty($user->id)) {
+            return null;
+        }
+
         $user = $this->loadHistoryUser((int)$user->id);
+        if (!$user instanceof User) {
+            return null;
+        }
 
         return [
             'id' => $user->id,
