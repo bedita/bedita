@@ -3687,6 +3687,32 @@ class ObjectsControllerTest extends IntegrationTestCase
     }
 
     /**
+     * Test creator/modifier users include on objects endpoint.
+     *
+     * @return void
+     * @covers ::prepareInclude()
+     */
+    public function testIncludeHistoryUsers(): void
+    {
+        $this->configRequestHeaders();
+        $this->get('/documents/3?include=created_by_user,modified_by_user');
+        $result = json_decode((string)$this->_response->getBody(), true);
+
+        $this->assertResponseCode(200);
+        $this->assertContentType('application/vnd.api+json');
+
+        static::assertSame(1, Hash::get($result, 'data.meta.created_by'));
+        static::assertSame(5, Hash::get($result, 'data.meta.modified_by'));
+
+        static::assertSame(1, Hash::get($result, 'data.meta.created_by_user.id'));
+        static::assertSame(5, Hash::get($result, 'data.meta.modified_by_user.id'));
+        static::assertNotNull(Hash::get($result, 'data.meta.created_by_user.name'));
+        static::assertNotNull(Hash::get($result, 'data.meta.created_by_user.surname'));
+        static::assertNotNull(Hash::get($result, 'data.meta.modified_by_user.name'));
+        static::assertNotNull(Hash::get($result, 'data.meta.modified_by_user.surname'));
+    }
+
+    /**
      * Test listing streams for an object.
      *
      * @return void

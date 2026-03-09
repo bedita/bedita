@@ -75,6 +75,8 @@ class ObjectsController extends ResourcesController
     protected $_defaultConfig = [
         'allowedAssociations' => [
             'parents' => ['folders'],
+            'created_by_user' => ['users'],
+            'modified_by_user' => ['users'],
         ],
     ];
 
@@ -108,6 +110,8 @@ class ObjectsController extends ResourcesController
             $objectType = $behaviorRegistry->call('objectType');
             $this->setConfig('allowedAssociations', array_fill_keys($objectType->relations, []));
         }
+        $this->setConfig('allowedAssociations.created_by_user', ['users']);
+        $this->setConfig('allowedAssociations.modified_by_user', ['users']);
 
         // Requested object type endpoint MUST be `enabled`
         if (!$this->objectType->get('enabled')) {

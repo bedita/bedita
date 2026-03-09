@@ -177,7 +177,55 @@ class ObjectEntity extends Entity implements JsonApiSerializable
      */
     protected function getMeta()
     {
-        return array_diff_key($this->jsonApiGetMeta(), array_flip(['type']));
+        $meta = array_diff_key($this->jsonApiGetMeta(), array_flip(['type']));
+        $meta['created_by_user'] = $this->getHistoryUserMeta('created_by_user');
+        $meta['modified_by_user'] = $this->getHistoryUserMeta('modified_by_user');
+
+        return $meta;
+    }
+
+    /**
+     * Extract compact user info for history metadata.
+     *
+     * @param string $property Association property name
+     * @return array
+     */
+    protected function getHistoryUserMeta(string $property): array
+    {
+        $user = $this->get($property);
+        $user = $this->loadHistoryUser((int)$user->id);
+
+        return [
+            'id' => $user->id,
+            'name' => $user->name,
+            'surname' => $user->surname,
+            'username' => $user->username,
+            'title' => $user->title,
+        ];
+    }
+
+    /**
+     * Load user data including inherited profile fields.
+     *
+     * @param int $id User ID
+     * @return \BEdita\Core\Model\Entity\User|null
+     */
+    protected function loadHistoryUser(int $id): ?User
+    {
+        static $cache = [];
+        if (array_key_exists($id, $cache)) {
+            return $cache[$id];
+        }
+
+        try {
+            /** @var \BEdita\Core\Model\Entity\User $user */
+            $user = TableRegistry::getTableLocator()->get('Users')->get($id);
+            $cache[$id] = $user;
+        } catch (RecordNotFoundException $e) {
+            $cache[$id] = null;
+        }
+
+        return $cache[$id];
     }
 
     /**
@@ -241,6 +289,13 @@ class ObjectEntity extends Entity implements JsonApiSerializable
         }
 
         $associations = $entity::listAssociations($table, $entity->getHidden());
+        // Keep these relationships hidden by default, but expose them when explicitly contained.
+        foreach (['created_by_user', 'modified_by_user'] as $association) {
+            if ($this->has($association)) {
+                $associations[] = $association;
+            }
+        }
+        $associations = array_values(array_unique($associations));
         foreach ($associations as $relationship) {
             $self = Router::url(
                 [
