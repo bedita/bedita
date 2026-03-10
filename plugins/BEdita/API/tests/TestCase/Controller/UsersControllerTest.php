@@ -457,6 +457,7 @@ class UsersControllerTest extends IntegrationTestCase
                             'username' => 'first_user',
                         ],
                     ],
+                    'fullname' => 'First User',
                 ],
                 'relationships' => [
                     'roles' => [
