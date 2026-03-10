@@ -322,6 +322,7 @@ class HistoryControllerTest extends IntegrationTestCase
                             'username' => 'first_user',
                         ],
                     ],
+                    'fullname' => 'First User',
                 ],
                 'relationships' => [
                     'roles' => [
@@ -573,6 +574,7 @@ class HistoryControllerTest extends IntegrationTestCase
                         'published' => null,
                         'created_by' => 1,
                         'modified_by' => 1,
+                        'fullname' => 'First User',
                     ],
                     'links' => [
                         'self' => 'http://api.example.com/users/1',
@@ -661,6 +663,7 @@ class HistoryControllerTest extends IntegrationTestCase
                         'published' => null,
                         'created_by' => 5,
                         'modified_by' => 5,
+                        'fullname' => 'Second User',
                     ],
                     'links' => [
                         'self' => 'http://api.example.com/users/5',

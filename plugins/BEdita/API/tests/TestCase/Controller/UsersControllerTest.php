@@ -117,6 +117,7 @@ class UsersControllerTest extends IntegrationTestCase
                                 'username' => 'first_user',
                             ],
                         ],
+                        'fullname' => 'First User',
                     ],
                     'links' => [
                         'self' => 'http://api.example.com/users/1',
@@ -205,6 +206,7 @@ class UsersControllerTest extends IntegrationTestCase
                                 'username' => '17fec0fa-068a-4d7c-8283-da91d47cef7d',
                             ],
                         ],
+                        'fullname' => 'Second User',
                     ],
                     'links' => [
                         'self' => 'http://api.example.com/users/5',
@@ -293,6 +295,7 @@ class UsersControllerTest extends IntegrationTestCase
                                 'username' => 'third_user',
                             ],
                         ],
+                        'fullname' => 'third User',
                     ],
                     'links' => [
                         'self' => 'http://api.example.com/users/20',
