@@ -16,6 +16,7 @@ declare(strict_types=1);
 namespace BEdita\Core\Test\TestCase\Model\Entity;
 
 use BEdita\Core\Model\Entity\ObjectEntity;
+use BEdita\Core\Model\Entity\User;
 use BEdita\Core\Model\Table\ObjectsTable;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
@@ -342,11 +343,19 @@ class ObjectEntityTest extends TestCase
         $entity = new ObjectEntity();
         $entity->type = 'documents';
         $entity->created_by = 1;
+        $mario = new User();
+        $mario->title = 'Mario Rossi';
+        $entity->created_by_user = $mario;
+        $luigi = new User();
+        $luigi->title = 'Luigi Bianchi';
+        $entity->modified_by_user = $luigi;
         $entity = $entity->jsonApiSerialize();
 
         $meta = $entity['meta'];
 
         static::assertArrayNotHasKey('type', $meta);
+        static::assertEquals('Mario Rossi', $meta['created_by_user']);
+        static::assertEquals('Luigi Bianchi', $meta['modified_by_user']);
     }
 
     /**
