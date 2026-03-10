@@ -15,6 +15,7 @@ declare(strict_types=1);
 namespace BEdita\Core\Test\TestCase\Model\Entity;
 
 use BEdita\Core\Model\Entity\ObjectEntity;
+use BEdita\Core\Model\Entity\User;
 use BEdita\Core\Model\Table\ObjectsTable;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
