@@ -182,7 +182,7 @@ class ObjectEntity extends Entity implements JsonApiSerializable
             $meta['created_by_user'] = $this->created_by_user->get('fullname');
         }
         if ($this->modified_by_user) {
-            $meta['modified_by_user'] = sprintf('%s', $this->modified_by_user->get('fullname'));
+            $meta['modified_by_user'] = $this->modified_by_user->get('fullname');
         }
 
         return $meta;
