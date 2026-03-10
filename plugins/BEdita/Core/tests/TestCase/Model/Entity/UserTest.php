@@ -198,4 +198,34 @@ class UserTest extends TestCase
         static::assertArrayHasKey('external_auth', $user['meta']);
         static::assertEquals(null, Hash::get($user, 'meta.external_auth'));
     }
+
+    /**
+     * Test `_getFullname`
+     *
+     * @return void
+     * @covers ::_getFullname()
+     */
+    public function testGetFullname(): void
+    {
+        // name + surname
+        $user = new User();
+        $user->username = 'lucarossi@example.com';
+        $user->title = 'Mario Bianchi';
+        $user->name = 'Mario';
+        $user->surname = 'Rossi';
+        static::assertEquals('Mario Rossi', $user->fullname);
+
+        // title
+        $user = new User();
+        $user->username = 'lucarossi@example.com';
+        $user->title = 'Mario Bianchi';
+        $user->surname = 'Rossi';
+        static::assertEquals('Mario Bianchi', $user->fullname);
+
+        // username
+        $user = new User();
+        $user->username = 'lucarossi@example.com';
+        $user->surname = 'Rossi';
+        static::assertEquals('lucarossi@example.com', $user->fullname);
+    }
 }
