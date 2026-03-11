@@ -202,6 +202,11 @@ class ObjectsController extends ResourcesController
         if ($objectType instanceof ObjectType && $objectType->hasAssoc('Permissions')) {
             $contain[] = 'Permissions.Roles';
         }
+        $savedByReferences = (string)$this->request->getQuery('saved_by_refs');
+        if ($savedByReferences) {
+            $contain['CreatedByUsers'] = ['strategy' => 'select'];
+            $contain['ModifiedByUsers'] = ['strategy' => 'select'];
+        }
 
         return $contain;
     }

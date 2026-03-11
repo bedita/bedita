@@ -214,6 +214,7 @@ class AppControllerTest extends IntegrationTestCase
                                 'username' => 'first_user',
                             ],
                         ],
+                        'fullname' => 'First User',
                     ],
                     'links' => [
                         'self' => 'http://api.example.com/users/1',
@@ -302,6 +303,7 @@ class AppControllerTest extends IntegrationTestCase
                                 'username' => 'third_user',
                             ],
                         ],
+                        'fullname' => 'third User',
                     ],
                     'links' => [
                         'self' => 'http://api.example.com/users/20',

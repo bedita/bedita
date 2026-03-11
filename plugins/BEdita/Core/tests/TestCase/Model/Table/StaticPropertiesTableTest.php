@@ -128,8 +128,9 @@ class StaticPropertiesTableTest extends TestCase
                     'length' => null,
                     'null' => false,
                     'default' => null,
-                    'comment' => '',
+                    'comment' => null,
                     'precision' => null,
+                    'collate' => null,
                 ];
             } elseif (in_array($column, ['created', 'modified'])) {
                 $expectedSchema['null'] = true;

@@ -176,7 +176,15 @@ class ObjectEntity extends Entity implements JsonApiSerializable
      */
     protected function getMeta()
     {
-        return array_diff_key($this->jsonApiGetMeta(), array_flip(['type']));
+        $meta = array_diff_key($this->jsonApiGetMeta(), array_flip(['type']));
+        if ($this->created_by_user) {
+            $meta['created_by_user'] = $this->created_by_user->get('fullname');
+        }
+        if ($this->modified_by_user) {
+            $meta['modified_by_user'] = $this->modified_by_user->get('fullname');
+        }
+
+        return $meta;
     }
 
     /**

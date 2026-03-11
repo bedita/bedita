@@ -54,8 +54,10 @@ class User extends Profile
             'num_login_err',
             'verified',
             'password_modified',
+            'fullname',
         ];
         $this->setAccess($access, false);
+        $this->setVirtual(['fullname'], true);
     }
 
     /**
@@ -128,5 +130,22 @@ class User extends Profile
         $this->password_modified = DateTime::now();
 
         return $password !== null ? (new DefaultPasswordHasher())->hash($password) : null;
+    }
+
+    /**
+     * Return full name.
+     *
+     * @return string
+     */
+    protected function _getFullname(): string
+    {
+        if (!empty($this->name) && !empty($this->surname)) {
+            return trim(sprintf('%s %s', (string)$this->name, (string)$this->surname));
+        }
+        if (!empty($this->title)) {
+            return trim($this->title);
+        }
+
+        return (string)$this->username;
     }
 }
