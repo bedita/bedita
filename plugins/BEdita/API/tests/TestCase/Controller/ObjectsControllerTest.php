@@ -1044,6 +1044,51 @@ class ObjectsControllerTest extends IntegrationTestCase
         $this->assertResponseCode(200);
         $this->assertContentType('application/vnd.api+json');
         static::assertEquals($expected, $result);
+
+        // test saved_by_refs=1
+        $this->configRequestHeaders();
+        $this->get('/objects?saved_by_refs=1');
+        $result = json_decode((string)$this->_response->getBody(), true);
+        $expected['links']['self'] = 'http://api.example.com/objects?saved_by_refs=1';
+        $expected['links']['first'] = 'http://api.example.com/objects?saved_by_refs=1';
+        $expected['links']['last'] = 'http://api.example.com/objects?saved_by_refs=1';
+        $expected['data'][0]['meta']['created_by_user'] = 'First User';
+        $expected['data'][0]['meta']['modified_by_user'] = 'First User';
+        $expected['data'][1]['meta']['created_by_user'] = 'First User';
+        $expected['data'][1]['meta']['modified_by_user'] = 'First User';
+        $expected['data'][2]['meta']['created_by_user'] = 'First User';
+        $expected['data'][2]['meta']['modified_by_user'] = 'Second User';
+        $expected['data'][3]['meta']['created_by_user'] = 'First User';
+        $expected['data'][3]['meta']['modified_by_user'] = 'First User';
+        $expected['data'][4]['meta']['created_by_user'] = 'Second User';
+        $expected['data'][4]['meta']['modified_by_user'] = 'Second User';
+        $expected['data'][5]['meta']['created_by_user'] = 'First User';
+        $expected['data'][5]['meta']['modified_by_user'] = 'First User';
+        $expected['data'][6]['meta']['created_by_user'] = 'First User';
+        $expected['data'][6]['meta']['modified_by_user'] = 'First User';
+        $expected['data'][7]['meta']['created_by_user'] = 'First User';
+        $expected['data'][7]['meta']['modified_by_user'] = 'First User';
+        $expected['data'][8]['meta']['created_by_user'] = 'First User';
+        $expected['data'][8]['meta']['modified_by_user'] = 'First User';
+        $expected['data'][9]['meta']['created_by_user'] = 'First User';
+        $expected['data'][9]['meta']['modified_by_user'] = 'First User';
+        $expected['data'][10]['meta']['created_by_user'] = 'First User';
+        $expected['data'][10]['meta']['modified_by_user'] = 'First User';
+        $expected['data'][11]['meta']['created_by_user'] = 'First User';
+        $expected['data'][11]['meta']['modified_by_user'] = 'First User';
+        $expected['data'][12]['meta']['created_by_user'] = 'First User';
+        $expected['data'][12]['meta']['modified_by_user'] = 'First User';
+        $expected['data'][13]['meta']['created_by_user'] = 'First User';
+        $expected['data'][13]['meta']['modified_by_user'] = 'First User';
+        $expected['data'][14]['meta']['created_by_user'] = 'First User';
+        $expected['data'][14]['meta']['modified_by_user'] = 'First User';
+        $expected['data'][15]['meta']['created_by_user'] = 'First User';
+        $expected['data'][15]['meta']['modified_by_user'] = 'First User';
+        $expected['data'][16]['meta']['created_by_user'] = 'First User';
+        $expected['data'][16]['meta']['modified_by_user'] = 'First User';
+        $this->assertResponseCode(200);
+        $this->assertContentType('application/vnd.api+json');
+        static::assertEquals($expected, $result);
     }
 
     /**
