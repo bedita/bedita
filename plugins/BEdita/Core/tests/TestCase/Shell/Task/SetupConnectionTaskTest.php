@@ -279,7 +279,7 @@ class SetupConnectionTaskTest extends TestCase
             $returnValues = [
                 $driver, // Driver
                 $originalConfig['host'], // Hostname
-                Hash::get($originalConfig, 'port', ''), // Port
+                (string)Hash::get($originalConfig, 'port', ''), // Port
                 $originalConfig['database'], // Database name
                 $originalConfig['username'], // Username
                 Hash::get($originalConfig, 'password', ''), // Password
@@ -372,7 +372,7 @@ class SetupConnectionTaskTest extends TestCase
 
                 // Port
                 '--connection-port',
-                Hash::get($originalConfig, 'port', $defaultPort),
+                (string)Hash::get($originalConfig, 'port', $defaultPort),
 
                 // Database name
                 '--connection-database',
@@ -481,7 +481,7 @@ class SetupConnectionTaskTest extends TestCase
 
                 // Port
                 '--connection-port',
-                Hash::get($originalConfig, 'port', $defaultPort),
+                (string)Hash::get($originalConfig, 'port', $defaultPort),
 
                 // Database name
                 '--connection-database',

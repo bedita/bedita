@@ -38,7 +38,7 @@ use Cake\Validation\Validator;
  * @property \Cake\ORM\Association\BelongsTo|\BEdita\Core\Model\Table\ObjectsTable $Objects
  * @property \Cake\ORM\Association\BelongsTo|\BEdita\Core\Model\Table\ObjectsTable $ParentObjects
  * @property \Cake\ORM\Association\BelongsTo|\BEdita\Core\Model\Table\ObjectsTable $RootObjects
- * @property \Cake\ORM\Association\BelongsTo|\BEdita\Core\Model\Table\TreesTable $ParentNode
+ * @property \Cake\ORM\Association\BelongsTo|\\BEdita\Core\Model\Table\TreesTable $ParentNode
  * @property \Cake\ORM\Association\HasMany|\BEdita\Core\Model\Table\TreesTable $ChildNodes
  * @method \BEdita\Core\Model\Entity\Tree get($primaryKey, $options = [])
  * @method \BEdita\Core\Model\Entity\Tree newEntity($data = null, array $options = [])
@@ -47,7 +47,7 @@ use Cake\Validation\Validator;
  * @method \BEdita\Core\Model\Entity\Tree patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
  * @method \BEdita\Core\Model\Entity\Tree[] patchEntities($entities, array $data, array $options = [])
  * @method \BEdita\Core\Model\Entity\Tree findOrCreate($search, callable $callback = null, $options = [])
- * @mixin \BEdita\Core\Model\Behavior\TreeBehavior
+ * @mixin \BEdita\Core\Model\Behavior\AdjacencyListBehavior
  */
 class TreesTable extends Table
 {
@@ -90,12 +90,8 @@ class TreesTable extends Table
             'foreignKey' => 'parent_node_id',
         ]);
 
-        $this->addBehavior('BEdita/Core.Tree', [
-            'left' => 'tree_left',
-            'right' => 'tree_right',
-            'parent' => 'parent_node_id',
-            'level' => 'depth_level',
-            'recoverOrder' => ['tree_left' => 'ASC', 'tree_right' => 'ASC', 'object_id' => 'ASC'],
+        $this->addBehavior('BEdita/Core.AdjacencyList', [
+            'parentAssociation' => 'ParentObjects',
         ]);
     }
 

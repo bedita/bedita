@@ -82,13 +82,9 @@ class TreeRecoverCommand extends Command
             return static::CODE_SUCCESS;
         }
 
-        $io->out('=====> <info>Beginning tree recovery...</info>');
+        $io->out('=====> <warning>Tree recovery for BEdita Objects is no longer needed.</warning>');
 
-        $start = microtime(true);
-        $this->Trees->recover();
-        $end = microtime(true);
-
-        $io->out(sprintf('=====> <success>Tree recovery completed</success> (took <info>%f</info> seconds)', $end - $start));
+        deprecationWarning('Tree recovery for BEdita Objects is no longer needed and will be removed in a future release.');
 
         return static::CODE_SUCCESS;
     }

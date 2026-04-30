@@ -104,23 +104,10 @@ class TreeRecoverCommandTest extends TestCase
      */
     public function testExecute(): void
     {
-        // Get current snapshot. This assumes fixtures cause tree to be in a valid state.
-        $expected = $this->getTreeState($this->Trees);
-        $this->corruptTree($this->Trees);
-
-        // Check that some corruption actually happened.
-        $corrupt = $this->getTreeState($this->Trees);
-        static::assertNotEquals($expected, $corrupt, 'Tree hasn\'t been corrupted prior to testing');
-
-        // Recover.
         $this->exec(TreeRecoverCommand::defaultName());
 
         $this->assertExitCode(Command::CODE_SUCCESS);
-        $this->assertOutputContains('Tree recovery completed');
-
-        // Assert that tree returned to a valid state.
-        $actual = $this->getTreeState($this->Trees);
-        static::assertEquals($expected, $actual);
+        $this->assertOutputContains('Tree recovery for BEdita Objects is no longer needed.');
     }
 
     /**

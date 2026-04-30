@@ -204,7 +204,6 @@ class TreesTableTest extends TestCase
     public function testIsPositionUnique($expected, $objectId, $parentId)
     {
         $this->Trees->deleteAll(['object_id' => 13]);
-        $this->Trees->recover();
 
         $entity = $this->Trees->newEntity([]);
         $entity->object_id = $objectId;

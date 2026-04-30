@@ -936,7 +936,6 @@ class FoldersControllerTest extends IntegrationTestCase
     public function testGetOrphanFolder($id = null)
     {
         TableRegistry::getTableLocator()->get('Trees')->deleteAll(['object_id' => 12]);
-        TableRegistry::getTableLocator()->get('Trees')->recover();
 
         $endpoint = '/folders';
         if ($id) {
