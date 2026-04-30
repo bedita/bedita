@@ -39,7 +39,7 @@ use stdClass;
  * @property \Cake\ORM\Association\BelongsTo|\BEdita\Core\Model\Table\ObjectsTable $Objects
  * @property \Cake\ORM\Association\BelongsTo|\BEdita\Core\Model\Table\ObjectsTable $ParentObjects
  * @property \Cake\ORM\Association\BelongsTo|\BEdita\Core\Model\Table\ObjectsTable $RootObjects
- * @property \Cake\ORM\Association\BelongsTo|\BEdita\Core\Model\Table\TreesTable $ParentNode
+ * @property \Cake\ORM\Association\BelongsTo|\\BEdita\Core\Model\Table\TreesTable $ParentNode
  * @property \Cake\ORM\Association\HasMany|\BEdita\Core\Model\Table\TreesTable $ChildNodes
  * @method \BEdita\Core\Model\Entity\Tree get(mixed $primaryKey, array|string $finder = 'all', \Psr\SimpleCache\CacheInterface|string|null $cache = null, \Closure|string|null $cacheKey = null, mixed ...$args)
  * @method \BEdita\Core\Model\Entity\Tree newEntity(array $data, array $options = [])
@@ -48,7 +48,7 @@ use stdClass;
  * @method \BEdita\Core\Model\Entity\Tree patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
  * @method \BEdita\Core\Model\Entity\Tree[] patchEntities(iterable $entities, array $data, array $options = [])
  * @method \BEdita\Core\Model\Entity\Tree findOrCreate(\Cake\ORM\Query\SelectQuery|callable|array $search, ?callable $callback = null, array $options = [])
- * @mixin \BEdita\Core\Model\Behavior\TreeBehavior
+ * @mixin \BEdita\Core\Model\Behavior\AdjacencyListBehavior
  * @method \BEdita\Core\Model\Entity\Tree newEmptyEntity()
  * @method \BEdita\Core\Model\Entity\Tree saveOrFail(\Cake\Datasource\EntityInterface $entity, array $options = [])
  * @method \BEdita\Core\Model\Entity\Tree[]|\Cake\Datasource\ResultSetInterface<\BEdita\Core\Model\Entity\Tree>|false saveMany(iterable $entities, array $options = [])
@@ -98,12 +98,8 @@ class TreesTable extends Table
             'foreignKey' => 'parent_node_id',
         ]);
 
-        $this->addBehavior('BEdita/Core.Tree', [
-            'left' => 'tree_left',
-            'right' => 'tree_right',
-            'parent' => 'parent_node_id',
-            'level' => 'depth_level',
-            'recoverOrder' => ['tree_left' => 'ASC', 'tree_right' => 'ASC', 'object_id' => 'ASC'],
+        $this->addBehavior('BEdita/Core.AdjacencyList', [
+            'parentAssociation' => 'ParentObjects',
         ]);
     }
 

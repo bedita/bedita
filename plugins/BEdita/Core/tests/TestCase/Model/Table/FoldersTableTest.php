@@ -416,11 +416,6 @@ class FoldersTableTest extends TestCase
         foreach ($notFoldersIds as $id) {
             static::assertTrue($Objects->exists(['id' => $id]));
         }
-
-        $currenTree = $Trees->find()->orderBy(['tree_left' => 'ASC'])->toArray();
-        // check that after recover the tree is the same.
-        $Trees->recover();
-        static::assertEquals($currenTree, $Trees->find()->orderBy(['tree_left' => 'ASC'])->toArray());
     }
 
     /**

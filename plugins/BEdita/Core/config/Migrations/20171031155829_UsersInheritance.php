@@ -33,9 +33,6 @@ class UsersInheritance extends BaseMigration
             'left' => 'tree_left',
             'right' => 'tree_right',
         ]);
-        /** @var \BEdita\Core\Model\Behavior\TreeBehavior $tree */
-        $tree = $table->behaviors()->get('Tree');
-        $tree->nonAtomicRecover();
     }
 
     /**
