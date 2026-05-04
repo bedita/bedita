@@ -16,6 +16,7 @@ namespace BEdita\Core\Utility;
 
 use Cake\Core\Configure;
 use Cake\Core\Plugin;
+use Cake\Utility\Hash;
 
 /**
  * Retrieve system information on service availability and general status
@@ -31,6 +32,8 @@ class System
      */
     public static function info(): array
     {
+        $db = Database::basicInfo();
+
         return [
             'Url' => Configure::read('App.fullBaseUrl'),
             'Version' => Configure::read('BEdita.version'),
@@ -43,6 +46,10 @@ class System
             'Memory limit' => ini_get('memory_limit'),
             'Post max size' => sprintf('%dM', intVal(substr(ini_get('post_max_size'), 0, -1))),
             'Upload max size' => sprintf('%dM', intVal(substr(ini_get('upload_max_filesize'), 0, -1))),
+            'Database' => [
+                'vendor' => (string)Hash::get($db, 'vendor'),
+                'version' => (string)Hash::get($db, 'version'),
+            ],
         ];
     }
 
