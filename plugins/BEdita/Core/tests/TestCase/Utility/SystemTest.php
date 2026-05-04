@@ -47,6 +47,7 @@ class SystemTest extends TestCase
             'Memory limit',
             'Post max size',
             'Upload max size',
+            'Database',
         ];
         foreach ($expectedKeys as $expectedKey) {
             $this->assertArrayHasKey($expectedKey, $actual);
