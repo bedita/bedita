@@ -101,6 +101,7 @@ class TreesTable extends Table
         $this->addBehavior('BEdita/Core.AdjacencyList', [
             'parentAssociation' => 'ParentObjects',
         ]);
+        $this->addBehavior('BEdita/Core.Priority', ['fields' => ['priority' => ['scope' => ['parent_id']]]]);
     }
 
     /**
