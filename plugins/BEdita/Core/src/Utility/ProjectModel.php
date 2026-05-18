@@ -44,6 +44,8 @@ class ProjectModel
             'properties' => static::properties(),
             'categories' => static::categories(),
             'config' => static::configs(),
+            'endpoints' => static::endpoints(),
+            'endpoint_permissions' => static::endpointPermissions(),
         ];
     }
 
@@ -227,6 +229,60 @@ class ProjectModel
     }
 
     /**
+     * Retrieve endpoints.
+     *
+     * @return array
+     */
+    protected static function endpoints(): array
+    {
+        return TableRegistry::getTableLocator()->get('Endpoints')
+            ->find()
+            ->select(['name', 'description', 'enabled'])
+            ->orderBy(['name' => 'ASC'])
+            ->toArray();
+    }
+
+    /**
+     * Retrieve endpoint permissions using symbolic names instead of IDs.
+     *
+     * @return array
+     */
+    protected static function endpointPermissions(): array
+    {
+        $table = TableRegistry::getTableLocator()->get('EndpointPermissions');
+        $endpointsTable = TableRegistry::getTableLocator()->get('Endpoints');
+        $applicationsTable = TableRegistry::getTableLocator()->get('Applications');
+        $rolesTable = TableRegistry::getTableLocator()->get('Roles');
+
+        return $table
+            ->find()
+            ->select([
+                $table->aliasField('permission'),
+                $table->aliasField('endpoint_id'),
+                $table->aliasField('application_id'),
+                $table->aliasField('role_id'),
+                'endpoint_name' => $endpointsTable->aliasField('name'),
+                'application_name' => $applicationsTable->aliasField('name'),
+                'role_name' => $rolesTable->aliasField('name'),
+            ])
+            ->leftJoinWith('Endpoints')
+            ->leftJoinWith('Applications')
+            ->leftJoinWith('Roles')
+            ->orderBy([$table->aliasField('id') => 'ASC'])
+            ->disableHydration()
+            ->all()
+            ->map(function (array $row): array {
+                return [
+                    'endpoint_name' => $row['endpoint_name'],
+                    'application_name' => $row['application_name'],
+                    'role_name' => $row['role_name'],
+                    'permission' => $row['permission'],
+                ];
+            })
+            ->toArray();
+    }
+
+    /**
      * Calculates the difference between the current project model
      * and a new project model passed by argument as array.
      * Diff array will contain 'create', 'update' and 'remove' keys
@@ -241,8 +297,14 @@ class ProjectModel
         $create = $update = $remove = [];
         $currentModel = json_decode(json_encode(static::generate()), true);
         foreach ($currentModel as $key => $items) {
-            if (in_array($key, ['categories', 'config', 'properties'])) {
-                $method = $key === 'config' ? 'configDiff' : 'byObjectDiff';
+            if (in_array($key, ['categories', 'config', 'properties', 'endpoint_permissions'])) {
+                if ($key === 'config') {
+                    $method = 'configDiff';
+                } elseif ($key === 'endpoint_permissions') {
+                    $method = 'endpointPermissionsDiff';
+                } else {
+                    $method = 'byObjectDiff';
+                }
                 $diff = static::$method((array)$items, (array)Hash::get($project, $key));
                 $create[$key] = $diff['create'];
                 $remove[$key] = $diff['remove'];
@@ -346,6 +408,43 @@ class ProjectModel
             }
         }
         $remove = array_values($items);
+
+        return compact('create', 'update', 'remove');
+    }
+
+    /**
+     * Calculate diff between current and project model endpoint permission resources.
+     *
+     * Endpoint permissions are identified by the composite key (endpoint_name, application_name, role_name).
+     *
+     * @param array $items Current items.
+     * @param array $projectItems Project items.
+     * @return array
+     */
+    protected static function endpointPermissionsDiff(array $items, array $projectItems): array
+    {
+        $key = function (array $item): string {
+            return sprintf('%s|%s|%s', $item['endpoint_name'] ?? '', $item['application_name'] ?? '', $item['role_name'] ?? '');
+        };
+
+        $current = [];
+        foreach ($items as $item) {
+            $current[$key($item)] = $item;
+        }
+
+        $create = $update = $remove = [];
+        foreach ($projectItems as $p) {
+            $k = $key($p);
+            if (isset($current[$k])) {
+                if ($p['permission'] !== $current[$k]['permission']) {
+                    $update[] = $p;
+                }
+                unset($current[$k]);
+            } else {
+                $create[] = $p;
+            }
+        }
+        $remove = array_values($current);
 
         return compact('create', 'update', 'remove');
     }
