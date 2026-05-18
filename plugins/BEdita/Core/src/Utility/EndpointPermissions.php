@@ -26,7 +26,8 @@ namespace BEdita\Core\Utility;
  *       'endpoint_name' => 'my-endpoint', // null for all endpoints
  *       'application_name' => 'my-app',   // null for all applications
  *       'role_name' => 'my-role',         // null for anonymous users
- *       'permission' => 15,
+ *       'read' => true,                   // true, false, 'mine', 'block'
+ *       'write' => false,                 // true, false, 'mine', 'block'
  *     ],
  *   ]
  */
@@ -91,7 +92,7 @@ class EndpointPermissions extends ResourcesBase
         foreach ($data as $item) {
             $identifiers = array_intersect_key($item, array_flip(static::IDENTIFIER_FIELDS));
             $entity = $Table->find('resource', ...$identifiers)->firstOrFail();
-            $entity->set('permission', $item['permission']);
+            $entity->set('permission', ['read' => $item['read'], 'write' => $item['write']]);
             $result[] = $Table->saveOrFail($entity, static::$defaults['save']);
         }
 

@@ -14,6 +14,7 @@ declare(strict_types=1);
  */
 namespace BEdita\Core\Utility;
 
+use BEdita\Core\Model\Entity\EndpointPermission;
 use BEdita\Core\Model\Entity\Relation;
 use Cake\Datasource\EntityInterface;
 use Cake\ORM\TableRegistry;
@@ -276,7 +277,8 @@ class ProjectModel
                     'endpoint_name' => $row['endpoint_name'],
                     'application_name' => $row['application_name'],
                     'role_name' => $row['role_name'],
-                    'permission' => $row['permission'],
+                    'read' => EndpointPermission::decode($row['permission'] >> EndpointPermission::PERM_READ & EndpointPermission::PERM_YES),
+                    'write' => EndpointPermission::decode($row['permission'] >> EndpointPermission::PERM_WRITE & EndpointPermission::PERM_YES),
                 ];
             })
             ->toArray();
@@ -436,7 +438,7 @@ class ProjectModel
         foreach ($projectItems as $p) {
             $k = $key($p);
             if (isset($current[$k])) {
-                if ($p['permission'] !== $current[$k]['permission']) {
+                if ($p['read'] !== $current[$k]['read'] || $p['write'] !== $current[$k]['write']) {
                     $update[] = $p;
                 }
                 unset($current[$k]);
