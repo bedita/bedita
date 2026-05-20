@@ -246,7 +246,7 @@ class TreesTable extends Table
     }
 
     /**
-     * Generate unique `slug` if needed.
+     * Generate unique `slug` and calculate `priority` from `position`.
      *
      * @param \Cake\Event\EventInterface $event The event
      * @param \Cake\Datasource\EntityInterface $entity The entity persisted
@@ -261,6 +261,59 @@ class TreesTable extends Table
             $slug = Text::truncate($slug, 255);
             $entity->set('slug', $slug);
         }
+
+        if ($entity->has('position')) {
+            $position = $entity->get('position');
+            $parentId = $entity->get('parent_id');
+
+            $siblings = $this->find()->where(fn (QueryExpression $exp): QueryExpression => $exp->eq($this->aliasField('parent_id'), $parentId));
+            if (!$entity->isNew()) {
+                $siblings = $siblings->where(fn (QueryExpression $exp): QueryExpression => $exp->notEq($this->aliasField('id'), $entity->id));
+            }
+
+            $count = $siblings->count();
+            $max = $entity->isNew() ? $count + 1 : max(1, $count);
+
+            if ($position === 'first') {
+                $priority = 1;
+            } elseif ($position === 'last') {
+                $priority = $max;
+            } elseif (is_numeric($position) && (int)$position !== 0) {
+                $n = (int)$position;
+                $priority = $n > 0 ? $n : ($count + $n + 1);
+                $priority = max(1, min($max, $priority));
+            } else {
+                throw new BadRequestException(__d('bedita', 'Invalid position'));
+            }
+
+            $entity->set('priority', $priority);
+            $entity->unset('position');
+        }
+    }
+
+    /**
+     * Compact priorities of the old tree when an object changes parent.
+     *
+     * @param \Cake\Event\EventInterface $event Dispatched event.
+     * @param \BEdita\Core\Model\Entity\Tree $entity Entity instance.
+     * @return void
+     */
+    public function beforeSave(EventInterface $event, Tree $entity)
+    {
+        if ($entity->isNew() || !$entity->isDirty('parent_id')) {
+            return;
+        }
+
+        $originalParentId = $entity->getOriginal('parent_id');
+        $originalPriority = $entity->getOriginal('priority');
+        if ($originalPriority === null) {
+            return;
+        }
+
+        $this->updateAll(
+            ['priority = priority - 1'],
+            ['parent_id IS' => $originalParentId, 'priority >' => $originalPriority],
+        );
     }
 
     /**
@@ -272,14 +325,6 @@ class TreesTable extends Table
      */
     public function afterSave(EventInterface $event, Tree $entity): void
     {
-        if ($entity->has('position')) {
-            /** @var \BEdita\Core\Model\Behavior\TreeBehavior $treeBehavior */
-            $treeBehavior = $this->getBehavior('Tree');
-            if ($treeBehavior->moveAt($entity, $entity->get('position')) === false) {
-                throw new BadRequestException(__d('bedita', 'Invalid position'));
-            }
-        }
-
         // if canonical set to `true` => set to `false` other `canonical` occurrences
         if ($entity->isDirty('canonical') && $entity->get('canonical')) {
             $this->updateAll(
@@ -291,19 +336,23 @@ class TreesTable extends Table
             );
         }
 
-        if ($entity->isNew()) {
+        if ($entity->isNew() || !$entity->isDirty('root_id')) {
             return;
         }
 
-        // update root_id
-        $this->updateAll(
-            ['root_id' => $entity->root_id],
-            [
-                'tree_left >' => $entity->tree_left,
-                'tree_right <' => $entity->tree_right,
-                'root_id !=' => $entity->root_id,
-            ],
-        );
+        // update descendant's root_id
+        $ids = $this->find('descendants', ['for' => $entity->id])
+            ->select([$this->aliasField('id')])
+            ->all()
+            ->extract('id')
+            ->toList();
+
+        if (!empty($ids)) {
+            $this->updateAll(
+                ['root_id' => $entity->root_id],
+                ['id IN' => $ids, 'root_id !=' => $entity->root_id],
+            );
+        }
     }
 
     /**

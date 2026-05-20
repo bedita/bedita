@@ -331,7 +331,7 @@ class FoldersTable extends ObjectsTable
 
     /**
      * Get sort by object ID.
-     * Default 'Trees.tree_left' => 'asc'
+     * Default 'Trees.priority' => 'asc'
      *
      * @param \BEdita\Core\Model\Entity\Folder|string|int $folder The tree object ID
      * @return \Cake\Database\ExpressionInterface|array<string, 'asc' | 'desc'>
@@ -344,7 +344,7 @@ class FoldersTable extends ObjectsTable
         [$field, $direction] = substr($order, 0, 1) === '-' ? [substr($order, 1), 'DESC'] : [$order, 'ASC'];
         switch ($field) {
             case 'position':
-                return [$this->Children->junction()->aliasField('tree_left') => $direction];
+                return [$this->Children->junction()->aliasField('priority') => $direction];
 
             case 'publish_start':
                 return new OrderClauseExpression(

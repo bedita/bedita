@@ -394,7 +394,7 @@ class AdjacencyListBehavior extends Behavior
      * Find all ancestors for a node.
      *
      * @param \Cake\ORM\Query\SelectQuery $query Query object.
-     * @param array{for: mixed, includeSelf?: bool} Options.
+     * @param array{for: mixed, includeSelf?: bool} $options Options.
      * @return \Cake\ORM\Query\SelectQuery
      */
     public function findAncestors(SelectQuery $query, array $options): SelectQuery
@@ -420,7 +420,7 @@ class AdjacencyListBehavior extends Behavior
      * Find all descendants for a node.
      *
      * @param \Cake\ORM\Query\SelectQuery $query Query object.
-     * @param array{for: mixed, includeSelf?: bool} Options.
+     * @param array{for: mixed, includeSelf?: bool} $options Options.
      * @return \Cake\ORM\Query\SelectQuery
      */
     public function findDescendants(SelectQuery $query, array $options): SelectQuery
