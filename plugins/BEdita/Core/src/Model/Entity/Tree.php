@@ -26,8 +26,7 @@ use Cake\ORM\TableRegistry;
  * @property int|null $parent_id
  * @property int $root_id
  * @property int|null $parent_node_id
- * @property int $tree_left
- * @property int $tree_right
+ * @property int $priority
  * @property int $depth_level
  * @property bool $menu
  * @property bool $canonical
