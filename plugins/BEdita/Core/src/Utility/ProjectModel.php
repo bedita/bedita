@@ -255,7 +255,7 @@ class ProjectModel
         $applicationsTable = TableRegistry::getTableLocator()->get('Applications');
         $rolesTable = TableRegistry::getTableLocator()->get('Roles');
 
-        return $table
+        $result = $table
             ->find()
             ->select([
                 $table->aliasField('permission'),
@@ -269,7 +269,6 @@ class ProjectModel
             ->leftJoinWith('Endpoints')
             ->leftJoinWith('Applications')
             ->leftJoinWith('Roles')
-            ->orderBy([$table->aliasField('id') => 'ASC'])
             ->disableHydration()
             ->all()
             ->map(function (array $row): array {
@@ -282,6 +281,13 @@ class ProjectModel
                 ];
             })
             ->toArray();
+
+        usort($result, function (array $a, array $b): int {
+            return [$a['endpoint_name'] ?? '', $a['application_name'] ?? '', $a['role_name'] ?? '']
+                <=> [$b['endpoint_name'] ?? '', $b['application_name'] ?? '', $b['role_name'] ?? ''];
+        });
+
+        return $result;
     }
 
     /**
