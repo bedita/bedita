@@ -133,6 +133,12 @@ return function (RouteBuilder $routes): void {
             ['_name' => 'streams:download'],
         )
         ->setPass(['uuid']);
+        // Upload new version for an existing object.
+        $routes->connect(
+            '/streams/version/{objectId}/{fileName}',
+            ['controller' => 'Streams', 'action' => 'uploadNewVersion'],
+            ['_name' => 'streams:version', 'pass' => ['objectId', 'fileName']],
+        );
 
         $resourcesRoutes = function (array $controllers) {
             $controller = implode('|', $controllers);

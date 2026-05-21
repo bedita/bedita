@@ -187,6 +187,56 @@ class UploadComponentTest extends IntegrationTestCase
     }
 
     /**
+     * Test uploadNewVersion: success, version increments correctly.
+     *
+     * @return void
+     */
+    public function testUploadNewVersion(): void
+    {
+        $objectId = 10; // media/files object with an existing version 1 stream in fixtures
+        $fileName = 'v2.json';
+        $contents = '{"version":2}';
+        $contentType = 'application/json';
+
+        $this->configRequestHeaders('POST', $this->getUserAuthHeader() + ['Content-Type' => $contentType]);
+        $this->post(sprintf('/streams/version/%d/%s', $objectId, $fileName), $contents);
+
+        $this->assertResponseCode(201);
+        $this->assertContentType('application/vnd.api+json');
+
+        $response = json_decode((string)$this->_response->getBody(), true);
+        static::assertArrayHasKey('data', $response);
+        static::assertSame('streams', $response['data']['type']);
+        static::assertEquals(['file_name' => $fileName, 'mime_type' => $contentType], $response['data']['attributes']);
+        static::assertArraySubset(
+            ['version' => 2, 'hash_sha1' => sha1($contents)],
+            $response['data']['meta'],
+        );
+    }
+
+    /**
+     * Test uploadNewVersion: 409 Conflict on hash collision with existing version.
+     *
+     * @return void
+     */
+    public function testUploadNewVersionConflict(): void
+    {
+        $objectId = 10;
+        $contents = '{"conflict":"test"}';
+        $contentType = 'application/json';
+
+        // First upload creates version 2.
+        $this->configRequestHeaders('POST', $this->getUserAuthHeader() + ['Content-Type' => $contentType]);
+        $this->post(sprintf('/streams/version/%d/conflict.json', $objectId), $contents);
+        $this->assertResponseCode(201);
+
+        // Second upload of same bytes triggers hash conflict.
+        $this->configRequestHeaders('POST', $this->getUserAuthHeader() + ['Content-Type' => $contentType]);
+        $this->post(sprintf('/streams/version/%d/conflict.json', $objectId), $contents);
+        $this->assertResponseCode(409);
+    }
+
+    /**
      * Test upload method with `private_url` query.
      *
      * @return void

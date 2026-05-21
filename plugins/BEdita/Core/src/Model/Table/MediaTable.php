@@ -63,6 +63,7 @@ class MediaTable extends Table
         $this->hasMany('Streams', [
             'foreignKey' => 'object_id',
             'className' => 'BEdita/Core.Streams',
+            'sort' => ['Streams.version' => 'DESC'],
         ]);
 
         $this->setupSimpleSearch([

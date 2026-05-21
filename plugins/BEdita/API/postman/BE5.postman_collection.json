@@ -5930,6 +5930,66 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "Upload new version of existing stream",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"try {",
+									"    var responseJSON = JSON.parse(responseBody);",
+									"    if (responseJSON && responseJSON.data && responseJSON.data.id) {",
+									"        postman.setEnvironmentVariable(\"streamUuid\", responseJSON.data.id);",
+									"    }",
+									"} catch (e) {}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/vnd.api+json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "image/png"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt}}"
+							},
+							{
+								"key": "X-Api-Key",
+								"value": "{{apiKey}}"
+							}
+						],
+						"body": {
+							"mode": "file",
+							"file": {
+								"src": ""
+							}
+						},
+						"url": {
+							"raw": "{{be4Url}}/streams/version/{{objectId}}/myfile-v2.png",
+							"host": [
+								"{{be4Url}}"
+							],
+							"path": [
+								"streams",
+								"version",
+								"{{objectId}}",
+								"myfile-v2.png"
+							]
+						},
+						"description": "Upload a new version of a file for an existing media object. The version counter is incremented automatically. Returns 409 Conflict if the file content (SHA1 hash) is identical to an existing version."
+					},
+					"response": []
 				}
 			]
 		},
@@ -7191,7 +7251,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"data\": {\n        \"type\": \"translations\",\n        \"attributes\": {\n\t\t\t\"object_id\": \"{{objectId}}\",\n\t\t\t\"status\": \"draft\",\n            \"lang\": \"sp\",\n            \"translated_fields\": {\n                \"title\": \"título uno\",\n                \"description\": \"descripción uno\"\n            }\n        }\n    }\n}"
+							"raw": "{\n    \"data\": {\n        \"type\": \"translations\",\n        \"attributes\": {\n\t\t\t\"object_id\": \"{{objectId}}\",\n\t\t\t\"status\": \"draft\",\n            \"lang\": \"sp\",\n            \"translated_fields\": {\n                \"title\": \"t\u00edtulo uno\",\n                \"description\": \"descripci\u00f3n uno\"\n            }\n        }\n    }\n}"
 						},
 						"url": {
 							"raw": "{{be4Url}}/translations",
@@ -7242,7 +7302,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"data\": {\n        \"id\": \"{{translationId}}\",\n        \"type\": \"translations\",\n        \"attributes\": {\n            \"translated_fields\": {\n                \"title\": \"nuevo título\",\n                \"description\": \"nueva descripción\"\n            }\n        }\n    }\n}"
+							"raw": "{\n    \"data\": {\n        \"id\": \"{{translationId}}\",\n        \"type\": \"translations\",\n        \"attributes\": {\n            \"translated_fields\": {\n                \"title\": \"nuevo t\u00edtulo\",\n                \"description\": \"nueva descripci\u00f3n\"\n            }\n        }\n    }\n}"
 						},
 						"url": {
 							"raw": "{{be4Url}}/translations/{{translationId}}",

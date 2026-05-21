@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -12,6 +13,7 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
+
 namespace BEdita\API\Controller\Component;
 
 use BEdita\Core\Model\Action\GetEntityAction;
@@ -21,6 +23,7 @@ use Cake\Datasource\EntityInterface;
 use Cake\Event\Event;
 use Cake\Event\EventInterface;
 use Cake\Event\EventManager;
+use Cake\Http\Exception\ConflictException;
 use Cake\ORM\Locator\LocatorAwareTrait;
 use Exception;
 use Laminas\Diactoros\Stream;
@@ -81,6 +84,61 @@ class UploadComponent extends Component
         $entity->set('private_url', $private);
         $stream = $action(compact('entity', 'data'));
         $this->dispatchThumbnailsEvent($stream);
+        $action = new GetEntityAction(['table' => $this->Streams]);
+
+        return $action(['primaryKey' => $stream->get($this->Streams->getPrimaryKey())]);
+    }
+
+    /**
+     * Upload a new version of a stream for an existing object.
+     *
+     * Creates a new stream with version = max(existing versions) + 1.
+     * Rejects the upload with a 409 Conflict if the incoming file hash matches
+     * any stream already associated with the object.
+     *
+     * @param string $fileName Original file name.
+     * @param int $objectId Object ID the new version belongs to.
+     * @return \Cake\Datasource\EntityInterface
+     * @throws \Cake\Http\Exception\ConflictException When the file is identical to an existing version.
+     */
+    public function uploadNewVersion(string $fileName, int $objectId): EntityInterface
+    {
+        $request = $this->getController()->getRequest();
+        $request->allowMethod(['post']);
+
+        $this->Streams = $this->fetchTable('Streams');
+        $entity = $this->Streams->newEmptyEntity();
+
+        // Patch to trigger _setContents() which computes hash_sha1, hash_md5, file_size.
+        // The body stream is detached and copied to a php://temp buffer on the entity.
+        $entity = $this->Streams->patchEntity($entity, [
+            'file_name' => $fileName,
+            'mime_type' => $request->contentType(),
+            'contents' => $request->getBody(),
+        ]);
+
+        // Reject if the file is byte-for-byte identical to any existing version.
+        $duplicate = $this->Streams->find()
+            ->where(['object_id' => $objectId, 'hash_sha1' => $entity->get('hash_sha1')])
+            ->first();
+        if ($duplicate !== null) {
+            throw new ConflictException(__(
+                'File is identical to existing version {0}',
+                $duplicate->get('version'),
+            ));
+        }
+
+        $entity->set('object_id', $objectId);
+        $entity->set('version', $this->Streams->nextVersion($objectId));
+        $private = filter_var($request->getQuery('private_url', false), FILTER_VALIDATE_BOOLEAN);
+        $entity->set('private_url', $private);
+
+        // Entity is already patched; pass empty data so SaveEntityAction does not re-patch.
+        $action = new SaveEntityAction(['table' => $this->Streams]);
+        $stream = $action(['entity' => $entity, 'data' => []]);
+
+        $this->dispatchThumbnailsEvent($stream);
+
         $action = new GetEntityAction(['table' => $this->Streams]);
 
         return $action(['primaryKey' => $stream->get($this->Streams->getPrimaryKey())]);

@@ -222,6 +222,63 @@ class StreamsControllerTest extends IntegrationTestCase
     }
 
     /**
+     * Test `uploadNewVersion` action: success case, version increments to 2.
+     *
+     * @return void
+     */
+    public function testUploadNewVersion(): void
+    {
+        $objectId = 10; // media/files object that already has version 1 stream in fixtures
+        $fileName = 'new-version.json';
+        $contents = '{"name":"NewVersion","v":2}';
+        $contentType = 'application/json';
+
+        $this->configRequestHeaders('POST', $this->getUserAuthHeader() + ['Content-Type' => $contentType]);
+        $this->post(sprintf('/streams/version/%d/%s', $objectId, $fileName), $contents);
+
+        $this->assertResponseCode(201);
+        $this->assertContentType('application/vnd.api+json');
+
+        $response = json_decode((string)$this->_response->getBody(), true);
+        static::assertArrayHasKey('data', $response);
+
+        $id = $response['data']['id'];
+        $locationUrl = sprintf('http://api.example.com/streams/%s', $id);
+        static::assertTrue(Validation::uuid($id));
+        static::assertSame('streams', $response['data']['type']);
+        static::assertEquals(['file_name' => $fileName, 'mime_type' => $contentType], $response['data']['attributes']);
+        static::assertArraySubset(
+            ['version' => 2, 'file_size' => strlen($contents), 'hash_sha1' => sha1($contents)],
+            $response['data']['meta'],
+        );
+        $this->assertHeader('Location', $locationUrl);
+    }
+
+    /**
+     * Test `uploadNewVersion` action: 409 Conflict when uploading an identical file.
+     *
+     * @return void
+     */
+    public function testUploadNewVersionConflict(): void
+    {
+        $objectId = 10;
+        $fileName = 'duplicate.json';
+        $contents = '{"duplicate":"yes"}';
+        $contentType = 'application/json';
+
+        // First upload must succeed (becomes version 2).
+        $this->configRequestHeaders('POST', $this->getUserAuthHeader() + ['Content-Type' => $contentType]);
+        $this->post(sprintf('/streams/version/%d/%s', $objectId, $fileName), $contents);
+        $this->assertResponseCode(201);
+
+        // Uploading the exact same bytes again must return 409 Conflict.
+        $this->configRequestHeaders('POST', $this->getUserAuthHeader() + ['Content-Type' => $contentType]);
+        $this->post(sprintf('/streams/version/%d/%s', $objectId, $fileName), $contents);
+        $this->assertResponseCode(409);
+        $this->assertContentType('application/vnd.api+json');
+    }
+
+    /**
      * Test {@see \BEdita\API\Controller\StreamsController::clone()} action.
      *
      * @return void

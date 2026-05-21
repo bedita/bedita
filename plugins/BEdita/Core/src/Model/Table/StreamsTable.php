@@ -189,6 +189,23 @@ class StreamsTable extends Table
     }
 
     /**
+     * Return the next available version number for streams associated to an object.
+     *
+     * @param int $objectId Object ID.
+     * @return int Next version (max existing version + 1, or 1 if no streams exist).
+     */
+    public function nextVersion(int $objectId): int
+    {
+        $result = $this->find()
+            ->select(['max_version' => $this->find()->func()->max('version')])
+            ->where(['object_id' => $objectId])
+            ->disableHydration()
+            ->first();
+
+        return ((int)($result['max_version'] ?? 0)) + 1;
+    }
+
+    /**
      * Clone a stream.
      *
      * @param \BEdita\Core\Model\Entity\Stream $stream Stream to clone.
