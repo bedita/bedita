@@ -130,6 +130,47 @@ class PriorityBehaviorTest extends TestCase
     }
 
     /**
+     * Test saving a new entity with an explicit priority.
+     *
+     * @return void
+     * @covers ::beforeSave()
+     * @covers ::updateEntityPriorities()
+     * @covers ::expand()
+     */
+    public function testBeforeSaveExplicitPriority()
+    {
+        $table = TableRegistry::getTableLocator()->get('ObjectRelations');
+
+        $entity = $table->newEntity([]);
+        $entity->set([
+            'left_id' => 2,
+            'relation_id' => 1,
+            'right_id' => 10,
+            'priority' => 2,
+        ], ['guard' => false]);
+        $table->saveOrFail($entity);
+
+        $entities = $table->find()
+            ->where([
+                'left_id' => 2,
+                'relation_id' => 1,
+            ])
+            ->order(['priority'])
+            ->all()
+            ->toList();
+
+        static::assertCount(4, $entities);
+        static::assertSame(4, $entities[0]->get('right_id'));
+        static::assertSame(1, $entities[0]->get('priority'));
+        static::assertSame(10, $entities[1]->get('right_id'));
+        static::assertSame(2, $entities[1]->get('priority'));
+        static::assertSame(3, $entities[2]->get('right_id'));
+        static::assertSame(3, $entities[2]->get('priority'));
+        static::assertSame(7, $entities[3]->get('right_id'));
+        static::assertSame(4, $entities[3]->get('priority'));
+    }
+
+    /**
      * Test priorities sorting before entity is saved using `ObjectRelations` table
      *
      * @return void
@@ -349,7 +390,7 @@ class PriorityBehaviorTest extends TestCase
                 'config' => [],
                 'expected' => false,
             ],
-            'actual value equals previous value' => [
+            'new entity with explicit priority' => [
                 [
                     'left_id' => 2,
                     'relation_id' => 1,
@@ -361,7 +402,7 @@ class PriorityBehaviorTest extends TestCase
                 'config' => [
                     'scope' => ['priority'],
                 ],
-                'expected' => false,
+                'expected' => true,
             ],
             'compact' => [
                 [
