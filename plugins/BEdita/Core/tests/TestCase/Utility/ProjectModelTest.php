@@ -522,6 +522,13 @@ class ProjectModelTest extends TestCase
                 'write' => true,
             ],
             [
+                'endpoint_name' => 'auth',
+                'application_name' => 'Disabled app',
+                'role_name' => 'second role',
+                'read' => 'mine',
+                'write' => false,
+            ],
+            [
                 'endpoint_name' => 'home',
                 'application_name' => 'Disabled app',
                 'role_name' => 'first role',
@@ -533,13 +540,6 @@ class ProjectModelTest extends TestCase
                 'application_name' => 'Disabled app',
                 'role_name' => 'second role',
                 'read' => false,
-                'write' => false,
-            ],
-            [
-                'endpoint_name' => 'auth',
-                'application_name' => 'Disabled app',
-                'role_name' => 'second role',
-                'read' => 'mine',
                 'write' => false,
             ],
         ],

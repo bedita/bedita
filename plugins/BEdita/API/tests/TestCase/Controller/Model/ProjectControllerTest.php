@@ -523,6 +523,13 @@ class ProjectControllerTest extends IntegrationTestCase
                     'write' => true,
                 ],
                 [
+                    'endpoint_name' => 'auth',
+                    'application_name' => 'Disabled app',
+                    'role_name' => 'second role',
+                    'read' => 'mine',
+                    'write' => false,
+                ],
+                [
                     'endpoint_name' => 'home',
                     'application_name' => 'Disabled app',
                     'role_name' => 'first role',
@@ -534,13 +541,6 @@ class ProjectControllerTest extends IntegrationTestCase
                     'application_name' => 'Disabled app',
                     'role_name' => 'second role',
                     'read' => false,
-                    'write' => false,
-                ],
-                [
-                    'endpoint_name' => 'auth',
-                    'application_name' => 'Disabled app',
-                    'role_name' => 'second role',
-                    'read' => 'mine',
                     'write' => false,
                 ],
             ],
