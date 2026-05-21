@@ -417,7 +417,9 @@ class ProjectModel
     /**
      * Calculate diff between current and project model endpoint permission resources.
      *
-     * Endpoint permissions are identified by the composite key (endpoint_name, application_name, role_name).
+     * Endpoint permissions are uniquely identified by the combination of
+     * `endpoint_name`, `application_name` and `role_name`. In this method,
+     * the internal diff key is built in `endpoint_name|application_name|role_name` order.
      *
      * @param array $items Current items.
      * @param array $projectItems Project items.

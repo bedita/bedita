@@ -92,7 +92,8 @@ class EndpointPermissions extends ResourcesBase
         foreach ($data as $item) {
             $identifiers = array_intersect_key($item, array_flip(static::IDENTIFIER_FIELDS));
             $entity = $Table->find('resource', ...$identifiers)->firstOrFail();
-            $entity->set('permission', ['read' => $item['read'], 'write' => $item['write']]);
+            $entity->set('read', $item['read']);
+            $entity->set('write', $item['write']);
             $result[] = $Table->saveOrFail($entity, static::$defaults['save']);
         }
 
