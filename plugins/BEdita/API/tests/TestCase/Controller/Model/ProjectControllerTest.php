@@ -490,12 +490,65 @@ class ProjectControllerTest extends IntegrationTestCase
                     'application' => 'First app',
                 ],
             ],
+            'endpoints' => [
+                [
+                    'name' => 'auth',
+                    'description' => '/auth endpoint',
+                    'enabled' => 1,
+                ],
+                [
+                    'name' => 'disabled',
+                    'description' => '/disabled endpoint',
+                    'enabled' => 0,
+                ],
+                [
+                    'name' => 'home',
+                    'description' => '/home endpoint',
+                    'enabled' => 1,
+                ],
+            ],
+            'endpoint_permissions' => [
+                [
+                    'endpoint_name' => null,
+                    'application_name' => null,
+                    'role_name' => null,
+                    'read' => false,
+                    'write' => false,
+                ],
+                [
+                    'endpoint_name' => null,
+                    'application_name' => 'First app',
+                    'role_name' => null,
+                    'read' => true,
+                    'write' => true,
+                ],
+                [
+                    'endpoint_name' => 'home',
+                    'application_name' => 'Disabled app',
+                    'role_name' => 'first role',
+                    'read' => 'mine',
+                    'write' => 'block',
+                ],
+                [
+                    'endpoint_name' => 'home',
+                    'application_name' => 'Disabled app',
+                    'role_name' => 'second role',
+                    'read' => false,
+                    'write' => false,
+                ],
+                [
+                    'endpoint_name' => 'auth',
+                    'application_name' => 'Disabled app',
+                    'role_name' => 'second role',
+                    'read' => 'mine',
+                    'write' => false,
+                ],
+            ],
         ];
 
         $this->configRequestHeaders('GET', ['Accept' => 'application/json']);
         $this->get('/model/project');
         $result = json_decode((string)$this->_response->getBody(), true);
-
         $this->assertResponseCode(200);
         $this->assertContentType('application/json');
         static::assertEquals($expected, $result);
