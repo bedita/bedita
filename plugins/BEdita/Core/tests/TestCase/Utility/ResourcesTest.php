@@ -399,90 +399,90 @@ class ResourcesTest extends TestCase
     public static function updateProvider(): array
     {
         return [
-            // 'roles' => [
-            //     'roles',
-            //     [
-            //         [
-            //             'name' => 'second role',
-            //             'description' => 'new role desc',
-            //         ],
-            //     ],
-            // ],
-            // 'apps' => [
-            //     'applications',
-            //     [
-            //         [
-            //             'name' => 'Disabled app',
-            //             'description' => 'A new description',
-            //         ],
-            //     ],
-            // ],
-            // 'auth prov' => [
-            //     'auth_providers',
-            //     [
-            //         [
-            //             'name' => 'linkedout',
-            //             'params' => [
-            //                 'provider_username_field' => 'another_id',
-            //             ],
-            //         ],
-            //     ],
-            // ],
-            // 'categories' => [
-            //     'categories',
-            //     [
-            //         [
-            //             'name' => 'second-cat',
-            //             'object_type_name' => 'documents',
-            //             'label' => 'Another category',
-            //         ],
-            //     ],
-            // ],
-            // 'config' => [
-            //     'config',
-            //     [
-            //         [
-            //             'name' => 'appVal',
-            //             'content' => '{"val": 50}',
-            //         ],
-            //     ],
-            // ],
-            // 'objects' => [
-            //     'object_types',
-            //     [
-            //         [
-            //             'name' => 'news',
-            //             'hidden' => '["description"]',
-            //         ],
-            //     ],
-            // ],
-            // 'prop types' => [
-            //     'property_types',
-            //     [
-            //         [
-            //             'name' => 'unused property type',
-            //             'params' => ['type' => 'object'],
-            //         ],
-            //     ],
-            // ],
-            // 'endpoints' => [
-            //     'endpoints',
-            //     [
-            //         [
-            //             'name' => 'disabled',
-            //             'enabled' => 1,
-            //         ],
-            //     ],
-            // ],
-            // 'endpoints with object type' => [
-            //     'endpoints',
-            //     [
-            //         [
-            //             'name' => 'disabled',
-            //             'object_type_name' => 'documents',
-            //         ],
-            //     ],
-            // ],
+            'roles' => [
+                'roles',
+                [
+                    [
+                        'name' => 'second role',
+                        'description' => 'new role desc',
+                    ],
+                ],
+            ],
+            'apps' => [
+                'applications',
+                [
+                    [
+                        'name' => 'Disabled app',
+                        'description' => 'A new description',
+                    ],
+                ],
+            ],
+            'auth prov' => [
+                'auth_providers',
+                [
+                    [
+                        'name' => 'linkedout',
+                        'params' => [
+                            'provider_username_field' => 'another_id',
+                        ],
+                    ],
+                ],
+            ],
+            'categories' => [
+                'categories',
+                [
+                    [
+                        'name' => 'second-cat',
+                        'object_type_name' => 'documents',
+                        'label' => 'Another category',
+                    ],
+                ],
+            ],
+            'config' => [
+                'config',
+                [
+                    [
+                        'name' => 'appVal',
+                        'content' => '{"val": 50}',
+                    ],
+                ],
+            ],
+            'objects' => [
+                'object_types',
+                [
+                    [
+                        'name' => 'news',
+                        'hidden' => '["description"]',
+                    ],
+                ],
+            ],
+            'prop types' => [
+                'property_types',
+                [
+                    [
+                        'name' => 'unused property type',
+                        'params' => ['type' => 'object'],
+                    ],
+                ],
+            ],
+            'endpoints' => [
+                'endpoints',
+                [
+                    [
+                        'name' => 'disabled',
+                        'enabled' => 1,
+                    ],
+                ],
+            ],
+            'endpoints with object type' => [
+                'endpoints',
+                [
+                    [
+                        'name' => 'disabled',
+                        'object_type_name' => 'documents',
+                    ],
+                ],
+            ],
             'endpoint_permissions' => [
                 'endpoint_permissions',
                 [
@@ -495,17 +495,17 @@ class ResourcesTest extends TestCase
                     ],
                 ],
             ],
-            // 'properties' => [
-            //     'properties',
-            //     [
-            //         [
-            //             'name' => 'another_title',
-            //             'description' => 'Another Title',
-            //             'object' => 'documents',
-            //             'property' => 'string',
-            //         ],
-            //     ],
-            // ],
+            'properties' => [
+                'properties',
+                [
+                    [
+                        'name' => 'another_title',
+                        'description' => 'Another Title',
+                        'object' => 'documents',
+                        'property' => 'string',
+                    ],
+                ],
+            ],
         ];
     }
 
