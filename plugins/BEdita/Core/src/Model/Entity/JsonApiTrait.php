@@ -442,7 +442,7 @@ trait JsonApiTrait
     {
         $id = $this->getId();
         $type = $this->getType();
-        if (!empty($fields[$type])) {
+        if ($type && !empty($fields[$type])) {
             $this->setSelected($fields[$type]);
         } elseif (!empty($fields['_common'])) {
             $this->setSelected($fields['_common']);
