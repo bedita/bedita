@@ -162,13 +162,12 @@ class ProjectModelCommand extends Command
      */
     protected function modelFileFromFolder(): ?string
     {
-        if (!is_dir(CONFIG . DS . 'project-model')) {
+        $projectModelFolder = CONFIG . DS . 'project-model';
+        if (!is_dir($projectModelFolder)) {
             return null;
         }
-        $files = glob(CONFIG . DS . 'project-model' . DS . '*.json');
-        if (empty($files)) {
-            return null;
-        }
+
+        $files = glob($projectModelFolder . DS . '*.json') ?: [];
         $projectModelFile = null;
         $json = [];
         foreach ($files as $file) {
@@ -178,12 +177,59 @@ class ProjectModelCommand extends Command
                 $json[$name] = (array)json_decode($content, true);
             }
         }
+
+        $propertiesFolder = $projectModelFolder . DS . 'properties';
+        if (is_dir($propertiesFolder)) {
+            $json['properties'] = array_merge(
+                (array)($json['properties'] ?? []),
+                $this->propertiesFromFolder($propertiesFolder),
+            );
+        }
+
         if (!empty($json)) {
             $projectModelFile = TMP . DS . 'project-model.json';
             file_put_contents($projectModelFile, json_encode($json, JSON_PRETTY_PRINT));
         }
 
         return $projectModelFile;
+    }
+
+    /**
+     * Load object properties from `project-model/properties` folder.
+     *
+     * @param string $propertiesFolder Properties folder path.
+     * @return array
+     */
+    protected function propertiesFromFolder(string $propertiesFolder): array
+    {
+        $properties = [];
+        $files = glob($propertiesFolder . DS . '*.json') ?: [];
+        foreach ($files as $file) {
+            $content = file_get_contents($file);
+            if (!$content) {
+                continue;
+            }
+            $data = json_decode($content, true);
+            if (!is_array($data)) {
+                continue;
+            }
+            if (!array_is_list($data)) {
+                $data = [$data];
+            }
+
+            $objectType = str_replace('.json', '', basename($file));
+            foreach ($data as $property) {
+                if (!is_array($property)) {
+                    continue;
+                }
+                if (empty($property['object'])) {
+                    $property['object'] = $objectType;
+                }
+                $properties[] = $property;
+            }
+        }
+
+        return $properties;
     }
 
     /**

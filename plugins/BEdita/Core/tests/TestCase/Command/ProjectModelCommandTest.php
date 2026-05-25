@@ -203,11 +203,29 @@ class ProjectModelCommandTest extends TestCase
      */
     public function testModelFileFromFolder(): void
     {
-        // CONFIG . DS . 'project-model' not exists
         $folder = CONFIG . DS . 'project-model';
-        if (is_dir($folder)) {
-            rmdir($folder);
-        }
+        $cleanupFolder = function (string $path): void {
+            if (!is_dir($path)) {
+                return;
+            }
+            foreach (glob($path . DS . '*') ?: [] as $entry) {
+                if (is_dir($entry)) {
+                    foreach (glob($entry . DS . '*') ?: [] as $child) {
+                        if (is_file($child)) {
+                            unlink($child);
+                        }
+                    }
+                    rmdir($entry);
+                }
+                if (is_file($entry)) {
+                    unlink($entry);
+                }
+            }
+            rmdir($path);
+        };
+        $cleanupFolder($folder);
+
+        // CONFIG . DS . 'project-model' not exists
         $cmd = new class () extends ProjectModelCommand
         {
             public function modelFileFromFolder(): ?string
@@ -233,9 +251,47 @@ class ProjectModelCommandTest extends TestCase
             'test1' => ['test1' => 'value1'],
             'test2' => ['test2' => 'value2'],
         ]));
-        unlink($file1);
-        unlink($file2);
-        rmdir($folder);
         $this->assertEquals($expected, $result);
+
+        $cleanupFolder($folder);
+
+        // CONFIG . DS . 'project-model' exists and contains properties folder
+        mkdir($folder . DS . 'properties', 0777, true);
+        file_put_contents($folder . DS . 'object_types.json', json_encode([
+            ['name' => 'profiles'],
+        ]));
+        file_put_contents($folder . DS . 'properties' . DS . 'profiles.json', json_encode([
+            [
+                'name' => 'my_profile_prop',
+                'property' => 'string',
+            ],
+        ]));
+        file_put_contents($folder . DS . 'properties' . DS . 'documents.json', json_encode([
+            [
+                'name' => 'my_doc_prop',
+                'property' => 'string',
+                'object' => 'documents',
+            ],
+        ]));
+
+        $result = $cmd->modelFileFromFolder();
+        $this->assertEquals($expected, $result);
+        $this->assertFileExists($expected);
+
+        $actual = (array)json_decode((string)file_get_contents($expected), true);
+        $this->assertEquals([['name' => 'profiles']], $actual['object_types']);
+        $this->assertCount(2, $actual['properties']);
+
+        $propertiesByName = [];
+        foreach ($actual['properties'] as $property) {
+            $propertiesByName[(string)$property['name']] = $property;
+        }
+        $this->assertArrayHasKey('my_profile_prop', $propertiesByName);
+        $this->assertArrayHasKey('my_doc_prop', $propertiesByName);
+        $this->assertSame('profiles', $propertiesByName['my_profile_prop']['object']);
+        $this->assertSame('documents', $propertiesByName['my_doc_prop']['object']);
+
+        unlink($expected);
+        $cleanupFolder($folder);
     }
 }
