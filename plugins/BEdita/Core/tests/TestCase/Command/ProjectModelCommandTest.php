@@ -294,4 +294,59 @@ class ProjectModelCommandTest extends TestCase
         unlink($expected);
         $cleanupFolder($folder);
     }
+
+    /**
+     * Test propertiesFromFolder method
+     *
+     * @return void
+     */
+    public function testPropertiesFromFolder(): void
+    {
+        $propertiesFolder = TMP . DS . 'project-model-properties-test';
+        if (!is_dir($propertiesFolder)) {
+            mkdir($propertiesFolder, 0777, true);
+        }
+
+        file_put_contents($propertiesFolder . DS . 'empty.json', '');
+        file_put_contents($propertiesFolder . DS . 'invalid.json', 'invalid-json');
+        file_put_contents($propertiesFolder . DS . 'profiles.json', json_encode([
+            'name' => 'profile_title',
+            'property' => 'string',
+        ]));
+        file_put_contents($propertiesFolder . DS . 'documents.json', json_encode([
+            'not-an-array',
+            [
+                'name' => 'document_code',
+                'property' => 'string',
+                'object' => 'documents',
+            ],
+        ]));
+
+        $cmd = new class () extends ProjectModelCommand
+        {
+            public function propertiesFromFolder(string $propertiesFolder): array
+            {
+                return parent::propertiesFromFolder($propertiesFolder);
+            }
+        };
+
+        $actual = $cmd->propertiesFromFolder($propertiesFolder);
+
+        $this->assertCount(2, $actual);
+
+        $propertiesByName = [];
+        foreach ($actual as $property) {
+            $propertiesByName[(string)$property['name']] = $property;
+        }
+
+        $this->assertArrayHasKey('profile_title', $propertiesByName);
+        $this->assertArrayHasKey('document_code', $propertiesByName);
+        $this->assertSame('profiles', $propertiesByName['profile_title']['object']);
+        $this->assertSame('documents', $propertiesByName['document_code']['object']);
+
+        foreach (glob($propertiesFolder . DS . '*.json') ?: [] as $file) {
+            unlink($file);
+        }
+        rmdir($propertiesFolder);
+    }
 }
