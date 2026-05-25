@@ -44,6 +44,8 @@ class ProjectModelCommandTest extends TestCase
         'plugin.BEdita/Core.Relations',
         'plugin.BEdita/Core.RelationTypes',
         'plugin.BEdita/Core.Objects',
+        'plugin.BEdita/Core.Endpoints',
+        'plugin.BEdita/Core.EndpointPermissions',
     ];
 
     /**

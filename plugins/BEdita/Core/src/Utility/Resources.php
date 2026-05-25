@@ -103,6 +103,7 @@ class Resources extends ResourcesBase
      * @var array
      */
     protected static array $otherTypesMap = [
+        'endpoint_permissions' => EndpointPermissions::class,
         'properties' => Properties::class,
         'relations' => Relations::class,
     ];

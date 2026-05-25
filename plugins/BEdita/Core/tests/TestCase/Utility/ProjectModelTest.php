@@ -40,6 +40,8 @@ class ProjectModelTest extends TestCase
         'plugin.BEdita/Core.Relations',
         'plugin.BEdita/Core.RelationTypes',
         'plugin.BEdita/Core.Objects',
+        'plugin.BEdita/Core.Endpoints',
+        'plugin.BEdita/Core.EndpointPermissions',
     ];
 
     /**
@@ -487,6 +489,60 @@ class ProjectModelTest extends TestCase
             ],
         ],
         'config' => [],
+        'endpoints' => [
+            [
+                'name' => 'auth',
+                'description' => '/auth endpoint',
+                'enabled' => true,
+            ],
+            [
+                'name' => 'disabled',
+                'description' => '/disabled endpoint',
+                'enabled' => false,
+            ],
+            [
+                'name' => 'home',
+                'description' => '/home endpoint',
+                'enabled' => true,
+            ],
+        ],
+        'endpoint_permissions' => [
+            [
+                'endpoint_name' => null,
+                'application_name' => null,
+                'role_name' => null,
+                'read' => false,
+                'write' => false,
+            ],
+            [
+                'endpoint_name' => null,
+                'application_name' => 'First app',
+                'role_name' => null,
+                'read' => true,
+                'write' => true,
+            ],
+            [
+                'endpoint_name' => 'auth',
+                'application_name' => 'Disabled app',
+                'role_name' => 'second role',
+                'read' => 'mine',
+                'write' => false,
+            ],
+            [
+                'endpoint_name' => 'home',
+                'application_name' => 'Disabled app',
+                'role_name' => 'first role',
+                'read' => 'mine',
+                'write' => 'block',
+            ],
+            [
+                'endpoint_name' => 'home',
+                'application_name' => 'Disabled app',
+                'role_name' => 'second role',
+                'read' => false,
+                'write' => false,
+            ],
+        ],
     ];
 
     /**
@@ -712,6 +768,77 @@ class ProjectModelTest extends TestCase
             }
         };
         $actual = $projectModel::configDiff($old, $current);
+        static::assertEquals($expected, $actual);
+    }
+
+    /**
+     * Data provider for `testEndpointPermissionsDiff` test case.
+     *
+     * @return array
+     */
+    public static function endpointPermissionsDiffProvider(): array
+    {
+        return [
+            'empty' => [
+                [],
+                [],
+                ['create' => [], 'update' => [], 'remove' => []],
+            ],
+            'no changes' => [
+                [
+                    ['endpoint_name' => null, 'application_name' => null, 'role_name' => null, 'read' => false, 'write' => false],
+                    ['endpoint_name' => 'auth', 'application_name' => 'myapp', 'role_name' => 'admin', 'read' => true, 'write' => true],
+                ],
+                [
+                    ['endpoint_name' => 'auth', 'application_name' => 'myapp', 'role_name' => 'admin', 'read' => true, 'write' => true],
+                    ['endpoint_name' => null, 'application_name' => null, 'role_name' => null, 'read' => false, 'write' => false],
+                ],
+                ['create' => [], 'update' => [], 'remove' => []],
+            ],
+            'create, update, remove' => [
+                [
+                    ['endpoint_name' => null, 'application_name' => null, 'role_name' => null, 'read' => false, 'write' => false],
+                    ['endpoint_name' => 'auth', 'application_name' => 'myapp', 'role_name' => 'admin', 'read' => true, 'write' => true],
+                    ['endpoint_name' => 'home', 'application_name' => null, 'role_name' => null, 'read' => 'mine', 'write' => 'block'],
+                ],
+                [
+                    ['endpoint_name' => null, 'application_name' => null, 'role_name' => null, 'read' => false, 'write' => false],
+                    ['endpoint_name' => 'auth', 'application_name' => 'myapp', 'role_name' => 'admin', 'read' => 'mine', 'write' => false],
+                    ['endpoint_name' => 'users', 'application_name' => null, 'role_name' => null, 'read' => true, 'write' => true],
+                ],
+                [
+                    'create' => [
+                        ['endpoint_name' => 'users', 'application_name' => null, 'role_name' => null, 'read' => true, 'write' => true],
+                    ],
+                    'update' => [
+                        ['endpoint_name' => 'auth', 'application_name' => 'myapp', 'role_name' => 'admin', 'read' => 'mine', 'write' => false],
+                    ],
+                    'remove' => [
+                        ['endpoint_name' => 'home', 'application_name' => null, 'role_name' => null, 'read' => 'mine', 'write' => 'block'],
+                    ],
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * Test `endpointPermissionsDiff()` method
+     *
+     * @param array $old Current endpoint permissions
+     * @param array $current New endpoint permissions (from project)
+     * @param array $expected Expected diff result
+     * @return void
+     */
+    #[DataProvider('endpointPermissionsDiffProvider')]
+    public function testEndpointPermissionsDiff(array $old, array $current, array $expected): void
+    {
+        $projectModel = new class extends ProjectModel {
+            public static function endpointPermissionsDiff(array $items, array $projectItems): array
+            {
+                return parent::endpointPermissionsDiff($items, $projectItems);
+            }
+        };
+        $actual = $projectModel::endpointPermissionsDiff($old, $current);
         static::assertEquals($expected, $actual);
     }
 }
