@@ -149,6 +149,44 @@ class MediaTableTest extends TestCase
     }
 
     /**
+     * Test that streams associated to a media are returned sorted by version DESC.
+     *
+     * @return void
+     */
+    public function testStreamsOrderedByVersionDesc(): void
+    {
+        $streamsTable = $this->fetchTable('Streams');
+
+        $media = $this->Media->newEntity([
+            'name' => 'Media with multiple versions',
+            'media_property' => false,
+        ]);
+        $media->object_type_id = 9;
+        $this->Media->saveOrFail($media);
+
+        $action = new SaveEntityAction(['table' => $streamsTable]);
+        foreach ([1, 2, 3] as $version) {
+            $entity = $streamsTable->newEmptyEntity();
+            $entity->set('object_id', $media->id);
+            $entity->set('version', $version);
+            $entity->set('private_url', false);
+            $action([
+                'entity' => $entity,
+                'data' => [
+                    'file_name' => sprintf('file-v%d.txt', $version),
+                    'mime_type' => 'text/plain',
+                    'contents' => sprintf('content version %d', $version),
+                ],
+            ]);
+        }
+
+        $loaded = $this->Media->get($media->id, contain: ['Streams']);
+        $versions = array_column($loaded->streams, 'version');
+
+        static::assertSame([3, 2, 1], $versions);
+    }
+
+    /**
      * Test delete of a media with stream(s).
      *
      * @return void

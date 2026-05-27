@@ -254,6 +254,32 @@ class StreamsTableTest extends TestCase
     }
 
     /**
+     * Data provider for {@see StreamsTableTest::testNextVersion()}.
+     *
+     * @return array
+     */
+    public static function nextVersionProvider(): array
+    {
+        return [
+            'object with existing stream' => [2, 10],
+            'object with no streams' => [1, 999],
+        ];
+    }
+
+    /**
+     * Test {@see \BEdita\Core\Model\Table\StreamsTable::nextVersion()}.
+     *
+     * @param int $expected Expected next version number.
+     * @param int $objectId Object ID to query.
+     * @return void
+     */
+    #[DataProvider('nextVersionProvider')]
+    public function testNextVersion(int $expected, int $objectId): void
+    {
+        static::assertSame($expected, $this->Streams->nextVersion($objectId));
+    }
+
+    /**
      * Test {@see \BEdita\Core\Model\Table\StreamsTable::clone()} method.
      *
      * @param string $uuid UUID of the Stream to clone.
