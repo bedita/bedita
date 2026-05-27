@@ -107,19 +107,12 @@ class UploadComponent extends Component
         $request->allowMethod(['post']);
 
         $this->Streams = $this->fetchTable('Streams');
-        $entity = $this->Streams->newEmptyEntity();
 
-        // Patch to trigger _setContents() which computes hash_sha1, hash_md5, file_size.
-        // The body stream is detached and copied to a php://temp buffer on the entity.
-        $entity = $this->Streams->patchEntity($entity, [
-            'file_name' => $fileName,
-            'mime_type' => $request->contentType(),
-            'contents' => $request->getBody(),
-        ]);
+        $bodyContents = (string)$request->getBody();
 
         // Reject if the file is byte-for-byte identical to any existing version.
         $duplicate = $this->Streams->find()
-            ->where(['object_id' => $objectId, 'hash_sha1' => $entity->get('hash_sha1')])
+            ->where(['object_id' => $objectId, 'hash_sha1' => sha1($bodyContents)])
             ->first();
         if ($duplicate !== null) {
             throw new ConflictException(__(
@@ -128,14 +121,25 @@ class UploadComponent extends Component
             ));
         }
 
+        $entity = $this->Streams->newEmptyEntity();
         $entity->set('object_id', $objectId);
         $entity->set('version', $this->Streams->nextVersion($objectId));
         $private = filter_var($request->getQuery('private_url', false), FILTER_VALIDATE_BOOLEAN);
         $entity->set('private_url', $private);
 
-        // Entity is already patched; pass empty data so SaveEntityAction does not re-patch.
+        $contents = new Stream('php://temp', 'r+b');
+        $contents->write($bodyContents);
+        $contents->rewind();
+
         $action = new SaveEntityAction(['table' => $this->Streams]);
-        $stream = $action(['entity' => $entity, 'data' => []]);
+        $stream = $action([
+            'entity' => $entity,
+            'data' => [
+                'file_name' => $fileName,
+                'mime_type' => $request->contentType(),
+                'contents' => $contents,
+            ],
+        ]);
 
         $this->dispatchThumbnailsEvent($stream);
 
