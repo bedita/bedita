@@ -574,11 +574,11 @@ class JsonApiTraitTest extends TestCase
         $child = $folder->children[0]->jsonApiSerialize();
 
         $expected = [
-            'depth_level' => 2,
             'menu' => true,
             'canonical' => true,
             'params' => null,
             'slug' => 'gustavo-supporto-profile-4',
+            'priority' => 1,
         ];
         static::assertEquals($expected, Hash::get($child, 'meta.relation'));
     }
