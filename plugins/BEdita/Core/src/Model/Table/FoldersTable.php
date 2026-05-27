@@ -59,7 +59,7 @@ class FoldersTable extends ObjectsTable
             'targetForeignKey' => 'object_id',
             'finder' => 'available',
             'sort' => [
-                'Trees.tree_left' => 'asc',
+                'Trees.priority' => 'asc',
             ],
             'cascadeCallbacks' => true,
         ]);
@@ -149,12 +149,12 @@ class FoldersTable extends ObjectsTable
             ->firstOrFail();
 
         $deletedParents = $this->find()
-            ->innerJoinWith('TreeNodes', function (SelectQuery $query) use ($node) {
-                return $query->where(function (QueryExpression $exp) use ($node) {
-                    return $exp
-                        ->lt($this->TreeNodes->aliasField('tree_left'), $node->get('tree_left'))
-                        ->gt($this->TreeNodes->aliasField('tree_right'), $node->get('tree_right'));
-                });
+            ->where(function (QueryExpression $exp) use ($node): QueryExpression {
+                return $exp->in(
+                    $this->aliasField('id'),
+                    $this->TreeNodes->find('ancestors', ['for' => $node->id])
+                        ->select(['object_id']),
+                );
             })
             ->where([$this->aliasField('deleted') => true])
             ->count();
@@ -277,7 +277,7 @@ class FoldersTable extends ObjectsTable
                     return $exp->isNull($this->TreeNodes->aliasField('parent_id'));
                 });
             })
-            ->orderBy('TreeNodes.tree_left');
+            ->orderBy('TreeNodes.priority');
     }
 
     /**
@@ -302,13 +302,8 @@ class FoldersTable extends ObjectsTable
             ->firstOrFail();
 
         $descendantsToUpdate = $this->TreeNodes
-            ->find()
-            ->select(['object_id'])
-            ->where(function (QueryExpression $exp) use ($parentNode) {
-                return $exp
-                    ->gt($this->TreeNodes->aliasField('tree_left'), $parentNode->get('tree_left'))
-                    ->lt($this->TreeNodes->aliasField('tree_right'), $parentNode->get('tree_right'));
-            });
+            ->find('descendants', ['for' => $parentNode->id])
+            ->select(['object_id']);
 
         // Update deleted field of descendants
         /** @var \BEdita\Core\Model\Behavior\ObjectTypeBehavior $objectTypeBehavior */
@@ -368,7 +363,7 @@ class FoldersTable extends ObjectsTable
             default:
                 Log::warning(sprintf('Malformed property `children_order` "%s" for children sorting of folder #%d, defaulting to tree position', $order, $folder->id));
 
-                return [$this->Children->junction()->aliasField('tree_left') => 'ASC'];
+                return [$this->Children->junction()->aliasField('priority') => 'ASC'];
         }
     }
 }

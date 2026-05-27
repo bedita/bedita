@@ -14,9 +14,11 @@ declare(strict_types=1);
  */
 namespace BEdita\Core\Model\Entity;
 
+use BEdita\Core\Model\Behavior\AdjacencyListBehavior;
 use BEdita\Core\Model\Table\RolesTable;
 use BEdita\Core\Utility\LoggedUser;
 use Cake\Datasource\Exception\RecordNotFoundException;
+use Cake\ORM\Query;
 use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
 use Cake\Utility\Hash;
@@ -76,38 +78,29 @@ class Folder extends ObjectEntity
     protected function getInheritedRolesPermissions(): array
     {
         $Trees = TableRegistry::getTableLocator()->get('Trees');
-        /** @var \BEdita\Core\Model\Entity\Tree $node */
+        /** @var \BEdita\Core\Model\Entity\Tree|null $node */
         $node = $Trees->find()->where(['object_id' => $this->id])->first();
-        $permission = [];
-
-        if ($node !== null) {
-            $permission = $this->getTable()->Permissions
-                ->find()
-                ->disableHydration()
-                ->select(['tree_left' => 'Trees.tree_left', 'name' => 'Roles.name'])
-                ->contain('Roles')
-                ->innerJoin(
-                    ['Trees' => 'trees'],
-                    [
-                        'Trees.object_id = Permissions.object_id',
-                        'Trees.tree_left <' => $node->tree_left,
-                        'Trees.tree_right >' => $node->tree_right,
-                    ],
-                    [
-                        'Trees.object_id' => 'integer',
-                        'Trees.tree_left' => 'integer',
-                        'Trees.tree_right' => 'integer',
-                    ],
-                )
-                ->orderBy(['Trees.tree_left' => 'DESC'])
-                ->toArray();
+        if ($node === null) {
+            return [];
         }
+
+        $query = $Trees->find('ancestors', ['for' => $node->id]);
+        $level = $Trees->getAssociation('Descendants')->junction()->aliasField(AdjacencyListBehavior::CTE_FIELD_LEVEL);
+        $permission = $query
+            ->disableHydration()
+            ->innerJoinWith('Objects.Permissions.Roles')
+            ->select([
+                'level' => $level,
+                'name' => 'Roles.name',
+            ])
+            ->orderByAsc($level)
+            ->toArray();
 
         if (empty($permission)) {
             return [];
         }
 
-        $roles = current(Hash::combine($permission, '{n}.name', '{n}.name', '{n}.tree_left'));
+        $roles = current(Hash::combine($permission, '{n}.name', '{n}.name', '{n}.level'));
 
         return ['roles' => array_values($roles), 'inherited' => true];
     }
@@ -129,25 +122,19 @@ class Folder extends ObjectEntity
         }
 
         $Trees = TableRegistry::getTableLocator()->get('Trees');
-        $descendantPermitted = $Trees->selectQuery()
+        /** @var \BEdita\Core\Model\Entity\Tree|null $node */
+        $node = $Trees->find()->where(['object_id' => $this->id])->first();
+        if ($node === null) {
+            return false;
+        }
+
+        $descendantPermitted = $Trees->find('descendants', ['for' => $node->id])
             ->disableHydration()
+            ->innerJoinWith(
+                'Objects.Permissions',
+                fn (Query $q): Query => $q->where(['Permissions.role_id IN' => $roleIds]),
+            )
             ->select(['existing' => 1])
-            ->from(['t1' => 'trees'], true)
-            ->innerJoin(
-                ['t2' => 'trees'],
-                [
-                    't2.tree_left > t1.tree_left',
-                    't2.tree_right < t1.tree_right',
-                ],
-            )
-            ->innerJoin(
-                ['op' => 'object_permissions'],
-                [
-                    'op.object_id = t2.object_id',
-                    'op.role_id IN' => Hash::extract($user, 'roles.{n}.id'),
-                ],
-            )
-            ->where(['t1.object_id' => $this->id], ['t1.object_id' => 'integer'])
             ->limit(1)
             ->first();
 
@@ -299,9 +286,15 @@ class Folder extends ObjectEntity
         }
 
         try {
-            return TableRegistry::getTableLocator()->get('Trees')
-                ->find('pathNodes', objectId: $this->id)
-                ->select(['id' => 'object_id', 'menu', 'params', 'slug'], true)
+            $Trees = TableRegistry::getTableLocator()->get('Trees');
+
+            return $Trees->find('pathNodes', objectId: $this->id)
+                ->select([
+                    'id' => $Trees->aliasField('object_id'),
+                    $Trees->aliasField('menu'),
+                    $Trees->aliasField('params'),
+                    $Trees->aliasField('slug'),
+                ], true)
                 ->disableHydration()
                 ->toArray();
         } catch (RecordNotFoundException $previous) {

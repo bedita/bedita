@@ -16,10 +16,10 @@ namespace BEdita\Core\Model\Table;
 
 use ArrayObject;
 use BEdita\Core\Exception\LockedResourceException;
+use BEdita\Core\Model\Behavior\AdjacencyListBehavior;
 use BEdita\Core\Model\Entity\Tree;
 use BEdita\Core\Model\Validation\Validation;
 use Cake\Core\Configure;
-use Cake\Database\Driver\Mysql;
 use Cake\Database\Expression\QueryExpression;
 use Cake\Datasource\EntityInterface;
 use Cake\Event\EventInterface;
@@ -31,6 +31,7 @@ use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Utility\Text;
 use Cake\Validation\Validator;
+use RuntimeException;
 use stdClass;
 
 /**
@@ -99,7 +100,7 @@ class TreesTable extends Table
         ]);
 
         $this->addBehavior('BEdita/Core.AdjacencyList', [
-            'parentAssociation' => 'ParentObjects',
+            'parentAssociation' => 'ParentNode',
         ]);
         $this->addBehavior('BEdita/Core.Priority', ['fields' => ['priority' => ['scope' => ['parent_id']]]]);
     }
@@ -266,13 +267,19 @@ class TreesTable extends Table
             $position = $entity->get('position');
             $parentId = $entity->get('parent_id');
 
-            $siblings = $this->find()->where(fn (QueryExpression $exp): QueryExpression => $exp->eq($this->aliasField('parent_id'), $parentId));
+            $siblings = $this->find()->where(
+                fn (QueryExpression $exp): QueryExpression => $parentId === null
+                    ? $exp->isNull($this->aliasField('parent_id'))
+                    : $exp->eq($this->aliasField('parent_id'), $parentId),
+            );
             if (!$entity->isNew()) {
-                $siblings = $siblings->where(fn (QueryExpression $exp): QueryExpression => $exp->notEq($this->aliasField('id'), $entity->id));
+                $siblings = $siblings->where(
+                    fn (QueryExpression $exp): QueryExpression => $exp->notEq($this->aliasField('id'), $entity->id),
+                );
             }
 
             $count = $siblings->count();
-            $max = $entity->isNew() ? $count + 1 : max(1, $count);
+            $max = $count + 1;
 
             if ($position === 'first') {
                 $priority = 1;
@@ -300,6 +307,10 @@ class TreesTable extends Table
      */
     public function beforeSave(EventInterface $event, Tree $entity)
     {
+        if ($entity->get('parent_id') === $entity->get('object_id')) {
+            throw new RuntimeException('Cannot set a folder as its own parent');
+        }
+
         if ($entity->isNew() || !$entity->isDirty('parent_id')) {
             return;
         }
@@ -409,30 +420,16 @@ class TreesTable extends Table
      */
     protected function findPathNodes(SelectQuery $query, int $objectId): SelectQuery
     {
-        $lft = $this->aliasField('tree_left');
-        $rgt = $this->aliasField('tree_right');
         $node = $this->find()
-            ->select([$lft, $rgt])
-            ->where(['object_id' => $objectId])
+            ->select([$this->aliasField('id')])
+            ->where([$this->aliasField('object_id') => $objectId])
             ->disableHydration()
             ->firstOrFail();
 
-        $index = 'trees_nsm_idx';
-        if ($query->getConnection()->getDriver() instanceof Mysql && in_array($index, $this->getSchema()->indexes())) {
-            $query = $query->modifier([sprintf(
-                '/*+ INDEX(%s %s) */',
-                $this->getAlias(),
-                $index,
-            )]);
-        }
+        $query = $query->find('ancestors', ['for' => $node['id'], 'includeSelf' => true]);
+        $level = $this->getAssociation('Descendants')->junction()->aliasField(AdjacencyListBehavior::CTE_FIELD_LEVEL);
 
-        return $query
-            ->where(
-                fn(QueryExpression $exp): QueryExpression => $exp
-                    ->lte($lft, $node['tree_left'])
-                    ->gte($rgt, $node['tree_right']),
-            )
-            ->orderByAsc($lft);
+        return $query->orderByDesc($level);
     }
 
     /**

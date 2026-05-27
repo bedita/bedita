@@ -23,13 +23,17 @@ use Cake\Database\Expression\TupleComparison;
 use Cake\Database\Expression\UnaryExpression;
 use Cake\Database\ExpressionInterface;
 use Cake\Database\Schema\TableSchema;
+use Cake\Datasource\EntityInterface;
+use Cake\Event\EventInterface;
 use Cake\ORM\Association;
 use Cake\ORM\Association\BelongsTo;
 use Cake\ORM\Association\BelongsToMany;
 use Cake\ORM\Behavior;
+use Cake\ORM\Query;
 use Cake\ORM\Query\SelectQuery;
 use Cake\ORM\Table;
 use InvalidArgumentException;
+use RuntimeException;
 use UnexpectedValueException;
 
 /**
@@ -121,6 +125,56 @@ class AdjacencyListBehavior extends Behavior
             ));
         }
         $this->parentAssociation = $parentAssociation;
+    }
+
+    /**
+     * Prevent saving an entity with a parent that would create a cycle in the tree.
+     *
+     * @param \Cake\Event\EventInterface $event Dispatched event.
+     * @param \Cake\Datasource\EntityInterface $entity Entity being saved.
+     * @return void
+     * @throws \RuntimeException When the new parent would create a cycle.
+     */
+    public function beforeSave(EventInterface $event, EntityInterface $entity): void
+    {
+        if ($entity->isNew()) {
+            return;
+        }
+
+        $foreignKey = (array)$this->parentAssociation->getForeignKey();
+
+        $isDirty = array_reduce($foreignKey, fn (bool $carry, string $f): bool => $carry || $entity->isDirty($f), false);
+        if (!$isDirty) {
+            return;
+        }
+
+        $parentKey = array_map(fn (string $f): mixed => $entity->get($f), $foreignKey);
+        if (array_filter($parentKey, fn($v) => $v !== null) === []) {
+            return;
+        }
+
+        $bindingKey = (array)$this->parentAssociation->getBindingKey();
+        $currentKey = array_map(fn (string $f): mixed => $entity->get($f), $bindingKey);
+
+        if ($parentKey === $currentKey) {
+            throw new RuntimeException('Cannot set a node\'s parent as itself');
+        }
+
+        $hasCycle = $this->table()
+            ->find('descendants', ['for' => $entity])
+            ->select(fn (Query $q): array => ['count' => $q->func()->count('*')])
+            ->where(fn (QueryExpression $exp): QueryExpression => $exp->add(
+                new TupleComparison(
+                    array_map([$this->table(), 'aliasField'], $bindingKey),
+                    $parentKey,
+                ),
+            ))
+            ->first()
+            ->get('count') > 0;
+
+        if ($hasCycle) {
+            throw new RuntimeException('Cannot use a descendant node as parent');
+        }
     }
 
     /**
@@ -440,5 +494,27 @@ class AdjacencyListBehavior extends Behavior
             $includeSelf,
             new TupleComparison(array_map([$association->getTarget(), 'aliasField'], $bindingKey), static::extractFields($for, $bindingKey)),
         );
+    }
+
+    /**
+     * Find all children for a node.
+     *
+     * @param \Cake\ORM\Query\SelectQuery $query Query object.
+     * @param array{for: mixed} $options Options.
+     * @return \Cake\ORM\Query\SelectQuery
+     */
+    public function findChildren(SelectQuery $query, array $options): SelectQuery
+    {
+        $for = $options['for'] ?? null;
+        if (empty($for)) {
+            throw new InvalidArgumentException(sprintf('Missing required `%s` option', 'for'));
+        }
+
+        $foreignKey = (array)$this->parentAssociation->getForeignKey();
+
+        return $query->andWhere(fn (QueryExpression $exp): QueryExpression => $exp->add(new TupleComparison(
+            array_map([$this->parentAssociation->getSource(), 'aliasField'], $foreignKey),
+            static::extractFields($for, $foreignKey),
+        )));
     }
 }
