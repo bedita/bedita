@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 /**
  * BEdita, API-first content management framework
  * Copyright 2026 Atlas Srl, Chialab Srl
@@ -10,8 +12,6 @@
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
-declare(strict_types=1);
 
 namespace BEdita\Core\Model\Behavior;
 

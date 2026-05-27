@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 /**
  * BEdita, API-first content management framework
  * Copyright 2026 Atlas Srl, Chialab Srl
@@ -10,8 +12,6 @@
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-
-declare(strict_types=1);
 
 namespace BEdita\Core\Test\TestCase\Model\Behavior;
 
@@ -26,17 +26,15 @@ use Cake\Datasource\ConnectionManager;
 use Cake\ORM\Association\BelongsTo;
 use Cake\ORM\Association\BelongsToMany;
 use Cake\ORM\Table;
-use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use DateTime;
 use Exception;
 use InvalidArgumentException;
-use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\Attributes\DataProvider;
 use UnexpectedValueException;
 
 /**
- * {@see \App\Model\Behavior\AdjacencyListBehavior} Test Case
+ * {@see BEdita\Core\Model\Behavior\AdjacencyListBehavior} Test Case
+ *
  * @covers \BEdita\Core\Model\Behavior\AdjacencyListBehavior
  */
 final class AdjacencyListBehaviorTest extends TestCase
