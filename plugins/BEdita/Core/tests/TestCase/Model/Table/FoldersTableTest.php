@@ -24,6 +24,7 @@ use Cake\Database\Expression\QueryExpression;
 use Cake\Database\ExpressionInterface;
 use Cake\Database\ValueBinder;
 use Cake\ORM\Association\BelongsToMany;
+use Cake\ORM\Query;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Hash;
@@ -269,7 +270,10 @@ class FoldersTableTest extends TestCase
         $descendants = null;
         if (!empty($data['id'])) {
             $node = $trees->find()->where(['object_id' => $data['id']])->first();
-            $descendants = $trees->childCount($node);
+            $descendants = $trees->find('children', ['for' => $node->id])
+                ->select(fn (Query $q): array => ['count' => $q->func()->count($trees->aliasField('id'))])
+                ->first()
+                ->get('count');
         }
 
         $entity = $this->Folders->newEntity($data, [
@@ -290,7 +294,10 @@ class FoldersTableTest extends TestCase
 
         if (!empty($data['id'])) {
             $node = $trees->find()->where(['object_id' => $data['id']])->first();
-            $actual = $trees->childCount($node);
+            $actual = $trees->find('children', ['for' => $node->id])
+                ->select(fn (Query $q): array => ['count' => $q->func()->count($trees->aliasField('id'))])
+                ->first()
+                ->get('count');
             static::assertSame($descendants, $actual);
         }
     }
@@ -521,15 +528,15 @@ class FoldersTableTest extends TestCase
     public static function getSortProvider(): array
     {
         return [
-            'Order position Trees.tree_left asc' => [
+            'Order position Trees.priority asc' => [
                 11,
                 'position',
-                ['Trees.tree_left' => 'ASC'],
+                ['Trees.priority' => 'ASC'],
             ],
-            'Order -position Trees.tree_left desc' => [
+            'Order -position Trees.priority desc' => [
                 11,
                 '-position',
-                ['Trees.tree_left' => 'DESC'],
+                ['Trees.priority' => 'DESC'],
             ],
             'Order title Children.title asc' => [
                 11,
@@ -571,10 +578,10 @@ class FoldersTableTest extends TestCase
                 '-publish_start',
                 new OrderClauseExpression(new FunctionExpression('COALESCE', ['Children.publish_start' => 'identifier', 'Children.created' => 'identifier']), 'DESC'),
             ],
-            'Default order Trees.tree_left asc' => [
+            'Default order Trees.priority asc' => [
                 11,
                 null,
-                ['Trees.tree_left' => 'ASC'],
+                ['Trees.priority' => 'ASC'],
             ],
         ];
     }
@@ -639,6 +646,30 @@ class FoldersTableTest extends TestCase
     {
         $actual = $this->Folders->getSort($this->Folders->newEmptyEntity()->set('children_order', $order));
 
-        static::assertSame(['Trees.tree_left' => 'ASC'], $actual);
+        static::assertSame(['Trees.priority' => 'ASC'], $actual);
+    }
+
+    /**
+     * Test that a folder cannot be set as its own parent.
+     *
+     * @return void
+     * @covers \BEdita\Core\Model\Table\TreesTable::beforeSave()
+     */
+    public function testSaveWithSelfAsParent(): void
+    {
+        $folder = $this->Folders->newEntity(
+            ['title' => 'New paradox folder', 'created_by' => 1, 'modified_by' => 1],
+            ['accessibleFields' => ['*' => true]]
+        );
+        $folder->setDirty('deleted', false);
+        /** @var \BEdita\Core\Model\Entity\Folder|false $folder */
+        $folder = $this->Folders->save($folder);
+        if ($folder === false) {
+            throw new \RuntimeException('Error creating new folder for test');
+        }
+
+        $this->expectException(\RuntimeException::class);
+        $folder->parent = $folder;
+        $this->Folders->save($folder);
     }
 }

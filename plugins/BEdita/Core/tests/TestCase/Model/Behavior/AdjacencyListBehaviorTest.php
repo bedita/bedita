@@ -72,6 +72,11 @@ final class AdjacencyListBehaviorTest extends TestCase
             'targetTable' => (clone $this->table)->setAlias('Parents'),
             'foreignKey' => 'parent_id',
         ]);
+        $this->table->hasMany('Children', [
+            'className' => $this->table->getAlias(),
+            'targetTable' => (clone $this->table)->setAlias('Children'),
+            'foreignKey' => 'parent_id',
+        ]);
     }
 
     /**

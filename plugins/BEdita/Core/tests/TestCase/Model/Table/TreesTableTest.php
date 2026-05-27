@@ -22,9 +22,6 @@ use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\Event\Event;
 use Cake\Http\Exception\BadRequestException;
 use Cake\Http\Exception\NotFoundException;
-use Cake\ORM\Association\BelongsTo;
-use Cake\ORM\Association\HasMany;
-use Cake\ORM\Behavior\TreeBehavior;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use Exception;
@@ -87,21 +84,6 @@ class TreesTableTest extends TestCase
         Configure::delete('ChildrenParams');
 
         parent::tearDown();
-    }
-
-    /**
-     * Test initialize method
-     *
-     * @return void
-     */
-    public function testInitialize()
-    {
-        static::assertInstanceOf(BelongsTo::class, $this->Trees->Objects);
-        static::assertInstanceOf(BelongsTo::class, $this->Trees->ParentObjects);
-        static::assertInstanceOf(BelongsTo::class, $this->Trees->RootObjects);
-        static::assertInstanceOf(BelongsTo::class, $this->Trees->ParentNode);
-        static::assertInstanceOf(HasMany::class, $this->Trees->ChildNodes);
-        static::assertInstanceOf(TreeBehavior::class, $this->Trees->behaviors()->get('Tree'));
     }
 
     /**
@@ -472,11 +454,8 @@ class TreesTableTest extends TestCase
             ->firstOrFail();
 
         $node->set('position', $position);
-        $this->Trees->save($node);
-
-        /** @var \BEdita\Core\Model\Behavior\TreeBehavior $treeBehavior */
-        $treeBehavior = $this->Trees->getBehavior('Tree');
-        $currentPosition = $treeBehavior->getCurrentPosition($node);
+        $node = $this->Trees->save($node);
+        $currentPosition = $node->get('priority');
 
         static::assertSame($expected, $currentPosition);
     }
