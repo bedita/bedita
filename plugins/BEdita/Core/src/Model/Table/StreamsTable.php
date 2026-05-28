@@ -202,7 +202,7 @@ class StreamsTable extends Table
             ->disableHydration()
             ->first();
 
-        return ((int)($result['max_version'] ?? 0)) + 1;
+        return (int)($result['max_version'] ?? 0) + 1;
     }
 
     /**
