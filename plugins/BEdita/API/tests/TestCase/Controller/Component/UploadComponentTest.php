@@ -237,6 +237,35 @@ class UploadComponentTest extends IntegrationTestCase
     }
 
     /**
+     * Test uploadNewVersion: content matching an older version (not latest) is accepted.
+     */
+    public function testUploadNewVersionOlderContentAllowed(): void
+    {
+        $objectId = 10;
+        $contentsV2 = '{"version":2,"marker":"alpha"}';
+        $contentsV3 = '{"version":3,"marker":"beta"}';
+        $contentType = 'application/json';
+
+        // Create version 2.
+        $this->configRequestHeaders('POST', $this->getUserAuthHeader() + ['Content-Type' => $contentType]);
+        $this->post(sprintf('/streams/version/%d/v2.json', $objectId), $contentsV2);
+        $this->assertResponseCode(201);
+
+        // Create version 3 with different content.
+        $this->configRequestHeaders('POST', $this->getUserAuthHeader() + ['Content-Type' => $contentType]);
+        $this->post(sprintf('/streams/version/%d/v3.json', $objectId), $contentsV3);
+        $this->assertResponseCode(201);
+
+        // Re-upload content of version 2 — matches an older version but NOT the latest (v3) → allowed as version 4.
+        $this->configRequestHeaders('POST', $this->getUserAuthHeader() + ['Content-Type' => $contentType]);
+        $this->post(sprintf('/streams/version/%d/v4.json', $objectId), $contentsV2);
+
+        $this->assertResponseCode(201);
+        $response = json_decode((string)$this->_response->getBody(), true);
+        static::assertArraySubset(['version' => 4], $response['data']['meta']);
+    }
+
+    /**
      * Test upload method with `private_url` query.
      *
      * @return void

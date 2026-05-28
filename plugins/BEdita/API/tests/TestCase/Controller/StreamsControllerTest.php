@@ -279,6 +279,96 @@ class StreamsControllerTest extends IntegrationTestCase
     }
 
     /**
+     * Test replace flow: linking a stream to an object inherits the correct next version.
+     *
+     * Simulates: DELETE version N → POST new stream → PATCH relationship → new stream gets version N.
+     */
+    public function testReplaceAssignsCorrectVersion(): void
+    {
+        $objectId = 10;
+        $version1Uuid = '9e58fa47-db64-4479-a0ab-88a706180d59';
+        $contentType = 'application/json';
+
+        // Create version 2 so object 10 has versions 1 and 2.
+        $this->configRequestHeaders('POST', $this->getUserAuthHeader() + ['Content-Type' => $contentType]);
+        $this->post(sprintf('/streams/version/%d/v2.json', $objectId), '{"v":2}');
+        $this->assertResponseCode(201);
+        $v2Uuid = json_decode((string)$this->_response->getBody(), true)['data']['id'];
+
+        // Delete version 2 (latest). Object 10 now has only version 1.
+        $this->configRequestHeaders('DELETE', $this->getUserAuthHeader());
+        $this->delete(sprintf('/streams/%s', $v2Uuid));
+        $this->assertResponseCode(204);
+
+        // Upload a new standalone stream (gets version=1 by default, no object).
+        $this->configRequestHeaders('POST', $this->getUserAuthHeader() + ['Content-Type' => $contentType]);
+        $this->post('/streams/upload/replacement.json', '{"replacement":true}');
+        $this->assertResponseCode(201);
+        $newUuid = json_decode((string)$this->_response->getBody(), true)['data']['id'];
+
+        // Link the new stream to object 10. It should receive version=2 (nextVersion after version 1).
+        $this->configRequestHeaders('PATCH', $this->getUserAuthHeader());
+        $data = ['id' => $objectId, 'type' => 'files'];
+        $this->patch(sprintf('/streams/%s/relationships/object', $newUuid), json_encode(compact('data')));
+        $this->assertResponseCode(200);
+
+        // Verify the new stream now has version 2.
+        $this->configRequestHeaders('GET', $this->getUserAuthHeader());
+        $this->get(sprintf('/streams/%s', $newUuid));
+        $this->assertResponseCode(200);
+        $response = json_decode((string)$this->_response->getBody(), true);
+        static::assertSame(2, $response['data']['meta']['version']);
+    }
+
+    /**
+     * Test that DELETE on the latest versioned stream is allowed.
+     */
+    public function testDeleteLatestVersionAllowed(): void
+    {
+        // object 10 has only version 1 — it is the latest
+        $uuid = '9e58fa47-db64-4479-a0ab-88a706180d59';
+
+        $this->configRequestHeaders('DELETE', $this->getUserAuthHeader());
+        $this->delete(sprintf('/streams/%s', $uuid));
+
+        $this->assertResponseCode(204);
+    }
+
+    /**
+     * Test that DELETE on a non-latest versioned stream returns 409.
+     */
+    public function testDeleteNonLatestVersionConflict(): void
+    {
+        $objectId = 10;
+        $version1Uuid = '9e58fa47-db64-4479-a0ab-88a706180d59';
+
+        // Create version 2 so that version 1 is no longer the latest.
+        $this->configRequestHeaders('POST', $this->getUserAuthHeader() + ['Content-Type' => 'application/json']);
+        $this->post(sprintf('/streams/version/%d/v2.json', $objectId), '{"v":2}');
+        $this->assertResponseCode(201);
+
+        // Attempting to delete version 1 (not the latest) must be rejected.
+        $this->configRequestHeaders('DELETE', $this->getUserAuthHeader());
+        $this->delete(sprintf('/streams/%s', $version1Uuid));
+
+        $this->assertResponseCode(409);
+    }
+
+    /**
+     * Test that DELETE on a stream with no object_id (standalone) is always allowed.
+     */
+    public function testDeleteStandaloneStreamAllowed(): void
+    {
+        // This stream has version set but no object_id.
+        $uuid = 'e5afe167-7341-458d-a1e6-042e8791b0fe';
+
+        $this->configRequestHeaders('DELETE', $this->getUserAuthHeader());
+        $this->delete(sprintf('/streams/%s', $uuid));
+
+        $this->assertResponseCode(204);
+    }
+
+    /**
      * Test {@see \BEdita\API\Controller\StreamsController::clone()} action.
      *
      * @return void

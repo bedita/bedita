@@ -109,20 +109,25 @@ class UploadComponent extends Component
 
         $bodyContents = (string)$request->getBody();
 
-        // Reject if the file is byte-for-byte identical to any existing version.
-        $duplicate = $this->Streams->find()
-            ->where(['object_id' => $objectId, 'hash_sha1' => sha1($bodyContents)])
+        // Get the latest existing stream — used for version calculation and duplicate detection.
+        $latestStream = $this->Streams->find()
+            ->where(['object_id' => $objectId])
+            ->orderByDesc('version')
             ->first();
-        if ($duplicate !== null) {
+
+        // Reject only if the file is identical to the latest version.
+        if ($latestStream !== null && $latestStream->get('hash_sha1') === sha1($bodyContents)) {
             throw new ConflictException(__(
-                'File is identical to existing version {0}',
-                $duplicate->get('version'),
+                'File is identical to latest version {0}',
+                $latestStream->get('version'),
             ));
         }
 
+        $nextVersion = $latestStream !== null ? (int)$latestStream->get('version') + 1 : 1;
+
         $entity = $this->Streams->newEmptyEntity();
         $entity->set('object_id', $objectId);
-        $entity->set('version', $this->Streams->nextVersion($objectId));
+        $entity->set('version', $nextVersion);
         $private = filter_var($request->getQuery('private_url', false), FILTER_VALIDATE_BOOLEAN);
         $entity->set('private_url', $private);
 

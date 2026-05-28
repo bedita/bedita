@@ -15,6 +15,8 @@ declare(strict_types=1);
 
 namespace BEdita\API\Controller;
 
+use BEdita\Core\Model\Action\GetEntityAction;
+use Cake\Http\Exception\ConflictException;
 use Cake\Http\Exception\ForbiddenException;
 use Cake\Http\Response;
 use Cake\ORM\TableRegistry;
@@ -191,6 +193,7 @@ class StreamsController extends ResourcesController
      * {@inheritDoc}
      *
      * @throws \Cake\Http\Exception\ForbiddenException An exception is thrown on attempts to update existing streams.
+     * @throws \Cake\Http\Exception\ConflictException An exception is thrown on attempts to delete a non-latest versioned stream.
      */
     public function resource(string $id): ?Response
     {
@@ -199,6 +202,23 @@ class StreamsController extends ResourcesController
                 'bedita',
                 'You are not allowed to update existing streams, please delete and re-upload',
             ));
+        }
+
+        if ($this->request->is('delete')) {
+            $entityId = $this->getResourceId($id);
+            $action = new GetEntityAction(['table' => $this->Table]);
+            $entity = $action(['primaryKey' => $entityId]);
+            $version = $entity->get('version');
+            $objectId = $entity->get('object_id');
+            if ($version !== null && $objectId !== null) {
+                $latestVersion = $this->Table->nextVersion($objectId) - 1;
+                if ((int)$version !== $latestVersion) {
+                    throw new ConflictException(__d(
+                        'bedita',
+                        'You can only delete the latest version of a stream',
+                    ));
+                }
+            }
         }
 
         return parent::resource($id);

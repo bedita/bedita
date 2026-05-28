@@ -167,6 +167,15 @@ class StreamsTable extends Table
     public function beforeSave(EventInterface $event, Stream $entity): void
     {
         if (!$entity->isNew()) {
+            // When a stream is linked to an object for the first time via relationship PATCH,
+            // auto-assign the next available version so it continues the existing version sequence.
+            if ($entity->isDirty('object_id')
+                && $entity->get('object_id') !== null
+                && $entity->getOriginal('object_id') === null
+            ) {
+                $entity->set('version', $this->nextVersion($entity->get('object_id')));
+            }
+
             return;
         }
 
@@ -196,8 +205,9 @@ class StreamsTable extends Table
      */
     public function nextVersion(int $objectId): int
     {
-        $result = $this->find()
-            ->select(['max_version' => $this->find()->func()->max('version')])
+        $query = $this->find();
+        $result = $query
+            ->select(['max_version' => $query->func()->max('version')])
             ->where(['object_id' => $objectId])
             ->disableHydration()
             ->first();
