@@ -25,6 +25,8 @@ use Cake\Validation\Validator;
  * Streams Model
  *
  * @property \BEdita\Core\Model\Table\ObjectsTable|\Cake\ORM\Association\BelongsTo $Objects
+ * @property \BEdita\Core\Model\Table\UsersTable|\Cake\ORM\Association\BelongsTo $CreatedByUsers
+ * @mixin \BEdita\Core\Model\Behavior\UserModifiedBehavior
  * @method \BEdita\Core\Model\Entity\Stream get(mixed $primaryKey, array|string $finder = 'all', \Psr\SimpleCache\CacheInterface|string|null $cache = null, \Closure|string|null $cacheKey = null, mixed ...$args)
  * @method \BEdita\Core\Model\Entity\Stream newEntity(array $data, array $options = [])
  * @method \BEdita\Core\Model\Entity\Stream[] newEntities(array $data, array $options = [])
@@ -61,6 +63,13 @@ class StreamsTable extends Table
             ->setColumnType('file_metadata', 'json');
 
         $this->addBehavior('Timestamp');
+        $this->addBehavior('BEdita/Core.UserModified', [
+            'events' => [
+                'Model.beforeSave' => [
+                    'created_by' => 'new',
+                ],
+            ],
+        ]);
         $this->addBehavior('BEdita/Core.Uploadable', [
             'files' => [
                 [
@@ -71,6 +80,10 @@ class StreamsTable extends Table
         ]);
 
         $this->belongsTo('Objects');
+        $this->belongsTo('CreatedByUsers', [
+            'foreignKey' => 'created_by',
+            'className' => 'BEdita/Core.Users',
+        ]);
     }
 
     /**
@@ -153,6 +166,7 @@ class StreamsTable extends Table
     {
         $rules->add($rules->isUnique(['uri']));
         $rules->add($rules->existsIn(['object_id'], 'Objects'));
+        $rules->add($rules->existsIn(['created_by'], 'CreatedByUsers'));
 
         return $rules;
     }

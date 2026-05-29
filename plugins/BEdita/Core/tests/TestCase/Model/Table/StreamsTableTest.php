@@ -18,6 +18,7 @@ use BEdita\Core\Model\Entity\Stream;
 use BEdita\Core\Model\Table\ObjectsTable;
 use BEdita\Core\Model\Table\StreamsTable;
 use BEdita\Core\Test\Utility\TestFilesystemTrait;
+use BEdita\Core\Utility\LoggedUser;
 use Cake\ORM\Association\BelongsTo;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
@@ -52,6 +53,8 @@ class StreamsTableTest extends TestCase
         'plugin.BEdita/Core.Relations',
         'plugin.BEdita/Core.RelationTypes',
         'plugin.BEdita/Core.Objects',
+        'plugin.BEdita/Core.Profiles',
+        'plugin.BEdita/Core.Users',
         'plugin.BEdita/Core.Streams',
     ];
 
@@ -63,6 +66,7 @@ class StreamsTableTest extends TestCase
         parent::setUp();
         $this->Streams = TableRegistry::getTableLocator()->get('Streams');
         $this->filesystemSetup(true, true);
+        LoggedUser::setUserAdmin();
     }
 
     /**
@@ -72,6 +76,7 @@ class StreamsTableTest extends TestCase
     {
         $this->filesystemRestore();
         unset($this->Streams);
+        LoggedUser::resetUser();
         parent::tearDown();
     }
 
@@ -88,6 +93,8 @@ class StreamsTableTest extends TestCase
 
         static::assertInstanceOf(BelongsTo::class, $this->Streams->Objects);
         static::assertInstanceOf(ObjectsTable::class, $this->Streams->Objects->getTarget());
+
+        static::assertInstanceOf(BelongsTo::class, $this->Streams->CreatedByUsers);
     }
 
     /**
@@ -226,6 +233,25 @@ class StreamsTableTest extends TestCase
         $stream = $this->Streams->get($uuid);
         $success = $this->Streams->delete($stream);
         static::assertNotEmpty($success);
+    }
+
+    /**
+     * Test that `created_by` is populated with the logged user ID on new stream creation.
+     *
+     * @return void
+     */
+    public function testBeforeSaveCreatedBy(): void
+    {
+        $stream = $this->Streams->newEmptyEntity();
+        $stream = $this->Streams->patchEntity($stream, [
+            'file_name' => 'test.txt',
+            'mime_type' => 'text/plain',
+            'contents' => 'test contents',
+        ]);
+
+        $this->Streams->saveOrFail($stream);
+
+        static::assertSame(LoggedUser::id(), $stream->get('created_by'));
     }
 
     /**
