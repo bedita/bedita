@@ -118,24 +118,25 @@ class StreamsController extends ResourcesController
      */
     public function uploadNewVersion(string $objectId, string $fileName): void
     {
+        $this->request->allowMethod(['post', 'patch']);
         $data = $this->Upload->uploadNewVersion($fileName, (int)$objectId);
 
         $this->set(compact('data'));
         $this->setSerialize(['data']);
 
-        $this->response = $this->response
-            ->withStatus(201)
-            ->withHeader(
-                'Location',
-                Router::url(
-                    [
-                        '_name' => 'api:resources:resource',
-                        'controller' => $this->name,
-                        'id' => $data->get('uuid'),
-                    ],
-                    true,
-                ),
-            );
+        $resourceUrl = Router::url(
+            [
+                '_name' => 'api:resources:resource',
+                'controller' => $this->name,
+                'id' => $data->get('uuid'),
+            ],
+            true,
+        );
+
+        $this->response = $this->response->withStatus($this->request->is('patch') ? 200 : 201);
+        if ($this->request->is('post')) {
+            $this->response = $this->response->withHeader('Location', $resourceUrl);
+        }
     }
 
     /**
