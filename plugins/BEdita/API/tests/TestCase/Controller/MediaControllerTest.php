@@ -788,6 +788,7 @@ class MediaControllerTest extends IntegrationTestCase
                         'url' => 'https://static.example.org/files/9e58fa47-db64-4479-a0ab-88a706180d59.txt',
                         'file_metadata' => null,
                         'private_url' => false,
+                        'created_by' => null,
                     ],
                     'links' => [
                         'self' => 'http://api.example.com/streams/9e58fa47-db64-4479-a0ab-88a706180d59',
@@ -797,6 +798,12 @@ class MediaControllerTest extends IntegrationTestCase
                             'links' => [
                                 'related' => 'http://api.example.com/streams/9e58fa47-db64-4479-a0ab-88a706180d59/object',
                                 'self' => 'http://api.example.com/streams/9e58fa47-db64-4479-a0ab-88a706180d59/relationships/object',
+                            ],
+                        ],
+                        'created_by_user' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/streams/9e58fa47-db64-4479-a0ab-88a706180d59/created_by_user',
+                                'self' => 'http://api.example.com/streams/9e58fa47-db64-4479-a0ab-88a706180d59/relationships/created_by_user',
                             ],
                         ],
                     ],
@@ -821,6 +828,7 @@ class MediaControllerTest extends IntegrationTestCase
                         'url' => 'https://static.example.org/files/6aceb0eb-bd30-4f60-ac74-273083b921b6-bedita-logo-gray.gif',
                         'file_metadata' => null,
                         'private_url' => false,
+                        'created_by' => null,
                     ],
                     'links' => [
                         'self' => 'http://api.example.com/streams/6aceb0eb-bd30-4f60-ac74-273083b921b6',
@@ -830,6 +838,12 @@ class MediaControllerTest extends IntegrationTestCase
                             'links' => [
                                 'related' => 'http://api.example.com/streams/6aceb0eb-bd30-4f60-ac74-273083b921b6/object',
                                 'self' => 'http://api.example.com/streams/6aceb0eb-bd30-4f60-ac74-273083b921b6/relationships/object',
+                            ],
+                        ],
+                        'created_by_user' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/streams/6aceb0eb-bd30-4f60-ac74-273083b921b6/created_by_user',
+                                'self' => 'http://api.example.com/streams/6aceb0eb-bd30-4f60-ac74-273083b921b6/relationships/created_by_user',
                             ],
                         ],
                     ],
@@ -854,6 +868,7 @@ class MediaControllerTest extends IntegrationTestCase
                         'url' => 'https://static.example.org/files/9b06b2cf-fce7-47e8-b367-a3e5b464ca85-sample.svg',
                         'file_metadata' => null,
                         'private_url' => false,
+                        'created_by' => null,
                     ],
                     'links' => [
                         'self' => 'http://api.example.com/streams/9b06b2cf-fce7-47e8-b367-a3e5b464ca85',
@@ -863,6 +878,12 @@ class MediaControllerTest extends IntegrationTestCase
                             'links' => [
                                 'related' => 'http://api.example.com/streams/9b06b2cf-fce7-47e8-b367-a3e5b464ca85/object',
                                 'self' => 'http://api.example.com/streams/9b06b2cf-fce7-47e8-b367-a3e5b464ca85/relationships/object',
+                            ],
+                        ],
+                        'created_by_user' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/streams/9b06b2cf-fce7-47e8-b367-a3e5b464ca85/created_by_user',
+                                'self' => 'http://api.example.com/streams/9b06b2cf-fce7-47e8-b367-a3e5b464ca85/relationships/created_by_user',
                             ],
                         ],
                     ],
@@ -887,6 +908,7 @@ class MediaControllerTest extends IntegrationTestCase
                         'url' => 'https://static.example.org/files/eadc9cd3-b0ae-4e43-9251-9f44bd026793-snow-on-white.jpg',
                         'file_metadata' => null,
                         'private_url' => false,
+                        'created_by' => null,
                     ],
                     'links' => [
                         'self' => 'http://api.example.com/streams/eadc9cd3-b0ae-4e43-9251-9f44bd026793',
@@ -896,6 +918,12 @@ class MediaControllerTest extends IntegrationTestCase
                             'links' => [
                                 'related' => 'http://api.example.com/streams/eadc9cd3-b0ae-4e43-9251-9f44bd026793/object',
                                 'self' => 'http://api.example.com/streams/eadc9cd3-b0ae-4e43-9251-9f44bd026793/relationships/object',
+                            ],
+                        ],
+                        'created_by_user' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/streams/eadc9cd3-b0ae-4e43-9251-9f44bd026793/created_by_user',
+                                'self' => 'http://api.example.com/streams/eadc9cd3-b0ae-4e43-9251-9f44bd026793/relationships/created_by_user',
                             ],
                         ],
                     ],
@@ -920,6 +948,7 @@ class MediaControllerTest extends IntegrationTestCase
                         'url' => 'https://static.example.org/files/7ffcb45e-4cc1-492e-9775-74ee6999503f-snow-on-white.jpg',
                         'file_metadata' => null,
                         'private_url' => false,
+                        'created_by' => null,
                     ],
                     'links' => [
                         'self' => 'http://api.example.com/streams/7ffcb45e-4cc1-492e-9775-74ee6999503f',
@@ -929,6 +958,12 @@ class MediaControllerTest extends IntegrationTestCase
                             'links' => [
                                 'related' => 'http://api.example.com/streams/7ffcb45e-4cc1-492e-9775-74ee6999503f/object',
                                 'self' => 'http://api.example.com/streams/7ffcb45e-4cc1-492e-9775-74ee6999503f/relationships/object',
+                            ],
+                        ],
+                        'created_by_user' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/streams/7ffcb45e-4cc1-492e-9775-74ee6999503f/created_by_user',
+                                'self' => 'http://api.example.com/streams/7ffcb45e-4cc1-492e-9775-74ee6999503f/relationships/created_by_user',
                             ],
                         ],
                     ],
@@ -1051,6 +1086,7 @@ class MediaControllerTest extends IntegrationTestCase
                         'url' => 'https://static.example.org/files/6aceb0eb-bd30-4f60-ac74-273083b921b6-bedita-logo-gray.gif',
                         'file_metadata' => null,
                         'private_url' => false,
+                        'created_by' => null,
                     ],
                     'links' => [
                         'self' => 'http://api.example.com/streams/6aceb0eb-bd30-4f60-ac74-273083b921b6',
@@ -1060,6 +1096,12 @@ class MediaControllerTest extends IntegrationTestCase
                             'links' => [
                                 'related' => 'http://api.example.com/streams/6aceb0eb-bd30-4f60-ac74-273083b921b6/object',
                                 'self' => 'http://api.example.com/streams/6aceb0eb-bd30-4f60-ac74-273083b921b6/relationships/object',
+                            ],
+                        ],
+                        'created_by_user' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/streams/6aceb0eb-bd30-4f60-ac74-273083b921b6/created_by_user',
+                                'self' => 'http://api.example.com/streams/6aceb0eb-bd30-4f60-ac74-273083b921b6/relationships/created_by_user',
                             ],
                         ],
                     ],

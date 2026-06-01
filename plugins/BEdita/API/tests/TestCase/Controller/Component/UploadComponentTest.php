@@ -266,6 +266,52 @@ class UploadComponentTest extends IntegrationTestCase
     }
 
     /**
+     * Test uploadNewVersion with PATCH: latest version is replaced in place.
+     *
+     * @return void
+     */
+    public function testUploadReplaceLatestVersion(): void
+    {
+        $objectId = 10;
+        $fileName = 'replaced.txt';
+        $contents = 'replacement payload';
+        $contentType = 'text/plain';
+
+        $this->configRequestHeaders('PATCH', $this->getUserAuthHeader() + ['Content-Type' => $contentType]);
+        $this->patch(sprintf('/streams/version/%d/%s', $objectId, $fileName), $contents);
+
+        $this->assertResponseCode(200);
+        $this->assertContentType('application/vnd.api+json');
+
+        $response = json_decode((string)$this->_response->getBody(), true);
+        static::assertArrayHasKey('data', $response);
+        static::assertSame('9e58fa47-db64-4479-a0ab-88a706180d59', $response['data']['id']);
+        static::assertEquals(['file_name' => $fileName, 'mime_type' => $contentType], $response['data']['attributes']);
+        static::assertArraySubset(
+            ['version' => 1, 'hash_sha1' => sha1($contents)],
+            $response['data']['meta'],
+        );
+    }
+
+    /**
+     * Test uploadNewVersion with PATCH: identical content is rejected.
+     *
+     * @return void
+     */
+    public function testUploadReplaceLatestVersionConflict(): void
+    {
+        $objectId = 10;
+        $contentType = 'text/plain';
+        $contents = "Sample uploaded file.\n";
+
+        $this->configRequestHeaders('PATCH', $this->getUserAuthHeader() + ['Content-Type' => $contentType]);
+        $this->patch(sprintf('/streams/version/%d/sample.txt', $objectId), $contents);
+
+        $this->assertResponseCode(409);
+        $this->assertContentType('application/vnd.api+json');
+    }
+
+    /**
      * Test upload method with `private_url` query.
      *
      * @return void

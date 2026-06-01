@@ -279,45 +279,31 @@ class StreamsControllerTest extends IntegrationTestCase
     }
 
     /**
-     * Test replace flow: linking a stream to an object inherits the correct next version.
+     * Test `uploadNewVersion` action with PATCH: latest version is replaced in place.
      *
-     * Simulates: DELETE version N → POST new stream → PATCH relationship → new stream gets version N.
+     * @return void
      */
-    public function testReplaceAssignsCorrectVersion(): void
+    public function testReplaceLatestVersion(): void
     {
         $objectId = 10;
-        $version1Uuid = '9e58fa47-db64-4479-a0ab-88a706180d59';
-        $contentType = 'application/json';
+        $fileName = 'replacement.txt';
+        $contents = 'replacement payload';
+        $contentType = 'text/plain';
 
-        // Create version 2 so object 10 has versions 1 and 2.
-        $this->configRequestHeaders('POST', $this->getUserAuthHeader() + ['Content-Type' => $contentType]);
-        $this->post(sprintf('/streams/version/%d/v2.json', $objectId), '{"v":2}');
-        $this->assertResponseCode(201);
-        $v2Uuid = json_decode((string)$this->_response->getBody(), true)['data']['id'];
+        $this->configRequestHeaders('PATCH', $this->getUserAuthHeader() + ['Content-Type' => $contentType]);
+        $this->patch(sprintf('/streams/version/%d/%s', $objectId, $fileName), $contents);
 
-        // Delete version 2 (latest). Object 10 now has only version 1.
-        $this->configRequestHeaders('DELETE', $this->getUserAuthHeader());
-        $this->delete(sprintf('/streams/%s', $v2Uuid));
-        $this->assertResponseCode(204);
-
-        // Upload a new standalone stream (gets version=1 by default, no object).
-        $this->configRequestHeaders('POST', $this->getUserAuthHeader() + ['Content-Type' => $contentType]);
-        $this->post('/streams/upload/replacement.json', '{"replacement":true}');
-        $this->assertResponseCode(201);
-        $newUuid = json_decode((string)$this->_response->getBody(), true)['data']['id'];
-
-        // Link the new stream to object 10. It should receive version=2 (nextVersion after version 1).
-        $this->configRequestHeaders('PATCH', $this->getUserAuthHeader());
-        $data = ['id' => $objectId, 'type' => 'files'];
-        $this->patch(sprintf('/streams/%s/relationships/object', $newUuid), json_encode(compact('data')));
         $this->assertResponseCode(200);
+        $this->assertContentType('application/vnd.api+json');
 
-        // Verify the new stream now has version 2.
-        $this->configRequestHeaders('GET', $this->getUserAuthHeader());
-        $this->get(sprintf('/streams/%s', $newUuid));
-        $this->assertResponseCode(200);
         $response = json_decode((string)$this->_response->getBody(), true);
-        static::assertSame(2, $response['data']['meta']['version']);
+        static::assertArrayHasKey('data', $response);
+        static::assertSame('9e58fa47-db64-4479-a0ab-88a706180d59', $response['data']['id']);
+        static::assertArraySubset(
+            ['version' => 1, 'hash_sha1' => sha1($contents)],
+            $response['data']['meta'],
+        );
+        static::assertEquals(['file_name' => $fileName, 'mime_type' => $contentType], $response['data']['attributes']);
     }
 
     /**

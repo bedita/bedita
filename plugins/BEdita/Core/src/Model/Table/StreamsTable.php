@@ -183,11 +183,21 @@ class StreamsTable extends Table
         if (!$entity->isNew()) {
             // When a stream is linked to an object for the first time via relationship PATCH,
             // auto-assign the next available version so it continues the existing version sequence.
-            if ($entity->isDirty('object_id')
-                && $entity->get('object_id') !== null
-                && $entity->getOriginal('object_id') === null
+            $objectId = $entity->get('object_id');
+            if ($objectId === null && $entity->get('object') !== null) {
+                $objectId = (int)$entity->get('object')->get('id');
+                $entity->set('object_id', $objectId);
+            }
+            $original = $this->find()
+                ->select(['object_id'])
+                ->where([$this->getPrimaryKey() => $entity->get($this->getPrimaryKey())])
+                ->disableHydration()
+                ->first();
+            if (
+                $objectId !== null
+                && ($original['object_id'] ?? null) === null
             ) {
-                $entity->set('version', $this->nextVersion($entity->get('object_id')));
+                $entity->set('version', $this->nextVersion($objectId));
             }
 
             return;

@@ -187,6 +187,7 @@ class JsonSchemaTest extends TestCase
                     'properties' => [
                         'uuid',
                         'created',
+                        'created_by',
                         'duration',
                         'file_name',
                         'file_size',
