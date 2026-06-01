@@ -3813,17 +3813,17 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n    \"data\": {\n        \"id\": \"{{categoryId}}\",\n        \"type\": \"categories\",\n        \"attributes\": {\n            \"label\": \"nice category!\"\n        }\n    }\n}"
+									"raw": "{\n    \"data\": {\n        \"id\": \"{{tagId}}\",\n        \"type\": \"tags\",\n        \"attributes\": {\n            \"label\": \"nice tag!\"\n        }\n    }\n}"
 								},
 								"url": {
-									"raw": "{{be4Url}}/model/categories/{{categoryId}}",
+									"raw": "{{be4Url}}/model/tags/{{tagId}}",
 									"host": [
 										"{{be4Url}}"
 									],
 									"path": [
 										"model",
-										"categories",
-										"{{categoryId}}"
+										"tags",
+										"{{tagId}}"
 									]
 								}
 							},
