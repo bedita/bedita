@@ -111,8 +111,17 @@ class UploadComponent extends Component
         $this->Streams = $this->fetchTable('Streams');
         $replace = $request->is('patch');
 
-        // Hash the request body as a stream to avoid loading the entire file into a PHP string.
-        $bodyResource = $request->getBody()->detach();
+        // Copy the request body to a seekable php://temp resource.
+        // This avoids loading the entire file into a PHP string, and correctly
+        // handles non-seekable streams (e.g. php://input in production).
+        $bodyResource = fopen('php://temp', 'wb+');
+        $rawBody = $request->getBody();
+        if ($rawBody->isSeekable()) {
+            $rawBody->rewind();
+        }
+        stream_copy_to_stream($rawBody->detach(), $bodyResource);
+        rewind($bodyResource);
+
         $hashContext = hash_init('sha1');
         hash_update_stream($hashContext, $bodyResource);
         $bodySha1 = hash_final($hashContext);
