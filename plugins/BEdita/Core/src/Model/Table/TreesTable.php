@@ -286,8 +286,12 @@ class TreesTable extends Table
             } elseif ($position === 'last') {
                 $priority = $max;
             } elseif (is_numeric($position) && (int)$position !== 0) {
-                $n = (int)$position;
-                $priority = $n > 0 ? $n : ($count + $n + 1);
+                $priority = (int)$position;
+
+                // Normalize position. Transform negative indexes, and apply bounds.
+                if ($priority < 0) {
+                    $priority = $max + $priority + 1;
+                }
                 $priority = max(1, min($max, $priority));
             } else {
                 throw new BadRequestException(__d('bedita', 'Invalid position'));
