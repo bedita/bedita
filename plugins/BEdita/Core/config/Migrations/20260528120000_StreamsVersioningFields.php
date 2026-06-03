@@ -25,7 +25,7 @@ class StreamsVersioningFields extends BaseMigration
             ->addIndex(
                 ['object_id', 'version'],
                 [
-                    'name' => 'streams_objectid_version_uidx',
+                    'name' => 'streams_objectid_version_uq',
                     'unique' => true,
                 ],
             )
