@@ -75,6 +75,14 @@ final class AdjacencyListBehaviorTest extends TestCase
             'targetTable' => (clone $this->table)->setAlias('Children'),
             'foreignKey' => 'parent_id',
         ]);
+
+        // Add cycle in categories tree
+        $connection = $this->table->getConnection();
+        $connection->disableConstraints(function ($connection): void {
+            $connection->insert('fake_categories', ['id' => 10, 'name' => 'Example circular reference', 'parent_id' => 11, 'left_idx' => 19, 'right_idx' => 21]);
+            $connection->insert('fake_categories', ['id' => 11, 'name' => 'Example circular reference', 'parent_id' => 10, 'left_idx' => 20, 'right_idx' => 22]);
+            $connection->insert('fake_categories', ['id' => 12, 'name' => 'Example self-reference', 'parent_id' => 12, 'left_idx' => 23, 'right_idx' => 24]);
+        });
     }
 
     /**

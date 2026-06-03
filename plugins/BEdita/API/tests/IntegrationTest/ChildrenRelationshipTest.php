@@ -182,6 +182,7 @@ class ChildrenRelationshipTest extends IntegrationTestCase
             'canonical' => true,
             'params' => null,
             'slug' => 'gustavo-supporto-profile-4',
+            'priority' => 1,
         ];
         static::assertEquals($expected, Hash::get($result, 'data.0.meta.relation'));
     }
