@@ -311,11 +311,11 @@ class TreesTable extends Table
             throw new RuntimeException('Cannot set a folder as its own parent');
         }
 
-        if ($entity->isNew() || !$entity->isDirty('parent_id')) {
+        $originalParentId = $entity->getOriginal('parent_id');
+        if ($entity->isNew() || !$entity->isDirty('parent_id') || $originalParentId === $entity->get('parent_id')) {
             return;
         }
 
-        $originalParentId = $entity->getOriginal('parent_id');
         $originalPriority = $entity->getOriginal('priority');
         if ($originalPriority === null) {
             return;
