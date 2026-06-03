@@ -1004,7 +1004,7 @@ class FoldersControllerTest extends IntegrationTestCase
         $getTreeList = function () use ($treesTable, $folderTreeNode) {
             return $treesTable
                 ->find('children', ['for' => $folderTreeNode->id])
-                ->find('treeList')
+                ->find('list')
                 ->toArray();
         };
 

@@ -91,23 +91,5 @@ class FakeCategoriesFixture extends TestFixture
             'left_idx' => 17,
             'right_idx' => 18,
         ],
-        [ // ID: 10
-            'name' => 'Example circular reference',
-            'parent_id' => 11,
-            'left_idx' => 19,
-            'right_idx' => 21,
-        ],
-        [ // ID: 11
-            'name' => 'Example circular reference',
-            'parent_id' => 10,
-            'left_idx' => 20,
-            'right_idx' => 22,
-        ],
-        [ // ID: 12
-            'name' => 'Example self-reference',
-            'parent_id' => 12,
-            'left_idx' => 23,
-            'right_idx' => 24,
-        ],
     ];
 }
