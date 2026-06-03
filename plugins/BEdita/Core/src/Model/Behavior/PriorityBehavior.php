@@ -139,7 +139,16 @@ class PriorityBehavior extends Behavior
                 return true;
             }
 
-            $previousValue = $entity->getOriginal($field);
+            /** @var string[] $primaryKey */
+            $primaryKey = (array)$this->_table->getPrimaryKey();
+            $previousValue = $this->_table->find()
+                ->select($this->_table->aliasField($field))
+                ->where(array_combine(
+                    array_map(fn (string $f): string => $this->_table->aliasField($f), $primaryKey),
+                    $entity->extract($primaryKey),
+                ))
+                ->firstOrFail()
+                ->get($field);
             if ($previousValue === $actualValue) {
                 return false;
             }
