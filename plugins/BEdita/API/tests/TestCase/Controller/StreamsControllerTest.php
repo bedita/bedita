@@ -45,7 +45,7 @@ class StreamsControllerTest extends IntegrationTestCase
     {
         parent::setUp();
 
-        $this->filesystemSetup();
+        $this->filesystemSetup(true, true);
     }
 
     /**
@@ -53,10 +53,10 @@ class StreamsControllerTest extends IntegrationTestCase
      */
     public function tearDown(): void
     {
-        parent::tearDown();
-
         $this->filesystemRestore();
         unset($this->Streams);
+
+        parent::tearDown();
     }
 
     /**
