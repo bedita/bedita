@@ -334,4 +334,42 @@ class UploadComponentTest extends IntegrationTestCase
         static::assertTrue($meta['private_url']);
         static::assertNull($meta['url']);
     }
+
+    /**
+     * Test uploadNewVersion with PATCH: 404 when no streams exist for object.
+     *
+     * @return void
+     */
+    public function testUploadReplaceLatestVersionNotFound(): void
+    {
+        // Object 2 has no streams in the fixture.
+        $this->configRequestHeaders('PATCH', $this->getUserAuthHeader() + ['Content-Type' => 'text/plain']);
+        $this->patch('/streams/version/2/test.txt', 'some content');
+
+        $this->assertResponseCode(404);
+        $this->assertContentType('application/vnd.api+json');
+    }
+
+    /**
+     * Test uploadNewVersion with PATCH and `private_url` query param.
+     *
+     * @return void
+     */
+    public function testUploadReplaceLatestVersionPrivateUrl(): void
+    {
+        $objectId = 10;
+        $fileName = 'replaced-private.txt';
+        $contents = 'private content replacement';
+        $contentType = 'text/plain';
+
+        $this->configRequestHeaders('PATCH', $this->getUserAuthHeader() + ['Content-Type' => $contentType]);
+        $this->patch(sprintf('/streams/version/%d/%s?private_url=true', $objectId, $fileName), $contents);
+
+        $this->assertResponseCode(200);
+        $this->assertContentType('application/vnd.api+json');
+
+        $response = json_decode((string)$this->_response->getBody(), true);
+        static::assertArrayHasKey('data', $response);
+        static::assertTrue($response['data']['meta']['private_url']);
+    }
 }
