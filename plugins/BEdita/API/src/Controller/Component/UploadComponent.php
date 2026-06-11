@@ -159,21 +159,14 @@ class UploadComponent extends Component
         }
 
         $action = new SaveEntityAction(['table' => $this->Streams]);
-        try {
-            $stream = $action([
-                'entity' => $entity,
-                'data' => [
-                    'file_name' => $fileName,
-                    'mime_type' => $request->contentType(),
-                    'contents' => $bodyResource,
-                ],
-            ]);
-        } catch (QueryException $e) {
-            if ($e->getCode() === '23000') {
-                throw new ConflictException(__('Stream version conflict, please retry.'));
-            }
-            throw $e;
-        }
+        $stream = $action([
+            'entity' => $entity,
+            'data' => [
+                'file_name' => $fileName,
+                'mime_type' => $request->contentType(),
+                'contents' => $bodyResource,
+            ],
+        ]);
 
         $this->dispatchThumbnailsEvent($stream);
 
