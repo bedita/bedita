@@ -18,7 +18,6 @@ namespace BEdita\API\Controller\Component;
 use BEdita\Core\Model\Action\GetEntityAction;
 use BEdita\Core\Model\Action\SaveEntityAction;
 use Cake\Controller\Component;
-use Cake\Database\Exception\QueryException;
 use Cake\Datasource\EntityInterface;
 use Cake\Event\Event;
 use Cake\Event\EventInterface;
