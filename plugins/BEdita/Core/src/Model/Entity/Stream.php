@@ -33,6 +33,7 @@ use Psr\Http\Message\StreamInterface;
  * @property string $uuid
  * @property int $version
  * @property int|null $object_id
+ * @property int|null $created_by
  * @property string $uri
  * @property string|null $file_name
  * @property string $mime_type

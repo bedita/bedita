@@ -45,7 +45,7 @@ class StreamsControllerTest extends IntegrationTestCase
     {
         parent::setUp();
 
-        $this->filesystemSetup();
+        $this->filesystemSetup(true, true);
     }
 
     /**
@@ -53,10 +53,10 @@ class StreamsControllerTest extends IntegrationTestCase
      */
     public function tearDown(): void
     {
-        parent::tearDown();
-
         $this->filesystemRestore();
         unset($this->Streams);
+
+        parent::tearDown();
     }
 
     /**
@@ -219,6 +219,139 @@ class StreamsControllerTest extends IntegrationTestCase
         $this->configRequestHeaders('GET', ['Accept' => 'application/json']);
         $this->get('/streams');
         $this->assertResponseCode(200);
+    }
+
+    /**
+     * Test `uploadNewVersion` action: success case, version increments to 2.
+     *
+     * @return void
+     */
+    public function testUploadNewVersion(): void
+    {
+        $objectId = 10; // media/files object that already has version 1 stream in fixtures
+        $fileName = 'new-version.json';
+        $contents = '{"name":"NewVersion","v":2}';
+        $contentType = 'application/json';
+
+        $this->configRequestHeaders('POST', $this->getUserAuthHeader() + ['Content-Type' => $contentType]);
+        $this->post(sprintf('/streams/version/%d/%s', $objectId, $fileName), $contents);
+
+        $this->assertResponseCode(201);
+        $this->assertContentType('application/vnd.api+json');
+
+        $response = json_decode((string)$this->_response->getBody(), true);
+        static::assertArrayHasKey('data', $response);
+
+        $id = $response['data']['id'];
+        $locationUrl = sprintf('http://api.example.com/streams/%s', $id);
+        static::assertTrue(Validation::uuid($id));
+        static::assertSame('streams', $response['data']['type']);
+        static::assertEquals(['file_name' => $fileName, 'mime_type' => $contentType], $response['data']['attributes']);
+        static::assertArraySubset(
+            ['version' => 2, 'file_size' => strlen($contents), 'hash_sha1' => sha1($contents)],
+            $response['data']['meta'],
+        );
+        $this->assertHeader('Location', $locationUrl);
+    }
+
+    /**
+     * Test `uploadNewVersion` action: 409 Conflict when uploading an identical file.
+     *
+     * @return void
+     */
+    public function testUploadNewVersionConflict(): void
+    {
+        $objectId = 10;
+        $fileName = 'duplicate.json';
+        $contents = '{"duplicate":"yes"}';
+        $contentType = 'application/json';
+
+        // First upload must succeed (becomes version 2).
+        $this->configRequestHeaders('POST', $this->getUserAuthHeader() + ['Content-Type' => $contentType]);
+        $this->post(sprintf('/streams/version/%d/%s', $objectId, $fileName), $contents);
+        $this->assertResponseCode(201);
+
+        // Uploading the exact same bytes again must return 409 Conflict.
+        $this->configRequestHeaders('POST', $this->getUserAuthHeader() + ['Content-Type' => $contentType]);
+        $this->post(sprintf('/streams/version/%d/%s', $objectId, $fileName), $contents);
+        $this->assertResponseCode(409);
+        $this->assertContentType('application/vnd.api+json');
+    }
+
+    /**
+     * Test `uploadNewVersion` action with PATCH: latest version is replaced in place.
+     *
+     * @return void
+     */
+    public function testReplaceLatestVersion(): void
+    {
+        $objectId = 10;
+        $fileName = 'replacement.txt';
+        $contents = 'replacement payload';
+        $contentType = 'text/plain';
+
+        $this->configRequestHeaders('PATCH', $this->getUserAuthHeader() + ['Content-Type' => $contentType]);
+        $this->patch(sprintf('/streams/version/%d/%s', $objectId, $fileName), $contents);
+
+        $this->assertResponseCode(200);
+        $this->assertContentType('application/vnd.api+json');
+
+        $response = json_decode((string)$this->_response->getBody(), true);
+        static::assertArrayHasKey('data', $response);
+        static::assertSame('9e58fa47-db64-4479-a0ab-88a706180d59', $response['data']['id']);
+        static::assertArraySubset(
+            ['version' => 1, 'hash_sha1' => sha1($contents)],
+            $response['data']['meta'],
+        );
+        static::assertEquals(['file_name' => $fileName, 'mime_type' => $contentType], $response['data']['attributes']);
+    }
+
+    /**
+     * Test that DELETE on the latest versioned stream is allowed.
+     */
+    public function testDeleteLatestVersionAllowed(): void
+    {
+        // object 10 has only version 1 — it is the latest
+        $uuid = '9e58fa47-db64-4479-a0ab-88a706180d59';
+
+        $this->configRequestHeaders('DELETE', $this->getUserAuthHeader());
+        $this->delete(sprintf('/streams/%s', $uuid));
+
+        $this->assertResponseCode(204);
+    }
+
+    /**
+     * Test that DELETE on a non-latest versioned stream returns 409.
+     */
+    public function testDeleteNonLatestVersionConflict(): void
+    {
+        $objectId = 10;
+        $version1Uuid = '9e58fa47-db64-4479-a0ab-88a706180d59';
+
+        // Create version 2 so that version 1 is no longer the latest.
+        $this->configRequestHeaders('POST', $this->getUserAuthHeader() + ['Content-Type' => 'application/json']);
+        $this->post(sprintf('/streams/version/%d/v2.json', $objectId), '{"v":2}');
+        $this->assertResponseCode(201);
+
+        // Attempting to delete version 1 (not the latest) must be rejected.
+        $this->configRequestHeaders('DELETE', $this->getUserAuthHeader());
+        $this->delete(sprintf('/streams/%s', $version1Uuid));
+
+        $this->assertResponseCode(409);
+    }
+
+    /**
+     * Test that DELETE on a stream with no object_id (standalone) is always allowed.
+     */
+    public function testDeleteStandaloneStreamAllowed(): void
+    {
+        // This stream has version set but no object_id.
+        $uuid = 'e5afe167-7341-458d-a1e6-042e8791b0fe';
+
+        $this->configRequestHeaders('DELETE', $this->getUserAuthHeader());
+        $this->delete(sprintf('/streams/%s', $uuid));
+
+        $this->assertResponseCode(204);
     }
 
     /**

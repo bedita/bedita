@@ -3646,6 +3646,12 @@ class ObjectsControllerTest extends IntegrationTestCase
                             'self' => sprintf('http://api.example.com/streams/%s/relationships/object', $id),
                         ],
                     ],
+                    'created_by_user' => [
+                        'links' => [
+                            'related' => sprintf('http://api.example.com/streams/%s/created_by_user', $id),
+                            'self' => sprintf('http://api.example.com/streams/%s/relationships/created_by_user', $id),
+                        ],
+                    ],
                 ],
             ],
         ];

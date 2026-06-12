@@ -25,6 +25,8 @@ use Cake\Validation\Validator;
  * Streams Model
  *
  * @property \BEdita\Core\Model\Table\ObjectsTable|\Cake\ORM\Association\BelongsTo $Objects
+ * @property \BEdita\Core\Model\Table\UsersTable|\Cake\ORM\Association\BelongsTo $CreatedByUsers
+ * @mixin \BEdita\Core\Model\Behavior\UserModifiedBehavior
  * @method \BEdita\Core\Model\Entity\Stream get(mixed $primaryKey, array|string $finder = 'all', \Psr\SimpleCache\CacheInterface|string|null $cache = null, \Closure|string|null $cacheKey = null, mixed ...$args)
  * @method \BEdita\Core\Model\Entity\Stream newEntity(array $data, array $options = [])
  * @method \BEdita\Core\Model\Entity\Stream[] newEntities(array $data, array $options = [])
@@ -61,6 +63,13 @@ class StreamsTable extends Table
             ->setColumnType('file_metadata', 'json');
 
         $this->addBehavior('Timestamp');
+        $this->addBehavior('BEdita/Core.UserModified', [
+            'events' => [
+                'Model.beforeSave' => [
+                    'created_by' => 'new',
+                ],
+            ],
+        ]);
         $this->addBehavior('BEdita/Core.Uploadable', [
             'files' => [
                 [
@@ -71,6 +80,10 @@ class StreamsTable extends Table
         ]);
 
         $this->belongsTo('Objects');
+        $this->belongsTo('CreatedByUsers', [
+            'foreignKey' => 'created_by',
+            'className' => 'BEdita/Core.Users',
+        ]);
     }
 
     /**
@@ -153,6 +166,7 @@ class StreamsTable extends Table
     {
         $rules->add($rules->isUnique(['uri']));
         $rules->add($rules->existsIn(['object_id'], 'Objects'));
+        $rules->add($rules->existsIn(['created_by'], 'CreatedByUsers'));
 
         return $rules;
     }
@@ -167,6 +181,25 @@ class StreamsTable extends Table
     public function beforeSave(EventInterface $event, Stream $entity): void
     {
         if (!$entity->isNew()) {
+            // When a stream is linked to an object for the first time via relationship PATCH,
+            // auto-assign the next available version so it continues the existing version sequence.
+            $objectId = $entity->get('object_id');
+            if ($objectId === null && $entity->get('object') !== null) {
+                $objectId = (int)$entity->get('object')->get('id');
+                $entity->set('object_id', $objectId);
+            }
+            $original = $this->find()
+                ->select(['object_id'])
+                ->where([$this->getPrimaryKey() => $entity->get($this->getPrimaryKey())])
+                ->disableHydration()
+                ->first();
+            if (
+                $objectId !== null
+                && ($original['object_id'] ?? null) === null
+            ) {
+                $entity->set('version', $this->nextVersion($objectId));
+            }
+
             return;
         }
 
@@ -186,6 +219,24 @@ class StreamsTable extends Table
     public function afterDelete(EventInterface $event, Stream $stream): void
     {
         Thumbnail::delete($stream);
+    }
+
+    /**
+     * Return the next available version number for streams associated to an object.
+     *
+     * @param int $objectId Object ID.
+     * @return int Next version (max existing version + 1, or 1 if no streams exist).
+     */
+    public function nextVersion(int $objectId): int
+    {
+        $query = $this->find();
+        $result = $query
+            ->select(['max_version' => $query->func()->max('version')])
+            ->where(['object_id' => $objectId])
+            ->disableHydration()
+            ->first();
+
+        return (int)($result['max_version'] ?? 0) + 1;
     }
 
     /**

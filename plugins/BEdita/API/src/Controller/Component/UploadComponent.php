@@ -12,6 +12,7 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
+
 namespace BEdita\API\Controller\Component;
 
 use BEdita\Core\Model\Action\GetEntityAction;
@@ -21,6 +22,8 @@ use Cake\Datasource\EntityInterface;
 use Cake\Event\Event;
 use Cake\Event\EventInterface;
 use Cake\Event\EventManager;
+use Cake\Http\Exception\ConflictException;
+use Cake\Http\Exception\NotFoundException;
 use Cake\ORM\Locator\LocatorAwareTrait;
 use Exception;
 use Laminas\Diactoros\Stream;
@@ -81,6 +84,91 @@ class UploadComponent extends Component
         $entity->set('private_url', $private);
         $stream = $action(compact('entity', 'data'));
         $this->dispatchThumbnailsEvent($stream);
+        $action = new GetEntityAction(['table' => $this->Streams]);
+
+        return $action(['primaryKey' => $stream->get($this->Streams->getPrimaryKey())]);
+    }
+
+    /**
+     * Upload a new version of a stream for an existing object.
+     *
+     * `POST` creates version N + 1.
+     * `PATCH` replaces the latest existing version in place.
+     * In both cases, the upload is rejected with a 409 Conflict if the
+     * incoming file hash matches the latest existing version.
+     *
+     * @param string $fileName Original file name.
+     * @param int $objectId Object ID the new version belongs to.
+     * @return \Cake\Datasource\EntityInterface
+     * @throws \Cake\Http\Exception\ConflictException When the file is identical to an existing version.
+     */
+    public function uploadNewVersion(string $fileName, int $objectId): EntityInterface
+    {
+        $request = $this->getController()->getRequest();
+        $request->allowMethod(['post', 'patch']);
+
+        $this->Streams = $this->fetchTable('Streams');
+        $replace = $request->is('patch');
+
+        // Copy the request body to a seekable php://temp resource.
+        // This avoids loading the entire file into a PHP string, and correctly
+        // handles non-seekable streams (e.g. php://input in production).
+        $bodyResource = fopen('php://temp', 'wb+');
+        $rawBody = $request->getBody();
+        if ($rawBody->isSeekable()) {
+            $rawBody->rewind();
+        }
+        stream_copy_to_stream($rawBody->detach(), $bodyResource);
+        rewind($bodyResource);
+
+        $hashContext = hash_init('sha1');
+        hash_update_stream($hashContext, $bodyResource);
+        $bodySha1 = hash_final($hashContext);
+        rewind($bodyResource);
+
+        // Get the latest existing stream — used for version calculation, duplicate detection,
+        // and latest-version replacement.
+        $latestStream = $this->Streams->find()
+            ->where(['object_id' => $objectId])
+            ->orderByDesc('version')
+            ->first();
+
+        if ($replace && $latestStream === null) {
+            throw new NotFoundException(__d('bedita', 'Resource not found.'));
+        }
+
+        // Reject only if the file is identical to the latest version.
+        if ($latestStream !== null && $latestStream->get('hash_sha1') === $bodySha1) {
+            throw new ConflictException(__(
+                'File is identical to latest version {0}',
+                $latestStream->get('version'),
+            ));
+        }
+
+        $entity = $replace ? $latestStream : $this->Streams->newEmptyEntity();
+        if (!$replace) {
+            $nextVersion = $latestStream !== null ? (int)$latestStream->get('version') + 1 : 1;
+            $entity->set('object_id', $objectId);
+            $entity->set('version', $nextVersion);
+            $private = filter_var($request->getQuery('private_url', false), FILTER_VALIDATE_BOOLEAN);
+            $entity->set('private_url', $private);
+        } elseif ($request->getQuery('private_url') !== null) {
+            $private = filter_var($request->getQuery('private_url'), FILTER_VALIDATE_BOOLEAN);
+            $entity->set('private_url', $private);
+        }
+
+        $action = new SaveEntityAction(['table' => $this->Streams]);
+        $stream = $action([
+            'entity' => $entity,
+            'data' => [
+                'file_name' => $fileName,
+                'mime_type' => $request->contentType(),
+                'contents' => $bodyResource,
+            ],
+        ]);
+
+        $this->dispatchThumbnailsEvent($stream);
+
         $action = new GetEntityAction(['table' => $this->Streams]);
 
         return $action(['primaryKey' => $stream->get($this->Streams->getPrimaryKey())]);

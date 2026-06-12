@@ -18,6 +18,8 @@ use BEdita\Core\Model\Entity\Stream;
 use BEdita\Core\Model\Table\ObjectsTable;
 use BEdita\Core\Model\Table\StreamsTable;
 use BEdita\Core\Test\Utility\TestFilesystemTrait;
+use BEdita\Core\Utility\LoggedUser;
+use Cake\Event\Event;
 use Cake\ORM\Association\BelongsTo;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
@@ -52,6 +54,8 @@ class StreamsTableTest extends TestCase
         'plugin.BEdita/Core.Relations',
         'plugin.BEdita/Core.RelationTypes',
         'plugin.BEdita/Core.Objects',
+        'plugin.BEdita/Core.Profiles',
+        'plugin.BEdita/Core.Users',
         'plugin.BEdita/Core.Streams',
     ];
 
@@ -63,6 +67,7 @@ class StreamsTableTest extends TestCase
         parent::setUp();
         $this->Streams = TableRegistry::getTableLocator()->get('Streams');
         $this->filesystemSetup(true, true);
+        LoggedUser::setUserAdmin();
     }
 
     /**
@@ -72,6 +77,7 @@ class StreamsTableTest extends TestCase
     {
         $this->filesystemRestore();
         unset($this->Streams);
+        LoggedUser::resetUser();
         parent::tearDown();
     }
 
@@ -88,6 +94,8 @@ class StreamsTableTest extends TestCase
 
         static::assertInstanceOf(BelongsTo::class, $this->Streams->Objects);
         static::assertInstanceOf(ObjectsTable::class, $this->Streams->Objects->getTarget());
+
+        static::assertInstanceOf(BelongsTo::class, $this->Streams->CreatedByUsers);
     }
 
     /**
@@ -229,6 +237,25 @@ class StreamsTableTest extends TestCase
     }
 
     /**
+     * Test that `created_by` is populated with the logged user ID on new stream creation.
+     *
+     * @return void
+     */
+    public function testBeforeSaveCreatedBy(): void
+    {
+        $stream = $this->Streams->newEmptyEntity();
+        $stream = $this->Streams->patchEntity($stream, [
+            'file_name' => 'test.txt',
+            'mime_type' => 'text/plain',
+            'contents' => 'test contents',
+        ]);
+
+        $this->Streams->saveOrFail($stream);
+
+        static::assertSame(LoggedUser::id(), $stream->get('created_by'));
+    }
+
+    /**
      * Test before save event handler with an already persisted entity.
      *
      * @return void
@@ -251,6 +278,72 @@ class StreamsTableTest extends TestCase
         $result = $stream->extract(array_keys($expected));
 
         static::assertSame($expected, $result);
+    }
+
+    /**
+     * Data provider for {@see StreamsTableTest::testNextVersion()}.
+     *
+     * @return array
+     */
+    public static function nextVersionProvider(): array
+    {
+        return [
+            'object with existing stream' => [2, 10],
+            'object with no streams' => [1, 999],
+        ];
+    }
+
+    /**
+     * Test {@see \BEdita\Core\Model\Table\StreamsTable::nextVersion()}.
+     *
+     * @param int $expected Expected next version number.
+     * @param int $objectId Object ID to query.
+     * @return void
+     */
+    #[DataProvider('nextVersionProvider')]
+    public function testNextVersion(int $expected, int $objectId): void
+    {
+        static::assertSame($expected, $this->Streams->nextVersion($objectId));
+    }
+
+    /**
+     * Test beforeSave auto-assigns version when stream is linked to object for the first time.
+     *
+     * @return void
+     */
+    public function testBeforeSaveNotNewAutoVersion(): void
+    {
+        // Stream e5afe167 has object_id = null in the fixture; object 2 has no streams.
+        $uuid = 'e5afe167-7341-458d-a1e6-042e8791b0fe';
+        $stream = $this->Streams->get($uuid);
+
+        $stream->set('object_id', 2);
+        $this->Streams->saveOrFail($stream);
+
+        static::assertSame(2, $stream->get('object_id'));
+        static::assertSame(1, $stream->get('version'));
+    }
+
+    /**
+     * Test beforeSave extracts object_id from embedded object association when object_id is null.
+     *
+     * @return void
+     */
+    public function testBeforeSaveNotNewObjectEntity(): void
+    {
+        $uuid = 'e5afe167-7341-458d-a1e6-042e8791b0fe';
+        $stream = $this->Streams->get($uuid);
+        static::assertNull($stream->get('object_id'));
+
+        $object = TableRegistry::getTableLocator()->get('Objects')->get(2);
+        $stream->set('object', $object);
+        // object_id remains null; beforeSave must derive it from the embedded object.
+
+        $event = new Event('Model.beforeSave', $this->Streams);
+        $this->Streams->beforeSave($event, $stream);
+
+        static::assertSame(2, $stream->get('object_id'));
+        static::assertSame(1, $stream->get('version'));
     }
 
     /**

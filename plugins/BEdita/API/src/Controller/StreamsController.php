@@ -12,8 +12,11 @@ declare(strict_types=1);
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
+
 namespace BEdita\API\Controller;
 
+use BEdita\Core\Model\Action\GetEntityAction;
+use Cake\Http\Exception\ConflictException;
 use Cake\Http\Exception\ForbiddenException;
 use Cake\Http\Response;
 use Cake\ORM\TableRegistry;
@@ -58,7 +61,7 @@ class StreamsController extends ResourcesController
 
         parent::initialize();
 
-        if ($this->request->getParam('action') === 'upload') {
+        if (in_array($this->request->getParam('action'), ['upload', 'uploadNewVersion'])) {
             $this->loadComponent('BEdita/API.Upload');
             if ($this->components()->has('JsonApi')) {
                 $this->JsonApi->setConfig('parseJson', false);
@@ -104,6 +107,36 @@ class StreamsController extends ResourcesController
                     true,
                 ),
             );
+    }
+
+    /**
+     * Upload a new version of a stream for an existing object.
+     *
+     * @param string $objectId Object ID (integer).
+     * @param string $fileName Original file name.
+     * @return void
+     */
+    public function uploadNewVersion(string $objectId, string $fileName): void
+    {
+        $this->request->allowMethod(['post', 'patch']);
+        $data = $this->Upload->uploadNewVersion($fileName, (int)$objectId);
+
+        $this->set(compact('data'));
+        $this->setSerialize(['data']);
+
+        $resourceUrl = Router::url(
+            [
+                '_name' => 'api:resources:resource',
+                'controller' => $this->name,
+                'id' => $data->get('uuid'),
+            ],
+            true,
+        );
+
+        $this->response = $this->response->withStatus($this->request->is('patch') ? 200 : 201);
+        if ($this->request->is('post')) {
+            $this->response = $this->response->withHeader('Location', $resourceUrl);
+        }
     }
 
     /**
@@ -161,6 +194,7 @@ class StreamsController extends ResourcesController
      * {@inheritDoc}
      *
      * @throws \Cake\Http\Exception\ForbiddenException An exception is thrown on attempts to update existing streams.
+     * @throws \Cake\Http\Exception\ConflictException An exception is thrown on attempts to delete a non-latest versioned stream.
      */
     public function resource(string $id): ?Response
     {
@@ -169,6 +203,23 @@ class StreamsController extends ResourcesController
                 'bedita',
                 'You are not allowed to update existing streams, please delete and re-upload',
             ));
+        }
+
+        if ($this->request->is('delete')) {
+            $entityId = $this->getResourceId($id);
+            $action = new GetEntityAction(['table' => $this->Table]);
+            $entity = $action(['primaryKey' => $entityId]);
+            $version = $entity->get('version');
+            $objectId = $entity->get('object_id');
+            if ($version !== null && $objectId !== null) {
+                $latestVersion = $this->Table->nextVersion($objectId) - 1;
+                if ((int)$version !== $latestVersion) {
+                    throw new ConflictException(__d(
+                        'bedita',
+                        'You can only delete the latest version of a stream',
+                    ));
+                }
+            }
         }
 
         return parent::resource($id);
