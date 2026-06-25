@@ -82,7 +82,8 @@ class MediaController extends ObjectsController
             return $ids;
         }
         $available = $this->Table->find('available')
-            ->where(['id IN' => $ids])
+            ->useReadRole()
+            ->where(fn (QueryExpression $exp) => $exp->in('id', $ids))
             ->select(['id'])
             ->toArray();
 
@@ -107,9 +108,8 @@ class MediaController extends ObjectsController
         $options = (array)$this->request->getQuery('options');
 
         $thumbnails = $this->Table->getAssociation('Streams')->find()
-            ->where(function (QueryExpression $exp) use ($ids) {
-                return $exp->in('object_id', $ids);
-            })
+            ->useReadRole()
+            ->where(fn (QueryExpression $exp): QueryExpression => $exp->in('object_id', $ids))
             ->all()
             ->map(function (Stream $stream) use ($options, $preset) {
                 $id = $stream->object_id;
@@ -146,6 +146,7 @@ class MediaController extends ObjectsController
             $this->Table->aliasField('provider_thumbnail') . ' IS NOT NULL',
         ];
         $thumbs = $this->Table->find()
+            ->useReadRole()
             ->where($conditions)
             ->select(['id', 'provider_thumbnail'])
             ->toArray();

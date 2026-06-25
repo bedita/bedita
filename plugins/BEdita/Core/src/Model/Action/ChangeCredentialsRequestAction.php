@@ -129,9 +129,8 @@ class ChangeCredentialsRequestAction extends BaseAction implements EventListener
     protected function getUser($contact)
     {
         $user = $this->Users->find()
-            ->where(function (QueryExpression $exp) use ($contact) {
-                return $exp->eq($this->Users->aliasField('email'), $contact);
-            })
+            ->useWriteRole()
+            ->where(fn (QueryExpression $exp): QueryExpression => $exp->eq($this->Users->aliasField('email'), $contact))
             ->firstOrFail();
 
         return $user;

@@ -179,6 +179,7 @@ class HomeController extends AppController
     {
         $allTypes = TableRegistry::getTableLocator()->get('ObjectTypes')
             ->find('list', ['keyField' => 'name', 'valueField' => 'is_abstract'])
+            ->useReadRole()
             ->where(['enabled' => true])
             ->toArray();
         $endPoints = [];

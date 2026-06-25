@@ -54,7 +54,7 @@ class BeditaShellTest extends TestCase
      */
     public function setUp(): void
     {
-        static::$fixtureManager->shutDown();
+        static::$fixtureManager?->shutDown();
 
         // Try to avoid "database schema has changed" error on SQLite.
         try {

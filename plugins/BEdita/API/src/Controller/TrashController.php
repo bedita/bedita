@@ -53,7 +53,9 @@ class TrashController extends AppController
         $id = $this->request->getParam('id');
         if ($id) {
             /** @var \BEdita\Core\Model\Entity\ObjectType $objectType */
-            $objectType = TableRegistry::getTableLocator()->get('ObjectTypes')->find('objectId', compact('id'))
+            $objectType = TableRegistry::getTableLocator()->get('ObjectTypes')
+                ->find('objectId', compact('id'))
+                ->useReadRole()
                 ->firstOrFail();
             $this->defaultTable = $objectType->alias;
         }

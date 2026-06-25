@@ -23,6 +23,7 @@ use BEdita\Core\Model\Action\SaveEntityAction;
 use BEdita\Core\Model\Entity\Application;
 use BEdita\Core\Model\Entity\User;
 use Cake\Auth\PasswordHasherFactory;
+use Cake\Database\Connection;
 use Cake\Http\Exception\BadRequestException;
 use Cake\Http\Exception\NotFoundException;
 use Cake\Http\Exception\UnauthorizedException;
@@ -232,7 +233,7 @@ class LoginController extends AppController
     {
         $this->request->allowMethod('patch');
 
-        $entity = $this->userEntity();
+        $entity = $this->userEntity(true);
         $entity->setAccess(['username', 'password_hash'], false);
         if (!empty($entity->get('email'))) {
             $entity->setAccess('email', false);
@@ -278,10 +279,11 @@ class LoginController extends AppController
     /**
      * Read logged user entity including roles and other related objects via `include` query string.
      *
+     * @param bool $forUpdate Select for updating.
      * @return \BEdita\Core\Model\Entity\User Logged user entity
      * @throws \Cake\Http\Exception\UnauthorizedException Throws an exception if user not logged or blocked/removed
      */
-    protected function userEntity()
+    protected function userEntity(bool $forUpdate = false)
     {
         $userId = $this->Authentication->getIdentityData('id');
         $contain = $this->prepareInclude($this->request->getQuery('include'));
@@ -291,6 +293,7 @@ class LoginController extends AppController
         /** @var \BEdita\Core\Model\Entity\User|null $user */
         $user = $this->Users
             ->find('login', compact('conditions', 'contain'))
+            ->setConnectionRole($forUpdate ? Connection::ROLE_WRITE : Connection::ROLE_READ)
             ->first();
         if (empty($user)) {
             throw new UnauthorizedException(__('Request not authorized'));

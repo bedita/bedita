@@ -63,6 +63,7 @@ abstract class UpdateRelatedObjectsAction extends UpdateAssociatedAction
 
         $table = $this->Association->junction();
         $entity = $table->find()
+            ->useWriteRole()
             ->where([$table->getAssociation('Objects')->getForeignKey() => $data['entity']->id])
             ->firstOrFail();
         if (is_array($relatedEntities) && count($relatedEntities) === 1) {

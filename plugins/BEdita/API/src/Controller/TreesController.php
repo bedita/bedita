@@ -187,6 +187,7 @@ class TreesController extends AppController
     protected function objectDetails(array $condition): array
     {
         return (array)$this->Objects->find('available')
+            ->useReadRole()
             ->where($condition)
             ->select(['id', 'uname', 'object_type_id'])
             ->disableHydration()
@@ -206,10 +207,12 @@ class TreesController extends AppController
         }
 
         return $this->Trees->find('pathNodes', [$parentId])
+            ->useReadRole()
             ->find('list', [
                 'keyField' => 'id',
                 'valueField' => 'object_id',
             ])
+            ->all()
             ->toArray();
     }
 
@@ -227,6 +230,7 @@ class TreesController extends AppController
 
         /** @var \BEdita\Core\Model\Entity\Tree|null $node */
         $node = $this->Trees->find()
+            ->useReadRole()
             ->where([
                 'object_id' => $id,
                 'parent_id IS' => $parentId,

@@ -145,18 +145,15 @@ class UpdateAssociatedAction extends BaseAction
         }
 
         $targetEntities = $target->find()
-            ->where(function (QueryExpression $exp) use ($targetPKField, $targetPrimaryKeys) {
-                return $exp->in($targetPKField, $targetPrimaryKeys);
-            });
-        $targetEntities = $targetEntities->all()->indexBy($primaryKeyField)->toArray();
+            ->useWriteRole()
+            ->where(fn (QueryExpression $exp): QueryExpression => $exp->in($targetPKField, $targetPrimaryKeys));
         /** @var \Cake\Datasource\EntityInterface[] $targetEntities */
+        $targetEntities = $targetEntities->all()->indexBy($primaryKeyField)->toArray();
 
         // sort following the original order
         uksort(
             $targetEntities,
-            function ($a, $b) use ($targetPrimaryKeys) {
-                return array_search($a, $targetPrimaryKeys) - array_search($b, $targetPrimaryKeys);
-            }
+            fn ($a, $b) => array_search($a, $targetPrimaryKeys) - array_search($b, $targetPrimaryKeys),
         );
 
         foreach ($data as $datum) {

@@ -43,6 +43,7 @@ class ListRelatedObjectsAction extends ListAssociatedAction
                     'name' => $this->Association->getName(),
                     'side' => 'right',
                 ])
+                ->useReadRole()
                 ->contain(['LeftRelations.RightObjectTypes', 'RightRelations.LeftObjectTypes'])
                 ->toArray();
             $table = $this->Association->getTarget();

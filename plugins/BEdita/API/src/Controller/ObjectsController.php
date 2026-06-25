@@ -94,6 +94,7 @@ class ObjectsController extends ResourcesController
             $name = $this->request->getParam('relationship');
             $allowedTypes = TableRegistry::getTableLocator()->get('ObjectTypes')
                 ->find('list')
+                ->useReadRole()
                 ->find('byRelation', compact('name') + ['descendants' => true])
                 ->toArray();
 
