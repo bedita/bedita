@@ -47,6 +47,10 @@ jobs:
             composer-
 
       - name: 'Install dependencies with Composer'
+        env:
+          # Ignore security policies when choosing versions of dependencies to install
+          COMPOSER_NO_SECURITY_BLOCKING: '1'
+          COMPOSER_NO_BLOCKING: '1'
         run: 'composer install --prefer-dist --no-interaction'
 
       - name: 'Run PHP CodeSniffer'
@@ -86,6 +90,10 @@ jobs:
             composer-
 
       - name: 'Install dependencies with Composer'
+        env:
+          # Ignore security policies when choosing versions of dependencies to install
+          COMPOSER_NO_SECURITY_BLOCKING: '1'
+          COMPOSER_NO_BLOCKING: '1'
         run: 'composer install --prefer-dist --no-interaction'
 
       - name: 'Run PHP STAN'
@@ -169,6 +177,10 @@ jobs:
             composer-
 
       - name: 'Install dependencies with Composer'
+        env:
+          # Ignore security policies when choosing versions of dependencies to install
+          COMPOSER_NO_SECURITY_BLOCKING: '1'
+          COMPOSER_NO_BLOCKING: '1'
         run: 'composer install --prefer-dist --no-interaction'
 
       - name: 'Run PHPUnit with coverage'

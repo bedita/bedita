@@ -91,6 +91,7 @@ class ImageThumbsHandler implements EventListenerInterface
         }
         $image = $this->fetchTable('Images')
             ->find('type', ['images'])
+            ->useWriteRole()
             ->where(['id' => $objectId])
             ->first();
         if (empty($image) || !$image instanceof ObjectEntity) {

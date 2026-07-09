@@ -67,6 +67,7 @@ class GetObjectAction extends BaseAction
 
         // Build query and add finders.
         $query = $this->Table->find('publishable')
+            ->useReadRole()
             ->contain($contain)
             ->where($conditions);
         if (isset($this->objectType)) {

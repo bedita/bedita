@@ -36,7 +36,8 @@ class ApplicationsController extends AppController
     public function index(): void
     {
         $query = $this->Applications->find()
-            ->select(['id', 'name', 'description']);
+            ->select(['id', 'name', 'description'])
+            ->useReadRole();
         $data = $this->paginate($query);
 
         $this->set(compact('data'));

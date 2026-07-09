@@ -352,6 +352,7 @@ abstract class BaseApplication extends CakeBaseApplication implements Authentica
     {
         $this->fetchTable('AuthProviders')
             ->find('enabled')
+            ->useReadRole()
             ->all()
             ->each(function (AuthProvider $authProvider) use ($service, $name): void {
                 if ($authProvider->name === $name) {

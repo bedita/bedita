@@ -86,9 +86,7 @@ class ListAssociatedAction extends BaseAction
         $primaryKey = (array)$primaryKey;
         if (count($primaryKeyFields) !== count($primaryKey)) {
             $primaryKey = $primaryKey ?: [null];
-            $primaryKey = array_map(function ($key) {
-                return var_export($key, true);
-            }, $primaryKey);
+            $primaryKey = array_map(fn ($key) => var_export($key, true), $primaryKey);
 
             throw new InvalidPrimaryKeyException(__(
                 'Record not found in table "{0}" with primary key [{1}]',
@@ -117,9 +115,14 @@ class ListAssociatedAction extends BaseAction
         $source = $this->Association->getSource();
         $conditions = $this->primaryKeyConditions($source, $data['primaryKey']);
 
-        $existing = $source->find()
+        $existing = !$source->find()
+            ->useReadRole()
             ->where($conditions)
-            ->count();
+            ->select(['existing' => 1])
+            ->disableHydration()
+            ->limit(1)
+            ->all()
+            ->isEmpty();
         if (!$existing) {
             throw new RecordNotFoundException(__('Record not found in table "{0}"', $source->getTable()));
         }
@@ -235,11 +238,10 @@ class ListAssociatedAction extends BaseAction
         return $query
             ->enableAutoFields(!$list)
             ->find($this->Association->getFinder())
-            ->innerJoinWith($inverseAssociation->getName(), function (Query $query) use ($primaryKeyConditions) {
-                return $query->where($primaryKeyConditions);
-            })
-            ->formatResults(function (CollectionInterface $results) use ($inverseAssociation) {
-                return $results->map(function (EntityInterface $entity) use ($inverseAssociation) {
+            ->useReadRole()
+            ->innerJoinWith($inverseAssociation->getName(), fn (Query $query): Query => $query->where($primaryKeyConditions))
+            ->formatResults(fn (CollectionInterface $results): CollectionInterface => $results->map(
+                function (EntityInterface $entity) use ($inverseAssociation) {
                     if (!($this->Association instanceof BelongsToMany)) {
                         return $entity->setHidden([$inverseAssociation->getProperty()], true);
                     }
@@ -254,8 +256,8 @@ class ListAssociatedAction extends BaseAction
                     }
 
                     return $entity;
-                });
-            });
+                },
+            ));
     }
 
     /**

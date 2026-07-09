@@ -97,7 +97,7 @@ class OTPIdentifier extends AbstractIdentifier
             'token_type' => 'otp',
         ];
 
-        $userToken = $this->UserTokens->find('valid')->where($data)->first();
+        $userToken = $this->UserTokens->find('valid')->useReadRole()->where($data)->first();
         if (!empty($userToken)) {
             $this->UserTokens->deleteOrFail($userToken);
 

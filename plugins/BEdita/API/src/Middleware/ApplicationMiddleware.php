@@ -156,6 +156,7 @@ class ApplicationMiddleware implements MiddlewareInterface
         }
 
         $application = $this->fetchTable('Applications')->find('enabled')
+            ->useReadRole()
             ->where(['id' => $appPayload->id])
             ->first();
         if (empty($application)) {

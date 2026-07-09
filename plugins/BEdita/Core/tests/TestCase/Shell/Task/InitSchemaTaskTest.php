@@ -44,7 +44,7 @@ class InitSchemaTaskTest extends TestCase
     {
         parent::setUp();
 
-        static::$fixtureManager->shutDown();
+        static::$fixtureManager?->shutDown();
     }
 
     /**

@@ -347,6 +347,7 @@ class SignupUserAction extends BaseAction implements EventListenerInterface
     {
         /** @var \BEdita\Core\Model\Entity\AuthProvider|null $authProvider */
         $authProvider = TableRegistry::getTableLocator()->get('AuthProviders')->find('enabled')
+            ->useWriteRole()
             ->where(['name' => $data['auth_provider']])
             ->first();
         if (empty($authProvider)) {

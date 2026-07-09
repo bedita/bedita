@@ -193,10 +193,10 @@ class CountRelatedObjectsAction extends BaseAction
             return $this->relationsList;
         }
 
-        $this->relationsList = $this->Relations->find('list', [
-            'keyField' => 'name',
-            'valueField' => 'inverse_name',
-        ])->toArray();
+        $this->relationsList = $this->Relations->find('list', ['keyField' => 'name', 'valueField' => 'inverse_name'])
+            ->useReadRole()
+            ->all()
+            ->toArray();
 
         return $this->relationsList;
     }
@@ -260,6 +260,7 @@ class CountRelatedObjectsAction extends BaseAction
         $query = $this->ObjectRelations->find();
 
         return $query
+            ->useReadRole()
             ->enableHydration(false)
             ->select([
                 'id' => $objectId,

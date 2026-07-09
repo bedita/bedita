@@ -225,7 +225,7 @@ class CloneObjectAction extends BaseAction
     public function cloneRelationships(int $sourceId, int $destinationId, string $key): array
     {
         $objectRelationsTable = $this->fetchTable('ObjectRelations');
-        $objectRelations = $objectRelationsTable->find()->where([$key => $sourceId])->toArray();
+        $objectRelations = $objectRelationsTable->find()->useWriteRole()->where([$key => $sourceId])->toArray();
         if (empty($objectRelations)) {
             return [];
         }
@@ -249,7 +249,7 @@ class CloneObjectAction extends BaseAction
     public function cloneTranslations(int $sourceId, $destinationId): array
     {
         $translationsTable = $this->fetchTable('Translations');
-        $objectTranslations = $translationsTable->find()->where(['object_id' => $sourceId])->toArray();
+        $objectTranslations = $translationsTable->find()->useWriteRole()->where(['object_id' => $sourceId])->toArray();
         if (empty($objectTranslations)) {
             return [];
         }
