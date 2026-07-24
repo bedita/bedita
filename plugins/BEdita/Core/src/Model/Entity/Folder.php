@@ -85,15 +85,14 @@ class Folder extends ObjectEntity
         }
 
         $query = $Trees->find('ancestors', ['for' => $node->id]);
-        $level = $Trees->getAssociation('Descendants')->junction()->aliasField(AdjacencyListBehavior::CTE_FIELD_LEVEL);
         $permission = $query
             ->disableHydration()
             ->innerJoinWith('Objects.Permissions.Roles')
             ->select([
-                'level' => $level,
+                'level' => AdjacencyListBehavior::CTE_FIELD_LEVEL,
                 'name' => 'Roles.name',
             ])
-            ->orderAsc($level)
+            ->orderAsc(AdjacencyListBehavior::CTE_FIELD_LEVEL)
             ->toArray();
 
         if (empty($permission)) {

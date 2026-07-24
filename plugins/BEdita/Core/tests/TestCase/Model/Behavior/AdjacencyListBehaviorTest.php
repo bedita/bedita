@@ -23,6 +23,7 @@ use Cake\Database\Expression\IdentifierExpression;
 use Cake\Database\ExpressionInterface;
 use Cake\Database\Schema\TableSchema;
 use Cake\Datasource\ConnectionManager;
+use Cake\ORM\Association;
 use Cake\ORM\Association\BelongsTo;
 use Cake\ORM\Association\BelongsToMany;
 use Cake\ORM\Table;
@@ -93,6 +94,24 @@ final class AdjacencyListBehaviorTest extends TestCase
         unset($this->table);
 
         parent::tearDown();
+    }
+
+    /**
+     * Helper to get associations created by the adjacency list, which have an alphanumeric suffix.
+     *
+     * @param string $name Association name
+     * @param \Cake\ORM\Table|null $table The table to search associations in
+     * @return \Cake\ORM\Association|null
+     */
+    public function getAssociation(string $name, ?Table $table = null): ?Association
+    {
+        foreach (($table ?? $this->table)->associations() as $n => $a) {
+            if (str_starts_with($n, $name)) {
+                return $a;
+            }
+        }
+
+        return null;
     }
 
     /**
@@ -183,13 +202,14 @@ final class AdjacencyListBehaviorTest extends TestCase
     public function testAliasCteField(): void
     {
         $behavior = new class ($this->table, ['parentAssociation' => 'Parents', 'cteName' => 'foo']) extends AdjacencyListBehavior {
-            public function aliasCteField(string $field): string
+            public function aliasCteField(string $field, string|null $suffix = null): string
             {
-                return parent::aliasCteField($field);
+                return parent::aliasCteField($field, $suffix);
             }
         };
 
         static::assertSame('foo.bar', $behavior->aliasCteField('bar'));
+        static::assertSame('foo_baz.bar', $behavior->aliasCteField('bar', 'baz'));
         static::assertSame('foo.baz', $behavior->aliasCteField('foo.baz'), 'Fields should not be prefixed twice');
     }
 
@@ -221,9 +241,9 @@ final class AdjacencyListBehaviorTest extends TestCase
     public function testToIdentifiers(): void
     {
         $behavior = new class ($this->table, ['parentAssociation' => 'Parents']) extends AdjacencyListBehavior {
-            public static function toIdentifiers(array $fields, callable $aliasFn): array
+            public static function toIdentifiers(array $fields, callable $aliasFn, string|null $suffix = null): array
             {
-                return parent::toIdentifiers($fields, $aliasFn);
+                return parent::toIdentifiers($fields, $aliasFn, $suffix);
             }
         };
 
@@ -331,9 +351,9 @@ final class AdjacencyListBehaviorTest extends TestCase
         }
 
         $behavior = new class ($this->table, $config) extends AdjacencyListBehavior {
-            public function getInheritanceAssociation(bool $descendants): BelongsToMany
+            public function getInheritanceAssociation(bool $descendants, array|null $for = null): BelongsToMany
             {
-                return parent::getInheritanceAssociation($descendants);
+                return parent::getInheritanceAssociation($descendants, $for);
             }
         };
 
@@ -392,9 +412,9 @@ final class AdjacencyListBehaviorTest extends TestCase
             'descendantsAssociation' => 'Parents',
         ];
         $behavior = new class ($this->table, $config) extends AdjacencyListBehavior {
-            public function getInheritanceAssociation(bool $descendants): BelongsToMany
+            public function getInheritanceAssociation(bool $descendants, array|null $for = null): BelongsToMany
             {
-                return parent::getInheritanceAssociation($descendants);
+                return parent::getInheritanceAssociation($descendants, $for);
             }
         };
 
@@ -518,36 +538,36 @@ final class AdjacencyListBehaviorTest extends TestCase
         return [
             'id' => [
                 [
-                    ['id' => 1, 'name' => 'Science', 'level' => 2],
-                    ['id' => 2, 'name' => 'Mathematics', 'level' => 1],
+                    ['id' => 1, 'name' => 'Science', 'level' => -2],
+                    ['id' => 2, 'name' => 'Mathematics', 'level' => -1],
                 ],
                 ['for' => 4],
             ],
             'id, include self' => [
                 [
-                    ['id' => 1, 'name' => 'Science', 'level' => 2],
-                    ['id' => 2, 'name' => 'Mathematics', 'level' => 1],
+                    ['id' => 1, 'name' => 'Science', 'level' => -2],
+                    ['id' => 2, 'name' => 'Mathematics', 'level' => -1],
                     ['id' => 4, 'name' => 'Algebra', 'level' => 0],
                 ],
                 ['for' => 4, 'includeSelf' => true],
             ],
             'associative array' => [
                 [
-                    ['id' => 1, 'name' => 'Science', 'level' => 2],
-                    ['id' => 2, 'name' => 'Mathematics', 'level' => 1],
+                    ['id' => 1, 'name' => 'Science', 'level' => -2],
+                    ['id' => 2, 'name' => 'Mathematics', 'level' => -1],
                 ],
                 ['for' => ['id' => 3]],
             ],
             'entity' => [
                 [
-                    ['id' => 1, 'name' => 'Science', 'level' => 1],
+                    ['id' => 1, 'name' => 'Science', 'level' => -1],
                     ['id' => 2, 'name' => 'Mathematics', 'level' => 0],
                 ],
                 fn(Table $table): array => ['for' => $table->get(2), 'includeSelf' => true],
             ],
             'sub-query' => [
                 [
-                    ['id' => 1, 'name' => 'Science', 'level' => 1],
+                    ['id' => 1, 'name' => 'Science', 'level' => -1],
                     ['id' => 2, 'name' => 'Mathematics', 'level' => 0],
                 ],
                 fn(Table $table): array => [
@@ -557,15 +577,15 @@ final class AdjacencyListBehaviorTest extends TestCase
             ],
             'circular reference' => [
                 [
-                    ['id' => 11, 'name' => 'Example circular reference', 'level' => 2],
-                    ['id' => 10, 'name' => 'Example circular reference', 'level' => 1],
+                    ['id' => 11, 'name' => 'Example circular reference', 'level' => -2],
+                    ['id' => 10, 'name' => 'Example circular reference', 'level' => -1],
                     ['id' => 11, 'name' => 'Example circular reference', 'level' => 0],
                 ],
                 ['for' => 11, 'includeSelf' => true],
             ],
             'self-reference' => [
                 [
-                    ['id' => 12, 'name' => 'Example self-reference', 'level' => 1],
+                    ['id' => 12, 'name' => 'Example self-reference', 'level' => -1],
                     ['id' => 12, 'name' => 'Example self-reference', 'level' => 0],
                 ],
                 ['for' => 12, 'includeSelf' => true],
@@ -600,10 +620,9 @@ final class AdjacencyListBehaviorTest extends TestCase
 
         $this->table->addBehavior('BEdita/Core.AdjacencyList', ['parentAssociation' => 'Parents']);
         $query = $this->table->find('ancestors', $options);
+        $association = $this->getAssociation('Descendants');
 
-        static::assertTrue($this->table->hasAssociation('Descendants'));
-        /** @var \Cake\ORM\Association\BelongsToMany $association */
-        $association = $this->table->getAssociation('Descendants');
+        static::assertNotNull($association);
         static::assertInstanceOf(BelongsToMany::class, $association);
 
         $actual = $query
@@ -612,7 +631,7 @@ final class AdjacencyListBehaviorTest extends TestCase
                 (array)$this->table->getDisplayField(),
                 [AdjacencyListBehavior::CTE_FIELD_LEVEL => $association->junction()->aliasField(AdjacencyListBehavior::CTE_FIELD_LEVEL)],
             ))
-            ->orderDesc(AdjacencyListBehavior::CTE_FIELD_LEVEL)
+            ->orderAsc(AdjacencyListBehavior::CTE_FIELD_LEVEL)
             ->disableHydration()
             ->all()
             ->toList();
@@ -768,8 +787,9 @@ final class AdjacencyListBehaviorTest extends TestCase
 
         static::assertTrue($this->table->hasAssociation('Ancestors'));
         static::assertInstanceOf(BelongsToMany::class, $this->table->getAssociation('Ancestors'));
-        static::assertTrue($this->table->hasAssociation('Descendants'));
-        static::assertInstanceOf(BelongsToMany::class, $this->table->getAssociation('Descendants'));
+        $descendants = $this->getAssociation('Descendants');
+        static::assertNotNull($descendants);
+        static::assertInstanceOf(BelongsToMany::class, $descendants);
 
         $actual = $query
             ->select(array_merge((array)$this->table->getPrimaryKey(), (array)$this->table->getDisplayField()))

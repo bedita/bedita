@@ -432,9 +432,8 @@ class TreesTable extends Table
             ->firstOrFail();
 
         $query = $query->find('ancestors', ['for' => $node['id'], 'includeSelf' => true]);
-        $level = $this->getAssociation('Descendants')->junction()->aliasField(AdjacencyListBehavior::CTE_FIELD_LEVEL);
 
-        return $query->orderDesc($level);
+        return $query->orderAsc(AdjacencyListBehavior::CTE_FIELD_LEVEL);
     }
 
     /**
