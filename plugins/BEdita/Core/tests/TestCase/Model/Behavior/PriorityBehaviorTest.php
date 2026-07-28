@@ -133,16 +133,13 @@ class PriorityBehaviorTest extends TestCase
      * Test saving a new entity with an explicit priority.
      *
      * @return void
-     * @covers ::beforeSave()
-     * @covers ::updateEntityPriorities()
-     * @covers ::expand()
      */
     public function testBeforeSaveExplicitPriority()
     {
         $table = TableRegistry::getTableLocator()->get('ObjectRelations');
 
         $entity = $table->newEntity([]);
-        $entity->set([
+        $entity->patch([
             'left_id' => 2,
             'relation_id' => 1,
             'right_id' => 10,

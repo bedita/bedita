@@ -16,6 +16,7 @@ namespace BEdita\Core\Test\TestCase\Model\Table;
 
 use BEdita\Core\Model\Entity\ObjectType;
 use BEdita\Core\Model\Table\FoldersTable;
+use BEdita\Core\Model\Table\TreesTable;
 use BEdita\Core\Utility\LoggedUser;
 use Cake\Core\Configure;
 use Cake\Database\Expression\FunctionExpression;
@@ -29,13 +30,16 @@ use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Hash;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\CoversMethod;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\TestWith;
+use RuntimeException;
 
 /**
  * {@see BEdita\Core\Model\Table\FoldersTable} Test Case
  */
 #[CoversClass(FoldersTable::class)]
+#[CoversMethod(TreesTable::class, 'beforeSave')]
 class FoldersTableTest extends TestCase
 {
     /**
@@ -271,7 +275,7 @@ class FoldersTableTest extends TestCase
         if (!empty($data['id'])) {
             $node = $trees->find()->where(['object_id' => $data['id']])->first();
             $descendants = $trees->find('children', ['for' => $node->id])
-                ->select(fn (Query $q): array => ['count' => $q->func()->count($trees->aliasField('id'))])
+                ->select(fn(Query $q): array => ['count' => $q->func()->count($trees->aliasField('id'))])
                 ->first()
                 ->get('count');
         }
@@ -295,7 +299,7 @@ class FoldersTableTest extends TestCase
         if (!empty($data['id'])) {
             $node = $trees->find()->where(['object_id' => $data['id']])->first();
             $actual = $trees->find('children', ['for' => $node->id])
-                ->select(fn (Query $q): array => ['count' => $q->func()->count($trees->aliasField('id'))])
+                ->select(fn(Query $q): array => ['count' => $q->func()->count($trees->aliasField('id'))])
                 ->first()
                 ->get('count');
             static::assertSame($descendants, $actual);
@@ -653,22 +657,21 @@ class FoldersTableTest extends TestCase
      * Test that a folder cannot be set as its own parent.
      *
      * @return void
-     * @covers \BEdita\Core\Model\Table\TreesTable::beforeSave()
      */
     public function testSaveWithSelfAsParent(): void
     {
         $folder = $this->Folders->newEntity(
             ['title' => 'New paradox folder', 'created_by' => 1, 'modified_by' => 1],
-            ['accessibleFields' => ['*' => true]]
+            ['accessibleFields' => ['*' => true]],
         );
         $folder->setDirty('deleted', false);
         /** @var \BEdita\Core\Model\Entity\Folder|false $folder */
         $folder = $this->Folders->save($folder);
         if ($folder === false) {
-            throw new \RuntimeException('Error creating new folder for test');
+            throw new RuntimeException('Error creating new folder for test');
         }
 
-        $this->expectException(\RuntimeException::class);
+        $this->expectException(RuntimeException::class);
         $folder->parent = $folder;
         $this->Folders->save($folder);
     }
