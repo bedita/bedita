@@ -153,6 +153,10 @@ class PriorityBehavior extends Behavior
                 return false;
             }
 
+            // The value stored in the database has changed since the entity was loaded:
+            // force the field to be dirty so the new value is actually persisted.
+            $entity->setDirty($field, true);
+
             if ($previousValue < $actualValue) {
                 $this->compact($field, $previousValue, $actualValue, $conditions);
 
