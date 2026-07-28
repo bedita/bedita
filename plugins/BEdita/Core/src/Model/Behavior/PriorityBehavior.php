@@ -144,7 +144,7 @@ class PriorityBehavior extends Behavior
             $previousValue = $this->_table->find()
                 ->select($this->_table->aliasField($field))
                 ->where(array_combine(
-                    array_map(fn (string $f): string => $this->_table->aliasField($f), $primaryKey),
+                    array_map(fn(string $f): string => $this->_table->aliasField($f), $primaryKey),
                     $entity->extract($primaryKey),
                 ))
                 ->firstOrFail()

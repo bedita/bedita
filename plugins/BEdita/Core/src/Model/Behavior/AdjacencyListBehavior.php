@@ -89,7 +89,7 @@ class AdjacencyListBehavior extends Behavior
     /**
      * @inheritDoc
      */
-    protected $_defaultConfig = [
+    protected array $_defaultConfig = [
         'cteName' => null,
         'parentAssociation' => 'Parents',
         'ancestorsAssociation' => 'Ancestors',
@@ -144,18 +144,18 @@ class AdjacencyListBehavior extends Behavior
 
         $foreignKey = (array)$this->parentAssociation->getForeignKey();
 
-        $isDirty = array_reduce($foreignKey, fn (bool $carry, string $f): bool => $carry || $entity->isDirty($f), false);
+        $isDirty = array_reduce($foreignKey, fn(bool $carry, string $f): bool => $carry || $entity->isDirty($f), false);
         if (!$isDirty) {
             return;
         }
 
-        $parentKey = array_map(fn (string $f): mixed => $entity->get($f), $foreignKey);
+        $parentKey = array_map(fn(string $f): mixed => $entity->get($f), $foreignKey);
         if (array_filter($parentKey, fn($v) => $v !== null) === []) {
             return;
         }
 
         $bindingKey = (array)$this->parentAssociation->getBindingKey();
-        $currentKey = array_map(fn (string $f): mixed => $entity->get($f), $bindingKey);
+        $currentKey = array_map(fn(string $f): mixed => $entity->get($f), $bindingKey);
 
         if ($parentKey === $currentKey) {
             throw new RuntimeException('Cannot set a node\'s parent as itself');
@@ -163,8 +163,8 @@ class AdjacencyListBehavior extends Behavior
 
         $hasCycle = $this->table()
             ->find('descendants', ['for' => $entity])
-            ->select(fn (Query $q): array => ['count' => $q->func()->count('*')])
-            ->where(fn (QueryExpression $exp): QueryExpression => $exp->add(
+            ->select(fn(Query $q): array => ['count' => $q->func()->count('*')])
+            ->where(fn(QueryExpression $exp): QueryExpression => $exp->add(
                 new TupleComparison(
                     array_map([$this->table(), 'aliasField'], $bindingKey),
                     $parentKey,
@@ -213,7 +213,7 @@ class AdjacencyListBehavior extends Behavior
      * @param array|null $for Used to generate an unique table name.
      * @return \Cake\ORM\Association\BelongsToMany
      */
-    protected function getInheritanceAssociation(bool $descendants, array|null $for = null): BelongsToMany
+    protected function getInheritanceAssociation(bool $descendants, ?array $for = null): BelongsToMany
     {
         $suffix = $this->nodeSuffix($for);
         $joinTable = $this->cteName($suffix);
@@ -282,7 +282,7 @@ class AdjacencyListBehavior extends Behavior
      * @param array|null $values Values to use in generating a unique suffix.
      * @return string|null
      */
-    protected function nodeSuffix(array|null $values): string|null
+    protected function nodeSuffix(?array $values): ?string
     {
         return $values !== null ? sha1(serialize($values)) : null;
     }
@@ -293,7 +293,7 @@ class AdjacencyListBehavior extends Behavior
      * @param string|null $suffix Optional suffix.
      * @return string
      */
-    protected function cteName(string|null $suffix = null): string
+    protected function cteName(?string $suffix = null): string
     {
         return $suffix ? sprintf('%s_%s', $this->cteName, $suffix) : $this->cteName;
     }
@@ -305,7 +305,7 @@ class AdjacencyListBehavior extends Behavior
      * @param string|null $suffix Optional suffix for the CTE name.
      * @return string
      */
-    protected function aliasCteField(string $field, string|null $suffix = null): string
+    protected function aliasCteField(string $field, ?string $suffix = null): string
     {
         if (str_contains($field, '.')) {
             return $field;
@@ -334,7 +334,7 @@ class AdjacencyListBehavior extends Behavior
      * @param string|null $suffix Optional suffix for the CTE name.
      * @return \Cake\Database\Expression\IdentifierExpression[]
      */
-    protected static function toIdentifiers(array $fields, callable $aliasFn, string|null $suffix = null): array
+    protected static function toIdentifiers(array $fields, callable $aliasFn, ?string $suffix = null): array
     {
         return array_map(fn(string $field): IdentifierExpression => new IdentifierExpression($aliasFn($field, $suffix)), $fields);
     }
@@ -430,7 +430,7 @@ class AdjacencyListBehavior extends Behavior
                     0, // cyclic flag
                 ],
             ))
-            ->where(fn (QueryExpression $exp): QueryExpression => $exp->add(new TupleComparison($bindingKey, $for)));
+            ->where(fn(QueryExpression $exp): QueryExpression => $exp->add(new TupleComparison($bindingKey, $for)));
 
         // Recursive part:
         $recursive = $table->find()
@@ -611,7 +611,7 @@ class AdjacencyListBehavior extends Behavior
 
         $foreignKey = (array)$this->parentAssociation->getForeignKey();
 
-        return $query->andWhere(fn (QueryExpression $exp): QueryExpression => $exp->add(new TupleComparison(
+        return $query->andWhere(fn(QueryExpression $exp): QueryExpression => $exp->add(new TupleComparison(
             array_map([$this->parentAssociation->getSource(), 'aliasField'], $foreignKey),
             static::extractFields($for, $foreignKey),
         )));

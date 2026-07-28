@@ -31,19 +31,21 @@ use Cake\TestSuite\TestCase;
 use DateTime;
 use Exception;
 use InvalidArgumentException;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\TestWith;
 use UnexpectedValueException;
 
 /**
  * {@see BEdita\Core\Model\Behavior\AdjacencyListBehavior} Test Case
- *
- * @covers \BEdita\Core\Model\Behavior\AdjacencyListBehavior
  */
+#[CoversClass(AdjacencyListBehavior::class)]
 final class AdjacencyListBehaviorTest extends TestCase
 {
     /**
      * @inheritDoc
      */
-    protected $fixtures = [
+    protected array $fixtures = [
         'plugin.BEdita/Core.FakeCategories',
     ];
 
@@ -167,8 +169,8 @@ final class AdjacencyListBehaviorTest extends TestCase
      * @param string|\Exception $expected Expected CTE name, or thrown exception.
      * @param array|callable $config Behavior configuration.
      * @return void
-     * @dataProvider initializeProvider()
-     */
+         */
+    #[DataProvider('initializeProvider')]
     public function testInitialize(string|Exception $expected, array|callable $config): void
     {
         if ($expected instanceof Exception) {
@@ -342,8 +344,8 @@ final class AdjacencyListBehaviorTest extends TestCase
      * @param array $config Configuration.
      * @param bool $descendants `true` for descendants, `false` for ancestors.
      * @return void
-     * @dataProvider getInheritanceAssociationProvider()
-     */
+         */
+    #[DataProvider('getInheritanceAssociationProvider')]
     public function testGetInheritanceAssociation(array|Exception $expected, array $config, bool $descendants): void
     {
         if ($expected instanceof Exception) {
@@ -399,9 +401,9 @@ final class AdjacencyListBehaviorTest extends TestCase
      *
      * @param bool $descendants `true` for descendants, `false` for ancestors.
      * @return void
-     * @testWith    [true]
-     *              [false]
      */
+    #[TestWith([true])]
+    #[TestWith([false])]
     public function testGetInheritanceAssociationWrongType(bool $descendants): void
     {
         $this->expectExceptionObject(new UnexpectedValueException(sprintf('Unexpected association type `%s`', BelongsTo::class)));
@@ -484,8 +486,8 @@ final class AdjacencyListBehaviorTest extends TestCase
      * @param mixed $from Object to extract fields from.
      * @param string[] $fields Fields to extract.
      * @return void
-     * @dataProvider extractFieldsProvider()
-     */
+         */
+    #[DataProvider('extractFieldsProvider')]
     public function testExtractFields(mixed $expected, mixed $from, array $fields): void
     {
         if ($expected instanceof Exception) {
@@ -607,8 +609,8 @@ final class AdjacencyListBehaviorTest extends TestCase
      * @param array|\Exception $expected Expected outcome.
      * @param array|callable $options Finder options.
      * @return void
-     * @dataProvider findAncestorsProvider()
-     */
+         */
+    #[DataProvider('findAncestorsProvider')]
     public function testFindAncestors(array|Exception $expected, array|callable $options): void
     {
         if ($expected instanceof Exception) {
@@ -631,7 +633,7 @@ final class AdjacencyListBehaviorTest extends TestCase
                 (array)$this->table->getDisplayField(),
                 [AdjacencyListBehavior::CTE_FIELD_LEVEL => $association->junction()->aliasField(AdjacencyListBehavior::CTE_FIELD_LEVEL)],
             ))
-            ->orderAsc(AdjacencyListBehavior::CTE_FIELD_LEVEL)
+            ->orderByAsc(AdjacencyListBehavior::CTE_FIELD_LEVEL)
             ->disableHydration()
             ->all()
             ->toList();
@@ -733,8 +735,8 @@ final class AdjacencyListBehaviorTest extends TestCase
      * @param array|\Exception $expected Expected outcome.
      * @param array|callable $options Finder options.
      * @return void
-     * @dataProvider findDescendantsProvider()
-     */
+         */
+    #[DataProvider('findDescendantsProvider')]
     public function testFindDescendants(array|Exception $expected, array|callable $options): void
     {
         if ($expected instanceof Exception) {
@@ -758,7 +760,7 @@ final class AdjacencyListBehaviorTest extends TestCase
                 (array)$this->table->getDisplayField(),
                 [AdjacencyListBehavior::CTE_FIELD_LEVEL => $association->junction()->aliasField(AdjacencyListBehavior::CTE_FIELD_LEVEL)],
             ))
-            ->order(array_merge(
+            ->orderBy(array_merge(
                 [AdjacencyListBehavior::CTE_FIELD_LEVEL],
                 array_map([$this->table, 'aliasField'], (array)$this->table->getPrimaryKey()),
             ))
@@ -793,7 +795,7 @@ final class AdjacencyListBehaviorTest extends TestCase
 
         $actual = $query
             ->select(array_merge((array)$this->table->getPrimaryKey(), (array)$this->table->getDisplayField()))
-            ->order(array_map([$this->table, 'aliasField'], (array)$this->table->getPrimaryKey()))
+            ->orderBy(array_map([$this->table, 'aliasField'], (array)$this->table->getPrimaryKey()))
             ->disableHydration()
             ->all()
             ->toList();

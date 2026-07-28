@@ -131,7 +131,7 @@ class Folder extends ObjectEntity
             ->disableHydration()
             ->innerJoinWith(
                 'Objects.Permissions',
-                fn (Query $q): Query => $q->where(['Permissions.role_id IN' => $roleIds]),
+                fn(Query $q): Query => $q->where(['Permissions.role_id IN' => $roleIds]),
             )
             ->select(['existing' => 1])
             ->limit(1)

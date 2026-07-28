@@ -268,13 +268,13 @@ class TreesTable extends Table
             $parentId = $entity->get('parent_id');
 
             $siblings = $this->find()->where(
-                fn (QueryExpression $exp): QueryExpression => $parentId === null
+                fn(QueryExpression $exp): QueryExpression => $parentId === null
                     ? $exp->isNull($this->aliasField('parent_id'))
                     : $exp->eq($this->aliasField('parent_id'), $parentId),
             );
             if (!$entity->isNew()) {
                 $siblings = $siblings->where(
-                    fn (QueryExpression $exp): QueryExpression => $exp->notEq($this->aliasField('id'), $entity->id),
+                    fn(QueryExpression $exp): QueryExpression => $exp->notEq($this->aliasField('id'), $entity->id),
                 );
             }
 
@@ -309,7 +309,7 @@ class TreesTable extends Table
      * @param \BEdita\Core\Model\Entity\Tree $entity Entity instance.
      * @return void
      */
-    public function beforeSave(EventInterface $event, Tree $entity)
+    public function beforeSave(EventInterface $event, Tree $entity): void
     {
         if ($entity->get('parent_id') === $entity->get('object_id')) {
             throw new RuntimeException('Cannot set a folder as its own parent');

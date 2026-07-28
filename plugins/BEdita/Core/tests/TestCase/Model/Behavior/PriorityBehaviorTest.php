@@ -155,7 +155,7 @@ class PriorityBehaviorTest extends TestCase
                 'left_id' => 2,
                 'relation_id' => 1,
             ])
-            ->order(['priority'])
+            ->orderBy(['priority'])
             ->all()
             ->toList();
 
