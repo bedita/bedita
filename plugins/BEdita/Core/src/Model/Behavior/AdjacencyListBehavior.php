@@ -284,7 +284,7 @@ class AdjacencyListBehavior extends Behavior
      */
     protected function nodeSuffix(?array $values): ?string
     {
-        return $values !== null ? sha1(serialize($values)) : null;
+        return $values !== null ? substr(sha1(serialize($values)), 0, 8) : null;
     }
 
     /**
@@ -368,7 +368,7 @@ class AdjacencyListBehavior extends Behavior
                 $bindingKey, // descendant
                 [
                     0, // level
-                    0, // cyclic flag
+                    new QueryExpression('FALSE'), // cyclic flag
                 ],
             ));
         // Recursive part:
@@ -427,7 +427,7 @@ class AdjacencyListBehavior extends Behavior
                 $bindingKey, // descendant
                 [
                     0, // level
-                    0, // cyclic flag
+                    new QueryExpression('FALSE'), // cyclic flag
                 ],
             ))
             ->where(fn(QueryExpression $exp): QueryExpression => $exp->add(new TupleComparison($bindingKey, $for)));
