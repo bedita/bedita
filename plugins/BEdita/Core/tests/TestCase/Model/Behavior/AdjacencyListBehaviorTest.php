@@ -34,7 +34,7 @@ use InvalidArgumentException;
 use UnexpectedValueException;
 
 /**
- * {@see BEdita\Core\Model\Behavior\AdjacencyListBehavior} Test Case
+ * {@see \BEdita\Core\Model\Behavior\AdjacencyListBehavior} Test Case
  *
  * @covers \BEdita\Core\Model\Behavior\AdjacencyListBehavior
  */
@@ -79,10 +79,12 @@ final class AdjacencyListBehaviorTest extends TestCase
 
         // Add cycle in categories tree
         $connection = $this->table->getConnection();
-        $connection->disableConstraints(function ($connection): void {
-            $connection->insert('fake_categories', ['id' => 10, 'name' => 'Example circular reference', 'parent_id' => 11, 'left_idx' => 19, 'right_idx' => 21]);
-            $connection->insert('fake_categories', ['id' => 11, 'name' => 'Example circular reference', 'parent_id' => 10, 'left_idx' => 20, 'right_idx' => 22]);
-            $connection->insert('fake_categories', ['id' => 12, 'name' => 'Example self-reference', 'parent_id' => 12, 'left_idx' => 23, 'right_idx' => 24]);
+        $connection->transactional(function ($connection): void {
+            $connection->disableConstraints(function ($connection): void {
+                $connection->insert('fake_categories', ['id' => 10, 'name' => 'Example circular reference', 'parent_id' => 11, 'left_idx' => 19, 'right_idx' => 21]);
+                $connection->insert('fake_categories', ['id' => 11, 'name' => 'Example circular reference', 'parent_id' => 10, 'left_idx' => 20, 'right_idx' => 22]);
+                $connection->insert('fake_categories', ['id' => 12, 'name' => 'Example self-reference', 'parent_id' => 12, 'left_idx' => 23, 'right_idx' => 24]);
+            });
         });
     }
 
@@ -441,7 +443,7 @@ final class AdjacencyListBehaviorTest extends TestCase
         $expected = <<<SQL
         foo(ancestor_id, descendant_id, level, cyclic) AS (
             (
-                SELECT (FakeCategories.id), (FakeCategories.id), 0, 0
+                SELECT (FakeCategories.id), (FakeCategories.id), 0, (FALSE)
                 FROM fake_categories FakeCategories
             )
             UNION ALL
