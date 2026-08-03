@@ -210,7 +210,7 @@ class ApplicationsControllerTest extends IntegrationTestCase
     public function testSingleName()
     {
         $this->configRequestHeaders('GET', $this->getUserAuthHeader());
-        $this->get(sprintf('/admin/applications/%s', urlencode('First app')));
+        $this->get(sprintf('/admin/applications/%s', rawurlencode('First app')));
         $this->assertResponseCode(200);
     }
 
