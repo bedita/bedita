@@ -1,9 +1,7 @@
 <?php
 declare(strict_types=1);
 
-use Cake\Database\Expression\CommonTableExpression;
 use Cake\Database\Expression\QueryExpression;
-use Cake\Database\ExpressionInterface;
 use Migrations\AbstractMigration;
 
 class UseAdjacencyListForTrees extends AbstractMigration
@@ -29,32 +27,34 @@ class UseAdjacencyListForTrees extends AbstractMigration
             ->update();
 
         // Update `trees` table using relative priorities.
-        $query = $this->getQueryBuilder();
-        $query->update('trees')
-            ->with(
-                fn (CommonTableExpression $cte): CommonTableExpression => $cte
-                    ->name('priorities')
-                    ->query(function (): \Cake\Database\Query {
-                        $query = $this->getQueryBuilder();
+        $selectQuery = $this->getQueryBuilder();
+        $rows = $selectQuery
+            ->select([
+                'id',
+                'priority' => $selectQuery->func()->rowNumber()
+                    ->partition('parent_id')
+                    ->order(['trees.priority', 'id']),
+            ])
+            ->from('trees')
+            ->order(['id' => 'ASC'])
+            ->execute()
+            ->fetchAll('assoc');
 
-                        return $query
-                            ->select([
-                                'id',
-                                'priority' => $query->func()->rowNumber()
-                                    ->partition('parent_id')
-                                    ->order(['priority', 'id']),
-                            ])
-                            ->from('trees')
-                            ->order(['id' => 'ASC']);
-                    }),
-            )
-            ->set(fn (QueryExpression $exp): QueryExpression => $exp->eq(
-                'priority',
-                $this->getQueryBuilder()->select('priority')
-                    ->from('priorities')
-                    ->where(fn (QueryExpression $exp): ExpressionInterface => $exp->equalFields('priorities.id', 'trees.id')),
-            ))
-            ->execute();
+        foreach (array_chunk($rows, 500) as $chunk) {
+            $updateQuery = $this->getQueryBuilder();
+            $case = $updateQuery->newExpr()->case();
+            $ids = [];
+            foreach ($chunk as $row) {
+                $id = (int)$row['id'];
+                $case->when(['id' => $id])->then((int)$row['priority']);
+                $ids[] = $id;
+            }
+
+            $updateQuery->update('trees')
+                ->set('trees.priority', $case)
+                ->where(fn (QueryExpression $exp): QueryExpression => $exp->in('id', $ids))
+                ->execute();
+        }
     }
 
     public function down()
