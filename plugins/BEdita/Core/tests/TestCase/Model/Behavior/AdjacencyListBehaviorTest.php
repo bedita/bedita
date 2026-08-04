@@ -448,7 +448,7 @@ final class AdjacencyListBehaviorTest extends TestCase
             )
             UNION ALL
             (
-                SELECT (foo.ancestor_id), (FakeCategories.id), ((foo.level) + 1), ((foo.ancestor_id) = (FakeCategories.id))
+                SELECT (foo.ancestor_id), (FakeCategories.id), ((foo.level) + 1), (COALESCE((foo.ancestor_id)=(FakeCategories.id), FALSE))
                 FROM fake_categories FakeCategories
                 INNER JOIN foo foo
                     ON ((foo.descendant_id) = (FakeCategories.parent_id) AND NOT (foo.cyclic))

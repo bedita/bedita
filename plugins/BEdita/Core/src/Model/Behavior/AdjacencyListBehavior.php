@@ -355,11 +355,14 @@ class AdjacencyListBehavior extends Behavior
         $descendantFields = static::prefix($bindingKey, static::CTE_PREFIX_DESCENDANT);
         $fields = array_merge($ancestorFields, $descendantFields, [static::CTE_FIELD_LEVEL, static::CTE_FIELD_CYCLIC]);
 
+        // SQLite rewrites tuple comparisons to AND/OR conditions, which require strings as array keys.
+        $ancestorFieldNames = array_map([$this, 'aliasCteField'], $ancestorFields);
+        $descendantFieldNames = array_map([$this, 'aliasCteField'], $descendantFields);
+
         // Prepare identifier expressions:
         $bindingKey = static::toIdentifiers($bindingKey, [$table, 'aliasField']);
         $foreignKey = static::toIdentifiers((array)($this->parentAssociation->getForeignKey() ?: null), [$table, 'aliasField']);
         $ancestorFields = static::toIdentifiers($ancestorFields, [$this, 'aliasCteField']);
-        $descendantFields = static::toIdentifiers($descendantFields, [$this, 'aliasCteField']);
 
         // Recursion base:
         $base = $table->find()
@@ -372,19 +375,21 @@ class AdjacencyListBehavior extends Behavior
                 ],
             ));
         // Recursive part:
-        $recursive = $table->find()
+        $recursive = $table->find();
+        $recursive = $recursive
             ->select(array_merge(
                 $ancestorFields, // ancestor
                 $bindingKey, // descendant
                 [
                     new UnaryExpression('+ 1', $this->aliasCteField(static::CTE_FIELD_LEVEL), UnaryExpression::POSTFIX), // level (increase by 1)
-                    new TupleComparison($ancestorFields, $bindingKey), // cyclic flag (true if we re-encounter the same node)
+                    // SQLite rewrites tuple comparisons in selects to scalar queries (ex. 1 = (SELECT 1 WHERE ...)), so we coalesce to `FALSE`.
+                    $recursive->func()->coalesce([new TupleComparison($ancestorFieldNames, $bindingKey), new QueryExpression('FALSE')]),
                 ],
             ))
             ->innerJoin(
                 $this->cteName,
                 (new QueryExpression())
-                    ->add(new TupleComparison($descendantFields, $foreignKey))
+                    ->add(new TupleComparison($descendantFieldNames, $foreignKey))
                     ->not($this->aliasCteField(static::CTE_FIELD_CYCLIC)), // Avoid infinite recursion even with cyclic references.
             );
 
@@ -414,10 +419,14 @@ class AdjacencyListBehavior extends Behavior
         $descendantFields = static::prefix($bindingKey, static::CTE_PREFIX_DESCENDANT);
         $fields = array_merge($ancestorFields, $descendantFields, [static::CTE_FIELD_LEVEL, static::CTE_FIELD_CYCLIC]);
 
+        // SQLite rewrites tuple comparisons to AND/OR conditions, which require strings as array keys.
+        $bindingKeyNames = array_map([$table, 'aliasField'], $bindingKey);
+        $ancestorFieldNames = array_map(fn (string $field): string => $this->aliasCteField($field, $suffix), $ancestorFields);
+        $descendantFieldNames = array_map(fn (string $field): string => $this->aliasCteField($field, $suffix), $descendantFields);
+
         // Prepare identifier expressions:
         $bindingKey = static::toIdentifiers($bindingKey, [$table, 'aliasField']);
         $foreignKey = static::toIdentifiers((array)($this->parentAssociation->getForeignKey() ?: null), [$table, 'aliasField']);
-        $ancestorFields = static::toIdentifiers($ancestorFields, [$this, 'aliasCteField'], $suffix);
         $descendantFields = static::toIdentifiers($descendantFields, [$this, 'aliasCteField'], $suffix);
 
         // Recursion base:
@@ -430,22 +439,24 @@ class AdjacencyListBehavior extends Behavior
                     new QueryExpression('FALSE'), // cyclic flag
                 ],
             ))
-            ->where(fn (QueryExpression $exp): QueryExpression => $exp->add(new TupleComparison($bindingKey, $for)));
+            ->where(fn (QueryExpression $exp): QueryExpression => $exp->add(new TupleComparison($bindingKeyNames, $for)));
 
         // Recursive part:
-        $recursive = $table->find()
+        $recursive = $table->find();
+        $recursive = $recursive
             ->select(array_merge(
                 $foreignKey, // ancestor
                 $descendantFields, // descendant
                 [
                     new UnaryExpression('- 1', $this->aliasCteField(static::CTE_FIELD_LEVEL, $suffix), UnaryExpression::POSTFIX), // level (decrease by 1 going up towards ancestors)
-                    new TupleComparison($descendantFields, $foreignKey), // cyclic flag (true if we re-encounter the same node)
+                    // SQLite rewrites tuple comparisons in selects to scalar queries (ex. 1 = (SELECT 1 WHERE ...)), so we coalesce to `FALSE`.
+                    $recursive->func()->coalesce([new TupleComparison($descendantFieldNames, $foreignKey), new QueryExpression('FALSE')]),
                 ],
             ))
             ->innerJoin(
                 $name,
                 (new QueryExpression())
-                    ->add(new TupleComparison($ancestorFields, $bindingKey))
+                    ->add(new TupleComparison($ancestorFieldNames, $bindingKey))
                     ->not($this->aliasCteField(static::CTE_FIELD_CYCLIC, $suffix)), // Avoid infinite recursion even with cyclic references.
             );
 
@@ -525,7 +536,7 @@ class AdjacencyListBehavior extends Behavior
                     function (QueryExpression $exp) use ($association, $conditions, $includeSelf): QueryExpression {
                         if (!$includeSelf) {
                             // descendants are > 0, ancestors < 0
-                            $exp = $exp->notEq($association->junction()->aliasField(static::CTE_FIELD_LEVEL), 0);
+                            $exp = $exp->notEq($association->junction()->aliasField(static::CTE_FIELD_LEVEL), 0, 'integer');
                         }
 
                         return $exp->add($conditions);
