@@ -20,6 +20,14 @@ class DropTreesDepthLevel extends BaseMigration
      */
     public function down(): void
     {
-        // TODO: restore `depth_level`
+        $this->table('trees')
+            ->addColumn('depth_level', 'integer', [
+                'comment' => 'tree depth level',
+                'default' => null,
+                'limit' => 10,
+                'null' => false,
+                'signed' => false,
+            ])
+            ->update();
     }
 }
