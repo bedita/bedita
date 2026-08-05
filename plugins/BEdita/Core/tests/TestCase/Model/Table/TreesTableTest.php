@@ -289,6 +289,9 @@ class TreesTableTest extends TestCase
      * @return void
      * @dataProvider changeRootProvider
      * @covers ::afterSave()
+     * @covers ::beforeSave()
+     * @covers \BEdita\Core\Model\Behavior\AdjacencyListBehavior::beforeSave()
+     * @covers \BEdita\Core\Model\Behavior\AdjacencyListBehavior::findChildren()
      */
     public function testChangeRoot($rootExpected, $parentId)
     {
@@ -332,7 +335,8 @@ class TreesTableTest extends TestCase
      * Test that moving a parent as child fails.
      *
      * @return void
-     * @coversNothing
+     * @covers ::beforeSave()
+     * @covers \BEdita\Core\Model\Behavior\AdjacencyListBehavior::beforeSave()
      */
     public function testMoveParentAsChild()
     {
@@ -443,7 +447,7 @@ class TreesTableTest extends TestCase
      * @param int|string $position Position.
      * @return void
      * @dataProvider setPositionProvider()
-     * @covers ::afterSave()
+     * @covers ::beforeRules()
      */
     public function testSetPosition($expected, $objectId, $position)
     {
