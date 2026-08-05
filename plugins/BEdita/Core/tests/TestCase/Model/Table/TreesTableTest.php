@@ -15,6 +15,7 @@ declare(strict_types=1);
 namespace BEdita\Core\Test\TestCase\Model\Table;
 
 use BEdita\Core\Exception\LockedResourceException;
+use BEdita\Core\Model\Behavior\AdjacencyListBehavior;
 use BEdita\Core\Model\Table\TreesTable;
 use BEdita\Core\Utility\LoggedUser;
 use Cake\Core\Configure;
@@ -26,6 +27,7 @@ use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use Exception;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\CoversMethod;
 use PHPUnit\Framework\Attributes\DataProvider;
 use RuntimeException;
 
@@ -33,6 +35,8 @@ use RuntimeException;
  * {@see \BEdita\Core\Model\Table\TreesTable} Test Case
  */
 #[CoversClass(TreesTable::class)]
+#[CoversMethod(AdjacencyListBehavior::class, 'beforeSave')]
+#[CoversMethod(AdjacencyListBehavior::class, 'findChildren')]
 class TreesTableTest extends TestCase
 {
     /**
