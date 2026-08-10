@@ -88,7 +88,15 @@ class UseAdjacencyListForTrees extends BaseMigration
 
         // Fix NSM indices by triggering a tree recovery.
         $table = new Table(['table' => 'trees', 'connection' => $this->getAdapter()->getConnection()]);
-        $table->addBehavior('BEdita/Core.Tree', ['left' => 'tree_left', 'right' => 'tree_right']);
-        $table->nonAtomicRecover();
+        $table->addBehavior('BEdita/Core.Tree', [
+            'left' => 'tree_left',
+            'right' => 'tree_right',
+            'parent' => 'parent_node_id',
+            'level' => 'depth_level',
+            'recoverOrder' => ['tree_left' => 'ASC', 'object_id' => 'ASC'],
+        ]);
+        /** @var \BEdita\Core\Model\Behavior\TreeBehavior $tree */
+        $tree = $table->behaviors()->get('Tree');
+        $tree->nonAtomicRecover();
     }
 }
