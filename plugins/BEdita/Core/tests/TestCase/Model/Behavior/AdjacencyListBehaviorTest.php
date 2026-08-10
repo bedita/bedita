@@ -171,7 +171,7 @@ final class AdjacencyListBehaviorTest extends TestCase
      * @param string|\Exception $expected Expected CTE name, or thrown exception.
      * @param array|callable $config Behavior configuration.
      * @return void
-         */
+     */
     #[DataProvider('initializeProvider')]
     public function testInitialize(string|Exception $expected, array|callable $config): void
     {
@@ -346,7 +346,7 @@ final class AdjacencyListBehaviorTest extends TestCase
      * @param array $config Configuration.
      * @param bool $descendants `true` for descendants, `false` for ancestors.
      * @return void
-         */
+     */
     #[DataProvider('getInheritanceAssociationProvider')]
     public function testGetInheritanceAssociation(array|Exception $expected, array $config, bool $descendants): void
     {
@@ -488,7 +488,7 @@ final class AdjacencyListBehaviorTest extends TestCase
      * @param mixed $from Object to extract fields from.
      * @param string[] $fields Fields to extract.
      * @return void
-         */
+     */
     #[DataProvider('extractFieldsProvider')]
     public function testExtractFields(mixed $expected, mixed $from, array $fields): void
     {
@@ -611,7 +611,7 @@ final class AdjacencyListBehaviorTest extends TestCase
      * @param array|\Exception $expected Expected outcome.
      * @param array|callable $options Finder options.
      * @return void
-         */
+     */
     #[DataProvider('findAncestorsProvider')]
     public function testFindAncestors(array|Exception $expected, array|callable $options): void
     {
@@ -737,7 +737,7 @@ final class AdjacencyListBehaviorTest extends TestCase
      * @param array|\Exception $expected Expected outcome.
      * @param array|callable $options Finder options.
      * @return void
-         */
+     */
     #[DataProvider('findDescendantsProvider')]
     public function testFindDescendants(array|Exception $expected, array|callable $options): void
     {
