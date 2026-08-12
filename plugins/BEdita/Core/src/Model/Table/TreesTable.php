@@ -39,7 +39,7 @@ use RuntimeException;
  * @property \Cake\ORM\Association\BelongsTo|\BEdita\Core\Model\Table\ObjectsTable $Objects
  * @property \Cake\ORM\Association\BelongsTo|\BEdita\Core\Model\Table\ObjectsTable $ParentObjects
  * @property \Cake\ORM\Association\BelongsTo|\BEdita\Core\Model\Table\ObjectsTable $RootObjects
- * @property \Cake\ORM\Association\BelongsTo|\\BEdita\Core\Model\Table\TreesTable $ParentNode
+ * @property \Cake\ORM\Association\BelongsTo|\BEdita\Core\Model\Table\TreesTable $ParentNode
  * @property \Cake\ORM\Association\HasMany|\BEdita\Core\Model\Table\TreesTable $ChildNodes
  * @method \BEdita\Core\Model\Entity\Tree get($primaryKey, $options = [])
  * @method \BEdita\Core\Model\Entity\Tree newEntity($data = null, array $options = [])

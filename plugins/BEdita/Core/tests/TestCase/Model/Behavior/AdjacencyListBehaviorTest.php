@@ -474,8 +474,8 @@ final class AdjacencyListBehaviorTest extends TestCase
             'associative array' => [['baz', 42], ['foo' => 42, 'bar' => 'baz'], ['bar', 'foo']],
             'list of associative arrays' => [[['barbaz', null], ['baz', 42]], [['bar' => 'barbaz'], ['foo' => 42, 'bar' => 'baz']], ['bar', 'foo']],
             'ArrayAccess' => [['baz', 42], new ArrayObject(['foo' => 42, 'bar' => 'baz']), ['bar', 'foo']],
-            'invalid' => [new InvalidArgumentException('Cannot extract fields'), new DateTime(), ['foo', 'bar']],
-            'list with invalid item' => [new InvalidArgumentException('Cannot extract fields'), [['foo' => 42, 'bar' => 'baz'], new DateTime()], ['foo', 'bar']],
+            'invalid' => [new InvalidArgumentException('Cannot extract fields.'), new DateTime(), ['foo', 'bar']],
+            'list with invalid item' => [new InvalidArgumentException('Cannot extract fields.'), [['foo' => 42, 'bar' => 'baz'], new DateTime()], ['foo', 'bar']],
         ];
     }
 
