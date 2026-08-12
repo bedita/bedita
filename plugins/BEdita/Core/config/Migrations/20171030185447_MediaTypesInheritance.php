@@ -29,12 +29,6 @@ class MediaTypesInheritance extends BaseMigration
                 'name IN' => ['videos', 'audio', 'files'],
             ]
         );
-
-        // Now let's fix NSM (nested-set model) left and right indexes from tree data.
-        $table->addBehavior('BEdita/Core.Tree', [
-            'left' => 'tree_left',
-            'right' => 'tree_right',
-        ]);
     }
 
     /**
