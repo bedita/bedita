@@ -396,13 +396,8 @@ class ObjectsTable extends Table
         return $query->where(function (QueryExpression $exp) use ($parentNode): QueryExpression {
             return $exp->in(
                 $this->aliasField('id'),
-                $this->TreeNodes->find()
-                    ->select(['object_id'])
-                    ->where(function (QueryExpression $exp) use ($parentNode) {
-                        return $exp
-                            ->gt($this->TreeNodes->aliasField('tree_left'), $parentNode->get('tree_left'))
-                            ->lt($this->TreeNodes->aliasField('tree_right'), $parentNode->get('tree_right'));
-                    })
+                $this->TreeNodes->find('descendants', ['for' => $parentNode->id])
+                    ->select(['object_id']),
             );
         });
     }
@@ -419,12 +414,10 @@ class ObjectsTable extends Table
         $parentId = $this->getId((string)Hash::get($options, '0'));
 
         return $query
-            ->innerJoinWith('TreeNodes', function (Query $query) use ($parentId) {
-                return $query->where([
-                    $this->TreeNodes->aliasField('parent_id') => $parentId,
-                ]);
-            })
-            ->order($this->TreeNodes->aliasField('tree_left'));
+            ->innerJoinWith('TreeNodes', fn (Query $query): Query => $query->where([
+                $this->TreeNodes->aliasField('parent_id') => $parentId,
+            ]))
+            ->order($this->TreeNodes->aliasField('priority'));
     }
 
     /**

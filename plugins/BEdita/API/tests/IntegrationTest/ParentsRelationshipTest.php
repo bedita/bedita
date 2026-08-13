@@ -247,7 +247,7 @@ class ParentsRelationshipTest extends IntegrationTestCase
 
         $childrenIds = $this->Trees->find('list', ['valueField' => 'object_id'])
             ->where(['parent_id' => 12])
-            ->order(['tree_left' => 'ASC'])
+            ->order(['priority' => 'ASC'])
             ->all()
             ->toList();
 
@@ -308,7 +308,7 @@ class ParentsRelationshipTest extends IntegrationTestCase
 
         $childrenIds = $this->Trees->find('list', ['valueField' => 'object_id'])
             ->where(['parent_id' => 12])
-            ->order(['tree_left' => 'ASC'])
+            ->order(['priority' => 'ASC'])
             ->all()
             ->toList();
 
@@ -330,11 +330,11 @@ class ParentsRelationshipTest extends IntegrationTestCase
         static::assertEquals(1, count($result['data']));
 
         $expected = [
-            'depth_level' => 2,
             'menu' => true,
             'canonical' => true,
             'params' => null,
             'slug' => 'gustavo-supporto-profile-4',
+            'priority' => 1,
         ];
         static::assertEquals($expected, Hash::get($result, 'data.0.meta.relation'));
 
@@ -345,11 +345,11 @@ class ParentsRelationshipTest extends IntegrationTestCase
         static::assertEquals('11', $result['data']['id']);
 
         $expected = [
-            'depth_level' => 1,
             'menu' => true,
             'canonical' => true,
             'params' => null,
             'slug' => 'sub-folder-12',
+            'priority' => 1,
         ];
         static::assertEquals($expected, Hash::get($result, 'data.meta.relation'));
     }

@@ -250,8 +250,6 @@ trait JsonApiTrait
                 'object_id',
                 'root_id',
                 'parent_node_id',
-                'tree_left',
-                'tree_right',
             ]);
         }
 

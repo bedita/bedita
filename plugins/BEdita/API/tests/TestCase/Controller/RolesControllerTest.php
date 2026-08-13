@@ -228,7 +228,7 @@ class RolesControllerTest extends IntegrationTestCase
     public function testSingleName()
     {
         $this->configRequestHeaders('GET', $this->getUserAuthHeader());
-        $this->get(sprintf('/roles/%s', urlencode('first role')));
+        $this->get(sprintf('/roles/%s', rawurlencode('first role')));
         $this->assertResponseCode(200);
     }
 

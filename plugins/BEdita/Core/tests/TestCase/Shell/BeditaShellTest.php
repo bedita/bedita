@@ -136,7 +136,7 @@ class BeditaShellTest extends TestCase
             $returnValues = [
                 $driver, // Driver
                 $originalConfig['host'], // Hostname
-                Hash::get($originalConfig, 'port', ''), // Port
+                (string)Hash::get($originalConfig, 'port', ''), // Port
                 $originalConfig['database'], // Database name
                 $originalConfig['username'], // Username
                 Hash::get($originalConfig, 'password', ''), // Password
@@ -222,7 +222,7 @@ class BeditaShellTest extends TestCase
 
                 // Port
                 '--connection-port',
-                Hash::get($originalConfig, 'port', $defaultPort),
+                (string)Hash::get($originalConfig, 'port', $defaultPort),
 
                 // Database name
                 '--connection-database',

@@ -159,7 +159,7 @@ class ChildrenRelationshipTest extends IntegrationTestCase
     {
         return $this->Trees->find('list', ['valueField' => 'object_id'])
             ->where(['parent_id' => $parentId])
-            ->order(['tree_left' => 'ASC'])
+            ->order(['priority' => 'ASC'])
             ->all()
             ->toList();
     }
@@ -180,11 +180,11 @@ class ChildrenRelationshipTest extends IntegrationTestCase
         static::assertEquals(1, count($result['data']));
 
         $expected = [
-            'depth_level' => 2,
             'menu' => true,
             'canonical' => true,
             'params' => null,
             'slug' => 'gustavo-supporto-profile-4',
+            'priority' => 1,
         ];
         static::assertEquals($expected, Hash::get($result, 'data.0.meta.relation'));
     }

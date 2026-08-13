@@ -269,7 +269,6 @@ class FolderTest extends TestCase
         $this->expectException(\RuntimeException::class);
         $this->expectExceptionMessage('Folder "12" is not on the tree.');
         TableRegistry::getTableLocator()->get('Trees')->deleteAll(['object_id' => 12]);
-        TableRegistry::getTableLocator()->get('Trees')->recover();
 
         $this->Folders->get(12)->get('path');
     }
@@ -372,7 +371,6 @@ class FolderTest extends TestCase
         $this->expectException(\RuntimeException::class);
         $this->expectExceptionMessage('Folder "12" is not on the tree.');
         TableRegistry::getTableLocator()->get('Trees')->deleteAll(['object_id' => 12]);
-        TableRegistry::getTableLocator()->get('Trees')->recover();
 
         $this->Folders->get(12)->get('slug_path');
     }

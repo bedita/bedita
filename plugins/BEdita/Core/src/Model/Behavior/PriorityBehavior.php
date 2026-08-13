@@ -132,7 +132,23 @@ class PriorityBehavior extends Behavior
         $conditions = $this->_getConditions($entity, $config['scope']);
         if (!empty($entity->get($field)) && $entity instanceof Entity) {
             $actualValue = $entity->get($field);
-            $previousValue = $entity->getOriginal($field);
+
+            if ($entity->isNew()) {
+                $this->expand($field, $actualValue, null, $conditions);
+
+                return true;
+            }
+
+            /** @var string[] $primaryKey */
+            $primaryKey = (array)$this->_table->getPrimaryKey();
+            $previousValue = $this->_table->find()
+                ->select($this->_table->aliasField($field))
+                ->where(array_combine(
+                    array_map(fn (string $f): string => $this->_table->aliasField($f), $primaryKey),
+                    $entity->extract($primaryKey),
+                ))
+                ->firstOrFail()
+                ->get($field);
             if ($previousValue === $actualValue) {
                 return false;
             }

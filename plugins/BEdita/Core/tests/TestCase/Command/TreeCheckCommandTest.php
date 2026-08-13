@@ -75,34 +75,11 @@ class TreeCheckCommandTest extends TestCase
         $this->exec(sprintf('%s --verbose', TreeCheckCommand::defaultName()));
 
         $this->assertExitSuccess();
-        $this->assertOutputContains('Tree integrity check passed');
         $this->assertOutputContains('There are no folders not in tree');
         $this->assertOutputContains('There are no ubiquitous folders');
         $this->assertOutputContains('There are no other objects with children');
         $this->assertOutputContains('There are no objects that are present multiple times within same parent');
         $this->assertOutputContains('There are no tree nodes that reference a different parent than the object of the parent node');
-        $this->assertOutputContains('There are no tree nodes that reference a different root than the root of the parent node');
-    }
-
-    /**
-     * Test execution when tree NSM is corrupt.
-     *
-     * @return void
-     */
-    public function testExecutionCorrupt(): void
-    {
-        $this->Trees->updateAll(['parent_node_id' => 1], ['parent_id' => 12]);
-        $this->exec(sprintf('%s --verbose', TreeCheckCommand::defaultName()));
-
-        $this->assertExitError();
-        $this->assertOutputContains('Tree is corrupt!');
-        $this->assertOutputContains('Found record where tree_left - 1 != MAX(previousSiblings.tree_right)');
-        $this->assertOutputContains('There are no folders not in tree');
-        $this->assertOutputContains('There are no ubiquitous folders');
-        $this->assertOutputContains('There are no other objects with children');
-        $this->assertOutputContains('There are no objects that are present multiple times within same parent');
-        $this->assertOutputContains('Found 1 tree nodes that reference a different parent than the object of the parent node');
-        $this->assertOutputContains('profile <info>gustavo-supporto</info> (#<info>4</info>) references a different parent_id than the object_id in the parent node');
         $this->assertOutputContains('There are no tree nodes that reference a different root than the root of the parent node');
     }
 
@@ -123,7 +100,6 @@ class TreeCheckCommandTest extends TestCase
         $this->exec(sprintf('%s --verbose', TreeCheckCommand::defaultName()));
 
         $this->assertExitError();
-        $this->assertOutputContains('Tree integrity check passed');
         $this->assertOutputContains('Found 1 folders not in tree!');
         $this->assertOutputContains('folder <info>sub-folder</info> (#<info>12</info>) is not in the tree');
         $this->assertOutputContains('There are no ubiquitous folders');
@@ -153,7 +129,6 @@ class TreeCheckCommandTest extends TestCase
         $this->exec(sprintf('%s --verbose', TreeCheckCommand::defaultName()));
 
         $this->assertExitError();
-        $this->assertOutputContains('Tree integrity check passed');
         $this->assertOutputContains('There are no folders not in tree');
         $this->assertOutputContains('Found 1 ubiquitous folders!');
         $this->assertOutputContains('folder <info>sub-folder</info> (#<info>12</info>) is ubiquitous');
@@ -183,7 +158,6 @@ class TreeCheckCommandTest extends TestCase
         $this->exec(sprintf('%s --verbose', TreeCheckCommand::defaultName()));
 
         $this->assertExitError();
-        $this->assertOutputContains('Tree integrity check passed');
         $this->assertOutputContains('There are no folders not in tree');
         $this->assertOutputContains('There are no ubiquitous folders');
         $this->assertOutputContains('Found 1 other objects in root!');
@@ -212,7 +186,6 @@ class TreeCheckCommandTest extends TestCase
         $this->exec(sprintf('%s --verbose', TreeCheckCommand::defaultName()));
 
         $this->assertExitError();
-        $this->assertOutputContains('Tree integrity check passed');
         $this->assertOutputContains('There are no folders not in tree');
         $this->assertOutputContains('There are no ubiquitous folders');
         $this->assertOutputContains('There are no other objects in root.');
@@ -250,7 +223,6 @@ class TreeCheckCommandTest extends TestCase
         $this->exec(sprintf('%s --verbose', TreeCheckCommand::defaultName()));
 
         $this->assertExitError();
-        $this->assertOutputContains('Tree integrity check passed');
         $this->assertOutputContains('There are no folders not in tree');
         $this->assertOutputContains('There are no ubiquitous folders');
         $this->assertOutputContains('There are no other objects in root.');
@@ -273,7 +245,6 @@ class TreeCheckCommandTest extends TestCase
         $this->exec(sprintf('%s --verbose', TreeCheckCommand::defaultName()));
 
         $this->assertExitError();
-        $this->assertOutputContains('Tree integrity check passed');
         $this->assertOutputContains('There are no folders not in tree');
         $this->assertOutputContains('There are no ubiquitous folders');
         $this->assertOutputContains('There are no other objects in root.');
@@ -296,7 +267,6 @@ class TreeCheckCommandTest extends TestCase
         $this->exec(sprintf('%s --verbose', TreeCheckCommand::defaultName()));
 
         $this->assertExitError();
-        $this->assertOutputContains('Tree integrity check passed');
         $this->assertOutputContains('There are no folders not in tree');
         $this->assertOutputContains('There are no ubiquitous folders');
         $this->assertOutputContains('There are no other objects in root.');

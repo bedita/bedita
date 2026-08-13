@@ -23,9 +23,6 @@ use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\Event\Event;
 use Cake\Http\Exception\BadRequestException;
 use Cake\Http\Exception\NotFoundException;
-use Cake\ORM\Association\BelongsTo;
-use Cake\ORM\Association\HasMany;
-use Cake\ORM\Behavior\TreeBehavior;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
@@ -85,24 +82,6 @@ class TreesTableTest extends TestCase
         Configure::delete('ChildrenParams');
 
         parent::tearDown();
-    }
-
-    /**
-     * Test initialize method
-     *
-     * @return void
-     * @coversNothing
-     */
-    public function testInitialize()
-    {
-        $this->Trees->initialize([]);
-
-        static::assertInstanceOf(BelongsTo::class, $this->Trees->Objects);
-        static::assertInstanceOf(BelongsTo::class, $this->Trees->ParentObjects);
-        static::assertInstanceOf(BelongsTo::class, $this->Trees->RootObjects);
-        static::assertInstanceOf(BelongsTo::class, $this->Trees->ParentNode);
-        static::assertInstanceOf(HasMany::class, $this->Trees->ChildNodes);
-        static::assertInstanceOf(TreeBehavior::class, $this->Trees->behaviors()->get('Tree'));
     }
 
     /**
@@ -204,7 +183,6 @@ class TreesTableTest extends TestCase
     public function testIsPositionUnique($expected, $objectId, $parentId)
     {
         $this->Trees->deleteAll(['object_id' => 13]);
-        $this->Trees->recover();
 
         $entity = $this->Trees->newEntity([]);
         $entity->object_id = $objectId;
@@ -311,6 +289,9 @@ class TreesTableTest extends TestCase
      * @return void
      * @dataProvider changeRootProvider
      * @covers ::afterSave()
+     * @covers ::beforeSave()
+     * @covers \BEdita\Core\Model\Behavior\AdjacencyListBehavior::beforeSave()
+     * @covers \BEdita\Core\Model\Behavior\AdjacencyListBehavior::findChildren()
      */
     public function testChangeRoot($rootExpected, $parentId)
     {
@@ -354,7 +335,8 @@ class TreesTableTest extends TestCase
      * Test that moving a parent as child fails.
      *
      * @return void
-     * @coversNothing
+     * @covers ::beforeSave()
+     * @covers \BEdita\Core\Model\Behavior\AdjacencyListBehavior::beforeSave()
      */
     public function testMoveParentAsChild()
     {
@@ -465,7 +447,7 @@ class TreesTableTest extends TestCase
      * @param int|string $position Position.
      * @return void
      * @dataProvider setPositionProvider()
-     * @covers ::afterSave()
+     * @covers ::beforeRules()
      */
     public function testSetPosition($expected, $objectId, $position)
     {
@@ -480,9 +462,8 @@ class TreesTableTest extends TestCase
             ->firstOrFail();
 
         $node->set('position', $position);
-        $this->Trees->save($node);
-
-        $currentPosition = $this->Trees->getCurrentPosition($node);
+        $node = $this->Trees->save($node);
+        $currentPosition = $node->get('priority');
 
         static::assertSame($expected, $currentPosition);
     }

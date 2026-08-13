@@ -73,8 +73,6 @@ class PublicationsTable extends AbstractMigration
                     ],
                 ])
                 ->save();
-
-            $this->recoverTree();
     }
 
     /**
@@ -87,26 +85,5 @@ class PublicationsTable extends AbstractMigration
             ->save();
 
         $this->query("DELETE FROM object_types WHERE name = 'publications'");
-        $this->recoverTree();
-    }
-
-    /**
-     * Recover `object_types` tree
-     *
-     * @return void
-     */
-    protected function recoverTree(): void
-    {
-        $table = new Table([
-            'table' => 'object_types',
-            'connection' => $this->getAdapter()->getCakeConnection(),
-        ]);
-        $table->addBehavior('BEdita/Core.Tree', [
-            'left' => 'tree_left',
-            'right' => 'tree_right',
-        ]);
-        /* @var \BEdita\Core\Model\Behavior\TreeBehavior $tree */
-        $tree = $table->behaviors()->get('Tree');
-        $tree->nonAtomicRecover();
     }
 }
