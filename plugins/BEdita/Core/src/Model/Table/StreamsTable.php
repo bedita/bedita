@@ -188,10 +188,9 @@ class StreamsTable extends Table
                 $objectId = (int)$entity->get('object')->get('id');
                 $entity->set('object_id', $objectId);
             }
-            $original = $this->find()
+            $original = $this->unhydratedFind()
                 ->select(['object_id'])
                 ->where([$this->getPrimaryKey() => $entity->get($this->getPrimaryKey())])
-                ->disableHydration()
                 ->first();
             if (
                 $objectId !== null

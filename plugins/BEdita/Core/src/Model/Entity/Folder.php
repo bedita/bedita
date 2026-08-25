@@ -300,9 +300,8 @@ class Folder extends ObjectEntity
 
         try {
             return TableRegistry::getTableLocator()->get('Trees')
-                ->find('pathNodes', objectId: $this->id)
+                ->unhydratedFind('pathNodes', objectId: $this->id)
                 ->select(['id' => 'object_id', 'menu', 'params', 'slug'], true)
-                ->disableHydration()
                 ->toArray();
         } catch (RecordNotFoundException $previous) {
             throw new RuntimeException(__d('bedita', 'Folder "{0}" is not on the tree.', $this->id), 0, $previous);
