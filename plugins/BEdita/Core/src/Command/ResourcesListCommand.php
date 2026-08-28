@@ -102,7 +102,7 @@ class ResourcesListCommand extends Command
         $query = $action(compact('filter'));
         $results = $query->toArray();
         $this->io->out(sprintf('<info>%d result(s) found</info>', count($results)));
-        $this->io->out($results);
+        $this->io->out(json_encode($results));
 
         return static::CODE_SUCCESS;
     }

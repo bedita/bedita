@@ -510,7 +510,7 @@ class JsonApiTest extends TestCase
                     ],
                 ],
                 function () {
-                    return TableRegistry::getTableLocator()->get('Documents')->get(2, ['contain' => ['Test']]);
+                    return TableRegistry::getTableLocator()->get('Documents')->get(2, contain: ['Test']);
                 },
             ],
         ];
