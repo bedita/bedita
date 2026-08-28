@@ -16,10 +16,10 @@ namespace BEdita\Core\Model\Table;
 
 use ArrayObject;
 use BEdita\Core\Exception\LockedResourceException;
+use BEdita\Core\Model\Behavior\AdjacencyListBehavior;
 use BEdita\Core\Model\Entity\Tree;
 use BEdita\Core\Model\Validation\Validation;
 use Cake\Core\Configure;
-use Cake\Database\Driver\Mysql;
 use Cake\Database\Expression\QueryExpression;
 use Cake\Datasource\EntityInterface;
 use Cake\Event\EventInterface;
@@ -31,6 +31,7 @@ use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Utility\Text;
 use Cake\Validation\Validator;
+use RuntimeException;
 use stdClass;
 
 /**
@@ -39,7 +40,7 @@ use stdClass;
  * @property \Cake\ORM\Association\BelongsTo|\BEdita\Core\Model\Table\ObjectsTable $Objects
  * @property \Cake\ORM\Association\BelongsTo|\BEdita\Core\Model\Table\ObjectsTable $ParentObjects
  * @property \Cake\ORM\Association\BelongsTo|\BEdita\Core\Model\Table\ObjectsTable $RootObjects
- * @property \Cake\ORM\Association\BelongsTo|\BEdita\Core\Model\Table\TreesTable $ParentNode
+ * @property \Cake\ORM\Association\BelongsTo|\\BEdita\Core\Model\Table\TreesTable $ParentNode
  * @property \Cake\ORM\Association\HasMany|\BEdita\Core\Model\Table\TreesTable $ChildNodes
  * @method \BEdita\Core\Model\Entity\Tree get(mixed $primaryKey, array|string $finder = 'all', \Psr\SimpleCache\CacheInterface|string|null $cache = null, \Closure|string|null $cacheKey = null, mixed ...$args)
  * @method \BEdita\Core\Model\Entity\Tree newEntity(array $data, array $options = [])
@@ -48,7 +49,7 @@ use stdClass;
  * @method \BEdita\Core\Model\Entity\Tree patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
  * @method \BEdita\Core\Model\Entity\Tree[] patchEntities(iterable $entities, array $data, array $options = [])
  * @method \BEdita\Core\Model\Entity\Tree findOrCreate(\Cake\ORM\Query\SelectQuery|callable|array $search, ?callable $callback = null, array $options = [])
- * @mixin \BEdita\Core\Model\Behavior\TreeBehavior
+ * @mixin \BEdita\Core\Model\Behavior\AdjacencyListBehavior
  * @method \BEdita\Core\Model\Entity\Tree newEmptyEntity()
  * @method \BEdita\Core\Model\Entity\Tree saveOrFail(\Cake\Datasource\EntityInterface $entity, array $options = [])
  * @method \BEdita\Core\Model\Entity\Tree[]|\Cake\Datasource\ResultSetInterface<\BEdita\Core\Model\Entity\Tree>|false saveMany(iterable $entities, array $options = [])
@@ -98,13 +99,10 @@ class TreesTable extends Table
             'foreignKey' => 'parent_node_id',
         ]);
 
-        $this->addBehavior('BEdita/Core.Tree', [
-            'left' => 'tree_left',
-            'right' => 'tree_right',
-            'parent' => 'parent_node_id',
-            'level' => 'depth_level',
-            'recoverOrder' => ['tree_left' => 'ASC', 'tree_right' => 'ASC', 'object_id' => 'ASC'],
+        $this->addBehavior('BEdita/Core.AdjacencyList', [
+            'parentAssociation' => 'ParentNode',
         ]);
+        $this->addBehavior('BEdita/Core.Priority', ['fields' => ['priority' => ['scope' => ['parent_id']]]]);
     }
 
     /**
@@ -249,7 +247,7 @@ class TreesTable extends Table
     }
 
     /**
-     * Generate unique `slug` if needed.
+     * Generate unique `slug` and calculate `priority` from `position`.
      *
      * @param \Cake\Event\EventInterface $event The event
      * @param \Cake\Datasource\EntityInterface $entity The entity persisted
@@ -264,6 +262,73 @@ class TreesTable extends Table
             $slug = Text::truncate($slug, 255);
             $entity->set('slug', $slug);
         }
+
+        if ($entity->has('position')) {
+            $position = $entity->get('position');
+            $parentId = $entity->get('parent_id');
+
+            $siblings = $this->find()->where(
+                fn(QueryExpression $exp): QueryExpression => $parentId === null
+                    ? $exp->isNull($this->aliasField('parent_id'))
+                    : $exp->eq($this->aliasField('parent_id'), $parentId),
+            );
+            if (!$entity->isNew()) {
+                $siblings = $siblings->where(
+                    fn(QueryExpression $exp): QueryExpression => $exp->notEq($this->aliasField('id'), $entity->id),
+                );
+            }
+
+            $count = $siblings->count();
+            $max = $count + 1;
+
+            if ($position === 'first') {
+                $priority = 1;
+            } elseif ($position === 'last') {
+                $priority = $max;
+            } elseif (is_numeric($position) && (int)$position !== 0) {
+                $priority = (int)$position;
+
+                // Normalize position. Transform negative indexes, and apply bounds.
+                if ($priority < 0) {
+                    $priority = $max + $priority + 1;
+                }
+                $priority = max(1, min($max, $priority));
+            } else {
+                throw new BadRequestException(__d('bedita', 'Invalid position'));
+            }
+
+            $entity->set('priority', $priority);
+            $entity->unset('position');
+        }
+    }
+
+    /**
+     * Compact priorities of the old tree when an object changes parent.
+     *
+     * @param \Cake\Event\EventInterface $event Dispatched event.
+     * @param \BEdita\Core\Model\Entity\Tree $entity Entity instance.
+     * @return void
+     */
+    public function beforeSave(EventInterface $event, Tree $entity): void
+    {
+        if ($entity->get('parent_id') === $entity->get('object_id')) {
+            throw new RuntimeException('Cannot set a folder as its own parent');
+        }
+
+        $originalParentId = $entity->getOriginal('parent_id');
+        if ($entity->isNew() || !$entity->isDirty('parent_id') || $originalParentId === $entity->get('parent_id')) {
+            return;
+        }
+
+        $originalPriority = $entity->getOriginal('priority');
+        if ($originalPriority === null) {
+            return;
+        }
+
+        $this->updateAll(
+            ['priority = priority - 1'],
+            ['parent_id IS' => $originalParentId, 'priority >' => $originalPriority],
+        );
     }
 
     /**
@@ -275,14 +340,6 @@ class TreesTable extends Table
      */
     public function afterSave(EventInterface $event, Tree $entity): void
     {
-        if ($entity->has('position')) {
-            /** @var \BEdita\Core\Model\Behavior\TreeBehavior $treeBehavior */
-            $treeBehavior = $this->getBehavior('Tree');
-            if ($treeBehavior->moveAt($entity, $entity->get('position')) === false) {
-                throw new BadRequestException(__d('bedita', 'Invalid position'));
-            }
-        }
-
         // if canonical set to `true` => set to `false` other `canonical` occurrences
         if ($entity->isDirty('canonical') && $entity->get('canonical')) {
             $this->updateAll(
@@ -294,19 +351,23 @@ class TreesTable extends Table
             );
         }
 
-        if ($entity->isNew()) {
+        if ($entity->isNew() || !$entity->isDirty('root_id')) {
             return;
         }
 
-        // update root_id
-        $this->updateAll(
-            ['root_id' => $entity->root_id],
-            [
-                'tree_left >' => $entity->tree_left,
-                'tree_right <' => $entity->tree_right,
-                'root_id !=' => $entity->root_id,
-            ],
-        );
+        // update descendant's root_id
+        $ids = $this->find('descendants', ['for' => $entity->id])
+            ->select([$this->aliasField('id')])
+            ->all()
+            ->extract('id')
+            ->toList();
+
+        if (!empty($ids)) {
+            $this->updateAll(
+                ['root_id' => $entity->root_id],
+                ['id IN' => $ids, 'root_id !=' => $entity->root_id],
+            );
+        }
     }
 
     /**
@@ -363,30 +424,15 @@ class TreesTable extends Table
      */
     protected function findPathNodes(SelectQuery $query, int $objectId): SelectQuery
     {
-        $lft = $this->aliasField('tree_left');
-        $rgt = $this->aliasField('tree_right');
         $node = $this->find()
-            ->select([$lft, $rgt])
-            ->where(['object_id' => $objectId])
+            ->select([$this->aliasField('id')])
+            ->where([$this->aliasField('object_id') => $objectId])
             ->disableHydration()
             ->firstOrFail();
 
-        $index = 'trees_nsm_idx';
-        if ($query->getConnection()->getDriver() instanceof Mysql && in_array($index, $this->getSchema()->indexes())) {
-            $query = $query->modifier([sprintf(
-                '/*+ INDEX(%s %s) */',
-                $this->getAlias(),
-                $index,
-            )]);
-        }
+        $query = $query->find('ancestors', ['for' => $node['id'], 'includeSelf' => true]);
 
-        return $query
-            ->where(
-                fn(QueryExpression $exp): QueryExpression => $exp
-                    ->lte($lft, $node['tree_left'])
-                    ->gte($rgt, $node['tree_right']),
-            )
-            ->orderByAsc($lft);
+        return $query->orderByAsc(AdjacencyListBehavior::CTE_FIELD_LEVEL);
     }
 
     /**

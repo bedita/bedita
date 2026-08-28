@@ -199,7 +199,7 @@ class BeditaCommandTest extends TestCase
             $returnValues = [
                 $driver, // Driver
                 $originalConfig['host'], // Hostname
-                Hash::get($originalConfig, 'port', ''), // Port
+                (string)Hash::get($originalConfig, 'port', ''), // Port
                 $originalConfig['database'], // Database name
                 $originalConfig['username'], // Username
                 Hash::get($originalConfig, 'password', ''), // Password
