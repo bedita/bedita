@@ -35,6 +35,14 @@ class QueryFactory extends CakeQueryFactory
     /**
      * @inheritDoc
      */
+    public function unhydratedSelect(Table $table): UnhydratedSelectQuery
+    {
+        return new UnhydratedSelectQuery($table);
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function insert(Table $table): InsertQuery
     {
         return new InsertQuery($table);
