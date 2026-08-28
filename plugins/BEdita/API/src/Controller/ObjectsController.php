@@ -206,8 +206,7 @@ class ObjectsController extends ResourcesController
         if ($savedByReferences) {
             $contain['CreatedByUsers'] = ['strategy' => 'select'];
             $contain['ModifiedByUsers'] = ['strategy' => 'select'];
-            $currTable = $table ?? $this->Table;
-            if ($currTable->hasAssociation('Streams')) {
+            if ($objectType instanceof ObjectType && $objectType->hasAssoc('Streams')) {
                 $contain['Streams'] = ['CreatedByUsers' => ['strategy' => 'select']];
             }
         }
