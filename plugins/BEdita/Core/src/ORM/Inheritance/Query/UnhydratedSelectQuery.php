@@ -19,8 +19,8 @@ use Cake\ORM\Query\UnhydratedSelectQuery as CakeUnhydratedSelectQuery;
 /**
  * UnhydratedSelectQuery class for tables that use class table inheritance (CTI).
  * Replicates the behavior of CakePHP's UnhydratedSelectQuery for inheritance.
- * @see {\Cake\ORM\Query\UnhydratedSelectQuery}
  *
+ * @see {\Cake\ORM\Query\UnhydratedSelectQuery}
  * @since 5.49.0
  */
 class UnhydratedSelectQuery extends CakeUnhydratedSelectQuery

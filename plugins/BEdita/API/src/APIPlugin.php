@@ -23,7 +23,6 @@ use Cake\Core\BasePlugin;
 use Cake\Core\Configure;
 use Cake\Core\PluginApplicationInterface;
 use Cake\Error\Middleware\ErrorHandlerMiddleware;
-use Cake\Event\EventManager;
 use Cake\Http\MiddlewareQueue;
 use Cake\Http\ServerRequest;
 use Cake\Log\LogTrait;
