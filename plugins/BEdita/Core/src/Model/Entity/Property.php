@@ -149,7 +149,7 @@ class Property extends Entity implements JsonApiSerializable
             ObjectTypesTable::CACHE_CONFIG,
         );
 
-        if (empty($propertyTypes[$propertyType])) {
+        if (empty($propertyTypes[(string)$propertyType])) {
             // Unknown property type.
             $this->property_type = null;
             $this->property_type_id = null;
@@ -157,7 +157,7 @@ class Property extends Entity implements JsonApiSerializable
             return null;
         }
 
-        $this->property_type = $propertyTypes[$propertyType];
+        $this->property_type = $propertyTypes[(string)$propertyType];
         $this->property_type_id = $this->property_type->id;
 
         return $this->property_type->name;
