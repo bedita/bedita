@@ -15,7 +15,7 @@ declare(strict_types=1);
 namespace BEdita\Core\ORM\Inheritance\Query;
 
 use Cake\Database\Expression\QueryExpression;
-use Cake\ORM\Query\SelectQuery;
+use Cake\ORM\Query\SelectQuery as CakeSelectQuery;
 use Cake\ORM\Table;
 
 /**
@@ -68,9 +68,9 @@ trait SelectQueryTrait
      *
      * @return \Cake\ORM\Query\SelectQuery
      */
-    public function getInheritanceSubQuery(): SelectQuery
+    public function getInheritanceSubQuery(): CakeSelectQuery
     {
-        $subQuery = new SelectQuery($this->_repository);
+        $subQuery = new CakeSelectQuery($this->_repository);
 
         // Current table.
         $subQuery
