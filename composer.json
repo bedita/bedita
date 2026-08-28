@@ -37,9 +37,9 @@
         "cakephp/repl": "^2.0.1",
         "phpunit/phpunit": "^12.5.1",
         "bedita/dev-tools": "^3.1.1",
-        "phpstan/phpstan": "^1.7.1",
+        "phpstan/phpstan": "^2.2",
         "phpstan/extension-installer": "^1.0",
-        "phpstan/phpstan-deprecation-rules": "^1.0",
+        "phpstan/phpstan-deprecation-rules": "^2.0",
         "dereuromark/cakephp-ide-helper": "^2.5.3"
     },
     "conflict": {
