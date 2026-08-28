@@ -27,8 +27,8 @@ use Cake\Validation\Validator;
 /**
  * RolesUsers Model
  *
- * @property \Cake\ORM\Association\BelongsTo $Roles
- * @property \Cake\ORM\Association\BelongsTo $Users
+ * @property \Cake\ORM\Association\BelongsTo|\BEdita\Core\Model\Table\RolesTable $Roles
+ * @property \Cake\ORM\Association\BelongsTo|\BEdita\Core\Model\Table\UsersTable $Users
  * @method \BEdita\Core\Model\Entity\RolesUser get(mixed $primaryKey, array|string $finder = 'all', \Psr\SimpleCache\CacheInterface|string|null $cache = null, \Closure|string|null $cacheKey = null, mixed ...$args)
  * @method \BEdita\Core\Model\Entity\RolesUser newEntity(array $data, array $options = [])
  * @method \BEdita\Core\Model\Entity\RolesUser[] newEntities(array $data, array $options = [])
@@ -145,11 +145,10 @@ class RolesUsersTable extends Table
             return false;
         }
 
-        $query = $this->Roles->find();
+        $query = $this->Roles->unhydratedFind();
         $priorityUser = $query
             ->select(['min_value' => $query->func()->min($this->Roles->aliasField('priority'))])
             ->where(['id IN' => $ids])
-            ->disableHydration()
             ->all()
             ->map(fn(array $row): int => (int)Hash::get($row, 'min_value'))
             ->first();

@@ -22,8 +22,8 @@
     ],
     "require": {
         "php": ">=8.3",
-        "cakephp/cakephp": "~5.3.2",
-        "cakephp/migrations": "^4.8.2",
+        "cakephp/cakephp": "~5.4.1",
+        "cakephp/migrations": "^5.0",
         "cakephp/plugin-installer": "^2.0",
         "mobiledetect/mobiledetectlib": "^4.8.03",
         "guzzlehttp/psr7": "^2.2.1",
@@ -37,15 +37,15 @@
         "cakephp/repl": "^2.0.1",
         "phpunit/phpunit": "^12.5.1",
         "bedita/dev-tools": "^3.1.1",
-        "phpstan/phpstan": "^1.7.1",
+        "phpstan/phpstan": "^2.2",
         "phpstan/extension-installer": "^1.0",
-        "phpstan/phpstan-deprecation-rules": "^1.0",
+        "phpstan/phpstan-deprecation-rules": "^2.0",
         "dereuromark/cakephp-ide-helper": "^2.5.3"
     },
     "conflict": {
-        "symfony/config": "^7",
-        "symfony/console": "^7",
-        "symfony/filesystem": "^7"
+        "symfony/config": "^8",
+        "symfony/console": "^8",
+        "symfony/filesystem": "^8"
     },
     "autoload": {
         "psr-4": {

@@ -17,6 +17,14 @@ end_of_line = crlf
 indent_style = space
 indent_size = 2
 
+[*.neon]
+indent_style = space
+indent_size = 2
+
+[*.neon.dist]
+indent_style = space
+indent_size = 2
+
 [Vagrantfile]
 indent_style = space
 indent_size = 2

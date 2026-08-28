@@ -12,7 +12,7 @@
  */
 
 use Migrations\BaseMigration;
-use Phinx\Db\Adapter\MysqlAdapter;
+use Migrations\Db\Adapter\MysqlAdapter;
 
 /**
  * Increase `objects.extra` column size to 16MB (on MySQL only)

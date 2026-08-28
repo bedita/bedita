@@ -149,7 +149,7 @@ class Property extends Entity implements JsonApiSerializable
             ObjectTypesTable::CACHE_CONFIG,
         );
 
-        if (empty($propertyTypes[(string)$propertyType])) {
+        if ($propertyType === null || empty($propertyTypes[$propertyType])) {
             // Unknown property type.
             $this->property_type = null;
             $this->property_type_id = null;

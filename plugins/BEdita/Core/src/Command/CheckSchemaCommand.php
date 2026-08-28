@@ -41,20 +41,6 @@ class CheckSchemaCommand extends Command
     use LocatorAwareTrait;
 
     /**
-     * Console arguments
-     *
-     * @var \Cake\Console\Arguments
-     */
-    protected Arguments $args;
-
-    /**
-     * Console IO
-     *
-     * @var \Cake\Console\ConsoleIo
-     */
-    protected ConsoleIo $io;
-
-    /**
      * Registry of all issues found.
      *
      * @var array
@@ -67,17 +53,6 @@ class CheckSchemaCommand extends Command
      * @var array
      */
     protected array $reservedWords = [];
-
-    /**
-     * {@inheritDoc}
-     *
-     * @codeCoverageIgnore
-     */
-    public function __construct()
-    {
-        $this->setName('cake check_schema');
-        parent::__construct();
-    }
 
     /**
      * @inheritDoc
@@ -115,21 +90,18 @@ class CheckSchemaCommand extends Command
      */
     public function execute(Arguments $args, ConsoleIo $io): int
     {
-        $this->args = $args;
-        $this->io = $io;
-
         if (!Plugin::isLoaded('Migrations')) {
-            $this->io->abort('Plugin "Migrations" must be loaded in order to perform schema checks');
+            $io->abort('Plugin "Migrations" must be loaded in order to perform schema checks');
         }
 
         try {
-            $connection = ConnectionManager::get($this->args->getOption('connection'));
+            $connection = ConnectionManager::get($args->getOption('connection'));
         } catch (Throwable $e) {
-            $this->io->error($e->getMessage());
-            $this->io->abort('Unknown connection type');
+            $io->error($e->getMessage());
+            $io->abort('Unknown connection type');
         }
 
-        if (!$this->args->getOption('ignore-migration-status')) {
+        if (!$args->getOption('ignore-migration-status')) {
             $this->checkMigrationsStatus($connection);
         }
 
@@ -140,7 +112,7 @@ class CheckSchemaCommand extends Command
             // Schema check removed for now - will be restored in a future release
             // $this->checkDiff($connection);
         } else {
-            $this->io->out('=====> <warning>SQL conventions and schema differences can only be checked on MySQL</warning>');
+            $io->out('=====> <warning>SQL conventions and schema differences can only be checked on MySQL</warning>');
         }
 
         return $this->formatMessages() ? static::CODE_SUCCESS : static::CODE_ERROR;

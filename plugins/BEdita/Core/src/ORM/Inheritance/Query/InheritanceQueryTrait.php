@@ -34,8 +34,8 @@ trait InheritanceQueryTrait
         if ($table instanceof Table) {
             // Add types of fields from inherited tables, so that they are cast to the correct type.
             $alias = $table->getAlias();
-            foreach ($table->inheritedTables() as $table) {
-                $map = $table->getSchema()->typeMap();
+            foreach ($table->inheritedTables() as $t) {
+                $map = $t->getSchema()->typeMap();
                 $fields = [];
                 foreach ($map as $f => $type) {
                     $fields[$f] = $fields[$alias . '.' . $f] = $fields[$alias . '__' . $f] = $type;

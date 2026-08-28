@@ -23,7 +23,6 @@ use Cake\Core\BasePlugin;
 use Cake\Core\Configure;
 use Cake\Core\PluginApplicationInterface;
 use Cake\Error\Middleware\ErrorHandlerMiddleware;
-use Cake\Event\EventManager;
 use Cake\Http\MiddlewareQueue;
 use Cake\Http\ServerRequest;
 use Cake\Log\LogTrait;
@@ -53,8 +52,16 @@ class APIPlugin extends BasePlugin
         ServerRequest::addDetector('jsonapi', function ($request) {
             return $request->accepts(JsonApiComponent::CONTENT_TYPE);
         });
+    }
 
-        EventManager::instance()->on(new CommonEventHandler());
+    /**
+     * @inheritDoc
+     */
+    public function eventListener(): array
+    {
+        return [
+            CommonEventHandler::class,
+        ];
     }
 
     /**

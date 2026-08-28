@@ -178,9 +178,8 @@ class ConfigTable extends Table
      */
     public function fetchConfig(?int $applicationId, ?string $context): SelectQuery
     {
-        $query = $this->find()
+        $query = $this->unhydratedFind()
             ->select(['name', 'content'])
-            ->disableHydration()
             ->where(function (QueryExpression $exp) use ($applicationId, $context): QueryExpression {
                 if (!empty($context)) {
                     $exp = $exp->eq($this->aliasField('context'), $context);

@@ -1107,14 +1107,14 @@ class ObjectTypeTest extends TestCase
         $called = 0;
         $objectType->getEventManager()->on(
             'ObjectType.getSchema',
-            function (Event $event, array $schema, ObjectType $ot) use ($expected, $objectType, &$called): array {
+            function (Event $event, array $schema, ObjectType $ot) use ($expected, $objectType, &$called): void {
                 $called++;
 
                 static::assertSame($objectType, $event->getSubject());
                 static::assertSame($objectType, $ot);
                 static::assertEquals($expected, Hash::remove($schema, 'properties.{*}.description'));
 
-                return ['foo'];
+                $event->setResult(['foo']);
             },
         );
 

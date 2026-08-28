@@ -22,9 +22,9 @@
     ],
     "require": {
         "php": ">=8.3",
-        "cakephp/cakephp": "~5.3.2",
-        "cakephp/migrations": "^4.8.2",
-        "cakephp/queue": "^2.2.0",
+        "cakephp/cakephp": "~5.4.1",
+        "cakephp/migrations": "^5.0",
+        "cakephp/queue": "^2.3.1",
         "league/flysystem": "^3.30.2",
         "league/glide": "^3.0",
         "symfony/yaml": "^7.3.5",

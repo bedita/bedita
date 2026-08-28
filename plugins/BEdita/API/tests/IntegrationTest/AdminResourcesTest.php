@@ -93,7 +93,7 @@ class AdminResourcesTest extends IntegrationTestCase
      * @return void
      */
     #[DataProvider('resourceProvider')]
-    public function testResource($type, $attributes, $modified)
+    public function testResource(string $type, array $attributes, array $modified)
     {
         // CREATE
         $data = [

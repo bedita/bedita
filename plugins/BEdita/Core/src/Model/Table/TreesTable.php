@@ -365,10 +365,9 @@ class TreesTable extends Table
     {
         $lft = $this->aliasField('tree_left');
         $rgt = $this->aliasField('tree_right');
-        $node = $this->find()
+        $node = $this->unhydratedFind()
             ->select([$lft, $rgt])
             ->where(['object_id' => $objectId])
-            ->disableHydration()
             ->firstOrFail();
 
         $index = 'trees_nsm_idx';
@@ -397,7 +396,7 @@ class TreesTable extends Table
      */
     protected function loadSlugsPath(array $conditions): array
     {
-        return (array)$this->Objects->find('available')
+        return (array)$this->Objects->unhydratedFind('available')
             ->where($conditions)
             ->select([
                 'id',
@@ -405,7 +404,6 @@ class TreesTable extends Table
                 'object_type_id',
             ])
             ->innerJoinWith('TreeNodes')
-            ->disableHydration()
             ->first();
     }
 
