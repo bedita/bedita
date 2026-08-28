@@ -396,7 +396,7 @@ class TreesTable extends Table
      */
     protected function loadSlugsPath(array $conditions): array
     {
-        return (array)$this->Objects->find('available')
+        return (array)$this->Objects->unhydratedFind('available')
             ->where($conditions)
             ->select([
                 'id',
@@ -404,7 +404,6 @@ class TreesTable extends Table
                 'object_type_id',
             ])
             ->innerJoinWith('TreeNodes')
-            ->disableHydration()
             ->first();
     }
 

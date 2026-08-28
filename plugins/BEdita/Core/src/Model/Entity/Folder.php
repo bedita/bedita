@@ -129,8 +129,7 @@ class Folder extends ObjectEntity
         }
 
         $Trees = TableRegistry::getTableLocator()->get('Trees');
-        $descendantPermitted = $Trees->selectQuery()
-            ->disableHydration()
+        $descendantPermitted = $Trees->unhydratedSelectQuery()
             ->select(['existing' => 1])
             ->from(['t1' => 'trees'], true)
             ->innerJoin(

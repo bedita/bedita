@@ -228,11 +228,10 @@ class StreamsTable extends Table
      */
     public function nextVersion(int $objectId): int
     {
-        $query = $this->find();
+        $query = $this->unhydratedFind();
         $result = $query
             ->select(['max_version' => $query->func()->max('version')])
             ->where(['object_id' => $objectId])
-            ->disableHydration()
             ->first();
 
         return (int)($result['max_version'] ?? 0) + 1;

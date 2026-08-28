@@ -718,7 +718,7 @@ class JsonApiTraitTest extends TestCase
             ],
         ];
 
-        $document = $this->Documents->get(2, ['contain' => ['TestSimple']])->jsonApiSerialize();
+        $document = $this->Documents->get(2, contain: ['TestSimple'])->jsonApiSerialize();
         static::assertEquals($expected, (array)Hash::extract($document, 'relationships.test_simple.data.0'));
     }
 
