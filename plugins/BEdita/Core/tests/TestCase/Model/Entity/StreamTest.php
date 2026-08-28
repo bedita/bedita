@@ -28,6 +28,7 @@ use Laminas\Diactoros\Stream;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Psr\Http\Message\StreamInterface;
+use ReflectionMethod;
 use stdClass;
 
 /**
@@ -148,6 +149,27 @@ class StreamTest extends TestCase
         $path = $stream->filesystemPath($filesystem, $subLevels);
 
         static::assertSame($expected, $path);
+    }
+
+    /**
+     * Test that `created_by_user` fullname is added to `meta` when the association is loaded.
+     *
+     * @return void
+     */
+    public function testGetMetaCreatedByUser()
+    {
+        $stream = $this->Streams->get('9e58fa47-db64-4479-a0ab-88a706180d59');
+        $getMeta = new ReflectionMethod($stream, 'getMeta');
+
+        static::assertArrayNotHasKey('created_by_user', $getMeta->invoke($stream));
+
+        $user = TableRegistry::getTableLocator()->get('Users')->newEntity(
+            ['name' => 'First', 'surname' => 'User'],
+            ['guard' => false],
+        );
+        $stream->set('created_by_user', $user, ['guard' => false]);
+
+        static::assertSame('First User', $getMeta->invoke($stream)['created_by_user']);
     }
 
     /**

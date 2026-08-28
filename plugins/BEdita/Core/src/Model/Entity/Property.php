@@ -157,7 +157,7 @@ class Property extends Entity implements JsonApiSerializable
             return null;
         }
 
-        $this->property_type = $propertyTypes[$propertyType];
+        $this->property_type = $propertyTypes[(string)$propertyType];
         $this->property_type_id = $this->property_type->id;
 
         return $this->property_type->name;

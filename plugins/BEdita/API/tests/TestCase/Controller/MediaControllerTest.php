@@ -21,6 +21,7 @@ use BEdita\API\TestSuite\IntegrationTestCase;
 use BEdita\Core\Filesystem\Thumbnail;
 use BEdita\Core\Test\Utility\TestFilesystemTrait;
 use Cake\Core\Configure;
+use Cake\ORM\TableRegistry;
 use Cake\Utility\Hash;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -1116,5 +1117,28 @@ class MediaControllerTest extends IntegrationTestCase
         $this->assertResponseCode(200);
         $this->assertContentType('application/vnd.api+json');
         static::assertEquals($expected, $result);
+    }
+
+    /**
+     * Test that `saved_by_refs` adds `created_by_user` fullname to included streams' `meta`.
+     *
+     * @return void
+     */
+    public function testSingleViewSavedByRefsStreams()
+    {
+        $streams = TableRegistry::getTableLocator()->get('Streams');
+        $stream = $streams->get('6aceb0eb-bd30-4f60-ac74-273083b921b6');
+        $stream->set('created_by', 1, ['guard' => false]);
+        $streams->saveOrFail($stream, ['checkRules' => false]);
+
+        $this->configRequestHeaders();
+        $this->get('/files/14?saved_by_refs=1');
+        $result = json_decode((string)$this->_response->getBody(), true);
+
+        $this->assertResponseCode(200);
+        $this->assertContentType('application/vnd.api+json');
+        static::assertSame('First User', $result['data']['meta']['created_by_user']);
+        static::assertSame(1, $result['included'][0]['meta']['created_by']);
+        static::assertSame('First User', $result['included'][0]['meta']['created_by_user']);
     }
 }

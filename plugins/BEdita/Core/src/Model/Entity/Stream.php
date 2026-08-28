@@ -50,11 +50,14 @@ use Psr\Http\Message\StreamInterface;
  * @property \Cake\I18n\DateTime $created
  * @property \Cake\I18n\DateTime $modified
  * @property \BEdita\Core\Model\Entity\ObjectEntity|null $object
+ * @property \BEdita\Core\Model\Entity\User|null $created_by_user
  */
 class Stream extends Entity implements JsonApiSerializable
 {
     use EventDispatcherTrait;
-    use JsonApiTrait;
+    use JsonApiTrait {
+        getMeta as protected jsonApiGetMeta;
+    }
     use LogTrait;
 
     public const FILE_PROPERTIES = [
@@ -150,6 +153,19 @@ class Stream extends Entity implements JsonApiSerializable
             $prefix, // Prefix.
             $fileName, // File name.
         );
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected function getMeta(): array
+    {
+        $meta = $this->jsonApiGetMeta();
+        if ($this->created_by_user) {
+            $meta['created_by_user'] = $this->created_by_user->get('fullname');
+        }
+
+        return $meta;
     }
 
     /**
