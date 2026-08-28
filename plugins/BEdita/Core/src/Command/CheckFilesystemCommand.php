@@ -28,31 +28,6 @@ class CheckFilesystemCommand extends Command
     use LocatorAwareTrait;
 
     /**
-     * Console arguments
-     *
-     * @var \Cake\Console\Arguments
-     */
-    protected Arguments $args;
-
-    /**
-     * Console IO
-     *
-     * @var \Cake\Console\ConsoleIo
-     */
-    protected ConsoleIo $io;
-
-    /**
-     * {@inheritDoc}
-     *
-     * @codeCoverageIgnore
-     */
-    public function __construct()
-    {
-        $this->setName('cake check_filesystem');
-        parent::__construct();
-    }
-
-    /**
      * @inheritDoc
      */
     public function buildOptionParser(ConsoleOptionParser $parser): ConsoleOptionParser
@@ -84,29 +59,26 @@ class CheckFilesystemCommand extends Command
      */
     public function execute(Arguments $args, ConsoleIo $io): int
     {
-        $this->args = $args;
-        $this->io = $io;
-
         // Load paths to be checked.
-        $paths = $this->args->getArguments('paths ...');
+        $paths = $args->getArguments();
         $paths = array_unique(array_filter($paths) ?: [TMP, LOGS]);
 
         // Detect HTTP daemon user.
         $httpdUser = $this->getHttpdUser();
         if (empty($httpdUser)) {
-            $this->io->out('=====> <warning>Unable to detect webserver user</warning>');
+            $io->out('=====> <warning>Unable to detect webserver user</warning>');
 
             return static::CODE_ERROR;
         }
 
         // Check that paths are writable by HTTPD user.
         if (!$this->checkPaths($paths, $httpdUser)) {
-            $this->io->out('=====> <warning>Potential issues were found, please check your installation</warning>');
+            $io->out('=====> <warning>Potential issues were found, please check your installation</warning>');
 
             return static::CODE_ERROR;
         }
 
-        $this->io->out('=====> <success>Filesystem permissions look alright. Time to write something in those shiny folders!</success>');
+        $io->out('=====> <success>Filesystem permissions look alright. Time to write something in those shiny folders!</success>');
 
         return static::CODE_SUCCESS;
     }

@@ -29,20 +29,6 @@ class CheckApiKeyCommand extends Command
     use LocatorAwareTrait;
 
     /**
-     * Console arguments
-     *
-     * @var \Cake\Console\Arguments
-     */
-    protected Arguments $args;
-
-    /**
-     * Console IO
-     *
-     * @var \Cake\Console\ConsoleIo
-     */
-    protected ConsoleIo $io;
-
-    /**
      * Applications table
      *
      * @var \BEdita\Core\Model\Table\ApplicationsTable
@@ -73,24 +59,22 @@ class CheckApiKeyCommand extends Command
      */
     public function execute(Arguments $args, ConsoleIo $io): int
     {
-        $this->args = $args;
-        $this->io = $io;
         $this->table = $this->fetchTable('Applications');
         try {
-            $this->io->verbose('=====> Loading default application... ', 0);
+            $io->verbose('=====> Loading default application... ', 0);
             $application = $this->table->get(ApplicationsTable::DEFAULT_APPLICATION);
-            $this->io->verbose('<info>DONE</info>');
+            $io->verbose('<info>DONE</info>');
         } catch (RecordNotFoundException $e) {
-            $this->io->verbose('<error>FAIL</error>');
-            $this->io->abort('Default application is missing, please check your installation');
+            $io->verbose('<error>FAIL</error>');
+            $io->abort('Default application is missing, please check your installation');
         }
         if (empty($application->api_key)) {
-            $this->io->out('=====> <warning>Default application has no API key</warning>');
+            $io->out('=====> <warning>Default application has no API key</warning>');
 
             return static::CODE_ERROR;
         }
-        $this->io->out(sprintf('=====> Default API key is: <info>%s</info>', $application->api_key));
-        $this->io->out('=====> <success>API key is ok. You can now make your requests even more handsome with it!</success>');
+        $io->out(sprintf('=====> Default API key is: <info>%s</info>', $application->api_key));
+        $io->out('=====> <success>API key is ok. You can now make your requests even more handsome with it!</success>');
 
         return static::CODE_SUCCESS;
     }

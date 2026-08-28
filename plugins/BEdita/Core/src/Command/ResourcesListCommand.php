@@ -31,20 +31,6 @@ class ResourcesListCommand extends Command
     use LocatorAwareTrait;
 
     /**
-     * Console arguments
-     *
-     * @var \Cake\Console\Arguments
-     */
-    protected Arguments $args;
-
-    /**
-     * Console IO
-     *
-     * @var \Cake\Console\ConsoleIo
-     */
-    protected ConsoleIo $io;
-
-    /**
      * The table
      *
      * @var \Cake\ORM\Table
@@ -94,8 +80,6 @@ class ResourcesListCommand extends Command
     public function execute(Arguments $args, ConsoleIo $io): int
     {
         $type = $args->getOption('type');
-        $this->args = $args;
-        $this->io = $io;
         $this->table = $this->fetchTable(Inflector::camelize($type));
         $action = new ListEntitiesAction(['table' => $this->table]);
         $filter = $args->getOption('filter');
