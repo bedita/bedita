@@ -1,4 +1,5 @@
 <?php
+use function Cake\Core\env;
 
 /*
  * Local configuration file to provide any overrides to your app.php configuration.
