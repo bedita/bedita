@@ -53,8 +53,16 @@ class APIPlugin extends BasePlugin
         ServerRequest::addDetector('jsonapi', function ($request) {
             return $request->accepts(JsonApiComponent::CONTENT_TYPE);
         });
+    }
 
-        EventManager::instance()->on(new CommonEventHandler());
+    /**
+     * @inheritDoc
+     */
+    public function eventListener(): array
+    {
+        return [
+            CommonEventHandler::class,
+        ];
     }
 
     /**
