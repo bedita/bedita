@@ -83,7 +83,6 @@ class TreesTableTest extends TestCase
      */
     public function tearDown(): void
     {
-        unset($this->Trees);
         Configure::delete('ChildrenParams');
 
         parent::tearDown();

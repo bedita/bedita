@@ -9,5 +9,3 @@ parameters:
     - plugins/BEdita/Core/src
     - plugins/BEdita/Core/tests
   level: 1
-  ignoreErrors:
-    - identifier: unset.possiblyHookedProperty

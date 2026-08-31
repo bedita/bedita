@@ -66,18 +66,6 @@ class EndpointPermissionsTableTest extends TestCase
     }
 
     /**
-     * tearDown method
-     *
-     * @return void
-     */
-    public function tearDown(): void
-    {
-        unset($this->EndpointPermissions);
-
-        parent::tearDown();
-    }
-
-    /**
      * Test initialize method
      *
      * @return void

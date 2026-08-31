@@ -97,17 +97,6 @@ class JsonApiTraitTest extends TestCase
     }
 
     /**
-     * @inheritDoc
-     */
-    public function tearDown(): void
-    {
-        unset($this->Roles);
-        unset($this->ObjectTypes);
-
-        parent::tearDown();
-    }
-
-    /**
      * Test getter for table.
      *
      * @return void

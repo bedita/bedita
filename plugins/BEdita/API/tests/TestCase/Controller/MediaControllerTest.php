@@ -101,7 +101,6 @@ class MediaControllerTest extends IntegrationTestCase
         }
         Thumbnail::setRegistry($this->originalRegistry);
         Thumbnail::setConfig($this->originalConfig);
-        unset($this->originalConfig, $this->originalRegistry);
     }
 
     /**

@@ -70,16 +70,6 @@ class ObjectTypeTest extends TestCase
     }
 
     /**
-     * @inheritDoc
-     */
-    public function tearDown(): void
-    {
-        unset($this->ObjectTypes);
-
-        parent::tearDown();
-    }
-
-    /**
      * Test accessible properties.
      *
      * @return void

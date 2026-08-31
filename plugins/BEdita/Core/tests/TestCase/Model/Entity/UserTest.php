@@ -68,16 +68,6 @@ class UserTest extends TestCase
     }
 
     /**
-     * @inheritDoc
-     */
-    public function tearDown(): void
-    {
-        unset($this->Users);
-
-        parent::tearDown();
-    }
-
-    /**
      * Test accessible properties.
      *
      * @return void

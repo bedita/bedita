@@ -83,7 +83,6 @@ class FoldersTableTest extends TestCase
      */
     public function tearDown(): void
     {
-        unset($this->Folders);
         LoggedUser::resetUser();
 
         parent::tearDown();

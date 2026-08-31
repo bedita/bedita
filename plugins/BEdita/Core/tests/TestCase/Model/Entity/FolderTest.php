@@ -70,16 +70,6 @@ class FolderTest extends TestCase
     }
 
     /**
-     * @inheritDoc
-     */
-    public function tearDown(): void
-    {
-        unset($this->Folders);
-
-        parent::tearDown();
-    }
-
-    /**
      * Test getter for `parent`
      *
      * @return void

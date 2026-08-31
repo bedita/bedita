@@ -71,16 +71,6 @@ class StaticPropertyTest extends TestCase
     }
 
     /**
-     * @inheritDoc
-     */
-    public function tearDown(): void
-    {
-        unset($this->Properties);
-
-        parent::tearDown();
-    }
-
-    /**
      * Test conversion from a property to a static property.
      *
      * @return void

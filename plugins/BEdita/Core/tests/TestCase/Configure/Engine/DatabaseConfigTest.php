@@ -58,17 +58,6 @@ class DatabaseConfigTest extends TestCase
     }
 
     /**
-     * tearDown method
-     *
-     * @return void
-     */
-    public function tearDown(): void
-    {
-        unset($this->DatabaseConfig);
-        parent::tearDown();
-    }
-
-    /**
      * Test read method
      *
      * @return void

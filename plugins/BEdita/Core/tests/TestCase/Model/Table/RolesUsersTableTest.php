@@ -63,16 +63,6 @@ class RolesUsersTableTest extends TestCase
     }
 
     /**
-     * @inheritDoc
-     */
-    public function tearDown(): void
-    {
-        unset($this->RolesUsers);
-
-        parent::tearDown();
-    }
-
-    /**
      * Data provider for `testValidation` test case.
      *
      * @return array

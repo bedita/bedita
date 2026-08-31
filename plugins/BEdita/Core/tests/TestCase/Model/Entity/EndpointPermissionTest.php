@@ -66,16 +66,6 @@ class EndpointPermissionTest extends TestCase
     }
 
     /**
-     * @inheritDoc
-     */
-    public function tearDown(): void
-    {
-        unset($this->EndpointPermissions);
-
-        parent::tearDown();
-    }
-
-    /**
      * Test accessible properties.
      *
      * @return void

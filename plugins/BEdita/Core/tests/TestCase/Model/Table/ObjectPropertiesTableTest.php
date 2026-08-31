@@ -56,18 +56,6 @@ class ObjectPropertiesTableTest extends TestCase
     }
 
     /**
-     * tearDown method
-     *
-     * @return void
-     */
-    public function tearDown(): void
-    {
-        unset($this->ObjectProperties);
-
-        parent::tearDown();
-    }
-
-    /**
      * Test initialize method
      *
      * @return void

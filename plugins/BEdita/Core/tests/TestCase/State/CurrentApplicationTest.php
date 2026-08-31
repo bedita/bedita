@@ -60,16 +60,6 @@ class CurrentApplicationTest extends TestCase
     }
 
     /**
-     * @inheritDoc
-     */
-    public function tearDown(): void
-    {
-        unset($this->Applications);
-
-        parent::tearDown();
-    }
-
-    /**
      * Test `getApplication` method.
      *
      * @return void

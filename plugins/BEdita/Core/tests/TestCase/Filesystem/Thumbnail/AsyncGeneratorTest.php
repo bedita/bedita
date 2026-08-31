@@ -115,9 +115,6 @@ class AsyncGeneratorTest extends TestCase
         }
         Thumbnail::setRegistry($this->originalRegistry);
         Thumbnail::setConfig($this->originalConfig);
-        unset($this->originalConfig, $this->originalRegistry);
-
-        unset($this->AsyncJobs, $this->Streams, $this->generator);
 
         parent::tearDown();
     }

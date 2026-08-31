@@ -76,16 +76,6 @@ class JsonApiTest extends TestCase
     }
 
     /**
-     * @inheritDoc
-     */
-    public function tearDown(): void
-    {
-        unset($this->Roles);
-
-        parent::tearDown();
-    }
-
-    /**
      * Data provider for `testFormatData` test case.
      *
      * @return array

@@ -60,18 +60,6 @@ class ObjectCategoriesTableTest extends TestCase
     }
 
     /**
-     * tearDown method
-     *
-     * @return void
-     */
-    public function tearDown(): void
-    {
-        unset($this->ObjectCategories);
-
-        parent::tearDown();
-    }
-
-    /**
      * Data provider for `testValidation` test case.
      *
      * @return array
