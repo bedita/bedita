@@ -157,7 +157,10 @@ class CheckSchemaCommand extends Command
     protected function filterPhinxlogTables(array $tables): array
     {
         return array_filter($tables, function ($table) {
-            return $table !== 'phinxlog' && substr($table, -strlen('_phinxlog')) !== '_phinxlog';
+            return $table !== 'phinxlog'
+                && substr($table, -strlen('_phinxlog')) !== '_phinxlog'
+                && $table !== 'cake_migrations'
+                && $table != 'cake_seeds';
         });
     }
 
