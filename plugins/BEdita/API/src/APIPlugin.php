@@ -21,6 +21,7 @@ use BEdita\API\Middleware\AnalyticsMiddleware;
 use BEdita\API\Middleware\CorsMiddleware;
 use Cake\Core\BasePlugin;
 use Cake\Core\Configure;
+use Cake\Core\ContainerInterface;
 use Cake\Core\PluginApplicationInterface;
 use Cake\Error\Middleware\ErrorHandlerMiddleware;
 use Cake\Http\MiddlewareQueue;
@@ -57,7 +58,15 @@ class APIPlugin extends BasePlugin
     /**
      * @inheritDoc
      */
-    public function eventListener(): array
+    public function services(ContainerInterface $container): void
+    {
+        $container->add(CommonEventHandler::class);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function eventListeners(): array
     {
         return [
             CommonEventHandler::class,

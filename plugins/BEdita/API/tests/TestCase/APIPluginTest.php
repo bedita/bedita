@@ -17,6 +17,7 @@ namespace BEdita\API\Test\TestCase;
 use BEdita\API\APIPlugin;
 use BEdita\API\App\BaseApplication;
 use BEdita\API\Error\ExceptionRenderer;
+use BEdita\API\Event\CommonEventHandler;
 use BEdita\API\Middleware\AnalyticsMiddleware;
 use BEdita\API\Middleware\CorsMiddleware;
 use Cake\Core\Configure;
@@ -60,6 +61,7 @@ class APIPluginTest extends TestCase
         };
 
         $plugin = new APIPlugin();
+        $app->addPlugin($plugin);
         $plugin->bootstrap($app);
 
         static::assertEquals(ExceptionRenderer::class, Configure::read('Error.exceptionRenderer'));
@@ -85,5 +87,19 @@ class APIPluginTest extends TestCase
             static::assertInstanceOf(current($expected), $actual);
             next($expected);
         }
+    }
+
+    /**
+     * Test eventListener method.
+     *
+     * @return void
+     */
+    public function testEventListeners(): void
+    {
+        $expected = [
+            CommonEventHandler::class,
+        ];
+        $plugin = new APIPlugin();
+        static::assertEquals($expected, $plugin->eventListeners());
     }
 }
