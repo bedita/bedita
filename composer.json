@@ -23,14 +23,14 @@
     "require": {
         "php": ">=8.3",
         "cakephp/cakephp": "~5.4.2",
-        "cakephp/migrations": "^5.0",
-        "cakephp/plugin-installer": "^2.0",
-        "mobiledetect/mobiledetectlib": "^4.8.03",
+        "cakephp/migrations": "^5.2.6",
+        "cakephp/plugin-installer": "^2.0.2",
+        "mobiledetect/mobiledetectlib": "^4.11.0",
         "guzzlehttp/psr7": "^2.2.1",
         "wikimedia/composer-merge-plugin": "^2.1.0"
     },
     "require-dev": {
-        "cakephp/bake": "^3.5.0",
+        "cakephp/bake": "^3.8.1",
         "cakephp/cakephp-codesniffer": "^5.3.0",
         "cakephp/debug_kit": "^5.2.0",
         "phpstan/phpdoc-parser": "^2.1",
