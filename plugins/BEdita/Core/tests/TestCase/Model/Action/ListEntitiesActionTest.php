@@ -334,7 +334,7 @@ class ListEntitiesActionTest extends TestCase
         ];
 
         $table = TableRegistry::getTableLocator()->get('FakeAnimals');
-        $contain = ['FakeArticles'];
+        $contain = ['FakeArticles' => ['sort' => ['id' => 'ASC']]];
         $action = new ListEntitiesAction(compact('table'));
 
         $result = $action(compact('contain'));
