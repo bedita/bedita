@@ -62,15 +62,6 @@ class SetupAdminUserCommandTest extends TestCase
     }
 
     /**
-     * @inheritDoc
-     */
-    public function tearDown(): void
-    {
-        unset($this->Users);
-        parent::tearDown();
-    }
-
-    /**
      * Test buildOptionParser method
      *
      * @return void

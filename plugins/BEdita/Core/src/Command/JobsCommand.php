@@ -32,20 +32,6 @@ class JobsCommand extends Command
     use LocatorAwareTrait;
 
     /**
-     * Console arguments
-     *
-     * @var \Cake\Console\Arguments
-     */
-    protected Arguments $args;
-
-    /**
-     * Console IO
-     *
-     * @var \Cake\Console\ConsoleIo
-     */
-    protected ConsoleIo $io;
-
-    /**
      * Async jobs table
      *
      * @var \BEdita\Core\Model\Table\AsyncJobsTable
@@ -97,12 +83,10 @@ class JobsCommand extends Command
     public function execute(Arguments $args, ConsoleIo $io)
     {
         $this->table = $this->fetchTable('AsyncJobs');
-        $this->args = $args;
-        $this->io = $io;
         $action = $this->args->getArgument('action');
         // this is to make it retrocompatible: bin/cake jobs run <uuid>
         if (in_array($action, ['process', 'run'])) {
-            return $this->process($this->args->getArgument('uuid'));
+            return $this->process($args->getArgument('uuid'));
         }
 
         return $this->{$action}();

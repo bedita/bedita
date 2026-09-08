@@ -31,20 +31,6 @@ class ResourcesModifyCommand extends Command
     use LocatorAwareTrait;
 
     /**
-     * Console arguments
-     *
-     * @var \Cake\Console\Arguments
-     */
-    protected Arguments $args;
-
-    /**
-     * Console IO
-     *
-     * @var \Cake\Console\ConsoleIo
-     */
-    protected ConsoleIo $io;
-
-    /**
      * The Table
      *
      * @var \Cake\ORM\Table
@@ -65,7 +51,7 @@ class ResourcesModifyCommand extends Command
     /**
      * Editable resource fields
      *
-     * @var <array>string
+     * @var array<string>
      */
     public static array $editableFields = ['api_key', 'description', 'enabled', 'name', 'unchangeable'];
 
@@ -108,25 +94,23 @@ class ResourcesModifyCommand extends Command
     {
         $type = $args->getOption('type');
         $field = $args->getOption('field');
-        $this->args = $args;
-        $this->io = $io;
         $this->table = $this->fetchTable(Inflector::camelize($type));
-        $id = $this->args->getArgument('name|id');
+        $id = $args->getArgument('name|id');
         $condition = is_numeric($id) ? compact('id') : ['name' => $id];
         $entity = $this->table->find()
             ->where($condition)
             ->first();
         if (empty($entity)) {
-            $this->io->abort(sprintf('Resource with id %s not found', $id));
+            $io->abort(sprintf('Resource with id %s not found', $id));
         }
         if ($field === 'api_key' && $this->table instanceof ApplicationsTable) {
             $entity->set('api_key', ApplicationsTable::generateApiKey());
         } else {
-            $value = $this->io->ask(sprintf('New value for "%s" [current is "%s"]', $field, $entity->get($field)));
+            $value = $io->ask(sprintf('New value for "%s" [current is "%s"]', $field, $entity->get($field)));
             $entity->set($field, $value);
         }
         $this->table->saveOrFail($entity);
-        $this->io->out(sprintf('Resource with id %d modified', $entity->id));
+        $io->out(sprintf('Resource with id %d modified', $entity->id));
 
         return static::CODE_SUCCESS;
     }

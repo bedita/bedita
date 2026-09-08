@@ -53,16 +53,6 @@ class ConfigTest extends TestCase
     }
 
     /**
-     * @inheritDoc
-     */
-    public function tearDown(): void
-    {
-        unset($this->Config);
-
-        parent::tearDown();
-    }
-
-    /**
      * Test entity
      *
      * @return void

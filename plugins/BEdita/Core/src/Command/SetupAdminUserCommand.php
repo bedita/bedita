@@ -39,36 +39,11 @@ class SetupAdminUserCommand extends Command
     public const DEFAULT_USERNAME = 'bedita';
 
     /**
-     * Console arguments
-     *
-     * @var \Cake\Console\Arguments
-     */
-    protected Arguments $args;
-
-    /**
-     * Console IO
-     *
-     * @var \Cake\Console\ConsoleIo
-     */
-    protected ConsoleIo $io;
-
-    /**
      * Users table
      *
      * @var \BEdita\Core\Model\Table\UsersTable
      */
     protected UsersTable $table;
-
-    /**
-     * {@inheritDoc}
-     *
-     * @codeCoverageIgnore
-     */
-    public function __construct()
-    {
-        $this->setName('cake setup_admin_user');
-        parent::__construct();
-    }
 
     /**
      * @inheritDoc
@@ -117,49 +92,47 @@ class SetupAdminUserCommand extends Command
      */
     public function execute(Arguments $args, ConsoleIo $io): int
     {
-        $this->args = $args;
-        $this->io = $io;
         $this->table = $this->fetchTable('Users');
 
         try {
-            $this->io->verbose('=====> Retrieving information for default administrator user... ', 0);
+            $io->verbose('=====> Retrieving information for default administrator user... ', 0);
             $user = $this->table->get(UsersTable::ADMIN_USER);
-            $this->io->verbose('<info>DONE</info>');
+            $io->verbose('<info>DONE</info>');
         } catch (RecordNotFoundException $e) {
-            $this->io->verbose('<error>FAIL</error>');
-            $this->io->abort(sprintf('Missing user %d!', UsersTable::ADMIN_USER));
+            $io->verbose('<error>FAIL</error>');
+            $io->abort(sprintf('Missing user %d!', UsersTable::ADMIN_USER));
         }
 
         if ($user->username !== static::DEFAULT_USERNAME) {
-            $this->io->out(sprintf('=====> Administrator user <comment>%s</comment> has already been configured.', $user->username));
+            $io->out(sprintf('=====> Administrator user <comment>%s</comment> has already been configured.', $user->username));
 
             $adminOverwrite = null;
-            if ($this->args->getOption('no-admin-overwrite')) {
+            if ($args->getOption('no-admin-overwrite')) {
                 $adminOverwrite = false;
-            } elseif (!$this->args->getOption('admin-overwrite')) {
-                $adminOverwrite = ($this->io->askChoice('Do you want to overwrite current admin user?', ['y', 'n'], 'n') === 'y');
+            } elseif (!$args->getOption('admin-overwrite')) {
+                $adminOverwrite = ($io->askChoice('Do you want to overwrite current admin user?', ['y', 'n'], 'n') === 'y');
             } else {
-                $adminOverwrite = $this->args->getOption('admin-overwrite');
+                $adminOverwrite = $args->getOption('admin-overwrite');
             }
             if (!$adminOverwrite) {
-                $this->io->out('=====> <success>Existing administrator user has been preserved. Don\'t panic!</success>');
+                $io->out('=====> <success>Existing administrator user has been preserved. Don\'t panic!</success>');
 
                 return static::CODE_SUCCESS;
             }
         }
 
         $adminUsername = null;
-        if (!$this->args->getOption('admin-username')) {
-            $adminUsername = $this->io->ask('Enter new username for default admin user:');
+        if (!$args->getOption('admin-username')) {
+            $adminUsername = $io->ask('Enter new username for default admin user:');
         } else {
-            $adminUsername = $this->args->getOption('admin-username');
+            $adminUsername = $args->getOption('admin-username');
         }
         $adminPassword = null;
-        if (!$this->args->getOption('admin-password')) {
-            $this->io->quiet('=====> <warning>Typing will NOT be hidden!</warning> Please do not enter really sensitive data here.');
-            $adminPassword = $this->io->ask('Enter new password for default admin user:');
+        if (!$args->getOption('admin-password')) {
+            $io->quiet('=====> <warning>Typing will NOT be hidden!</warning> Please do not enter really sensitive data here.');
+            $adminPassword = $io->ask('Enter new password for default admin user:');
         } else {
-            $adminPassword = $this->args->getOption('admin-password');
+            $adminPassword = $args->getOption('admin-password');
         }
 
         $user->username = $adminUsername;
@@ -167,15 +140,15 @@ class SetupAdminUserCommand extends Command
         $user->blocked = false;
 
         try {
-            $this->io->verbose('=====> Saving user credentials... ', 0);
+            $io->verbose('=====> Saving user credentials... ', 0);
             $this->table->saveOrFail($user, ['associated' => false]);
-            $this->io->verbose('<info>DONE</info>');
+            $io->verbose('<info>DONE</info>');
         } catch (PersistenceFailedException $e) {
-            $this->io->verbose('<error>FAIL</error>');
-            $this->io->abort($e->getMessage());
+            $io->verbose('<error>FAIL</error>');
+            $io->abort($e->getMessage());
         }
 
-        $this->io->out('=====> <success>Administrator user set up. You are now ready to rock BEdita!</success>');
+        $io->out('=====> <success>Administrator user set up. You are now ready to rock BEdita!</success>');
 
         return static::CODE_SUCCESS;
     }

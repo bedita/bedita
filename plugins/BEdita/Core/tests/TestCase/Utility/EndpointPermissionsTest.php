@@ -55,15 +55,6 @@ class EndpointPermissionsTest extends TestCase
     }
 
     /**
-     * @inheritDoc
-     */
-    public function tearDown(): void
-    {
-        unset($this->EndpointPermissions);
-        parent::tearDown();
-    }
-
-    /**
      * Test `create()` method.
      *
      * @return void

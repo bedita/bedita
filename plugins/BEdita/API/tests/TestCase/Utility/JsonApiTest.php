@@ -76,16 +76,6 @@ class JsonApiTest extends TestCase
     }
 
     /**
-     * @inheritDoc
-     */
-    public function tearDown(): void
-    {
-        unset($this->Roles);
-
-        parent::tearDown();
-    }
-
-    /**
      * Data provider for `testFormatData` test case.
      *
      * @return array
@@ -510,7 +500,7 @@ class JsonApiTest extends TestCase
                     ],
                 ],
                 function () {
-                    return TableRegistry::getTableLocator()->get('Documents')->get(2, ['contain' => ['Test']]);
+                    return TableRegistry::getTableLocator()->get('Documents')->get(2, contain: ['Test']);
                 },
             ],
         ];

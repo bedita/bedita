@@ -59,16 +59,6 @@ class ExternalAuthTest extends TestCase
     }
 
     /**
-     * @inheritDoc
-     */
-    public function tearDown(): void
-    {
-        unset($this->ExternalAuth);
-
-        parent::tearDown();
-    }
-
-    /**
      * Test accessible properties.
      *
      * @return void

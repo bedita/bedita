@@ -64,16 +64,6 @@ class TranslationsTableTest extends TestCase
     }
 
     /**
-     * @inheritDoc
-     */
-    public function tearDown(): void
-    {
-        unset($this->Translations);
-
-        parent::tearDown();
-    }
-
-    /**
      * Test initialization.
      *
      * @return void

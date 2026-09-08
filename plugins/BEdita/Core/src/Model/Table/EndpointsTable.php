@@ -117,9 +117,8 @@ class EndpointsTable extends Table
         $path = array_values(array_filter(explode('/', $path)));
         $name = Hash::get($path, '0', '');
 
-        $query = $this->find()
+        $query = $this->unhydratedFind()
             ->select(['id', 'enabled'])
-            ->disableHydration()
             ->where([$this->aliasField('name') => $name]);
 
         /** @var \BEdita\Core\Model\Behavior\QueryCacheBehavior $queryCacheBehavior */

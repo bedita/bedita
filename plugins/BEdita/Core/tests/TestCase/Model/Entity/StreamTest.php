@@ -75,7 +75,7 @@ class StreamTest extends TestCase
     public function tearDown(): void
     {
         $this->filesystemRestore();
-        unset($this->Streams);
+
         parent::tearDown();
     }
 

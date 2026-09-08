@@ -62,16 +62,6 @@ class TreeTest extends TestCase
     }
 
     /**
-     * @inheritDoc
-     */
-    public function tearDown(): void
-    {
-        unset($this->Trees);
-
-        parent::tearDown();
-    }
-
-    /**
      * Test setter for `parent_id`
      *
      * @return void

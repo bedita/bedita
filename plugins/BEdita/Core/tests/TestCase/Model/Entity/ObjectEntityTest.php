@@ -77,8 +77,6 @@ class ObjectEntityTest extends TestCase
      */
     public function tearDown(): void
     {
-        unset($this->Objects);
-
         ObjectEntity::setExtraInlineAssociations([], false);
 
         parent::tearDown();

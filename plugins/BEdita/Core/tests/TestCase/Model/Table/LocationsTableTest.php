@@ -72,7 +72,6 @@ class LocationsTableTest extends TestCase
      */
     public function tearDown(): void
     {
-        unset($this->Locations);
         LoggedUser::resetUser();
 
         parent::tearDown();

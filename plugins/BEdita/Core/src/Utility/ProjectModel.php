@@ -256,7 +256,7 @@ class ProjectModel
         $rolesTable = TableRegistry::getTableLocator()->get('Roles');
 
         $result = $table
-            ->find()
+            ->unhydratedFind()
             ->select([
                 $table->aliasField('permission'),
                 $table->aliasField('endpoint_id'),
@@ -269,7 +269,6 @@ class ProjectModel
             ->leftJoinWith('Endpoints')
             ->leftJoinWith('Applications')
             ->leftJoinWith('Roles')
-            ->disableHydration()
             ->all()
             ->map(function (array $row): array {
                 return [

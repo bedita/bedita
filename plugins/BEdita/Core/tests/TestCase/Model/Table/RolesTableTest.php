@@ -70,7 +70,6 @@ class RolesTableTest extends TestCase
      */
     public function tearDown(): void
     {
-        unset($this->Roles);
         LoggedUser::resetUser();
 
         parent::tearDown();

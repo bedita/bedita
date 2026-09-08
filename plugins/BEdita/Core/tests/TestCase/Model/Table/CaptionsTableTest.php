@@ -55,18 +55,6 @@ class CaptionsTableTest extends TestCase
     }
 
     /**
-     * tearDown method
-     *
-     * @return void
-     */
-    protected function tearDown(): void
-    {
-        unset($this->Captions);
-
-        parent::tearDown();
-    }
-
-    /**
      * Test initialization.
      *
      * @return void

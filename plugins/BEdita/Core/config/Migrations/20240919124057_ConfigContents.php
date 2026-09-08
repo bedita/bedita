@@ -2,7 +2,7 @@
 declare(strict_types=1);
 
 use Migrations\BaseMigration;
-use Phinx\Db\Adapter\MysqlAdapter;
+use Migrations\Db\Adapter\MysqlAdapter;
 
 class ConfigContents extends BaseMigration
 {

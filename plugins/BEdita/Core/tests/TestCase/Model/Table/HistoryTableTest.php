@@ -56,18 +56,6 @@ class HistoryTableTest extends TestCase
     }
 
     /**
-     * tearDown method
-     *
-     * @return void
-     */
-    public function tearDown(): void
-    {
-        unset($this->History);
-
-        parent::tearDown();
-    }
-
-    /**
      * Data provider for `testValidation` test case.
      *
      * @return array

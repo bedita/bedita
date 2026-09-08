@@ -76,7 +76,6 @@ class ExternalAuthTableTest extends TestCase
      */
     public function tearDown(): void
     {
-        unset($this->ExternalAuth);
         LoggedUser::resetUser();
 
         parent::tearDown();

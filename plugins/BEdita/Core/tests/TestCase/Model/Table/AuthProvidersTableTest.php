@@ -54,16 +54,6 @@ class AuthProvidersTableTest extends TestCase
     }
 
     /**
-     * @inheritDoc
-     */
-    public function tearDown(): void
-    {
-        unset($this->AuthProviders);
-
-        parent::tearDown();
-    }
-
-    /**
      * Test initialization.
      *
      * @return void

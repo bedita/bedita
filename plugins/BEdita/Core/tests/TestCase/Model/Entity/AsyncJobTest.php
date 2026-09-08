@@ -77,8 +77,6 @@ class AsyncJobTest extends TestCase
      */
     public function tearDown(): void
     {
-        unset($this->AsyncJobs);
-
         if (in_array('async_jobs', ConnectionManager::configured())) {
             ConnectionManager::drop('async_jobs');
         }

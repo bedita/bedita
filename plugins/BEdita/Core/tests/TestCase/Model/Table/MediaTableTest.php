@@ -79,7 +79,6 @@ class MediaTableTest extends TestCase
     public function tearDown(): void
     {
         $this->filesystemRestore();
-        unset($this->Media);
         LoggedUser::resetUser();
 
         parent::tearDown();

@@ -33,31 +33,6 @@ class SetupConnectionCommand extends Command
     use LocatorAwareTrait;
 
     /**
-     * Console arguments
-     *
-     * @var \Cake\Console\Arguments
-     */
-    protected Arguments $args;
-
-    /**
-     * Console IO
-     *
-     * @var \Cake\Console\ConsoleIo
-     */
-    protected ConsoleIo $io;
-
-    /**
-     * {@inheritDoc}
-     *
-     * @codeCoverageIgnore
-     */
-    public function __construct()
-    {
-        $this->setName('cake setup_connection');
-        parent::__construct();
-    }
-
-    /**
      * @inheritDoc
      */
     public function buildOptionParser(ConsoleOptionParser $parser): ConsoleOptionParser
@@ -122,26 +97,23 @@ class SetupConnectionCommand extends Command
      */
     public function execute(Arguments $args, ConsoleIo $io): int
     {
-        $this->args = $args;
-        $this->io = $io;
-
-        $connectionName = $this->args->getOption('connection');
+        $connectionName = $args->getOption('connection');
         $connection = ConnectionManager::get($connectionName);
         if (!($connection instanceof Connection)) {
-            $this->io->abort('Invalid connection object');
+            $io->abort('Invalid connection object');
         }
 
         // Check if connection has already been configured, and assert we're able to connect.
         if ($this->isConnectionConfigured($connection)) {
-            $this->io->verbose('=====> <info>Connection has already been configured</info>');
+            $io->verbose('=====> <info>Connection has already been configured</info>');
 
             $this->checkCanConnect($connection);
 
-            $this->io->out('=====> <success>Connection is still ok. Relax...</success>');
+            $io->out('=====> <success>Connection is still ok. Relax...</success>');
 
             return static::CODE_SUCCESS;
         }
-        $this->io->verbose('=====> <info>Connection hasn\'t been configured yet</info>');
+        $io->verbose('=====> <info>Connection hasn\'t been configured yet</info>');
 
         // Ask user for connection params, check ability to connect, and save config to file.
         $newConnection = $this->readConnectionParams($connection);
@@ -149,12 +121,12 @@ class SetupConnectionCommand extends Command
         $this->saveConnectionConfig($newConnection);
 
         // Clean up things.
-        $this->io->verbose('=====> Replacing old connection and flushing models');
+        $io->verbose('=====> Replacing old connection and flushing models');
         ConnectionManager::drop($connectionName);
         ConnectionManager::setConfig($connectionName, ['className' => Connection::class] + $newConnection->config());
         TableRegistry::getTableLocator()->clear();
 
-        $this->io->out('=====> <success>Connection is ok. It\'s time to start using BEdita!</success>');
+        $io->out('=====> <success>Connection is ok. It\'s time to start using BEdita!</success>');
 
         return static::CODE_SUCCESS;
     }
