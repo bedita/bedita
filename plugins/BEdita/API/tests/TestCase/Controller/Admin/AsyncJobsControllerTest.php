@@ -61,6 +61,7 @@ class AsyncJobsControllerTest extends IntegrationTestCase
                     'attributes' => [
                         'service' => 'example',
                         'priority' => 1,
+                        'job_options' => null,
                         'payload' => [
                             'key' => 'value',
                         ],
@@ -86,6 +87,7 @@ class AsyncJobsControllerTest extends IntegrationTestCase
                     'attributes' => [
                         'service' => 'example',
                         'priority' => 1,
+                        'job_options' => null,
                         'payload' => [
                             'key' => 'value',
                         ],
@@ -111,6 +113,7 @@ class AsyncJobsControllerTest extends IntegrationTestCase
                     'attributes' => [
                         'service' => 'example',
                         'priority' => 1,
+                        'job_options' => null,
                         'payload' => [
                             'key' => 'value',
                         ],
@@ -136,6 +139,7 @@ class AsyncJobsControllerTest extends IntegrationTestCase
                     'attributes' => [
                         'service' => 'signup',
                         'priority' => 20,
+                        'job_options' => null,
                         'payload' => [
                             'user_id' => '99999',
                         ],
@@ -161,6 +165,7 @@ class AsyncJobsControllerTest extends IntegrationTestCase
                     'attributes' => [
                         'service' => 'example',
                         'priority' => 1,
+                        'job_options' => null,
                         'payload' => [
                             'key' => 'value',
                         ],
@@ -186,6 +191,7 @@ class AsyncJobsControllerTest extends IntegrationTestCase
                     'attributes' => [
                         'service' => 'example',
                         'priority' => 1,
+                        'job_options' => null,
                         'payload' => [
                             'key' => 'value',
                         ],
@@ -211,6 +217,7 @@ class AsyncJobsControllerTest extends IntegrationTestCase
                     'attributes' => [
                         'service' => 'example',
                         'priority' => 1,
+                        'job_options' => null,
                         'payload' => [
                             'key' => 'value',
                         ],
@@ -236,6 +243,7 @@ class AsyncJobsControllerTest extends IntegrationTestCase
                     'attributes' => [
                         'service' => 'example2',
                         'priority' => 10,
+                        'job_options' => null,
                         'payload' => [
                             'key' => 'value',
                         ],
@@ -324,6 +332,7 @@ class AsyncJobsControllerTest extends IntegrationTestCase
                 'attributes' => [
                     'service' => 'example',
                     'priority' => 1,
+                    'job_options' => null,
                     'payload' => [
                         'key' => 'value',
                     ],

@@ -34,6 +34,7 @@ class AsyncJobsTransport extends AbstractTransport
     protected array $_defaultConfig = [
         'service' => 'mail',
         'max_attempts' => 3,
+        'job_options' => null,
     ];
 
     /**
@@ -50,6 +51,7 @@ class AsyncJobsTransport extends AbstractTransport
         if ($this->getConfig('priority') !== null) {
             $asyncJob->priority = $this->getConfig('priority');
         }
+        $asyncJob->job_options = $this->getConfig('job_options');
 
         $payload = $message->jsonSerialize();
         // Remove unnecessary attributes from payload since templates have already been rendered
