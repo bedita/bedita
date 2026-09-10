@@ -10,8 +10,12 @@ class AsyncJobsAddColumnOptions extends BaseMigration
      */
     public function up()
     {
+        $adapterType = $this->getAdapter()->getAdapterType();
         $columnTypes = $this->getAdapter()->getColumnTypes();
         $json = in_array('json', $columnTypes) ? 'json' : 'text';
+        if ($adapterType === 'pgsql' && in_array('jsonb', $columnTypes)) {
+            $json = 'jsonb';
+        }
         $this->table('async_jobs')
             ->addColumn('job_options', $json, [
                 'after' => 'priority',
