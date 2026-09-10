@@ -105,7 +105,7 @@ class AsyncJob extends Entity implements JsonApiSerializable, EventDispatcherInt
         if ($this->status !== 'locked') {
             throw new BadMethodCallException('Only locked jobs can be run');
         }
-
+        $options += $this->job_options ?? [];
         $service = ServiceRegistry::get($this->service);
         $entity = $this;
         $this->dispatchEvent('AsyncJob.beforeRun', compact('entity', 'options'), $service);
