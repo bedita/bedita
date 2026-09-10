@@ -13,7 +13,7 @@ class AsyncJobsAddColumnOptions extends BaseMigration
         $columnTypes = $this->getAdapter()->getColumnTypes();
         $json = in_array('json', $columnTypes) ? 'json' : 'text';
         $this->table('async_jobs')
-            ->addColumn('options', $json, [
+            ->addColumn('job_options', $json, [
                 'after' => 'priority',
                 'comment' => 'Job options (JSON)',
                 'default' => null,
@@ -29,7 +29,7 @@ class AsyncJobsAddColumnOptions extends BaseMigration
     public function down()
     {
         $this->table('async_jobs')
-            ->removeColumn('options')
+            ->removeColumn('job_options')
             ->update();
     }
 }

@@ -28,7 +28,7 @@ use Cake\ORM\Entity;
  * @property string $uuid
  * @property string $service
  * @property int $priority
- * @property array|null $options
+ * @property array|null $job_options
  * @property array|null $payload
  * @property \Cake\I18n\DateTime|null $scheduled_from
  * @property \Cake\I18n\DateTime|null $expires
@@ -53,7 +53,7 @@ class AsyncJob extends Entity implements JsonApiSerializable, EventDispatcherInt
         'uuid' => true,
         'service' => true,
         'priority' => true,
-        'options' => true,
+        'job_options' => true,
         'payload' => true,
         'scheduled_from' => true,
         'expires' => true,

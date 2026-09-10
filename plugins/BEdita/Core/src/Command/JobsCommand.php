@@ -113,7 +113,7 @@ class JobsCommand extends Command
         $success = false;
         $messages = [];
         try {
-            $result = $asyncJob->run($asyncJob->options ?? []);
+            $result = $asyncJob->run($asyncJob->job_options ?? []);
             $success = is_bool($result) ? $result : (bool)Hash::get((array)$result, 'success');
             $messages = is_array($result) ? (array)Hash::get($result, 'messages') : [];
         } catch (Exception $e) {
