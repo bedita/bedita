@@ -238,7 +238,8 @@ class AdjacencyListBehavior extends Behavior
             $foreignKey = static::prefix($bindingKey, $foreignKeyPrefix);
             $targetForeignKey = static::prefix($bindingKey, $targetForeignKeyPrefix);
 
-            return $table->belongsToMany($name, compact('targetTable', 'joinTable', 'through', 'foreignKey', 'targetForeignKey'));
+            return $table->belongsToMany($name, compact('targetTable', 'joinTable', 'through', 'foreignKey', 'targetForeignKey'))
+                ->setDependent(false);
         }
 
         $association = $table->getAssociation($name);
