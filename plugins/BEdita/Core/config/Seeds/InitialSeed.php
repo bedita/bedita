@@ -19,4 +19,12 @@ class InitialSeed extends BaseSeed
     public function run(): void
     {
     }
+
+    /**
+     * @inheritDoc
+     */
+    public function isIdempotent(): bool
+    {
+        return true;
+    }
 }
