@@ -8,14 +8,14 @@ if [ ! -z "${DATABASE_URL}" ]; then
         /wait-for-it.sh ${DATABASE_HOST} -s -t 0 -- echo '=====> Database Ready'
     fi
     bin/cake migrations migrate -p BEdita/Core
-    bin/cake migrations seed -p BEdita/Core --seed InitialSeed
+    bin/cake seeds run InitialSeed -p BEdita/Core
 
     if [ ! -z "${BEDITA_API_KEY}" ]; then
-        bin/cake migrations seed -p BEdita/Core --seed ApplicationFromEnvSeed
+        bin/cake seeds run ApplicationFromEnvSeed -p BEdita/Core
     fi
 
     if [[ ! -z "${BEDITA_ADMIN_USR}" && ! -z "${BEDITA_ADMIN_PWD}" ]]; then
-        bin/cake migrations seed -p BEdita/Core --seed AdminFromEnvSeed
+        bin/cake seeds run AdminFromEnvSeed -p BEdita/Core
     fi
 
     DATABASE_VENDOR=$(php -r "echo explode('://', getenv('DATABASE_URL'))[0];")
