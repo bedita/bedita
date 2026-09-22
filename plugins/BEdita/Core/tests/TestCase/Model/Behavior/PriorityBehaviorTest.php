@@ -258,6 +258,44 @@ class PriorityBehaviorTest extends TestCase
     }
 
     /**
+     * Test that a priority is persisted when the stored value changed after the entity was loaded.
+     *
+     * Since CakePHP 5, setting a field to the value it already holds no longer marks it dirty,
+     * so without an explicit `setDirty()` the entity's priority is never written back.
+     *
+     * @return void
+     */
+    public function testUpdateStalePriority()
+    {
+        $table = TableRegistry::getTableLocator()->get('ObjectRelations');
+        $conditions = ['left_id' => 2, 'relation_id' => 1];
+
+        // Load the entity that is about to go stale.
+        $stale = $table->find()->where($conditions + ['right_id' => 7])->firstOrFail();
+        static::assertSame(3, $stale->get('priority'));
+
+        // Move another entity, shifting the stored priority of the stale one from 3 to 2.
+        $other = $table->find()->where($conditions + ['right_id' => 4])->firstOrFail();
+        $other->patch(['priority' => 3]);
+        $table->saveOrFail($other);
+        static::assertSame(2, $table->find()->where($conditions + ['right_id' => 7])->firstOrFail()->get('priority'));
+
+        // Touch an unrelated field, so the save is not skipped for a clean entity.
+        $stale->patch(['params' => ['answer' => 42]], ['guard' => false]);
+        static::assertFalse($stale->isDirty('priority'));
+        $table->saveOrFail($stale);
+
+        $actual = $table->find()
+            ->where($conditions)
+            ->orderBy(['priority'])
+            ->all()
+            ->combine('right_id', 'priority')
+            ->toArray();
+
+        static::assertSame([3 => 1, 4 => 2, 7 => 3], $actual);
+    }
+
+    /**
      * Test priorities compaction before entity is deleted using `ObjectRelations` table
      *
      * @return void

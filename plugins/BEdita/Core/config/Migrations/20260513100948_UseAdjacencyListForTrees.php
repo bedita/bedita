@@ -68,7 +68,7 @@ class UseAdjacencyListForTrees extends BaseMigration
             ->renameColumn('priority', 'tree_left')
             ->addColumn('tree_right', 'integer', [
                 'comment' => 'right counter (for nested set model)',
-                'default' => null,
+                'default' => 0, // PostgreSQL needs this
                 'limit' => 11,
                 'null' => false,
             ])
