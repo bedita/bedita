@@ -43,6 +43,20 @@ class FoldersType extends BaseMigration
                 ],
             ])
             ->save();
+
+        $adapter = $this->getAdapter();
+        $table = new Table([
+            'table' => 'object_types',
+            'connection' => $adapter->getConnection(),
+        ]);
+        // Now let's fix NSM (nested-set model) left and right indexes from tree data.
+        $table->addBehavior('BEdita/Core.Tree', [
+            'left' => 'tree_left',
+            'right' => 'tree_right',
+        ]);
+        /** @var \BEdita\Core\Model\Behavior\TreeBehavior $tree */
+        $tree = $table->behaviors()->get('Tree');
+        $tree->nonAtomicRecover();
     }
 
     /**
