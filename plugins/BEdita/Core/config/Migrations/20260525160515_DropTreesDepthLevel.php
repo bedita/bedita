@@ -23,7 +23,7 @@ class DropTreesDepthLevel extends AbstractMigration
         $this->table('trees')
             ->addColumn('depth_level', 'integer', [
                 'comment' => 'tree depth level',
-                'default' => null,
+                'default' => 0, // PostgreSQL needs this
                 'limit' => 10,
                 'null' => false,
                 'signed' => false,
