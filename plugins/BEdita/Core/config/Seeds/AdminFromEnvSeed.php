@@ -25,4 +25,12 @@ class AdminFromEnvSeed extends BaseSeed
         $query = sprintf("UPDATE users set username='%s', password_hash='%s' WHERE id=1", $username, $hash);
         $this->query($query);
     }
+
+    /**
+     * @inheritDoc
+     */
+    public function isIdempotent(): bool
+    {
+        return true;
+    }
 }

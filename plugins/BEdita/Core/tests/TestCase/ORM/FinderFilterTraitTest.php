@@ -97,15 +97,6 @@ class FinderFilterTraitTest extends TestCase
     }
 
     /**
-     * @inheritDoc
-     */
-    public function tearDown(): void
-    {
-        parent::tearDown();
-        unset($this->Table);
-    }
-
-    /**
      * Test that `hasFilter` method throws an exception if called on a class that is not a Table instance.
      *
      * @return void

@@ -68,8 +68,6 @@ class RelationTypesTableTest extends TestCase
      */
     public function tearDown(): void
     {
-        unset($this->RelationTypes);
-
         Cache::clear(ObjectTypesTable::CACHE_CONFIG);
         Cache::drop('_bedita_object_types_');
         Cache::setConfig('_bedita_object_types_', ['className' => 'Null']);

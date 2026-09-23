@@ -60,15 +60,6 @@ class TagsTableTest extends TestCase
     }
 
     /**
-     * @inheritDoc
-     */
-    public function tearDown(): void
-    {
-        unset($this->Tags);
-        parent::tearDown();
-    }
-
-    /**
      * Test `beforeFind` method
      *
      * @return void

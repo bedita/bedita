@@ -86,7 +86,6 @@ class ThumbnailTest extends TestCase
         }
         Thumbnail::setRegistry($this->originalRegistry);
         Thumbnail::setConfig($this->originalConfig);
-        unset($this->originalConfig, $this->originalRegistry);
 
         parent::tearDown();
     }

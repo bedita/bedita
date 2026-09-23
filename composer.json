@@ -22,30 +22,30 @@
     ],
     "require": {
         "php": ">=8.3",
-        "cakephp/cakephp": "~5.3.2",
-        "cakephp/migrations": "^4.8.2",
-        "cakephp/plugin-installer": "^2.0",
-        "mobiledetect/mobiledetectlib": "^4.8.03",
+        "cakephp/cakephp": "~5.4.2",
+        "cakephp/migrations": "^5.2.6",
+        "cakephp/plugin-installer": "^2.0.2",
+        "mobiledetect/mobiledetectlib": "^4.11.0",
         "guzzlehttp/psr7": "^2.2.1",
         "wikimedia/composer-merge-plugin": "^2.1.0"
     },
     "require-dev": {
-        "cakephp/bake": "^3.5.0",
+        "cakephp/bake": "^3.8.1",
         "cakephp/cakephp-codesniffer": "^5.3.0",
         "cakephp/debug_kit": "^5.2.0",
         "phpstan/phpdoc-parser": "^2.1",
         "cakephp/repl": "^2.0.1",
         "phpunit/phpunit": "^12.5.1",
         "bedita/dev-tools": "^3.1.1",
-        "phpstan/phpstan": "^1.7.1",
+        "phpstan/phpstan": "^2.2",
         "phpstan/extension-installer": "^1.0",
-        "phpstan/phpstan-deprecation-rules": "^1.0",
+        "phpstan/phpstan-deprecation-rules": "^2.0",
         "dereuromark/cakephp-ide-helper": "^2.5.3"
     },
     "conflict": {
-        "symfony/config": "^7",
-        "symfony/console": "^7",
-        "symfony/filesystem": "^7"
+        "symfony/config": "^8",
+        "symfony/console": "^8",
+        "symfony/filesystem": "^8"
     },
     "autoload": {
         "psr-4": {

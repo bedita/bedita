@@ -32,31 +32,6 @@ class InitSchemaCommand extends Command
     use LocatorAwareTrait;
 
     /**
-     * Console arguments
-     *
-     * @var \Cake\Console\Arguments
-     */
-    protected Arguments $args;
-
-    /**
-     * Console IO
-     *
-     * @var \Cake\Console\ConsoleIo
-     */
-    protected ConsoleIo $io;
-
-    /**
-     * {@inheritDoc}
-     *
-     * @codeCoverageIgnore
-     */
-    public function __construct()
-    {
-        $this->setName('cake init_schema');
-        parent::__construct();
-    }
-
-    /**
      * {@inheritDoc}
      *
      * @codeCoverageIgnore
@@ -110,10 +85,8 @@ class InitSchemaCommand extends Command
      */
     public function execute(Arguments $args, ConsoleIo $io): int
     {
-        $this->args = $args;
-        $this->io = $io;
-        $connection = ConnectionManager::get($this->args->getOption('connection'));
-        $this->io->verbose('<comment>You are about to initialize your instance.</comment>');
+        $connection = ConnectionManager::get($args->getOption('connection'));
+        $io->verbose('<comment>You are about to initialize your instance.</comment>');
         $this->cleanup($connection);
         $this->migrate($connection);
         $this->seed($connection);

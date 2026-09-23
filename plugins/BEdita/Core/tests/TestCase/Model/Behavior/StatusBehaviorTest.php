@@ -75,16 +75,6 @@ class StatusBehaviorTest extends TestCase
     }
 
     /**
-     * @inheritDoc
-     */
-    public function tearDown(): void
-    {
-        unset($this->Objects);
-
-        parent::tearDown();
-    }
-
-    /**
      * Data provider for `checkStatus`.
      *
      * @return array

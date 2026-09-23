@@ -65,13 +65,12 @@ class UpdateRelatedAction extends UpdateAssociatedAction
         }
 
         // Query database to map `uname`s to the corresponding `id`s.
-        $map = $table->find()
+        $map = $table->unhydratedFind()
             ->select(['id', 'uname'])
             ->where(function (QueryExpression $exp) use ($nonNumericIds): QueryExpression {
                 return $exp->in('uname', $nonNumericIds);
             })
             ->distinct()
-            ->disableHydration()
             ->all()
             ->combine('uname', 'id')
             ->toArray();

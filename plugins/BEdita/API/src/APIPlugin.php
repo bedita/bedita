@@ -21,9 +21,9 @@ use BEdita\API\Middleware\AnalyticsMiddleware;
 use BEdita\API\Middleware\CorsMiddleware;
 use Cake\Core\BasePlugin;
 use Cake\Core\Configure;
+use Cake\Core\ContainerInterface;
 use Cake\Core\PluginApplicationInterface;
 use Cake\Error\Middleware\ErrorHandlerMiddleware;
-use Cake\Event\EventManager;
 use Cake\Http\MiddlewareQueue;
 use Cake\Http\ServerRequest;
 use Cake\Log\LogTrait;
@@ -53,8 +53,24 @@ class APIPlugin extends BasePlugin
         ServerRequest::addDetector('jsonapi', function ($request) {
             return $request->accepts(JsonApiComponent::CONTENT_TYPE);
         });
+    }
 
-        EventManager::instance()->on(new CommonEventHandler());
+    /**
+     * @inheritDoc
+     */
+    public function services(ContainerInterface $container): void
+    {
+        $container->add(CommonEventHandler::class);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function eventListeners(): array
+    {
+        return [
+            CommonEventHandler::class,
+        ];
     }
 
     /**

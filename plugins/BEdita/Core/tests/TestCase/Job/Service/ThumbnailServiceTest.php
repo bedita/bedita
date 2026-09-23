@@ -95,9 +95,6 @@ class ThumbnailServiceTest extends TestCase
         }
         Thumbnail::setRegistry($this->originalRegistry);
         Thumbnail::setConfig($this->originalConfig);
-        unset($this->originalConfig, $this->originalRegistry);
-
-        unset($this->Streams);
 
         parent::tearDown();
     }

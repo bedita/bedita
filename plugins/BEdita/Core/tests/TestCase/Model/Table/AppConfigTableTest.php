@@ -55,15 +55,6 @@ class AppConfigTableTest extends TestCase
     }
 
     /**
-     * @inheritDoc
-     */
-    public function tearDown(): void
-    {
-        unset($this->AppConfig);
-        parent::tearDown();
-    }
-
-    /**
      * Test `initialize` method.
      *
      * @return void

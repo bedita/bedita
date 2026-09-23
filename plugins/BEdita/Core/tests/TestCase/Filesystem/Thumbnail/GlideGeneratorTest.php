@@ -84,7 +84,6 @@ class GlideGeneratorTest extends TestCase
     public function tearDown(): void
     {
         $this->filesystemRestore();
-        unset($this->generator, $this->Streams);
 
         parent::tearDown();
     }

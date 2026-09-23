@@ -127,8 +127,7 @@ class Folder extends ObjectEntity
             return false;
         }
 
-        $descendantPermitted = $Trees->find('descendants', ['for' => $node->id])
-            ->disableHydration()
+        $descendantPermitted = $Trees->unhydratedFind('descendants', ['for' => $node->id])
             ->innerJoinWith(
                 'Objects.Permissions',
                 fn(Query $q): Query => $q->where(['Permissions.role_id IN' => $roleIds]),
@@ -287,14 +286,13 @@ class Folder extends ObjectEntity
         try {
             $Trees = TableRegistry::getTableLocator()->get('Trees');
 
-            return $Trees->find('pathNodes', objectId: $this->id)
+            return $Trees->unhydratedFind('pathNodes', objectId: $this->id)
                 ->select([
                     'id' => $Trees->aliasField('object_id'),
                     $Trees->aliasField('menu'),
                     $Trees->aliasField('params'),
                     $Trees->aliasField('slug'),
                 ], true)
-                ->disableHydration()
                 ->toArray();
         } catch (RecordNotFoundException $previous) {
             throw new RuntimeException(__d('bedita', 'Folder "{0}" is not on the tree.', $this->id), 0, $previous);

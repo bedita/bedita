@@ -76,7 +76,6 @@ class StreamsTableTest extends TestCase
     public function tearDown(): void
     {
         $this->filesystemRestore();
-        unset($this->Streams);
         LoggedUser::resetUser();
         parent::tearDown();
     }

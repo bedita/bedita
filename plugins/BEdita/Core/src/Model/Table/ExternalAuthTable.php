@@ -167,8 +167,8 @@ class ExternalAuthTable extends Table
 
         if (is_string($authProvider)) {
             return $query
-                ->innerJoinWith('AuthProviders', function (SelectQuery $query) use ($authProvider) {
-                    return $query->where([
+                ->innerJoinWith('AuthProviders', function (SelectQuery $q) use ($authProvider) {
+                    return $q->where([
                         $this->AuthProviders->aliasField('name') => $authProvider,
                     ]);
                 });

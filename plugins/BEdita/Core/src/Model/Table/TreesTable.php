@@ -427,10 +427,9 @@ class TreesTable extends Table
      */
     protected function findPathNodes(SelectQuery $query, int $objectId): SelectQuery
     {
-        $node = $this->find()
+        $node = $this->unhydratedFind()
             ->select([$this->aliasField('id')])
             ->where([$this->aliasField('object_id') => $objectId])
-            ->disableHydration()
             ->firstOrFail();
 
         $query = $query->find('ancestors', ['for' => $node['id'], 'includeSelf' => true]);
@@ -446,7 +445,7 @@ class TreesTable extends Table
      */
     protected function loadSlugsPath(array $conditions): array
     {
-        return (array)$this->Objects->find('available')
+        return (array)$this->Objects->unhydratedFind('available')
             ->where($conditions)
             ->select([
                 'id',
@@ -454,7 +453,6 @@ class TreesTable extends Table
                 'object_type_id',
             ])
             ->innerJoinWith('TreeNodes')
-            ->disableHydration()
             ->first();
     }
 

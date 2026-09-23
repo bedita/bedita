@@ -52,16 +52,6 @@ class SearchRegistryTest extends TestCase
     }
 
     /**
-     * @inheritDoc
-     */
-    protected function tearDown(): void
-    {
-        parent::tearDown();
-
-        unset($this->registry);
-    }
-
-    /**
      * Data provider for {@see SearchRegistryTest::testLoad()} test case.
      *
      * @return array[]

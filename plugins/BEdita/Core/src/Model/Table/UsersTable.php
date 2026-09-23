@@ -210,9 +210,11 @@ class UsersTable extends Table
             return;
         }
 
+        /** @var \Cake\ORM\Behavior\TimestampBehavior $timestampBehavior */
+        $timestampBehavior = $this->getBehavior('Timestamp');
         $this->updateAll(
             [
-                'last_login' => $this->timestamp(),
+                'last_login' => $timestampBehavior->timestamp(),
                 'num_login_err' => 0,
             ],
             [
@@ -238,9 +240,11 @@ class UsersTable extends Table
             return;
         }
 
+        /** @var \Cake\ORM\Behavior\TimestampBehavior $timestampBehavior */
+        $timestampBehavior = $this->getBehavior('Timestamp');
         $this->updateAll(
             [
-                'last_login_err' => $this->timestamp(),
+                'last_login_err' => $timestampBehavior->timestamp(),
                 new QueryExpression('num_login_err = num_login_err + 1'),
             ],
             [
@@ -288,16 +292,16 @@ class UsersTable extends Table
     ): SelectQuery {
         $query = $query->find('loginRoles');
 
-        return $query->innerJoinWith('ExternalAuth', function (SelectQuery $query) use ($auth_provider, $username) {
-            $query = $query->find('authProvider', authProvider: $auth_provider);
+        return $query->innerJoinWith('ExternalAuth', function (SelectQuery $q) use ($auth_provider, $username) {
+            $q = $q->find('authProvider', authProvider: $auth_provider);
             if (!empty($username)) {
-                $query = $query->where(fn(QueryExpression $exp) => $exp->in(
+                $q = $q->where(fn(QueryExpression $exp) => $exp->in(
                     $this->ExternalAuth->aliasField('provider_username'),
                     (array)$username,
                 ));
             }
 
-            return $query;
+            return $q;
         });
     }
 

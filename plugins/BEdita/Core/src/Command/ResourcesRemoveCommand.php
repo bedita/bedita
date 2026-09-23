@@ -31,36 +31,11 @@ class ResourcesRemoveCommand extends Command
     use LocatorAwareTrait;
 
     /**
-     * Console arguments
-     *
-     * @var \Cake\Console\Arguments
-     */
-    protected Arguments $args;
-
-    /**
-     * Console IO
-     *
-     * @var \Cake\Console\ConsoleIo
-     */
-    protected ConsoleIo $io;
-
-    /**
      * The table
      *
      * @var \Cake\ORM\Table
      */
     protected Table $table;
-
-    /**
-     * {@inheritDoc}
-     *
-     * @codeCoverageIgnore
-     */
-    public function __construct()
-    {
-        $this->setName('cake resources_remove');
-        parent::__construct();
-    }
 
     /**
      * @inheritDoc
@@ -94,17 +69,15 @@ class ResourcesRemoveCommand extends Command
     public function execute(Arguments $args, ConsoleIo $io): int
     {
         $type = $args->getOption('type');
-        $this->args = $args;
-        $this->io = $io;
         $this->table = $this->fetchTable(Inflector::camelize($type));
-        $id = $this->args->getArgument('name|id');
-        $res = $this->io->askChoice(
+        $id = $args->getArgument('name|id');
+        $res = $io->askChoice(
             sprintf('You are REMOVING "%s" with name or id "%s" - are you sure?', $type, $id),
             ['y', 'n'],
             'n',
         );
         if ($res !== 'y') {
-            $this->io->info('No action performed');
+            $io->info('No action performed');
 
             return static::CODE_ERROR;
         }
@@ -113,11 +86,11 @@ class ResourcesRemoveCommand extends Command
             ->where($condition)
             ->first();
         if (empty($entity)) {
-            $this->io->abort(sprintf('Resource with id %s not found', $id));
+            $io->abort(sprintf('Resource with id %s not found', $id));
         }
         $action = new DeleteEntityAction(['table' => $this->table]);
         $action(compact('entity'));
-        $this->io->out(sprintf('Record "%s" deleted', $id));
+        $io->out(sprintf('Record "%s" deleted', $id));
 
         return static::CODE_SUCCESS;
     }

@@ -65,7 +65,7 @@ class CheckFilesystemCommandTest extends TestCase
             }
             rmdir(static::TEMP_DIR);
         }
-        unset($this->wwwUser);
+
         parent::tearDown();
     }
 

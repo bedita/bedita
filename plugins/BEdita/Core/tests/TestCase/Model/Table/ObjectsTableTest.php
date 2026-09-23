@@ -85,7 +85,6 @@ class ObjectsTableTest extends TestCase
      */
     public function tearDown(): void
     {
-        unset($this->Objects);
         LoggedUser::resetUser();
 
         parent::tearDown();

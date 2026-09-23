@@ -82,16 +82,6 @@ class TreeBehaviorTest extends TestCase
     }
 
     /**
-     * @inheritDoc
-     */
-    public function tearDown(): void
-    {
-        unset($this->Table);
-
-        parent::tearDown();
-    }
-
-    /**
      * Data provider for `testGetCurrentPosition` test case.
      *
      * @return array

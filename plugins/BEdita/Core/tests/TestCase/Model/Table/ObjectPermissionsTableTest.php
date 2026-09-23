@@ -70,7 +70,6 @@ class ObjectPermissionsTableTest extends TestCase
      */
     public function tearDown(): void
     {
-        unset($this->ObjectPermissions);
         LoggedUser::resetUser();
 
         parent::tearDown();

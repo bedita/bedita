@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 /**
  * BEdita, API-first content management framework
- * Copyright 2024 ChannelWeb Srl, Chialab Srl
+ * Copyright 2026 Chialab Srl
  *
  * This file is part of BEdita: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published
@@ -14,19 +14,19 @@ declare(strict_types=1);
  */
 namespace BEdita\Core\Test\TestCase\ORM\Inheritance\Query;
 
-use BEdita\Core\ORM\Inheritance\Query\SelectQuery;
+use BEdita\Core\ORM\Inheritance\Query\SelectQueryTrait;
 use BEdita\Core\Test\TestCase\ORM\Inheritance\FakeAnimalsTrait;
 use Cake\Database\ValueBinder;
-use Cake\ORM\Query\SelectQuery as CakeSelectQuery;
+use Cake\ORM\Query\SelectQuery;
 use Cake\TestSuite\TestCase;
-use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\CoversTrait;
 use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
- * {@see \BEdita\Core\ORM\Inheritance\Query\SelectQuery} Test Case
+ * {@see \BEdita\Core\ORM\Inheritance\Query\SelectQueryTrait} Test Case
  */
-#[CoversClass(SelectQuery::class)]
-class SelectQueryTest extends TestCase
+#[CoversTrait(SelectQueryTrait::class)]
+class SelectQueryTraitTest extends TestCase
 {
     use FakeAnimalsTrait;
 
@@ -121,7 +121,7 @@ class SelectQueryTest extends TestCase
         $from = $query->clause('from');
         static::assertCount(1, $from);
         static::assertArrayHasKey('FakeFelines', $from);
-        static::assertInstanceOf(CakeSelectQuery::class, $from['FakeFelines']);
+        static::assertInstanceOf(SelectQuery::class, $from['FakeFelines']);
 
         /** @var \Cake\ORM\Query $subQuery */
         $subQuery = $from['FakeFelines'];

@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 /**
  * BEdita, API-first content management framework
- * Copyright 2024 ChannelWeb Srl, Chialab Srl
+ * Copyright 2026 Chialab Srl
  *
  * This file is part of BEdita: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published
@@ -14,14 +14,16 @@ declare(strict_types=1);
  */
 namespace BEdita\Core\ORM\Inheritance\Query;
 
-use Cake\ORM\Query\SelectQuery as CakeSelectQuery;
+use Cake\ORM\Query\UnhydratedSelectQuery as CakeUnhydratedSelectQuery;
 
 /**
- * Select Query class for tables that use class table inheritance (CTI).
+ * UnhydratedSelectQuery class for tables that use class table inheritance (CTI).
+ * Replicates the behavior of CakePHP's UnhydratedSelectQuery for inheritance.
  *
- * @since 5.24.0
+ * @see {\Cake\ORM\Query\UnhydratedSelectQuery}
+ * @since 5.49.0
  */
-class SelectQuery extends CakeSelectQuery
+class UnhydratedSelectQuery extends CakeUnhydratedSelectQuery
 {
     use InheritanceQueryTrait;
     use SelectQueryTrait;

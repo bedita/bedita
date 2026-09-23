@@ -31,20 +31,6 @@ class ResourcesAddCommand extends Command
     use LocatorAwareTrait;
 
     /**
-     * Console arguments
-     *
-     * @var \Cake\Console\Arguments
-     */
-    protected Arguments $args;
-
-    /**
-     * Console IO
-     *
-     * @var \Cake\Console\ConsoleIo
-     */
-    protected ConsoleIo $io;
-
-    /**
      * Async jobs table
      *
      * @var \Cake\ORM\Table
@@ -84,8 +70,6 @@ class ResourcesAddCommand extends Command
     public function execute(Arguments $args, ConsoleIo $io): int
     {
         $type = $args->getOption('type');
-        $this->args = $args;
-        $this->io = $io;
         $this->table = $this->fetchTable(Inflector::camelize($type));
         $entity = $this->table->newEmptyEntity();
         if ($type === 'endpoint_permissions') {
@@ -94,7 +78,7 @@ class ResourcesAddCommand extends Command
             $this->setupDefaultEntity($entity);
         }
         $this->table->saveOrFail($entity);
-        $this->io->out(sprintf('Resource with id %d created', $entity->id));
+        $io->out(sprintf('Resource with id %d created', $entity->id));
 
         return static::CODE_SUCCESS;
     }

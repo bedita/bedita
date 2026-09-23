@@ -74,6 +74,7 @@ class AsyncJobsTable extends Table
         $this->setPrimaryKey('uuid');
         $this->setDisplayField('payload');
         $this->getSchema()
+            ->setColumnType('job_options', 'json')
             ->setColumnType('payload', 'json')
             ->setColumnType('uuid', 'uuid')
             ->setColumnType('results', 'json');

@@ -60,18 +60,6 @@ class EndpointsTableTest extends TestCase
     }
 
     /**
-     * tearDown method
-     *
-     * @return void
-     */
-    public function tearDown(): void
-    {
-        unset($this->Endpoints);
-
-        parent::tearDown();
-    }
-
-    /**
      * Test initialize method
      *
      * @return void

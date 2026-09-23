@@ -35,20 +35,6 @@ class StreamsCommand extends Command
     use LocatorAwareTrait;
 
     /**
-     * Console arguments
-     *
-     * @var \Cake\Console\Arguments
-     */
-    protected Arguments $args;
-
-    /**
-     * Console IO
-     *
-     * @var \Cake\Console\ConsoleIo
-     */
-    protected ConsoleIo $io;
-
-    /**
      * Streams table
      *
      * @var \BEdita\Core\Model\Table\StreamsTable
@@ -85,10 +71,8 @@ class StreamsCommand extends Command
     public function execute(Arguments $args, ConsoleIo $io): ?int
     {
         $this->table = $this->fetchTable('Streams');
-        $this->args = $args;
-        $this->io = $io;
-        $action = $this->args->getArgument('action');
-        $this->{$action}();
+        $action = $args->getArgument('action');
+        $this->{$action}($args, $io);
 
         return self::CODE_SUCCESS;
     }
@@ -175,7 +159,7 @@ class StreamsCommand extends Command
     /**
      * Generator to paginate through all streams.
      *
-     * @param \Cake\ORM\SelectQuery $query Query to retrieve concerned streams
+     * @param \Cake\ORM\Query\SelectQuery $query Query to retrieve concerned streams
      * @param int $limit Limit amount of objects retrieved with each internal iteration
      * @return \Generator|array<\BEdita\Core\Model\Entity\Stream>
      */

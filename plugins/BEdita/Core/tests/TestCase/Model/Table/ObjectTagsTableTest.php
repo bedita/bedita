@@ -62,18 +62,6 @@ class ObjectTagsTableTest extends TestCase
     }
 
     /**
-     * tearDown method
-     *
-     * @return void
-     */
-    public function tearDown(): void
-    {
-        unset($this->ObjectTags);
-
-        parent::tearDown();
-    }
-
-    /**
      * Data provider for `testBuildRules` test case.
      *
      * @return array

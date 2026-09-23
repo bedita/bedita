@@ -67,16 +67,6 @@ class RelationshipsParamsTest extends IntegrationTestCase
     }
 
     /**
-     * @inheritDoc
-     */
-    public function tearDown(): void
-    {
-        unset($this->Locations, $this->Users, $this->Relations, $this->ObjectRelations);
-
-        parent::tearDown();
-    }
-
-    /**
      * Test success with valid parameters.
      *
      * @return void

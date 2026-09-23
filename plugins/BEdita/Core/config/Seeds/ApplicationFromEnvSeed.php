@@ -51,4 +51,12 @@ class ApplicationFromEnvSeed extends BaseSeed
         $table = $this->table('applications');
         $table->insert($row)->saveData();
     }
+
+    /**
+     * @inheritDoc
+     */
+    public function isIdempotent(): bool
+    {
+        return true;
+    }
 }

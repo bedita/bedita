@@ -52,16 +52,6 @@ class PropertyTypeTest extends TestCase
     }
 
     /**
-     * @inheritDoc
-     */
-    public function tearDown(): void
-    {
-        unset($this->PropertyTypes);
-
-        parent::tearDown();
-    }
-
-    /**
      * Test entity
      *
      * @return void

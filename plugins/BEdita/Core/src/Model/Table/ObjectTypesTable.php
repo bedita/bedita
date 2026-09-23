@@ -265,7 +265,9 @@ class ObjectTypesTable extends Table
             }
         }
         if ($event->getData('operation') === 'delete') {
-            if ($entity->get('is_abstract') && $this->childCount($entity) > 0) {
+            /** @var \Cake\ORM\Behavior\TreeBehavior $treeBehavior */
+            $treeBehavior = $this->getBehavior('Tree');
+            if ($entity->get('is_abstract') && $treeBehavior->childCount($entity) > 0) {
                 throw new ForbiddenException(__d('bedita', 'Abstract type with existing subtypes'));
             }
             if ($entity->get('core_type')) {
@@ -302,19 +304,21 @@ class ObjectTypesTable extends Table
      */
     public function beforeSave(EventInterface $event, EntityInterface $entity): void
     {
+        /** @var \Cake\ORM\Behavior\TreeBehavior $treeBehavior */
+        $treeBehavior = $this->getBehavior('Tree');
         if ($entity->isDirty('is_abstract')) {
             if ($entity->get('is_abstract') && $this->objectsExist($entity->get('id'))) {
                 throw new ForbiddenException(
                     __d('bedita', 'Setting as abstract forbidden: objects of this type exist'),
                 );
-            } elseif (!$entity->get('is_abstract') && $this->childCount($entity) > 0) {
+            } elseif (!$entity->get('is_abstract') && $treeBehavior->childCount($entity) > 0) {
                 throw new ForbiddenException(__d('bedita', 'Setting as not abstract forbidden: subtypes exist'));
             }
         }
         if ($entity->isDirty('enabled') && !$entity->get('enabled')) {
             if ($this->objectsExist($entity->get('id'))) {
                 throw new ForbiddenException(__d('bedita', 'Type disable forbidden: objects of this type exist'));
-            } elseif ($this->childCount($entity) > 0) {
+            } elseif ($treeBehavior->childCount($entity) > 0) {
                 throw new ForbiddenException(__d('bedita', 'Type disable forbidden: subtypes exist'));
             }
         }

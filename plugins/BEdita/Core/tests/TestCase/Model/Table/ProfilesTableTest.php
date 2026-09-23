@@ -78,7 +78,6 @@ class ProfilesTableTest extends TestCase
      */
     public function tearDown(): void
     {
-        unset($this->Profiles);
         LoggedUser::resetUser();
 
         parent::tearDown();

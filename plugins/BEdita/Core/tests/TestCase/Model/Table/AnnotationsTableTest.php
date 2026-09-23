@@ -64,16 +64,6 @@ class AnnotationsTableTest extends TestCase
     }
 
     /**
-     * @inheritDoc
-     */
-    public function tearDown(): void
-    {
-        unset($this->Annotations);
-
-        parent::tearDown();
-    }
-
-    /**
      * Test initialization.
      *
      * @return void

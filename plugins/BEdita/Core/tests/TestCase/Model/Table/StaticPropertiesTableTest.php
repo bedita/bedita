@@ -66,16 +66,7 @@ class StaticPropertiesTableTest extends TestCase
         parent::setUp();
 
         Cache::delete('static_properties', ObjectTypesTable::CACHE_CONFIG);
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function tearDown(): void
-    {
-        unset($this->StaticProperties);
-
-        parent::tearDown();
+        $this->StaticProperties = TableRegistry::getTableLocator()->get('StaticProperties');
     }
 
     /**
@@ -85,8 +76,6 @@ class StaticPropertiesTableTest extends TestCase
      */
     public function testInitialize()
     {
-        $this->StaticProperties = TableRegistry::getTableLocator()->get('StaticProperties');
-
         static::assertSame(StaticProperty::class, $this->StaticProperties->getEntityClass());
         static::assertMatchesRegularExpression('/^(?:[\w_]+\.)?static_properties_[a-f0-9]{16}$/', $this->StaticProperties->getTable());
 
@@ -102,8 +91,6 @@ class StaticPropertiesTableTest extends TestCase
      */
     public function testCreateTable()
     {
-        $this->StaticProperties = TableRegistry::getTableLocator()->get('StaticProperties');
-
         $Properties = TableRegistry::getTableLocator()->get('Properties');
 
         $staticPropSchema = $this->StaticProperties->getSchema();
@@ -257,9 +244,8 @@ class StaticPropertiesTableTest extends TestCase
     #[DataProvider('addSchemaDetailsProvider')]
     public function testAddSchemaDetails(?array $expected, array $conditions)
     {
-        $result = TableRegistry::getTableLocator()->get('StaticProperties')->find()
+        $result = $this->StaticProperties->unhydratedFind()
             ->where($conditions)
-            ->enableHydration(false)
             ->first();
 
         if ($expected === null) {

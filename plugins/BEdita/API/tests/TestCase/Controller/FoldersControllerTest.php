@@ -51,16 +51,6 @@ class FoldersControllerTest extends IntegrationTestCase
     }
 
     /**
-     * @inheritDoc
-     */
-    public function tearDown(): void
-    {
-        unset($this->Folders);
-
-        parent::tearDown();
-    }
-
-    /**
      * Test index method.
      *
      * @return void

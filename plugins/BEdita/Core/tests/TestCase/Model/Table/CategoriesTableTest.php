@@ -62,15 +62,6 @@ class CategoriesTableTest extends TestCase
     }
 
     /**
-     * @inheritDoc
-     */
-    public function tearDown(): void
-    {
-        unset($this->Categories);
-        parent::tearDown();
-    }
-
-    /**
      * Test `beforeFind` method
      *
      * @return void

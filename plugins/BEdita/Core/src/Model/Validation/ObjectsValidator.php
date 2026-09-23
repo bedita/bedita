@@ -17,7 +17,7 @@ namespace BEdita\Core\Model\Validation;
 use BEdita\Core\Model\Enum\ObjectEntityStatus;
 use Cake\ORM\TableRegistry;
 use Cake\Validation\Validator;
-use Phinx\Db\Adapter\MysqlAdapter;
+use Migrations\Db\Adapter\MysqlAdapter;
 
 /**
  * Base validator for BEdita objects.

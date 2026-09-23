@@ -70,16 +70,6 @@ class JsonApiViewTest extends TestCase
     }
 
     /**
-     * @inheritDoc
-     */
-    public function tearDown(): void
-    {
-        unset($this->Roles);
-
-        parent::tearDown();
-    }
-
-    /**
      * Data provider for `testRenderWithoutView` test case.
      *
      * @return array

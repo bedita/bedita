@@ -150,7 +150,7 @@ class InitSchemaCommandTest extends TestCase
         });
         $schemaTables = array_keys($schema);
         $expected = count($schemaTables) + 1;
-        $actual = count($connectionTables) - count($fake) - 1;
+        $actual = count($connectionTables) - count($fake) - 2; // -2 for migrations and seeds tables
 
         static::assertSame($expected, $actual);
     }

@@ -79,7 +79,6 @@ class ApplicationsTableTest extends TestCase
      */
     public function tearDown(): void
     {
-        unset($this->Applications);
         CurrentApplication::setApplication($this->currentApplication);
 
         parent::tearDown();

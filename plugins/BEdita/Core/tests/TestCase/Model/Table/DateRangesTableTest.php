@@ -55,16 +55,6 @@ class DateRangesTableTest extends TestCase
     }
 
     /**
-     * @inheritDoc
-     */
-    public function tearDown(): void
-    {
-        unset($this->DateRanges);
-
-        parent::tearDown();
-    }
-
-    /**
      * Test marshalling of new entities.
      *
      * @return void

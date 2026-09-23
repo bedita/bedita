@@ -55,15 +55,6 @@ class CheckApiKeyCommandTest extends TestCase
     }
 
     /**
-     * @inheritDoc
-     */
-    public function tearDown(): void
-    {
-        unset($this->Applications);
-        parent::tearDown();
-    }
-
-    /**
      * Test help
      *
      * @return void

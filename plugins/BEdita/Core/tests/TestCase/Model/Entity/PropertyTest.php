@@ -66,16 +66,6 @@ class PropertyTest extends TestCase
     }
 
     /**
-     * @inheritDoc
-     */
-    public function tearDown(): void
-    {
-        unset($this->Properties);
-
-        parent::tearDown();
-    }
-
-    /**
      * Test accessible properties.
      *
      * @return void

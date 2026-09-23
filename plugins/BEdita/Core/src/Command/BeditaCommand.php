@@ -35,20 +35,6 @@ class BeditaCommand extends Command
     use SubcommandTrait;
 
     /**
-     * Console arguments
-     *
-     * @var \Cake\Console\Arguments
-     */
-    protected Arguments $args;
-
-    /**
-     * Console IO
-     *
-     * @var \Cake\Console\ConsoleIo
-     */
-    protected ConsoleIo $io;
-
-    /**
      * Subcommands.
      *
      * @var array
@@ -184,8 +170,6 @@ class BeditaCommand extends Command
      */
     public function execute(Arguments $args, ConsoleIo $io): int
     {
-        $this->args = $args;
-        $this->io = $io;
         $subcommand = $args->getArgument('subcommand');
         if (in_array($subcommand, ['check', 'setup'])) {
             $this->{$subcommand}();

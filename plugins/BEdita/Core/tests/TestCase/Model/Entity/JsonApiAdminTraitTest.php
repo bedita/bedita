@@ -55,16 +55,6 @@ class JsonApiAdminTraitTest extends TestCase
     }
 
     /**
-     * @inheritDoc
-     */
-    public function tearDown(): void
-    {
-        unset($this->Applications);
-
-        parent::tearDown();
-    }
-
-    /**
      * Test getter for meta.
      *
      * @return void

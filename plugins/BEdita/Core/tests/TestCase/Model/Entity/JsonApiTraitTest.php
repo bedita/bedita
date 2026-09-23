@@ -97,17 +97,6 @@ class JsonApiTraitTest extends TestCase
     }
 
     /**
-     * @inheritDoc
-     */
-    public function tearDown(): void
-    {
-        unset($this->Roles);
-        unset($this->ObjectTypes);
-
-        parent::tearDown();
-    }
-
-    /**
      * Test getter for table.
      *
      * @return void
@@ -718,7 +707,7 @@ class JsonApiTraitTest extends TestCase
             ],
         ];
 
-        $document = $this->Documents->get(2, ['contain' => ['TestSimple']])->jsonApiSerialize();
+        $document = $this->Documents->get(2, contain: ['TestSimple'])->jsonApiSerialize();
         static::assertEquals($expected, (array)Hash::extract($document, 'relationships.test_simple.data.0'));
     }
 

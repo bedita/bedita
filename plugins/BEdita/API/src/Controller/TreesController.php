@@ -191,10 +191,9 @@ class TreesController extends AppController
      */
     protected function objectDetails(array $condition): array
     {
-        return (array)$this->Objects->find('available')
+        return (array)$this->Objects->unhydratedFind('available')
             ->where($condition)
             ->select(['id', 'uname', 'object_type_id'])
-            ->disableHydration()
             ->first();
     }
 
