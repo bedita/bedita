@@ -355,6 +355,25 @@ class TreesTableTest extends TestCase
     }
 
     /**
+     * Test that setting a folder as its own parent fails.
+     *
+     * @return void
+     */
+    public function testFolderAsOwnParent(): void
+    {
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('Cannot set a folder as its own parent');
+
+        $node = $this->Trees->find()
+            ->where(['object_id' => 13])
+            ->firstOrFail();
+        // Bypass `Tree::_setParentId()`, which would keep `parent_node_id` in sync and trip the adjacency list guard first.
+        $node->set('parent_id', 13, ['setter' => false]);
+
+        $this->Trees->save($node);
+    }
+
+    /**
      * Data provider for `testDeleteOrphaned` test case.
      *
      * @return array

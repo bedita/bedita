@@ -429,6 +429,53 @@ class FolderTest extends TestCase
     }
 
     /**
+     * Test that a folder not on the tree has no inherited permissions.
+     *
+     * @return void
+     */
+    public function testGetPermsNotInTree(): void
+    {
+        $ot = $this->Folders->ObjectTypes->get('folders');
+        $ot->addAssoc('Permissions');
+        $this->Folders->ObjectTypes->saveOrFail($ot);
+
+        TableRegistry::getTableLocator()->get('Trees')->deleteAll(['object_id' => 13]);
+
+        static::assertEquals([], $this->Folders->get(13)->get('perms'));
+    }
+
+    /**
+     * Test that a folder not on the tree grants no permissions on its descendants.
+     *
+     * @return void
+     */
+    public function testDescendantHavePermissionsNotInTree(): void
+    {
+        $ot = $this->Folders->ObjectTypes->get('folders');
+        $ot->addAssoc('Permissions');
+        $this->Folders->ObjectTypes->saveOrFail($ot);
+
+        $permission = $this->Folders->Permissions->newEntity(
+            ['object_id' => 13, 'role_id' => 1, 'created_by' => 1],
+            ['accessibleFields' => ['created_by' => true]],
+        );
+        $this->Folders->Permissions->saveOrFail($permission);
+
+        TableRegistry::getTableLocator()->get('Trees')->deleteAll(['object_id' => 13]);
+
+        LoggedUser::setUser(['id' => 5, 'roles' => [['id' => 2]]]);
+
+        $expected = [
+            'roles' => ['first role'],
+            'inherited' => false,
+            'descendant_perms_granted' => false,
+        ];
+        static::assertEquals($expected, $this->Folders->get(13)->get('perms'));
+
+        LoggedUser::resetUser();
+    }
+
+    /**
      * Provider for `testDescendantHavePermissions`.
      *
      * @return array[]

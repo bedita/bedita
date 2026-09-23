@@ -321,9 +321,12 @@ class TreesTable extends Table
         }
 
         $originalPriority = $entity->getOriginal('priority');
+        // @codeCoverageIgnoreStart
+        // Unreachable: PriorityBehavior is registered before this callback and always sets `priority`.
         if ($originalPriority === null) {
             return;
         }
+        // @codeCoverageIgnoreEnd
 
         $this->updateAll(
             ['priority = priority - 1'],

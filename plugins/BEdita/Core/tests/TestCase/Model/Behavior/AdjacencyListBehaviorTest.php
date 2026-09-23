@@ -34,6 +34,7 @@ use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\TestWith;
+use RuntimeException;
 use UnexpectedValueException;
 
 /**
@@ -255,6 +256,23 @@ final class AdjacencyListBehaviorTest extends TestCase
         $actual = $behavior::toIdentifiers(['bar', 'baz'], 'mb_strtoupper');
 
         static::assertEquals($expected, $actual);
+    }
+
+    /**
+     * Test {@see AdjacencyListBehavior::beforeSave()} when a node is set as its own parent.
+     *
+     * @return void
+     */
+    public function testBeforeSaveSelfParent(): void
+    {
+        $this->expectExceptionObject(new RuntimeException('Cannot set a node\'s parent as itself'));
+
+        $this->table->addBehavior('BEdita/Core.AdjacencyList', ['parentAssociation' => 'Parents']);
+
+        $entity = $this->table->get(2);
+        $entity->set('parent_id', 2);
+
+        $this->table->save($entity);
     }
 
     /**
@@ -579,6 +597,13 @@ final class AdjacencyListBehaviorTest extends TestCase
                     'includeSelf' => true,
                 ],
             ],
+            'sub-query with no results' => [
+                new InvalidArgumentException('Query for the `for` option returned no results'),
+                fn(Table $table): array => [
+                    'for' => $table->find()->select((array)$table->getPrimaryKey())->where(['id <' => 0]),
+                    'includeSelf' => true,
+                ],
+            ],
             'circular reference' => [
                 [
                     ['id' => 11, 'name' => 'Example circular reference', 'level' => -2],
@@ -766,6 +791,62 @@ final class AdjacencyListBehaviorTest extends TestCase
                 [AdjacencyListBehavior::CTE_FIELD_LEVEL],
                 array_map([$this->table, 'aliasField'], (array)$this->table->getPrimaryKey()),
             ))
+            ->disableHydration()
+            ->all()
+            ->toList();
+
+        static::assertSame($expected, $actual);
+    }
+
+    /**
+     * Data provider for {@see AdjacencyListBehaviorTest::testFindChildren()} test case.
+     *
+     * @return array[]
+     */
+    public static function findChildrenProvider(): array
+    {
+        return [
+            'id' => [
+                [
+                    ['id' => 3, 'name' => 'Geometry'],
+                    ['id' => 4, 'name' => 'Algebra'],
+                    ['id' => 5, 'name' => 'Mathematical Logic'],
+                ],
+                ['for' => 2],
+            ],
+            'associative array' => [
+                [
+                    ['id' => 2, 'name' => 'Mathematics'],
+                    ['id' => 6, 'name' => 'Physics'],
+                ],
+                ['for' => ['parent_id' => 1]],
+            ],
+            'missing required option' => [
+                new InvalidArgumentException('Missing required `for` option'),
+                ['for' => null],
+            ],
+        ];
+    }
+
+    /**
+     * Test {@see AdjacencyListBehavior::findChildren()} finder.
+     *
+     * @param array|\Exception $expected Expected outcome.
+     * @param array $options Finder options.
+     * @return void
+     */
+    #[DataProvider('findChildrenProvider')]
+    public function testFindChildren(array|Exception $expected, array $options): void
+    {
+        if ($expected instanceof Exception) {
+            $this->expectExceptionObject($expected);
+        }
+
+        $this->table->addBehavior('BEdita/Core.AdjacencyList', ['parentAssociation' => 'Parents']);
+
+        $actual = $this->table->find('children', $options)
+            ->select(array_merge((array)$this->table->getPrimaryKey(), (array)$this->table->getDisplayField()))
+            ->orderBy(array_map([$this->table, 'aliasField'], (array)$this->table->getPrimaryKey()))
             ->disableHydration()
             ->all()
             ->toList();
