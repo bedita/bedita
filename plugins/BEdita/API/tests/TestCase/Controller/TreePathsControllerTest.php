@@ -153,9 +153,6 @@ class TreePathsControllerTest extends IntegrationTestCase
             'parent_id' => 13, // Another-root-folder-13
             'root_id' => 13,
             'parent_node_id' => 5,
-            'tree_left' => 10,
-            'tree_right' => 11,
-            'depth_level' => 1,
             'menu' => 1,
             'canonical' => 1,
             'slug' => 'gustavo-supporto-profile-4',
