@@ -84,9 +84,8 @@ class Folder extends ObjectEntity
             return [];
         }
 
-        $query = $Trees->find('ancestors', ['for' => $node->id]);
+        $query = $Trees->unhydratedFind('ancestors', ['for' => $node->id]);
         $permission = $query
-            ->disableHydration()
             ->innerJoinWith('Objects.Permissions.Roles')
             ->select([
                 'level' => AdjacencyListBehavior::CTE_FIELD_LEVEL,

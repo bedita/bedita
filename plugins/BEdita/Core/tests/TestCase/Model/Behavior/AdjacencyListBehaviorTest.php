@@ -648,7 +648,7 @@ final class AdjacencyListBehaviorTest extends TestCase
         }
 
         $this->table->addBehavior('BEdita/Core.AdjacencyList', ['parentAssociation' => 'Parents']);
-        $query = $this->table->find('ancestors', $options);
+        $query = $this->table->unhydratedFind('ancestors', $options);
         $association = $this->getAssociation('Descendants');
 
         static::assertNotNull($association);
@@ -661,7 +661,6 @@ final class AdjacencyListBehaviorTest extends TestCase
                 [AdjacencyListBehavior::CTE_FIELD_LEVEL => $association->junction()->aliasField(AdjacencyListBehavior::CTE_FIELD_LEVEL)],
             ))
             ->orderByAsc(AdjacencyListBehavior::CTE_FIELD_LEVEL)
-            ->disableHydration()
             ->all()
             ->toList();
 
@@ -774,7 +773,7 @@ final class AdjacencyListBehaviorTest extends TestCase
         }
 
         $this->table->addBehavior('BEdita/Core.AdjacencyList', ['parentAssociation' => 'Parents']);
-        $query = $this->table->find('descendants', $options);
+        $query = $this->table->unhydratedFind('descendants', $options);
 
         static::assertTrue($this->table->hasAssociation('Ancestors'));
         /** @var \Cake\ORM\Association\BelongsToMany $association */
@@ -791,7 +790,6 @@ final class AdjacencyListBehaviorTest extends TestCase
                 [AdjacencyListBehavior::CTE_FIELD_LEVEL],
                 array_map([$this->table, 'aliasField'], (array)$this->table->getPrimaryKey()),
             ))
-            ->disableHydration()
             ->all()
             ->toList();
 
@@ -844,10 +842,9 @@ final class AdjacencyListBehaviorTest extends TestCase
 
         $this->table->addBehavior('BEdita/Core.AdjacencyList', ['parentAssociation' => 'Parents']);
 
-        $actual = $this->table->find('children', $options)
+        $actual = $this->table->unhydratedFind('children', $options)
             ->select(array_merge((array)$this->table->getPrimaryKey(), (array)$this->table->getDisplayField()))
             ->orderBy(array_map([$this->table, 'aliasField'], (array)$this->table->getPrimaryKey()))
-            ->disableHydration()
             ->all()
             ->toList();
 
@@ -867,7 +864,7 @@ final class AdjacencyListBehaviorTest extends TestCase
 
         $this->table->addBehavior('BEdita/Core.AdjacencyList', ['parentAssociation' => 'Parents']);
         $query = $this->table
-            ->find('ancestors', ['for' => 3])
+            ->unhydratedFind('ancestors', ['for' => 3])
             ->find('descendants', ['for' => 1]);
 
         static::assertTrue($this->table->hasAssociation('Ancestors'));
@@ -879,7 +876,6 @@ final class AdjacencyListBehaviorTest extends TestCase
         $actual = $query
             ->select(array_merge((array)$this->table->getPrimaryKey(), (array)$this->table->getDisplayField()))
             ->orderBy(array_map([$this->table, 'aliasField'], (array)$this->table->getPrimaryKey()))
-            ->disableHydration()
             ->all()
             ->toList();
 
