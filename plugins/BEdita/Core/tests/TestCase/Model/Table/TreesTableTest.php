@@ -433,6 +433,31 @@ class TreesTableTest extends TestCase
                 11,
                 'gustavo',
             ],
+            'numeric' => [
+                2,
+                12,
+                2,
+            ],
+            'numericAboveMax' => [
+                2,
+                12,
+                99,
+            ],
+            'negative' => [
+                2,
+                12,
+                -1,
+            ],
+            'negativeToFirst' => [
+                1,
+                2,
+                -2,
+            ],
+            'negativeBelowMin' => [
+                1,
+                12,
+                -99,
+            ],
         ];
     }
 
@@ -462,6 +487,36 @@ class TreesTableTest extends TestCase
         $currentPosition = $node->get('priority');
 
         static::assertSame($expected, $currentPosition);
+    }
+
+    /**
+     * Test that a numeric position can move a node between its siblings.
+     *
+     * @return void
+     */
+    public function testSetPositionBetweenSiblings(): void
+    {
+        $node = $this->Trees->newEntity([
+            'object_id' => 10,
+            'parent_id' => 11,
+            'position' => 'last',
+        ]);
+        $this->Trees->saveOrFail($node);
+        static::assertSame(3, $node->get('priority'));
+
+        $node->set('position', 2);
+        $this->Trees->saveOrFail($node);
+
+        static::assertSame(2, $node->get('priority'));
+
+        $actual = $this->Trees->find()
+            ->where(['parent_id' => 11])
+            ->orderBy(['priority'])
+            ->all()
+            ->combine('object_id', 'priority')
+            ->toArray();
+
+        static::assertSame([12 => 1, 10 => 2, 2 => 3], $actual);
     }
 
     /**
