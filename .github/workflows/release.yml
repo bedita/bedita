@@ -35,7 +35,9 @@ jobs:
     steps:
 
       - name: Checkout Code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
+        with:
+          ref: ${{ github.base_ref || github.ref_name }}
 
       - name: Debug output version
         run: |
