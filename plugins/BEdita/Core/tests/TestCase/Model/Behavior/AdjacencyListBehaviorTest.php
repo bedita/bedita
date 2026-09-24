@@ -600,6 +600,12 @@ final class AdjacencyListBehaviorTest extends TestCase
                 new InvalidArgumentException('Missing required `for` option'),
                 ['for' => null, 'includeSelf' => true],
             ],
+            'empty sub-query' => [
+                new InvalidArgumentException('Query for the `for` option returned no results'),
+                fn(Table $table): array => [
+                    'for' => $table->find()->select((array)$table->getPrimaryKey())->where(['id' => -1]),
+                ],
+            ],
         ];
     }
 
@@ -725,6 +731,12 @@ final class AdjacencyListBehaviorTest extends TestCase
             'missing required option' => [
                 new InvalidArgumentException('Missing required `for` option'),
                 ['for' => null, 'includeSelf' => true],
+            ],
+            'empty sub-query' => [
+                new InvalidArgumentException('Query for the `for` option returned no results'),
+                fn(Table $table): array => [
+                    'for' => $table->find()->select((array)$table->getPrimaryKey())->where(['id' => -1]),
+                ],
             ],
         ];
     }
