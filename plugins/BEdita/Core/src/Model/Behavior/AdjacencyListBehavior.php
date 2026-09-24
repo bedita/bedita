@@ -86,6 +86,9 @@ class AdjacencyListBehavior extends Behavior
      */
     protected CommonTableExpression $cte;
 
+    // Node CTEs by name suffix, reused so the same one is never added twice to a query.
+    protected array $nodeCtes = [];
+
     /**
      * @inheritDoc
      */
@@ -344,11 +347,14 @@ class AdjacencyListBehavior extends Behavior
      * Build recursive Common Table Expression (CTE) for finding all pairs of ancestor and descendant nodes,
      * with level and a flag to stop infinite recursion in case of cyclic references.
      *
+     * @param array|null $for Primary keys of the node to start the recursion from, or `null` for the whole table.
+     * @param string|null $suffix Optional suffix for the CTE name.
      * @return \Cake\Database\Expression\CommonTableExpression
      */
-    protected function cteBuilder(): CommonTableExpression
+    protected function cteBuilder(array|null $for = null, string|null $suffix = null): CommonTableExpression
     {
         $table = $this->table();
+        $name = $this->cteName($suffix);
 
         // Prepare fields:
         $bindingKey = (array)$this->parentAssociation->getBindingKey();
@@ -357,13 +363,14 @@ class AdjacencyListBehavior extends Behavior
         $fields = array_merge($ancestorFields, $descendantFields, [static::CTE_FIELD_LEVEL, static::CTE_FIELD_CYCLIC]);
 
         // SQLite rewrites tuple comparisons to AND/OR conditions, which require strings as array keys.
-        $ancestorFieldNames = array_map([$this, 'aliasCteField'], $ancestorFields);
-        $descendantFieldNames = array_map([$this, 'aliasCteField'], $descendantFields);
+        $bindingKeyNames = array_map([$table, 'aliasField'], $bindingKey);
+        $ancestorFieldNames = array_map(fn (string $field): string => $this->aliasCteField($field, $suffix), $ancestorFields);
+        $descendantFieldNames = array_map(fn (string $field): string => $this->aliasCteField($field, $suffix), $descendantFields);
 
         // Prepare identifier expressions:
         $bindingKey = static::toIdentifiers($bindingKey, [$table, 'aliasField']);
         $foreignKey = static::toIdentifiers((array)($this->parentAssociation->getForeignKey() ?: null), [$table, 'aliasField']);
-        $ancestorFields = static::toIdentifiers($ancestorFields, [$this, 'aliasCteField']);
+        $ancestorFields = static::toIdentifiers($ancestorFields, [$this, 'aliasCteField'], $suffix);
 
         // Recursion base:
         $base = $table->find()
@@ -375,6 +382,9 @@ class AdjacencyListBehavior extends Behavior
                     new QueryExpression('FALSE'), // cyclic flag
                 ],
             ));
+        if ($for !== null) {
+            $base->where(fn (QueryExpression $exp): QueryExpression => $exp->add(new TupleComparison($bindingKeyNames, $for)));
+        }
         // Recursive part:
         $recursive = $table->find();
         $recursive = $recursive
@@ -382,21 +392,21 @@ class AdjacencyListBehavior extends Behavior
                 $ancestorFields, // ancestor
                 $bindingKey, // descendant
                 [
-                    new UnaryExpression('+ 1', $this->aliasCteField(static::CTE_FIELD_LEVEL), UnaryExpression::POSTFIX), // level (increase by 1)
+                    new UnaryExpression('+ 1', $this->aliasCteField(static::CTE_FIELD_LEVEL, $suffix), UnaryExpression::POSTFIX), // level (increase by 1)
                     // SQLite rewrites tuple comparisons in selects to scalar queries (ex. 1 = (SELECT 1 WHERE ...)), so we coalesce to `FALSE`.
                     $recursive->func()->coalesce([new TupleComparison($ancestorFieldNames, $bindingKey), new QueryExpression('FALSE')]),
                 ],
             ))
             ->innerJoin(
-                $this->cteName,
+                $name,
                 (new QueryExpression())
                     ->add(new TupleComparison($descendantFieldNames, $foreignKey))
-                    ->not($this->aliasCteField(static::CTE_FIELD_CYCLIC)), // Avoid infinite recursion even with cyclic references.
+                    ->not($this->aliasCteField(static::CTE_FIELD_CYCLIC, $suffix)), // Avoid infinite recursion even with cyclic references.
             );
 
         return (new CommonTableExpression())
             ->recursive()
-            ->name($this->cteName)
+            ->name($name)
             ->field($fields)
             ->query($base->unionAll($recursive));
     }
@@ -573,8 +583,14 @@ class AdjacencyListBehavior extends Behavior
         $association = $this->getInheritanceAssociation(true, (array)$for);
         $bindingKey = (array)$association->getBindingKey();
 
+        $suffix = (string)$this->nodeSuffix((array)$for);
+        $cte = $this->nodeCtes[$suffix] ??= $this->ancestorsCteBuilder((array)$for);
+        if (!in_array($cte, (array)$query->clause('with'), true)) {
+            $query = $query->with($cte);
+        }
+
         return $this->makeJoin(
-            $query->with($this->ancestorsCteBuilder((array)$for)),
+            $query,
             $association,
             $includeSelf,
             new TupleComparison(array_map([$association->getTarget(), 'aliasField'], $bindingKey), static::extractFields($for, $bindingKey)),
@@ -595,12 +611,29 @@ class AdjacencyListBehavior extends Behavior
         if (empty($for)) {
             throw new InvalidArgumentException(sprintf('Missing required `%s` option', 'for'));
         }
+        if ($for instanceof Query) {
+            $for = $for->first();
+            if ($for === null) {
+                throw new InvalidArgumentException('Query for the `for` option returned no results');
+            }
+        }
+        if ($for instanceof Entity) {
+            $for = $for->extract((array)$this->table()->getPrimaryKey());
+        }
 
-        $association = $this->getInheritanceAssociation(false);
+        // Prefixed so the CTE name differs from the ancestors one for the same node.
+        $key = [static::CTE_PREFIX_DESCENDANT => (array)$for];
+        $association = $this->getInheritanceAssociation(false, $key);
         $bindingKey = (array)$association->getBindingKey();
 
+        $suffix = (string)$this->nodeSuffix($key);
+        $cte = $this->nodeCtes[$suffix] ??= $this->cteBuilder((array)$for, $suffix);
+        if (!in_array($cte, (array)$query->clause('with'), true)) {
+            $query = $query->with($cte);
+        }
+
         return $this->makeJoin(
-            $query->find('inheritanceMatrix'),
+            $query,
             $association,
             $includeSelf,
             new TupleComparison(array_map([$association->getTarget(), 'aliasField'], $bindingKey), static::extractFields($for, $bindingKey)),

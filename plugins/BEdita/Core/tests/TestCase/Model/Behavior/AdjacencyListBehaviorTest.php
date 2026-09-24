@@ -431,9 +431,9 @@ final class AdjacencyListBehaviorTest extends TestCase
     public function testCteBuilder(): void
     {
         $behavior = new class ($this->table, ['parentAssociation' => 'Parents', 'cteName' => 'foo']) extends AdjacencyListBehavior {
-            public function cteBuilder(): CommonTableExpression
+            public function cteBuilder(array|null $for = null, string|null $suffix = null): CommonTableExpression
             {
-                return parent::cteBuilder();
+                return parent::cteBuilder($for, $suffix);
             }
         };
 
@@ -749,9 +749,8 @@ final class AdjacencyListBehaviorTest extends TestCase
         $this->table->addBehavior('BEdita/Core.AdjacencyList', ['parentAssociation' => 'Parents']);
         $query = $this->table->find('descendants', $options);
 
-        static::assertTrue($this->table->hasAssociation('Ancestors'));
-        /** @var \Cake\ORM\Association\BelongsToMany $association */
-        $association = $this->table->getAssociation('Ancestors');
+        $association = $this->getAssociation('Ancestors');
+        static::assertNotNull($association);
         static::assertInstanceOf(BelongsToMany::class, $association);
 
         $actual = $query
@@ -787,8 +786,9 @@ final class AdjacencyListBehaviorTest extends TestCase
             ->find('ancestors', ['for' => 3])
             ->find('descendants', ['for' => 1]);
 
-        static::assertTrue($this->table->hasAssociation('Ancestors'));
-        static::assertInstanceOf(BelongsToMany::class, $this->table->getAssociation('Ancestors'));
+        $ancestors = $this->getAssociation('Ancestors');
+        static::assertNotNull($ancestors);
+        static::assertInstanceOf(BelongsToMany::class, $ancestors);
         $descendants = $this->getAssociation('Descendants');
         static::assertNotNull($descendants);
         static::assertInstanceOf(BelongsToMany::class, $descendants);
@@ -801,5 +801,47 @@ final class AdjacencyListBehaviorTest extends TestCase
             ->toList();
 
         static::assertSame($expected, $actual);
+    }
+
+    /** Applying the same descendants finder twice must not add the same CTE twice. */
+    public function testFindDescendantsTwiceOnSameNode(): void
+    {
+        $this->table->addBehavior('BEdita/Core.AdjacencyList', ['parentAssociation' => 'Parents']);
+        $query = $this->table
+            ->find('descendants', ['for' => 2])
+            ->find('descendants', ['for' => 2]);
+
+        static::assertCount(1, (array)$query->clause('with'));
+
+        $actual = $query
+            ->select((array)$this->table->getPrimaryKey())
+            ->order(array_map([$this->table, 'aliasField'], (array)$this->table->getPrimaryKey()))
+            ->disableHydration()
+            ->all()
+            ->extract('id')
+            ->toList();
+
+        static::assertSame([3, 4, 5], $actual);
+    }
+
+    /** Applying the same ancestors finder twice must not add the same CTE twice. */
+    public function testFindAncestorsTwiceOnSameNode(): void
+    {
+        $this->table->addBehavior('BEdita/Core.AdjacencyList', ['parentAssociation' => 'Parents']);
+        $query = $this->table
+            ->find('ancestors', ['for' => 3])
+            ->find('ancestors', ['for' => 3]);
+
+        static::assertCount(1, (array)$query->clause('with'));
+
+        $actual = $query
+            ->select((array)$this->table->getPrimaryKey())
+            ->order(array_map([$this->table, 'aliasField'], (array)$this->table->getPrimaryKey()))
+            ->disableHydration()
+            ->all()
+            ->extract('id')
+            ->toList();
+
+        static::assertSame([1, 2], $actual);
     }
 }
