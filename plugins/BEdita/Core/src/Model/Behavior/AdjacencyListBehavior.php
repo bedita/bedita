@@ -80,11 +80,11 @@ class AdjacencyListBehavior extends Behavior
     protected BelongsTo $parentAssociation;
 
     /**
-     * Built CTE.
+     * Built CTEs, by name suffix.
      *
-     * @var \Cake\Database\Expression\CommonTableExpression
+     * @var array<string, \Cake\Database\Expression\CommonTableExpression>
      */
-    protected CommonTableExpression $cte;
+    protected array $ctes = [];
 
     /**
      * @inheritDoc
@@ -210,12 +210,11 @@ class AdjacencyListBehavior extends Behavior
      * Get or build association for ancestors or descendants.
      *
      * @param bool $descendants `true` for descendants, `false` for ancestors.
-     * @param array|null $for Used to generate an unique table name.
+     * @param string $suffix Suffix for the association and CTE names.
      * @return \Cake\ORM\Association\BelongsToMany
      */
-    protected function getInheritanceAssociation(bool $descendants, array|null $for = null): BelongsToMany
+    protected function getInheritanceAssociation(bool $descendants, string $suffix): BelongsToMany
     {
-        $suffix = $this->nodeSuffix($for);
         $joinTable = $this->cteName($suffix);
 
         [$config, $foreignKeyPrefix, $targetForeignKeyPrefix] = ['ancestorsAssociation', static::CTE_PREFIX_DESCENDANT, static::CTE_PREFIX_ANCESTOR];
@@ -229,7 +228,7 @@ class AdjacencyListBehavior extends Behavior
         }
 
         $table = $this->table();
-        $name .= $suffix ?? '';
+        $name .= $suffix;
         if (!$table->hasAssociation($name)) {
             $targetTable = static::getCleanCopy($table)->setAlias($name);
             $through = new Table(['table' => $joinTable, 'schema' => $this->getCteSchema(), 'alias' => $name . 'Through']);
@@ -278,35 +277,36 @@ class AdjacencyListBehavior extends Behavior
     }
 
     /**
-     * Generate a unique suffix for a node.
+     * Generate a unique suffix for a node and walk direction.
      *
-     * @param array|null $values Values to use in generating a unique suffix.
-     * @return string|null
+     * @param array $for Primary keys of the node.
+     * @param bool $descendants `true` for descendants, `false` for ancestors.
+     * @return string
      */
-    protected function nodeSuffix(array|null $values): string|null
+    protected function nodeSuffix(array $for, bool $descendants): string
     {
-        return $values !== null ? substr(sha1(serialize($values)), 0, 8) : null;
+        return substr(sha1(serialize([$for, $descendants])), 0, 8);
     }
 
     /**
      * Generate CTE name.
      *
-     * @param string|null $suffix Optional suffix.
+     * @param string $suffix Suffix.
      * @return string
      */
-    protected function cteName(string|null $suffix = null): string
+    protected function cteName(string $suffix): string
     {
-        return $suffix ? sprintf('%s_%s', $this->cteName, $suffix) : $this->cteName;
+        return sprintf('%s_%s', $this->cteName, $suffix);
     }
 
     /**
      * Alias a field from CTE.
      *
      * @param string $field Field to be aliased.
-     * @param string|null $suffix Optional suffix for the CTE name.
+     * @param string $suffix Suffix for the CTE name.
      * @return string
      */
-    protected function aliasCteField(string $field, string|null $suffix = null): string
+    protected function aliasCteField(string $field, string $suffix): string
     {
         if (str_contains($field, '.')) {
             return $field;
@@ -341,77 +341,17 @@ class AdjacencyListBehavior extends Behavior
     }
 
     /**
-     * Build recursive Common Table Expression (CTE) for finding all pairs of ancestor and descendant nodes,
+     * Build recursive Common Table Expression (CTE) for finding all pairs of a node and its descendants (or ancestors),
      * with level and a flag to stop infinite recursion in case of cyclic references.
      *
+     * @param array $for Primary keys of the node to start the recursion from.
+     * @param bool $descendants `true` to walk down to descendants, `false` to walk up to ancestors.
+     * @param string $suffix Suffix for the CTE name.
      * @return \Cake\Database\Expression\CommonTableExpression
      */
-    protected function cteBuilder(): CommonTableExpression
+    protected function cteBuilder(array $for, bool $descendants, string $suffix): CommonTableExpression
     {
         $table = $this->table();
-
-        // Prepare fields:
-        $bindingKey = (array)$this->parentAssociation->getBindingKey();
-        $ancestorFields = static::prefix($bindingKey, static::CTE_PREFIX_ANCESTOR);
-        $descendantFields = static::prefix($bindingKey, static::CTE_PREFIX_DESCENDANT);
-        $fields = array_merge($ancestorFields, $descendantFields, [static::CTE_FIELD_LEVEL, static::CTE_FIELD_CYCLIC]);
-
-        // SQLite rewrites tuple comparisons to AND/OR conditions, which require strings as array keys.
-        $ancestorFieldNames = array_map([$this, 'aliasCteField'], $ancestorFields);
-        $descendantFieldNames = array_map([$this, 'aliasCteField'], $descendantFields);
-
-        // Prepare identifier expressions:
-        $bindingKey = static::toIdentifiers($bindingKey, [$table, 'aliasField']);
-        $foreignKey = static::toIdentifiers((array)($this->parentAssociation->getForeignKey() ?: null), [$table, 'aliasField']);
-        $ancestorFields = static::toIdentifiers($ancestorFields, [$this, 'aliasCteField']);
-
-        // Recursion base:
-        $base = $table->find()
-            ->select(array_merge(
-                $bindingKey, // ancestor
-                $bindingKey, // descendant
-                [
-                    0, // level
-                    new QueryExpression('FALSE'), // cyclic flag
-                ],
-            ));
-        // Recursive part:
-        $recursive = $table->find();
-        $recursive = $recursive
-            ->select(array_merge(
-                $ancestorFields, // ancestor
-                $bindingKey, // descendant
-                [
-                    new UnaryExpression('+ 1', $this->aliasCteField(static::CTE_FIELD_LEVEL), UnaryExpression::POSTFIX), // level (increase by 1)
-                    // SQLite rewrites tuple comparisons in selects to scalar queries (ex. 1 = (SELECT 1 WHERE ...)), so we coalesce to `FALSE`.
-                    $recursive->func()->coalesce([new TupleComparison($ancestorFieldNames, $bindingKey), new QueryExpression('FALSE')]),
-                ],
-            ))
-            ->innerJoin(
-                $this->cteName,
-                (new QueryExpression())
-                    ->add(new TupleComparison($descendantFieldNames, $foreignKey))
-                    ->not($this->aliasCteField(static::CTE_FIELD_CYCLIC)), // Avoid infinite recursion even with cyclic references.
-            );
-
-        return (new CommonTableExpression())
-            ->recursive()
-            ->name($this->cteName)
-            ->field($fields)
-            ->query($base->unionAll($recursive));
-    }
-
-    /**
-     * Build recursive Common Table Expression (CTE) for finding all pairs of ancestor and descendant nodes,
-     * with level and a flag to stop infinite recursion in case of cyclic references.
-     *
-     * @param array $for Primary keys of the node to build the CTE for.
-     * @return \Cake\Database\Expression\CommonTableExpression
-     */
-    protected function ancestorsCteBuilder(array $for): CommonTableExpression
-    {
-        $table = $this->table();
-        $suffix = $this->nodeSuffix($for);
         $name = $this->cteName($suffix);
 
         // Prepare fields:
@@ -428,7 +368,19 @@ class AdjacencyListBehavior extends Behavior
         // Prepare identifier expressions:
         $bindingKey = static::toIdentifiers($bindingKey, [$table, 'aliasField']);
         $foreignKey = static::toIdentifiers((array)($this->parentAssociation->getForeignKey() ?: null), [$table, 'aliasField']);
+        $ancestorFields = static::toIdentifiers($ancestorFields, [$this, 'aliasCteField'], $suffix);
         $descendantFields = static::toIdentifiers($descendantFields, [$this, 'aliasCteField'], $suffix);
+
+        // Recursion step: walking down, the child becomes the new descendant; walking up, the parent becomes the new ancestor.
+        if ($descendants) {
+            [$ancestor, $descendant, $level] = [$ancestorFields, $bindingKey, '+ 1'];
+            $join = new TupleComparison($descendantFieldNames, $foreignKey);
+            $cyclic = new TupleComparison($ancestorFieldNames, $bindingKey);
+        } else {
+            [$ancestor, $descendant, $level] = [$foreignKey, $descendantFields, '- 1'];
+            $join = new TupleComparison($ancestorFieldNames, $bindingKey);
+            $cyclic = new TupleComparison($descendantFieldNames, $foreignKey);
+        }
 
         // Recursion base:
         $base = $table->find()
@@ -446,18 +398,18 @@ class AdjacencyListBehavior extends Behavior
         $recursive = $table->find();
         $recursive = $recursive
             ->select(array_merge(
-                $foreignKey, // ancestor
-                $descendantFields, // descendant
+                $ancestor,
+                $descendant,
                 [
-                    new UnaryExpression('- 1', $this->aliasCteField(static::CTE_FIELD_LEVEL, $suffix), UnaryExpression::POSTFIX), // level (decrease by 1 going up towards ancestors)
+                    new UnaryExpression($level, $this->aliasCteField(static::CTE_FIELD_LEVEL, $suffix), UnaryExpression::POSTFIX),
                     // SQLite rewrites tuple comparisons in selects to scalar queries (ex. 1 = (SELECT 1 WHERE ...)), so we coalesce to `FALSE`.
-                    $recursive->func()->coalesce([new TupleComparison($descendantFieldNames, $foreignKey), new QueryExpression('FALSE')]),
+                    $recursive->func()->coalesce([$cyclic, new QueryExpression('FALSE')]),
                 ],
             ))
             ->innerJoin(
                 $name,
                 (new QueryExpression())
-                    ->add(new TupleComparison($ancestorFieldNames, $bindingKey))
+                    ->add($join)
                     ->not($this->aliasCteField(static::CTE_FIELD_CYCLIC, $suffix)), // Avoid infinite recursion even with cyclic references.
             );
 
@@ -502,24 +454,6 @@ class AdjacencyListBehavior extends Behavior
     }
 
     /**
-     * Append CTE to query `WITH` clause.
-     *
-     * @param \Cake\ORM\Query\SelectQuery $query Query object.
-     * @return \Cake\ORM\Query\SelectQuery
-     */
-    public function findInheritanceMatrix(SelectQuery $query): SelectQuery
-    {
-        $this->cte ??= $this->cteBuilder();
-
-        // Ensure CTE has been added to query:
-        if (!in_array($this->cte, (array)$query->clause('with'), true)) {
-            $query = $query->with($this->cte);
-        }
-
-        return $query;
-    }
-
-    /**
      * Attach join to Query object.
      *
      * @param \Cake\ORM\Query\SelectQuery $query Query object.
@@ -547,13 +481,14 @@ class AdjacencyListBehavior extends Behavior
     }
 
     /**
-     * Find all ancestors for a node.
+     * Find all descendants or ancestors for a node.
      *
      * @param \Cake\ORM\Query\SelectQuery $query Query object.
      * @param array{for: mixed, includeSelf?: bool} $options Options.
+     * @param bool $descendants `true` for descendants, `false` for ancestors.
      * @return \Cake\ORM\Query\SelectQuery
      */
-    public function findAncestors(SelectQuery $query, array $options): SelectQuery
+    protected function findRelatives(SelectQuery $query, array $options, bool $descendants): SelectQuery
     {
         $for = $options['for'] ?? null;
         $includeSelf = $options['includeSelf'] ?? false;
@@ -570,15 +505,34 @@ class AdjacencyListBehavior extends Behavior
             $for = $for->extract((array)$this->table()->getPrimaryKey());
         }
 
-        $association = $this->getInheritanceAssociation(true, (array)$for);
+        $suffix = $this->nodeSuffix((array)$for, $descendants);
+        $cte = $this->ctes[$suffix] ??= $this->cteBuilder((array)$for, $descendants, $suffix);
+        if (!in_array($cte, (array)$query->clause('with'), true)) {
+            $query = $query->with($cte);
+        }
+
+        // Descendants are found by joining their ancestors, and vice versa.
+        $association = $this->getInheritanceAssociation(!$descendants, $suffix);
         $bindingKey = (array)$association->getBindingKey();
 
         return $this->makeJoin(
-            $query->with($this->ancestorsCteBuilder((array)$for)),
+            $query,
             $association,
             $includeSelf,
             new TupleComparison(array_map([$association->getTarget(), 'aliasField'], $bindingKey), static::extractFields($for, $bindingKey)),
         );
+    }
+
+    /**
+     * Find all ancestors for a node.
+     *
+     * @param \Cake\ORM\Query\SelectQuery $query Query object.
+     * @param array{for: mixed, includeSelf?: bool} $options Options.
+     * @return \Cake\ORM\Query\SelectQuery
+     */
+    public function findAncestors(SelectQuery $query, array $options): SelectQuery
+    {
+        return $this->findRelatives($query, $options, false);
     }
 
     /**
@@ -590,21 +544,7 @@ class AdjacencyListBehavior extends Behavior
      */
     public function findDescendants(SelectQuery $query, array $options): SelectQuery
     {
-        $for = $options['for'] ?? null;
-        $includeSelf = $options['includeSelf'] ?? false;
-        if (empty($for)) {
-            throw new InvalidArgumentException(sprintf('Missing required `%s` option', 'for'));
-        }
-
-        $association = $this->getInheritanceAssociation(false);
-        $bindingKey = (array)$association->getBindingKey();
-
-        return $this->makeJoin(
-            $query->find('inheritanceMatrix'),
-            $association,
-            $includeSelf,
-            new TupleComparison(array_map([$association->getTarget(), 'aliasField'], $bindingKey), static::extractFields($for, $bindingKey)),
-        );
+        return $this->findRelatives($query, $options, true);
     }
 
     /**
