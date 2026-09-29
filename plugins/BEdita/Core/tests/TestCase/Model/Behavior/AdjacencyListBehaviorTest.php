@@ -22,7 +22,6 @@ use Cake\Database\Expression\CommonTableExpression;
 use Cake\Database\Expression\IdentifierExpression;
 use Cake\Database\ExpressionInterface;
 use Cake\Database\Schema\TableSchema;
-use Cake\Datasource\ConnectionManager;
 use Cake\ORM\Association;
 use Cake\ORM\Association\BelongsTo;
 use Cake\ORM\Association\BelongsToMany;
@@ -61,10 +60,6 @@ final class AdjacencyListBehaviorTest extends TestCase
     {
         parent::setUp();
 
-        if (ConnectionManager::get('default')->getDriver() instanceof Sqlite) {
-            static::markTestSkipped('AdjacencyListBehavior tests cannot run on SQLite');
-        }
-
         $this->table = $this->fetchTable('FakeCategories');
         $this->table->belongsTo('Parents', [
             'className' => $this->table->getAlias(),
@@ -77,15 +72,14 @@ final class AdjacencyListBehaviorTest extends TestCase
             'foreignKey' => 'parent_id',
         ]);
 
-        // Add cycle in categories tree
+        // Add cycle in categories tree.
+        // Cycles are closed with updates because disabling constraints needs opposite transaction nesting on SQLite and Postgres.
         $connection = $this->table->getConnection();
-        $connection->transactional(function ($connection): void {
-            $connection->disableConstraints(function ($connection): void {
-                $connection->insert('fake_categories', ['id' => 10, 'name' => 'Example circular reference', 'parent_id' => 11, 'left_idx' => 19, 'right_idx' => 21]);
-                $connection->insert('fake_categories', ['id' => 11, 'name' => 'Example circular reference', 'parent_id' => 10, 'left_idx' => 20, 'right_idx' => 22]);
-                $connection->insert('fake_categories', ['id' => 12, 'name' => 'Example self-reference', 'parent_id' => 12, 'left_idx' => 23, 'right_idx' => 24]);
-            });
-        });
+        $connection->insert('fake_categories', ['id' => 10, 'name' => 'Example circular reference', 'parent_id' => null, 'left_idx' => 19, 'right_idx' => 21]);
+        $connection->insert('fake_categories', ['id' => 11, 'name' => 'Example circular reference', 'parent_id' => 10, 'left_idx' => 20, 'right_idx' => 22]);
+        $connection->insert('fake_categories', ['id' => 12, 'name' => 'Example self-reference', 'parent_id' => null, 'left_idx' => 23, 'right_idx' => 24]);
+        $connection->update('fake_categories', ['parent_id' => 11], ['id' => 10]);
+        $connection->update('fake_categories', ['parent_id' => 12], ['id' => 12]);
     }
 
     /**
@@ -204,15 +198,14 @@ final class AdjacencyListBehaviorTest extends TestCase
     public function testAliasCteField(): void
     {
         $behavior = new class ($this->table, ['parentAssociation' => 'Parents', 'cteName' => 'foo']) extends AdjacencyListBehavior {
-            public function aliasCteField(string $field, string|null $suffix = null): string
+            public function aliasCteField(string $field, string $suffix): string
             {
                 return parent::aliasCteField($field, $suffix);
             }
         };
 
-        static::assertSame('foo.bar', $behavior->aliasCteField('bar'));
         static::assertSame('foo_baz.bar', $behavior->aliasCteField('bar', 'baz'));
-        static::assertSame('foo.baz', $behavior->aliasCteField('foo.baz'), 'Fields should not be prefixed twice');
+        static::assertSame('foo.baz', $behavior->aliasCteField('foo.baz', 'baz'), 'Fields should not be prefixed twice');
     }
 
     /**
@@ -296,8 +289,8 @@ final class AdjacencyListBehaviorTest extends TestCase
         return [
             'descendants' => [
                 [
-                    'name' => 'Example',
-                    'table' => 'foo',
+                    'name' => 'Examplebar',
+                    'table' => 'foo_bar',
                     'foreignKey' => ['ancestor_id'],
                     'targetForeignKey' => ['descendant_id'],
                 ],
@@ -316,8 +309,8 @@ final class AdjacencyListBehaviorTest extends TestCase
             ],
             'ancestors' => [
                 [
-                    'name' => 'Example',
-                    'table' => 'foo',
+                    'name' => 'Examplebar',
+                    'table' => 'foo_bar',
                     'foreignKey' => ['descendant_id'],
                     'targetForeignKey' => ['ancestor_id'],
                 ],
@@ -353,13 +346,13 @@ final class AdjacencyListBehaviorTest extends TestCase
         }
 
         $behavior = new class ($this->table, $config) extends AdjacencyListBehavior {
-            public function getInheritanceAssociation(bool $descendants, array|null $for = null): BelongsToMany
+            public function getInheritanceAssociation(bool $descendants, string $suffix): BelongsToMany
             {
-                return parent::getInheritanceAssociation($descendants, $for);
+                return parent::getInheritanceAssociation($descendants, $suffix);
             }
         };
 
-        $association = $behavior->getInheritanceAssociation($descendants);
+        $association = $behavior->getInheritanceAssociation($descendants, 'bar');
         if ($expected instanceof Exception) {
             return;
         }
@@ -392,7 +385,7 @@ final class AdjacencyListBehaviorTest extends TestCase
             static::assertSame($type, $schema->getColumnType($name));
         }
 
-        $anotherAssociation = $behavior->getInheritanceAssociation($descendants);
+        $anotherAssociation = $behavior->getInheritanceAssociation($descendants, 'bar');
         static::assertSame($association, $anotherAssociation);
     }
 
@@ -408,53 +401,99 @@ final class AdjacencyListBehaviorTest extends TestCase
     {
         $this->expectExceptionObject(new UnexpectedValueException(sprintf('Unexpected association type `%s`', BelongsTo::class)));
 
+        $this->table->belongsTo('Examplebar', [
+            'className' => $this->table->getAlias(),
+            'targetTable' => (clone $this->table)->setAlias('Examplebar'),
+            'foreignKey' => 'parent_id',
+        ]);
         $config = [
             'parentAssociation' => 'Parents',
-            'ancestorsAssociation' => 'Parents',
-            'descendantsAssociation' => 'Parents',
+            'ancestorsAssociation' => 'Example',
+            'descendantsAssociation' => 'Example',
         ];
         $behavior = new class ($this->table, $config) extends AdjacencyListBehavior {
-            public function getInheritanceAssociation(bool $descendants, array|null $for = null): BelongsToMany
+            public function getInheritanceAssociation(bool $descendants, string $suffix): BelongsToMany
             {
-                return parent::getInheritanceAssociation($descendants, $for);
+                return parent::getInheritanceAssociation($descendants, $suffix);
             }
         };
 
-        $behavior->getInheritanceAssociation($descendants);
+        $behavior->getInheritanceAssociation($descendants, 'bar');
+    }
+
+    /**
+     * Data provider for {@see AdjacencyListBehaviorTest::testCteBuilder()} test case.
+     *
+     * @return array[]
+     */
+    public static function cteBuilderProvider(): array
+    {
+        return [
+            'descendants' => [
+                <<<SQL
+                foo_bar(ancestor_id, descendant_id, level, cyclic) AS (
+                    (
+                        SELECT (FakeCategories.id), (FakeCategories.id), 0, (FALSE)
+                        FROM fake_categories FakeCategories
+                        WHERE (FakeCategories.id) = (:tuple0)
+                    )
+                    UNION ALL
+                    (
+                        SELECT (foo_bar.ancestor_id), (FakeCategories.id), ((foo_bar.level) + 1), (COALESCE((foo_bar.ancestor_id)=(FakeCategories.id), FALSE))
+                        FROM fake_categories FakeCategories
+                        INNER JOIN foo_bar foo_bar
+                            ON ((foo_bar.descendant_id) = (FakeCategories.parent_id) AND NOT (foo_bar.cyclic))
+                    )
+                )
+                SQL,
+                true,
+            ],
+            'ancestors' => [
+                <<<SQL
+                foo_bar(ancestor_id, descendant_id, level, cyclic) AS (
+                    (
+                        SELECT (FakeCategories.id), (FakeCategories.id), 0, (FALSE)
+                        FROM fake_categories FakeCategories
+                        WHERE (FakeCategories.id) = (:tuple0)
+                    )
+                    UNION ALL
+                    (
+                        SELECT (FakeCategories.parent_id), (foo_bar.descendant_id), ((foo_bar.level) - 1), (COALESCE((foo_bar.descendant_id)=(FakeCategories.parent_id), FALSE))
+                        FROM fake_categories FakeCategories
+                        INNER JOIN foo_bar foo_bar
+                            ON ((foo_bar.ancestor_id) = (FakeCategories.id) AND NOT (foo_bar.cyclic))
+                    )
+                )
+                SQL,
+                false,
+            ],
+        ];
     }
 
     /**
      * Test {@see AdjacencyListBehavior::cteBuilder()} method.
      *
+     * @param string $expected Expected SQL.
+     * @param bool $descendants `true` for descendants, `false` for ancestors.
      * @return void
+     * @dataProvider cteBuilderProvider()
      */
-    public function testCteBuilder(): void
+    public function testCteBuilder(string $expected, bool $descendants): void
     {
+        if ($this->table->getConnection()->getDriver() instanceof Sqlite) {
+            static::markTestSkipped('SQLite rewrites tuple comparisons, so the generated SQL differs');
+        }
+
         $behavior = new class ($this->table, ['parentAssociation' => 'Parents', 'cteName' => 'foo']) extends AdjacencyListBehavior {
-            public function cteBuilder(): CommonTableExpression
+            public function cteBuilder(array $for, bool $descendants, string $suffix): CommonTableExpression
             {
-                return parent::cteBuilder();
+                return parent::cteBuilder($for, $descendants, $suffix);
             }
         };
 
-        $expression = $behavior->cteBuilder();
+        $expression = $behavior->cteBuilder([2], $descendants, 'bar');
         static::assertTrue($expression->isRecursive());
 
-        $expected = <<<SQL
-        foo(ancestor_id, descendant_id, level, cyclic) AS (
-            (
-                SELECT (FakeCategories.id), (FakeCategories.id), 0, (FALSE)
-                FROM fake_categories FakeCategories
-            )
-            UNION ALL
-            (
-                SELECT (foo.ancestor_id), (FakeCategories.id), ((foo.level) + 1), (COALESCE((foo.ancestor_id)=(FakeCategories.id), FALSE))
-                FROM fake_categories FakeCategories
-                INNER JOIN foo foo
-                    ON ((foo.descendant_id) = (FakeCategories.parent_id) AND NOT (foo.cyclic))
-            )
-        )
-        SQL;
         $actual = $expression->sql($this->table->getConnection()->insertQuery()->getValueBinder());
         $normalize = fn(string $string): string => (string)preg_replace(['/(?<=[()])\s+|\s+(?=[()])/', '/\s+/'], ['', ' '], $string);
 
@@ -504,30 +543,6 @@ final class AdjacencyListBehaviorTest extends TestCase
         $actual = $behavior::extractFields($from, $fields);
 
         static::assertSame($expected, $actual);
-    }
-
-    /**
-     * Test {@see AdjacencyListBehavior::findInheritanceMatrix()} finder.
-     *
-     * @return void
-     */
-    public function testFindInheritanceMatrix(): void
-    {
-        $this->table->addBehavior('BEdita/Core.AdjacencyList', ['parentAssociation' => 'Parents', 'cteName' => 'foo']);
-        $query = $this->table->find();
-
-        $query = $query->find('inheritanceMatrix');
-        /** @var \Cake\Database\Expression\CommonTableExpression[] $with */
-        $with = $query->clause('with');
-        static::assertCount(1, $with);
-
-        $cte = $with[array_key_first($with)];
-        static::assertInstanceOf(CommonTableExpression::class, $cte);
-        static::assertStringStartsWith('foo(ancestor_id, descendant_id, level, cyclic) AS (', $cte->sql($query->getValueBinder()));
-
-        $query = $query->find('inheritanceMatrix');
-        $anotherWith = $query->clause('with');
-        static::assertSame($with, $anotherWith);
     }
 
     /**
@@ -599,6 +614,12 @@ final class AdjacencyListBehaviorTest extends TestCase
             'missing required option' => [
                 new InvalidArgumentException('Missing required `for` option'),
                 ['for' => null, 'includeSelf' => true],
+            ],
+            'empty sub-query' => [
+                new InvalidArgumentException('Query for the `for` option returned no results'),
+                fn(Table $table): array => [
+                    'for' => $table->find()->select((array)$table->getPrimaryKey())->where(['id' => -1]),
+                ],
             ],
         ];
     }
@@ -726,6 +747,12 @@ final class AdjacencyListBehaviorTest extends TestCase
                 new InvalidArgumentException('Missing required `for` option'),
                 ['for' => null, 'includeSelf' => true],
             ],
+            'empty sub-query' => [
+                new InvalidArgumentException('Query for the `for` option returned no results'),
+                fn(Table $table): array => [
+                    'for' => $table->find()->select((array)$table->getPrimaryKey())->where(['id' => -1]),
+                ],
+            ],
         ];
     }
 
@@ -749,9 +776,8 @@ final class AdjacencyListBehaviorTest extends TestCase
         $this->table->addBehavior('BEdita/Core.AdjacencyList', ['parentAssociation' => 'Parents']);
         $query = $this->table->find('descendants', $options);
 
-        static::assertTrue($this->table->hasAssociation('Ancestors'));
-        /** @var \Cake\ORM\Association\BelongsToMany $association */
-        $association = $this->table->getAssociation('Ancestors');
+        $association = $this->getAssociation('Ancestors');
+        static::assertNotNull($association);
         static::assertInstanceOf(BelongsToMany::class, $association);
 
         $actual = $query
@@ -787,8 +813,9 @@ final class AdjacencyListBehaviorTest extends TestCase
             ->find('ancestors', ['for' => 3])
             ->find('descendants', ['for' => 1]);
 
-        static::assertTrue($this->table->hasAssociation('Ancestors'));
-        static::assertInstanceOf(BelongsToMany::class, $this->table->getAssociation('Ancestors'));
+        $ancestors = $this->getAssociation('Ancestors');
+        static::assertNotNull($ancestors);
+        static::assertInstanceOf(BelongsToMany::class, $ancestors);
         $descendants = $this->getAssociation('Descendants');
         static::assertNotNull($descendants);
         static::assertInstanceOf(BelongsToMany::class, $descendants);
@@ -798,6 +825,56 @@ final class AdjacencyListBehaviorTest extends TestCase
             ->order(array_map([$this->table, 'aliasField'], (array)$this->table->getPrimaryKey()))
             ->disableHydration()
             ->all()
+            ->toList();
+
+        static::assertSame($expected, $actual);
+    }
+
+    /** Ancestors and descendants of the same node must use distinct CTEs. */
+    public function testFindAncestorsAndDescendantsOnSameNode(): void
+    {
+        $this->table->addBehavior('BEdita/Core.AdjacencyList', ['parentAssociation' => 'Parents']);
+        $query = $this->table
+            ->find('ancestors', ['for' => 2, 'includeSelf' => true])
+            ->find('descendants', ['for' => 2, 'includeSelf' => true]);
+
+        static::assertCount(2, (array)$query->clause('with'));
+
+        $actual = $query
+            ->select((array)$this->table->getPrimaryKey())
+            ->disableHydration()
+            ->all()
+            ->extract('id')
+            ->toList();
+
+        static::assertSame([2], $actual);
+    }
+
+    /**
+     * Applying the same finder twice on the same node must not add the same CTE twice.
+     *
+     * @param int[] $expected Expected IDs.
+     * @param string $finder Finder name.
+     * @param int $for Node ID.
+     * @return void
+     * @testWith    [[3, 4, 5], "descendants", 2]
+     *              [[1, 2], "ancestors", 3]
+     */
+    public function testFindTwiceOnSameNode(array $expected, string $finder, int $for): void
+    {
+        $this->table->addBehavior('BEdita/Core.AdjacencyList', ['parentAssociation' => 'Parents']);
+        $query = $this->table
+            ->find($finder, compact('for'))
+            ->find($finder, compact('for'));
+
+        static::assertCount(1, (array)$query->clause('with'));
+
+        $actual = $query
+            ->select((array)$this->table->getPrimaryKey())
+            ->order(array_map([$this->table, 'aliasField'], (array)$this->table->getPrimaryKey()))
+            ->disableHydration()
+            ->all()
+            ->extract('id')
             ->toList();
 
         static::assertSame($expected, $actual);
