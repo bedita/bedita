@@ -2,6 +2,7 @@
 declare(strict_types=1);
 
 use Cake\Database\Expression\QueryExpression;
+use Cake\ORM\Table;
 use Migrations\AbstractMigration;
 
 class UseAdjacencyListForTrees extends AbstractMigration
