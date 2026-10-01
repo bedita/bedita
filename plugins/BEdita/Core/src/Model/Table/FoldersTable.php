@@ -32,13 +32,18 @@ use Cake\ORM\RulesChecker;
  *
  * @property \BEdita\Core\Model\Table\TreesTable|\Cake\ORM\Association\HasOne $TreeParentNodes
  * @property \BEdita\Core\Model\Table\ObjectsTable|\Cake\ORM\Association\BelongsToMany $Children
- * @method \BEdita\Core\Model\Entity\Folder get($primaryKey, $options = [])
- * @method \BEdita\Core\Model\Entity\Folder newEntity($data = null, array $options = [])
+ * @method \BEdita\Core\Model\Entity\Folder get(mixed $primaryKey, array|string $finder = 'all', \Psr\SimpleCache\CacheInterface|string|null $cache = null, \Closure|string|null $cacheKey = null, mixed ...$args)
+ * @method \BEdita\Core\Model\Entity\Folder newEntity(array $data, array $options = [])
  * @method \BEdita\Core\Model\Entity\Folder[] newEntities(array $data, array $options = [])
- * @method \BEdita\Core\Model\Entity\Folder|bool save(\Cake\Datasource\EntityInterface $entity, $options = [])
+ * @method \BEdita\Core\Model\Entity\Folder|false save(\Cake\Datasource\EntityInterface $entity, array $options = [])
  * @method \BEdita\Core\Model\Entity\Folder patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
- * @method \BEdita\Core\Model\Entity\Folder[] patchEntities($entities, array $data, array $options = [])
- * @method \BEdita\Core\Model\Entity\Folder findOrCreate($search, callable $callback = null, $options = [])
+ * @method \BEdita\Core\Model\Entity\Folder[] patchEntities(iterable $entities, array $data, array $options = [])
+ * @method \BEdita\Core\Model\Entity\Folder findOrCreate(\Cake\ORM\Query\SelectQuery|callable|array $search, ?callable $callback = null, array $options = [])
+ * @method \BEdita\Core\Model\Entity\Folder newEmptyEntity()
+ * @method \BEdita\Core\Model\Entity\Folder[]|\Cake\Datasource\ResultSetInterface<\BEdita\Core\Model\Entity\Folder>|false saveMany(iterable $entities, array $options = [])
+ * @method \BEdita\Core\Model\Entity\Folder[]|\Cake\Datasource\ResultSetInterface<\BEdita\Core\Model\Entity\Folder> saveManyOrFail(iterable $entities, array $options = [])
+ * @method \BEdita\Core\Model\Entity\Folder[]|\Cake\Datasource\ResultSetInterface<\BEdita\Core\Model\Entity\Folder>|false deleteMany(iterable $entities, array $options = [])
+ * @method \BEdita\Core\Model\Entity\Folder[]|\Cake\Datasource\ResultSetInterface<\BEdita\Core\Model\Entity\Folder> deleteManyOrFail(iterable $entities, array $options = [])
  * @since 4.0.0
  */
 class FoldersTable extends ObjectsTable

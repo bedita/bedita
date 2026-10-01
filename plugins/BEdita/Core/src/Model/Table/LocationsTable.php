@@ -20,13 +20,18 @@ use BEdita\Core\Model\Validation\LocationsValidator;
 /**
  * Locations Model
  *
- * @method \BEdita\Core\Model\Entity\Location get($primaryKey, $options = [])
- * @method \BEdita\Core\Model\Entity\Location newEntity($data = null, array $options = [])
+ * @method \BEdita\Core\Model\Entity\Location get(mixed $primaryKey, array|string $finder = 'all', \Psr\SimpleCache\CacheInterface|string|null $cache = null, \Closure|string|null $cacheKey = null, mixed ...$args)
+ * @method \BEdita\Core\Model\Entity\Location newEntity(array $data, array $options = [])
  * @method \BEdita\Core\Model\Entity\Location[] newEntities(array $data, array $options = [])
- * @method \BEdita\Core\Model\Entity\Location|bool save(\Cake\Datasource\EntityInterface $entity, $options = [])
+ * @method \BEdita\Core\Model\Entity\Location|false save(\Cake\Datasource\EntityInterface $entity, array $options = [])
  * @method \BEdita\Core\Model\Entity\Location patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
- * @method \BEdita\Core\Model\Entity\Location[] patchEntities($entities, array $data, array $options = [])
- * @method \BEdita\Core\Model\Entity\Location findOrCreate($search, callable $callback = null, $options = [])
+ * @method \BEdita\Core\Model\Entity\Location[] patchEntities(iterable $entities, array $data, array $options = [])
+ * @method \BEdita\Core\Model\Entity\Location findOrCreate(\Cake\ORM\Query\SelectQuery|callable|array $search, ?callable $callback = null, array $options = [])
+ * @method \BEdita\Core\Model\Entity\Location newEmptyEntity()
+ * @method \BEdita\Core\Model\Entity\Location[]|\Cake\Datasource\ResultSetInterface<\BEdita\Core\Model\Entity\Location>|false saveMany(iterable $entities, array $options = [])
+ * @method \BEdita\Core\Model\Entity\Location[]|\Cake\Datasource\ResultSetInterface<\BEdita\Core\Model\Entity\Location> saveManyOrFail(iterable $entities, array $options = [])
+ * @method \BEdita\Core\Model\Entity\Location[]|\Cake\Datasource\ResultSetInterface<\BEdita\Core\Model\Entity\Location>|false deleteMany(iterable $entities, array $options = [])
+ * @method \BEdita\Core\Model\Entity\Location[]|\Cake\Datasource\ResultSetInterface<\BEdita\Core\Model\Entity\Location> deleteManyOrFail(iterable $entities, array $options = [])
  * @mixin \BEdita\Core\Model\Behavior\RelationsBehavior
  */
 class LocationsTable extends Table
