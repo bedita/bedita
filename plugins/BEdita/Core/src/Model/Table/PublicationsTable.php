@@ -20,14 +20,19 @@ use Cake\Validation\Validator;
 /**
  * Publications Model
  *
- * @method \BEdita\Core\Model\Entity\Publication get($primaryKey, $options = [])
- * @method \BEdita\Core\Model\Entity\Publication newEntity($data = null, array $options = [])
+ * @method \BEdita\Core\Model\Entity\Publication get(mixed $primaryKey, array|string $finder = 'all', \Psr\SimpleCache\CacheInterface|string|null $cache = null, \Closure|string|null $cacheKey = null, mixed ...$args)
+ * @method \BEdita\Core\Model\Entity\Publication newEntity(array $data, array $options = [])
  * @method \BEdita\Core\Model\Entity\Publication[] newEntities(array $data, array $options = [])
- * @method \BEdita\Core\Model\Entity\Publication|false save(\Cake\Datasource\EntityInterface $entity, $options = [])
- * @method \BEdita\Core\Model\Entity\Publication saveOrFail(\Cake\Datasource\EntityInterface $entity, $options = [])
+ * @method \BEdita\Core\Model\Entity\Publication|false save(\Cake\Datasource\EntityInterface $entity, array $options = [])
+ * @method \BEdita\Core\Model\Entity\Publication saveOrFail(\Cake\Datasource\EntityInterface $entity, array $options = [])
  * @method \BEdita\Core\Model\Entity\Publication patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
- * @method \BEdita\Core\Model\Entity\Publication[] patchEntities($entities, array $data, array $options = [])
- * @method \BEdita\Core\Model\Entity\Publication findOrCreate($search, callable $callback = null, $options = [])
+ * @method \BEdita\Core\Model\Entity\Publication[] patchEntities(iterable $entities, array $data, array $options = [])
+ * @method \BEdita\Core\Model\Entity\Publication findOrCreate(\Cake\ORM\Query\SelectQuery|callable|array $search, ?callable $callback = null, array $options = [])
+ * @method \BEdita\Core\Model\Entity\Publication newEmptyEntity()
+ * @method \BEdita\Core\Model\Entity\Publication[]|\Cake\Datasource\ResultSetInterface<\BEdita\Core\Model\Entity\Publication>|false saveMany(iterable $entities, array $options = [])
+ * @method \BEdita\Core\Model\Entity\Publication[]|\Cake\Datasource\ResultSetInterface<\BEdita\Core\Model\Entity\Publication> saveManyOrFail(iterable $entities, array $options = [])
+ * @method \BEdita\Core\Model\Entity\Publication[]|\Cake\Datasource\ResultSetInterface<\BEdita\Core\Model\Entity\Publication>|false deleteMany(iterable $entities, array $options = [])
+ * @method \BEdita\Core\Model\Entity\Publication[]|\Cake\Datasource\ResultSetInterface<\BEdita\Core\Model\Entity\Publication> deleteManyOrFail(iterable $entities, array $options = [])
  */
 class PublicationsTable extends Table
 {

@@ -32,13 +32,18 @@ use Cake\ORM\TableRegistry;
  *
  * @property \Cake\ORM\Association\BelongsTo $PropertyTypes
  * @property \Cake\ORM\Association\BelongsTo $ObjectTypes
- * @method \BEdita\Core\Model\Entity\StaticProperty get($primaryKey, $options = [])
- * @method \BEdita\Core\Model\Entity\StaticProperty newEntity($data = null, array $options = [])
+ * @method \BEdita\Core\Model\Entity\StaticProperty get(mixed $primaryKey, array|string $finder = 'all', \Psr\SimpleCache\CacheInterface|string|null $cache = null, \Closure|string|null $cacheKey = null, mixed ...$args)
+ * @method \BEdita\Core\Model\Entity\StaticProperty newEntity(array $data, array $options = [])
  * @method \BEdita\Core\Model\Entity\StaticProperty[] newEntities(array $data, array $options = [])
- * @method \BEdita\Core\Model\Entity\StaticProperty|bool save(\Cake\Datasource\EntityInterface $entity, $options = [])
+ * @method \BEdita\Core\Model\Entity\StaticProperty|false save(\Cake\Datasource\EntityInterface $entity, array $options = [])
  * @method \BEdita\Core\Model\Entity\StaticProperty patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
- * @method \BEdita\Core\Model\Entity\StaticProperty[] patchEntities($entities, array $data, array $options = [])
- * @method \BEdita\Core\Model\Entity\StaticProperty findOrCreate($search, callable $callback = null, $options = [])
+ * @method \BEdita\Core\Model\Entity\StaticProperty[] patchEntities(iterable $entities, array $data, array $options = [])
+ * @method \BEdita\Core\Model\Entity\StaticProperty findOrCreate(\Cake\ORM\Query\SelectQuery|callable|array $search, ?callable $callback = null, array $options = [])
+ * @method \BEdita\Core\Model\Entity\StaticProperty newEmptyEntity()
+ * @method \BEdita\Core\Model\Entity\StaticProperty[]|\Cake\Datasource\ResultSetInterface<\BEdita\Core\Model\Entity\StaticProperty>|false saveMany(iterable $entities, array $options = [])
+ * @method \BEdita\Core\Model\Entity\StaticProperty[]|\Cake\Datasource\ResultSetInterface<\BEdita\Core\Model\Entity\StaticProperty> saveManyOrFail(iterable $entities, array $options = [])
+ * @method \BEdita\Core\Model\Entity\StaticProperty[]|\Cake\Datasource\ResultSetInterface<\BEdita\Core\Model\Entity\StaticProperty>|false deleteMany(iterable $entities, array $options = [])
+ * @method \BEdita\Core\Model\Entity\StaticProperty[]|\Cake\Datasource\ResultSetInterface<\BEdita\Core\Model\Entity\StaticProperty> deleteManyOrFail(iterable $entities, array $options = [])
  * @since 4.0.0
  */
 class StaticPropertiesTable extends Table
