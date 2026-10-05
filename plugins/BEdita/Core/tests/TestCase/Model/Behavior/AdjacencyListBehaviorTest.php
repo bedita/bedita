@@ -663,7 +663,7 @@ final class AdjacencyListBehaviorTest extends TestCase
         }
 
         $this->table->addBehavior('BEdita/Core.AdjacencyList', ['parentAssociation' => 'Parents']);
-        $query = $this->table->unhydratedFind('ancestors', $options);
+        $query = $this->table->unhydratedFind('ancestors', ...$options);
         $association = $this->getAssociation('Descendants');
 
         static::assertNotNull($association);
@@ -794,7 +794,7 @@ final class AdjacencyListBehaviorTest extends TestCase
         }
 
         $this->table->addBehavior('BEdita/Core.AdjacencyList', ['parentAssociation' => 'Parents']);
-        $query = $this->table->unhydratedFind('descendants', $options);
+        $query = $this->table->unhydratedFind('descendants', ...$options);
 
         $association = $this->getAssociation('Ancestors');
         static::assertNotNull($association);
@@ -862,7 +862,7 @@ final class AdjacencyListBehaviorTest extends TestCase
 
         $this->table->addBehavior('BEdita/Core.AdjacencyList', ['parentAssociation' => 'Parents']);
 
-        $actual = $this->table->unhydratedFind('children', $options)
+        $actual = $this->table->unhydratedFind('children', ...$options)
             ->select(array_merge((array)$this->table->getPrimaryKey(), (array)$this->table->getDisplayField()))
             ->orderBy(array_map([$this->table, 'aliasField'], (array)$this->table->getPrimaryKey()))
             ->all()
@@ -884,8 +884,8 @@ final class AdjacencyListBehaviorTest extends TestCase
 
         $this->table->addBehavior('BEdita/Core.AdjacencyList', ['parentAssociation' => 'Parents']);
         $query = $this->table
-            ->unhydratedFind('ancestors', ['for' => 3])
-            ->find('descendants', ['for' => 1]);
+            ->unhydratedFind('ancestors', for: 3)
+            ->find('descendants', for: 1);
 
         $ancestors = $this->getAssociation('Ancestors');
         static::assertNotNull($ancestors);
@@ -908,8 +908,8 @@ final class AdjacencyListBehaviorTest extends TestCase
     {
         $this->table->addBehavior('BEdita/Core.AdjacencyList', ['parentAssociation' => 'Parents']);
         $query = $this->table
-            ->unhydratedFind('ancestors', ['for' => 2, 'includeSelf' => true])
-            ->find('descendants', ['for' => 2, 'includeSelf' => true]);
+            ->unhydratedFind('ancestors', for: 2, includeSelf: true)
+            ->find('descendants', for: 2, includeSelf: true);
 
         static::assertCount(2, (array)$query->clause('with'));
 
@@ -936,8 +936,8 @@ final class AdjacencyListBehaviorTest extends TestCase
     {
         $this->table->addBehavior('BEdita/Core.AdjacencyList', ['parentAssociation' => 'Parents']);
         $query = $this->table
-            ->unhydratedFind($finder, compact('for'))
-            ->find($finder, compact('for'));
+            ->unhydratedFind($finder, for: $for)
+            ->find($finder, for: $for);
 
         static::assertCount(1, (array)$query->clause('with'));
 

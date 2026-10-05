@@ -152,7 +152,7 @@ class FoldersTable extends ObjectsTable
             ->where(function (QueryExpression $exp) use ($node): QueryExpression {
                 return $exp->in(
                     $this->aliasField('id'),
-                    $this->TreeNodes->find('ancestors', ['for' => $node->id])
+                    $this->TreeNodes->find('ancestors', for: $node->id)
                         ->select(['object_id']),
                 );
             })
@@ -302,7 +302,7 @@ class FoldersTable extends ObjectsTable
             ->firstOrFail();
 
         $descendantsToUpdate = $this->TreeNodes
-            ->find('descendants', ['for' => $parentNode->id])
+            ->find('descendants', for: $parentNode->id)
             ->select(['object_id']);
 
         // Update deleted field of descendants
@@ -310,10 +310,12 @@ class FoldersTable extends ObjectsTable
         $objectTypeBehavior = $this->getBehavior('ObjectType');
         /** @var \BEdita\Core\Model\Behavior\UserModifiedBehavior $userModifiedBehavior */
         $userModifiedBehavior = $this->getBehavior('UserModified');
+        /** @var \Cake\ORM\Behavior\TimestampBehavior $timestampBehavior */
+        $timestampBehavior = $this->getBehavior('Timestamp');
         $this->updateAll(
             [
                 'deleted' => $folder->deleted,
-                'modified' => $this->timestamp(null, true),
+                'modified' => $timestampBehavior->timestamp(null, true),
                 'modified_by' => $userModifiedBehavior->userId(),
             ],
             [

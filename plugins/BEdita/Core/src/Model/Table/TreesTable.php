@@ -359,7 +359,7 @@ class TreesTable extends Table
         }
 
         // update descendant's root_id
-        $ids = $this->find('descendants', ['for' => $entity->id])
+        $ids = $this->find('descendants', for: $entity->id)
             ->select([$this->aliasField('id')])
             ->all()
             ->extract('id')
@@ -432,7 +432,7 @@ class TreesTable extends Table
             ->where([$this->aliasField('object_id') => $objectId])
             ->firstOrFail();
 
-        $query = $query->find('ancestors', ['for' => $node['id'], 'includeSelf' => true]);
+        $query = $query->find('ancestors', for: $node['id'], includeSelf: true);
 
         return $query->orderByAsc(AdjacencyListBehavior::CTE_FIELD_LEVEL);
     }

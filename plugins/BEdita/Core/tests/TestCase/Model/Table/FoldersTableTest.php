@@ -273,7 +273,7 @@ class FoldersTableTest extends TestCase
         $descendants = null;
         if (!empty($data['id'])) {
             $node = $trees->find()->where(['object_id' => $data['id']])->first();
-            $descendants = $trees->find('children', ['for' => $node->id])
+            $descendants = $trees->find('children', for: $node->id)
                 ->select(fn(Query $q): array => ['count' => $q->func()->count($trees->aliasField('id'))])
                 ->first()
                 ->get('count');
@@ -297,7 +297,7 @@ class FoldersTableTest extends TestCase
 
         if (!empty($data['id'])) {
             $node = $trees->find()->where(['object_id' => $data['id']])->first();
-            $actual = $trees->find('children', ['for' => $node->id])
+            $actual = $trees->find('children', for: $node->id)
                 ->select(fn(Query $q): array => ['count' => $q->func()->count($trees->aliasField('id'))])
                 ->first()
                 ->get('count');

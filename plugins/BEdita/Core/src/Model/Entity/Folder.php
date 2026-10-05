@@ -84,7 +84,7 @@ class Folder extends ObjectEntity
             return [];
         }
 
-        $query = $Trees->unhydratedFind('ancestors', ['for' => $node->id]);
+        $query = $Trees->unhydratedFind('ancestors', for: $node->id);
         $permission = $query
             ->innerJoinWith('Objects.Permissions.Roles')
             ->select([
@@ -126,7 +126,7 @@ class Folder extends ObjectEntity
             return false;
         }
 
-        $descendantPermitted = $Trees->unhydratedFind('descendants', ['for' => $node->id])
+        $descendantPermitted = $Trees->unhydratedFind('descendants', for: $node->id)
             ->innerJoinWith(
                 'Objects.Permissions',
                 fn(Query $q): Query => $q->where(['Permissions.role_id IN' => $roleIds]),

@@ -569,7 +569,7 @@ class FoldersControllerTest extends IntegrationTestCase
         $treesTable = TableRegistry::getTableLocator()->get('Trees');
         $node = $treesTable->find()->where(['object_id' => 11])->first();
         $children = $treesTable
-            ->find('children', ['for' => $node->id, 'direct' => true])
+            ->find('children', for: $node->id, direct: true)
             ->toArray();
 
         // build array of ids casted to string

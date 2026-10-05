@@ -391,7 +391,7 @@ class BulkControllerTest extends IntegrationTestCase
         $eventId = 9;
         $documentId = 3;
         $wrongObject = $this->fetchTable('Documents')
-            ->find('type', ['documents'])
+            ->find('type', 'documents')
             ->where(['id' => $documentId])
             ->firstOrFail();
         $originalStatusWrongObject = $wrongObject->get('status');
@@ -419,11 +419,11 @@ class BulkControllerTest extends IntegrationTestCase
         $this->assertEquals($eventId, Hash::get($response, 'saved.0'));
 
         $wrongObject = $this->fetchTable('Documents')
-            ->find('type', ['documents'])
+            ->find('type', 'documents')
             ->where(['id' => $documentId])
             ->firstOrFail();
         $event = $this->fetchTable('Events')
-            ->find('type', ['events'])
+            ->find('type', 'events')
             ->where(['id' => $eventId])
             ->firstOrFail();
 

@@ -162,7 +162,7 @@ class AdjacencyListBehavior extends Behavior
         }
 
         $hasCycle = $this->table()
-            ->find('descendants', ['for' => $entity])
+            ->find('descendants', for: $entity)
             ->select(fn(Query $q): array => ['count' => $q->func()->count('*')])
             ->where(fn(QueryExpression $exp): QueryExpression => $exp->add(
                 new TupleComparison(
@@ -484,14 +484,13 @@ class AdjacencyListBehavior extends Behavior
      * Find all descendants or ancestors for a node.
      *
      * @param \Cake\ORM\Query\SelectQuery $query Query object.
-     * @param array{for: mixed, includeSelf?: bool} $options Options.
      * @param bool $descendants `true` for descendants, `false` for ancestors.
+     * @param mixed $for Node to find relatives for.
+     * @param bool $includeSelf Whether to include the node itself.
      * @return \Cake\ORM\Query\SelectQuery
      */
-    protected function findRelatives(SelectQuery $query, array $options, bool $descendants): SelectQuery
+    protected function findRelatives(SelectQuery $query, bool $descendants, mixed $for, bool $includeSelf): SelectQuery
     {
-        $for = $options['for'] ?? null;
-        $includeSelf = $options['includeSelf'] ?? false;
         if (empty($for)) {
             throw new InvalidArgumentException('Missing required `for` option');
         }
@@ -527,36 +526,37 @@ class AdjacencyListBehavior extends Behavior
      * Find all ancestors for a node.
      *
      * @param \Cake\ORM\Query\SelectQuery $query Query object.
-     * @param array{for: mixed, includeSelf?: bool} $options Options.
+     * @param mixed $for Node to find ancestors for.
+     * @param bool $includeSelf Whether to include the node itself.
      * @return \Cake\ORM\Query\SelectQuery
      */
-    public function findAncestors(SelectQuery $query, array $options): SelectQuery
+    public function findAncestors(SelectQuery $query, mixed $for = null, bool $includeSelf = false): SelectQuery
     {
-        return $this->findRelatives($query, $options, false);
+        return $this->findRelatives($query, false, $for, $includeSelf);
     }
 
     /**
      * Find all descendants for a node.
      *
      * @param \Cake\ORM\Query\SelectQuery $query Query object.
-     * @param array{for: mixed, includeSelf?: bool} $options Options.
+     * @param mixed $for Node to find descendants for.
+     * @param bool $includeSelf Whether to include the node itself.
      * @return \Cake\ORM\Query\SelectQuery
      */
-    public function findDescendants(SelectQuery $query, array $options): SelectQuery
+    public function findDescendants(SelectQuery $query, mixed $for = null, bool $includeSelf = false): SelectQuery
     {
-        return $this->findRelatives($query, $options, true);
+        return $this->findRelatives($query, true, $for, $includeSelf);
     }
 
     /**
      * Find all children for a node.
      *
      * @param \Cake\ORM\Query\SelectQuery $query Query object.
-     * @param array{for: mixed} $options Options.
+     * @param mixed $for Node to find children for.
      * @return \Cake\ORM\Query\SelectQuery
      */
-    public function findChildren(SelectQuery $query, array $options): SelectQuery
+    public function findChildren(SelectQuery $query, mixed $for = null): SelectQuery
     {
-        $for = $options['for'] ?? null;
         if (empty($for)) {
             throw new InvalidArgumentException(sprintf('Missing required `%s` option', 'for'));
         }

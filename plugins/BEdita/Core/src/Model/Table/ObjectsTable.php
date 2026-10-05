@@ -419,7 +419,7 @@ class ObjectsTable extends Table
         return $query->where(function (QueryExpression $exp) use ($parentNode): QueryExpression {
             return $exp->in(
                 $this->aliasField('id'),
-                $this->TreeNodes->find('descendants', ['for' => $parentNode->id])
+                $this->TreeNodes->find('descendants', for: $parentNode->id)
                     ->select(['object_id']),
             );
         });
