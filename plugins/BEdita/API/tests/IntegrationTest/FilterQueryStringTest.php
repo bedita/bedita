@@ -400,6 +400,72 @@ class FilterQueryStringTest extends IntegrationTestCase
     }
 
     /**
+     * Data provider for `testSearchExactFilter` test case.
+     *
+     * @return array
+     */
+    public static function searchExactFilterProvider(): array
+    {
+        return [
+            'not exact' => [
+                'filter[query][string]=root first',
+                ['11'],
+            ],
+            'exact 0' => [
+                'filter[query][string]=root first&filter[query][exact]=0',
+                ['11'],
+            ],
+            'exact false' => [
+                'filter[query][string]=root first&filter[query][exact]=false',
+                ['11'],
+            ],
+            'exact 1' => [
+                'filter[query][string]=root first&filter[query][exact]=1',
+                [],
+            ],
+            'exact true' => [
+                'filter[query][string]=root first&filter[query][exact]=true',
+                [],
+            ],
+            'exact match' => [
+                'filter[query][string]=first root&filter[query][exact]=1',
+                ['11'],
+            ],
+            'exact invalid' => [
+                'filter[query][string]=first root&filter[query][exact]=abc',
+                null,
+            ],
+        ];
+    }
+
+    /**
+     * Test search using `filter[query][string]` and `filter[query][exact]`.
+     *
+     * @param string $query Query string.
+     * @param array|null $expected Expected result, `null` if a 400 error is expected.
+     * @return void
+     */
+    #[DataProvider('searchExactFilterProvider')]
+    public function testSearchExactFilter(string $query, ?array $expected): void
+    {
+        $this->configRequestHeaders();
+        $this->get('/folders?' . $query);
+        $result = json_decode((string)$this->_response->getBody(), true);
+        $this->assertContentType('application/vnd.api+json');
+
+        if ($expected === null) {
+            $this->assertResponseCode(400);
+            static::assertSame('filter parameter `exact` must be of type bool', Hash::get($result, 'error.detail'));
+
+            return;
+        }
+
+        $this->assertResponseCode(200);
+        static::assertArrayHasKey('data', $result);
+        static::assertEquals($expected, Hash::extract($result['data'], '{n}.id'));
+    }
+
+    /**
      * Test search users by username.
      *
      * @return void
