@@ -788,7 +788,7 @@ class FilterQueryStringTest extends IntegrationTestCase
             ],
             'folders' => [
                 '/folders',
-                'filter[parent]=11',
+                'filter[parent][parent]=11',
                 [
                     '12',
                 ],
@@ -797,7 +797,7 @@ class FilterQueryStringTest extends IntegrationTestCase
     }
 
     /**
-     * Test filters on /trash endpoint.
+     * Test filters on parent and ancestor fields.
      *
      * @param string $endpoint Endpoint.
      * @param string $query Query string.
