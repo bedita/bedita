@@ -186,9 +186,9 @@ trait FinderFilterTrait
     {
         $type = $param->getType();
         if (
-            $arg === null
-            || !$type instanceof ReflectionNamedType
+            !$type instanceof ReflectionNamedType
             || !in_array($type->getName(), ['bool', 'int', 'float', 'string'], true)
+            || ($arg === null && $type->allowsNull())
         ) {
             return $arg;
         }
