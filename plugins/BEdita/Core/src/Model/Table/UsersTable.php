@@ -42,13 +42,18 @@ use Cake\Validation\Validator;
  *
  * @property \Cake\ORM\Association\HasMany $ExternalAuth
  * @property \Cake\ORM\Association\BelongsToMany $Roles
- * @method \BEdita\Core\Model\Entity\User get($primaryKey, $options = [])
- * @method \BEdita\Core\Model\Entity\User newEntity($data = null, array $options = [])
+ * @method \BEdita\Core\Model\Entity\User get(mixed $primaryKey, array|string $finder = 'all', \Psr\SimpleCache\CacheInterface|string|null $cache = null, \Closure|string|null $cacheKey = null, mixed ...$args)
+ * @method \BEdita\Core\Model\Entity\User newEntity(array $data, array $options = [])
  * @method \BEdita\Core\Model\Entity\User[] newEntities(array $data, array $options = [])
- * @method \BEdita\Core\Model\Entity\User|bool save(\Cake\Datasource\EntityInterface $entity, $options = [])
+ * @method \BEdita\Core\Model\Entity\User|false save(\Cake\Datasource\EntityInterface $entity, array $options = [])
  * @method \BEdita\Core\Model\Entity\User patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
- * @method \BEdita\Core\Model\Entity\User[] patchEntities($entities, array $data, array $options = [])
- * @method \BEdita\Core\Model\Entity\User findOrCreate($search, callable $callback = null, $options = [])
+ * @method \BEdita\Core\Model\Entity\User[] patchEntities(iterable $entities, array $data, array $options = [])
+ * @method \BEdita\Core\Model\Entity\User findOrCreate(\Cake\ORM\Query\SelectQuery|callable|array $search, ?callable $callback = null, array $options = [])
+ * @method \BEdita\Core\Model\Entity\User newEmptyEntity()
+ * @method \BEdita\Core\Model\Entity\User[]|\Cake\Datasource\ResultSetInterface<\BEdita\Core\Model\Entity\User>|false saveMany(iterable $entities, array $options = [])
+ * @method \BEdita\Core\Model\Entity\User[]|\Cake\Datasource\ResultSetInterface<\BEdita\Core\Model\Entity\User> saveManyOrFail(iterable $entities, array $options = [])
+ * @method \BEdita\Core\Model\Entity\User[]|\Cake\Datasource\ResultSetInterface<\BEdita\Core\Model\Entity\User>|false deleteMany(iterable $entities, array $options = [])
+ * @method \BEdita\Core\Model\Entity\User[]|\Cake\Datasource\ResultSetInterface<\BEdita\Core\Model\Entity\User> deleteManyOrFail(iterable $entities, array $options = [])
  * @mixin \Cake\ORM\Behavior\TimestampBehavior
  * @since 4.0.0
  */

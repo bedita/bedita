@@ -15,12 +15,15 @@ declare(strict_types=1);
 namespace BEdita\Core\ORM;
 
 use BadMethodCallException;
+use BEdita\Core\Exception\BadFilterException;
 use Cake\ORM\Query\SelectQuery;
 use Cake\ORM\Table;
 use Closure;
 use LogicException;
 use ReflectionFunction;
 use ReflectionMethod;
+use ReflectionNamedType;
+use ReflectionParameter;
 
 /**
  * Trait to handle filters in tables and behaviors.
@@ -131,13 +134,78 @@ trait FinderFilterTrait
             return $callable($query);
         }
 
+        $params = array_slice($reflected->getParameters(), 1);
         if (!array_is_list((array)$value)) {
-            return $callable($query, ...$value);
+            return $callable($query, ...$this->castFilterArguments($params, $value));
         }
 
-        $secondParam = $reflected->getParameters()[1];
+        $secondParam = $params[0];
         $key = !$secondParam->isVariadic() ? $secondParam->getName() : 'value';
 
-        return $callable($query, ...[$key => $value]);
+        return $callable($query, ...$this->castFilterArguments($params, [$key => $value]));
+    }
+
+    /**
+     * Cast filter arguments to the scalar types declared by the filter parameters.
+     *
+     * Filter values usually come from query strings, so they are strings (i.e. `'1'`, `'true'`, `'10'`).
+     * Since filters are invoked in strict mode, they are cast here to `bool`, `int`, `float` or `string`
+     * when the target parameter declares one of these types and the value can be safely converted.
+     * A `BadFilterException` is thrown if a value can't be converted.
+     *
+     * @param array<\ReflectionParameter> $params Filter parameters, excluding the query.
+     * @param array $args Filter arguments, keyed by parameter name.
+     * @return array
+     * @throws \BEdita\Core\Exception\BadFilterException If an argument can't be cast to the declared type.
+     */
+    protected function castFilterArguments(array $params, array $args): array
+    {
+        $byName = [];
+        foreach ($params as $param) {
+            $byName[$param->getName()] = $param;
+        }
+        foreach ($args as $name => $arg) {
+            $param = is_string($name) ? $byName[$name] ?? null : $params[$name] ?? null;
+            if ($param !== null && !$param->isVariadic()) {
+                $args[$name] = $this->castFilterArgument($param, $arg);
+            }
+        }
+
+        return $args;
+    }
+
+    /**
+     * Cast a single filter argument to the scalar type declared by the parameter.
+     *
+     * @param \ReflectionParameter $param The filter parameter.
+     * @param mixed $arg The argument value.
+     * @return mixed
+     * @throws \BEdita\Core\Exception\BadFilterException If the argument can't be cast to the declared type.
+     */
+    protected function castFilterArgument(ReflectionParameter $param, mixed $arg): mixed
+    {
+        $type = $param->getType();
+        if (
+            !$type instanceof ReflectionNamedType
+            || !in_array($type->getName(), ['bool', 'int', 'float', 'string'], true)
+            || ($arg === null && $type->allowsNull())
+        ) {
+            return $arg;
+        }
+
+        $cast = !is_scalar($arg) ? null : match ($type->getName()) {
+            'bool' => filter_var($arg, FILTER_VALIDATE_BOOL, FILTER_NULL_ON_FAILURE),
+            'int' => filter_var($arg, FILTER_VALIDATE_INT, FILTER_NULL_ON_FAILURE),
+            'float' => filter_var($arg, FILTER_VALIDATE_FLOAT, FILTER_NULL_ON_FAILURE),
+            'string' => (string)$arg,
+        };
+        if ($cast === null) {
+            throw new BadFilterException([
+                'title' => __d('bedita', 'Invalid data'),
+                'detail' => sprintf('filter parameter `%s` must be of type %s', $param->getName(), $type->getName()),
+            ]);
+        }
+
+        return $cast;
     }
 }

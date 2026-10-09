@@ -15,6 +15,7 @@ declare(strict_types=1);
 namespace BEdita\Core\Test\TestCase\ORM;
 
 use BadMethodCallException;
+use BEdita\Core\Exception\BadFilterException;
 use BEdita\Core\ORM\FinderFilterTrait;
 use Cake\ORM\Behavior;
 use Cake\ORM\Query\SelectQuery;
@@ -87,6 +88,11 @@ class FinderFilterTraitTest extends TestCase
             public function findAssocParams(SelectQuery $query, string $aliasName, string $aliasLegs): SelectQuery
             {
                 return $query->select([$aliasName => 'name', $aliasLegs => 'legs']);
+            }
+
+            public function findTyped(SelectQuery $query, string $alias, bool $flag = false, int $num = 0, float $dec = 0.0): SelectQuery
+            {
+                return $query->select([$alias => sprintf('%s_%d_%s', var_export($flag, true), $num, $dec)]);
             }
 
             public function findVariadic(SelectQuery $query, ...$args): SelectQuery
@@ -190,6 +196,26 @@ class FinderFilterTraitTest extends TestCase
                 'variadic',
                 'alias_name',
             ],
+            'typedCastTrue' => [
+                ['a' => 'true_10_1.5'],
+                'typed',
+                ['alias' => 'a', 'flag' => '1', 'num' => '10', 'dec' => '1.5'],
+            ],
+            'typedCastTrueString' => [
+                ['a' => 'true_0_0'],
+                'typed',
+                ['alias' => 'a', 'flag' => 'true'],
+            ],
+            'typedCastFalse' => [
+                ['a' => 'false_0_0'],
+                'typed',
+                ['alias' => 'a', 'flag' => '0'],
+            ],
+            'typedCastSingleValue' => [
+                ['a' => 'false_0_0'],
+                'typed',
+                'a',
+            ],
         ];
     }
 
@@ -207,5 +233,49 @@ class FinderFilterTraitTest extends TestCase
 
         $q = $this->Table->callFilter($filterName, $this->Table->find(), $value);
         static::assertEquals($expected, $q->clause('select'));
+    }
+
+    /**
+     * Data provider for `testCallFilterInvalidArgument()`.
+     *
+     * @return array
+     */
+    public static function callFilterInvalidArgumentProvider(): array
+    {
+        return [
+            'invalidBool' => [
+                'filter parameter `flag` must be of type bool',
+                ['alias' => 'a', 'flag' => 'abc'],
+            ],
+            'invalidInt' => [
+                'filter parameter `num` must be of type int',
+                ['alias' => 'a', 'num' => '1.5'],
+            ],
+            'invalidFloat' => [
+                'filter parameter `dec` must be of type float',
+                ['alias' => 'a', 'dec' => 'abc'],
+            ],
+            'arrayToScalar' => [
+                'filter parameter `flag` must be of type bool',
+                ['alias' => 'a', 'flag' => ['1']],
+            ],
+        ];
+    }
+
+    /**
+     * Test `callFilter()` method with arguments that can't be cast to the declared parameter type.
+     *
+     * @return void
+     */
+    #[DataProvider('callFilterInvalidArgumentProvider')]
+    public function testCallFilterInvalidArgument(string $expected, array $value): void
+    {
+        try {
+            $this->Table->callFilter('typed', $this->Table->find(), $value);
+            static::fail('Expected BadFilterException was not thrown');
+        } catch (BadFilterException $e) {
+            static::assertSame(400, $e->getCode());
+            static::assertSame($expected, $e->getAttributes()['detail']);
+        }
     }
 }

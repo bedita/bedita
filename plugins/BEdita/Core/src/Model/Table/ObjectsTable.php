@@ -44,12 +44,17 @@ use Cake\ORM\Table;
  * @property \BEdita\Core\Model\Table\ObjectPermissionsTable|\Cake\ORM\Association\HasMany $Permissions
  * @property \BEdita\Core\Model\Table\CaptionsTable|\Cake\ORM\Association\HasMany $Captions
  * @method \BEdita\Core\Model\Entity\ObjectEntity get(mixed $primaryKey, array|string $finder = 'all', \Psr\SimpleCache\CacheInterface|string|null $cache = null, \Closure|string|null $cacheKey = null, mixed ...$args)
- * @method \BEdita\Core\Model\Entity\ObjectEntity newEntity($data = null, array $options = [])
+ * @method \BEdita\Core\Model\Entity\ObjectEntity newEntity(array $data, array $options = [])
  * @method \BEdita\Core\Model\Entity\ObjectEntity[] newEntities(array $data, array $options = [])
- * @method \BEdita\Core\Model\Entity\ObjectEntity|bool save(\Cake\Datasource\EntityInterface $entity, $options = [])
+ * @method \BEdita\Core\Model\Entity\ObjectEntity|false save(\Cake\Datasource\EntityInterface $entity, array $options = [])
  * @method \BEdita\Core\Model\Entity\ObjectEntity patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
- * @method \BEdita\Core\Model\Entity\ObjectEntity[] patchEntities($entities, array $data, array $options = [])
- * @method \BEdita\Core\Model\Entity\ObjectEntity findOrCreate($search, callable $callback = null, $options = [])
+ * @method \BEdita\Core\Model\Entity\ObjectEntity[] patchEntities(iterable $entities, array $data, array $options = [])
+ * @method \BEdita\Core\Model\Entity\ObjectEntity findOrCreate(\Cake\ORM\Query\SelectQuery|callable|array $search, ?callable $callback = null, array $options = [])
+ * @method \BEdita\Core\Model\Entity\ObjectEntity newEmptyEntity()
+ * @method \BEdita\Core\Model\Entity\ObjectEntity[]|\Cake\Datasource\ResultSetInterface<\BEdita\Core\Model\Entity\ObjectEntity>|false saveMany(iterable $entities, array $options = [])
+ * @method \BEdita\Core\Model\Entity\ObjectEntity[]|\Cake\Datasource\ResultSetInterface<\BEdita\Core\Model\Entity\ObjectEntity> saveManyOrFail(iterable $entities, array $options = [])
+ * @method \BEdita\Core\Model\Entity\ObjectEntity[]|\Cake\Datasource\ResultSetInterface<\BEdita\Core\Model\Entity\ObjectEntity>|false deleteMany(iterable $entities, array $options = [])
+ * @method \BEdita\Core\Model\Entity\ObjectEntity[]|\Cake\Datasource\ResultSetInterface<\BEdita\Core\Model\Entity\ObjectEntity> deleteManyOrFail(iterable $entities, array $options = [])
  * @mixin \Cake\ORM\Behavior\TimestampBehavior
  * @mixin \BEdita\Core\Model\Behavior\UserModifiedBehavior
  * @mixin \BEdita\Core\Model\Behavior\ObjectTypeBehavior

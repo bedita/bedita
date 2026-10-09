@@ -23,13 +23,18 @@ use Cake\Utility\Hash;
 /**
  * Profiles Model
  *
- * @method \BEdita\Core\Model\Entity\Profile get($primaryKey, $options = [])
- * @method \BEdita\Core\Model\Entity\Profile newEntity($data = null, array $options = [])
+ * @method \BEdita\Core\Model\Entity\Profile get(mixed $primaryKey, array|string $finder = 'all', \Psr\SimpleCache\CacheInterface|string|null $cache = null, \Closure|string|null $cacheKey = null, mixed ...$args)
+ * @method \BEdita\Core\Model\Entity\Profile newEntity(array $data, array $options = [])
  * @method \BEdita\Core\Model\Entity\Profile[] newEntities(array $data, array $options = [])
- * @method \BEdita\Core\Model\Entity\Profile|bool save(\Cake\Datasource\EntityInterface $entity, $options = [])
+ * @method \BEdita\Core\Model\Entity\Profile|false save(\Cake\Datasource\EntityInterface $entity, array $options = [])
  * @method \BEdita\Core\Model\Entity\Profile patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
- * @method \BEdita\Core\Model\Entity\Profile[] patchEntities($entities, array $data, array $options = [])
- * @method \BEdita\Core\Model\Entity\Profile findOrCreate($search, callable $callback = null, $options = [])
+ * @method \BEdita\Core\Model\Entity\Profile[] patchEntities(iterable $entities, array $data, array $options = [])
+ * @method \BEdita\Core\Model\Entity\Profile findOrCreate(\Cake\ORM\Query\SelectQuery|callable|array $search, ?callable $callback = null, array $options = [])
+ * @method \BEdita\Core\Model\Entity\Profile newEmptyEntity()
+ * @method \BEdita\Core\Model\Entity\Profile[]|\Cake\Datasource\ResultSetInterface<\BEdita\Core\Model\Entity\Profile>|false saveMany(iterable $entities, array $options = [])
+ * @method \BEdita\Core\Model\Entity\Profile[]|\Cake\Datasource\ResultSetInterface<\BEdita\Core\Model\Entity\Profile> saveManyOrFail(iterable $entities, array $options = [])
+ * @method \BEdita\Core\Model\Entity\Profile[]|\Cake\Datasource\ResultSetInterface<\BEdita\Core\Model\Entity\Profile>|false deleteMany(iterable $entities, array $options = [])
+ * @method \BEdita\Core\Model\Entity\Profile[]|\Cake\Datasource\ResultSetInterface<\BEdita\Core\Model\Entity\Profile> deleteManyOrFail(iterable $entities, array $options = [])
  * @since 4.0.0
  */
 class ProfilesTable extends Table
