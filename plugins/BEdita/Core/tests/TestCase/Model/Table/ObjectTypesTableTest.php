@@ -18,6 +18,7 @@ use BEdita\Core\Exception\BadFilterException;
 use BEdita\Core\Model\Enum\RelationTypeSide;
 use BEdita\Core\Model\Table\ObjectTypesTable;
 use BEdita\Core\ORM\Rule\IsUniqueAmongst;
+use BEdita\Core\Utility\ObjectTypesRegistry;
 use Cake\Cache\Cache;
 use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\Http\Exception\BadRequestException;
@@ -440,24 +441,16 @@ class ObjectTypesTableTest extends TestCase
      */
     public function testInvalidateCacheAfterSave()
     {
+        ObjectTypesRegistry::reset();
         $entity = $this->ObjectTypes->get('document');
-        $this->ObjectTypes->get(3);
-        $this->ObjectTypes->get(6);
 
-        static::assertNotFalse(Cache::read('id_2_rel', ObjectTypesTable::CACHE_CONFIG));
-        static::assertNotFalse(Cache::read('id_3_rel', ObjectTypesTable::CACHE_CONFIG));
-        static::assertNotFalse(Cache::read('id_6_rel', ObjectTypesTable::CACHE_CONFIG));
-        static::assertNotFalse(Cache::read('map', ObjectTypesTable::CACHE_CONFIG));
-        static::assertNotFalse(Cache::read('map_singular', ObjectTypesTable::CACHE_CONFIG));
+        static::assertNotNull(Cache::read(ObjectTypesRegistry::CACHE_KEY, ObjectTypesTable::CACHE_CONFIG));
 
         $entity = $this->ObjectTypes->patchEntity($entity, ['singular' => 'foo', 'name' => 'foos']);
         $this->ObjectTypes->save($entity);
 
-        static::assertNull(Cache::read('id_2_rel', ObjectTypesTable::CACHE_CONFIG));
-        static::assertNull(Cache::read('id_3_rel', ObjectTypesTable::CACHE_CONFIG));
-        static::assertNull(Cache::read('id_6_rel', ObjectTypesTable::CACHE_CONFIG));
-        static::assertNull(Cache::read('map', ObjectTypesTable::CACHE_CONFIG));
-        static::assertNull(Cache::read('map_singular', ObjectTypesTable::CACHE_CONFIG));
+        static::assertNull(Cache::read(ObjectTypesRegistry::CACHE_KEY, ObjectTypesTable::CACHE_CONFIG));
+        static::assertSame('foos', $this->ObjectTypes->get('foo')->name);
     }
 
     /**
@@ -468,23 +461,16 @@ class ObjectTypesTableTest extends TestCase
     public function testInvalidateCacheAfterDelete()
     {
         // there are no 'news` in objects fixture, safe to delete it
+        ObjectTypesRegistry::reset();
         $entity = $this->ObjectTypes->get('news_item');
-        $this->ObjectTypes->get(3);
-        $this->ObjectTypes->get(6);
 
-        static::assertNotFalse(Cache::read('id_5_rel', ObjectTypesTable::CACHE_CONFIG));
-        static::assertNotFalse(Cache::read('id_3_rel', ObjectTypesTable::CACHE_CONFIG));
-        static::assertNotFalse(Cache::read('id_6_rel', ObjectTypesTable::CACHE_CONFIG));
-        static::assertNotFalse(Cache::read('map', ObjectTypesTable::CACHE_CONFIG));
-        static::assertNotFalse(Cache::read('map_singular', ObjectTypesTable::CACHE_CONFIG));
+        static::assertNotNull(Cache::read(ObjectTypesRegistry::CACHE_KEY, ObjectTypesTable::CACHE_CONFIG));
 
         $this->ObjectTypes->delete($entity);
 
-        static::assertNull(Cache::read('id_5_rel', ObjectTypesTable::CACHE_CONFIG));
-        static::assertNull(Cache::read('id_3_rel', ObjectTypesTable::CACHE_CONFIG));
-        static::assertNull(Cache::read('id_6_rel', ObjectTypesTable::CACHE_CONFIG));
-        static::assertNull(Cache::read('map', ObjectTypesTable::CACHE_CONFIG));
-        static::assertNull(Cache::read('map_singular', ObjectTypesTable::CACHE_CONFIG));
+        static::assertNull(Cache::read(ObjectTypesRegistry::CACHE_KEY, ObjectTypesTable::CACHE_CONFIG));
+        $this->expectException(RecordNotFoundException::class);
+        $this->ObjectTypes->get('news_item');
     }
 
     /**
