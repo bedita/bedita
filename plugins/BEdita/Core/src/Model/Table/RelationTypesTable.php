@@ -15,7 +15,7 @@ declare(strict_types=1);
 namespace BEdita\Core\Model\Table;
 
 use BEdita\Core\Model\Enum\RelationTypeSide;
-use Cake\Cache\Cache;
+use BEdita\Core\Utility\ObjectTypesRegistry;
 use Cake\Database\Type\EnumType;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
@@ -105,7 +105,7 @@ class RelationTypesTable extends Table
      */
     public function afterSave(): void
     {
-        Cache::clear(ObjectTypesTable::CACHE_CONFIG);
+        ObjectTypesRegistry::clear();
     }
 
     /**
@@ -115,6 +115,6 @@ class RelationTypesTable extends Table
      */
     public function afterDelete(): void
     {
-        Cache::clear(ObjectTypesTable::CACHE_CONFIG);
+        ObjectTypesRegistry::clear();
     }
 }

@@ -17,6 +17,7 @@ namespace BEdita\Core\Test\TestCase\Model\Table;
 use BEdita\Core\Exception\ImmutableResourceException;
 use BEdita\Core\Model\Table\ObjectTypesTable;
 use BEdita\Core\Model\Table\PropertyTypesTable;
+use BEdita\Core\Utility\ObjectTypesRegistry;
 use Cake\Cache\Cache;
 use Cake\Http\Exception\ForbiddenException;
 use Cake\ORM\Association\HasMany;
@@ -153,15 +154,17 @@ class PropertyTypesTableTest extends TestCase
      */
     public function testInvalidateCacheAfterSave()
     {
-        $this->PropertyTypes->Properties->get(1);
+        ObjectTypesRegistry::reset();
+        ObjectTypesRegistry::getPropertyTypes();
 
-        static::assertNotFalse(Cache::read('property_types', ObjectTypesTable::CACHE_CONFIG));
+        static::assertNotNull(Cache::read(ObjectTypesRegistry::CACHE_KEY, ObjectTypesTable::CACHE_CONFIG));
 
         $propertyType = $this->PropertyTypes->get(12);
         $propertyType->name = 'gustavo';
         $this->PropertyTypes->save($propertyType);
 
-        static::assertNull(Cache::read('property_types', ObjectTypesTable::CACHE_CONFIG));
+        static::assertNull(Cache::read(ObjectTypesRegistry::CACHE_KEY, ObjectTypesTable::CACHE_CONFIG));
+        static::assertArrayHasKey('gustavo', ObjectTypesRegistry::getPropertyTypes());
     }
 
     /**
@@ -171,14 +174,16 @@ class PropertyTypesTableTest extends TestCase
      */
     public function testInvalidateCacheAfterDelete()
     {
-        $this->PropertyTypes->Properties->get(1);
+        ObjectTypesRegistry::reset();
+        ObjectTypesRegistry::getPropertyTypes();
 
-        static::assertNotNull(Cache::read('property_types', ObjectTypesTable::CACHE_CONFIG));
+        static::assertNotNull(Cache::read(ObjectTypesRegistry::CACHE_KEY, ObjectTypesTable::CACHE_CONFIG));
 
         $propertyType = $this->PropertyTypes->get(12);
         $this->PropertyTypes->delete($propertyType);
 
-        static::assertNull(Cache::read('property_types', ObjectTypesTable::CACHE_CONFIG));
+        static::assertNull(Cache::read(ObjectTypesRegistry::CACHE_KEY, ObjectTypesTable::CACHE_CONFIG));
+        static::assertNull(ObjectTypesRegistry::getPropertyType(12));
     }
 
     /**

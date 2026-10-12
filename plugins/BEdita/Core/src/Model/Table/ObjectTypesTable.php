@@ -19,7 +19,7 @@ use BEdita\Core\Model\Enum\RelationTypeSide;
 use BEdita\Core\Model\Validation\ObjectTypesValidator;
 use BEdita\Core\ORM\Rule\IsUniqueAmongst;
 use BEdita\Core\Search\SimpleSearchTrait;
-use Cake\Cache\Cache;
+use BEdita\Core\Utility\ObjectTypesRegistry;
 use Cake\Core\App;
 use Cake\Database\Expression\QueryExpression;
 use Cake\Datasource\EntityInterface;
@@ -196,27 +196,20 @@ class ObjectTypesTable extends Table
         Closure|string|null $cacheKey = null,
         mixed ...$args,
     ): EntityInterface {
-        if (is_string($primaryKey) && !is_numeric($primaryKey)) {
-            $allTypes = array_flip(
-                $this->find('list')
-                    ->cache('map', self::CACHE_CONFIG)
-                    ->toArray(),
-            );
-            $allTypes += array_flip(
-                $this->find('list', valueField: 'singular')
-                    ->cache('map_singular', self::CACHE_CONFIG)
-                    ->toArray(),
-            );
-
-            $primaryKey = Inflector::underscore($primaryKey);
-            if (!isset($allTypes[$primaryKey])) {
+        if (is_string($primaryKey) || is_int($primaryKey)) {
+            $objectType = ObjectTypesRegistry::getObjectType($primaryKey);
+            if ($objectType === null) {
                 throw new RecordNotFoundException(sprintf(
                     'Record not found in table `%s`',
                     $this->getTable(),
                 ));
             }
+            if ($finder === 'all' && $cache === null && $cacheKey === null && $args === []) {
+                // Registry entities are shared: return a copy, so that callers can safely modify it.
+                return clone $objectType;
+            }
 
-            $primaryKey = $allTypes[$primaryKey];
+            $primaryKey = $objectType->id;
         }
 
         if ($cacheKey === null) {
@@ -287,7 +280,7 @@ class ObjectTypesTable extends Table
      */
     public function afterSave(): void
     {
-        Cache::clear(self::CACHE_CONFIG);
+        ObjectTypesRegistry::clear();
     }
 
     /**
@@ -366,7 +359,7 @@ class ObjectTypesTable extends Table
      */
     public function afterDelete(): void
     {
-        Cache::clear(self::CACHE_CONFIG);
+        ObjectTypesRegistry::clear();
     }
 
     /**

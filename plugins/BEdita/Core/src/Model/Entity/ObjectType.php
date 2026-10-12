@@ -16,6 +16,7 @@ namespace BEdita\Core\Model\Entity;
 
 use BEdita\Core\Model\Enum\RelationTypeSide;
 use BEdita\Core\Utility\JsonApiSerializable;
+use BEdita\Core\Utility\ObjectTypesRegistry;
 use Cake\Datasource\EntityInterface;
 use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\Event\EventDispatcherInterface;
@@ -235,10 +236,12 @@ class ObjectType extends Entity implements JsonApiSerializable, EventDispatcherI
             return $this->parent;
         }
 
-        /** @var \BEdita\Core\Model\Table\ObjectTypesTable $table */
-        $table = $this->getTableLocator()->get($this->getSource());
+        $parent = ObjectTypesRegistry::getObjectType($this->parent_id);
+        if ($parent === null) {
+            throw new RecordNotFoundException(sprintf('Record not found in table `%s`', 'object_types'));
+        }
 
-        return $table->get($this->parent_id);
+        return clone $parent;
     }
 
     /**
