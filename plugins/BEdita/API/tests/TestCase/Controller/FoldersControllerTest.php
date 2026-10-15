@@ -569,7 +569,7 @@ class FoldersControllerTest extends IntegrationTestCase
         $treesTable = TableRegistry::getTableLocator()->get('Trees');
         $node = $treesTable->find()->where(['object_id' => 11])->first();
         $children = $treesTable
-            ->find('children', ['for' => $node->id, 'direct' => true])
+            ->find('children', for: $node->id, direct: true)
             ->toArray();
 
         // build array of ids casted to string
@@ -903,7 +903,6 @@ class FoldersControllerTest extends IntegrationTestCase
     public function testGetOrphanFolder($id = null)
     {
         TableRegistry::getTableLocator()->get('Trees')->deleteAll(['object_id' => 12]);
-        TableRegistry::getTableLocator()->get('Trees')->recover();
 
         $endpoint = '/folders';
         if ($id) {
@@ -971,7 +970,7 @@ class FoldersControllerTest extends IntegrationTestCase
         $getTreeList = function () use ($treesTable, $folderTreeNode) {
             return $treesTable
                 ->find('children', for: $folderTreeNode->id)
-                ->find('treeList')
+                ->find('list')
                 ->toArray();
         };
 

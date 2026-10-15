@@ -130,6 +130,44 @@ class PriorityBehaviorTest extends TestCase
     }
 
     /**
+     * Test saving a new entity with an explicit priority.
+     *
+     * @return void
+     */
+    public function testBeforeSaveExplicitPriority()
+    {
+        $table = TableRegistry::getTableLocator()->get('ObjectRelations');
+
+        $entity = $table->newEntity([]);
+        $entity->patch([
+            'left_id' => 2,
+            'relation_id' => 1,
+            'right_id' => 10,
+            'priority' => 2,
+        ], ['guard' => false]);
+        $table->saveOrFail($entity);
+
+        $entities = $table->find()
+            ->where([
+                'left_id' => 2,
+                'relation_id' => 1,
+            ])
+            ->orderBy(['priority'])
+            ->all()
+            ->toList();
+
+        static::assertCount(4, $entities);
+        static::assertSame(4, $entities[0]->get('right_id'));
+        static::assertSame(1, $entities[0]->get('priority'));
+        static::assertSame(10, $entities[1]->get('right_id'));
+        static::assertSame(2, $entities[1]->get('priority'));
+        static::assertSame(3, $entities[2]->get('right_id'));
+        static::assertSame(3, $entities[2]->get('priority'));
+        static::assertSame(7, $entities[3]->get('right_id'));
+        static::assertSame(4, $entities[3]->get('priority'));
+    }
+
+    /**
      * Test priorities sorting before entity is saved using `ObjectRelations` table
      *
      * @return void
@@ -217,6 +255,44 @@ class PriorityBehaviorTest extends TestCase
         static::assertSame(2, $entities[1]->get('priority'));
         static::assertSame(4, $entities[2]->get('right_id'));
         static::assertSame(3, $entities[2]->get('priority'));
+    }
+
+    /**
+     * Test that a priority is persisted when the stored value changed after the entity was loaded.
+     *
+     * Since CakePHP 5, setting a field to the value it already holds no longer marks it dirty,
+     * so without an explicit `setDirty()` the entity's priority is never written back.
+     *
+     * @return void
+     */
+    public function testUpdateStalePriority()
+    {
+        $table = TableRegistry::getTableLocator()->get('ObjectRelations');
+        $conditions = ['left_id' => 2, 'relation_id' => 1];
+
+        // Load the entity that is about to go stale.
+        $stale = $table->find()->where($conditions + ['right_id' => 7])->firstOrFail();
+        static::assertSame(3, $stale->get('priority'));
+
+        // Move another entity, shifting the stored priority of the stale one from 3 to 2.
+        $other = $table->find()->where($conditions + ['right_id' => 4])->firstOrFail();
+        $other->patch(['priority' => 3]);
+        $table->saveOrFail($other);
+        static::assertSame(2, $table->find()->where($conditions + ['right_id' => 7])->firstOrFail()->get('priority'));
+
+        // Touch an unrelated field, so the save is not skipped for a clean entity.
+        $stale->patch(['params' => ['answer' => 42]], ['guard' => false]);
+        static::assertFalse($stale->isDirty('priority'));
+        $table->saveOrFail($stale);
+
+        $actual = $table->find()
+            ->where($conditions)
+            ->orderBy(['priority'])
+            ->all()
+            ->combine('right_id', 'priority')
+            ->toArray();
+
+        static::assertSame([3 => 1, 4 => 2, 7 => 3], $actual);
     }
 
     /**
@@ -349,7 +425,7 @@ class PriorityBehaviorTest extends TestCase
                 'config' => [],
                 'expected' => false,
             ],
-            'actual value equals previous value' => [
+            'new entity with explicit priority' => [
                 [
                     'left_id' => 2,
                     'relation_id' => 1,
@@ -361,7 +437,7 @@ class PriorityBehaviorTest extends TestCase
                 'config' => [
                     'scope' => ['priority'],
                 ],
-                'expected' => false,
+                'expected' => true,
             ],
             'compact' => [
                 [

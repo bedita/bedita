@@ -15,6 +15,7 @@ declare(strict_types=1);
 namespace BEdita\Core\Test\TestCase\Model\Table;
 
 use BEdita\Core\Exception\LockedResourceException;
+use BEdita\Core\Model\Behavior\AdjacencyListBehavior;
 use BEdita\Core\Model\Table\TreesTable;
 use BEdita\Core\Utility\LoggedUser;
 use Cake\Core\Configure;
@@ -22,13 +23,11 @@ use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\Event\Event;
 use Cake\Http\Exception\BadRequestException;
 use Cake\Http\Exception\NotFoundException;
-use Cake\ORM\Association\BelongsTo;
-use Cake\ORM\Association\HasMany;
-use Cake\ORM\Behavior\TreeBehavior;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use Exception;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\CoversMethod;
 use PHPUnit\Framework\Attributes\DataProvider;
 use RuntimeException;
 
@@ -36,6 +35,8 @@ use RuntimeException;
  * {@see \BEdita\Core\Model\Table\TreesTable} Test Case
  */
 #[CoversClass(TreesTable::class)]
+#[CoversMethod(AdjacencyListBehavior::class, 'beforeSave')]
+#[CoversMethod(AdjacencyListBehavior::class, 'findChildren')]
 class TreesTableTest extends TestCase
 {
     /**
@@ -86,21 +87,6 @@ class TreesTableTest extends TestCase
         Configure::delete('ChildrenParams');
 
         parent::tearDown();
-    }
-
-    /**
-     * Test initialize method
-     *
-     * @return void
-     */
-    public function testInitialize()
-    {
-        static::assertInstanceOf(BelongsTo::class, $this->Trees->Objects);
-        static::assertInstanceOf(BelongsTo::class, $this->Trees->ParentObjects);
-        static::assertInstanceOf(BelongsTo::class, $this->Trees->RootObjects);
-        static::assertInstanceOf(BelongsTo::class, $this->Trees->ParentNode);
-        static::assertInstanceOf(HasMany::class, $this->Trees->ChildNodes);
-        static::assertInstanceOf(TreeBehavior::class, $this->Trees->behaviors()->get('Tree'));
     }
 
     /**
@@ -198,7 +184,6 @@ class TreesTableTest extends TestCase
     public function testIsPositionUnique($expected, $objectId, $parentId)
     {
         $this->Trees->deleteAll(['object_id' => 13]);
-        $this->Trees->recover();
 
         $entity = $this->Trees->newEmptyEntity();
         $entity->object_id = $objectId;
@@ -369,6 +354,25 @@ class TreesTableTest extends TestCase
     }
 
     /**
+     * Test that setting a folder as its own parent fails.
+     *
+     * @return void
+     */
+    public function testFolderAsOwnParent(): void
+    {
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('Cannot set a folder as its own parent');
+
+        $node = $this->Trees->find()
+            ->where(['object_id' => 13])
+            ->firstOrFail();
+        // Bypass `Tree::_setParentId()`, which would keep `parent_node_id` in sync and trip the adjacency list guard first.
+        $node->set('parent_id', 13, ['setter' => false]);
+
+        $this->Trees->save($node);
+    }
+
+    /**
      * Data provider for `testDeleteOrphaned` test case.
      *
      * @return array
@@ -447,6 +451,31 @@ class TreesTableTest extends TestCase
                 11,
                 'gustavo',
             ],
+            'numeric' => [
+                2,
+                12,
+                2,
+            ],
+            'numericAboveMax' => [
+                2,
+                12,
+                99,
+            ],
+            'negative' => [
+                2,
+                12,
+                -1,
+            ],
+            'negativeToFirst' => [
+                1,
+                2,
+                -2,
+            ],
+            'negativeBelowMin' => [
+                1,
+                12,
+                -99,
+            ],
         ];
     }
 
@@ -472,13 +501,40 @@ class TreesTableTest extends TestCase
             ->firstOrFail();
 
         $node->set('position', $position);
-        $this->Trees->save($node);
-
-        /** @var \BEdita\Core\Model\Behavior\TreeBehavior $treeBehavior */
-        $treeBehavior = $this->Trees->getBehavior('Tree');
-        $currentPosition = $treeBehavior->getCurrentPosition($node);
+        $node = $this->Trees->save($node);
+        $currentPosition = $node->get('priority');
 
         static::assertSame($expected, $currentPosition);
+    }
+
+    /**
+     * Test that a numeric position can move a node between its siblings.
+     *
+     * @return void
+     */
+    public function testSetPositionBetweenSiblings(): void
+    {
+        $node = $this->Trees->newEntity([
+            'object_id' => 10,
+            'parent_id' => 11,
+            'position' => 'last',
+        ]);
+        $this->Trees->saveOrFail($node);
+        static::assertSame(3, $node->get('priority'));
+
+        $node->set('position', 2);
+        $this->Trees->saveOrFail($node);
+
+        static::assertSame(2, $node->get('priority'));
+
+        $actual = $this->Trees->find()
+            ->where(['parent_id' => 11])
+            ->orderBy(['priority'])
+            ->all()
+            ->combine('object_id', 'priority')
+            ->toArray();
+
+        static::assertSame([12 => 1, 10 => 2, 2 => 3], $actual);
     }
 
     /**
