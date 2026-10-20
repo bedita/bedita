@@ -14,6 +14,7 @@ declare(strict_types=1);
  */
 namespace BEdita\API\Controller;
 
+use BEdita\Core\Database\Connection;
 use BEdita\Core\Model\Action\DeleteObjectAction;
 use BEdita\Core\Model\Action\DeleteObjectsAction;
 use BEdita\Core\Model\Action\GetObjectAction;
@@ -53,10 +54,12 @@ class TrashController extends AppController
         $id = $this->request->getParam('id');
         if ($id) {
             /** @var \BEdita\Core\Model\Entity\ObjectType $objectType */
-            $objectType = TableRegistry::getTableLocator()->get('ObjectTypes')
-                ->find('objectId', compact('id'))
-                ->useReadRole()
-                ->firstOrFail();
+            $objectType = Connection::withPrimaryFallback(
+                fn () => TableRegistry::getTableLocator()->get('ObjectTypes')
+                    ->find('objectId', ['id' => $id])
+                    ->useReadRole()
+                    ->firstOrFail()
+            );
             $this->defaultTable = $objectType->alias;
         }
         $this->Table = $this->fetchTable();

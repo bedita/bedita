@@ -16,6 +16,7 @@ declare(strict_types=1);
 namespace BEdita\Core\State;
 
 use BEdita\Core\Configure\Engine\DatabaseConfig;
+use BEdita\Core\Database\Connection;
 use BEdita\Core\Model\Entity\Application;
 use BEdita\Core\SingletonTrait;
 use Cake\Core\Configure;
@@ -128,10 +129,12 @@ class CurrentApplication
     public static function setFromApiKey(string $apiKey): void
     {
         static::getInstance()->set(
-            TableRegistry::getTableLocator()->get('Applications')
-                ->find('apiKey', compact('apiKey'))
-                ->useReadRole()
-                ->firstOrFail()
+            Connection::withPrimaryFallback(
+                fn () => TableRegistry::getTableLocator()->get('Applications')
+                    ->find('apiKey', ['apiKey' => $apiKey])
+                    ->useReadRole()
+                    ->firstOrFail()
+            )
         );
     }
 

@@ -428,6 +428,7 @@ class TreesTable extends Table
         $node = $this->find()
             ->select([$this->aliasField('id')])
             ->where([$this->aliasField('object_id') => $options[0]])
+             ->setConnectionRole($query->getConnectionRole())
             ->disableHydration()
             ->firstOrFail();
 
@@ -444,7 +445,9 @@ class TreesTable extends Table
      */
     protected function loadSlugsPath(array $conditions): array
     {
-        return (array)$this->Objects->find('available')
+        return (array)$this->Objects->find()
+            ->useReadRole()
+            ->find('available')
             ->where($conditions)
             ->select([
                 'id',

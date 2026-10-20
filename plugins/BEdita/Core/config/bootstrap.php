@@ -1,6 +1,7 @@
 <?php
 
 use BEdita\Core\Configure\Engine\DatabaseConfig;
+use BEdita\Core\Database\Connection;
 use BEdita\Core\Database\Type\BoolType;
 use BEdita\Core\Database\Type\DateTimeType;
 use BEdita\Core\Database\Type\DateType;
@@ -11,7 +12,9 @@ use BEdita\Core\I18n\MessagesFileLoader;
 use BEdita\Core\ORM\Locator\TableLocator;
 use Cake\Core\Configure;
 use Cake\Core\Configure\Engine\IniConfig;
+use Cake\Core\Exception\CakeException;
 use Cake\Database\TypeFactory;
+use Cake\Datasource\ConnectionManager;
 use Cake\I18n\ChainMessagesLoader;
 use Cake\I18n\Date;
 use Cake\I18n\FrozenDate;
@@ -23,6 +26,25 @@ use Cake\ORM\TableRegistry;
  */
 if (!TableRegistry::getTableLocator() instanceof TableLocator) {
     TableRegistry::setTableLocator(new TableLocator());
+}
+
+/**
+ * Read replicas are safe only with BEdita connection, that sends reads to the primary after a write.
+ */
+foreach (ConnectionManager::configured() as $name) {
+    $config = (array)ConnectionManager::getConfig($name);
+    $className = $config['className'] ?? null;
+    if (
+        (array_key_exists('read', $config) || array_key_exists('write', $config))
+        && !(is_string($className) && is_a($className, Connection::class, true))
+        && !($className instanceof Connection)
+    ) {
+        throw new CakeException(sprintf(
+            'Datasource "%s" has `read` or `write` configuration, but its `className` is not %s',
+            $name,
+            Connection::class,
+        ));
+    }
 }
 
 /**

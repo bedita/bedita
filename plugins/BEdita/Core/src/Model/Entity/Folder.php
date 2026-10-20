@@ -15,6 +15,7 @@ declare(strict_types=1);
 
 namespace BEdita\Core\Model\Entity;
 
+use BEdita\Core\Database\Connection;
 use BEdita\Core\Model\Behavior\AdjacencyListBehavior;
 use BEdita\Core\Model\Table\RolesTable;
 use BEdita\Core\Utility\LoggedUser;
@@ -261,14 +262,17 @@ class Folder extends ObjectEntity
         }
 
         try {
-            $path = TableRegistry::getTableLocator()->get('Trees')
+            // The folder may have been read from either role, so a replica miss falls back to the primary.
+            $path = Connection::withPrimaryFallback(fn (): array => TableRegistry::getTableLocator()->get('Trees')
+                ->find()
+                ->useReadRole()
                 ->find('pathNodes', [$this->id])
                 ->find('list', [
                     'keyField' => 'id',
                     'valueField' => 'object_id',
                 ])
                 ->all()
-                ->toArray();
+                ->toArray());
         } catch (RecordNotFoundException $previous) {
             throw new \RuntimeException(__d('bedita', 'Folder "{0}" is not on the tree.', $this->id), 0, $previous);
         }
@@ -291,7 +295,9 @@ class Folder extends ObjectEntity
         try {
             $Trees = TableRegistry::getTableLocator()->get('Trees');
 
-            return $Trees->find('pathNodes', [$this->id])
+            return Connection::withPrimaryFallback(fn (): array => $Trees->find()
+                ->useReadRole()
+                ->find('pathNodes', [$this->id])
                 ->select([
                     'id' => $Trees->aliasField('object_id'),
                     $Trees->aliasField('menu'),
@@ -299,7 +305,7 @@ class Folder extends ObjectEntity
                     $Trees->aliasField('slug'),
                 ], true)
                 ->disableHydration()
-                ->toArray();
+                ->toArray());
         } catch (RecordNotFoundException $previous) {
             throw new \RuntimeException(__d('bedita', 'Folder "{0}" is not on the tree.', $this->id), 0, $previous);
         }

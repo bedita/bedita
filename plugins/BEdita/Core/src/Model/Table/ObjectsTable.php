@@ -15,6 +15,7 @@ declare(strict_types=1);
 
 namespace BEdita\Core\Model\Table;
 
+use BEdita\Core\Database\Connection;
 use BEdita\Core\Exception\LockedResourceException;
 use BEdita\Core\Model\Entity\ObjectEntity;
 use BEdita\Core\Model\Validation\ObjectsValidator;
@@ -273,11 +274,16 @@ class ObjectsTable extends Table
 
                 $objectTypeIds[] = $value->id;
                 if ($value->get('is_abstract')) {
+                    // Same as `find('children')`, whose node lookup and list query were uncached on the primary.
                     $objectTypeIds = array_merge(
                         $objectTypeIds,
                         $this->ObjectTypes
-                            ->find('children', ['for' => $value->id])
                             ->find('list', ['valueField' => $this->ObjectTypes->getPrimaryKey()])
+                            ->where([
+                                $this->ObjectTypes->aliasField('tree_left') . ' >' => $value->get('tree_left'),
+                                $this->ObjectTypes->aliasField('tree_right') . ' <' => $value->get('tree_right'),
+                            ])
+                            ->cache(sprintf('descendants_%d', $value->id), ObjectTypesTable::CACHE_CONFIG)
                             ->all()
                             ->toList()
                     );
@@ -387,11 +393,12 @@ class ObjectsTable extends Table
     protected function findAncestor(Query $query, array $options)
     {
         $parentId = $this->getId((string)Hash::get($options, '0'));
-        $parentNode = $this->TreeNodes->find()
+        $parentNode = Connection::withPrimaryFallback(fn (): EntityInterface => $this->TreeNodes->find()
             ->where([
                 $this->TreeNodes->aliasField('object_id') => $parentId,
             ])
-            ->firstOrFail();
+            ->setConnectionRole($query->getConnectionRole())
+            ->firstOrFail());
 
         return $query->where(function (QueryExpression $exp) use ($parentNode): QueryExpression {
             return $exp->in(

@@ -18,6 +18,7 @@ use Authentication\AuthenticationService;
 use Authorization\AuthorizationServiceInterface;
 use BEdita\API\App\BaseApplication;
 use BEdita\API\Middleware\BodyParserMiddleware;
+use BEdita\API\Middleware\PrimaryDatabaseMiddleware;
 use Cake\Core\Configure;
 use Cake\Error\Middleware\ErrorHandlerMiddleware;
 use Cake\Http\Exception\UnauthorizedException;
@@ -57,6 +58,8 @@ class BaseApplicationTest extends TestCase
         $middleware = $app->middleware($middleware);
         $middleware->rewind();
 
+        static::assertInstanceOf(PrimaryDatabaseMiddleware::class, $middleware->current());
+        $middleware->next();
         static::assertInstanceOf(ErrorHandlerMiddleware::class, $middleware->current());
         $middleware->next();
         static::assertInstanceOf(RoutingMiddleware::class, $middleware->current());

@@ -165,7 +165,7 @@ class ListEntitiesAction extends BaseAction
      */
     public function execute(array $data = [])
     {
-        $query = $this->Table->find();
+        $query = $this->Table->find()->useReadRole();
 
         if (!empty($data['filter'])) {
             $query = $this->buildFilter($query, static::parseFilter($data['filter']));

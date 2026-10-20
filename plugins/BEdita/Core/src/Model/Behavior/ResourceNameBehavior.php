@@ -14,6 +14,7 @@ declare(strict_types=1);
  */
 namespace BEdita\Core\Model\Behavior;
 
+use BEdita\Core\Database\Connection;
 use Cake\ORM\Behavior;
 
 /**
@@ -46,11 +47,12 @@ class ResourceNameBehavior extends Behavior
             return (int)$name;
         }
 
-        $result = $this->table()->find()
+        $result = Connection::withPrimaryFallback(fn (): array => $this->table()->find()
+            ->useReadRole()
             ->select($this->table()->aliasField('id'))
             ->where([$this->table()->aliasField($this->getConfig('field')) => $name])
             ->enableHydration(false)
-            ->firstOrFail();
+            ->firstOrFail());
 
         return $result['id'];
     }

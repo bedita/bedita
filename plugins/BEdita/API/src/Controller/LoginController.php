@@ -17,13 +17,13 @@ namespace BEdita\API\Controller;
 
 use BEdita\API\Policy\EndpointPolicy;
 use BEdita\API\Utility\JWTHandler;
+use BEdita\Core\Database\Connection;
 use BEdita\Core\Model\Action\ActionTrait;
 use BEdita\Core\Model\Action\GetObjectAction;
 use BEdita\Core\Model\Action\SaveEntityAction;
 use BEdita\Core\Model\Entity\Application;
 use BEdita\Core\Model\Entity\User;
 use Cake\Auth\PasswordHasherFactory;
-use Cake\Database\Connection;
 use Cake\Http\Exception\BadRequestException;
 use Cake\Http\Exception\NotFoundException;
 use Cake\Http\Exception\UnauthorizedException;
@@ -291,10 +291,13 @@ class LoginController extends AppController
         $conditions = ['id' => $userId];
 
         /** @var \BEdita\Core\Model\Entity\User|null $user */
-        $user = $this->Users
-            ->find('login', compact('conditions', 'contain'))
-            ->setConnectionRole($forUpdate ? Connection::ROLE_WRITE : Connection::ROLE_READ)
-            ->first();
+        $user = Connection::withPrimaryFallback(
+            fn () => $this->Users
+                ->find('login', ['conditions' => $conditions, 'contain' => $contain])
+                ->setConnectionRole($forUpdate ? Connection::ROLE_WRITE : Connection::ROLE_READ)
+                ->first(),
+            fn ($user): bool => empty($user),
+        );
         if (empty($user)) {
             throw new UnauthorizedException(__('Request not authorized'));
         }

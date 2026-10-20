@@ -20,10 +20,10 @@ use BEdita\Core\Model\Entity\Property;
 use BEdita\Core\Model\Entity\StaticProperty;
 use BEdita\Core\Model\Validation\Validation;
 use BEdita\Core\Search\SimpleSearchTrait;
+use Cake\Collection\CollectionInterface;
 use Cake\Database\Expression\QueryExpression;
 use Cake\Database\Query as DatabaseQuery;
 use Cake\Database\Schema\TableSchemaInterface;
-use Cake\Datasource\ResultSetInterface;
 use Cake\Event\EventInterface;
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
@@ -159,14 +159,19 @@ class PropertiesTable extends Table
         if (count($options) !== 1) {
             throw new BadFilterException(__d('bedita', 'Missing object type to get properties for'));
         }
-        $for = reset($options);
+        // Same as `find('path')`, whose node lookup bypasses the object types cache and always runs on the primary.
+        $objectType = $this->ObjectTypes->get(reset($options));
 
         return $query
-            ->where(function (QueryExpression $exp) use ($for) {
+            ->where(function (QueryExpression $exp) use ($objectType) {
                 return $exp->in(
                     $this->aliasField($this->ObjectTypes->getForeignKey()),
-                    $this->ObjectTypes->find('path', compact('for'))
+                    $this->ObjectTypes->find()
                         ->select([$this->ObjectTypes->aliasField($this->ObjectTypes->getBindingKey())])
+                        ->where([
+                            $this->ObjectTypes->aliasField('tree_left') . ' <=' => $objectType->get('tree_left'),
+                            $this->ObjectTypes->aliasField('tree_right') . ' >=' => $objectType->get('tree_right'),
+                        ])
                 );
             });
     }
@@ -244,7 +249,7 @@ class PropertiesTable extends Table
 
         return $query
             ->from([$this->getAlias() => $from], true)
-            ->formatResults(function (ResultSetInterface $results) {
+            ->formatResults(function (CollectionInterface $results) {
                 return $results->map(function ($row) {
                     if (!($row instanceof Property) || empty($row->id) || !CakeValidation::uuid($row->id)) {
                         return $row;

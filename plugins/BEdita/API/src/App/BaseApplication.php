@@ -31,6 +31,7 @@ use BEdita\API\Identifier\JwtSubjectIdentifier;
 use BEdita\API\Middleware\ApplicationMiddleware;
 use BEdita\API\Middleware\BodyParserMiddleware;
 use BEdita\API\Middleware\LoggedUserMiddleware;
+use BEdita\API\Middleware\PrimaryDatabaseMiddleware;
 use BEdita\API\Policy\EndpointPolicy;
 use BEdita\API\Policy\ObjectsResolver;
 use BEdita\Core\Model\Entity\AuthProvider;
@@ -144,6 +145,10 @@ abstract class BaseApplication extends CakeBaseApplication implements Authentica
     public function middleware(MiddlewareQueue $middlewareQueue): MiddlewareQueue
     {
         $middlewareQueue
+            // Use only the primary database on writing requests.
+            // It should be before AuthenticationMiddleware and ApplicationMiddleware.
+            ->add(new PrimaryDatabaseMiddleware())
+
             // Catch any exceptions in the lower layers,
             // and make an error page/response
             ->add(new ErrorHandlerMiddleware(Configure::read('Error')))
