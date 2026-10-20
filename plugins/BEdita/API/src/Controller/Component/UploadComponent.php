@@ -31,7 +31,6 @@ use Laminas\Diactoros\Stream;
  * Handles file upload actions
  *
  * @since 4.2.0
- * @property \BEdita\Core\Model\Table\StreamsTable $Streams
  */
 class UploadComponent extends Component
 {
