@@ -69,10 +69,10 @@ class UploadComponent extends Component
         $request = $this->getController()->getRequest();
         $request->allowMethod(['post']);
 
-        $this->Streams = $this->fetchTable('Streams');
+        $streamsTable = $this->fetchTable('Streams');
         // Add a new entity.
-        $entity = $this->Streams->newEmptyEntity();
-        $action = new SaveEntityAction(['table' => $this->Streams]);
+        $entity = $streamsTable->newEmptyEntity();
+        $action = new SaveEntityAction(['table' => $streamsTable]);
 
         $data = [
             'file_name' => $fileName,
@@ -84,9 +84,9 @@ class UploadComponent extends Component
         $entity->set('private_url', $private);
         $stream = $action(compact('entity', 'data'));
         $this->dispatchThumbnailsEvent($stream);
-        $action = new GetEntityAction(['table' => $this->Streams]);
+        $action = new GetEntityAction(['table' => $streamsTable]);
 
-        return $action(['primaryKey' => $stream->get($this->Streams->getPrimaryKey())]);
+        return $action(['primaryKey' => $stream->get($streamsTable->getPrimaryKey())]);
     }
 
     /**
@@ -107,7 +107,7 @@ class UploadComponent extends Component
         $request = $this->getController()->getRequest();
         $request->allowMethod(['post', 'patch']);
 
-        $this->Streams = $this->fetchTable('Streams');
+        $streamsTable = $this->fetchTable('Streams');
         $replace = $request->is('patch');
 
         // Copy the request body to a seekable php://temp resource.
@@ -128,7 +128,7 @@ class UploadComponent extends Component
 
         // Get the latest existing stream — used for version calculation, duplicate detection,
         // and latest-version replacement.
-        $latestStream = $this->Streams->find()
+        $latestStream = $streamsTable->find()
             ->where(['object_id' => $objectId])
             ->orderByDesc('version')
             ->first();
@@ -145,7 +145,7 @@ class UploadComponent extends Component
             ));
         }
 
-        $entity = $replace ? $latestStream : $this->Streams->newEmptyEntity();
+        $entity = $replace ? $latestStream : $streamsTable->newEmptyEntity();
         if (!$replace) {
             $nextVersion = $latestStream !== null ? (int)$latestStream->get('version') + 1 : 1;
             $entity->set('object_id', $objectId);
@@ -157,7 +157,7 @@ class UploadComponent extends Component
             $entity->set('private_url', $private);
         }
 
-        $action = new SaveEntityAction(['table' => $this->Streams]);
+        $action = new SaveEntityAction(['table' => $streamsTable]);
         $stream = $action([
             'entity' => $entity,
             'data' => [
@@ -169,9 +169,9 @@ class UploadComponent extends Component
 
         $this->dispatchThumbnailsEvent($stream);
 
-        $action = new GetEntityAction(['table' => $this->Streams]);
+        $action = new GetEntityAction(['table' => $streamsTable]);
 
-        return $action(['primaryKey' => $stream->get($this->Streams->getPrimaryKey())]);
+        return $action(['primaryKey' => $stream->get($streamsTable->getPrimaryKey())]);
     }
 
     /**
