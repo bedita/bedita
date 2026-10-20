@@ -117,6 +117,9 @@ class UserTokensTable extends Table
             ->dateTime('used')
             ->allowEmptyDateTime('used');
 
+        $validator
+            ->allowEmptyArray('params');
+
         return $validator;
     }
 
