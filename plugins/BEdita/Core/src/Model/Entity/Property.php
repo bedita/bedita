@@ -14,13 +14,9 @@ declare(strict_types=1);
  */
 namespace BEdita\Core\Model\Entity;
 
-use BEdita\Core\Model\Table\ObjectTypesTable;
 use BEdita\Core\Utility\JsonApiSerializable;
-use Cake\Cache\Cache;
-use Cake\Datasource\Exception\InvalidPrimaryKeyException;
-use Cake\Datasource\Exception\RecordNotFoundException;
+use BEdita\Core\Utility\ObjectTypesRegistry;
 use Cake\ORM\Entity;
-use Cake\ORM\TableRegistry;
 use Cake\Utility\Hash;
 use Cake\Utility\Inflector;
 use stdClass;
@@ -102,17 +98,12 @@ class Property extends Entity implements JsonApiSerializable
         if (array_key_exists('property_type', $this->_fields)) {
             return $this->_fields['property_type'];
         }
-
-        try {
-            $this->_fields['property_type'] = TableRegistry::getTableLocator()->get('PropertyTypes')
-                ->get($this->property_type_id, cache: ObjectTypesTable::CACHE_CONFIG);
-
-            return $this->_fields['property_type'];
-        } catch (RecordNotFoundException $e) {
-            return null;
-        } catch (InvalidPrimaryKeyException $e) {
+        $propertyType = $this->property_type_id !== null ? ObjectTypesRegistry::getPropertyType((int)$this->property_type_id) : null;
+        if ($propertyType === null) {
             return null;
         }
+
+        return $this->_fields['property_type'] = clone $propertyType;
     }
 
     /**
@@ -137,17 +128,7 @@ class Property extends Entity implements JsonApiSerializable
      */
     protected function _setPropertyTypeName(?string $propertyType): ?string
     {
-        /** @var array<\BEdita\Core\Model\Entity\PropertyType> $propertyTypes */
-        $propertyTypes = Cache::remember(
-            'property_types',
-            function () {
-                return TableRegistry::getTableLocator()->get('PropertyTypes')->find()
-                    ->all()
-                    ->indexBy('name')
-                    ->toArray();
-            },
-            ObjectTypesTable::CACHE_CONFIG,
-        );
+        $propertyTypes = ObjectTypesRegistry::getPropertyTypes();
 
         if ($propertyType === null || empty($propertyTypes[$propertyType])) {
             // Unknown property type.
@@ -157,7 +138,7 @@ class Property extends Entity implements JsonApiSerializable
             return null;
         }
 
-        $this->property_type = $propertyTypes[(string)$propertyType];
+        $this->property_type = clone $propertyTypes[(string)$propertyType];
         $this->property_type_id = $this->property_type->id;
 
         return $this->property_type->name;
