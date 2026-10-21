@@ -65,6 +65,7 @@ class UserTokensTable extends Table
         $this->setTable('user_tokens');
         $this->setDisplayField('id');
         $this->setPrimaryKey('id');
+        $this->getSchema()->setColumnType('params', 'json');
 
         $this->addBehavior('Timestamp');
 
@@ -115,6 +116,9 @@ class UserTokensTable extends Table
         $validator
             ->dateTime('used')
             ->allowEmptyDateTime('used');
+
+        $validator
+            ->allowEmptyArray('params');
 
         return $validator;
     }

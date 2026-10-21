@@ -25,6 +25,7 @@ use Cake\ORM\Entity;
  * @property string $client_token
  * @property string|null $secret_token
  * @property string $token_type
+ * @property array|null $params
  * @property \Cake\I18n\DateTime|null $expires
  * @property \Cake\I18n\DateTime $created
  * @property \Cake\I18n\DateTime|null $used

@@ -45,6 +45,7 @@ class UserTokensTableTest extends TestCase
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.Applications',
         'plugin.BEdita/Core.Objects',
+        'plugin.BEdita/Core.Profiles',
         'plugin.BEdita/Core.Users',
         'plugin.BEdita/Core.UserTokens',
     ];
