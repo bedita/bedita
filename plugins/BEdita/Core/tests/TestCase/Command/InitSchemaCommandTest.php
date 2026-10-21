@@ -145,13 +145,18 @@ class InitSchemaCommandTest extends TestCase
      */
     private function checkCounts(array $schema, array $connectionTables): void
     {
-        $fake = array_filter($connectionTables, function ($table) {
-            return strpos($table, 'fake_') === 0;
+        // remove fake tables, migrations and seeds tables
+        $tablesToRemove = ['foo_bar', 'json_schema_table', 'cake_seeds', 'cake_migrations'];
+        $connectionTables = array_filter($connectionTables, function ($table) use ($tablesToRemove) {
+            return strpos($table, 'fake_') !== 0 && !in_array($table, $tablesToRemove);
         });
-        $schemaTables = array_keys($schema);
-        $expected = count($schemaTables) + 1;
-        $actual = count($connectionTables) - count($fake) - 2; // -2 for migrations and seeds tables
 
+        $schemaTables = array_filter(array_keys($schema), function ($table) use ($tablesToRemove) {
+            return !in_array($table, $tablesToRemove);
+        });
+
+        $expected = count($schemaTables);
+        $actual = count($connectionTables);
         static::assertSame($expected, $actual);
     }
 }
