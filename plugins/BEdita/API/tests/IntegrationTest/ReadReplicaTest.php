@@ -50,6 +50,13 @@ class ReadReplicaTest extends IntegrationTestCase
     protected array $originalConfig;
 
     /**
+     * Original `_bedita_core_` cache configuration.
+     *
+     * @var array
+     */
+    protected array $coreCacheConfig;
+
+    /**
      * Test connection with a separate `read` driver on the same database.
      *
      * @var \BEdita\Core\Test\Utility\SpyConnection
@@ -81,6 +88,11 @@ class ReadReplicaTest extends IntegrationTestCase
         // Use a cache for object types, otherwise all queries go to the primary because of the `StaticPropertiesTabble` temp table.
         Cache::drop('_bedita_object_types_');
         Cache::setConfig('_bedita_object_types_', ['className' => 'Array']);
+
+        // Reset the core cache between test runs.
+        $this->coreCacheConfig = (array)Cache::getConfig('_bedita_core_');
+        Cache::drop('_bedita_core_');
+        Cache::setConfig('_bedita_core_', ['className' => 'Array']);
     }
 
     /**
@@ -99,6 +111,8 @@ class ReadReplicaTest extends IntegrationTestCase
         $this->getTableLocator()->clear();
         Cache::drop('_bedita_object_types_');
         Cache::setConfig('_bedita_object_types_', ['className' => 'Null']);
+        Cache::drop('_bedita_core_');
+        Cache::setConfig('_bedita_core_', $this->coreCacheConfig);
 
         parent::tearDown();
     }
