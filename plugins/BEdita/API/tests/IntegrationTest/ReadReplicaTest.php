@@ -43,6 +43,13 @@ class ReadReplicaTest extends IntegrationTestCase
     protected ConnectionInterface $original;
 
     /**
+     * Original test connection configuration.
+     *
+     * @var array
+     */
+    protected array $originalConfig;
+
+    /**
      * Test connection with a separate `read` driver on the same database.
      *
      * @var \BEdita\Core\Test\Utility\SpyConnection
@@ -65,6 +72,7 @@ class ReadReplicaTest extends IntegrationTestCase
 
         $this->replica = Connection::hasReplica();
         $this->original = ConnectionManager::get('test');
+        $this->originalConfig = (array)ConnectionManager::getConfig('test');
         $this->spy = new SpyConnection(['read' => []] + $this->original->config());
         ConnectionManager::drop('test');
         ConnectionManager::setConfig('test', $this->spy);
@@ -84,8 +92,10 @@ class ReadReplicaTest extends IntegrationTestCase
         Connection::setReplica($this->replica);
         $this->spy->getDriver(Connection::ROLE_READ)->disconnect();
         $this->spy->getDriver(Connection::ROLE_WRITE)->disconnect();
+        $this->original->getDriver()->disconnect();
         ConnectionManager::drop('test');
-        ConnectionManager::setConfig('test', $this->original);
+        // Restore the configuration, not the instance
+        ConnectionManager::setConfig('test', $this->originalConfig);
         $this->getTableLocator()->clear();
         Cache::drop('_bedita_object_types_');
         Cache::setConfig('_bedita_object_types_', ['className' => 'Null']);
@@ -129,7 +139,7 @@ class ReadReplicaTest extends IntegrationTestCase
             ['type' => 'select', 'table' => 'Documents', 'requested' => 'read', 'actual' => 'write'],
             $this->spy->executed
         );
-        static::assertEmpty(array_filter($this->spy->executed, fn (array $query): bool => $query['actual'] === 'read'));
+        static::assertSame([], array_values(array_filter($this->spy->executed, fn (array $query): bool => $query['actual'] === 'read')));
     }
 
     /**
@@ -210,7 +220,7 @@ class ReadReplicaTest extends IntegrationTestCase
         $this->assertResponseCode(200);
         static::assertContains($table, array_column($this->spy->executed, 'table'));
 
-        static::assertEmpty(array_values(array_filter(
+        static::assertSame([], array_values(array_filter(
             $this->spy->executed,
             fn (array $query): bool => $query['actual'] !== 'read'
         )));
