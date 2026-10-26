@@ -39,12 +39,20 @@ class ConnectionTest extends TestCase
     ];
 
     /**
+     * Replica flag before the test.
+     *
+     * @var bool
+     */
+    protected bool $replica;
+
+    /**
      * @inheritDoc
      */
     public function setUp(): void
     {
         parent::setUp();
 
+        $this->replica = Connection::hasReplica();
         Connection::setSticky(false);
         Connection::setReplica(false);
     }
@@ -55,7 +63,7 @@ class ConnectionTest extends TestCase
     public function tearDown(): void
     {
         Connection::setSticky(false);
-        Connection::setReplica(false);
+        Connection::setReplica($this->replica);
 
         parent::tearDown();
     }

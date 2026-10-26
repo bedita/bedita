@@ -50,12 +50,20 @@ class ReadReplicaTest extends IntegrationTestCase
     protected SpyConnection $spy;
 
     /**
+     * Replica flag before the test.
+     *
+     * @var bool
+     */
+    protected bool $replica;
+
+    /**
      * @inheritDoc
      */
     public function setUp(): void
     {
         parent::setUp();
 
+        $this->replica = Connection::hasReplica();
         $this->original = ConnectionManager::get('test');
         $this->spy = new SpyConnection(['read' => []] + $this->original->config());
         ConnectionManager::drop('test');
@@ -73,7 +81,7 @@ class ReadReplicaTest extends IntegrationTestCase
     public function tearDown(): void
     {
         Connection::setSticky(false);
-        Connection::setReplica(false);
+        Connection::setReplica($this->replica);
         $this->spy->getDriver(Connection::ROLE_READ)->disconnect();
         $this->spy->getDriver(Connection::ROLE_WRITE)->disconnect();
         ConnectionManager::drop('test');
