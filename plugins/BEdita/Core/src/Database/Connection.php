@@ -199,6 +199,34 @@ class Connection extends CakeConnection
     }
 
     /**
+     * @inheritDoc
+     */
+    public function prepare($query): StatementInterface
+    {
+        // Handle raw SQL queries.
+        if (is_string($query) && !$this->isRead($query)) {
+            static::$sticky = true;
+        }
+
+        return parent::prepare($query);
+    }
+
+    /**
+     * Check whether raw SQL is a read.
+     *
+     * Unknown statements count as writes: a misclassified read only keeps the rest of the process off the replica.
+     *
+     * @param string $sql Raw SQL.
+     * @return bool
+     */
+    protected function isRead(string $sql): bool
+    {
+        $sql = (string)preg_replace('/^(\s+|--[^\n]*|#[^\n]*|\/\*.*?\*\/)+/s', '', $sql);
+
+        return (bool)preg_match('/^(SELECT|SHOW|DESCRIBE|DESC|PRAGMA)\b/i', $sql);
+    }
+
+    /**
      * Check whether every source of a query is a subquery with the read role.
      *
      * @param \Cake\Database\Query $query Query being run.

@@ -201,6 +201,67 @@ class ConnectionTest extends TestCase
     }
 
     /**
+     * Test that raw SQL makes the process sticky only when it's not a read.
+     *
+     * @return void
+     * @covers ::prepare()
+     */
+    public function testPrepareRaw(): void
+    {
+        $connection = $this->createConnection();
+
+        $connection->execute('SELECT 1')->closeCursor();
+        static::assertFalse(Connection::isSticky());
+
+        $connection->execute("UPDATE config SET content = 'yes' WHERE name = 'Sticky'")->closeCursor();
+        static::assertTrue(Connection::isSticky());
+    }
+
+    /**
+     * Data provider for `testIsRead`.
+     *
+     * @return array
+     */
+    public function isReadProvider(): array
+    {
+        return [
+            'select' => ['SELECT 1', true],
+            'lowercase' => ['select 1', true],
+            'show' => ['SHOW TABLES', true],
+            'describe' => ['DESCRIBE config', true],
+            'desc' => ['DESC config', true],
+            'pragma' => ['PRAGMA table_info(config)', true],
+            'leading comments' => ["  -- comment\n# other\n/* block\n */ SELECT 1", true],
+            'update' => ['UPDATE config SET content = 1', false],
+            'insert' => ['INSERT INTO config (name) VALUES (1)', false],
+            'cte' => ['WITH t AS (SELECT 1) SELECT * FROM t', false],
+            'cte update' => ['WITH t AS (SELECT 1) UPDATE config SET content = 1', false],
+            'call' => ['CALL procedure()', false],
+            'create temporary' => ['CREATE TEMPORARY TABLE t (id INT)', false],
+            'prefix of a keyword' => ['SELECTED', false],
+            'commented select' => ['/* SELECT */ DELETE FROM config', false],
+            'empty' => ['', false],
+        ];
+    }
+
+    /**
+     * Test raw SQL classification.
+     *
+     * @param string $sql Raw SQL.
+     * @param bool $expected Expected result.
+     * @return void
+     * @dataProvider isReadProvider()
+     * @covers ::isRead()
+     */
+    public function testIsRead(string $sql, bool $expected): void
+    {
+        $method = new \ReflectionMethod(Connection::class, 'isRead');
+        $method->setAccessible(true);
+
+        static::assertSame($expected, $method->invoke($this->createConnection(), $sql));
+    }
+
+    /**
      * Test that an entity saved inside a transaction keeps reads on the primary after commit.
      *
      * @return void
