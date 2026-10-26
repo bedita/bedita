@@ -46,6 +46,7 @@ class ConnectionTest extends TestCase
         parent::setUp();
 
         Connection::setSticky(false);
+        Connection::setReplica(false);
     }
 
     /**
@@ -54,6 +55,7 @@ class ConnectionTest extends TestCase
     public function tearDown(): void
     {
         Connection::setSticky(false);
+        Connection::setReplica(false);
 
         parent::tearDown();
     }
@@ -88,6 +90,7 @@ class ConnectionTest extends TestCase
 
         static::assertSame($connection->getDriver(Connection::ROLE_READ), $connection->getDriver(Connection::ROLE_WRITE));
         static::assertSame(Connection::ROLE_WRITE, $connection->getDriver(Connection::ROLE_READ)->getRole());
+        static::assertFalse(Connection::hasReplica());
     }
 
     /**
@@ -109,6 +112,7 @@ class ConnectionTest extends TestCase
         static::assertNotSame('Europe/Rome', $write->config()['timezone'] ?? null);
         static::assertSame($write->config()['database'], $read->config()['database']);
         static::assertArrayNotHasKey('read', $read->config());
+        static::assertTrue(Connection::hasReplica());
     }
 
     /**
@@ -280,6 +284,7 @@ class ConnectionTest extends TestCase
      */
     public function testWithPrimaryFallback(array $results, ?callable $isMiss, int $expectedCalls, bool $expectedSticky): void
     {
+        Connection::setReplica(true);
         $calls = 0;
         $stickyOnCall = [];
         $callback = function () use (&$calls, &$stickyOnCall, $results) {
@@ -311,6 +316,7 @@ class ConnectionTest extends TestCase
      */
     public function testWithPrimaryFallbackMissing(): void
     {
+        Connection::setReplica(true);
         $calls = 0;
 
         try {
@@ -347,6 +353,40 @@ class ConnectionTest extends TestCase
 
         static::assertNull($actual);
         static::assertSame(1, $calls);
+    }
+
+    /**
+     * Test that no fallback happens without a replica.
+     *
+     * @return void
+     * @covers ::withPrimaryFallback()
+     */
+    public function testWithPrimaryFallbackNoReplica(): void
+    {
+        $calls = 0;
+
+        $actual = Connection::withPrimaryFallback(
+            function () use (&$calls) {
+                $calls++;
+
+                return null;
+            },
+            fn ($result): bool => $result === null,
+        );
+        static::assertNull($actual);
+        static::assertSame(1, $calls);
+
+        try {
+            Connection::withPrimaryFallback(function () use (&$calls): void {
+                $calls++;
+
+                throw new RecordNotFoundException();
+            });
+            static::fail('Expected exception not thrown');
+        } catch (RecordNotFoundException) {
+            static::assertSame(2, $calls);
+        }
+        static::assertFalse(Connection::isSticky());
     }
 
     /**

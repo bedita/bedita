@@ -73,6 +73,7 @@ class ReadReplicaTest extends IntegrationTestCase
     public function tearDown(): void
     {
         Connection::setSticky(false);
+        Connection::setReplica(false);
         $this->spy->getDriver(Connection::ROLE_READ)->disconnect();
         $this->spy->getDriver(Connection::ROLE_WRITE)->disconnect();
         ConnectionManager::drop('test');

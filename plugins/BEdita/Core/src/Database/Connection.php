@@ -42,6 +42,34 @@ class Connection extends CakeConnection
     protected static bool $sticky = false;
 
     /**
+     * Whether any connection of this process has a separate `read` driver.
+     *
+     * @var bool
+     */
+    protected static bool $replica = false;
+
+    /**
+     * Set the `replica` flag.
+     *
+     * @param bool $replica Replica flag.
+     * @return void
+     */
+    public static function setReplica(bool $replica): void
+    {
+        static::$replica = $replica;
+    }
+
+    /**
+     * Whether any connection of this process has a separate `read` driver.
+     *
+     * @return bool
+     */
+    public static function hasReplica(): bool
+    {
+        return static::$replica;
+    }
+
+    /**
      * Set the `sticky` flag.
      *
      * @param bool $sticky Sticky flag.
@@ -66,6 +94,7 @@ class Connection extends CakeConnection
      * Run a lookup, and run it again on the primary if the record is missing on the replica.
      *
      * A miss is a `RecordNotFoundException`/`NotFoundException`, or a result for which `$isMiss` returns `true`.
+     * Without a replica the lookup runs once.
      *
      * @param callable $callback Lookup to run: it must build its queries anew on each call.
      * @param callable|null $isMiss Check on the result of the lookup.
@@ -77,12 +106,16 @@ class Connection extends CakeConnection
             return $callback();
         }
 
+        // The `replica` flag is checked after the first run, which may be what creates the connection.
         try {
             $result = $callback();
-            if ($isMiss === null || !$isMiss($result)) {
+            if (!static::$replica || $isMiss === null || !$isMiss($result)) {
                 return $result;
             }
-        } catch (RecordNotFoundException | NotFoundException) {
+        } catch (RecordNotFoundException | NotFoundException $e) {
+            if (!static::$replica) {
+                throw $e;
+            }
         }
 
         static::$sticky = true;
@@ -124,6 +157,7 @@ class Connection extends CakeConnection
         if (array_key_exists('write', $config) || array_key_exists('read', $config)) {
             $readDriver = new $driverClass(['_role' => self::ROLE_READ] + $readConfig);
             $writeDriver = new $driverClass(['_role' => self::ROLE_WRITE] + $writeConfig);
+            static::$replica = true;
         } else {
             $readDriver = $writeDriver = new $driverClass(['_role' => self::ROLE_WRITE] + $writeConfig);
         }
