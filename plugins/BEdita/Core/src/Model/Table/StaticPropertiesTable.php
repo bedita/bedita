@@ -15,6 +15,7 @@ declare(strict_types=1);
 
 namespace BEdita\Core\Model\Table;
 
+use BEdita\Core\Database\Connection as BEditaConnection;
 use BEdita\Core\Model\Entity\ObjectType;
 use BEdita\Core\ORM\Inheritance\Table as InheritanceTable;
 use BEdita\Core\Utility\Text;
@@ -63,6 +64,10 @@ class StaticPropertiesTable extends Table
             'static_properties_%016x',
             function_exists('random_int') ? random_int(0, PHP_INT_MAX) : mt_rand(0, PHP_INT_MAX)
         ));
+
+        // The temporary table exists only in the write driver's session: any query using it, even as a subquery
+        // or join, must run there, and so must the rest of the process that depends on its data.
+        BEditaConnection::setSticky(true);
 
         // Create the temporary table.
         $this->createTable();

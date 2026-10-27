@@ -15,6 +15,7 @@ declare(strict_types=1);
 
 namespace BEdita\Core\Shell\Task;
 
+use BEdita\Core\Database\Connection as BEditaConnection;
 use Cake\Console\ConsoleOptionParser;
 use Cake\Console\Shell;
 use Cake\Database\Connection;
@@ -121,7 +122,10 @@ class SetupConnectionTask extends Shell /* @phpstan-ignore-line */
         // Clean up things.
         $this->verbose('=====> Replacing old connection and flushing models');
         ConnectionManager::drop($connectionName);
-        ConnectionManager::setConfig($connectionName, ['className' => Connection::class] + $newConnection->config());
+        ConnectionManager::setConfig(
+            $connectionName,
+            ['className' => BEditaConnection::class] + $newConnection->config()
+        );
         TableRegistry::getTableLocator()->clear();
 
         $this->out('=====> <success>Connection is ok. It\'s time to start using BEdita!</success>');

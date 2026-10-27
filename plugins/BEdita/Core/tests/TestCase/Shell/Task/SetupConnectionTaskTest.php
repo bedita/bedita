@@ -15,6 +15,7 @@ declare(strict_types=1);
 
 namespace BEdita\Core\Test\TestCase\Shell\Task;
 
+use BEdita\Core\Database\Connection as BEditaConnection;
 use BEdita\Core\Shell\Task\SetupConnectionTask;
 use Cake\Command\Command;
 use Cake\Console\TestSuite\ConsoleIntegrationTestTrait;
@@ -299,9 +300,10 @@ class SetupConnectionTaskTest extends TestCase
 
         // Perform additional assertions on connection.
         $newConnection = ConnectionManager::get(static::TEMP_CONNECTION);
-        $newConfig = $newConnection->config() + ['className' => Connection::class];
+        $newConfig = $newConnection->config() + ['className' => get_class($newConnection)];
         $newConfig = array_intersect_key($newConfig, array_flip($relevantKeys));
         static::assertNotSame($connection, $newConnection);
+        static::assertSame(BEditaConnection::class, $newConfig['className']);
         static::assertArraySubset(array_intersect_key($originalConfig, array_flip($relevantKeys)), $newConfig);
 
         // Perform additional assertions on configuration.
@@ -410,9 +412,10 @@ class SetupConnectionTaskTest extends TestCase
 
         // Perform additional assertions on connection.
         $newConnection = ConnectionManager::get(static::TEMP_CONNECTION);
-        $newConfig = $newConnection->config() + ['className' => Connection::class];
+        $newConfig = $newConnection->config() + ['className' => get_class($newConnection)];
         $newConfig = array_intersect_key($newConfig, array_flip($relevantKeys));
         static::assertNotSame($connection, $newConnection);
+        static::assertSame(BEditaConnection::class, $newConfig['className']);
         static::assertArraySubset(array_intersect_key($originalConfig, array_flip($relevantKeys)), $newConfig);
 
         // Perform additional assertions on configuration.

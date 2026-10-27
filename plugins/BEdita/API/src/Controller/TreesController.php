@@ -14,6 +14,7 @@ declare(strict_types=1);
  */
 namespace BEdita\API\Controller;
 
+use BEdita\Core\Database\Connection;
 use BEdita\Core\Model\Action\GetObjectAction;
 use BEdita\Core\Model\Entity\ObjectType;
 use Cake\Core\InstanceConfigTrait;
@@ -107,16 +108,22 @@ class TreesController extends AppController
     {
         $this->request->allowMethod(['get']);
 
-        // populate idList, unameList
-        $this->pathDetails($path);
+        $entity = Connection::withPrimaryFallback(function () use ($path): EntityInterface {
+            $this->pathInfo = ['ids' => [], 'unames' => [], 'types' => []];
 
-        $this->loadTreesNode();
-        $parents = $this->parents();
+            // populate idList, unameList
+            $this->pathDetails($path);
 
-        $ids = array_values((array)$this->pathInfo['ids']);
-        $entity = $this->loadObject(end($ids));
+            $this->loadTreesNode();
+            $parents = $this->parents();
 
-        $this->checkPath($entity, $parents);
+            $ids = array_values((array)$this->pathInfo['ids']);
+            $entity = $this->loadObject(end($ids));
+
+            $this->checkPath($entity, $parents);
+
+            return $entity;
+        });
 
         $entity->set('uname_path', sprintf('/%s', implode('/', $this->pathInfo['unames'])));
         $entity->setAccess('uname_path', false);
@@ -206,8 +213,10 @@ class TreesController extends AppController
             return [];
         }
 
-        return $this->Trees->find('pathNodes', [$parentId])
+        // Must set the connection role before calling a finder that runs a query internally.
+        return $this->Trees->find()
             ->useReadRole()
+            ->find('pathNodes', [$parentId])
             ->find('list', [
                 'keyField' => 'id',
                 'valueField' => 'object_id',

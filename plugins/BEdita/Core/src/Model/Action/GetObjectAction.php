@@ -15,6 +15,7 @@ declare(strict_types=1);
 
 namespace BEdita\Core\Model\Action;
 
+use BEdita\Core\Database\Connection;
 use Cake\Datasource\Exception\InvalidPrimaryKeyException;
 use Cake\Utility\Hash;
 
@@ -65,23 +66,25 @@ class GetObjectAction extends BaseAction
         }
         $contain = array_merge(['ObjectTypes'], (array)Hash::get($data, 'contain'));
 
-        // Build query and add finders.
-        $query = $this->Table->find('publishable')
-            ->useReadRole()
-            ->contain($contain)
-            ->where($conditions);
-        if (isset($this->objectType)) {
-            $assoc = $this->objectType->associations;
-            if (!empty($assoc)) {
-                $query = $query->contain($assoc);
+        return Connection::withPrimaryFallback(function () use ($conditions, $contain, $data) {
+            // Build query and add finders.
+            $query = $this->Table->find('publishable')
+                ->useReadRole()
+                ->contain($contain)
+                ->where($conditions);
+            if (isset($this->objectType)) {
+                $assoc = $this->objectType->associations;
+                if (!empty($assoc)) {
+                    $query = $query->contain($assoc);
+                }
+                $query = $query->find('type', (array)$this->objectType->id);
             }
-            $query = $query->find('type', (array)$this->objectType->id);
-        }
-        if (!empty($data['lang'])) {
-            $query = $query->find('translations', ['lang' => $data['lang']]);
-        }
+            if (!empty($data['lang'])) {
+                $query = $query->find('translations', ['lang' => $data['lang']]);
+            }
 
-        return $query->firstOrFail();
+            return $query->firstOrFail();
+        });
     }
 
     /**

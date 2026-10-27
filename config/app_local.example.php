@@ -38,7 +38,7 @@ return [
     'Datasources' => [
         'default' => [
 
-            'className' => 'Cake\Database\Connection',
+            'className' => 'BEdita\Core\Database\Connection',
             'driver' => 'Cake\Database\Driver\Mysql',
 
             'host' => '__BE4_DB_HOST__',

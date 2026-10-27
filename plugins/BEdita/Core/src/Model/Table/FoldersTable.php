@@ -323,7 +323,10 @@ class FoldersTable extends ObjectsTable
      */
     public function getSort($folder)
     {
-        $entity = $folder instanceof Folder ? $folder : $this->get($folder);
+        $entity = $folder instanceof Folder ? $folder : $this->find()
+            ->useReadRole()
+            ->where([$this->aliasField($this->getPrimaryKey()) => $folder])
+            ->firstOrFail();
         $order = $entity->get('children_order') ?: 'position';
 
         [$field, $direction] = substr($order, 0, 1) === '-' ? [substr($order, 1), 'DESC'] : [$order, 'ASC'];

@@ -450,6 +450,7 @@ class ObjectTypesTable extends Table
                 ->select(['tree_left', 'tree_right'])
                 ->where($conditionsBuilder)
                 ->enableHydration(false)
+                ->setConnectionRole($query->getConnectionRole())
                 ->all();
 
             // Replace `$conditionsBuilder` with a more complex one that returns not only the matching object types,

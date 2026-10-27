@@ -1,8 +1,8 @@
 <?php
 
 use BEdita\API\Error\ExceptionRenderer;
+use BEdita\Core\Database\Connection;
 use Cake\Cache\Engine\FileEngine;
-use Cake\Database\Connection;
 use Cake\Database\Driver\Mysql;
 use Cake\Log\Engine\FileLog;
 use Cake\Mailer\Transport\MailTransport;
