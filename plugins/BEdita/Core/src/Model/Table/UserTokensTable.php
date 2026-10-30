@@ -14,6 +14,7 @@ declare(strict_types=1);
  */
 namespace BEdita\Core\Model\Table;
 
+use BEdita\Core\Model\Validation\Validation;
 use Cake\Core\Configure;
 use Cake\Database\Expression\QueryExpression;
 use Cake\I18n\DateTime;
@@ -110,11 +111,11 @@ class UserTokensTable extends Table
             ->notEmptyString('token_type');
 
         $validator
-            ->dateTime('expires')
+            ->add('expires', 'dateTime', ['rule' => [Validation::class, 'dateTime']])
             ->allowEmptyDateTime('expires');
 
         $validator
-            ->dateTime('used')
+            ->add('used', 'dateTime', ['rule' => [Validation::class, 'dateTime']])
             ->allowEmptyDateTime('used');
 
         $validator
