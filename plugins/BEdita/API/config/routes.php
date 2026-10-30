@@ -32,6 +32,7 @@ return function (RouteBuilder $routes): void {
             'applications',
             'auth_providers',
             'external_auth',
+            'user_tokens',
             'async_jobs',
             'config',
             'endpoints',
