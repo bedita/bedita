@@ -427,6 +427,23 @@ class EndpointPermissionsTableTest extends TestCase
     }
 
     /**
+     * Test that `fetchCount` is cached until a permission is saved or deleted.
+     *
+     * @return void
+     */
+    public function testFetchCountCache(): void
+    {
+        CurrentApplication::setApplication(null);
+        static::assertSame(1, $this->EndpointPermissions->fetchCount(1));
+
+        $this->EndpointPermissions->deleteAll(['application_id IS' => null]);
+        static::assertSame(1, $this->EndpointPermissions->fetchCount(1));
+
+        $this->EndpointPermissions->delete($this->EndpointPermissions->get(2));
+        static::assertSame(0, $this->EndpointPermissions->fetchCount(1));
+    }
+
+    /**
      * Data provider for `testFetchPermissions`
      */
     public static function fetchPermissionsProvider(): array

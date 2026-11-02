@@ -17,6 +17,7 @@ namespace BEdita\API\Controller;
 use Authentication\PasswordHasher\PasswordHasherFactory;
 use BEdita\API\Policy\EndpointPolicy;
 use BEdita\API\Utility\JWTHandler;
+use BEdita\Core\Database\Connection;
 use BEdita\Core\Model\Action\ActionTrait;
 use BEdita\Core\Model\Action\GetObjectAction;
 use BEdita\Core\Model\Action\SaveEntityAction;
@@ -295,9 +296,13 @@ class LoginController extends AppController
         $conditions = ['id' => $userId];
 
         /** @var \BEdita\Core\Model\Entity\User|null $user */
-        $user = $this->Users
-            ->find('login', conditions: $conditions, contain: $contain)
-            ->first();
+        $user = Connection::withPrimaryFallback(
+            fn() => $this->Users->find()
+                ->useReadRole()
+                ->find('login', conditions: $conditions, contain: $contain)
+                ->first(),
+            fn($user): bool => empty($user),
+        );
         if (empty($user)) {
             throw new UnauthorizedException(__('Request not authorized'));
         }

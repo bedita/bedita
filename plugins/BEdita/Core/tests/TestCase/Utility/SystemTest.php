@@ -14,6 +14,7 @@ declare(strict_types=1);
  */
 namespace BEdita\Core\Test\TestCase\Utility;
 
+use BEdita\Core\Database\Connection;
 use BEdita\Core\Utility\Database;
 use BEdita\Core\Utility\System;
 use Cake\Core\Configure;
@@ -102,6 +103,37 @@ class SystemTest extends TestCase
         $this->assertNotEmpty($result['errors']);
 
         $this->cleanupFakeDb();
+    }
+
+    /**
+     * Test status method with a read replica that can't connect
+     *
+     * @return void
+     */
+    public function testStatusReplicaFail(): void
+    {
+        $replica = Connection::hasReplica();
+        $config = ConnectionManager::get('test')->config();
+        ConnectionManager::setConfig('__replica-temp__', [
+            'className' => Connection::class,
+            'read' => ['database' => '/_______missing-dir_______/replica.sqlite', 'host' => '_______fake-tmp_______.invalid'],
+        ] + $config);
+        ConnectionManager::alias('__replica-temp__', 'default');
+        $debug = Configure::read('debug');
+        Configure::write('debug', 1);
+
+        try {
+            $result = System::status();
+        } finally {
+            Configure::write('debug', $debug);
+            ConnectionManager::alias('test', 'default');
+            ConnectionManager::drop('__replica-temp__');
+            Connection::setReplica($replica);
+        }
+
+        static::assertSame('error', $result['environment']);
+        static::assertArrayNotHasKey('db', $result['errors']);
+        static::assertNotEmpty($result['errors']['db_read']);
     }
 
     /**

@@ -14,6 +14,7 @@ declare(strict_types=1);
  */
 namespace BEdita\Core\Model\Table;
 
+use BEdita\Core\Database\Connection;
 use BEdita\Core\Exception\LockedResourceException;
 use BEdita\Core\Model\Entity\ObjectEntity;
 use BEdita\Core\Model\Enum\DateRangesSortField;
@@ -290,11 +291,16 @@ class ObjectsTable extends Table
 
                 $objectTypeIds[] = $value->id;
                 if ($value->get('is_abstract')) {
+                    // Same as `find('children')`, whose node lookup and list query are uncached.
                     $objectTypeIds = array_merge(
                         $objectTypeIds,
                         $this->ObjectTypes
-                            ->find('children', for: $value->id)
                             ->find('list', valueField: $this->ObjectTypes->getPrimaryKey())
+                            ->where([
+                                $this->ObjectTypes->aliasField('tree_left') . ' >' => $value->get('tree_left'),
+                                $this->ObjectTypes->aliasField('tree_right') . ' <' => $value->get('tree_right'),
+                            ])
+                            ->cache(sprintf('descendants_%d', $value->id), ObjectTypesTable::CACHE_CONFIG)
                             ->all()
                             ->toList(),
                     );
@@ -415,11 +421,12 @@ class ObjectsTable extends Table
         /** @var \BEdita\Core\Model\Behavior\ResourceNameBehavior $resourceNameBehavior */
         $resourceNameBehavior = $this->getBehavior('ResourceName');
         $parentId = $resourceNameBehavior->getId($parent);
-        $parentNode = $this->TreeNodes->find()
+        $parentNode = Connection::withPrimaryFallback(fn(): EntityInterface => $this->TreeNodes->find()
+            ->setConnectionRole($query->getConnectionRole())
             ->where([
                 $this->TreeNodes->aliasField('object_id') => $parentId,
             ])
-            ->firstOrFail();
+            ->firstOrFail());
 
         return $query->where(function (QueryExpression $exp) use ($parentNode): QueryExpression {
             return $exp->in(
