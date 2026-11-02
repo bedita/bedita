@@ -14,6 +14,7 @@ declare(strict_types=1);
  */
 namespace BEdita\API\Controller;
 
+use BEdita\Core\Database\Connection;
 use BEdita\Core\Filesystem\Thumbnail;
 use BEdita\Core\Model\Entity\Stream;
 use Cake\Database\Expression\QueryExpression;
@@ -80,12 +81,18 @@ class MediaController extends ObjectsController
         if (empty($ids)) {
             return $ids;
         }
-        $available = $this->Table->find('available')
-            ->where(['id IN' => $ids])
-            ->select(['id'])
-            ->toArray();
 
-        return (array)Hash::extract($available, '{n}.id');
+        return Connection::withPrimaryFallback(
+            fn(): array => $this->Table->find()
+                ->useReadRole()
+                ->find('available')
+                ->where(['id IN' => $ids])
+                ->select(['id'])
+                ->all()
+                ->extract('id')
+                ->toList(),
+            fn(array $available): bool => count($available) < count($ids),
+        );
     }
 
     /**
@@ -106,6 +113,7 @@ class MediaController extends ObjectsController
         $options = (array)$this->request->getQuery('options');
 
         $thumbnails = $this->Table->getAssociation('Streams')->find()
+            ->useReadRole()
             ->where(function (QueryExpression $exp) use ($ids) {
                 return $exp->in('object_id', $ids);
             })
@@ -145,6 +153,7 @@ class MediaController extends ObjectsController
             $this->Table->aliasField('provider_thumbnail') . ' IS NOT NULL',
         ];
         $thumbs = $this->Table->find()
+            ->useReadRole()
             ->where($conditions)
             ->select(['id', 'provider_thumbnail'])
             ->toArray();

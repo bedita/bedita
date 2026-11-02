@@ -42,6 +42,7 @@ class ListRelatedObjectsAction extends ListAssociatedAction
             $objectTypes = TableRegistry::getTableLocator()->get('ObjectTypes')
                 ->find('byRelation', name: $this->Association->getName(), side: RelationTypeSide::Right)
                 ->contain(['LeftRelations.RightObjectTypes', 'RightRelations.LeftObjectTypes'])
+                ->useReadRole()
                 ->toArray();
             $table = $this->Association->getTarget();
             $objectType = null;

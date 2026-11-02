@@ -40,7 +40,7 @@ return [
     'Datasources' => [
         'default' => [
 
-            'className' => 'Cake\Database\Connection',
+            'className' => 'BEdita\Core\Database\Connection',
             'driver' => 'Cake\Database\Driver\Mysql',
 
             'host' => '__BE4_DB_HOST__',
@@ -75,6 +75,14 @@ return [
              * which is the recommended value in production environments
              */
             //'init' => ['SET GLOBAL innodb_stats_on_metadata = 0'],
+
+            /**
+             * Read replica: `read` keys override the settings above for read queries.
+             * It requires `BEdita\Core\Database\Connection` as `className`.
+             */
+            //'read' => [
+            //    'host' => 'replica.example.com',
+            //],
 
             'url' => env('DATABASE_URL', null),
         ],

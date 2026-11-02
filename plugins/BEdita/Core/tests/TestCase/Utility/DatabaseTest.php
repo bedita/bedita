@@ -14,6 +14,7 @@ declare(strict_types=1);
  */
 namespace BEdita\Core\Test\TestCase\Utility;
 
+use BEdita\Core\Database\Connection;
 use BEdita\Core\Utility\Database;
 use Cake\Datasource\ConnectionManager;
 use Cake\TestSuite\TestCase;
@@ -66,5 +67,37 @@ class DatabaseTest extends TestCase
         $this->assertNotEmpty($res);
         $this->assertFalse($res['success']);
         $this->assertNotEmpty($res['error']);
+    }
+
+    /**
+     * Test connectionTest and hasReplica methods with a read replica
+     *
+     * @return void
+     */
+    public function testReplica(): void
+    {
+        static::assertFalse(Database::hasReplica('test'));
+        static::assertFalse(Database::hasReplica('zzzzzzzzzzz'));
+
+        $replica = Connection::hasReplica();
+        $config = ConnectionManager::get('test')->config();
+        ConnectionManager::setConfig('__replica-temp__', [
+            'className' => Connection::class,
+            'read' => ['database' => '/_______missing-dir_______/replica.sqlite', 'host' => '_______fake-tmp_______.invalid'],
+        ] + $config);
+        Connection::setSticky(true);
+
+        try {
+            static::assertTrue(Database::hasReplica('__replica-temp__'));
+            static::assertTrue(Database::connectionTest('__replica-temp__')['success']);
+            $res = Database::connectionTest('__replica-temp__', Connection::ROLE_READ);
+        } finally {
+            Connection::setSticky(false);
+            ConnectionManager::drop('__replica-temp__');
+            Connection::setReplica($replica);
+        }
+
+        static::assertFalse($res['success']);
+        static::assertNotEmpty($res['error']);
     }
 }

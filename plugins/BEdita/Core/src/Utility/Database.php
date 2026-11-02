@@ -54,19 +54,41 @@ class Database
      * See if Database connection is available and working correctly
      *
      * @param string $dbConfig input database configuration ('default' as default)
+     * @param string $role Connection role to test, 'write' (default) or 'read'
      * @return array containing keys: 'success' (boolean), 'error' (string with error message)
      */
-    public static function connectionTest(string $dbConfig = 'default'): array
+    public static function connectionTest(string $dbConfig = 'default', string $role = Connection::ROLE_WRITE): array
     {
         $res = ['success' => false, 'error' => ''];
         try {
             $connection = ConnectionManager::get($dbConfig);
-            $connection->getDriver()->connect();
+            // `getDriver()` may send the read role to the write driver.
+            $driver = $role === Connection::ROLE_READ && $connection instanceof Connection
+                ? $connection->getReadDriver()
+                : $connection->getDriver();
+            $driver->connect();
             $res['success'] = true;
         } catch (Exception $e) {
             $res['error'] = $e->getMessage();
         }
 
         return $res;
+    }
+
+    /**
+     * See if a database connection has a separate read driver (a read replica)
+     *
+     * @param string $dbConfig input database configuration ('default' as default)
+     * @return bool
+     */
+    public static function hasReplica(string $dbConfig = 'default'): bool
+    {
+        try {
+            $connection = ConnectionManager::get($dbConfig);
+        } catch (Exception) {
+            return false;
+        }
+
+        return $connection instanceof Connection && $connection->getReadDriver() !== $connection->getWriteDriver();
     }
 }
