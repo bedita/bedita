@@ -15,6 +15,7 @@ declare(strict_types=1);
 
 namespace BEdita\API\Controller;
 
+use BEdita\Core\Database\Connection;
 use BEdita\Core\Model\Action\GetEntityAction;
 use Cake\Http\Exception\ConflictException;
 use Cake\Http\Exception\ForbiddenException;
@@ -54,6 +55,7 @@ class StreamsController extends ResourcesController
         /** @var \BEdita\Core\Model\Table\ObjectTypesTable $ObjectTypes */
         $ObjectTypes = TableRegistry::getTableLocator()->get('ObjectTypes');
         $allowed = $ObjectTypes->find('list')
+            ->useReadRole()
             ->where(['parent_id' => $ObjectTypes->get('media')->id])
             ->all()
             ->toList();
@@ -176,7 +178,11 @@ class StreamsController extends ResourcesController
      */
     public function download(string $uuid): Response
     {
-        $stream = $this->Table->get($uuid);
+        /** @var \BEdita\Core\Model\Entity\Stream $stream */
+        $stream = Connection::withPrimaryFallback(fn() => $this->Table->find()
+            ->useReadRole()
+            ->where([$this->Table->aliasField('uuid') => $uuid])
+            ->firstOrFail());
         $filename = Hash::get($stream, 'file_name', sprintf('stream-%s', $uuid));
 
         $response = $this->response->withType($stream->get('mime_type'));

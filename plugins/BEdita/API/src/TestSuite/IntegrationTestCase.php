@@ -15,6 +15,7 @@ declare(strict_types=1);
 namespace BEdita\API\TestSuite;
 
 use BEdita\API\Event\CommonEventHandler;
+use BEdita\Core\Database\Connection;
 use BEdita\Core\State\CurrentApplication;
 use BEdita\Core\Utility\LoggedUser;
 use Cake\Event\EventManager;
@@ -109,6 +110,7 @@ abstract class IntegrationTestCase extends TestCase
     {
         parent::setUp();
 
+        Connection::setSticky(false);
         LoggedUser::resetUser();
         CurrentApplication::setFromApiKey(API_KEY);
 

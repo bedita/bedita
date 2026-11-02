@@ -14,6 +14,8 @@ declare(strict_types=1);
  */
 namespace BEdita\API\Controller;
 
+use BEdita\Core\Database\Connection;
+use Cake\Datasource\EntityInterface;
 use Cake\Http\Response;
 
 /**
@@ -48,16 +50,20 @@ class TreePathsController extends TreesController
     {
         $this->request->allowMethod(['get']);
 
-        // populate idList, unameList
-        $this->pathInfo = $this->Objects->TreeNodes->getPathInfo($path);
+        $entity = Connection::withPrimaryFallback(function () use ($path): EntityInterface {
+            // populate idList, unameList
+            $this->pathInfo = $this->Objects->TreeNodes->getPathInfo($path);
 
-        $this->loadTreesNode();
-        $parents = $this->parents();
+            $this->loadTreesNode();
+            $parents = $this->parents();
 
-        $ids = array_values((array)$this->pathInfo['ids']);
-        $entity = $this->loadObject(end($ids));
+            $ids = array_values((array)$this->pathInfo['ids']);
+            $entity = $this->loadObject(end($ids));
 
-        $this->checkPath($entity, $parents);
+            $this->checkPath($entity, $parents);
+
+            return $entity;
+        });
 
         $entity->set('slug_path', sprintf('/%s', implode('/', $this->pathInfo['slugs'])));
         $entity->setAccess('slug_path', false);

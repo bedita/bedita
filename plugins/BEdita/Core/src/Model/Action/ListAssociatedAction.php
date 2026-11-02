@@ -14,6 +14,7 @@ declare(strict_types=1);
  */
 namespace BEdita\Core\Model\Action;
 
+use BEdita\Core\Database\Connection;
 use Cake\Collection\CollectionInterface;
 use Cake\Database\Expression\QueryExpression;
 use Cake\Database\ExpressionInterface;
@@ -118,12 +119,15 @@ class ListAssociatedAction extends BaseAction
         $source = $this->Association->getSource();
         $conditions = $this->primaryKeyConditions($source, $data['primaryKey']);
 
-        $existing = $source->find()
-            ->where($conditions)
-            ->count();
-        if (!$existing) {
-            throw new RecordNotFoundException(__('Record not found in table "{0}"', $source->getTable()));
-        }
+        Connection::withPrimaryFallback(function () use ($source, $conditions): void {
+            $existing = $source->find()
+                ->useReadRole()
+                ->where($conditions)
+                ->count();
+            if (!$existing) {
+                throw new RecordNotFoundException(__('Record not found in table "{0}"', $source->getTable()));
+            }
+        });
     }
 
     /**

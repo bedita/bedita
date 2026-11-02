@@ -14,6 +14,7 @@ declare(strict_types=1);
  */
 namespace BEdita\Core\Command;
 
+use BEdita\Core\Database\Connection as BEditaConnection;
 use Cake\Command\Command;
 use Cake\Console\Arguments;
 use Cake\Console\ConsoleIo;
@@ -123,7 +124,10 @@ class SetupConnectionCommand extends Command
         // Clean up things.
         $io->verbose('=====> Replacing old connection and flushing models');
         ConnectionManager::drop($connectionName);
-        ConnectionManager::setConfig($connectionName, ['className' => Connection::class] + $newConnection->config());
+        ConnectionManager::setConfig(
+            $connectionName,
+            ['className' => BEditaConnection::class] + $newConnection->config(),
+        );
         TableRegistry::getTableLocator()->clear();
 
         $io->out('=====> <success>Connection is ok. It\'s time to start using BEdita!</success>');

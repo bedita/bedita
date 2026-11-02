@@ -96,6 +96,7 @@ class User extends Profile
         return $this->getTableLocator()
             ->get('ExternalAuth')
             ->find('user', user: $this->id)
+            ->useReadRole()
             ->all()
             ->map(function (ExternalAuth $item) {
                 return [

@@ -428,6 +428,7 @@ class TreesTable extends Table
     protected function findPathNodes(SelectQuery $query, int $objectId): SelectQuery
     {
         $node = $this->unhydratedFind()
+            ->setConnectionRole($query->getConnectionRole())
             ->select([$this->aliasField('id')])
             ->where([$this->aliasField('object_id') => $objectId])
             ->firstOrFail();
@@ -445,7 +446,9 @@ class TreesTable extends Table
      */
     protected function loadSlugsPath(array $conditions): array
     {
-        return (array)$this->Objects->unhydratedFind('available')
+        return (array)$this->Objects->unhydratedFind()
+            ->useReadRole()
+            ->find('available')
             ->where($conditions)
             ->select([
                 'id',
