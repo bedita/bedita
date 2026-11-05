@@ -31,6 +31,7 @@
     </testsuites>
     <extensions>
         <bootstrap class="Cake\TestSuite\Fixture\Extension\PHPUnitExtension"/>
+        <bootstrap class="BEdita\Core\TestSuite\ObjectTypesRegistryExtension"/>
     </extensions>
     <!-- Ignore vendor tests in code coverage reports -->
     <source>
