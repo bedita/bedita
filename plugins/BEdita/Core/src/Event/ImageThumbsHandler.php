@@ -108,6 +108,9 @@ class ImageThumbsHandler implements EventListenerInterface
      */
     public function updateThumbs(ObjectEntity $image, Stream $stream, array $presets): void
     {
+        if (empty($presets)) {
+            return;
+        }
         $extra = (array)$image->get('extra');
         $result = (array)Hash::get($extra, 'thumbs');
         foreach ($presets as $key => $value) {
