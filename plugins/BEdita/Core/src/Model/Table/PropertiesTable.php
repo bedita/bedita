@@ -19,6 +19,7 @@ use BEdita\Core\Model\Entity\Property;
 use BEdita\Core\Model\Entity\StaticProperty;
 use BEdita\Core\Model\Validation\Validation;
 use BEdita\Core\Search\SimpleSearchTrait;
+use BEdita\Core\Utility\ObjectTypesRegistry;
 use Cake\Database\Expression\QueryExpression;
 use Cake\Database\Query\SelectQuery as DatabaseSelectQuery;
 use Cake\Datasource\ResultSetInterface;
@@ -125,6 +126,26 @@ class PropertiesTable extends Table
         $rules->add($rules->existsIn(['property_type_id'], 'PropertyTypes'));
 
         return $rules;
+    }
+
+    /**
+     * Invalidate object types cache after saving a property.
+     *
+     * @return void
+     */
+    public function afterSave(): void
+    {
+        ObjectTypesRegistry::clear();
+    }
+
+    /**
+     * Invalidate object types cache after deleting a property.
+     *
+     * @return void
+     */
+    public function afterDelete(): void
+    {
+        ObjectTypesRegistry::clear();
     }
 
     /**

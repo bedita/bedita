@@ -16,6 +16,7 @@ namespace BEdita\Core\Test\TestCase\Model\Table;
 
 use BEdita\Core\Model\Table\ObjectTypesTable;
 use BEdita\Core\Model\Table\RelationsTable;
+use BEdita\Core\Utility\ObjectTypesRegistry;
 use Cake\Cache\Cache;
 use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\ORM\TableRegistry;
@@ -210,22 +211,16 @@ class RelationsTableTest extends TestCase
      */
     public function testInvalidateCacheAfterSave()
     {
+        ObjectTypesRegistry::reset();
         $this->Relations->LeftObjectTypes->get('document');
-        $this->Relations->LeftObjectTypes->get(3);
 
-        static::assertNotFalse(Cache::read('id_2_rel', ObjectTypesTable::CACHE_CONFIG));
-        static::assertNotFalse(Cache::read('id_3_rel', ObjectTypesTable::CACHE_CONFIG));
-        static::assertNotFalse(Cache::read('map', ObjectTypesTable::CACHE_CONFIG));
-        static::assertNotFalse(Cache::read('map_singular', ObjectTypesTable::CACHE_CONFIG));
+        static::assertNotNull(Cache::read(ObjectTypesRegistry::CACHE_KEY, ObjectTypesTable::CACHE_CONFIG));
 
         $entity = $this->Relations->get(1);
         $entity = $this->Relations->patchEntity($entity, ['description' => 'My brand new description']);
         $this->Relations->save($entity);
 
-        static::assertNull(Cache::read('id_2_rel', ObjectTypesTable::CACHE_CONFIG));
-        static::assertNull(Cache::read('id_3_rel', ObjectTypesTable::CACHE_CONFIG));
-        static::assertNull(Cache::read('map', ObjectTypesTable::CACHE_CONFIG));
-        static::assertNull(Cache::read('map_singular', ObjectTypesTable::CACHE_CONFIG));
+        static::assertNull(Cache::read(ObjectTypesRegistry::CACHE_KEY, ObjectTypesTable::CACHE_CONFIG));
     }
 
     /**
@@ -276,21 +271,15 @@ class RelationsTableTest extends TestCase
      */
     public function testInvalidateCacheAfterDelete()
     {
+        ObjectTypesRegistry::reset();
         $this->Relations->LeftObjectTypes->get('document');
-        $this->Relations->LeftObjectTypes->get(3);
 
-        static::assertNotFalse(Cache::read('id_2_rel', ObjectTypesTable::CACHE_CONFIG));
-        static::assertNotFalse(Cache::read('id_3_rel', ObjectTypesTable::CACHE_CONFIG));
-        static::assertNotFalse(Cache::read('map', ObjectTypesTable::CACHE_CONFIG));
-        static::assertNotFalse(Cache::read('map_singular', ObjectTypesTable::CACHE_CONFIG));
+        static::assertNotNull(Cache::read(ObjectTypesRegistry::CACHE_KEY, ObjectTypesTable::CACHE_CONFIG));
 
         $entity = $this->Relations->get(1);
         $this->Relations->delete($entity);
 
-        static::assertNull(Cache::read('id_2_rel', ObjectTypesTable::CACHE_CONFIG));
-        static::assertNull(Cache::read('id_3_rel', ObjectTypesTable::CACHE_CONFIG));
-        static::assertNull(Cache::read('map', ObjectTypesTable::CACHE_CONFIG));
-        static::assertNull(Cache::read('map_singular', ObjectTypesTable::CACHE_CONFIG));
+        static::assertNull(Cache::read(ObjectTypesRegistry::CACHE_KEY, ObjectTypesTable::CACHE_CONFIG));
     }
 
     /**

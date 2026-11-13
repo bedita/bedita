@@ -18,7 +18,7 @@ use BEdita\Core\Exception\ImmutableResourceException;
 use BEdita\Core\Model\Entity\PropertyType;
 use BEdita\Core\Model\Validation\Validation;
 use BEdita\Core\Search\SimpleSearchTrait;
-use Cake\Cache\Cache;
+use BEdita\Core\Utility\ObjectTypesRegistry;
 use Cake\Datasource\EntityInterface;
 use Cake\Event\EventInterface;
 use Cake\Http\Exception\ForbiddenException;
@@ -143,7 +143,7 @@ class PropertyTypesTable extends Table
      */
     public function afterSave(): void
     {
-        Cache::clear(ObjectTypesTable::CACHE_CONFIG);
+        ObjectTypesRegistry::clear();
     }
 
     /**
@@ -169,7 +169,7 @@ class PropertyTypesTable extends Table
      */
     public function afterDelete(): void
     {
-        Cache::clear(ObjectTypesTable::CACHE_CONFIG);
+        ObjectTypesRegistry::clear();
     }
 
     /**
@@ -181,45 +181,35 @@ class PropertyTypesTable extends Table
      */
     public function detect(string $name, Table $table): PropertyType
     {
-        /** @var array<\BEdita\Core\Model\Entity\PropertyType> $propertyTypes */
-        $propertyTypes = Cache::remember(
-            'property_types',
-            function () {
-                return $this->find()
-                    ->all()
-                    ->indexBy('name')
-                    ->toArray();
-            },
-            ObjectTypesTable::CACHE_CONFIG,
-        );
+        $propertyTypes = ObjectTypesRegistry::getPropertyTypes();
 
         // Check if there is a property type whose name matches column name.
         if (isset($propertyTypes[$name])) {
-            return $propertyTypes[$name];
+            return clone $propertyTypes[$name];
         }
 
         // Check if there is a property type whose name matches an applicable validation rule's name.
         $rules = array_keys($table->getValidator()->field($name)->rules());
         foreach ($rules as $ruleName) {
             if (isset($propertyTypes[$ruleName])) {
-                return $propertyTypes[$ruleName];
+                return clone $propertyTypes[$ruleName];
             }
         }
 
         // Try to infer a generic type from column definition.
         $type = $table->getSchema()->getColumnType($name);
         if (isset($propertyTypes[$type])) {
-            return $propertyTypes[$type];
+            return clone $propertyTypes[$type];
         }
         // Try to convert specific types to more generic ones.
         if (isset(static::COLUMN_TYPE_MAP[$type])) {
             $type = static::COLUMN_TYPE_MAP[$type];
         }
         if (isset($propertyTypes[$type])) {
-            return $propertyTypes[$type];
+            return clone $propertyTypes[$type];
         }
 
         // Fallback on string type.
-        return $propertyTypes['string'];
+        return clone $propertyTypes['string'];
     }
 }

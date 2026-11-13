@@ -108,7 +108,7 @@ if (!Configure::check('Cache._bedita_object_types_')) {
         'prefix' => 'bedita_object_types_',
         'path' => CACHE . 'object_types/',
         'serialize' => true,
-        'duration' => '+1 year',
+        'duration' => '+6 hours',
     ]);
 }
 if (!Configure::check('Cache._bedita_core_')) {
