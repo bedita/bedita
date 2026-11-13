@@ -352,10 +352,12 @@ class CustomPropertiesBehavior extends Behavior
                 $field = $this->table()->aliasField($this->getConfig('field'));
                 $fieldExp = $this->expressionField($field, $key, $driver);
                 $operation = $conditions[$key];
-                $operator = key($operation);
-                $value = $operation[$operator];
+                $expr = $query->expr();
+                foreach ($operation as $operator => $value) {
+                    $expr->add($this->operatorExpression($query->expr(), $operator, $fieldExp, $value));
+                }
 
-                return $this->operatorExpression($query->expr(), $operator, $fieldExp, $value);
+                return $expr;
             }, array_keys($conditions)));
         });
     }
@@ -414,7 +416,9 @@ class CustomPropertiesBehavior extends Behavior
                 } else {
                     $expValue = $this->expressionValue($v, $schema, $driver);
                 }
-                $conditions[$key] = [$operator => $expValue];
+
+                $conditions[$key] ??= [];
+                $conditions[$key][$operator] = $expValue;
             }
 
             if (!empty($in)) {

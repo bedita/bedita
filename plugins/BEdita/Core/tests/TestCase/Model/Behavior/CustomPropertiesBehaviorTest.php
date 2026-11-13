@@ -147,6 +147,7 @@ class CustomPropertiesBehaviorTest extends TestCase
     public function testGetAvailable(array $expected, $tableName)
     {
         $table = TableRegistry::getTableLocator()->get($tableName);
+        /** @var \BEdita\Core\Model\Behavior\CustomPropertiesBehavior $behavior */
         $behavior = $table->behaviors()->get('CustomProperties');
         $result = $behavior->getAvailable();
         $result = array_keys($result);
@@ -173,6 +174,7 @@ class CustomPropertiesBehaviorTest extends TestCase
 
         static::assertEquals('InverseTest', $table->getAlias());
 
+        /** @var \BEdita\Core\Model\Behavior\CustomPropertiesBehavior $behavior */
         $behavior = $table->behaviors()->get('CustomProperties');
         $result = $behavior->getAvailable();
 
@@ -206,7 +208,9 @@ class CustomPropertiesBehaviorTest extends TestCase
     public function testEmpty()
     {
         $table = TableRegistry::getTableLocator()->get('Locations');
-        $result = $table->behaviors()->get('CustomProperties')->getDefaultValues();
+        /** @var \BEdita\Core\Model\Behavior\CustomPropertiesBehavior $behavior */
+        $behavior = $table->behaviors()->get('CustomProperties');
+        $result = $behavior->getDefaultValues();
         static::assertEmpty($result);
     }
 
@@ -223,7 +227,9 @@ class CustomPropertiesBehaviorTest extends TestCase
             'default_val_property' => null,
         ];
         $user = TableRegistry::getTableLocator()->get('Files');
-        $result = $user->behaviors()->get('CustomProperties')->getDefaultValues();
+        /** @var \BEdita\Core\Model\Behavior\CustomPropertiesBehavior $behavior */
+        $behavior = $user->behaviors()->get('CustomProperties');
+        $result = $behavior->getDefaultValues();
         static::assertEquals($expected, $result);
     }
 
@@ -539,6 +545,16 @@ class CustomPropertiesBehaviorTest extends TestCase
                 [],
                 'Profiles',
                 ['number_of_friends' => ['lt' => 10]],
+            ],
+            'filter integer operator lt and gt' => [
+                [4],
+                'Profiles',
+                ['number_of_friends' => ['lt' => 50, 'gt' => 40]],
+            ],
+            'filter integer operator lt and gt no result' => [
+                [],
+                'Profiles',
+                ['number_of_friends' => ['lt' => 42, 'gt' => 40]],
             ],
             'filter integer operator in' => [
                 [4],
