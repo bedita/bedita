@@ -20,6 +20,7 @@ use Cake\Command\Command;
 use Cake\Console\Arguments;
 use Cake\Console\ConsoleIo;
 use Cake\Console\ConsoleOptionParser;
+use Cake\Database\Expression\QueryExpression;
 use Cake\ORM\Query\SelectQuery;
 
 /**
@@ -55,6 +56,7 @@ class UserExternalAuthListCommand extends Command
             ->addOption('provider', [
                 'short' => 'p',
                 'help' => 'Filter by provider name',
+                'multiple' => true,
             ]);
     }
 
@@ -66,8 +68,14 @@ class UserExternalAuthListCommand extends Command
         $query = $this->fetchTable('ExternalAuth')
             ->find()
             ->contain(['AuthProviders', 'Users']);
-        if ($args->getOption('provider') !== null) {
-            $query = $query->find('authProvider', authProvider: $args->getOption('provider'));
+        $providers = (array)$args->getArrayOption('provider');
+        if ($providers) {
+            $query = $query->innerJoinWith(
+                'AuthProviders',
+                fn(SelectQuery $q): SelectQuery => $q->where(
+                    fn(QueryExpression $exp): QueryExpression => $exp->in('AuthProviders.name', $providers),
+                ),
+            );
         }
         $user = $this->getUser($args);
         if ($user !== null) {

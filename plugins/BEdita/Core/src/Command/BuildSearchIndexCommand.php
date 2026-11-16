@@ -39,6 +39,7 @@ use Exception;
  * ```bash
  * bin/cake build_search_index
  * bin/cake build_search_index --type documents,events
+ * bin/cake build_search_index --type documents --type events
  * bin/cake build_search_index --id 1,2,3,4,5
  * bin/cake build_search_index --uname my-document,my-event
  * ```
@@ -57,14 +58,17 @@ class BuildSearchIndexCommand extends Command
         $parser->addOption('type', [
             'help' => 'Reindex only objects from one or more specific types.',
             'required' => false,
+            'multiple' => true,
         ]);
         $parser->addOption('id', [
             'help' => 'Reindex only one or more specific objects by ID.',
             'required' => false,
+            'multiple' => true,
         ]);
         $parser->addOption('uname', [
             'help' => 'Reindex only one or more specific objects by uname.',
             'required' => false,
+            'multiple' => true,
         ]);
         $parser->addOption('ancestor', [
             'help' => 'Reindex only objects with a specific ancestor folder.',
@@ -73,6 +77,7 @@ class BuildSearchIndexCommand extends Command
         $parser->addOption('adapter', [
             'help' => 'Reindex only using one or more specific adapters.',
             'required' => false,
+            'multiple' => true,
         ]);
 
         return $parser;
@@ -85,7 +90,7 @@ class BuildSearchIndexCommand extends Command
     {
         $io->out('Building search index');
         $io->out("\n" . 'This may take a while, please wait... (Ctrl+C to abort)');
-        $types = array_filter(explode(',', (string)$args->getOption('type')));
+        $types = $this->getListOption($args, 'type');
         if (empty($types)) {
             $result = $this->fetchTable('ObjectTypes')
                 ->find()
@@ -95,7 +100,7 @@ class BuildSearchIndexCommand extends Command
             $types = (array)Hash::extract($result, '{n}.name');
         }
         $summary = [];
-        $adapters = array_filter(explode(',', (string)$args->getOption('adapter')));
+        $adapters = $this->getListOption($args, 'adapter');
         foreach ($types as $type) {
             $io->verbose("\n" . sprintf('Indexing %s', $type) . "\n");
             $counter = 0;
@@ -163,6 +168,18 @@ class BuildSearchIndexCommand extends Command
     }
 
     /**
+     * Get values of a multiple option, also splitting comma separated values.
+     *
+     * @param \Cake\Console\Arguments $args The command arguments
+     * @param string $name The option name
+     * @return array<string>
+     */
+    protected function getListOption(Arguments $args, string $name): array
+    {
+        return array_values(array_filter(explode(',', implode(',', (array)$args->getArrayOption($name)))));
+    }
+
+    /**
      * Get objects by type and return an iterable.
      *
      * @param \Cake\Console\Arguments $args The command arguments
@@ -174,13 +191,15 @@ class BuildSearchIndexCommand extends Command
         $table = $this->fetchTable('Objects');
         $query = $table->find()->orderByAsc($table->aliasField('id'))->limit(200);
         $query = $query->find('type', value: [$type]);
-        $id = array_filter(explode(',', (string)$args->getOption('id')));
+        $id = $this->getListOption($args, 'id');
         if (!empty($id)) {
-            $query = $query->where([$table->aliasField('id') . ' IN' => $id]);
+            $query = $query->where(fn(QueryExpression $exp): QueryExpression => $exp->in($table->aliasField('id'), $id));
         }
-        $uname = array_filter(explode(',', (string)$args->getOption('uname')));
+        $uname = $this->getListOption($args, 'uname');
         if (!empty($uname)) {
-            $query = $query->where([$table->aliasField('uname') . ' IN' => $uname]);
+            $query = $query->where(
+                fn(QueryExpression $exp): QueryExpression => $exp->in($table->aliasField('uname'), $uname),
+            );
         }
         $ancestor = (string)$args->getOption('ancestor');
         if (!empty($ancestor)) {

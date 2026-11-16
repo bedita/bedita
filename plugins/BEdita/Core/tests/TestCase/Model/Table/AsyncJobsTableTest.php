@@ -363,6 +363,27 @@ class AsyncJobsTableTest extends TestCase
     }
 
     /**
+     * Test finder for pending jobs sorted by priority and filtering by multiple service types.
+     *
+     * @return void
+     */
+    public function testFindPriorityFilterMultipleServices()
+    {
+        $expected = [
+            '427ece75-71fb-4aca-bfab-1214cd98495a' => [
+                'user_id' => '99999',
+            ],
+            'e533e1cf-b12c-4dbe-8fb7-b25fafbd2f76' => [
+                'key' => 'value',
+            ],
+        ];
+
+        $actual = $this->AsyncJobs->find('priority', service: ['example2', 'signup'])->find('list')->toArray();
+
+        static::assertSame($expected, $actual);
+    }
+
+    /**
      * Test finder for pending jobs sorted by priority and filtering by priority.
      *
      * @return void

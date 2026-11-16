@@ -91,6 +91,19 @@ class CustomPropsCommandTest extends TestCase
     }
 
     /**
+     * Test `execute` with multiple `id` and `type` options
+     *
+     * @return void
+     */
+    public function testMultipleOptionsExecute(): void
+    {
+        $this->exec('custom_props --type users -t documents --id 1 --id 5');
+        $this->assertOutputContains('Updated 2 users without errors');
+        $this->assertOutputContains('Updated 0 documents without errors');
+        $this->assertExitSuccess();
+    }
+
+    /**
      * Test `execute` method
      *
      * @return void
