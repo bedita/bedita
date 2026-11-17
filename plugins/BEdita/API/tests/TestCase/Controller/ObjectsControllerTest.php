@@ -4205,11 +4205,15 @@ class ObjectsControllerTest extends IntegrationTestCase
     public function testIndexFilterParent(): void
     {
         $this->configRequestHeaders('GET', $this->getUserAuthHeader());
-        $this->get('/objects?filter[parent]=11'); // 11 is the root
+        $this->get('/objects?filter[parent]=11');
         $this->assertResponseCode(200);
 
         $this->configRequestHeaders('GET', $this->getUserAuthHeader());
-        $this->get('/documents?filter[parent]=11'); // 11 is the root
+        $this->get('/documents?filter[parent]=11');
+        $this->assertResponseCode(200);
+
+        $this->configRequestHeaders('GET', $this->getUserAuthHeader());
+        $this->get('/profiles?filter[parent]=12');
         $this->assertResponseCode(200);
     }
 }
