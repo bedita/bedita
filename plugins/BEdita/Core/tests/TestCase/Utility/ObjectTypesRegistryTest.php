@@ -88,9 +88,9 @@ class ObjectTypesRegistryTest extends TestCase
                 $this->describe($actual),
                 sprintf('Object type "%s" differs', $objectType->name),
             );
-            static::assertSame($actual, ObjectTypesRegistry::getObjectType($objectType->name));
-            static::assertSame($actual, ObjectTypesRegistry::getObjectType($objectType->singular));
-            static::assertSame($actual, ObjectTypesRegistry::getObjectType(ucfirst($objectType->name)));
+            static::assertSame($actual->id, ObjectTypesRegistry::getObjectType($objectType->name)?->id);
+            static::assertSame($actual->id, ObjectTypesRegistry::getObjectType($objectType->singular)?->id);
+            static::assertSame($actual->id, ObjectTypesRegistry::getObjectType(ucfirst($objectType->name))?->id);
         }
     }
 
@@ -163,10 +163,12 @@ class ObjectTypesRegistryTest extends TestCase
         static::assertSame($expected, $actual);
         static::assertSame([], ObjectTypesRegistry::getProperties(99999));
 
-        $propertyTypes = ObjectTypesRegistry::getPropertyTypes();
-        static::assertArrayHasKey('string', $propertyTypes);
-        static::assertSame($propertyTypes['string'], ObjectTypesRegistry::getPropertyType($propertyTypes['string']->id));
+        $string = ObjectTypesRegistry::getPropertyTypeByName('string');
+        static::assertNotNull($string);
+        static::assertSame('string', $string->name);
+        static::assertEquals($string->toArray(), ObjectTypesRegistry::getPropertyType($string->id)?->toArray());
         static::assertNull(ObjectTypesRegistry::getPropertyType(99999));
+        static::assertNull(ObjectTypesRegistry::getPropertyTypeByName('not_a_type'));
     }
 
     /**
@@ -180,13 +182,13 @@ class ObjectTypesRegistryTest extends TestCase
         static::assertNotNull(Cache::read(ObjectTypesRegistry::CACHE_KEY, ObjectTypesTable::CACHE_CONFIG));
 
         Cache::clear(ObjectTypesTable::CACHE_CONFIG);
-        static::assertSame($document, ObjectTypesRegistry::getObjectType('documents'));
+        static::assertEquals($document->toArray(), ObjectTypesRegistry::getObjectType('documents')?->toArray());
         static::assertNull(Cache::read(ObjectTypesRegistry::CACHE_KEY, ObjectTypesTable::CACHE_CONFIG));
 
         ObjectTypesRegistry::reset();
         $reloaded = ObjectTypesRegistry::getObjectType('documents');
-        static::assertNotSame($document, $reloaded);
-        static::assertEquals($document->toArray(), $reloaded->toArray());
+        static::assertNotNull(Cache::read(ObjectTypesRegistry::CACHE_KEY, ObjectTypesTable::CACHE_CONFIG));
+        static::assertEquals($document->toArray(), $reloaded?->toArray());
     }
 
     /**
@@ -196,11 +198,43 @@ class ObjectTypesRegistryTest extends TestCase
      */
     public function testClear(): void
     {
-        $document = ObjectTypesRegistry::getObjectType('documents');
+        ObjectTypesRegistry::getObjectType('documents');
 
         ObjectTypesRegistry::clear();
-
         static::assertNull(Cache::read(ObjectTypesRegistry::CACHE_KEY, ObjectTypesTable::CACHE_CONFIG));
-        static::assertNotSame($document, ObjectTypesRegistry::getObjectType('documents'));
+
+        // Data kept in memory would be served without writing cache again, see `testInMemory()`.
+        ObjectTypesRegistry::getObjectType('documents');
+        static::assertNotNull(Cache::read(ObjectTypesRegistry::CACHE_KEY, ObjectTypesTable::CACHE_CONFIG));
+    }
+
+    /**
+     * Test that changes to returned entities do not leak into the registry.
+     *
+     * @return void
+     */
+    public function testReturnsCopies(): void
+    {
+        $document = ObjectTypesRegistry::getObjectType('documents');
+        $name = $document->name;
+        $document->name = 'changed';
+        static::assertSame($name, ObjectTypesRegistry::getObjectType('documents')?->name);
+
+        $properties = ObjectTypesRegistry::getProperties(2);
+        static::assertNotEmpty($properties);
+        $name = $properties[0]->name;
+        $properties[0]->name = 'changed';
+        static::assertSame($name, ObjectTypesRegistry::getProperties(2)[0]->name);
+
+        $propertyType = ObjectTypesRegistry::getPropertyTypeByName('string');
+        $id = $propertyType->id;
+        $propertyType->name = 'changed';
+        static::assertSame('string', ObjectTypesRegistry::getPropertyTypeByName('string')?->name);
+        static::assertSame('string', ObjectTypesRegistry::getPropertyType($id)?->name);
+
+        $propertyType = ObjectTypesRegistry::getPropertyType($id);
+        $propertyType->name = 'changed';
+        static::assertSame('string', ObjectTypesRegistry::getPropertyType($id)?->name);
+        static::assertSame('string', ObjectTypesRegistry::getPropertyTypeByName('string')?->name);
     }
 }

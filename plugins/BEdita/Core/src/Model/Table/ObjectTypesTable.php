@@ -205,8 +205,7 @@ class ObjectTypesTable extends Table
                 ));
             }
             if ($finder === 'all' && $cache === null && $cacheKey === null && $args === []) {
-                // Registry entities are shared: return a copy, so that callers can safely modify it.
-                return clone $objectType;
+                return $objectType;
             }
 
             $primaryKey = $objectType->id;

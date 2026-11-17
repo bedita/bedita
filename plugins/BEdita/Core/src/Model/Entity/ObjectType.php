@@ -241,7 +241,7 @@ class ObjectType extends Entity implements JsonApiSerializable, EventDispatcherI
             throw new RecordNotFoundException(sprintf('Record not found in table `%s`', 'object_types'));
         }
 
-        return clone $parent;
+        return $parent;
     }
 
     /**

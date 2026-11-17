@@ -30,7 +30,7 @@ use Cake\Utility\Inflector;
  *
  * All the data is loaded at once with a few queries and stored in object types cache
  * under a single key, so that a request needs a single cache read to resolve every object type.
- * Entities returned by this class are shared, callers that need to modify them must clone them first.
+ * Returned entities are shallow copies: nested relations, object types and join data are shared.
  *
  * @since 6.14.0
  */
@@ -91,7 +91,9 @@ class ObjectTypesRegistry
             }
         }
 
-        return $registry['objectTypes'][(int)$key] ?? null;
+        $objectType = $registry['objectTypes'][(int)$key] ?? null;
+
+        return $objectType === null ? null : clone $objectType;
     }
 
     /**
@@ -102,7 +104,7 @@ class ObjectTypesRegistry
      */
     public static function getProperties(int $objectTypeId): array
     {
-        return static::registry()['properties'][$objectTypeId] ?? [];
+        return array_map(fn(Property $p): Property => clone $p, static::registry()['properties'][$objectTypeId] ?? []);
     }
 
     /**
@@ -113,17 +115,22 @@ class ObjectTypesRegistry
      */
     public static function getPropertyType(int $id): ?PropertyType
     {
-        return static::registry()['propertyTypes'][$id] ?? null;
+        $propertyType = static::registry()['propertyTypes'][$id] ?? null;
+
+        return $propertyType === null ? null : clone $propertyType;
     }
 
     /**
-     * Get all property types, indexed by name.
+     * Get a property type by its name.
      *
-     * @return array<string, \BEdita\Core\Model\Entity\PropertyType>
+     * @param string $name Property type name.
+     * @return \BEdita\Core\Model\Entity\PropertyType|null
      */
-    public static function getPropertyTypes(): array
+    public static function getPropertyTypeByName(string $name): ?PropertyType
     {
-        return static::registry()['propertyTypesByName'];
+        $propertyType = static::registry()['propertyTypesByName'][$name] ?? null;
+
+        return $propertyType === null ? null : clone $propertyType;
     }
 
     /**

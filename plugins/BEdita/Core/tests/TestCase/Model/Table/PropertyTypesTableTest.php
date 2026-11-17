@@ -155,7 +155,7 @@ class PropertyTypesTableTest extends TestCase
     public function testInvalidateCacheAfterSave()
     {
         ObjectTypesRegistry::reset();
-        ObjectTypesRegistry::getPropertyTypes();
+        ObjectTypesRegistry::getPropertyTypeByName('string');
 
         static::assertNotNull(Cache::read(ObjectTypesRegistry::CACHE_KEY, ObjectTypesTable::CACHE_CONFIG));
 
@@ -164,7 +164,7 @@ class PropertyTypesTableTest extends TestCase
         $this->PropertyTypes->save($propertyType);
 
         static::assertNull(Cache::read(ObjectTypesRegistry::CACHE_KEY, ObjectTypesTable::CACHE_CONFIG));
-        static::assertArrayHasKey('gustavo', ObjectTypesRegistry::getPropertyTypes());
+        static::assertNotNull(ObjectTypesRegistry::getPropertyTypeByName('gustavo'));
     }
 
     /**
@@ -175,7 +175,7 @@ class PropertyTypesTableTest extends TestCase
     public function testInvalidateCacheAfterDelete()
     {
         ObjectTypesRegistry::reset();
-        ObjectTypesRegistry::getPropertyTypes();
+        ObjectTypesRegistry::getPropertyTypeByName('string');
 
         static::assertNotNull(Cache::read(ObjectTypesRegistry::CACHE_KEY, ObjectTypesTable::CACHE_CONFIG));
 

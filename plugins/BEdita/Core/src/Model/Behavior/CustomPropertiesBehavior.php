@@ -115,7 +115,7 @@ class CustomPropertiesBehavior extends Behavior
         foreach ($objectType->getFullInheritanceChain() as $type) {
             foreach (ObjectTypesRegistry::getProperties($type->id) as $property) {
                 if ($property->enabled && !$property->is_static) {
-                    $this->available[$property->name] ??= clone $property;
+                    $this->available[$property->name] ??= $property;
                 }
             }
         }

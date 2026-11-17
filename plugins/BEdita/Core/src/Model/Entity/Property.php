@@ -103,7 +103,7 @@ class Property extends Entity implements JsonApiSerializable
             return null;
         }
 
-        return $this->_fields['property_type'] = clone $propertyType;
+        return $this->_fields['property_type'] = $propertyType;
     }
 
     /**
@@ -128,9 +128,8 @@ class Property extends Entity implements JsonApiSerializable
      */
     protected function _setPropertyTypeName(?string $propertyType): ?string
     {
-        $propertyTypes = ObjectTypesRegistry::getPropertyTypes();
-
-        if ($propertyType === null || empty($propertyTypes[$propertyType])) {
+        $type = $propertyType === null ? null : ObjectTypesRegistry::getPropertyTypeByName($propertyType);
+        if ($type === null) {
             // Unknown property type.
             $this->property_type = null;
             $this->property_type_id = null;
@@ -138,7 +137,7 @@ class Property extends Entity implements JsonApiSerializable
             return null;
         }
 
-        $this->property_type = clone $propertyTypes[(string)$propertyType];
+        $this->property_type = $type;
         $this->property_type_id = $this->property_type->id;
 
         return $this->property_type->name;
