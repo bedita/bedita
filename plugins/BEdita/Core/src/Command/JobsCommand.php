@@ -74,6 +74,7 @@ class JobsCommand extends Command
                 'short' => 's',
                 'required' => false,
                 'default' => null,
+                'multiple' => true,
             ]);
     }
 
@@ -157,7 +158,7 @@ class JobsCommand extends Command
             ->find(
                 'priority',
                 priority: $this->args->getOption('min-priority'),
-                service: $this->args->getOption('service'),
+                service: $this->args->getArrayOption('service'),
             );
         if ($this->args->getOption('limit') !== null) {
             $query = $query->limit((int)$this->args->getOption('limit'));

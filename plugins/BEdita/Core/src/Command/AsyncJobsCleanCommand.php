@@ -18,6 +18,7 @@ use Cake\Command\Command;
 use Cake\Console\Arguments;
 use Cake\Console\ConsoleIo;
 use Cake\Console\ConsoleOptionParser;
+use Cake\Database\Expression\QueryExpression;
 use Cake\I18n\Date;
 use Cake\ORM\Locator\LocatorAwareTrait;
 
@@ -41,6 +42,7 @@ class AsyncJobsCleanCommand extends Command
             ->addOption('service', [
                 'help' => 'Delete async jobs for this service',
                 'required' => false,
+                'multiple' => true,
             ]);
     }
 
@@ -50,16 +52,23 @@ class AsyncJobsCleanCommand extends Command
     public function execute(Arguments $args, ConsoleIo $io)
     {
         $since = $args->getOption('since') ?? '-1 month';
-        $service = $args->getOption('service');
+        $services = (array)$args->getArrayOption('service');
         $message = 'Cleaning async jobs, since ' . $since;
-        $conditions = ['created <' => new Date($since)];
-        if ($service) {
-            $conditions['service'] = $service;
-            $message .= ', for service ' . $service;
+        if ($services) {
+            $message .= ', for service ' . implode(', ', $services);
         }
         $io->info($message);
         $this->log($message, 'info');
-        $deleted = $this->fetchTable('AsyncJobs')->deleteAll($conditions);
+        $deleted = $this->fetchTable('AsyncJobs')->deleteAll(
+            function (QueryExpression $exp) use ($since, $services): QueryExpression {
+                $exp = $exp->lt('created', new Date($since));
+                if ($services) {
+                    $exp = $exp->in('service', $services);
+                }
+
+                return $exp;
+            },
+        );
         $this->log(sprintf('Deleted %d async jobs', $deleted), 'info');
         $io->success(sprintf('Deleted %d async jobs', $deleted));
         $io->info('Done');
