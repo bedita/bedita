@@ -16,6 +16,7 @@ namespace BEdita\Core\Utility;
 
 use Cake\Core\Configure;
 use Cake\Core\Plugin;
+use Cake\Database\Connection;
 use Cake\Utility\Hash;
 
 /**
@@ -78,6 +79,14 @@ class System
         if (!$check['success']) {
             $env = 'error';
             $errors['db'] = $check['error'];
+        }
+
+        if (Database::hasReplica()) {
+            $check = Database::connectionTest('default', Connection::ROLE_READ);
+            if (!$check['success']) {
+                $env = 'error';
+                $errors['db_read'] = $check['error'];
+            }
         }
 
         $res = ['environment' => $env];

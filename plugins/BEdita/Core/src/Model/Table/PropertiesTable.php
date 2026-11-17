@@ -19,9 +19,9 @@ use BEdita\Core\Model\Entity\Property;
 use BEdita\Core\Model\Entity\StaticProperty;
 use BEdita\Core\Model\Validation\Validation;
 use BEdita\Core\Search\SimpleSearchTrait;
+use Cake\Collection\CollectionInterface;
 use Cake\Database\Expression\QueryExpression;
 use Cake\Database\Query\SelectQuery as DatabaseSelectQuery;
-use Cake\Datasource\ResultSetInterface;
 use Cake\Event\EventInterface;
 use Cake\ORM\Query\SelectQuery;
 use Cake\ORM\RulesChecker;
@@ -237,7 +237,7 @@ class PropertiesTable extends Table
 
         return $query
             ->from([$this->getAlias() => $from], true)
-            ->formatResults(function (ResultSetInterface $results) {
+            ->formatResults(function (CollectionInterface $results) {
                 return $results->map(function ($row) {
                     if (!($row instanceof Property) || empty($row->id) || !CakeValidation::uuid($row->id)) {
                         return $row;

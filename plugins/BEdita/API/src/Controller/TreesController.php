@@ -14,6 +14,7 @@ declare(strict_types=1);
  */
 namespace BEdita\API\Controller;
 
+use BEdita\Core\Database\Connection;
 use BEdita\Core\Model\Action\GetObjectAction;
 use BEdita\Core\Model\Entity\ObjectType;
 use BEdita\Core\Model\Entity\Tree;
@@ -112,16 +113,22 @@ class TreesController extends AppController
     {
         $this->request->allowMethod(['get']);
 
-        // populate idList, unameList
-        $this->pathDetails($path);
+        $entity = Connection::withPrimaryFallback(function () use ($path): EntityInterface {
+            $this->pathInfo = ['ids' => [], 'unames' => [], 'types' => []];
 
-        $this->loadTreesNode();
-        $parents = $this->parents();
+            // populate idList, unameList
+            $this->pathDetails($path);
 
-        $ids = array_values((array)$this->pathInfo['ids']);
-        $entity = $this->loadObject(end($ids));
+            $this->loadTreesNode();
+            $parents = $this->parents();
 
-        $this->checkPath($entity, $parents);
+            $ids = array_values((array)$this->pathInfo['ids']);
+            $entity = $this->loadObject(end($ids));
+
+            $this->checkPath($entity, $parents);
+
+            return $entity;
+        });
 
         $entity->set('uname_path', sprintf('/%s', implode('/', $this->pathInfo['unames'])));
         $entity->setAccess('uname_path', false);
@@ -191,7 +198,9 @@ class TreesController extends AppController
      */
     protected function objectDetails(array $condition): array
     {
-        return (array)$this->Objects->unhydratedFind('available')
+        return (array)$this->Objects->unhydratedFind()
+            ->useReadRole()
+            ->find('available')
             ->where($condition)
             ->select(['id', 'uname', 'object_type_id'])
             ->first();
@@ -209,7 +218,9 @@ class TreesController extends AppController
             return [];
         }
 
-        return $this->Trees->find('pathNodes', objectId: $parentId)
+        return $this->Trees->find()
+            ->useReadRole()
+            ->find('pathNodes', objectId: $parentId)
             ->find('list', keyField: 'id', valueField: 'object_id')
             ->toArray();
     }
@@ -228,6 +239,7 @@ class TreesController extends AppController
 
         /** @var \BEdita\Core\Model\Entity\Tree|null $node */
         $node = $this->Trees->find()
+            ->useReadRole()
             ->where([
                 'object_id' => $id,
                 'parent_id IS' => $parentId,

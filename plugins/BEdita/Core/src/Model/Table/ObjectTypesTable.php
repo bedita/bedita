@@ -483,6 +483,7 @@ class ObjectTypesTable extends Table
             // Obtain Nested-Set-Model left and right counters for the explicitly-linked object types, that are obtained
             // using the `$conditionsBuilder` built before.
             $nsmCounters = $this->find()
+                ->setConnectionRole($query->getConnectionRole())
                 ->select(['tree_left', 'tree_right'])
                 ->where($conditionsBuilder)
                 ->enableHydration(false)

@@ -16,6 +16,7 @@ namespace BEdita\Core\Model\Table;
 
 use ArrayAccess;
 use BEdita\Core\State\CurrentApplication;
+use Cake\Cache\Cache;
 use Cake\Database\Expression\ComparisonExpression;
 use Cake\Database\Expression\QueryExpression;
 use Cake\ORM\Query\SelectQuery;
@@ -266,11 +267,12 @@ class EndpointPermissionsTable extends Table
         $query = $this->find('byApplication', applicationId: $applicationId)
             ->find('byEndpoint', endpointIds: $endpointIds);
 
-        /** @var \BEdita\Core\Model\Behavior\QueryCacheBehavior $queryCacheBehavior */
-        $queryCacheBehavior = $this->getBehavior('QueryCache');
-
-        return $queryCacheBehavior->queryCache($query, $key)
-            ->count();
+        // `SelectQuery::count()` bypasses the query result cache.
+        return (int)Cache::remember(
+            $key,
+            fn(): int => $query->count(),
+            $this->getBehavior('QueryCache')->getConfig('cacheConfig'),
+        );
     }
 
     /**
