@@ -174,7 +174,7 @@ return [
             'prefix' => 'bedita_object_types_',
             'path' => CACHE . 'object_types/',
             'serialize' => true,
-            'duration' => '+1 year',
+            'duration' => '+6 hours',
             'url' => env('CACHE_BEDITAOBJECTTYPES_URL', null),
         ],
     ],
