@@ -251,7 +251,7 @@ class HistoryControllerTest extends IntegrationTestCase
             'links' => [
                 'self' => 'http://api.example.com/history/1/user',
                 'home' => 'http://api.example.com/home',
-                'available' => null,
+                'available' => 'http://api.example.com/users',
             ],
             'meta' => [
                 'schema' => [
