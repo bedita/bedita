@@ -18,6 +18,7 @@ namespace BEdita\Core\Model\Behavior;
 use BEdita\Core\Exception\BadFilterException;
 use BEdita\Core\Model\Entity\ObjectEntity;
 use BEdita\Core\Model\Validation\Validation;
+use BEdita\Core\ORM\QueryFilterTrait;
 use Cake\Collection\CollectionInterface;
 use Cake\Database\Driver\Mysql;
 use Cake\Database\Driver\Postgres;
@@ -37,6 +38,8 @@ use Cake\Utility\Hash;
  */
 class CustomPropertiesBehavior extends Behavior
 {
+    use QueryFilterTrait;
+
     /**
      * @inheritDoc
      */
@@ -323,47 +326,129 @@ class CustomPropertiesBehavior extends Behavior
             throw new BadFilterException(__d('bedita', 'Invalid data'));
         }
 
-        foreach ($options as $key => &$value) {
+        $conditions = $this->setupConditions($options, $driver);
+
+        return $query->where(function (QueryExpression $exp) use ($conditions, $query, $driver) {
+
+            return $exp->and(array_map(function ($key) use ($conditions, $query, $driver) {
+                $field = $this->table()->aliasField($this->getConfig('field'));
+                $fieldExp = $this->expressionField($field, $key, $driver);
+                $operation = $conditions[$key];
+                $operator = key($operation);
+                $value = $operation[$operator];
+
+                return $this->operatorExpression($query->newExpr(), $operator, $fieldExp, $value);
+            }, array_keys($conditions)));
+        });
+    }
+
+    /**
+     * Setup conditions for custom properties filtering.
+     * An array of conditions is returned with this structure:
+     *
+     * ```
+     * [
+     *     <property1> => [<operator1> => <expressionValue1>],
+     *     <property2> => [<operator2> => <expressionValue2>],
+     * ]
+     * ...
+     *
+     * Where `<expressionValue1>` and `<expressionValue2>` are database driver specific expressions.
+     *
+     * @param array $options Filter options.
+     * @param object $driver Database driver.
+     * @return array
+     */
+    protected function setupConditions(array $options, object $driver): array
+    {
+        $conditions = [];
+        $available = $this->getAvailable();
+        foreach ($options as $key => $value) {
+            if ($value === null) {
+                $conditions[$key] = ['null' => true];
+                continue;
+            }
+            $in = [];
             /** @var \BEdita\Core\Model\Entity\Property $property */
             $property = Hash::get($available, $key);
-            $value = $this->formatValue($value, $property->property_type->params);
+            $schema = [];
+            if ($property && $property->property_type) {
+                $schema = (array)$property->property_type->params;
+            }
+
+            if (!is_array($value)) {
+                if (is_string($value) && strpos($value, ',') !== false) {
+                    $value = explode(',', $value);
+                } else {
+                    $conditions[$key] = ['eq' => $this->expressionValue($value, $schema, $driver)];
+                    continue;
+                }
+            }
+            foreach ($value as $operator => $v) {
+                if (is_numeric($operator)) {
+                    $in[] = $this->expressionValue($v, $schema, $driver);
+                    continue;
+                }
+
+                if ($operator === 'in' || $operator === 'notin' || $operator === 'nin') {
+                    $v = is_array($v) ? $v : [$v];
+                    $expValue = array_map(fn($i) => $this->expressionValue($i, $schema, $driver), $v);
+                } else {
+                    $expValue = $this->expressionValue($v, $schema, $driver);
+                }
+                $conditions[$key] = [$operator => $expValue];
+            }
+
+            if (!empty($in)) {
+                $conditions[$key] = ['in' => $in];
+            }
         }
-        unset($value);
 
-        return $query->where(function (QueryExpression $exp, Query $query) use ($options, $driver) {
-            $field = $this->table()->aliasField($this->getConfig('field'));
+        return $conditions;
+    }
 
-            return $exp->and(array_map(
-                function ($key, $value) use ($field, $query, $driver) {
-                    if ($driver instanceof Mysql) {
-                        // MySQL syntax using JSON_EXTRACT and JSON_UNQUOTE
-                        return $query->expr()->eq(
-                            new FunctionExpression(
-                                'JSON_UNQUOTE',
-                                [
-                                    new FunctionExpression(
-                                        'JSON_EXTRACT',
-                                        [$field => 'identifier', sprintf('$.%s', $key)]
-                                    ),
-                                ]
-                            ),
-                            new FunctionExpression('JSON_UNQUOTE', [json_encode($value)]) // trick to normalize values compared
-                        );
-                    }
-                    // PostgreSQL syntax with native JSON column using ->> operator
-                    // For PostgreSQL's ->> operator, we need to handle value formatting correctly
-                    $compareValue = is_string($value) ? $value : json_encode($value); // Use json_encode to handle formatting
-                    [$key, $type] = $query->getConnection()->cast($key, 'string');
+    /**
+     * Get expression for a property field.
+     *
+     * @param string $field Field name.
+     * @param string $key Property name.
+     * @param object $driver Database driver.
+     * @return \Cake\Database\Expression\FunctionExpression|string
+     */
+    protected function expressionField(string $field, string $key, object $driver)
+    {
+        if ($driver instanceof Mysql) {
+            return new FunctionExpression(
+                'JSON_UNQUOTE',
+                [
+                    new FunctionExpression(
+                        'JSON_EXTRACT',
+                        [$field => 'identifier', sprintf('$.%s', $key)],
+                    ),
+                ],
+            );
+        }
 
-                    // Use ->> operator directly on JSON column
-                    return $query->expr()->eq(
-                        sprintf('%s->>%s', $field, $query->getConnection()->getDriver()->quote($key, $type)),
-                        $compareValue
-                    );
-                },
-                array_keys($options),
-                $options
-            ));
-        });
+        // Postgres field
+        return sprintf('%s->>%s', $field, $driver->quote($key));
+    }
+
+    /**
+     * Get expression value for a property value.
+     *
+     * @param mixed $value Property value.
+     * @param array $schema Property JSON Schema.
+     * @param object $driver Database driver.
+     * @return \Cake\Database\Expression\FunctionExpression|string
+     */
+    protected function expressionValue(mixed $value, array $schema, object $driver)
+    {
+        $value = $this->formatValue($value, $schema);
+        $value = is_string($value) ? $value : json_encode($value);
+        if ($driver instanceof Mysql) {
+            return new FunctionExpression('JSON_UNQUOTE', [$value]);
+        }
+
+        return $value;
     }
 }
