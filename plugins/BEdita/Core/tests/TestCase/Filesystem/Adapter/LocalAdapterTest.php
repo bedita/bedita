@@ -17,6 +17,7 @@ namespace BEdita\Core\Test\TestCase\Filesystem\Adapter;
 use BEdita\Core\Filesystem\Adapter\LocalAdapter;
 use Cake\Routing\Router;
 use Cake\TestSuite\TestCase;
+use League\Flysystem\Config;
 use League\Flysystem\Local\LocalFilesystemAdapter;
 use PHPUnit\Framework\Attributes\CoversClass;
 
@@ -85,5 +86,34 @@ class LocalAdapterTest extends TestCase
         $innerAdapter = $adapter->getInnerAdapter();
 
         static::assertInstanceOf(LocalFilesystemAdapter::class, $innerAdapter);
+    }
+
+    /**
+     * Directories created implicitly while writing a file (e.g. nested thumbnail
+     * directories) must use the adapter's configured default visibility, not always
+     * fall back to "private", regardless of the `permissions` configuration.
+     *
+     * @return void
+     */
+    public function testWriteUsesDefaultVisibilityForImplicitDirectories()
+    {
+        $config = [
+            'path' => self::FILES_PATH,
+            'permissions' => [
+                'dir' => ['public' => 0755, 'private' => 0700],
+            ],
+        ];
+
+        $adapter = new LocalAdapter();
+        $adapter->initialize($config);
+
+        $innerAdapter = $adapter->getInnerAdapter();
+        $innerAdapter->write('nested/file.txt', 'content', new Config());
+
+        $permissions = fileperms(self::FILES_PATH . DS . 'nested') & 0777;
+        static::assertSame(0755, $permissions);
+
+        unlink(self::FILES_PATH . DS . 'nested' . DS . 'file.txt');
+        rmdir(self::FILES_PATH . DS . 'nested');
     }
 }
