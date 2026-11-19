@@ -406,6 +406,12 @@ trait JsonApiTrait
         $associations = $Table->associations();
         $btmJunctionAliases = array_map(
             function (BelongsToMany $val) {
+                // avoid `junction()` when possible: it generates (and validates) associations on junction and target tables
+                $through = $val->getThrough();
+                if ($through instanceof Table) {
+                    return $through->getAlias();
+                }
+
                 return $val->junction()->getAlias();
             },
             $associations->getByType('BelongsToMany'),
