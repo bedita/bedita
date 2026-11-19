@@ -107,10 +107,15 @@ class GlideGenerator extends ThumbnailGenerator
      */
     protected function makeThumbnail(Stream $stream, array $options = []): string
     {
-        $source = (string)$stream->contents;
+        $tmpfile = tempnam(sys_get_temp_dir(), 'bedita_thumb_');
+        file_put_contents($tmpfile, (string)$stream->contents);
 
-        return $this->getGlideApi()
-            ->run($source, $options);
+        try {
+            return $this->getGlideApi()
+                ->run($tmpfile, $options);
+        } finally {
+            unlink($tmpfile);
+        }
     }
 
     /**
