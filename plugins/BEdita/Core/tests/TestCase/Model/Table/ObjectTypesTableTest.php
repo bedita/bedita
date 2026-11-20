@@ -473,6 +473,23 @@ class ObjectTypesTableTest extends TestCase
         $this->ObjectTypes->get('news_item');
     }
 
+    public function testGetSelectCache(): void
+    {
+        // a restricted `select` (e.g. from TreeBehavior::findPath) must not poison the full entity cache
+        $partial = $this->ObjectTypes->get('documents', select: ['tree_left', 'tree_right']);
+        static::assertNull($partial->get('name'));
+
+        $entity = $this->ObjectTypes->get('documents', contain: []);
+        static::assertSame('documents', $entity->get('name'));
+        static::assertSame('document', $entity->get('singular'));
+        static::assertTrue($entity->has('left_relations'));
+        static::assertTrue($entity->has('right_relations'));
+
+        $partial = $this->ObjectTypes->get('documents', select: ['tree_left', 'tree_right']);
+        static::assertNull($partial->get('name'));
+        static::assertNotNull($partial->get('tree_left'));
+    }
+
     /**
      * Data provider for `testFindByRelation` test case.
      *

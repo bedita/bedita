@@ -211,11 +211,12 @@ class ObjectTypesTable extends Table
             $primaryKey = $objectType->id;
         }
 
-        if ($cacheKey === null) {
+        // a partial entity (custom `select`) must never be cached under the key of the full one
+        if ($cacheKey === null && empty($args['select'])) {
             $cacheKey = sprintf('id_%d_rel', $primaryKey);
         }
 
-        if ($cache === null) {
+        if ($cache === null && $cacheKey !== null) {
             $cache = self::CACHE_CONFIG;
         }
 
@@ -226,8 +227,10 @@ class ObjectTypesTable extends Table
                 $args['select'][] = $this->aliasField('id');
             }
         }
-        $args['cache'] = $cache;
-        $args['cacheKey'] = $cacheKey;
+        if ($cache !== null) {
+            $args['cache'] = $cache;
+            $args['cacheKey'] = $cacheKey;
+        }
 
         return parent::get($primaryKey, ...$args);
     }
