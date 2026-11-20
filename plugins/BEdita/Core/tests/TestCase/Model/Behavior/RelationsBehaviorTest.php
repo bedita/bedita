@@ -14,12 +14,14 @@ declare(strict_types=1);
  */
 namespace BEdita\Core\Test\TestCase\Model\Behavior;
 
+use BEdita\Core\Exception\BadFilterException;
 use BEdita\Core\Model\Behavior\RelationsBehavior;
 use BEdita\Core\Model\Entity\Relation;
 use Cake\ORM\Association\BelongsToMany;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * {@see \BEdita\Core\Model\Behavior\RelationsBehavior} Test Case
@@ -37,6 +39,7 @@ class RelationsBehaviorTest extends TestCase
         'plugin.BEdita/Core.Relations',
         'plugin.BEdita/Core.RelationTypes',
         'plugin.BEdita/Core.Objects',
+        'plugin.BEdita/Core.ObjectRelations',
         'plugin.BEdita/Core.Profiles',
         'plugin.BEdita/Core.Locations',
     ];
@@ -126,5 +129,119 @@ class RelationsBehaviorTest extends TestCase
         $after = count($FakeArticles->associations()->keys());
 
         static::assertSame($before, $after);
+    }
+
+    /**
+     * Data provider for `testHasRelation` method.
+     *
+     * @return array
+     */
+    public static function hasRelationProvider(): array
+    {
+        return [
+            'hasRelation' => [
+                [4],
+                'Profiles',
+                ['inverse_test_simple' => true],
+            ],
+            'hasRelationStringTrue' => [
+                [4],
+                'Profiles',
+                ['inverse_test_simple' => 'true'],
+            ],
+            'hasRelationIntTrue' => [
+                [4],
+                'Profiles',
+                ['inverse_test_simple' => 1],
+            ],
+            'hasRelationNumericStringTrue' => [
+                [4],
+                'Profiles',
+                ['inverse_test_simple' => '1'],
+            ],
+            'hasRelation2' => [
+                [2, 3],
+                'Documents',
+                ['test' => true],
+            ],
+            'hasRelationMulti' => [
+                [2],
+                'Documents',
+                ['test' => true, 'test_simple' => true, 'test_defaults' => true],
+            ],
+            'notMatchRelation' => [
+                [6, 7],
+                'Documents',
+                ['test' => false],
+            ],
+            'notMatchRelationStringFalse' => [
+                [6, 7],
+                'Documents',
+                ['test' => 'false'],
+            ],
+            'notMatchRelationIntFalse' => [
+                [6, 7],
+                'Documents',
+                ['test' => 0],
+            ],
+            'notMatchRelationNumericStringFalse' => [
+                [6, 7],
+                'Documents',
+                ['test' => '0'],
+            ],
+            'matchAndNotMatchRelations' => [
+                [7],
+                'Documents',
+                ['test' => false, 'inverse_test' => true],
+            ],
+            'invalidRelation' => [
+                new BadFilterException('Invalid value for "relation" parameter using hasRelation finder'),
+                'Documents',
+                ['test' => 'gustavo'],
+            ],
+            'numericKey' => [
+                new BadFilterException('Invalid value for "relation" parameter using hasRelation finder'),
+                'Documents',
+                [0 => true],
+            ],
+        ];
+    }
+
+    /**
+     * Test `findHasRelation` method.
+     *
+     * @param array<int>|\BEdita\Core\Exception\BadFilterException $expected The expected list of IDs.
+     * @param string $table The table to check for relations.
+     * @param array<string, mixed> $relations The relations to check for.
+     * @return void
+     */
+    #[DataProvider('hasRelationProvider')]
+    public function testHasRelations(array|BadFilterException $expected, string $table, array $relations): void
+    {
+        if ($expected instanceof BadFilterException) {
+            $this->expectExceptionMessage($expected->getMessage());
+            $this->expectException(BadFilterException::class);
+        }
+
+        $Table = $this->fetchTable($table);
+        if ($table === 'Documents') {
+            // restore from trash documents 6, 7
+            foreach ([6, 7] as $id) {
+                $d = $Table->get($id);
+                $d->set('deleted', false);
+                $Table->saveOrFail($d);
+            }
+        }
+
+        $result = $Table
+            ->find('hasRelation', ...$relations)
+            ->all()
+            ->extract('id')
+            ->toList();
+
+        sort($result);
+        sort($expected);
+
+        static::assertSame($expected, $result);
     }
 }

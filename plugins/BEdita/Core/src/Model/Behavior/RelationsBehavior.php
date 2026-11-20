@@ -14,12 +14,15 @@ declare(strict_types=1);
  */
 namespace BEdita\Core\Model\Behavior;
 
+use BEdita\Core\Exception\BadFilterException;
 use BEdita\Core\Model\Entity\ObjectType;
 use BEdita\Core\ORM\Association\RelatedTo;
 use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\ORM\Association;
 use Cake\ORM\Behavior;
+use Cake\ORM\Query\SelectQuery;
 use Cake\ORM\TableRegistry;
+use Cake\Utility\Inflector;
 use Swaggest\JsonSchema\Schema;
 
 /**
@@ -186,5 +189,53 @@ class RelationsBehavior extends Behavior
     public function getRelations(): array
     {
         return $this->objectType()->getRelations();
+    }
+
+    /**
+     * Finder for objects having/not-having specific relations with other objects.
+     *
+     * The `$args` parameter can be an array of relations or a single relation value
+     * that says whether the related objects should exist or not. If `value` is present it will be used.
+     * The allowed values are all values that can be interpreted as boolean using `filter_var`.
+     *
+     * The following calls are equivalent:
+     * - `find('hasRelation', value: ['relation_name' => true, 'other_relation' => false])`
+     * - `find('hasRelation', relation_name: true, other_relation: false)`
+     * - `find('hasRelation', relation_name: 1, other_relation: 0)`
+     * - `find('hasRelation', relation_name: 'true', other_relation: 'false')`
+     * - `find('hasRelation', relation_name: '1', other_relation: '0')`
+     * - `find('hasRelation', relation_name: false, other_relation: true)`
+     * - `find('hasRelation', relation_name: 0, other_relation: 1)`
+     * - `find('hasRelation', relation_name: 'false', other_relation: 'true')`
+     * - `find('hasRelation', relation_name: '0', other_relation: '1')`
+     *
+     * @param \Cake\ORM\Query\SelectQuery $query Query object instance.
+     * @param array|bool|string|int $args Relations to check for. If `value` is present it will be used.
+     * @return \Cake\ORM\Query\SelectQuery
+     */
+    public function findHasRelation(SelectQuery $query, array|bool|int|string ...$args): SelectQuery
+    {
+        $origRelations = $args['value'] ?? $args;
+        // convert all values to boolean, removing first any non-boolean values
+        $relations = array_map(
+            fn($value) => filter_var($value, FILTER_VALIDATE_BOOL),
+            array_filter((array)$origRelations, fn($value, $key) => !is_numeric($key) && filter_var($value, FILTER_VALIDATE_BOOL, FILTER_NULL_ON_FAILURE) !== null, ARRAY_FILTER_USE_BOTH),
+        );
+
+        if (empty($relations) || count($relations) !== count($origRelations)) {
+            throw new BadFilterException(__d('bedita', 'Invalid value for "relation" parameter using hasRelation finder'));
+        }
+
+        foreach ($relations as $relation => $value) {
+            $associationName = Inflector::camelize($relation);
+            match ($value) {
+                true => $query->innerJoinWith($associationName, fn(SelectQuery $q) => $q->find('available')),
+                false => $query->notMatching($associationName, fn(SelectQuery $q) => $q->find('available')),
+            };
+        }
+
+        return $query->find('type', value: $this->table()->getAlias())
+            ->find('available')
+            ->distinct([$this->table()->aliasField('id')]);
     }
 }

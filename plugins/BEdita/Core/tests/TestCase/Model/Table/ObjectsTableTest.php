@@ -14,7 +14,6 @@ declare(strict_types=1);
  */
 namespace BEdita\Core\Test\TestCase\Model\Table;
 
-use BEdita\Core\Exception\BadFilterException;
 use BEdita\Core\Exception\LockedResourceException;
 use BEdita\Core\Model\Entity\ObjectEntity;
 use BEdita\Core\Model\Enum\DateRangesSortField;
@@ -862,107 +861,5 @@ class ObjectsTableTest extends TestCase
         $object = $this->Objects->get(2, contain: ['Parents']);
         $childrenIds = Hash::extract($object->parents, '{*}.id');
         static::assertNotContains($firstParent->id, $childrenIds);
-    }
-
-    /**
-     * Data provider for `testHasRelation` method.
-     *
-     * @return array
-     */
-    public static function hasRelationProvider(): array
-    {
-        return [
-            'hasRelation' => [
-                [4],
-                'Profiles',
-                ['inverse_test_simple' => true],
-            ],
-            'hasRelationStringTrue' => [
-                [4],
-                'Profiles',
-                ['inverse_test_simple' => 'true'],
-            ],
-            'hasRelationIntTrue' => [
-                [4],
-                'Profiles',
-                ['inverse_test_simple' => 1],
-            ],
-            'hasRelationNumericStringTrue' => [
-                [4],
-                'Profiles',
-                ['inverse_test_simple' => '1'],
-            ],
-            'hasRelation2' => [
-                [2, 3],
-                'Documents',
-                ['test' => true],
-            ],
-            'hasRelationMulti' => [
-                [2],
-                'Documents',
-                ['test' => true, 'test_simple' => true, 'test_defaults' => true],
-            ],
-            'notMatchRelation' => [
-                [6, 7, 15],
-                'Documents',
-                ['test' => false],
-            ],
-            'notMatchRelationStringFalse' => [
-                [6, 7, 15],
-                'Documents',
-                ['test' => 'false'],
-            ],
-            'notMatchRelationIntFalse' => [
-                [6, 7, 15],
-                'Documents',
-                ['test' => 0],
-            ],
-            'notMatchRelationNumericStringFalse' => [
-                [6, 7, 15],
-                'Documents',
-                ['test' => '0'],
-            ],
-            'matchAndNotMatchRelations' => [
-                [7],
-                'Documents',
-                ['test' => false, 'inverse_test' => true],
-            ],
-            'invalidRelation' => [
-                new BadFilterException('Invalid value for "relation" parameter using hasRelation finder'),
-                'Documents',
-                ['test' => 'gustavo'],
-            ],
-            'numericKey' => [
-                new BadFilterException('Invalid value for "relation" parameter using hasRelation finder'),
-                'Documents',
-                [0 => true],
-            ],
-        ];
-    }
-
-    /**
-     * Test `findHasRelation` method.
-     *
-     * @param array<int>|\BEdita\Core\Exception\BadFilterException $expected The expected list of IDs.
-     * @param string $table The table to check for relations.
-     * @param array<string, mixed> $relations The relations to check for.
-     * @return void
-     */
-    #[DataProvider('hasRelationProvider')]
-    public function testHasRelations(array|BadFilterException $expected, string $table, array $relations): void
-    {
-        if ($expected instanceof BadFilterException) {
-            $this->expectExceptionMessage($expected->getMessage());
-            $this->expectException(BadFilterException::class);
-        }
-
-        $Table = $this->fetchTable($table);
-        $result = $Table
-            ->find('hasRelation', ...$relations)
-            ->all()
-            ->extract('id')
-            ->toList();
-
-        static::assertSame($expected, $result);
     }
 }
