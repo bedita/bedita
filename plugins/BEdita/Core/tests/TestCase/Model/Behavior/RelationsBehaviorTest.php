@@ -244,4 +244,34 @@ class RelationsBehaviorTest extends TestCase
 
         static::assertSame($expected, $result);
     }
+
+    /**
+     * Test `findHasRelation` method when related entity is not available.
+     *
+     * @return void
+     */
+    public function testHasRelationWithRelatedNotAvailable(): void
+    {
+        $Table = $this->fetchTable('Documents');
+        $result = $Table->find('hasRelation', test: true)
+            ->all()
+            ->extract('id')
+            ->toList();
+
+        sort($result);
+        static::assertEquals([2, 3], $result);
+
+        $ProfilesTable = $this->fetchTable('Profiles');
+        $p = $ProfilesTable->get(4);
+        $p->set('deleted', true);
+        $ProfilesTable->saveOrFail($p);
+
+        $result = $Table->find('hasRelation', test: true)
+            ->all()
+            ->extract('id')
+            ->toList();
+
+        sort($result);
+        static::assertEquals([2], $result);
+    }
 }
