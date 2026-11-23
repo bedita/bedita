@@ -193,12 +193,12 @@ class ListEntitiesAction extends BaseAction implements FinderFilterInterface
         $subQuery = $this->Table->subquery()
             ->select($foreignKey)
             ->innerJoinWith($assoc, $joinConditions);
-        $primaryKey = array_map([$this->Table, 'aliasField'], (array)$this->Table->getPrimaryKey());
-        if (count($primaryKey) === 1) {
-            return $query->where([$primaryKey[0] . ' IN' => $subQuery]);
+        $bindingKey = array_map([$this->Table, 'aliasField'], (array)$association->getBindingKey());
+        if (count($bindingKey) === 1) {
+            return $query->where([$bindingKey[0] . ' IN' => $subQuery]);
         }
 
-        return $query->where(new TupleComparison($primaryKey, $subQuery, [], 'IN'));
+        return $query->where(new TupleComparison($bindingKey, $subQuery, [], 'IN'));
     }
 
     /**
