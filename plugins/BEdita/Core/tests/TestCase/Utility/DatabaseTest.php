@@ -76,7 +76,7 @@ class DatabaseTest extends TestCase
      */
     public function testReplica(): void
     {
-        static::assertFalse(Database::hasReplica('test'));
+        static::assertSame(array_key_exists('read', (array)ConnectionManager::getConfig('test')), Database::hasReplica('test'));
         static::assertFalse(Database::hasReplica('zzzzzzzzzzz'));
 
         $replica = Connection::hasReplica();

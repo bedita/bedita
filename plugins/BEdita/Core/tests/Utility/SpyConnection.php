@@ -15,6 +15,7 @@ declare(strict_types=1);
 namespace BEdita\Core\Test\Utility;
 
 use BEdita\Core\Database\Connection;
+use Cake\Database\Driver;
 use Cake\Database\Query;
 use Cake\Database\StatementInterface;
 
@@ -31,16 +32,43 @@ class SpyConnection extends Connection
     public array $executed = [];
 
     /**
+     * Role of the driver picked by each `run()` in progress, innermost last.
+     *
+     * @var array<string|null>
+     */
+    protected array $running = [];
+
+    /**
+     * @inheritDoc
+     */
+    public function getDriver(string $role = self::ROLE_WRITE): Driver
+    {
+        $driver = parent::getDriver($role);
+        // Cake's `run()` picks the driver before compiling: later calls come from compilation, which may set sticky.
+        $last = array_key_last($this->running);
+        if ($last !== null && $this->running[$last] === null) {
+            $this->running[$last] = $driver->getRole();
+        }
+
+        return $driver;
+    }
+
+    /**
      * @inheritDoc
      */
     public function run(Query $query): StatementInterface
     {
-        $statement = parent::run($query);
+        $this->running[] = null;
+        try {
+            $statement = parent::run($query);
+        } finally {
+            $actual = array_pop($this->running);
+        }
         $this->executed[] = [
             'type' => $query->type(),
             'table' => method_exists($query, 'getRepository') ? $query->getRepository()->getAlias() : null,
             'requested' => $query->getConnectionRole(),
-            'actual' => $this->getDriver($query->getConnectionRole())->getRole(),
+            'actual' => $actual,
         ];
 
         return $statement;

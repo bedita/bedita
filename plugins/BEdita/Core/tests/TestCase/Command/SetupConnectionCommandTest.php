@@ -264,7 +264,8 @@ class SetupConnectionCommandTest extends TestCase
             'username' => '__BE4_DB_USERNAME__',
             'password' => '__BE4_DB_PASSWORD__',
         ];
-        $config += $originalConfig;
+        // With `read`, Core's bootstrap run by `exec()` would replace the connection with a BEdita one.
+        $config += array_diff_key($originalConfig, ['read' => null, 'write' => null]);
         ConnectionManager::setConfig(static::TEMP_CONNECTION, $config);
         $connection = ConnectionManager::get(static::TEMP_CONNECTION);
 
@@ -338,7 +339,8 @@ class SetupConnectionCommandTest extends TestCase
             'username' => '__BE4_DB_USERNAME__',
             'password' => '__BE4_DB_PASSWORD__',
         ];
-        $config += $originalConfig;
+        // With `read`, Core's bootstrap run by `exec()` would replace the connection with a BEdita one.
+        $config += array_diff_key($originalConfig, ['read' => null, 'write' => null]);
         ConnectionManager::setConfig(static::TEMP_CONNECTION, $config);
         $connection = ConnectionManager::get(static::TEMP_CONNECTION);
 
@@ -446,7 +448,8 @@ class SetupConnectionCommandTest extends TestCase
             'username' => '__BE4_DB_USERNAME__',
             'password' => '__BE4_DB_PASSWORD__',
         ];
-        $config += $originalConfig;
+        // With `read`, Core's bootstrap run by `exec()` would replace the connection with a BEdita one.
+        $config += array_diff_key($originalConfig, ['read' => null, 'write' => null]);
         ConnectionManager::setConfig(static::TEMP_CONNECTION, $config);
         $connection = ConnectionManager::get(static::TEMP_CONNECTION);
 

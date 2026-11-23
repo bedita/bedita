@@ -115,10 +115,16 @@ jobs:
             db: '{"vendor": "MySQL 8.4", "pdo": "mysql", "dsn": "mysql://bedita:bedita@127.0.0.1:3306/bedita", "image": "mysql:8.4", "options": "--health-cmd \"mysqladmin ping -h localhost\" --health-interval 10s --health-timeout 5s --health-retries 5"}'
           - php: '8.3'
             db: '{"vendor": "MySQL 8.4", "pdo": "mysql", "dsn": "mysql://bedita:bedita@127.0.0.1:3306/bedita", "image": "mysql:8.4", "options": "--health-cmd \"mysqladmin ping -h localhost\" --health-interval 10s --health-timeout 5s --health-retries 5"}'
+          # `replica` lives in `db`: as a separate key, `include` would merge it into the existing combination.
+          - php: '8.5'
+            db: '{"vendor": "MySQL 8.4 read replica", "pdo": "mysql", "dsn": "mysql://bedita:bedita@127.0.0.1:3306/bedita", "image": "mysql:8.4", "replica": "1", "options": "--health-cmd \"mysqladmin ping -h localhost\" --health-interval 10s --health-timeout 5s --health-retries 5"}'
+          - php: '8.5'
+            db: '{"vendor": "PostgreSQL 18 read replica", "pdo": "pgsql", "dsn": "postgres://bedita:bedita@127.0.0.1:5432/bedita", "image": "postgres:18", "replica": "1", "options": "--health-cmd \"pg_isready\" --health-interval 10s --health-timeout 5s --health-retries 5"}'
     env:
       PHP_VERSION: '${{ matrix.php }}'
       DB_VENDOR: '${{ fromJson(matrix.db).vendor }}'
       db_dsn: '${{ fromJson(matrix.db).dsn }}'
+      db_replica: '${{ fromJson(matrix.db).replica }}'
 
     services:
       db:
