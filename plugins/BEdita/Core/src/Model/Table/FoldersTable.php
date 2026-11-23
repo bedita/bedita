@@ -282,7 +282,6 @@ class FoldersTable extends ObjectsTable
                     return $exp->isNull($this->TreeNodes->aliasField('parent_id'));
                 });
             })
-            // keyed order: CakePHP adds it to the eager-loading subquery GROUP BY only in this form
             ->orderBy(['TreeNodes.priority' => 'ASC']);
     }
 
