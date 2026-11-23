@@ -188,11 +188,19 @@ class ListEntitiesAction extends BaseAction implements FinderFilterInterface
             return $query->innerJoinWith($assoc, $joinConditions);
         }
 
-        $fkTable = $association instanceof BelongsToMany ? $association->junction() : $association->getTarget();
-        $foreignKey = array_map([$fkTable, 'aliasField'], (array)$association->getForeignKey());
-        $subQuery = $this->Table->subquery()
-            ->select($foreignKey)
-            ->innerJoinWith($assoc, $joinConditions);
+        // Subquery on association target (with association finder and conditions), without the source table:
+        // a source table alias in the subquery would shadow the outer query one in a correlated subquery
+        // (e.g. tuple comparison transformed into `EXISTS` on SQLite).
+        $subQuery = $association->find()->where($conditions);
+        $fkTable = $association->getTarget();
+        if ($association instanceof BelongsToMany) {
+            $fkTable = $association->junction();
+            if (!array_key_exists($fkTable->getAlias(), $subQuery->clause('join'))) {
+                // junction table is already joined by `find()` only if there are junction conditions
+                $subQuery->innerJoinWith($fkTable->getAlias());
+            }
+        }
+        $subQuery->select(array_map([$fkTable, 'aliasField'], (array)$association->getForeignKey()), true);
         $bindingKey = array_map([$this->Table, 'aliasField'], (array)$association->getBindingKey());
         if (count($bindingKey) === 1) {
             return $query->where([$bindingKey[0] . ' IN' => $subQuery]);
