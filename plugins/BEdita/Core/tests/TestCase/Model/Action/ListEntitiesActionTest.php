@@ -323,6 +323,37 @@ class ListEntitiesActionTest extends TestCase
     }
 
     /**
+     * Test filter on a "to-many" association with composite binding key.
+     *
+     * @return void
+     */
+    public function testAssociationFilterCompositeKey(): void
+    {
+        $table = TableRegistry::getTableLocator()->get('FakeAnimals');
+        // articles are bound to animals by both `id` and `name` (as article title)
+        $table->hasMany('TitledArticles', [
+            'className' => 'FakeArticles',
+            'bindingKey' => ['id', 'name'],
+            'foreignKey' => ['fake_animal_id', 'head_title'],
+        ]);
+        $articles = $table->getAssociation('TitledArticles')->getTarget();
+        $insert = $articles->insertQuery()->insert(['fake_animal_id', 'head_title', 'main_body']);
+        $insert->values(['fake_animal_id' => 2, 'head_title' => 'koala', 'main_body' => 'first']);
+        $insert->values(['fake_animal_id' => 2, 'head_title' => 'koala', 'main_body' => 'second']);
+        $insert->values(['fake_animal_id' => 1, 'head_title' => 'koala', 'main_body' => 'mismatch']);
+        $insert->execute();
+        $articleId = fn(string $body): int => $articles->find()->where(['main_body' => $body])->firstOrFail()->id;
+
+        $action = new ListEntitiesAction(compact('table'));
+        $extractIds = fn(array $filter): array => $action(compact('filter'))->all()->extract('id')->toList();
+
+        // both articles match koala: no duplicates
+        static::assertSame([2], $extractIds(['titled_articles' => [$articleId('first'), $articleId('second')]]));
+        // `fake_animal_id` matches cat but `head_title` does not
+        static::assertSame([], $extractIds(['titled_articles' => $articleId('mismatch')]));
+    }
+
+    /**
      * Test command execution with custom prop filter.
      *
      * @return void
