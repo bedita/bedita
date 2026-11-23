@@ -13,6 +13,7 @@ use BEdita\Core\ORM\Locator\TableLocator;
 use Cake\Core\Configure;
 use Cake\Core\Configure\Engine\IniConfig;
 use Cake\Core\Exception\CakeException;
+use Cake\Database\Connection as CakeConnection;
 use Cake\Database\TypeFactory;
 use Cake\Datasource\ConnectionManager;
 use Cake\I18n\ChainMessagesLoader;
@@ -31,10 +32,20 @@ if (!TableRegistry::getTableLocator() instanceof TableLocator) {
  */
 foreach (ConnectionManager::configured() as $name) {
     $config = (array)ConnectionManager::getConfig($name);
+    if (!array_key_exists('read', $config) && !array_key_exists('write', $config)) {
+        continue;
+    }
+
+    // A connection using `url` without `driver` in its query string resets `className` to Cake's, discarding the configured one.
     $className = $config['className'] ?? null;
+    if ($className === CakeConnection::class) {
+        ConnectionManager::drop($name);
+        ConnectionManager::setConfig($name, ['className' => Connection::class] + $config);
+
+        continue;
+    }
     if (
-        (array_key_exists('read', $config) || array_key_exists('write', $config))
-        && !(is_string($className) && is_a($className, Connection::class, true))
+        !(is_string($className) && is_a($className, Connection::class, true))
         && !($className instanceof Connection)
     ) {
         throw new CakeException(sprintf(
