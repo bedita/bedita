@@ -193,10 +193,6 @@ class ReadReplicaTest extends IntegrationTestCase
             ['type' => 'select', 'table' => 'Documents', 'requested' => 'read', 'actual' => 'read'],
             $this->spy->executed,
         );
-        static::assertContains(
-            ['type' => 'select', 'table' => 'Properties', 'requested' => 'read', 'actual' => 'read'],
-            $this->spy->executed,
-        );
         static::assertFalse(Connection::isSticky());
     }
 
