@@ -42,6 +42,8 @@ class ListEntitiesActionTest extends TestCase
     protected array $fixtures = [
         'plugin.BEdita/Core.FakeAnimals',
         'plugin.BEdita/Core.FakeArticles',
+        'plugin.BEdita/Core.FakeTags',
+        'plugin.BEdita/Core.FakeArticlesTags',
         'plugin.BEdita/Core.FakeMammals',
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.Relations',
@@ -266,6 +268,58 @@ class ListEntitiesActionTest extends TestCase
 
         static::assertInstanceOf(SelectQuery::class, $result);
         static::assertEquals($expected, $result->enableHydration(false)->toArray());
+    }
+
+    /**
+     * Data provider for `testAssociationFilter` test case.
+     *
+     * @return array
+     */
+    public static function associationFilterProvider(): array
+    {
+        return [
+            'belongsTo' => [
+                [2, 1],
+                ['fake_animals' => 1],
+            ],
+            'belongsToMany' => [
+                [1],
+                ['fake_tags' => 1],
+            ],
+            'belongsToMany no duplicates' => [
+                [2, 1],
+                ['fake_tags' => [1, 2]],
+            ],
+        ];
+    }
+
+    /**
+     * Test filter on "to-one" and "to-many" associations, with results sorted on a different field.
+     *
+     * @param array $expected Expected article IDs, sorted by `head_title`.
+     * @param array $filter Filter.
+     * @return void
+     */
+    #[DataProvider('associationFilterProvider')]
+    public function testAssociationFilter(array $expected, array $filter): void
+    {
+        $table = TableRegistry::getTableLocator()->get('FakeArticles');
+        $table->belongsTo('FakeAnimals');
+        $table->belongsToMany('FakeTags', ['joinTable' => 'fake_articles_tags']);
+        // article 1 has both tags: a plain join would return it twice
+        $table->getAssociation('FakeTags')->junction()->insertQuery()
+            ->insert(['fake_article_id', 'fake_tag_id'])
+            ->values(['fake_article_id' => 1, 'fake_tag_id' => 2])
+            ->execute();
+
+        $action = new ListEntitiesAction(compact('table'));
+        $result = $action(compact('filter'))
+            ->orderBy([$table->aliasField('head_title') => 'ASC'])
+            ->all()
+            ->extract('id')
+            ->toList();
+
+        static::assertSame($expected, $result);
     }
 
     /**
