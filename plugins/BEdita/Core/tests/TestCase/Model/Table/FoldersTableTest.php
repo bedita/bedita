@@ -70,6 +70,7 @@ class FoldersTableTest extends TestCase
         'plugin.BEdita/Core.Tags',
         'plugin.BEdita/Core.ObjectTags',
         'plugin.BEdita/Core.History',
+        'plugin.BEdita/Core.Roles',
         'plugin.BEdita/Core.ObjectPermissions',
     ];
 
