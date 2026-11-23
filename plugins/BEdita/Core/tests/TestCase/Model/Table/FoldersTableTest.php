@@ -24,6 +24,7 @@ use Cake\Database\Expression\OrderClauseExpression;
 use Cake\Database\Expression\QueryExpression;
 use Cake\Database\ExpressionInterface;
 use Cake\Database\ValueBinder;
+use Cake\Log\Engine\ArrayLog;
 use Cake\ORM\Association\BelongsToMany;
 use Cake\ORM\Query;
 use Cake\ORM\TableRegistry;
@@ -70,6 +71,7 @@ class FoldersTableTest extends TestCase
         'plugin.BEdita/Core.Tags',
         'plugin.BEdita/Core.ObjectTags',
         'plugin.BEdita/Core.History',
+        'plugin.BEdita/Core.ObjectPermissions',
     ];
 
     /**
@@ -316,6 +318,34 @@ class FoldersTableTest extends TestCase
         static::assertNotEmpty($folders);
         $ids = Hash::extract($folders, '{n}.id');
         static::assertEquals([11, 13], $ids);
+    }
+
+    public function testFindRootsSubqueryGroupBy(): void
+    {
+        // the eager-loading subquery must group by the ORDER BY column, or MySQL ONLY_FULL_GROUP_BY rejects it
+        $driver = $this->Folders->getConnection()->getDriver();
+        $previous = $driver->getLogger();
+        $logger = new ArrayLog();
+        $driver->setLogger($logger);
+        try {
+            $folders = $this->Folders->find('roots')->contain(['Permissions'])->limit(10)->toArray();
+        } finally {
+            if ($previous !== null) {
+                $driver->setLogger($previous);
+            }
+        }
+
+        static::assertEquals([11, 13], Hash::extract($folders, '{n}.id'));
+        $subqueries = array_filter(
+            $logger->read(),
+            fn(string $sql): bool => str_contains($sql, 'object_permissions') && str_contains($sql, 'GROUP BY'),
+        );
+        static::assertNotEmpty($subqueries);
+        foreach ($subqueries as $sql) {
+            static::assertMatchesRegularExpression('/GROUP BY (.*?) ORDER BY/', $sql);
+            preg_match('/GROUP BY (.*?) ORDER BY/', $sql, $matches);
+            static::assertStringContainsString('TreeNodes.priority', $matches[1]);
+        }
     }
 
     /**
