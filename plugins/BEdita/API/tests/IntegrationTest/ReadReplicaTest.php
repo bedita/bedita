@@ -17,7 +17,9 @@ namespace BEdita\API\Test\IntegrationTest;
 use BEdita\API\TestSuite\IntegrationTestCase;
 use BEdita\Core\Database\Connection;
 use BEdita\Core\Test\Utility\SpyConnection;
+use BEdita\Core\Test\Utility\TestFilesystemTrait;
 use Cake\Cache\Cache;
+use Cake\Database\Driver\Sqlite;
 use Cake\Datasource\ConnectionInterface;
 use Cake\Datasource\ConnectionManager;
 use PHPUnit\Framework\Attributes\CoversNothing;
@@ -29,6 +31,8 @@ use PHPUnit\Framework\Attributes\DataProvider;
 #[CoversNothing]
 class ReadReplicaTest extends IntegrationTestCase
 {
+    use TestFilesystemTrait;
+
     /**
      * @inheritDoc
      */
@@ -73,6 +77,13 @@ class ReadReplicaTest extends IntegrationTestCase
     protected bool $replica;
 
     /**
+     * SQLite file the `read` driver uses after `freezeReplica()`.
+     *
+     * @var string|null
+     */
+    protected ?string $snapshot = null;
+
+    /**
      * @inheritDoc
      */
     public function setUp(): void
@@ -107,6 +118,9 @@ class ReadReplicaTest extends IntegrationTestCase
         $this->spy->getReadDriver()->disconnect();
         $this->spy->getWriteDriver()->disconnect();
         $this->original->getDriver()->disconnect();
+        if ($this->snapshot !== null) {
+            unlink($this->snapshot);
+        }
         ConnectionManager::drop('test');
         // Restore the configuration, not the instance: the migrations plugin builds its settings from it.
         ConnectionManager::setConfig('test', $this->originalConfig);
@@ -343,5 +357,220 @@ class ReadReplicaTest extends IntegrationTestCase
         static::assertSame([], $this->notOn('read', array_slice($this->spy->executed, 0, $insert)));
         static::assertSame([], $this->notOn('write', array_slice($this->spy->executed, $insert)));
         static::assertTrue(Connection::isSticky());
+    }
+
+    /**
+     * Point the `read` driver at a copy of the database as it is now, so that later writes exist only on the primary.
+     *
+     * @return void
+     */
+    protected function freezeReplica(): void
+    {
+        $config = $this->original->config();
+        $this->skipIf(
+            !is_a($config['driver'], Sqlite::class, true) || $config['database'] === ':memory:',
+            'A frozen replica needs an SQLite database file',
+        );
+
+        // `VACUUM INTO` requires a missing or empty file.
+        $this->snapshot = (string)tempnam(sys_get_temp_dir(), 'replica');
+        $this->spy->getWriteDriver()->execute('VACUUM INTO ?', [$this->snapshot]);
+
+        $this->spy->getReadDriver()->disconnect();
+        $this->spy->getWriteDriver()->disconnect();
+        $this->spy = new SpyConnection(['read' => ['database' => $this->snapshot]] + $config);
+        ConnectionManager::drop('test');
+        ConnectionManager::setConfig('test', $this->spy);
+        $this->getTableLocator()->clear();
+    }
+
+    /**
+     * Assert that a lookup on the given table missed on the replica and ran again on the primary.
+     *
+     * @param string $table Alias of the table of the lookup.
+     * @return void
+     */
+    protected function assertFallback(string $table): void
+    {
+        // The temporary table also sends reads to the primary: only queries before it prove a fallback.
+        $executed = $this->spy->executed;
+        $temporary = array_search('StaticProperties', array_column($executed, 'table'), true);
+        if ($temporary !== false) {
+            $executed = array_slice($executed, 0, $temporary);
+        }
+        $miss = array_search(
+            ['type' => 'select', 'table' => $table, 'requested' => 'read', 'actual' => 'read'],
+            $executed,
+            true,
+        );
+        static::assertNotFalse($miss, sprintf('No read on the replica for "%s"', $table));
+        static::assertContains(
+            ['type' => 'select', 'table' => $table, 'requested' => 'read', 'actual' => 'write'],
+            array_slice($executed, $miss + 1),
+        );
+        static::assertTrue(Connection::isSticky());
+    }
+
+    /**
+     * Create an object and return its id.
+     *
+     * @param string $type Object type.
+     * @param array $attributes Object attributes.
+     * @param array $authHeader Authorization header.
+     * @return string
+     */
+    protected function createObject(string $type, array $attributes, array $authHeader): string
+    {
+        $this->configRequestHeaders('POST', $authHeader);
+        $this->post(sprintf('/%s', $type), json_encode(['data' => compact('type', 'attributes')]));
+        $this->assertResponseCode(201);
+
+        return json_decode((string)$this->_response->getBody(), true)['data']['id'];
+    }
+
+    /**
+     * Data provider for `testFallback`.
+     *
+     * @return array
+     */
+    public static function fallbackProvider(): array
+    {
+        return [
+            'view' => ['documents', '/documents/{id}', 'Documents'],
+            'uname' => ['documents', '/documents/lag-test', 'Objects'],
+            'related' => ['documents', '/documents/{id}/test', 'Documents'],
+            'ancestor' => ['folders', '/objects?filter[ancestor]={id}', 'TreeNodes'],
+            'thumbs' => ['images', '/media/thumbs/{id}', 'Media', ['media_property' => false]],
+        ];
+    }
+
+    /**
+     * Test that a lookup of an object created after the replica stopped falls back to the primary.
+     *
+     * @param string $type Type of the created object.
+     * @param string $url Request URL, `{id}` is replaced with the new object id.
+     * @param string $table Alias of the table of the lookup that misses.
+     * @param array $attributes Attributes of the created object.
+     * @return void
+     */
+    #[DataProvider('fallbackProvider')]
+    public function testFallback(string $type, string $url, string $table, array $attributes = []): void
+    {
+        $this->freezeReplica();
+        $authHeader = $this->getUserAuthHeader();
+        $id = $this->createObject($type, ['uname' => 'lag-test'] + $attributes, $authHeader);
+        $this->resetProcess();
+
+        $this->configRequestHeaders('GET', $authHeader);
+        $this->get(str_replace('{id}', $id, $url));
+
+        $this->assertResponseCode(200);
+        $this->assertFallback($table);
+    }
+
+    /**
+     * Test that a trashed object missing on the replica is read from the primary.
+     *
+     * @return void
+     */
+    public function testFallbackTrash(): void
+    {
+        $this->freezeReplica();
+        $authHeader = $this->getUserAuthHeader();
+        $id = $this->createObject('documents', ['title' => 'Lag'], $authHeader);
+        $this->configRequestHeaders('DELETE', $authHeader);
+        $this->delete(sprintf('/documents/%s', $id));
+        $this->assertResponseCode(204);
+        $this->resetProcess();
+
+        $this->configRequestHeaders('GET', $authHeader);
+        $this->get(sprintf('/trash/%s', $id));
+
+        $this->assertResponseCode(200);
+        $this->assertFallback('ObjectTypes');
+    }
+
+    /**
+     * Data provider for `testFallbackTree`.
+     *
+     * @return array
+     */
+    public static function fallbackTreeProvider(): array
+    {
+        return [
+            'trees' => ['/trees/root-folder/title-two', 'Trees'],
+            'tree paths' => ['/tree_paths/root-folder-11/title-two', 'Objects'],
+        ];
+    }
+
+    /**
+     * Test that a tree position missing on the replica is read from the primary.
+     *
+     * @param string $url Request URL.
+     * @param string $table Alias of the table of the lookup that misses.
+     * @return void
+     */
+    #[DataProvider('fallbackTreeProvider')]
+    public function testFallbackTree(string $url, string $table): void
+    {
+        $this->freezeReplica();
+        $authHeader = $this->getUserAuthHeader();
+        $this->configRequestHeaders('POST', $authHeader);
+        $this->post('/folders/11/relationships/children', json_encode(['data' => [['type' => 'documents', 'id' => '3']]]));
+        $this->assertResponseOk();
+        $this->resetProcess();
+
+        $this->configRequestHeaders('GET', $authHeader);
+        $this->get($url);
+
+        $this->assertResponseCode(200);
+        $this->assertFallback($table);
+    }
+
+    /**
+     * Test that a stream missing on the replica is downloaded from the primary.
+     *
+     * @return void
+     */
+    public function testFallbackDownload(): void
+    {
+        $this->filesystemSetup();
+        try {
+            $this->freezeReplica();
+            $authHeader = $this->getUserAuthHeader();
+            $this->configRequestHeaders('POST', $authHeader + ['Content-Type' => 'text/plain']);
+            $this->post('/streams/upload/lag.txt', 'Lag');
+            $this->assertResponseCode(201);
+            $uuid = json_decode((string)$this->_response->getBody(), true)['data']['id'];
+            $this->resetProcess();
+
+            $this->configRequestHeaders('GET', $authHeader);
+            $this->get(sprintf('/streams/download/%s', $uuid));
+
+            $this->assertResponseCode(200);
+            $this->assertResponseEquals('Lag');
+            $this->assertFallback('Streams');
+        } finally {
+            $this->filesystemRestore();
+        }
+    }
+
+    /**
+     * Test that a user missing on the replica is read from the primary.
+     *
+     * @return void
+     */
+    public function testFallbackAuthUser(): void
+    {
+        $this->freezeReplica();
+        $this->createObject('users', ['username' => 'lag-user', 'password' => 'lag-password', 'status' => 'on'], $this->getUserAuthHeader());
+        $authHeader = $this->getUserAuthHeader('lag-user', 'lag-password');
+        $this->resetProcess();
+
+        $this->configRequestHeaders('GET', $authHeader);
+        $this->get('/auth/user');
+
+        $this->assertResponseCode(200);
+        $this->assertFallback('Users');
     }
 }
