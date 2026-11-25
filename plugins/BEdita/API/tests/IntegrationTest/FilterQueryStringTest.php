@@ -966,6 +966,10 @@ class FilterQueryStringTest extends IntegrationTestCase
                 ['2', '3'],
                 '/documents?filter[has_relation][test]=true',
             ],
+            'true and sort' => [
+                ['2', '3'],
+                '/documents?filter[has_relation][test]=true&sort=title',
+            ],
             'numeric true' => [
                 ['2'],
                 '/documents?filter[has_relation][test_simple]=1',
@@ -977,6 +981,10 @@ class FilterQueryStringTest extends IntegrationTestCase
             'false' => [
                 ['3'],
                 '/documents?filter[has_relation][test_simple]=false',
+            ],
+            'false and sort' => [
+                ['3'],
+                '/documents?filter[has_relation][test_simple]=false&sort=title',
             ],
             'numeric false' => [
                 ['3'],

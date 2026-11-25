@@ -17,6 +17,7 @@ namespace BEdita\Core\Model\Behavior;
 use BEdita\Core\Exception\BadFilterException;
 use BEdita\Core\Model\Entity\ObjectType;
 use BEdita\Core\ORM\Association\RelatedTo;
+use Cake\Database\Expression\QueryExpression;
 use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\ORM\Association;
 use Cake\ORM\Behavior;
@@ -228,14 +229,17 @@ class RelationsBehavior extends Behavior
 
         foreach ($relations as $relation => $value) {
             $associationName = Inflector::camelize($relation);
+            $subquery = $this->table()
+                ->find('type', value: $this->table()->getAlias())
+                ->find('available')
+                ->select([$this->table()->aliasField('id')])
+                ->innerJoinWith($associationName, fn(SelectQuery $q) => $q->find('available'));
             match ($value) {
-                true => $query->innerJoinWith($associationName, fn(SelectQuery $q) => $q->find('available')),
-                false => $query->notMatching($associationName, fn(SelectQuery $q) => $q->find('available')),
+                true => $query->where(fn(QueryExpression $exp) => $exp->in($this->table()->aliasField('id'), $subquery)),
+                false => $query->where(fn(QueryExpression $exp) => $exp->notIn($this->table()->aliasField('id'), $subquery)),
             };
         }
 
-        return $query->find('type', value: $this->table()->getAlias())
-            ->find('available')
-            ->distinct([$this->table()->aliasField('id')]);
+        return $query;
     }
 }
