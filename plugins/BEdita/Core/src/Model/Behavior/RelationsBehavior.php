@@ -230,16 +230,17 @@ class RelationsBehavior extends Behavior
         foreach ($relations as $relation => $value) {
             $associationName = Inflector::camelize($relation);
             $subquery = $this->table()
-                ->find('type', value: $this->table()->getAlias())
-                ->find('available')
+                ->find()
                 ->select([$this->table()->aliasField('id')])
-                ->innerJoinWith($associationName, fn(SelectQuery $q) => $q->find('available'));
+                ->innerJoinWith($associationName);
             match ($value) {
                 true => $query->where(fn(QueryExpression $exp) => $exp->in($this->table()->aliasField('id'), $subquery)),
                 false => $query->where(fn(QueryExpression $exp) => $exp->notIn($this->table()->aliasField('id'), $subquery)),
             };
         }
 
-        return $query;
+        return $query
+            ->find('type', value: $this->table()->getAlias())
+            ->find('available');
     }
 }
