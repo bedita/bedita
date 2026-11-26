@@ -27,6 +27,7 @@ VOLUME /var/www/html/webroot/_files
 # Install dependencies, ensure permissions are correct, and setup permissive CORS rules
 RUN if [ ! "$DEBUG" = "true" ]; then export COMPOSER_ARGS='--no-dev'; fi \
     && composer install $COMPOSER_ARGS --optimize-autoloader --no-interaction \
+    && rm -f config/app_local.php \
     && chmod -R ug+rwX tmp logs webroot/_files \
     && tee -a webroot/.htaccess < apache_cors.conf
 
