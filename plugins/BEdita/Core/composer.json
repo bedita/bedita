@@ -22,7 +22,7 @@
     ],
     "require": {
         "php": ">=8.3",
-        "cakephp/cakephp": "~5.4.2",
+        "cakephp/cakephp": "~5.4.4",
         "cakephp/migrations": "^5.2.6",
         "cakephp/queue": "^2.3.1",
         "league/flysystem": "^3.30.2",

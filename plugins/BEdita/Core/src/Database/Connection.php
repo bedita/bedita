@@ -155,9 +155,6 @@ class Connection extends CakeConnection
     {
         if (!$query instanceof SelectQuery) {
             static::$sticky = true;
-        } elseif ($this->isReadCount($query)) {
-            // `SelectQuery::_performCount()` wraps complex queries in a new query with the write role.
-            $query->useReadRole();
         }
 
         return parent::run($query);
@@ -174,22 +171,5 @@ class Connection extends CakeConnection
         static::$sticky = true;
 
         return parent::execute($sql, $params, $types);
-    }
-
-    /**
-     * Whether the query is the wrapper built by `SelectQuery::_performCount()` to count a read-role query.
-     *
-     * @param \Cake\Database\Query\SelectQuery $query The query.
-     * @return bool
-     */
-    protected function isReadCount(SelectQuery $query): bool
-    {
-        $from = $query->clause('from');
-        $source = $from['count_source'] ?? null;
-
-        return count($from) === 1
-            && empty($query->clause('join'))
-            && $source instanceof Query
-            && $source->getConnectionRole() === self::ROLE_READ;
     }
 }

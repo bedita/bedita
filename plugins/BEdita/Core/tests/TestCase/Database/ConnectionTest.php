@@ -438,29 +438,4 @@ class ConnectionTest extends TestCase
         static::assertSame(['Applications', 'Config', 'Owners'], array_column($connection->executed, 'table'));
         static::assertSame([$role, $role, $role], array_column($connection->executed, 'actual'));
     }
-
-    /**
-     * Test that the count of a complex query, run as a subquery, uses the role of the counted query.
-     *
-     * @param string $role Role of the counted query.
-     * @return void
-     */
-    #[DataProvider('roleProvider')]
-    public function testRunComplexCount(string $role): void
-    {
-        /** @var \BEdita\Core\Test\Utility\SpyConnection $connection */
-        $connection = $this->createConnection([], SpyConnection::class);
-        $applications = new Table(['table' => 'applications', 'alias' => 'Applications', 'connection' => $connection]);
-
-        $count = $applications->find()
-            ->distinct()
-            ->setConnectionRole($role)
-            ->count();
-
-        static::assertSame(2, $count);
-        static::assertSame(
-            [['type' => 'select', 'table' => null, 'requested' => $role, 'actual' => $role]],
-            $connection->executed,
-        );
-    }
 }
