@@ -176,28 +176,14 @@ class TagsTable extends Table
      */
     public function findUsage(SelectQuery $query): SelectQuery
     {
-        $objectTagsAlias = $this->ObjectTags->getAlias();
-        $objectsAlias = $this->Objects->getAlias();
-        $tagsAlias = $this->getAlias();
-
         return $query
             ->enableHydration(false)
             ->select([
-                'name' => "{$tagsAlias}.name",
-                'count' => $query->func()->count("{$objectsAlias}.id"),
+                'name' => $this->aliasField('name'),
+                'count' => $query->func()->count($this->Objects->aliasField('id')),
             ])
-            ->leftJoin(
-                [$objectTagsAlias => 'object_tags'],
-                ["{$objectTagsAlias}.tag_id = {$tagsAlias}.id"],
-            )
-            ->leftJoin(
-                [$objectsAlias => 'objects'],
-                [
-                    "{$objectsAlias}.id = {$objectTagsAlias}.object_id",
-                    "{$objectsAlias}.deleted = FALSE",
-                ],
-            )
-            ->groupBy(["{$tagsAlias}.id", "{$tagsAlias}.name"])
-            ->orderBy(["{$tagsAlias}.name" => 'ASC']);
+            ->innerJoinWith('Objects', fn(SelectQuery $q) => $q->find('available'))
+            ->groupBy([$this->aliasField('id'), $this->aliasField('name')])
+            ->orderBy([$this->aliasField('name') => 'ASC']);
     }
 }
