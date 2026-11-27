@@ -204,6 +204,11 @@ return function (RouteBuilder $routes): void {
                     ['controller' => 'Project', 'action' => 'index'],
                     ['_name' => 'project'],
                 );
+                $routes->connect(
+                    '/tags/usage',
+                    ['controller' => 'Tags', 'action' => 'usage'],
+                    ['_name' => 'tags:usage'],
+                );
             },
         );
 

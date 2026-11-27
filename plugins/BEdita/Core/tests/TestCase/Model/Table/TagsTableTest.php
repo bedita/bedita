@@ -124,4 +124,21 @@ class TagsTableTest extends TestCase
         $tags = $this->Tags->find('ids', names: ['tag-1', 'tag-2'])->toArray();
         static::assertEmpty($tags);
     }
+
+    /**
+     * Test `findUsage` method
+     *
+     * @return void
+     */
+    public function testFindUsage(): void
+    {
+        $tag = $this->Tags->newEntity(['name' => 'other-tag']);
+        $this->Tags->saveOrFail($tag);
+        $actual = $this->Tags->find('usage')->toArray();
+        $expected = [
+            ['name' => 'first-tag', 'count' => 1],
+            ['name' => 'other-tag', 'count' => 0],
+        ];
+        static::assertEquals($expected, $actual);
+    }
 }

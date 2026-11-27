@@ -167,4 +167,23 @@ class TagsTable extends Table
                     ->in($this->aliasField('name'), $names);
             });
     }
+
+    /**
+     * Find tags usage: tagged objects count per tag name
+     *
+     * @param \Cake\ORM\Query\SelectQuery $query Query object.
+     * @return \Cake\ORM\Query\SelectQuery
+     */
+    public function findUsage(SelectQuery $query): SelectQuery
+    {
+        return $query
+            ->enableHydration(false)
+            ->select([
+                'name' => $this->aliasField('name'),
+                'count' => $query->func()->count($this->Objects->aliasField('id')),
+            ])
+            ->leftJoinWith('Objects', fn(SelectQuery $q) => $q->find('available'))
+            ->groupBy([$this->aliasField('id'), $this->aliasField('name')])
+            ->orderBy([$this->aliasField('name') => 'ASC']);
+    }
 }

@@ -35,4 +35,20 @@ class TagsController extends ModelController
             'object_tags' => ['object_tags'],
         ],
     ];
+
+    /**
+     * Usage endpoint
+     *
+     * @return void
+     */
+    public function usage(): void
+    {
+        $this->getRequest()->allowMethod(['get']);
+        if ($this->components()->has('JsonApi')) {
+            $this->components()->unload('JsonApi');
+        }
+        $this->viewBuilder()->setClassName('Json');
+        $this->set('data', $this->Tags->find('usage')->toArray());
+        $this->viewBuilder()->setOption('serialize', ['data']);
+    }
 }
