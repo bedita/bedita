@@ -2,6 +2,11 @@
 set -eo pipefail
 shopt -s nullglob
 
+if [ -z "${SECURITY_SALT:-}" ]; then
+    SECURITY_SALT="$(php -r 'echo bin2hex(random_bytes(32));')"
+    export SECURITY_SALT
+fi
+
 if [ ! -z "${DATABASE_URL}" ]; then
     DATABASE_HOST=$(php -r "echo parse_url(getenv('DATABASE_URL'), PHP_URL_HOST) . ':' . parse_url(getenv('DATABASE_URL'), PHP_URL_PORT);")
     if [ "$DATABASE_HOST" != ":" ]; then
