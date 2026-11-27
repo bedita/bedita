@@ -40,7 +40,7 @@ return [
     'Datasources' => [
         'default' => [
 
-            'className' => 'Cake\Database\Connection',
+            'className' => 'BEdita\Core\Database\Connection',
             'driver' => 'Cake\Database\Driver\Mysql',
 
             'host' => '__BE4_DB_HOST__',
@@ -75,6 +75,17 @@ return [
              * which is the recommended value in production environments
              */
             //'init' => ['SET GLOBAL innodb_stats_on_metadata = 0'],
+
+            /**
+             * Read replica: `read` keys override the settings above for read queries.
+             * It requires `BEdita\Core\Database\Connection` as `className`.
+             * The merge is shallow: `init` applies to the replica too, and a `read.flags` array replaces `flags`.
+             * A separate `async_jobs` datasource must use the same `className`, or its writes won't send
+             * the following reads to the primary.
+             */
+            //'read' => [
+            //    'host' => 'replica.example.com',
+            //],
 
             'url' => env('DATABASE_URL', null),
         ],

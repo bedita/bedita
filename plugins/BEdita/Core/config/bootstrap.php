@@ -1,6 +1,7 @@
 <?php
 
 use BEdita\Core\Configure\Engine\DatabaseConfig;
+use BEdita\Core\Database\Connection;
 use BEdita\Core\Database\Type\BoolType;
 use BEdita\Core\Database\Type\DateTimeType;
 use BEdita\Core\Database\Type\DateType;
@@ -11,7 +12,10 @@ use BEdita\Core\I18n\MessagesFileLoader;
 use BEdita\Core\ORM\Locator\TableLocator;
 use Cake\Core\Configure;
 use Cake\Core\Configure\Engine\IniConfig;
+use Cake\Core\Exception\CakeException;
+use Cake\Database\Connection as CakeConnection;
 use Cake\Database\TypeFactory;
+use Cake\Datasource\ConnectionManager;
 use Cake\I18n\ChainMessagesLoader;
 use Cake\I18n\I18n;
 use Cake\ORM\TableRegistry;
@@ -21,6 +25,35 @@ use Cake\ORM\TableRegistry;
  */
 if (!TableRegistry::getTableLocator() instanceof TableLocator) {
     TableRegistry::setTableLocator(new TableLocator());
+}
+
+/**
+ * Read replicas are safe only with BEdita connection, that sends reads to the primary after a write.
+ */
+foreach (ConnectionManager::configured() as $name) {
+    $config = (array)ConnectionManager::getConfig($name);
+    if (!array_key_exists('read', $config) && !array_key_exists('write', $config)) {
+        continue;
+    }
+
+    // A connection using `url` without `driver` in its query string resets `className` to Cake's, discarding the configured one.
+    $className = $config['className'] ?? null;
+    if ($className === CakeConnection::class) {
+        ConnectionManager::drop($name);
+        ConnectionManager::setConfig($name, ['className' => Connection::class] + $config);
+
+        continue;
+    }
+    if (
+        !(is_string($className) && is_a($className, Connection::class, true))
+        && !($className instanceof Connection)
+    ) {
+        throw new CakeException(sprintf(
+            'Datasource "%s" has `read` or `write` configuration, but its `className` is not %s',
+            $name,
+            Connection::class,
+        ));
+    }
 }
 
 /**

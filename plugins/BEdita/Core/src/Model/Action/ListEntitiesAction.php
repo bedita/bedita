@@ -179,7 +179,7 @@ class ListEntitiesAction extends BaseAction implements FinderFilterInterface
      */
     public function execute(array $data = []): SelectQuery
     {
-        $query = $this->Table->find();
+        $query = $this->Table->find()->useReadRole();
 
         if (!empty($data['filter'])) {
             $query = $this->buildFilter($query, static::parseFilter($data['filter']));
