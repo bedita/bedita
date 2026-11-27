@@ -87,6 +87,21 @@ class SortQueryStringTest extends IntegrationTestCase
                 'number_of_friends',
                 true,
             ],
+            'categoriesFilter' => [
+                200,
+                '/documents?filter[categories]=first-cat',
+                'title',
+            ],
+            'dateRangesFilter' => [
+                200,
+                '/events?filter[date_ranges][from_date]=2017-01-01',
+                'title',
+            ],
+            'associationFilter' => [
+                200,
+                '/objects?filter[parents]=11',
+                'title',
+            ],
         ];
     }
 
@@ -109,7 +124,8 @@ class SortQueryStringTest extends IntegrationTestCase
         }
         // sort asc
         $this->configRequestHeaders();
-        $url = sprintf('%s?sort=%s', $endpoint, $sort);
+        $format = '%s' . (str_contains($endpoint, '?') ? '&' : '?') . 'sort=%s';
+        $url = sprintf($format, $endpoint, $sort);
         $this->get($url);
         $fields = $sortedFields = [];
         $this->assertResponseCode($expected);
@@ -122,7 +138,7 @@ class SortQueryStringTest extends IntegrationTestCase
 
         // sort desc
         $this->configRequestHeaders();
-        $url = sprintf('%s?sort=-%s', $endpoint, $sort);
+        $url = sprintf($format, $endpoint, '-' . $sort);
         $this->get($url);
         $this->assertResponseCode($expected);
         if ($expected === 200) {

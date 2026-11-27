@@ -42,6 +42,8 @@ class ListEntitiesActionTest extends TestCase
     protected array $fixtures = [
         'plugin.BEdita/Core.FakeAnimals',
         'plugin.BEdita/Core.FakeArticles',
+        'plugin.BEdita/Core.FakeTags',
+        'plugin.BEdita/Core.FakeArticlesTags',
         'plugin.BEdita/Core.FakeMammals',
         'plugin.BEdita/Core.ObjectTypes',
         'plugin.BEdita/Core.Relations',
@@ -266,6 +268,89 @@ class ListEntitiesActionTest extends TestCase
 
         static::assertInstanceOf(SelectQuery::class, $result);
         static::assertEquals($expected, $result->enableHydration(false)->toArray());
+    }
+
+    /**
+     * Data provider for `testAssociationFilter` test case.
+     *
+     * @return array
+     */
+    public static function associationFilterProvider(): array
+    {
+        return [
+            'belongsTo' => [
+                [2, 1],
+                ['fake_animals' => 1],
+            ],
+            'belongsToMany' => [
+                [1],
+                ['fake_tags' => 1],
+            ],
+            'belongsToMany no duplicates' => [
+                [2, 1],
+                ['fake_tags' => [1, 2]],
+            ],
+        ];
+    }
+
+    /**
+     * Test filter on "to-one" and "to-many" associations, with results sorted on a different field.
+     *
+     * @param array $expected Expected article IDs, sorted by `head_title`.
+     * @param array $filter Filter.
+     * @return void
+     */
+    #[DataProvider('associationFilterProvider')]
+    public function testAssociationFilter(array $expected, array $filter): void
+    {
+        $table = TableRegistry::getTableLocator()->get('FakeArticles');
+        $table->belongsTo('FakeAnimals');
+        $table->belongsToMany('FakeTags', ['joinTable' => 'fake_articles_tags']);
+        // article 1 has both tags: a plain join would return it twice
+        $table->getAssociation('FakeTags')->junction()->insertQuery()
+            ->insert(['fake_article_id', 'fake_tag_id'])
+            ->values(['fake_article_id' => 1, 'fake_tag_id' => 2])
+            ->execute();
+
+        $action = new ListEntitiesAction(compact('table'));
+        $result = $action(compact('filter'))
+            ->orderBy([$table->aliasField('head_title') => 'ASC'])
+            ->all()
+            ->extract('id')
+            ->toList();
+
+        static::assertSame($expected, $result);
+    }
+
+    /**
+     * Test filter on a "to-many" association with composite binding key.
+     *
+     * @return void
+     */
+    public function testAssociationFilterCompositeKey(): void
+    {
+        $table = TableRegistry::getTableLocator()->get('FakeAnimals');
+        // articles are bound to animals by both `id` and `name` (as article title)
+        $table->hasMany('TitledArticles', [
+            'className' => 'FakeArticles',
+            'bindingKey' => ['id', 'name'],
+            'foreignKey' => ['fake_animal_id', 'head_title'],
+        ]);
+        $articles = $table->getAssociation('TitledArticles')->getTarget();
+        $insert = $articles->insertQuery()->insert(['fake_animal_id', 'head_title', 'main_body']);
+        $insert->values(['fake_animal_id' => 2, 'head_title' => 'koala', 'main_body' => 'first']);
+        $insert->values(['fake_animal_id' => 2, 'head_title' => 'koala', 'main_body' => 'second']);
+        $insert->values(['fake_animal_id' => 1, 'head_title' => 'koala', 'main_body' => 'mismatch']);
+        $insert->execute();
+        $articleId = fn(string $body): int => $articles->find()->where(['main_body' => $body])->firstOrFail()->id;
+
+        $action = new ListEntitiesAction(compact('table'));
+        $extractIds = fn(array $filter): array => $action(compact('filter'))->all()->extract('id')->toList();
+
+        // both articles match koala: no duplicates
+        static::assertSame([2], $extractIds(['titled_articles' => [$articleId('first'), $articleId('second')]]));
+        // `fake_animal_id` matches cat but `head_title` does not
+        static::assertSame([], $extractIds(['titled_articles' => $articleId('mismatch')]));
     }
 
     /**
