@@ -80,7 +80,7 @@ class PropertiesTable extends Table
         $this->belongsTo('ObjectTypes', [
             'foreignKey' => 'object_type_id',
             'joinType' => 'INNER',
-            'className' => 'BEdita/Core.ObjectTypes',
+            'className' => 'ObjectTypes',
         ]);
 
         $this->addBehavior('BEdita/Core.Searchable', ['scopes' => (array)$this->getTable()]);

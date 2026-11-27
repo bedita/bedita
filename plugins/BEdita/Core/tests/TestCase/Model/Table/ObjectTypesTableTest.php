@@ -104,6 +104,34 @@ class ObjectTypesTableTest extends TestCase
     }
 
     /**
+     * Data provider for `testAssociationTargetIsShared` test case.
+     *
+     * @return array
+     */
+    public static function associationTargetIsSharedProvider(): array
+    {
+        return [
+            'objects' => ['Objects'],
+            'properties' => ['Properties'],
+            'categories' => ['Categories'],
+        ];
+    }
+
+    /**
+     * Test that `ObjectTypes` associations of Core tables target the registry `ObjectTypes` instance.
+     *
+     * @param string $source Source table alias.
+     * @return void
+     */
+    #[DataProvider('associationTargetIsSharedProvider')]
+    public function testAssociationTargetIsShared(string $source): void
+    {
+        $target = TableRegistry::getTableLocator()->get($source)->getAssociation('ObjectTypes')->getTarget();
+
+        static::assertSame($this->ObjectTypes, $target);
+    }
+
+    /**
      * Data provider for `testValidation` test case.
      *
      * @return array

@@ -27,8 +27,9 @@ use PHPUnit\Framework\Attributes\CoversClass;
  * Relations whose name matches a Core table or object type.
  *
  * `RelationsBehavior` names a `RelatedTo` association after the relation and sets `className` to the target
- * object type's table, so Cake registers its target as `BEdita/Core.<RelationAlias>`. When `TableLocator`
- * folds `BEdita/Core.X` into `X`, that target shares the registry key with the real `X` table.
+ * object type's table, so Cake registers its target as `BEdita/Core.<RelationAlias>`. These tests guard that
+ * `TableLocator` keeps that key apart from `<RelationAlias>`: folding `BEdita/Core.X` into `X` would make the
+ * relation target share the registry key with the real `X` table.
  */
 #[CoversClass(TableLocator::class)]
 #[CoversClass(RelatedTo::class)]
@@ -84,8 +85,8 @@ class RelationAliasCollisionTest extends TestCase
     /**
      * Relation `locations` (documents → media), with `LocationsTable` loaded before the relation target.
      *
-     * The relation target must be a `MediaTable`, but registry key `Locations` already holds a `LocationsTable`,
-     * so Cake's `Association::getTarget()` throws a `DatabaseException`
+     * The relation target must be a `MediaTable` while `Locations` holds a `LocationsTable`. If both shared one
+     * registry key, Cake's `Association::getTarget()` would throw a `DatabaseException`
      * ("You can't have an association of the same name with a different target className").
      *
      * @return void
@@ -105,8 +106,8 @@ class RelationAliasCollisionTest extends TestCase
     /**
      * Relation `locations` (documents → media), with the relation target built first.
      *
-     * No exception here: the `MediaTable` target takes registry key `Locations`, so every later
-     * `get('Locations')` returns a `MediaTable` instead of the `LocationsTable`.
+     * With a shared registry key nothing would throw: the `MediaTable` target would take key `Locations`, and every
+     * later `get('Locations')` would return a `MediaTable` instead of the `LocationsTable`.
      *
      * @return void
      */
@@ -123,7 +124,8 @@ class RelationAliasCollisionTest extends TestCase
     /**
      * Relation `documents` (events → media): a relation named after an object type.
      *
-     * Same collision as above, with the `ObjectsTable` behind the `documents` type instead of a Core table class.
+     * Guards the same collision as above, with the `ObjectsTable` behind the `documents` type instead of a Core
+     * table class.
      *
      * @return void
      */
@@ -142,9 +144,9 @@ class RelationAliasCollisionTest extends TestCase
     /**
      * Relation `media` (documents → files): same table class, different object type.
      *
-     * The target class matches, so nothing throws, but `RelatedTo::getTarget()` calls `setupRelations()` with the
-     * `files` type on its target. With a shared instance, the `Media` table gains every relation of `files`
-     * (here `files_only`), which is then exposed on `media` too.
+     * The target class matches, so nothing would throw, but `RelatedTo::getTarget()` calls `setupRelations()` with
+     * the `files` type on its target. With a shared instance, the `Media` table would gain every relation of
+     * `files` (here `files_only`) and expose it on `media` too.
      *
      * @return void
      */

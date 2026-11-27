@@ -120,21 +120,4 @@ class TableLocatorTest extends TestCase
 
         $this->assertInstanceOf($expected, $result);
     }
-
-    /**
-     * Test that `BEdita/Core.Name` and `Name` aliases share the same table instance.
-     *
-     * @return void
-     */
-    public function testPluginAliasSharesInstance(): void
-    {
-        $table = $this->TableLocator->get('BEdita/Core.Roles');
-
-        static::assertTrue($this->TableLocator->exists('Roles'));
-        static::assertSame($table, $this->TableLocator->get('Roles'));
-        static::assertSame('Roles', $table->getRegistryAlias());
-
-        $this->TableLocator->remove('Roles');
-        static::assertFalse($this->TableLocator->exists('BEdita/Core.Roles'));
-    }
 }

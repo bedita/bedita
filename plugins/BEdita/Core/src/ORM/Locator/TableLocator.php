@@ -15,13 +15,10 @@ declare(strict_types=1);
 namespace BEdita\Core\ORM\Locator;
 
 use Cake\Core\App;
-use Cake\Datasource\RepositoryInterface;
 use Cake\Log\LogTrait;
 use Cake\ORM\Locator\TableLocator as CakeLocator;
-use Cake\ORM\Table;
 use Cake\Utility\Inflector;
 use Exception;
-use function Cake\Core\pluginSplit;
 
 /**
  * Custom table locator for BEdita.
@@ -31,55 +28,6 @@ use function Cake\Core\pluginSplit;
 class TableLocator extends CakeLocator
 {
     use LogTrait;
-
-    /**
-     * Normalize a registry alias, so that `BEdita/Core.Name` and `Name` share the same table instance,
-     * unless the application overrides the `Name` table class.
-     *
-     * @param string $alias The alias name.
-     * @return string
-     */
-    protected function normalizeAlias(string $alias): string
-    {
-        [$plugin, $name] = pluginSplit($alias);
-        if ($plugin !== 'BEdita/Core' || App::className($name, 'Model/Table', 'Table') !== null) {
-            return $alias;
-        }
-
-        return $name;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function get(string $alias, array $options = []): Table
-    {
-        return parent::get($this->normalizeAlias($alias), $options);
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function exists(string $alias): bool
-    {
-        return parent::exists($this->normalizeAlias($alias));
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function set(string $alias, RepositoryInterface $repository): Table
-    {
-        return parent::set($this->normalizeAlias($alias), $repository);
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function remove(string $alias): void
-    {
-        parent::remove($this->normalizeAlias($alias));
-    }
 
     /**
      * Gets the table class name.

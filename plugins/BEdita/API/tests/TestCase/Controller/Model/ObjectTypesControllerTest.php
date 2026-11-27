@@ -805,13 +805,13 @@ class ObjectTypesControllerTest extends IntegrationTestCase
     }
 
     /**
-     * Test sparse fields after loading relations through a plugin-qualified table alias.
+     * Test sparse fields after properties of the same type have been loaded.
      *
      * @return void
      */
     public function testSingleWithFields(): void
     {
-        TableRegistry::getTableLocator()->get('BEdita/Core.ObjectTypes')->get('events', contain: ['LeftRelations']);
+        $this->fetchTable('Properties')->find('objectType', for: 'events')->all();
         $this->configRequestHeaders();
         $this->get('/model/object_types/events?fields=associations,relations');
         $this->assertResponseOk();
