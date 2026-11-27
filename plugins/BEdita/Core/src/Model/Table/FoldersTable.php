@@ -282,7 +282,7 @@ class FoldersTable extends ObjectsTable
                     return $exp->isNull($this->TreeNodes->aliasField('parent_id'));
                 });
             })
-            ->orderBy('TreeNodes.priority');
+            ->orderBy(['TreeNodes.priority' => 'ASC']);
     }
 
     /**

@@ -70,6 +70,8 @@ class FoldersTableTest extends TestCase
         'plugin.BEdita/Core.Tags',
         'plugin.BEdita/Core.ObjectTags',
         'plugin.BEdita/Core.History',
+        'plugin.BEdita/Core.Roles',
+        'plugin.BEdita/Core.ObjectPermissions',
     ];
 
     /**
@@ -316,6 +318,12 @@ class FoldersTableTest extends TestCase
         static::assertNotEmpty($folders);
         $ids = Hash::extract($folders, '{n}.id');
         static::assertEquals([11, 13], $ids);
+    }
+
+    public function testFindRootsWithPermissions(): void
+    {
+        $folders = $this->Folders->find('roots')->contain(['Permissions'])->limit(10)->toArray();
+        static::assertEquals([11, 13], Hash::extract($folders, '{n}.id'));
     }
 
     /**
