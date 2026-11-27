@@ -76,11 +76,13 @@ For an explanation on `Accept` headers usage [read here](https://docs.bedita.net
 
 ## Docker
 
+### ⚠️ The docker image is meant for testing or simple demos. Using it in a production environment is discouraged. ⚠️
+
 See [Docker setup documentation](https://docs.bedita.net/en/latest/setup.html#setup-docker) for a more detailed overview.
 
 ### Pull official image
 
-Get latest offical image build from Docker Hub
+Get latest official image build from Docker Hub
 
 ```bash
  docker pull bedita/bedita:latest
@@ -110,7 +112,9 @@ Run a Docker image setting an initial API KEY and admin username and password, l
 
 This will launch a BEdita4 instance using `SQLite` as its storage backend. It should become available at http://localhost:8090/home almost instantly.
 
-Replace `bedita/bedita:latest` with `bedita5-local` (or other chosen name) to lanch a local built image.
+Replace `bedita/bedita:latest` with `bedita5-local` (or other chosen name) to launch a local built image.
+
+If the `SECURITY_SALT` env variable is unset or empty, the container generates a new random value on every start. If you need a persistent secret value, set `SECURITY_SALT` and share it across containers serving the same installation. Changing it invalidates existing JWTs and can affect encrypted data.
 
 ## Documentation
 
