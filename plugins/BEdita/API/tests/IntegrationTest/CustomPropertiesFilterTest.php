@@ -92,6 +92,14 @@ class CustomPropertiesFilterTest extends IntegrationTestCase
                 ['4'],
                 '/profiles?filter[number_of_friends][gt]=10',
             ],
+            'integer with two operators' => [
+                ['4'],
+                '/profiles?filter[number_of_friends][lt]=50&filter[number_of_friends][gt]=40',
+            ],
+            'integer with two operators no result' => [
+                [],
+                '/profiles?filter[number_of_friends][lt]=42&filter[number_of_friends][gt]=40',
+            ],
             'string' => [
                 ['5'],
                 '/users?filter[another_username]=synapse',

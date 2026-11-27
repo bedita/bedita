@@ -27,6 +27,7 @@ use Cake\TestSuite\TestCase;
 use Cake\Utility\Text;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
+use Throwable;
 
 /**
  * {@see \BEdita\Core\Event\ImageThumbsHandler} Test Case
@@ -199,6 +200,26 @@ class ImageThumbsHandlerTest extends TestCase
         Thumbnail::drop('test');
         Configure::delete('Thumbnails.allowAny');
         LoggedUser::resetUser();
+    }
+
+    /**
+     * Test update do nothing when no presets.
+     *
+     * @return void
+     */
+    public function testUpdateThumbsNoPresets(): void
+    {
+        $handler = new ImageThumbsHandler();
+        $image = $this->fetchTable('Images')->newEmptyEntity();
+        $stream = new Stream(['uuid' => Text::uuid()]);
+        $handler->updateThumbs($image, $stream, []);
+        static::assertTrue(true); // no exception thrown
+        $t = null;
+        try {
+            $handler->updateThumbs($image, $stream, ['default' => ['w' => 100]]);
+        } catch (Throwable $t) {
+        }
+        static::assertNotNull($t);
     }
 
     /**

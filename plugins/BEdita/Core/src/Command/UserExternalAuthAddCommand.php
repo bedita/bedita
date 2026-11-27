@@ -47,6 +47,11 @@ class UserExternalAuthAddCommand extends UserExternalAuthListCommand
             ])
             ->addOption('provider-params', [
                 'help' => 'Set provider parameters',
+            ])
+            ->removeOption('provider')
+            ->addOption('provider', [
+                'short' => 'p',
+                'help' => 'Set provider name',
             ]);
     }
 

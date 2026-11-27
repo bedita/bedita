@@ -174,6 +174,21 @@ class UserExternalAuthCommandsTest extends TestCase
     }
 
     /**
+     * Test case for {@see \BEdita\Core\Command\UserExternalAuthListCommand} command with multiple providers.
+     *
+     * @return void
+     */
+    public function testListByMultipleProviders(): void
+    {
+        $this->exec(sprintf('%s --provider uuid -p linkedout', UserExternalAuthListCommand::defaultName()));
+        $this->assertExitSuccess();
+        $this->assertOutputContains('uuid');
+        $this->assertOutputContains('linkedout');
+        $this->assertOutputContains('second user');
+        $this->assertOutputNotContains('first user');
+    }
+
+    /**
      * Test case for {@see \BEdita\Core\Command\UserExternalAuthListCommand} command.
      *
      * @return void

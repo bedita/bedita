@@ -19,6 +19,7 @@ use BEdita\Core\Model\Entity\ObjectEntity;
 use BEdita\Core\Model\Entity\ObjectType;
 use BEdita\Core\Model\Validation\Validation;
 use BEdita\Core\ORM\QueryFilterTrait;
+use BEdita\Core\Utility\ObjectTypesRegistry;
 use Cake\Collection\CollectionInterface;
 use Cake\Database\Driver\Mysql;
 use Cake\Database\Driver\Postgres;
@@ -29,7 +30,6 @@ use Cake\Datasource\EntityInterface;
 use Cake\Event\EventInterface;
 use Cake\ORM\Behavior;
 use Cake\ORM\Query\SelectQuery;
-use Cake\ORM\TableRegistry;
 use Cake\Utility\Hash;
 
 /**
@@ -111,13 +111,14 @@ class CustomPropertiesBehavior extends Behavior
             return [];
         }
 
-        $this->available = TableRegistry::getTableLocator()->get('Properties')
-            ->find('type', propType: 'dynamic')
-            ->find('objectType', for: $objectType->id)
-            ->where(['enabled' => true, 'is_static' => false])
-            ->all()
-            ->indexBy('name')
-            ->toArray();
+        $this->available = [];
+        foreach ($objectType->getFullInheritanceChain() as $type) {
+            foreach (ObjectTypesRegistry::getProperties($type->id) as $property) {
+                if ($property->enabled && !$property->is_static) {
+                    $this->available[$property->name] ??= $property;
+                }
+            }
+        }
 
         return $this->available;
     }
@@ -352,10 +353,12 @@ class CustomPropertiesBehavior extends Behavior
                 $field = $this->table()->aliasField($this->getConfig('field'));
                 $fieldExp = $this->expressionField($field, $key, $driver);
                 $operation = $conditions[$key];
-                $operator = key($operation);
-                $value = $operation[$operator];
+                $expr = $query->expr();
+                foreach ($operation as $operator => $value) {
+                    $expr->add($this->operatorExpression($query->expr(), $operator, $fieldExp, $value));
+                }
 
-                return $this->operatorExpression($query->expr(), $operator, $fieldExp, $value);
+                return $expr;
             }, array_keys($conditions)));
         });
     }
@@ -414,7 +417,9 @@ class CustomPropertiesBehavior extends Behavior
                 } else {
                     $expValue = $this->expressionValue($v, $schema, $driver);
                 }
-                $conditions[$key] = [$operator => $expValue];
+
+                $conditions[$key] ??= [];
+                $conditions[$key][$operator] = $expValue;
             }
 
             if (!empty($in)) {

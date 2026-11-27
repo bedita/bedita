@@ -28,6 +28,13 @@ class AsyncJobsCleanCommandTest extends TestCase
     use ConsoleIntegrationTestTrait;
 
     /**
+     * @inheritDoc
+     */
+    protected array $fixtures = [
+        'plugin.BEdita/Core.AsyncJobs',
+    ];
+
+    /**
      * Test buildOptionParser method
      *
      * @return void
@@ -65,5 +72,20 @@ class AsyncJobsCleanCommandTest extends TestCase
         $this->assertOutputContains('Deleted');
         $this->assertOutputContains('Done');
         $this->assertExitSuccess();
+    }
+
+    /**
+     * Test `execute` method with multiple `--service` options
+     *
+     * @return void
+     */
+    public function testExecuteMultipleServices(): void
+    {
+        $this->exec('async_jobs_clean --since 2018-01-01 --service example2 --service signup');
+        $this->assertOutputContains('Cleaning async jobs, since 2018-01-01, for service example2, signup');
+        $this->assertOutputContains('Deleted 2 async jobs');
+        $this->assertExitSuccess();
+        $services = $this->fetchTable('AsyncJobs')->find()->all()->extract('service')->toList();
+        static::assertSame(['example'], array_values(array_unique($services)));
     }
 }

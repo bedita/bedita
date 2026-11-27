@@ -195,6 +195,23 @@ class JobsCommandTest extends TestCase
     }
 
     /**
+     * Test run pending jobs filtered by multiple services.
+     *
+     * @return void
+     */
+    public function testPendingMultipleServices()
+    {
+        ServiceRegistry::set('example2', $this->getStubService());
+        ServiceRegistry::set('signup', $this->getStubService());
+        $this->exec('jobs pending --service example2 -s signup');
+        $this->assertExitCode(Command::CODE_SUCCESS);
+        $this->assertOutputContains('[example2] completed successfully');
+        $this->assertOutputContains('[signup] completed successfully');
+        $this->assertOutputNotContains('[example]');
+        $this->assertErrorEmpty();
+    }
+
+    /**
      * Test run pending jobs with no pending jobs to run.
      *
      * @return void

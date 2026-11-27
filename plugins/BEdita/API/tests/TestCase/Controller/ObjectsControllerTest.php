@@ -4196,4 +4196,24 @@ class ObjectsControllerTest extends IntegrationTestCase
         $this->assertSame('first-cat', $result['data']['attributes']['categories'][0]['name']);
         $this->assertSame('second-cat', $result['data']['attributes']['categories'][1]['name']);
     }
+
+    /**
+     * Test to verify that "filter[parent]" returns a 200.
+     *
+     * @return void
+     */
+    public function testIndexFilterParent(): void
+    {
+        $this->configRequestHeaders('GET', $this->getUserAuthHeader());
+        $this->get('/objects?filter[parent]=11');
+        $this->assertResponseCode(200);
+
+        $this->configRequestHeaders('GET', $this->getUserAuthHeader());
+        $this->get('/documents?filter[parent]=11');
+        $this->assertResponseCode(200);
+
+        $this->configRequestHeaders('GET', $this->getUserAuthHeader());
+        $this->get('/profiles?filter[parent]=12');
+        $this->assertResponseCode(200);
+    }
 }

@@ -19,6 +19,7 @@ use Cake\Console\Arguments;
 use Cake\Console\ConsoleIo;
 use Cake\Console\ConsoleOptionParser;
 use Cake\Core\Exception\CakeException as Exception;
+use Cake\Database\Expression\QueryExpression;
 use Cake\ORM\Query\SelectQuery;
 use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
@@ -49,11 +50,13 @@ class CustomPropsCommand extends Command
         return $parser->addOption('id', [
                 'help' => 'Object ID to check',
                 'required' => false,
+                'multiple' => true,
             ])
             ->addOption('type', [
                 'help' => 'Object type name to check',
                 'short' => 't',
                 'required' => false,
+                'multiple' => true,
             ]);
     }
 
@@ -67,12 +70,13 @@ class CustomPropsCommand extends Command
             ->where(['is_abstract' => false])
             ->all()
             ->toList();
-        if ($args->getOption('type')) {
-            $types = [(string)$args->getOption('type')];
+        if ($args->getArrayOption('type')) {
+            $types = $args->getArrayOption('type');
         }
+        $ids = array_map('intval', (array)$args->getArrayOption('id'));
         $errors = 0;
         foreach ($types as $type) {
-            $errors += $this->customPropsByType($type, (int)$args->getOption('id'), $io);
+            $errors += $this->customPropsByType($type, $ids, $io);
         }
         if ($errors) {
             $io->error(sprintf('Errors found (%d)', $errors));
@@ -89,18 +93,18 @@ class CustomPropsCommand extends Command
      * Check custom properties of an object type.
      *
      * @param string $type Object type
-     * @param int|null $id Object ID
+     * @param array<int> $ids Object IDs
      * @param \Cake\Console\ConsoleIo $io Console IO
      * @return int Number of errors found
      */
-    protected function customPropsByType(string $type, ?int $id, ConsoleIo $io): int
+    protected function customPropsByType(string $type, array $ids, ConsoleIo $io): int
     {
         $io->info(sprintf('Processing %s...', $type));
         $this->Table = TableRegistry::getTableLocator()->get(Inflector::camelize($type));
         $query = $this->Table
             ->find('type', value: (array)$type);
-        if ($id) {
-            $query = $query->where(compact('id'));
+        if ($ids) {
+            $query = $query->where(fn(QueryExpression $exp): QueryExpression => $exp->in('id', $ids));
         }
 
         $count = $err = 0;

@@ -18,7 +18,7 @@ use BEdita\Core\Model\Enum\RelationTypeSide;
 use BEdita\Core\Model\Validation\Validation;
 use BEdita\Core\ORM\Rule\IsUniqueAmongst;
 use BEdita\Core\Search\SimpleSearchTrait;
-use Cake\Cache\Cache;
+use BEdita\Core\Utility\ObjectTypesRegistry;
 use Cake\Database\Expression\QueryExpression;
 use Cake\Datasource\EntityInterface;
 use Cake\Event\EventInterface;
@@ -233,7 +233,7 @@ class RelationsTable extends Table
      */
     public function afterSave(): void
     {
-        Cache::clear(ObjectTypesTable::CACHE_CONFIG);
+        ObjectTypesRegistry::clear();
     }
 
     /**
@@ -243,6 +243,6 @@ class RelationsTable extends Table
      */
     public function afterDelete(): void
     {
-        Cache::clear(ObjectTypesTable::CACHE_CONFIG);
+        ObjectTypesRegistry::clear();
     }
 }

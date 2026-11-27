@@ -25,6 +25,7 @@ use Cake\Datasource\EntityInterface;
 use Cake\TestSuite\TestCase;
 use Exception;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * {@see BEdita\Core\Command\BuildSearchIndexCommand} Test Case
@@ -383,6 +384,61 @@ class BuildSearchIndexCommandTest extends TestCase
         $this->exec(sprintf('build_search_index --adapter "%s"', implode(',', $adapters)));
         static::assertSame(0, $adapter1->afterSaveCount);
         static::assertLessThan(0, $adapter2->afterSaveCount);
+        $this->assertExitCode(Command::CODE_SUCCESS);
+    }
+
+    /**
+     * Data provider for {@see BuildSearchIndexCommandTest::testExecuteMultipleOptions()}
+     *
+     * @return array
+     */
+    public static function executeMultipleOptionsProvider(): array
+    {
+        return [
+            'ids' => ['build_search_index --id 2 --id 3,4'],
+            'unames' => ['build_search_index --uname title-one --uname title-two,gustavo-supporto'],
+            'types' => ['build_search_index --type documents --type profiles --id 2,3,4'],
+        ];
+    }
+
+    /**
+     * Test `execute` method with repeated options, mixed with comma separated values
+     *
+     * @param string $command The command to execute
+     * @return void
+     */
+    #[DataProvider('executeMultipleOptionsProvider')]
+    public function testExecuteMultipleOptions(string $command): void
+    {
+        $adapter = new class extends SimpleAdapter
+        {
+            public $afterSaveCount = 0;
+            public function indexResource(EntityInterface $entity, string $operation): void
+            {
+                if ($operation === 'edit') {
+                    $this->afterSaveCount++;
+                }
+            }
+        };
+        $dummy = new class extends SimpleAdapter
+        {
+            public $afterSaveCount = 0;
+            public function indexResource(EntityInterface $entity, string $operation): void
+            {
+                if ($operation === 'edit') {
+                    $this->afterSaveCount++;
+                }
+            }
+        };
+        Configure::write('Search.adapters.default', [
+            'className' => $adapter,
+        ]);
+        Configure::write('Search.adapters.dummy', [
+            'className' => $dummy,
+        ]);
+        $this->exec($command . ' --adapter default --adapter dummy');
+        static::assertSame(3, $adapter->afterSaveCount);
+        static::assertSame(3, $dummy->afterSaveCount);
         $this->assertExitCode(Command::CODE_SUCCESS);
     }
 }

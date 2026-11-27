@@ -301,10 +301,11 @@ class AsyncJobsTable extends Table
      * Find pending asynchronous jobs sorted by descending priority, and optionally filtered by service and priority.
      *
      * @param \Cake\ORM\Query\SelectQuery $query Query object instance.
-     * @param array $options Additional options.
+     * @param int|null $priority Minimum priority.
+     * @param array|string|null $service Service name(s).
      * @return \Cake\ORM\Query\SelectQuery
      */
-    protected function findPriority(SelectQuery $query, ?int $priority = null, ?string $service = null): SelectQuery
+    protected function findPriority(SelectQuery $query, ?int $priority = null, array|string|null $service = null): SelectQuery
     {
         if (!empty($priority)) {
             $query = $query->where(
@@ -313,7 +314,7 @@ class AsyncJobsTable extends Table
         }
         if (!empty($service)) {
             $query = $query->where(
-                fn(QueryExpression $exp): QueryExpression => $exp->eq($this->aliasField('service'), $service),
+                fn(QueryExpression $exp): QueryExpression => $exp->in($this->aliasField('service'), (array)$service),
             );
         }
 

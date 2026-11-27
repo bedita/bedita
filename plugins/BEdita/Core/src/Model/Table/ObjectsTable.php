@@ -451,7 +451,7 @@ class ObjectsTable extends Table
                     $this->TreeNodes->aliasField('parent_id') => $parentId,
                 ]);
             })
-            ->orderBy($this->TreeNodes->aliasField('priority'));
+            ->orderBy([$this->TreeNodes->aliasField('priority') => 'ASC']);
     }
 
     /**
