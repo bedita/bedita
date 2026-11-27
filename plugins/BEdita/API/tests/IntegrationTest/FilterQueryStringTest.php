@@ -953,4 +953,91 @@ class FilterQueryStringTest extends IntegrationTestCase
         $found = Hash::extract($result, 'data.{n}.id');
         static::assertEquals($expected, $found);
     }
+
+    /**
+     * Data provider for `testHasRelationsFilter`.
+     *
+     * @return array
+     */
+    public static function hasRelationsFilterProvider(): array
+    {
+        return [
+            'true' => [
+                ['2', '3'],
+                '/documents?filter[has_relation][test]=true',
+            ],
+            'true and sort' => [
+                ['2', '3'],
+                '/documents?filter[has_relation][test]=true&sort=title',
+            ],
+            'numeric true' => [
+                ['2'],
+                '/documents?filter[has_relation][test_simple]=1',
+            ],
+            'yes' => [
+                ['2'],
+                '/documents?filter[has_relation][test_simple]=yes',
+            ],
+            'false' => [
+                ['3'],
+                '/documents?filter[has_relation][test_simple]=false',
+            ],
+            'false and sort' => [
+                ['3'],
+                '/documents?filter[has_relation][test_simple]=false&sort=title',
+            ],
+            'numeric false' => [
+                ['3'],
+                '/documents?filter[has_relation][test_simple]=0',
+            ],
+            'off' => [
+                ['3'],
+                '/documents?filter[has_relation][test_simple]=off',
+            ],
+            'multiple relations' => [
+                ['3'],
+                '/documents?filter[has_relation][test]=true&filter[has_relation][test_simple]=false',
+            ],
+            'invalid value' => [
+                false,
+                '/documents?filter[has_relation][test]=true&filter[has_relation][test_simple]=invalid',
+            ],
+            'only invalid value' => [
+                false,
+                '/documents?filter[has_relation][test_simple]=invalid',
+            ],
+            'inverse relation' => [
+                ['4'],
+                '/profiles?filter[has_relation][inverse_test_simple]=true',
+            ],
+        ];
+    }
+
+    /**
+     * Test `filter[has_relation]` query string.
+     *
+     * @param array|false $expected Expected IDs or false if an error is expected.
+     * @param string $url Request URL.
+     * @return void
+     */
+    #[DataProvider('hasRelationsFilterProvider')]
+    public function testHasRelationsFilter(array|false $expected, string $url): void
+    {
+        $this->configRequestHeaders();
+        $this->get($url);
+        $this->assertContentType('application/vnd.api+json');
+        $result = json_decode((string)$this->_response->getBody(), true);
+        if ($expected === false) {
+            $this->assertResponseCode(400);
+            static::assertArrayHasKey('error', $result);
+            static::assertArrayHasKey('status', $result['error']);
+            static::assertArrayHasKey('title', $result['error']);
+            static::assertEquals('400', $result['error']['status']);
+            static::assertEquals('Invalid value for "relation" parameter using hasRelation finder', $result['error']['title']);
+        } else {
+            $this->assertResponseCode(200);
+            static::assertArrayHasKey('data', $result);
+            static::assertEquals($expected, Hash::extract($result, 'data.{n}.id'));
+        }
+    }
 }

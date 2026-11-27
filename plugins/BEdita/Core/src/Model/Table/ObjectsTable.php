@@ -436,7 +436,7 @@ class ObjectsTable extends Table
      * Finder for objects having a certain `parent` on the tree.
      *
      * @param \Cake\ORM\Query\SelectQuery $query Query object instance.
-     * @param string|int $value Id or unique name of ancestor
+     * @param string|int $parent Id or unique name of ancestor
      * @return \Cake\ORM\Query\SelectQuery
      */
     public function findParent(SelectQuery $query, string|int $parent): SelectQuery
