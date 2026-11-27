@@ -18,6 +18,9 @@ use BEdita\Core\Exception\BadFilterException;
 use BEdita\Core\ORM\FinderFilterInterface;
 use BEdita\Core\ORM\FinderFilterTrait;
 use BEdita\Core\ORM\QueryFilterTrait;
+use Cake\Database\Expression\TupleComparison;
+use Cake\ORM\Association\BelongsToMany;
+use Cake\ORM\Association\HasMany;
 use Cake\ORM\Query\SelectQuery;
 use Cake\ORM\Table;
 use Cake\Utility\Inflector;
@@ -127,15 +130,7 @@ class ListEntitiesAction extends BaseAction implements FinderFilterInterface
                 }
                 $conditions = [$targetPrimaryKey => $value];
 
-                $query = $query
-                    ->distinct(array_map(
-                        // Avoid duplicate results when INNER JOIN-ing hasMany associations and similar.
-                        [$this->Table, 'aliasField'],
-                        (array)$this->Table->getPrimaryKey(),
-                    ))
-                    ->innerJoinWith($camelizedKey, function (SelectQuery $query) use ($conditions) {
-                        return $query->where($conditions);
-                    });
+                $query = $this->associationFilter($query, $camelizedKey, $conditions);
 
                 continue;
             }
@@ -170,6 +165,48 @@ class ListEntitiesAction extends BaseAction implements FinderFilterInterface
         }
 
         return $query;
+    }
+
+    /**
+     * Filter on an associated entity.
+     *
+     * For "to-many" associations a subquery on the association foreign key is used instead of
+     * an INNER JOIN + `DISTINCT ON` to avoid duplicate results: on Postgres `DISTINCT ON`
+     * is incompatible with an `ORDER BY` on other fields.
+     *
+     * @param \Cake\ORM\Query\SelectQuery $query Query object instance.
+     * @param string $assoc Association name.
+     * @param array $conditions Conditions on associated entity.
+     * @return \Cake\ORM\Query\SelectQuery
+     */
+    protected function associationFilter(SelectQuery $query, string $assoc, array $conditions): SelectQuery
+    {
+        $association = $this->Table->getAssociation($assoc);
+        $joinConditions = fn(SelectQuery $query): SelectQuery => $query->where($conditions);
+        if (!$association instanceof HasMany && !$association instanceof BelongsToMany) {
+            // "to-one" association: no duplicate results.
+            return $query->innerJoinWith($assoc, $joinConditions);
+        }
+
+        // Subquery on association target (with association finder and conditions), without the source table:
+        // a source table alias in the subquery would shadow the outer query one in a correlated subquery
+        // (e.g. tuple comparison transformed into `EXISTS` on SQLite).
+        $subQuery = $association->find()->where($conditions);
+        $fkTable = $association->getTarget();
+        if ($association instanceof BelongsToMany) {
+            $fkTable = $association->junction();
+            if (!array_key_exists($fkTable->getAlias(), $subQuery->clause('join'))) {
+                // junction table is already joined by `find()` only if there are junction conditions
+                $subQuery->innerJoinWith($fkTable->getAlias());
+            }
+        }
+        $subQuery->select(array_map([$fkTable, 'aliasField'], (array)$association->getForeignKey()), true);
+        $bindingKey = array_map([$this->Table, 'aliasField'], (array)$association->getBindingKey());
+        if (count($bindingKey) === 1) {
+            return $query->where([$bindingKey[0] . ' IN' => $subQuery]);
+        }
+
+        return $query->where(new TupleComparison($bindingKey, $subQuery, [], 'IN'));
     }
 
     /**

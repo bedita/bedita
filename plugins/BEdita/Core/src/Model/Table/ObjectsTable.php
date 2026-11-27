@@ -347,10 +347,12 @@ class ObjectsTable extends Table
             return $this->dateRangesSubQueryJoin($query, $sortableField, $options);
         }
 
-        return $query->distinct([$this->aliasField($this->getPrimaryKey())])
-            ->innerJoinWith('DateRanges', function (SelectQuery $query) use ($options) {
-                return $query->find('dateRanges', ...$options);
-            });
+        // Use a subquery instead of `DISTINCT ON` + join to avoid duplicates:
+        // on Postgres `DISTINCT ON` is incompatible with an `ORDER BY` on other fields.
+        $subQuery = $this->DateRanges->find('dateRanges', ...$options)
+            ->select([$this->DateRanges->aliasField('object_id')]);
+
+        return $query->where([$this->aliasField($this->getPrimaryKey()) . ' IN' => $subQuery]);
     }
 
     /**
@@ -434,7 +436,7 @@ class ObjectsTable extends Table
      * Finder for objects having a certain `parent` on the tree.
      *
      * @param \Cake\ORM\Query\SelectQuery $query Query object instance.
-     * @param string|int $value Id or unique name of ancestor
+     * @param string|int $parent Id or unique name of ancestor
      * @return \Cake\ORM\Query\SelectQuery
      */
     public function findParent(SelectQuery $query, string|int $parent): SelectQuery
@@ -592,9 +594,16 @@ class ObjectsTable extends Table
             $name = array_filter(explode(',', $name));
         }
 
-        return $query->distinct([$this->aliasField('id')])
+        // Use a subquery instead of `DISTINCT ON` + join to avoid duplicates:
+        // on Postgres `DISTINCT ON` is incompatible with an `ORDER BY` on other fields.
+        /** @var \Cake\ORM\Association\BelongsToMany $association */
+        $association = $this->getAssociation($assoc);
+        $subQuery = $this->subquery()
+            ->select([$association->junction()->aliasField($association->getForeignKey())])
             ->innerJoinWith($assoc, function (SelectQuery $query) use ($assoc, $name) {
                 return $query->where([sprintf('%s.name IN', $assoc) => $name]);
             });
+
+        return $query->where([$this->aliasField('id') . ' IN' => $subQuery]);
     }
 }
