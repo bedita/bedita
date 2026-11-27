@@ -79,7 +79,7 @@ class StaticPropertiesTableTest extends TestCase
         static::assertSame(StaticProperty::class, $this->StaticProperties->getEntityClass());
         static::assertMatchesRegularExpression('/^(?:[\w_]+\.)?static_properties_[a-f0-9]{16}$/', $this->StaticProperties->getTable());
 
-        $otherInstance = TableRegistry::getTableLocator()->get('OtherStaticProperties', ['className' => 'BEdita/Core.StaticProperties']);
+        $otherInstance = TableRegistry::getTableLocator()->get('BEdita/Core.StaticProperties');
 
         static::assertNotSame($otherInstance->getTable(), $this->StaticProperties->getTable());
     }

@@ -81,7 +81,7 @@ class CategoriesTable extends Table
 
         $this->belongsTo('ObjectTypes', [
             'foreignKey' => 'object_type_id',
-            'className' => 'BEdita/Core.ObjectTypes',
+            'className' => 'ObjectTypes',
         ]);
         $this->belongsTo('ParentCategories', [
             'className' => 'BEdita/Core.Categories',

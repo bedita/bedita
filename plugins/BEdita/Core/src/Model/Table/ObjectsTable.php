@@ -112,7 +112,7 @@ class ObjectsTable extends Table
         $this->belongsTo('ObjectTypes', [
             'foreignKey' => 'object_type_id',
             'joinType' => 'INNER',
-            'className' => 'BEdita/Core.ObjectTypes',
+            'className' => 'ObjectTypes',
         ]);
         $this->hasMany('DateRanges', [
             'foreignKey' => 'object_id',
