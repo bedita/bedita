@@ -124,4 +124,15 @@ class TagsTableTest extends TestCase
         $tags = $this->Tags->find('ids', names: ['tag-1', 'tag-2'])->toArray();
         static::assertEmpty($tags);
     }
+
+    /**
+     * Test `findUsage` method
+     *
+     * @return void
+     */
+    public function testFindUsage(): void
+    {
+        $actual = $this->Tags->find('usage')->toArray();
+        static::assertEquals([['name' => 'first-tag', 'count' => 1]], $actual);
+    }
 }
