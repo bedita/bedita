@@ -22,6 +22,6 @@ class TagsControllerTest extends IntegrationTestCase
         $actual = json_decode((string)$this->_response->getBody(), true);
         $this->assertResponseCode(200);
         $this->assertContentType('application/json');
-        $this->assertEquals([['name' => 'first-tag', 'count' => 1]], $actual);
+        $this->assertEquals(['data' => [['name' => 'first-tag', 'count' => 1]]], $actual);
     }
 }
