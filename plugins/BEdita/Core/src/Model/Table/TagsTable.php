@@ -182,7 +182,7 @@ class TagsTable extends Table
                 'name' => $this->aliasField('name'),
                 'count' => $query->func()->count($this->Objects->aliasField('id')),
             ])
-            ->innerJoinWith('Objects', fn(SelectQuery $q) => $q->find('available'))
+            ->leftJoinWith('Objects', fn(SelectQuery $q) => $q->find('available'))
             ->groupBy([$this->aliasField('id'), $this->aliasField('name')])
             ->orderBy([$this->aliasField('name') => 'ASC']);
     }
